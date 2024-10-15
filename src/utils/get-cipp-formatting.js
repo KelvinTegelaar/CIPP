@@ -8,11 +8,8 @@ import ReactTimeAgo from "react-time-ago";
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
-  // if data is a data object, return a formatted date
 
-  if (cellName.includes("Date")) {
-    return isText ? new Date(data).toLocaleString() : <ReactTimeAgo date={new Date(data)} />;
-  }
+  // if data is a data object, return a formatted date
 
   if (cellName === "addrow") {
     return isText ? (

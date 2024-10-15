@@ -24,7 +24,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListRoles"
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={columns}

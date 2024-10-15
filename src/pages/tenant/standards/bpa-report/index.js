@@ -1,51 +1,49 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import {
-  Box,
-  Container,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Grid,
-} from "@mui/material";
+import { Box, Container, Typography, Button, IconButton } from "@mui/material";
 import { useState } from "react";
 import Head from "next/head";
+import { Responsive, WidthProvider } from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+import DeleteIcon from "@mui/icons-material/Delete"; // Import delete icon
+import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { useForm } from "react-hook-form";
 
-const availableComponents = [
-  { label: "CippTableCard", value: "CippTableCard" },
-  { label: "CippButtonCard", value: "CippButtonCard" },
-];
-
+const ResponsiveGridLayout = WidthProvider(Responsive);
 const Page = () => {
-  const pageTitle = "Best Practice Analyser";
-  const [gridConfig, setGridConfig] = useState([]);
-  const [hoveredColumns, setHoveredColumns] = useState(null);
+  const formControl = useForm({ mode: "onChange" });
 
-  const handleAddBlock = (columns) => {
-    setGridConfig((prevConfig) => {
-      const columnsUsed = prevConfig.reduce((sum, item) => sum + item.columns, 0);
-      if (columnsUsed + columns <= 4) {
-        return [
-          ...prevConfig,
-          {
-            id: `block-${prevConfig.length + 1}`,
-            component: "",
-            columns,
-          },
-        ];
-      }
-      return prevConfig;
-    });
+  const pageTitle = "Best Practice Analyser";
+  const [gridConfig, setGridConfig] = useState([
+    {
+      i: `block-default`,
+      x: 0 % 4, // Place the block in the next column (up to 4 columns)
+      y: Math.floor(1 / 4), // Push to the next row after every 4 blocks
+      w: 1,
+      h: 2, // Default height, fixed
+      minH: 2, // Prevent height resizing
+      maxH: 2, // Prevent height resizing
+    },
+  ]);
+
+  const handleAddBlock = () => {
+    setGridConfig((prevConfig) => [
+      ...prevConfig,
+      {
+        i: `block-${prevConfig.length + 1}`,
+        x: prevConfig.length % 4, // Place the block in the next column (up to 4 columns)
+        y: Math.floor(prevConfig.length / 4), // Push to the next row after every 4 blocks
+        w: 1,
+        h: 2, // Default height, fixed
+        minH: 2, // Prevent height resizing
+        maxH: 2, // Prevent height resizing
+      },
+    ]);
   };
 
-  const handleComponentChange = (id, value) => {
-    setGridConfig((prevConfig) =>
-      prevConfig.map((block) => (block.id === id ? { ...block, component: value } : block))
-    );
+  const handleRemoveBlock = (blockId) => {
+    setGridConfig((prevConfig) => prevConfig.filter((block) => block.i !== blockId));
   };
 
   const saveConfig = () => {
@@ -53,19 +51,6 @@ const Page = () => {
     console.log("Saved Config:", jsonConfig);
     // For now, just log the config. Later, this could be connected to an API.
   };
-
-  const handleMouseEnter = (columns) => {
-    setHoveredColumns(columns);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredColumns(null);
-  };
-
-  const columnsUsed = gridConfig.reduce((sum, item) => sum + item.columns, 0);
-  const availableColumns = 4 - columnsUsed;
-
-  const row1HasItems = gridConfig.some((block) => block.columns > 0);
 
   return (
     <>
@@ -82,106 +67,66 @@ const Page = () => {
           <Typography variant="h4" gutterBottom>
             {pageTitle}
           </Typography>
-          <Button variant="contained" onClick={saveConfig} sx={{ mb: 2 }}>
+          <Button variant="contained" onClick={handleAddBlock} sx={{ mb: 2 }}>
+            Add Block
+          </Button>
+          <Button variant="contained" onClick={saveConfig} sx={{ mb: 2, ml: 2 }}>
             Save Dashboard Configuration
           </Button>
-          <Grid container spacing={2}>
-            {availableColumns > 0 && (
-              <Grid
-                item
-                xs={(availableColumns / 4) * 12}
-                onMouseMove={(e) => {
-                  const boxWidth = e.currentTarget.offsetWidth;
-                  const relativeX = e.nativeEvent.offsetX;
-                  const hoveredCols = Math.ceil((relativeX / boxWidth) * availableColumns);
-                  setHoveredColumns(Math.min(hoveredCols, availableColumns));
-                }}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => handleAddBlock(hoveredColumns)}
-                sx={{
-                  height: 150,
-                  position: "relative",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: hoveredColumns ? "#f0f0f0" : "transparent",
-                  border: hoveredColumns ? "1px dotted #aaa" : "none",
-                  transition: "width 0.3s ease",
-                }}
-              >
-                {hoveredColumns && (
-                  <Typography variant="h6" color="textSecondary">
-                    + ({hoveredColumns} column{hoveredColumns > 1 ? "s" : ""})
-                  </Typography>
-                )}
-              </Grid>
-            )}
+          <ResponsiveGridLayout
+            className="layout"
+            layouts={{
+              lg: gridConfig.map((block) => ({
+                ...block,
+                w: block.w || 1,
+                h: block.h || 2, // Ensure blocks always have a default height
+              })),
+            }}
+            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+            cols={{ lg: 4, md: 3, sm: 2, xs: 1, xxs: 1 }}
+            rowHeight={100}
+            width={1500}
+            onLayoutChange={(layout) =>
+              setGridConfig(
+                layout.map((item) => ({
+                  ...item,
+                  w: Math.max(Math.round(item.w), 1),
+                  h: 2, // Keep height fixed at 2
+                  minH: 2, // Ensure minimum height
+                }))
+              )
+            }
+            isResizable={true}
+            isDraggable={false} // Disable dragging
+            preventCollision={true} // Prevent overlapping
+            autoSize={true}
+          >
             {gridConfig.map((block) => (
-              <Grid item key={block.id} xs={(block.columns / 4) * 12}>
-                <Card sx={{ width: "100%", height: 150 }}>
-                  <CardContent>
-                    <FormControl fullWidth>
-                      <InputLabel>Select Component</InputLabel>
-                      <Select
-                        value={block.component || ""}
-                        label="Select Component"
-                        onChange={(e) => handleComponentChange(block.id, e.target.value)}
-                      >
-                        {availableComponents.map((component) => (
-                          <MenuItem key={component.value} value={component.value}>
-                            {component.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    {block.component && (
-                      <Box sx={{ mt: 2 }}>
-                        {block.component === "CippTableCard" && (
-                          <Typography variant="body1">CippTableCard Placeholder</Typography>
-                        )}
-                        {block.component === "CippButtonCard" && (
-                          <Button variant="outlined">CippButtonCard Placeholder</Button>
-                        )}
-                      </Box>
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-            {row1HasItems && (
-              <Grid
-                item
-                xs={12}
-                onMouseMove={(e) => {
-                  const boxWidth = e.currentTarget.offsetWidth;
-                  const relativeX = e.nativeEvent.offsetX;
-                  const hoveredCols = Math.ceil((relativeX / boxWidth) * 4);
-                  setHoveredColumns(Math.min(hoveredCols, 4));
-                }}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => handleAddBlock(hoveredColumns)}
-                sx={{
-                  height: 150,
-                  position: "relative",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: hoveredColumns ? "#f0f0f0" : "transparent",
-                  border: hoveredColumns ? "1px dotted #aaa" : "none",
-                  transition: "width 0.3s ease",
-                  mt: 2,
-                }}
-              >
-                {hoveredColumns && (
-                  <Typography variant="h6" color="textSecondary">
-                    + ({hoveredColumns} column{hoveredColumns > 1 ? "s" : ""})
+              <div key={block.i} data-grid={block}>
+                <CippButtonCard
+                  title={`BPA Report`}
+                  cardActions={
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => handleRemoveBlock(block.i)} // Remove block on click
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  <Typography>
+                    This block will display the data you set it up to display. You can add more
+                    blocks.
                   </Typography>
-                )}
-              </Grid>
-            )}
-          </Grid>
+                  <CippFormComponent
+                    label={"Field Name"}
+                    formControl={formControl}
+                    name="fieldName"
+                  />
+                </CippButtonCard>
+              </div>
+            ))}
+          </ResponsiveGridLayout>
         </Container>
       </Box>
     </>

@@ -2,7 +2,27 @@ import { getCippFilterVariant } from "../../utils/get-cipp-filter-variant";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 
-export const utilColumnsFromAPI = (dataSample) => {
+// Function to merge keys from all objects in the array
+const mergeKeys = (dataArray) => {
+  return dataArray.reduce((acc, item) => {
+    const mergeRecursive = (obj, base = {}) => {
+      Object.keys(obj).forEach((key) => {
+        if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+          base[key] = mergeRecursive(obj[key], base[key] || {});
+        } else {
+          base[key] = obj[key];
+        }
+      });
+      return base;
+    };
+
+    return mergeRecursive(item, acc);
+  }, {});
+};
+
+export const utilColumnsFromAPI = (dataArray) => {
+  const dataSample = mergeKeys(dataArray);
+
   const generateColumns = (obj, parentKey = "") => {
     return Object.keys(obj)
       .map((key) => {

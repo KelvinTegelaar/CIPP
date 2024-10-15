@@ -23,6 +23,7 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippDataTable = (props) => {
   const {
@@ -53,6 +54,7 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  const settings = useSettings();
   const waitingBool = api?.url ? true : false;
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
@@ -113,7 +115,7 @@ export const CippDataTable = (props) => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
       return;
     }
-    const apiColumns = utilColumnsFromAPI(usedData[0]);
+    const apiColumns = utilColumnsFromAPI(usedData);
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
@@ -123,6 +125,7 @@ export const CippDataTable = (props) => {
         newVisibility[col.id] = true;
       });
     } else if (simpleColumns.length > 0) {
+      settings.currentTenant === "AllTenants" ? simpleColumns.unshift("Tenant") : null;
       finalColumns = apiColumns.map((col) => {
         newVisibility[col.id] = simpleColumns.includes(col.id);
         return col;
@@ -134,6 +137,7 @@ export const CippDataTable = (props) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
     }
+    //if the currentTenant is "allTenants", make sure we also add the Tenant column as the first column.
 
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
@@ -150,7 +154,10 @@ export const CippDataTable = (props) => {
     columns: usedColumns,
     data: usedData,
     state: { columnVisibility },
-
+    renderEmptyRowsFallback: ({ table }) =>
+      getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
+        <center>{getRequestData.data?.pages?.[0].Metadata?.QueueMessage}</center>
+      ) : undefined,
     onColumnVisibilityChange: setColumnVisibility,
     ...modeInfo,
 

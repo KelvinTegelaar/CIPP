@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, CardHeader, CardContent, CardActions, Skeleton, Divider } from "@mui/material";
-import { ActionsMenu } from "../actions-menu";
 
 export default function CippButtonCard({
   title,
