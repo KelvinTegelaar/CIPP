@@ -1,11 +1,12 @@
 [
   {
     "name": "CIPP-API",
-    "id": "CIPP-API",
+    "id": "cippapi",
     "type": "CIPP-API",
     "cat": "API",
     "logo": "/assets/integrations/cipp-api.png",
     "forceSyncButton": false,
+    "hideTestButton": true,
     "disableWhenhosted": true,
     "description": "Enable the CIPP API to access CIPP data outside of CIPP using a RESTful API.",
     "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
