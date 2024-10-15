@@ -2,7 +2,7 @@ import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
@@ -11,17 +11,47 @@ import { useEffect } from "react";
 import { ArrowPathIcon, ArrowTopRightOnSquareIcon, BeakerIcon } from "@heroicons/react/24/outline";
 import { SvgIcon } from "@mui/material";
 import { useState } from "react";
+import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 
 const Page = () => {
   const router = useRouter();
   const settings = useSettings();
-
-  const [formIsDirty, setFormIsDirty] = useState(false);
   const preferredTheme = settings.currentTheme?.value;
+
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
   });
+
+  const [testQuery, setTestQuery] = useState({ url: "", waiting: false, queryKey: "" });
+  const actionTestResults = ApiGetCall({
+    ...testQuery,
+  });
+  const handleIntegrationTest = () => {
+    setTestQuery({
+      url: "/api/ExecExtensionTest",
+      data: {
+        extensionName: router.query.id,
+      },
+      waiting: true,
+      queryKey: `ExecExtensionTest-${router.query.id}`,
+    });
+  };
+
+  const [syncQuery, setSyncQuery] = useState({ url: "", waiting: false, queryKey: "" });
+  const actionSyncResults = ApiGetCall({
+    ...syncQuery,
+  });
+  const handleIntegrationSync = () => {
+    setSyncQuery({
+      url: "/api/ExecExtensionSync",
+      data: {
+        Extension: router.query.id,
+      },
+      waiting: true,
+      queryKey: `ExecExtensionSync-${router.query.id}`,
+    });
+  };
 
   const formControl = useForm({
     mode: "onChange",
@@ -44,20 +74,6 @@ const Page = () => {
     }
   }, [integrations.isSuccess]);
 
-  useEffect(() => {
-    // if form fields are not saved and differ from the default values disable the test/sync buttons
-    if (
-      formControl.formState.dirtyFields &&
-      Object.keys(formControl.formState.dirtyFields).length > 0 &&
-      !formIsDirty &&
-      !formControl.formState.isSubmitted
-    ) {
-      setFormIsDirty(true);
-    } else {
-      setFormIsDirty(false);
-    }
-  }, [formControl, setFormIsDirty]);
-
   return (
     <>
       {integrations.isSuccess && extension ? (
@@ -75,7 +91,12 @@ const Page = () => {
           </Typography>
           <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
             {extension?.hideTestButton !== true && (
-              <Button variant="contained" color="primary" disabled={formIsDirty}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleIntegrationTest()}
+                disabled={actionTestResults?.isLoading}
+              >
                 <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                   <BeakerIcon />
                 </SvgIcon>
@@ -83,7 +104,12 @@ const Page = () => {
               </Button>
             )}
             {extension?.forceSyncButton && (
-              <Button variant="contained" color="primary" disabled={formIsDirty}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleIntegrationSync()}
+                disabled={actionSyncResults.isLoading}
+              >
                 <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                   <ArrowPathIcon />
                 </SvgIcon>
@@ -102,6 +128,10 @@ const Page = () => {
                 ))}
               </>
             )}
+          </Stack>
+          <Stack direction="column" spacing={0.5}>
+            <CippApiResults apiObject={actionTestResults} />
+            <CippApiResults apiObject={actionSyncResults} />
           </Stack>
           <Box sx={{ my: 2 }}>
             {extension.SettingOptions.map((setting, index) => (
