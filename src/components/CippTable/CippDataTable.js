@@ -146,6 +146,7 @@ export const CippDataTable = (props) => {
   const createDialog = useDialog();
 
   // Apply the modeInfo directly
+  settings.currentTenant === "AllTenants" ? simpleColumns.unshift("Tenant") : null;
   const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns);
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
