@@ -596,8 +596,7 @@ export const items = [
         ),
         items: [
           { title: "Application Settings", path: "/cipp/settings" },
-          { title: "Extensions Settings", path: "/cipp/extensions" },
-          { title: "Extension Sync", path: "/cipp/extension-sync" },
+          { title: "Integrations", path: "/cipp/integrations" },
           { title: "User Settings", path: "/cipp/user-settings" },
           { title: "Scheduler", path: "/cipp/scheduler" },
           { title: "Logbook", path: "/cipp/logs" },
