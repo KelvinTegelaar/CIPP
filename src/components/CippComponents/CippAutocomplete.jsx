@@ -67,7 +67,8 @@ export const CippAutoComplete = (props) => {
         return {
           label:
             typeof api.labelField === "function" ? api.labelField(option) : option[api.labelField],
-          value: option[api.valueField],
+          value:
+            typeof api.valueField === "function" ? api.valueField(option) : option[api.valueField],
           addedFields: addedFields,
         };
       });
@@ -90,7 +91,7 @@ export const CippAutoComplete = (props) => {
         )
       }
       isOptionEqualToValue={(option, value) => option.value === value.value}
-      value={value}
+      value={typeof value === "string" ? { label: value, value: value } : value}
       filterSelectedOptions
       disableClearable={disableClearable}
       multiple={multiple}
@@ -103,7 +104,11 @@ export const CippAutoComplete = (props) => {
         return filtered;
       }}
       size="small"
-      defaultValue={defaultValue}
+      defaultValue={
+        typeof defaultValue === "string"
+          ? { label: defaultValue, value: defaultValue }
+          : defaultValue
+      }
       name={name}
       onChange={
         onChange

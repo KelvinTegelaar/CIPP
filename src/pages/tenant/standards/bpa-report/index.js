@@ -11,26 +11,26 @@ const Page = () => {
     {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
-      link: "/tenant/standards/template?id=[GUID]",
+      link: "/tenant/standards/bpa-report/builder?id=[Name]",
       icon: <EyeIcon />,
       color: "success",
       target: "_self",
     },
     {
       label: "Clone & Edit Template",
-      link: "/tenant/standards/template?id=[GUID]&clone=true",
+      link: "/tenant/standards/bpa-report/builder?id=[Name]&clone=true",
       icon: <EyeIcon />,
       color: "success",
       target: "_self",
     },
     {
       label: "Delete Template",
-      type: "POST",
-      url: "/api/RemoveStandardTemplate",
-      icon: <Delete />,
+      type: "GET",
+      url: "/api/RemoveBPATemplate",
       data: {
-        ID: "GUID",
+        TemplateName: "Name",
       },
+      icon: <Delete />,
       confirmText: "Are you sure you want to delete this template?",
       multiPost: false,
     },

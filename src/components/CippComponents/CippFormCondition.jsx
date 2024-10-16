@@ -2,7 +2,7 @@ import { useWatch } from "react-hook-form";
 import isEqual from "lodash/isEqual"; // lodash for deep comparison
 
 export const CippFormCondition = (props) => {
-  const { field, compareType = "is", compareValue, children, formControl } = props;
+  let { field, compareType = "is", compareValue, children, formControl } = props;
   if (
     field === undefined ||
     compareValue === undefined ||
@@ -11,8 +11,15 @@ export const CippFormCondition = (props) => {
   ) {
     return null;
   }
-
   let watcher = useWatch({ control: formControl.control, name: field });
+
+  if (watcher?.value !== undefined) {
+    watcher = watcher.value;
+  }
+
+  if (compareValue?.value !== undefined) {
+    compareValue = compareValue.value;
+  }
 
   switch (compareType) {
     case "is":
