@@ -8,8 +8,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Card,
-  CardContent,
   Grid,
   IconButton,
   Stack,
@@ -31,21 +29,7 @@ const Page = () => {
     defaultValues: {
       name: "",
       style: "Table",
-      Fields: [
-        {
-          name: "",
-          UseExistingInfo: false,
-          FrontendFields: [{ name: "", value: "", formatter: "string" }],
-          desc: "",
-          API: "Graph",
-          StoreAs: "string",
-          ExtractFields: [""],
-          where: "",
-          Command: "",
-          URL: "",
-          parameters: { asApp: false },
-        },
-      ],
+      Fields: [],
     },
   });
 
@@ -266,7 +250,20 @@ const Page = () => {
                       compareValue={true}
                       formControl={formControl}
                     >
-                      //List all fields with label/value
+                      <CippFormComponent
+                        name={`Fields.${index}.value`}
+                        label={"Field Name"}
+                        type="autoComplete"
+                        formControl={formControl}
+                        multiple={false}
+                        api={{
+                          queryKey: `ListBPA`,
+                          url: "/api/ListBPA",
+                          dataKey: "Keys",
+                          labelField: (option) => `${option}`,
+                          valueField: "id",
+                        }}
+                      />
                     </CippFormCondition>
 
                     <CippFormCondition
@@ -298,13 +295,51 @@ const Page = () => {
                           formControl={formControl}
                         />
                         <CippFormComponent
+                          label="Where Object (PowerShell Syntax, optional)"
+                          name={`Fields.${index}.where`}
+                          formControl={formControl}
+                        />
+                        <CippFormComponent
                           label="Use Application Permissions"
                           name={`Fields.${index}.parameters.asApp`}
                           formControl={formControl}
                           type="switch"
                         />
                       </CippFormCondition>
-
+                      <CippFormCondition
+                        field={`Fields.${index}.API`}
+                        compareType="is"
+                        compareValue={{ label: "Exchange Online PowerShell", value: "Exchange" }}
+                        formControl={formControl}
+                      >
+                        <CippFormComponent
+                          label="Exchange Command (PowerShell Syntax)"
+                          name={`Fields.${index}.Command`}
+                          formControl={formControl}
+                        />
+                        <CippFormComponent
+                          label="Where Object (PowerShell Syntax, optional)"
+                          name={`Fields.${index}.where`}
+                          formControl={formControl}
+                        />
+                      </CippFormCondition>
+                      <CippFormCondition
+                        field={`Fields.${index}.API`}
+                        compareType="is"
+                        compareValue={{ label: "CIPP Function", value: "CIPPFunction" }}
+                        formControl={formControl}
+                      >
+                        <CippFormComponent
+                          label="CIPP Command (Get- only)"
+                          name={`Fields.${index}.Command`}
+                          formControl={formControl}
+                        />
+                        <CippFormComponent
+                          label="Where Object (PowerShell Syntax, optional)"
+                          name={`Fields.${index}.where`}
+                          formControl={formControl}
+                        />
+                      </CippFormCondition>
                       <CippFormComponent
                         label="What fields from the API response should we save?"
                         name={`Fields.${index}.ExtractFields`}
@@ -318,18 +353,6 @@ const Page = () => {
                         formControl={formControl}
                         autoCompleteOptions={["string", "JSON", "bool"]}
                         type="autocomplete"
-                      />
-
-                      <CippFormComponent
-                        label="Where"
-                        name={`Fields.${index}.where`}
-                        formControl={formControl}
-                      />
-
-                      <CippFormComponent
-                        label="Command"
-                        name={`Fields.${index}.Command`}
-                        formControl={formControl}
                       />
                     </CippFormCondition>
                     {/* Submit Button */}

@@ -109,7 +109,7 @@ export const CippAutoComplete = (props) => {
         onChange
           ? (event, newValue) => {
               if (onChange) {
-                onChange(newValue, newValue.addedFields);
+                onChange(newValue, newValue?.addedFields);
               }
             }
           : undefined

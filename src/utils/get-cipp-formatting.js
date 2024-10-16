@@ -3,7 +3,6 @@ import { Chip, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
-import ReactTimeAgo from "react-time-ago";
 
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
@@ -21,6 +20,28 @@ export const getCippFormatting = (data, cellName, type) => {
     );
   }
 
+  //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.
+  if (cellName === "tenantFilter") {
+    //check if data is an array.
+    if (Array.isArray(data)) {
+      return isText
+        ? data.join(", ")
+        : data.map((item) => (
+            <CippCopyToClipBoard key={item.value} text={item.label} type="chip" />
+          ));
+    }
+  }
+
+  if (cellName === "excludedTenants") {
+    //check if data is an array.
+    if (Array.isArray(data)) {
+      return isText
+        ? data.join(", ")
+        : data.map((item) => (
+            <CippCopyToClipBoard key={item.value} text={item.label} type="chip" />
+          ));
+    }
+  }
   if (cellName === "bulkUser") {
     return isText ? `${data.length} new users to create` : `${data.length} new users to create`;
   }
