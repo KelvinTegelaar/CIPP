@@ -114,7 +114,6 @@ export const CippDataTable = (props) => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
       return;
     }
-    console.log("here");
     const apiColumns = utilColumnsFromAPI(usedData);
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
@@ -125,7 +124,6 @@ export const CippDataTable = (props) => {
         newVisibility[col.id] = true;
       });
     } else if (simpleColumns.length > 0) {
-      console.log("simpleColumns", simpleColumns);
       finalColumns = apiColumns.map((col) => {
         newVisibility[col.id] = simpleColumns.includes(col.id);
         return col;

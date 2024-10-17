@@ -49,7 +49,6 @@ const CippFormPage = (props) => {
     if (customDataformatter) {
       customDataformatter(values);
     }
-    console.log(values);
     postCall.mutate({
       url: postUrl,
       data: values,
