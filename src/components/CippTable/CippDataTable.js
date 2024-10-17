@@ -47,6 +47,7 @@ export const CippDataTable = (props) => {
     simple = false,
     cardButton,
     offCanvas = false,
+    noCard = false,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
@@ -234,9 +235,9 @@ export const CippDataTable = (props) => {
   });
 
   return (
-    <Card style={{ width: "100%" }}>
-      <CardHeader action={cardButton} title={title} /> <Divider />
-      <CardContent sx={{ padding: "1rem" }}>
+    <>
+      {noCard ? (
+        // Just render the table and related components without the Card
         <Scrollbar>
           {!Array.isArray(usedData) && usedData ? (
             <ResourceUnavailable message="Data not in correct format" />
@@ -265,7 +266,43 @@ export const CippDataTable = (props) => {
             </>
           ) : null}
         </Scrollbar>
-      </CardContent>
+      ) : (
+        // Render the table inside a Card
+        <Card style={{ width: "100%" }}>
+          <CardHeader action={cardButton} title={title} />
+          <Divider />
+          <CardContent sx={{ padding: "1rem" }}>
+            <Scrollbar>
+              {!Array.isArray(usedData) && usedData ? (
+                <ResourceUnavailable message="Data not in correct format" />
+              ) : (
+                <>
+                  {(getRequestData.isSuccess ||
+                    getRequestData.data?.pages.length >= 0 ||
+                    data.length >= 1) && (
+                    <MaterialReactTable
+                      enableRowVirtualization
+                      enableColumnVirtualization
+                      table={table}
+                    />
+                  )}
+                </>
+              )}
+              {getRequestData.isError && !getRequestData.isFetchNextPageError && (
+                <ResourceError
+                  onReload={() => getRequestData.refetch()}
+                  message={`Error Loading data:  ${getCippError(getRequestData.error)}`}
+                />
+              )}
+              {isFetching || (getRequestData.isFetching && !getRequestData.data) ? (
+                <>
+                  <Skeleton />
+                </>
+              ) : null}
+            </Scrollbar>
+          </CardContent>
+        </Card>
+      )}
       <CippOffCanvas
         isFetching={getRequestData.isFetching}
         visible={offcanvasVisible}
@@ -284,6 +321,6 @@ export const CippDataTable = (props) => {
           relatedQueryKeys={queryKey ? queryKey : title}
         />
       )}
-    </Card>
+    </>
   );
 };

@@ -1,14 +1,5 @@
 import { Sync } from "@mui/icons-material";
-import {
-  Button,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  SvgIcon,
-  Tooltip,
-} from "@mui/material";
+import { Button, IconButton, ListItemText, Menu, MenuItem, SvgIcon, Tooltip } from "@mui/material";
 import { Box } from "@mui/system";
 import {
   MRT_GlobalFilterTextField,

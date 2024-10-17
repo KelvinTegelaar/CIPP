@@ -3,6 +3,7 @@ import { Chip, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
+import CippDataTableButton from "../components/CippTable/CippDataTableButton";
 
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
@@ -93,7 +94,7 @@ export const getCippFormatting = (data, cellName, type) => {
   }
 
   // Handle boolean data
-  if (typeof data === "boolean") {
+  if (typeof data === "boolean" || cellNameLower === "bool") {
     return isText ? (
       data ? (
         "Yes"
@@ -137,7 +138,7 @@ export const getCippFormatting = (data, cellName, type) => {
 
   // Handle objects
   if (typeof data === "object" && data !== null) {
-    return isText ? JSON.stringify(data) : <span>{JSON.stringify(data)}</span>;
+    return isText ? JSON.stringify(data) : <CippDataTableButton data={data} />;
   }
 
   // Default case: return data as-is
