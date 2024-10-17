@@ -55,7 +55,6 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  const settings = useSettings();
   const waitingBool = api?.url ? true : false;
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
@@ -63,7 +62,6 @@ export const CippDataTable = (props) => {
     queryKey: queryKey ? queryKey : title,
     waiting: waitingBool,
   });
-
   useEffect(() => {
     if (data) {
       if (JSON.stringify(data) !== JSON.stringify(usedData) && data.length > 0) {
@@ -116,6 +114,7 @@ export const CippDataTable = (props) => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
       return;
     }
+    console.log("here");
     const apiColumns = utilColumnsFromAPI(usedData);
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
@@ -126,7 +125,7 @@ export const CippDataTable = (props) => {
         newVisibility[col.id] = true;
       });
     } else if (simpleColumns.length > 0) {
-      settings.currentTenant === "AllTenants" ? simpleColumns.unshift("Tenant") : null;
+      console.log("simpleColumns", simpleColumns);
       finalColumns = apiColumns.map((col) => {
         newVisibility[col.id] = simpleColumns.includes(col.id);
         return col;
@@ -138,16 +137,14 @@ export const CippDataTable = (props) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
     }
-    //if the currentTenant is "allTenants", make sure we also add the Tenant column as the first column.
-
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, simpleColumns, usedData.length]);
+  }, [columns.length, usedData.length]);
 
   const createDialog = useDialog();
 
   // Apply the modeInfo directly
-  settings.currentTenant === "AllTenants" ? simpleColumns.unshift("Tenant") : null;
+
   const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns);
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({

@@ -9,8 +9,10 @@ const mergeKeys = (dataArray) => {
       Object.keys(obj).forEach((key) => {
         if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
           base[key] = mergeRecursive(obj[key], base[key] || {});
+        } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
+          base[key] = base[key];
         } else {
-          base[key] = obj[key];
+          base[key] = obj[key]; // Assign valid primitive values
         }
       });
       return base;
@@ -22,7 +24,6 @@ const mergeKeys = (dataArray) => {
 
 export const utilColumnsFromAPI = (dataArray) => {
   const dataSample = mergeKeys(dataArray);
-
   const generateColumns = (obj, parentKey = "") => {
     return Object.keys(obj)
       .map((key) => {

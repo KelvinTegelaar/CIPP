@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
+import { Dialog, DialogContent, Button } from "@mui/material";
 import { CippDataTable } from "./CippDataTable";
 const CippDataTableButton = ({ data }) => {
   const [openDialogs, setOpenDialogs] = useState([]);
@@ -12,11 +12,11 @@ const CippDataTableButton = ({ data }) => {
   const handleCloseDialog = (index) => {
     setOpenDialogs(openDialogs.filter((_, i) => i !== index));
   };
-
+  const dataIsNotANullArray = !Array.isArray(data) || data.length === 0;
   return (
     <>
-      <Button variant="contained" onClick={handleOpenDialog}>
-        {Array.isArray(data) ? `${data.length} items` : "1 item"}
+      <Button disabled={dataIsNotANullArray} variant="contained" onClick={handleOpenDialog}>
+        {dataIsNotANullArray ? "No items" : `${data.length} items`}
       </Button>
 
       {openDialogs.map((dialogData, index) => (
