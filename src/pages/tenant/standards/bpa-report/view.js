@@ -59,7 +59,10 @@ const Page = () => {
 
             const tenantData = bpaData?.data?.Data?.find((data) => data.GUID === tenantId);
             const cards = frontendFields.map((field) => {
-              const blockData = field.value.split(".").reduce((obj, key) => obj[key], tenantData);
+              //instead of this, use lodash to get the data for blockData
+              const blockData = _.get(tenantData, field.value)
+                ? _.get(tenantData, field.value)
+                : ["No Data"];
               return {
                 name: field.name,
                 value: field.value,
