@@ -43,7 +43,7 @@ const Page = () => {
               title="Not supported"
               imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
               text={
-                "The Tenant Overview does not support all Tenants, please select a different tenant using the tenant selector, or check the Table Overview."
+                "The Tenant Overview does not support all Tenants, please select a different tenant using the tenant selector. Would you like to see the scores for all tenants? Check out the Best Practices report instead."
               }
             />
           </Grid>
