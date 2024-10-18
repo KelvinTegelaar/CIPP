@@ -22,4 +22,5 @@ export const CippTranslations = {
   onPremisesLastPasswordSyncDateTime: "On Premises Last Password Sync Date Time",
   postalCode: "Postal Code",
   deleteTenant: "Delete Tenant",
+  ScorePercentage: "Score",
 };

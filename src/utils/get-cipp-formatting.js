@@ -1,9 +1,10 @@
 import { Cancel, Check } from "@mui/icons-material";
-import { Chip, Link } from "@mui/material";
+import { Chip, LinearProgress, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
 import CippDataTableButton from "../components/CippTable/CippDataTableButton";
+import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
 
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
@@ -19,6 +20,34 @@ export const getCippFormatting = (data, cellName, type) => {
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
     );
+  }
+
+  //domainAnalyser layouts
+
+  if (cellName === "ScorePercentage") {
+    return isText ? `${data}%` : <LinearProgressWithLabel variant="determinate" value={data} />;
+  }
+
+  if (cellName === "DMARCPercentagePass") {
+    return isText ? `${data}%` : <LinearProgressWithLabel variant="determinate" value={data} />;
+  }
+
+  if (cellName === "ScoreExplanation") {
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "DMARCActionPolicy") {
+    if (data === "") {
+      data = "No DMARC Action";
+    }
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "MailProvider") {
+    if (data === "Null") {
+      data = "Unknown";
+    }
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
   }
 
   //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.

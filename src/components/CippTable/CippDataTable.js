@@ -143,7 +143,7 @@ export const CippDataTable = (props) => {
 
   // Apply the modeInfo directly
 
-  const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns);
+  const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas);
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,

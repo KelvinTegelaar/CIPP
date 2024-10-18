@@ -11,7 +11,7 @@ export function useSecureScore() {
       controlScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
       secureScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
       translatedData: [],
-      isFetching: false,
+      isFetching: true,
       isSuccess: false,
     };
   }
