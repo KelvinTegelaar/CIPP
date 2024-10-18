@@ -6,7 +6,11 @@ import { styled } from "@mui/system"; // Correct import from @mui/system
 
 const CodeContainer = styled("div")`
   position: relative;
-  display: inline-block;
+  display: block;
+  max-width: 100%; /* Ensure it fits within the card */
+  word-wrap: break-word; /* Ensure long words are broken to wrap */
+  white-space: pre-wrap; /* Allow the code block to wrap */
+  word-break: break-all; /* Break long continuous strings into the next line */
 
   .cipp-code-copy-button {
     position: absolute;
@@ -20,7 +24,7 @@ export const CippCodeBlock = (props) => {
   const {
     code,
     language = "javascript",
-    showLineNumbers = true,
+    showLineNumbers = false,
     startingLineNumber = 1,
     wrapLongLines = true,
   } = props;
@@ -37,6 +41,7 @@ export const CippCodeBlock = (props) => {
         <CippCopyToClipBoard text={code} type="button" onClick={onCodeCopied} />
       </div>
       <SyntaxHighlighter
+        lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
         language={language}
         style={atomDark}
         showLineNumbers={showLineNumbers}

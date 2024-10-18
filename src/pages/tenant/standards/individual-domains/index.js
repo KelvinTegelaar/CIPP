@@ -234,7 +234,7 @@ const Page = () => {
                   info={
                     <div>
                       <p>Nameservers:</p>
-                      <CippCodeBlock code={nsData?.Records.join("\n")} />
+                      <pre>{nsData?.Records.join("\n")}</pre>
                     </div>
                   }
                 />
@@ -248,15 +248,15 @@ const Page = () => {
                   data={spfData}
                   isFetching={spfLoading}
                   info={
-                    <div>
+                    <>
                       <p>SPF Record:</p>
-                      <pre>{spfData?.Record}</pre>
+                      <CippCodeBlock code={spfData?.Record} />
                       <ResultList
                         passes={spfData?.ValidationPasses}
                         warns={spfData?.ValidationWarns}
                         fails={spfData?.ValidationFails}
                       />
-                    </div>
+                    </>
                   }
                 />
               </Grid>
@@ -268,7 +268,7 @@ const Page = () => {
                   info={
                     <div>
                       <p>DMARC Policy:</p>
-                      <pre>{dmarcData?.Record}</pre>
+                      <CippCodeBlock code={dmarcData?.Record} />
                       <ResultList
                         passes={dmarcData?.ValidationPasses}
                         warns={dmarcData?.ValidationWarns}
@@ -286,7 +286,7 @@ const Page = () => {
                   info={
                     <div>
                       <p>DKIM Record:</p>
-                      <pre>{dkimData?.Records?.[0]?.Record}</pre>
+                      <CippCodeBlock code={dkimData?.Records?.[0]?.Record} />
                       <ResultList
                         passes={dkimData?.ValidationPasses}
                         warns={dkimData?.ValidationWarns}
@@ -303,8 +303,6 @@ const Page = () => {
                   isFetching={dnssecLoading}
                   info={
                     <div>
-                      <p>DNSSEC Keys:</p>
-                      <pre>{dnssecData?.Keys.join("\n")}</pre>
                       <ResultList
                         passes={dnssecData?.ValidationPasses}
                         warns={dnssecData?.ValidationWarns}
@@ -322,7 +320,7 @@ const Page = () => {
                   info={
                     <div>
                       <p>MTA-STS Mode:</p>
-                      <pre>{mtastsData?.StsPolicy?.Mode || "No record found"}</pre>
+                      <CippCodeBlock code={mtastsData?.StsPolicy?.Mode || "No record found"} />
                       <ResultList
                         passes={mtastsData?.ValidationPasses}
                         warns={mtastsData?.ValidationWarns}
@@ -435,7 +433,9 @@ function DomainResultCard({ title, data, isFetching, info }) {
       }
       isFetching={isFetching}
     >
-      {info}
+      <Grid item xs={12}>
+        {info}
+      </Grid>
     </CippButtonCard>
   );
 }
