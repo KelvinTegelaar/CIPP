@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, CardContent, Grid } from "@mui/material";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";
@@ -7,70 +7,59 @@ import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "/src/data/Extensions.json";
 import { useEffect } from "react";
+import { CippDataTable } from "../CippTable/CippDataTable";
 
 const CippIntegrationSettings = ({ children }) => {
   const router = useRouter();
-  const settings = useSettings();
-  const preferredTheme = settings.currentTheme?.value;
 
-  const integrations = ApiGetCall({
-    url: "/api/ListExtensionsConfig",
-    queryKey: "Integrations",
+  const mappings = ApiGetCall({
+    url: "/api/ExecExtensionMapping",
+    data: {
+      List: router.query.id,
+    },
+    queryKey: `IntegrationTenantMapping-${router.query.id}`,
   });
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: integrations?.data,
+    defaultValues: mappings?.data,
   });
 
   const extension = extensions.find((extension) => extension.id === router.query.id);
 
-  var logo = extension?.logo;
-  if (preferredTheme === "dark" && extension?.logoDark) {
-    logo = extension.logoDark;
-  }
-
   useEffect(() => {
-    if (integrations.isSuccess) {
+    if (mappings.isSuccess) {
       formControl.reset({
-        ...integrations.data,
+        ...mappings.data,
       });
       formControl.trigger();
     }
-  }, [integrations.isSuccess]);
+  }, [mappings.isSuccess]);
 
   return (
     <>
-      {integrations.isSuccess && extension ? (
+      {mappings.isSuccess && extension ? (
         <CippFormSection
-          queryKey={"Integrations"}
+          queryKey={`IntegrationTenantMapping-${router.query.id}`}
           formControl={formControl}
-          formPageType="Integration"
-          title={extension.name}
-          backButtonTitle="Integrations"
-          postUrl="/api/ExecExtensionsConfig"
+          postUrl={`/api/ExecExtensionsConfig?AddMapping=${router.query.id}`}
         >
           {children}
 
           <Box>
-            {extension.SettingOptions.map((setting, index) => (
-              <Box key={index} sx={{ mb: 2 }}>
-                <CippFormComponent
-                  name={setting.name}
-                  type={setting.type}
-                  label={setting.label}
-                  options={setting.options}
-                  formControl={formControl}
-                  placeholder={setting?.placeholder}
-                />
-              </Box>
-            ))}
+            <CippDataTable
+              noCard={true}
+              reportTitle={`${extension.id}-tenant-map`}
+              data={mappings.data.Mappings}
+              simple={false}
+              simpleColumns={["Tenant", "IntegrationName"]}
+            />
           </Box>
         </CippFormSection>
       ) : (
         <CardContent>
-          {integrations.isLoading && <Box>Loading...</Box>}
-          {integrations.isSuccess && !extension && (
+          {mappings.isLoading && <Box>Loading...</Box>}
+          {mappings.isSuccess && !extension && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Box sx={{ p: 3 }}>
