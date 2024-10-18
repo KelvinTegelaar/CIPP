@@ -1,6 +1,5 @@
-import { Box, Button, Grid, Stack, Typography } from "@mui/material";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import { Box, Button, CardContent, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
+import CippIntegrationSettings from "/src/components/CippIntegrations/CippIntegrationSettings";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useSettings } from "/src/hooks/use-settings";
@@ -12,11 +11,35 @@ import { ArrowPathIcon, ArrowTopRightOnSquareIcon, BeakerIcon } from "@heroicons
 import { SvgIcon } from "@mui/material";
 import { useState } from "react";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
+import CippPageCard from "../../../components/CippCards/CippPageCard";
+
+function CardTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+function tabProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 const Page = () => {
   const router = useRouter();
   const settings = useSettings();
   const preferredTheme = settings.currentTheme?.value;
+  const [value, setValue] = useState(0);
 
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
@@ -27,6 +50,11 @@ const Page = () => {
   const actionTestResults = ApiGetCall({
     ...testQuery,
   });
+
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   const handleIntegrationTest = () => {
     setTestQuery({
       url: "/api/ExecExtensionTest",
@@ -76,91 +104,94 @@ const Page = () => {
 
   return (
     <>
-      {integrations.isSuccess && extension ? (
-        <CippFormPage
-          queryKey={"Integrations"}
-          formControl={formControl}
-          formPageType="Integration"
+      {integrations.isSuccess && extension && (
+        <CippPageCard
           title={extension.name}
           backButtonTitle="Integrations"
-          postUrl="/api/ExecExtensionsConfig"
+          headerText={extension.headerText}
+          headerImage={logo}
         >
-          <Box component="img" src={logo} sx={{ mx: "auto", display: "block", width: "50%" }} />
-          <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
-            {extension.helpText}
-          </Typography>
-          <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-            {extension?.hideTestButton !== true && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleIntegrationTest()}
-                disabled={actionTestResults?.isLoading}
-              >
-                <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                  <BeakerIcon />
-                </SvgIcon>
-                Test
-              </Button>
+          <CardContent sx={{ pb: 0, mb: 0 }}>
+            {logo && (
+              <Box
+                component="img"
+                src={logo}
+                alt={extension.name}
+                sx={{ width: "50%", mx: "auto" }}
+              />
             )}
-            {extension?.forceSyncButton && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleIntegrationSync()}
-                disabled={actionSyncResults.isLoading}
-              >
-                <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                  <ArrowPathIcon />
-                </SvgIcon>
-                Force Sync
-              </Button>
+            <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
+              {extension.helpText}
+            </Typography>
+
+            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+              {extension?.hideTestButton !== true && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleIntegrationTest()}
+                  disabled={actionTestResults?.isLoading}
+                >
+                  <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                    <BeakerIcon />
+                  </SvgIcon>
+                  Test
+                </Button>
+              )}
+              {extension?.forceSyncButton && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleIntegrationSync()}
+                  disabled={actionSyncResults.isLoading}
+                >
+                  <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                    <ArrowPathIcon />
+                  </SvgIcon>
+                  Force Sync
+                </Button>
+              )}
+              {extension?.links && (
+                <>
+                  {extension.links.map((link, index) => (
+                    <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
+                      <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                        <ArrowTopRightOnSquareIcon />
+                      </SvgIcon>
+                      {link.name}
+                    </Button>
+                  ))}
+                </>
+              )}
+            </Stack>
+            <Stack direction="column" spacing={0.5}>
+              <CippApiResults apiObject={actionTestResults} />
+              <CippApiResults apiObject={actionSyncResults} />
+            </Stack>
+          </CardContent>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider", px: "24px", m: "auto" }}>
+              <Tabs value={value} onChange={handleTabChange} aria-label="Integration settings">
+                <Tab label="Settings" {...tabProps(0)} />
+                {extension?.mappingRequired && <Tab label="Tenant Mapping" {...tabProps(1)} />}
+                {extension?.fieldMapping && <Tab label="Field Mapping" {...tabProps(2)} />}
+              </Tabs>
+            </Box>
+            <CardTabPanel value={value} index={0}>
+              <CippIntegrationSettings />
+            </CardTabPanel>
+            {extension?.mappingRequired && (
+              <CardTabPanel value={value} index={1}>
+                Item Two
+              </CardTabPanel>
             )}
-            {extension?.links && (
-              <>
-                {extension.links.map((link, index) => (
-                  <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
-                    <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                      <ArrowTopRightOnSquareIcon />
-                    </SvgIcon>
-                    {link.name}
-                  </Button>
-                ))}
-              </>
+            {extension?.fieldMapping && (
+              <CardTabPanel value={value} index={2}>
+                Item Three
+              </CardTabPanel>
             )}
-          </Stack>
-          <Stack direction="column" spacing={0.5}>
-            <CippApiResults apiObject={actionTestResults} />
-            <CippApiResults apiObject={actionSyncResults} />
-          </Stack>
-          <Box sx={{ my: 2 }}>
-            {extension.SettingOptions.map((setting, index) => (
-              <Box key={index} sx={{ mb: 2 }}>
-                <CippFormComponent
-                  name={setting.name}
-                  type={setting.type}
-                  label={setting.label}
-                  options={setting.options}
-                  formControl={formControl}
-                  placeholder={setting?.placeholder}
-                />
-              </Box>
-            ))}
           </Box>
-        </CippFormPage>
-      ) : (
-        <>
-          {integrations.isLoading && <Box>Loading...</Box>}
-          {integrations.isSuccess && !extension && (
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Box sx={{ p: 3 }}>
-                  <Box sx={{ textAlign: "center" }}>Extension not found</Box>
-                </Box>
-              </Grid>
-            </Grid>
-          )}
-        </>
+        </CippPageCard>
       )}
     </>
   );
