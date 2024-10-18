@@ -220,6 +220,7 @@ const Page = () => {
                           data={block.data}
                           simple={false}
                           noCard={true}
+                          incorrectDataMessage={"No data has been found for this report."}
                           simpleColumns={block?.simpleColumns}
                         />
                       ) : (

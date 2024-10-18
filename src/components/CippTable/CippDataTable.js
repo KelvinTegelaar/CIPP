@@ -23,7 +23,6 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
-import { useSettings } from "../../hooks/use-settings";
 
 export const CippDataTable = (props) => {
   const {
@@ -48,6 +47,7 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
     noCard = false,
+    incorrectDataMessage = "Data not in correct format",
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
@@ -235,7 +235,7 @@ export const CippDataTable = (props) => {
         // Just render the table and related components without the Card
         <Scrollbar>
           {!Array.isArray(usedData) && usedData ? (
-            <ResourceUnavailable message="Data not in correct format" />
+            <ResourceUnavailable message={incorrectDataMessage} />
           ) : (
             <>
               {(getRequestData.isSuccess ||
@@ -269,7 +269,7 @@ export const CippDataTable = (props) => {
           <CardContent sx={{ padding: "1rem" }}>
             <Scrollbar>
               {!Array.isArray(usedData) && usedData ? (
-                <ResourceUnavailable message="Data not in correct format" />
+                <ResourceUnavailable message={incorrectDataMessage} />
               ) : (
                 <>
                   {(getRequestData.isSuccess ||
