@@ -20,7 +20,7 @@ const RefreshAction = () => {
           <i>Please note: This job runs automatically every 12 hours.</i>
         </div>
       ),
-      onConfirm: () => execStandards({ path: 'api/AddChocoApp_OrchestrationStarter' }),
+      onConfirm: () => execStandards({ path: 'api/ExecAppUpload' }),
     })
 
   return (
