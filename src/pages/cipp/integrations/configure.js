@@ -1,4 +1,4 @@
-import { Box, Button, CardContent, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, CardContent, Stack, Tab, Tabs, Typography } from "@mui/material";
 import CippIntegrationSettings from "/src/components/CippIntegrations/CippIntegrationSettings";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
@@ -155,7 +155,13 @@ const Page = () => {
               {extension?.links && (
                 <>
                   {extension.links.map((link, index) => (
-                    <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
+                    <Button
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      color="inherit"
+                      key={index}
+                    >
                       <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                         <ArrowTopRightOnSquareIcon />
                       </SvgIcon>
