@@ -8,6 +8,7 @@ import {
   CardContent,
   Container,
   Grid,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -98,15 +99,22 @@ const Page = () => {
                   <div style={{ flexGrow: 1 }} />
                   <CardActions>
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <Box
-                        sx={{
-                          backgroundColor: isEnabled ? "success.main" : "warning.main",
-                          borderRadius: "50%",
-                          width: 8,
-                          height: 8,
-                        }}
-                      />
-                      <Typography variant="body2">{status}</Typography>
+                      {integrations.isSuccess ? (
+                        <Box
+                          sx={{
+                            backgroundColor: isEnabled ? "success.main" : "warning.main",
+                            borderRadius: "50%",
+                            width: 8,
+                            height: 8,
+                          }}
+                        />
+                      ) : (
+                        <Skeleton variant="circular" width={8} height={8} animation="pulse" />
+                      )}
+
+                      <Typography variant="body2">
+                        {integrations.isSuccess ? status : "Loading"}
+                      </Typography>
                     </Stack>
                   </CardActions>
                 </Card>
