@@ -1,4 +1,4 @@
-import { Box, Button, CardContent, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, CardContent, Stack, Tab, Tabs, Typography } from "@mui/material";
 import CippIntegrationSettings from "/src/components/CippIntegrations/CippIntegrationSettings";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
@@ -25,7 +25,7 @@ function CardTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
 }
@@ -112,64 +112,72 @@ const Page = () => {
           headerText={extension.headerText}
           headerImage={logo}
         >
-          <CardContent sx={{ pb: 0, mb: 0 }}>
-            {logo && (
-              <Box
-                component="img"
-                src={logo}
-                alt={extension.name}
-                sx={{ width: "50%", mx: "auto" }}
-              />
-            )}
-            <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
-              {extension.helpText}
-            </Typography>
+          <Box>
+            <CardContent sx={{ pb: 0, mb: 0 }}>
+              {logo && (
+                <Box
+                  component="img"
+                  src={logo}
+                  alt={extension.name}
+                  sx={{ width: "50%", mx: "auto" }}
+                />
+              )}
+              <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
+                {extension.helpText}
+              </Typography>
 
-            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-              {extension?.hideTestButton !== true && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleIntegrationTest()}
-                  disabled={actionTestResults?.isLoading}
-                >
-                  <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                    <BeakerIcon />
-                  </SvgIcon>
-                  Test
-                </Button>
-              )}
-              {extension?.forceSyncButton && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleIntegrationSync()}
-                  disabled={actionSyncResults.isLoading}
-                >
-                  <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                    <ArrowPathIcon />
-                  </SvgIcon>
-                  Force Sync
-                </Button>
-              )}
-              {extension?.links && (
-                <>
-                  {extension.links.map((link, index) => (
-                    <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
-                      <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
-                        <ArrowTopRightOnSquareIcon />
-                      </SvgIcon>
-                      {link.name}
-                    </Button>
-                  ))}
-                </>
-              )}
-            </Stack>
-            <Stack direction="column" spacing={0.5}>
-              <CippApiResults apiObject={actionTestResults} />
-              <CippApiResults apiObject={actionSyncResults} />
-            </Stack>
-          </CardContent>
+              <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+                {extension?.hideTestButton !== true && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleIntegrationTest()}
+                    disabled={actionTestResults?.isLoading}
+                  >
+                    <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                      <BeakerIcon />
+                    </SvgIcon>
+                    Test
+                  </Button>
+                )}
+                {extension?.forceSyncButton && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleIntegrationSync()}
+                    disabled={actionSyncResults.isLoading}
+                  >
+                    <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                      <ArrowPathIcon />
+                    </SvgIcon>
+                    Force Sync
+                  </Button>
+                )}
+                {extension?.links && (
+                  <>
+                    {extension.links.map((link, index) => (
+                      <Button
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        color="inherit"
+                        key={index}
+                      >
+                        <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                          <ArrowTopRightOnSquareIcon />
+                        </SvgIcon>
+                        {link.name}
+                      </Button>
+                    ))}
+                  </>
+                )}
+              </Stack>
+              <Stack direction="column" spacing={0.5}>
+                <CippApiResults apiObject={actionTestResults} />
+                <CippApiResults apiObject={actionSyncResults} />
+              </Stack>
+            </CardContent>
+          </Box>
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider", px: "24px", m: "auto" }}>
               <Tabs value={value} onChange={handleTabChange} aria-label="Integration settings">
