@@ -21,7 +21,7 @@ const Page = () => {
       apiDataKey="Results"
       apiUrl="/api/ListGraphRequest"
       apiData={apiFilter}
-      queryKey={queryKey}
+      queryKey={queryKey.apiFilter}
     />
   );
 };
