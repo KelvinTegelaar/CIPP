@@ -52,8 +52,10 @@ export const CippOffCanvas = (props) => {
 
           {/* Wrap children in Grid with xs={12} for full width stacking */}
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {children}
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {typeof children === "function" ? children(extendedData) : children}
+              </Grid>
             </Grid>
           </Grid>
         </Box>

@@ -28,7 +28,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: <CippDomainCards fullwidth={true} />,
+    children: (extendedData) => <CippDomainCards domain={extendedData.Domain} fullwidth={true} />,
   };
   return (
     <CippTablePage
