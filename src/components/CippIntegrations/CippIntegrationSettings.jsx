@@ -52,20 +52,23 @@ const CippIntegrationSettings = ({ children }) => {
         >
           {children}
 
-          <Box>
+          <Grid container sx={{ alignItems: "center" }}>
             {extension.SettingOptions.map((setting, index) => (
-              <Box key={index} sx={{ mb: 2 }}>
-                <CippFormComponent
-                  name={setting.name}
-                  type={setting.type}
-                  label={setting.label}
-                  options={setting.options}
-                  formControl={formControl}
-                  placeholder={setting?.placeholder}
-                />
-              </Box>
+              <Grid item xs={12} md={setting.type == "switch" ? 12 : 6} key={index}>
+                <Box sx={{ p: 1 }}>
+                  <CippFormComponent
+                    name={setting.name}
+                    type={setting.type}
+                    label={setting.label}
+                    options={setting.options}
+                    formControl={formControl}
+                    placeholder={setting?.placeholder}
+                    fullWidth
+                  />
+                </Box>
+              </Grid>
             ))}
-          </Box>
+          </Grid>
         </CippFormSection>
       ) : (
         <CardContent>
