@@ -1,5 +1,5 @@
 import { Cancel, Check } from "@mui/icons-material";
-import { Chip, LinearProgress, Link } from "@mui/material";
+import { Chip, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
@@ -23,6 +23,23 @@ export const getCippFormatting = (data, cellName, type) => {
   }
 
   //domainAnalyser layouts
+  if (cellName === "ReportInterval") {
+    //device by 86400 to get days, then return "days"
+    const days = data / 86400;
+    return isText ? `${days} days` : `${days} days`;
+  }
+  if (cellName === "DMARCPolicy") {
+    if (data === "s") {
+      data = "Strict";
+    }
+    if (data === "r") {
+      data = "Relaxed";
+    }
+    if (data === "afrf") {
+      data = "Authentication Failure";
+    }
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
 
   if (cellName === "ScorePercentage") {
     return isText ? `${data}%` : <LinearProgressWithLabel variant="determinate" value={data} />;

@@ -1,10 +1,19 @@
-import { Drawer, Box } from "@mui/material";
+import { Drawer, Box, Grid } from "@mui/material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippOffCanvas = (props) => {
-  const { visible, extendedInfoFields = [], extendedData, actions, onClose, isFetching } = props;
+  const {
+    visible,
+    extendedInfoFields = [],
+    extendedData,
+    actions,
+    onClose,
+    isFetching,
+    children,
+  } = props;
+
   const extendedInfo = extendedInfoFields.map((field) => {
     return {
       label: getCippTranslation(field),
@@ -25,7 +34,10 @@ export const CippOffCanvas = (props) => {
         open={visible}
         onClose={onClose}
       >
-        <Box sx={{ overflowY: "auto", maxHeight: "100%" }}>
+        {/* Force vertical stacking in a column layout */}
+        <Box
+          sx={{ overflowY: "auto", maxHeight: "100%", display: "flex", flexDirection: "column" }}
+        >
           {extendedInfo && (
             <CippPropertyListCard
               isFetching={isFetching}
@@ -37,6 +49,13 @@ export const CippOffCanvas = (props) => {
               data={extendedData}
             />
           )}
+
+          {/* Wrap children in Grid with xs={12} for full width stacking */}
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              {children}
+            </Grid>
+          </Grid>
         </Box>
       </Drawer>
     </>

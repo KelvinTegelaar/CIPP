@@ -305,6 +305,7 @@ export const CippDataTable = (props) => {
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
+        children={offCanvas?.children}
       />
       {actionData.ready && (
         <CippApiDialog
