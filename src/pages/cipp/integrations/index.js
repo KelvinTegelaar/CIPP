@@ -11,12 +11,11 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import extensions from "/src/data/Extensions";
 import { Sync } from "@mui/icons-material";
-import { useMediaPredicate } from "react-media-hook";
 import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
+import Link from "next/link";
 
 const Page = () => {
   const settings = useSettings();
@@ -61,6 +60,7 @@ const Page = () => {
           return (
             <Grid item sm={12} md={6} xl={3} key={extension.id}>
               <CardActionArea
+                component={Link}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
