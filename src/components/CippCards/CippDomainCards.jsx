@@ -234,18 +234,20 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
                 Record:
               </Typography>
               <CippCodeBlock code={data?.Record} />
-              <Typography variant="h6" gutterBottom>
-                Recommendations
-              </Typography>
-              <ResultList warns={data?.ValidationWarns} fails={data?.ValidationFails} />
-              <CippPropertyListCard
-                title="Settings"
-                copyItems={true}
-                propertyItems={data?.RecordList.map((record) => ({
-                  label: `${record.Domain} Lookups`,
-                  value: record.RecordCount,
-                }))}
-              />
+              {data?.Recommendations && (
+                <>
+                  <CippPropertyListCard
+                    title="Recommendations"
+                    copyItems={true}
+                    propertyItems={data?.Recommendations.map((rec) => ({
+                      label: "Recommendation",
+                      value: rec.Message,
+                    }))}
+                  />
+                  
+                </>
+              )}
+
               <Typography variant="h6" gutterBottom>
                 IP Addresses
               </Typography>
