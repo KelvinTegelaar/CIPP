@@ -1,17 +1,17 @@
 import {
   Box,
   Button,
+  CardActions,
   CardContent,
   Grid,
-  IconButton,
   Stack,
   SvgIcon,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "/src/data/Extensions.json";
 import { useEffect } from "react";
@@ -20,9 +20,11 @@ import { PlusSmallIcon, SparklesIcon, TrashIcon } from "@heroicons/react/24/outl
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { SyncAlt } from "@mui/icons-material";
 import { CippFormComponent } from "../CippComponents/CippFormComponent";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 
 const CippIntegrationSettings = ({ children }) => {
   const router = useRouter();
+  const [tableData, setTableData] = useState([]);
 
   const mappings = ApiGetCall({
     url: "/api/ExecExtensionMapping",
@@ -32,19 +34,45 @@ const CippIntegrationSettings = ({ children }) => {
     queryKey: `IntegrationTenantMapping-${router.query.id}`,
   });
 
+  const tenantList = ApiGetCall({
+    url: "/api/ListTenants",
+    data: { AllTenantSelector: false },
+    queryKey: "ListTenants-notAllTenants",
+  });
+
   const formControl = useForm({
     mode: "onChange",
     defaultValues: mappings?.data,
   });
 
-  const [tableData, setTableData] = useState([]);
-  const handleRemoveItem = (row) => {
-    console.log(row);
-    if (row === undefined) return false;
-    console.log(tableData);
-    const index = tableData.findIndex((item) => item === row);
+  const automapPostCall = ApiPostCall({
+    datafromUrl: true,
+  });
+
+  const postCall = ApiPostCall({
+    datafromUrl: true,
+  });
+
+  const handleSubmit = () => {
+    postCall.mutate({
+      url: `/api/ExecExtensionMapping?AddMapping=${router.query.id}`,
+      data: tableData,
+      queryKey: `IntegrationTenantMapping-${router.query.id}`,
+    });
+  };
+
+  const handleRemoveItem = (rows) => {
+    if (rows === undefined) return false;
     const newTableData = [...tableData];
-    newTableData.splice(index, 1);
+    if (Array.isArray(rows)) {
+      rows.forEach((row) => {
+        const index = newTableData.findIndex((item) => item === row);
+        if (index !== -1) newTableData.splice(index, 1);
+      });
+    } else {
+      const index = newTableData.findIndex((item) => item === rows);
+      if (index !== -1) newTableData.splice(index, 1);
+    }
     setTableData(newTableData);
   };
 
@@ -52,6 +80,7 @@ const CippIntegrationSettings = ({ children }) => {
     const selectedTenant = formControl.getValues("tenantFilter");
     const selectedCompany = formControl.getValues("integrationCompany");
     if (!selectedTenant || !selectedCompany) return;
+    if (tableData.find((item) => item.TenantId === selectedTenant.value)) return;
 
     const newRowData = {
       TenantId: selectedTenant.value,
@@ -61,6 +90,31 @@ const CippIntegrationSettings = ({ children }) => {
     };
 
     setTableData([...tableData, newRowData]);
+  };
+
+  const handleAutoMap = () => {
+    const newTableData = [];
+    tenantList.data.forEach((tenant) => {
+      const matchingCompany = mappings.data.Companies.find(
+        (company) => company.name === tenant.displayName
+      );
+      if (tableData.find((item) => item.TenantId === tenant.customerId)) return;
+      if (matchingCompany) {
+        newTableData.push({
+          TenantId: tenant.customerId,
+          Tenant: tenant.displayName,
+          IntegrationName: matchingCompany.name,
+          IntegrationId: matchingCompany.value,
+        });
+      }
+    });
+    setTableData([...tableData, ...newTableData]);
+    if (extension.autoMapSyncApi) {
+      automapPostCall.mutate({
+        url: `/api/ExecExtensionMapping?AutoMapping=${router.query.id}`,
+        queryKey: `IntegrationTenantMapping-${router.query.id}`,
+      });
+    }
   };
 
   const actions = [
@@ -83,77 +137,90 @@ const CippIntegrationSettings = ({ children }) => {
   return (
     <>
       {mappings.isSuccess && extension ? (
-        <CippFormSection
-          queryKey={`IntegrationTenantMapping-${router.query.id}`}
-          formControl={formControl}
-          postUrl={`/api/ExecExtensionsConfig?AddMapping=${router.query.id}`}
-        >
-          <Typography variant="h5" sx={{ mb: 3 }}>
-            Add a Tenant Mapping
-          </Typography>
-          <Grid
-            container
-            spacing={2}
-            sx={{
-              alignItems: "center",
-              mb: 3,
-            }}
-          >
-            <Grid item xs={12} md={4}>
-              <Box sx={{ my: "auto" }}>
-                <CippFormTenantSelector formControl={formControl} multiple={false} />
-              </Box>
+        <>
+          <CardContent>
+            <Typography variant="h5" sx={{ mb: 3 }}>
+              Add a Tenant Mapping
+            </Typography>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                alignItems: "center",
+                mb: 3,
+              }}
+            >
+              <Grid item xs={12} md={4}>
+                <Box sx={{ my: "auto" }}>
+                  <CippFormTenantSelector formControl={formControl} multiple={false} />
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box sx={{ my: "auto" }}>
+                  <SvgIcon>
+                    <SyncAlt />
+                  </SvgIcon>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CippFormComponent
+                  type="autoComplete"
+                  fullWidth
+                  name="integrationCompany"
+                  formControl={formControl}
+                  placeholder={`Select ${extension.name} Company`}
+                  options={mappings?.data?.Companies?.map((company) => {
+                    return {
+                      label: company.name,
+                      value: company.value,
+                    };
+                  })}
+                  multiple={false}
+                />
+              </Grid>
+              <Grid item>
+                <Stack direction={"row"} spacing={1}>
+                  <Tooltip title="Add Mapping">
+                    <Button size="small" onClick={() => handleAddItem()} variant="contained">
+                      <SvgIcon>
+                        <PlusSmallIcon />
+                      </SvgIcon>
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Automap Companies">
+                    <Button size="small" onClick={() => handleAutoMap()} variant="contained">
+                      <SvgIcon>
+                        <SparklesIcon />
+                      </SvgIcon>
+                    </Button>
+                  </Tooltip>
+                </Stack>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Box sx={{ my: "auto" }}>
-                <SvgIcon>
-                  <SyncAlt />
-                </SvgIcon>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <CippFormComponent
-                type="autoComplete"
-                fullWidth
-                name="integrationCompany"
-                formControl={formControl}
-                placeholder={`Select ${extension.name} Company`}
-                options={mappings?.data?.Companies?.map((company) => {
-                  return {
-                    label: company.name,
-                    value: company.value,
-                  };
-                })}
-                multiple={false}
+            <CippApiResults apiObject={automapPostCall} />
+            <Box sx={{ borderTop: 1, borderColor: "divider" }}>
+              <CippDataTable
+                actions={actions}
+                noCard={true}
+                reportTitle={`${extension.id}-tenant-map`}
+                data={tableData}
+                simple={false}
+                simpleColumns={["Tenant", "IntegrationName"]}
               />
-            </Grid>
-            <Grid item>
-              <Stack direction={"row"} spacing={1}>
-                <Button size="small" onClick={() => handleAddItem()} variant="contained">
-                  <SvgIcon>
-                    <PlusSmallIcon />
-                  </SvgIcon>
-                </Button>
-                <Button size="small" onClick={() => handleAutoMap()} variant="contained">
-                  <SvgIcon>
-                    <SparklesIcon />
-                  </SvgIcon>
-                </Button>
-              </Stack>
-            </Grid>
-          </Grid>
-
-          <Box sx={{ borderTop: 1, borderColor: "divider" }}>
-            <CippDataTable
-              actions={actions}
-              noCard={true}
-              reportTitle={`${extension.id}-tenant-map`}
-              data={tableData}
-              simple={false}
-              simpleColumns={["Tenant", "IntegrationName"]}
-            />
-          </Box>
-        </CippFormSection>
+            </Box>
+            <CippApiResults apiObject={postCall} />
+          </CardContent>
+          <CardActions sx={{ justifyContent: "flex-end" }}>
+            <Button
+              disabled={postCall.isPending}
+              onClick={formControl.handleSubmit(handleSubmit)}
+              type="submit"
+              variant="contained"
+            >
+              Submit
+            </Button>
+          </CardActions>
+        </>
       ) : (
         <CardContent>
           {mappings.isLoading && <Box>Loading...</Box>}
