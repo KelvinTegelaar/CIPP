@@ -1,4 +1,13 @@
-import { Box, Button, CardContent, Grid, IconButton, SvgIcon, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CardContent,
+  Grid,
+  IconButton,
+  Stack,
+  SvgIcon,
+  Typography,
+} from "@mui/material";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -7,7 +16,7 @@ import { useRouter } from "next/router";
 import extensions from "/src/data/Extensions.json";
 import { useEffect } from "react";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { PlusSmallIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlusSmallIcon, SparklesIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { SyncAlt } from "@mui/icons-material";
 import { CippFormComponent } from "../CippComponents/CippFormComponent";
@@ -86,12 +95,11 @@ const CippIntegrationSettings = ({ children }) => {
             container
             spacing={2}
             sx={{
-              justifyContent: "center",
               alignItems: "center",
               mb: 3,
             }}
           >
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={4}>
               <Box sx={{ my: "auto" }}>
                 <CippFormTenantSelector formControl={formControl} multiple={false} />
               </Box>
@@ -103,7 +111,7 @@ const CippIntegrationSettings = ({ children }) => {
                 </SvgIcon>
               </Box>
             </Grid>
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={4}>
               <CippFormComponent
                 type="autoComplete"
                 fullWidth
@@ -120,11 +128,18 @@ const CippIntegrationSettings = ({ children }) => {
               />
             </Grid>
             <Grid item>
-              <Button size="small" onClick={() => handleAddItem()} variant="contained">
-                <SvgIcon>
-                  <PlusSmallIcon />
-                </SvgIcon>
-              </Button>
+              <Stack direction={"row"} spacing={1}>
+                <Button size="small" onClick={() => handleAddItem()} variant="contained">
+                  <SvgIcon>
+                    <PlusSmallIcon />
+                  </SvgIcon>
+                </Button>
+                <Button size="small" onClick={() => handleAutoMap()} variant="contained">
+                  <SvgIcon>
+                    <SparklesIcon />
+                  </SvgIcon>
+                </Button>
+              </Stack>
             </Grid>
           </Grid>
 
