@@ -5,6 +5,7 @@ import {
   CardContent,
   Grid,
   Stack,
+  Skeleton,
   SvgIcon,
   Tooltip,
   Typography,
@@ -223,7 +224,27 @@ const CippIntegrationSettings = ({ children }) => {
         </>
       ) : (
         <CardContent>
-          {mappings.isLoading && <Box>Loading...</Box>}
+          {mappings.isLoading && (
+            <Box>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Box>
+                    <Skeleton variant="rectangular" height={60} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box>
+                    <Skeleton variant="rectangular" height={60} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box>
+                    <Skeleton variant="rectangular" height={300} />
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
           {mappings.isSuccess && !extension && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
