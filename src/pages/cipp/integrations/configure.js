@@ -12,6 +12,7 @@ import { SvgIcon } from "@mui/material";
 import { useState } from "react";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
+import CippIntegrationTenantMapping from "../../../components/CippIntegrations/CippIntegrationTenantMapping";
 
 function CardTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -182,7 +183,7 @@ const Page = () => {
             </CardTabPanel>
             {extension?.mappingRequired && (
               <CardTabPanel value={value} index={1}>
-                Item Two
+                <CippIntegrationTenantMapping />
               </CardTabPanel>
             )}
             {extension?.fieldMapping && (
