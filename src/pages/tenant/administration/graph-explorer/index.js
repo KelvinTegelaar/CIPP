@@ -7,7 +7,6 @@ import { Grid } from "@mui/material";
 const Page = () => {
   const pageTitle = "Graph Explorer";
   const [apiFilter, setApiFilter] = useState([]);
-  const queryKey = JSON.stringify(apiFilter);
   return (
     <CippTablePage
       tableFilter={
@@ -19,9 +18,11 @@ const Page = () => {
       }
       title={pageTitle}
       apiDataKey="Results"
-      apiUrl="/api/ListGraphRequest"
+      apiUrl={apiFilter.endpoint ? "/api/ListGraphRequest" : null}
       apiData={apiFilter}
-      queryKey={queryKey.apiFilter}
+      queryKey={`${apiFilter.endpoint}-${apiFilter.$select}`}
+      Key={`${apiFilter.endpoint}-${apiFilter.$select}`}
+      simpleColumns={apiFilter.$select ? apiFilter.$select.split(",") : []}
     />
   );
 };

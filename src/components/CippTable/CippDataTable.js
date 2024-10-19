@@ -108,7 +108,13 @@ export const CippDataTable = (props) => {
 
       setUsedData(combinedResults || []);
     }
-  }, [getRequestData.isSuccess, getRequestData.data, api.dataKey]);
+  }, [
+    getRequestData.isSuccess,
+    getRequestData.data,
+    api.dataKey,
+    getRequestData.isFetching,
+    queryKey,
+  ]);
 
   useEffect(() => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {

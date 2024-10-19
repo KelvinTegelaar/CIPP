@@ -67,6 +67,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
   const onSubmit = (values) => {
     values.$select = values?.$select?.map((item) => item.value)?.join(",");
     onSubmitFilter(values);
+    setCardExpanded(false);
   };
 
   return (
@@ -118,6 +119,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
                   name="$select"
                   label="Select"
                   formControl={formControl}
+                  isFetching={propertyList.isLoading}
                   options={
                     (propertyList.isSuccess &&
                       propertyList?.data?.Results?.map((item) => ({ label: item, value: item }))) ||
