@@ -13,6 +13,7 @@ import { useState } from "react";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import CippIntegrationTenantMapping from "../../../components/CippIntegrations/CippIntegrationTenantMapping";
+import CippIntegrationFieldMapping from "../../../components/CippIntegrations/CippIntegrationFieldMapping";
 
 function CardTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -196,7 +197,7 @@ const Page = () => {
             )}
             {extension?.fieldMapping && (
               <CardTabPanel value={value} index={2}>
-                Item Three
+                <CippIntegrationFieldMapping />
               </CardTabPanel>
             )}
           </Box>
