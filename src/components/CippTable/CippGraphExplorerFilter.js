@@ -1,8 +1,7 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Grid, Button, IconButton, Tooltip, Collapse } from "@mui/material";
 import {
   Save as SaveIcon,
-  MoreVert as MoreVertIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
@@ -10,11 +9,12 @@ import { useForm, useWatch } from "react-hook-form";
 import { debounce } from "lodash";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 
-const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
-  const [cardExpanded, setCardExpanded] = useState(false); // State for showing/hiding the card content
+const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
+  const [cardExpanded, setCardExpanded] = useState(true); // State for showing/hiding the card content
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -24,6 +24,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
       ReverseTenantLookup: false,
       ReverseTenantLookupProperty: "tenantId",
       $count: false,
+      manualPagination: false,
     },
   });
 
@@ -62,11 +63,48 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
     };
   }, [endPoint, debouncedRefetch]);
 
-  // Watch for endpoint changes
+  const savePresetApi = ApiPostCall({
+    relatedQueryKeys: "ExecGraphExplorerPreset",
+  });
 
+  // Save preset function
+  const handleSavePreset = () => {
+    const currentTemplate = formControl.getValues();
+
+    savePresetApi.mutate({
+      url: "/api/ExecGraphExplorerPreset",
+      data: { action: "copy", preset: currentTemplate },
+      TenantFilter: tenant,
+    });
+  };
+
+  const selectedPresets = useWatch({ control, name: "reportTemplate" });
+  useEffect(() => {
+    if (selectedPresets?.addedFields?.params) {
+      //remove all null values or undefined values
+      Object.keys(selectedPresets.addedFields.params).forEach(
+        (key) =>
+          selectedPresets.addedFields.params[key] == null &&
+          delete selectedPresets.addedFields.params[key]
+      );
+      //transform $select to an object array of {label: value:}
+      selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params.$select
+        ?.split(",")
+        .map((item) => ({ label: item, value: item }));
+      formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
+    }
+  }, [selectedPresets]);
+
+  // Schedule report function
+  const handleScheduleReport = () => {
+    console.log("Schedule Report:", formControl.getValues());
+  };
+
+  // Handle filter form submission
   const onSubmit = (values) => {
     values.$select = values?.$select?.map((item) => item.value)?.join(",");
     onSubmitFilter(values);
+    setCardExpanded(false);
   };
 
   return (
@@ -75,13 +113,11 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
         title="Graph Explorer Filter"
         cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
         cardActions={
-          <>
-            <Tooltip title="Expand/Collapse">
-              <IconButton onClick={() => setCardExpanded(!cardExpanded)}>
-                {cardExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </IconButton>
-            </Tooltip>
-          </>
+          <Tooltip title="Expand/Collapse">
+            <IconButton onClick={() => setCardExpanded(!cardExpanded)}>
+              {cardExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </IconButton>
+          </Tooltip>
         }
       >
         <Collapse in={cardExpanded} timeout="auto" unmountOnExit>
@@ -92,12 +128,15 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
                   type="autoComplete"
                   name="reportTemplate"
                   label="Select a Report Preset"
+                  multiple={false}
                   formControl={formControl}
                   api={{
                     url: "/api/ListGraphExplorerPresets",
                     dataKey: "Results",
                     labelField: "name",
                     valueField: "id",
+                    queryKey: "ListGraphExplorerPresets",
+                    addedField: { params: "params" },
                   }}
                   placeholder="Select a preset"
                 />
@@ -118,6 +157,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
                   name="$select"
                   label="Select"
                   formControl={formControl}
+                  isFetching={propertyList.isLoading}
                   options={
                     (propertyList.isSuccess &&
                       propertyList?.data?.Results?.map((item) => ({ label: item, value: item }))) ||
@@ -143,7 +183,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
             {/* Right Column */}
             <Grid container item xs={12} sm={6} spacing={2}>
               {/* Preset Name Field */}
-              <Grid item xs={10}>
+              <Grid item xs={12}>
                 <CippFormComponent
                   type="textField"
                   name="name"
@@ -151,15 +191,6 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
                   formControl={formControl}
                   placeholder="Name for this filter preset"
                 />
-              </Grid>
-
-              {/* Save Preset Icon Button */}
-              <Grid item xs={2} style={{ display: "flex", alignItems: "center" }}>
-                <Tooltip title="Save Preset">
-                  <IconButton color="primary" onClick={() => onSavePreset(formControl.getValues())}>
-                    <SaveIcon />
-                  </IconButton>
-                </Tooltip>
               </Grid>
 
               {/* Filter Field */}
@@ -177,6 +208,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
               <Grid item xs={12}>
                 <CippFormComponent
                   type="number"
+                  fullWidth
                   name="$top"
                   label="Top"
                   formControl={formControl}
@@ -207,7 +239,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
             </Grid>
 
             {/* Reverse Tenant Lookup Property Field */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <CippFormComponent
                 type="textField"
                 name="ReverseTenantLookupProperty"
@@ -237,18 +269,34 @@ const CippGraphExplorerFilter = ({ onSubmitFilter, onSavePreset }) => {
               />
             </Grid>
 
-            {/* Is Shared Switch */}
-            <Grid item xs={12} sm={6}>
-              <CippFormComponent
-                type="switch"
-                name="IsShared"
-                label="Share Preset"
-                formControl={formControl}
-              />
+            {/* Buttons Row */}
+            <Grid item xs={12} style={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                {/* Save Preset Button */}
+                <Button
+                  variant="contained"
+                  onClick={handleSavePreset}
+                  startIcon={<SaveIcon />}
+                  style={{ marginRight: "8px" }}
+                >
+                  Save Preset
+                </Button>
+
+                {/* Schedule Report Button */}
+                <Button variant="contained" onClick={handleScheduleReport}>
+                  Schedule Report
+                </Button>
+              </div>
+
+              {/* Import/Export Button */}
+              <Button variant="outlined" color="primary">
+                Import/Export
+              </Button>
             </Grid>
 
-            {/* Submit Button */}
+            {/* Apply Filter Button */}
             <Grid item xs={12}>
+              <CippApiResults apiObject={savePresetApi} />
               <Button variant="contained" color="primary" type="submit">
                 Apply Filter
               </Button>

@@ -19,9 +19,11 @@ const Page = () => {
       }
       title={pageTitle}
       apiDataKey="Results"
-      apiUrl="/api/ListGraphRequest"
+      apiUrl={apiFilter.endpoint ? "/api/ListGraphRequest" : null}
       apiData={apiFilter}
-      queryKey={queryKey.apiFilter}
+      queryKey={queryKey}
+      Key={`${apiFilter.endpoint}-${apiFilter.$select}`}
+      simpleColumns={apiFilter.$select ? apiFilter.$select.split(",") : []}
     />
   );
 };
