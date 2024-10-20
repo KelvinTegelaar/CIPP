@@ -14,6 +14,7 @@ import { useSettings } from "../../hooks/use-settings";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
+import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 
 const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
@@ -23,7 +24,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     mode: "onChange",
     defaultValues: {
       endpoint: "",
-      $select: [],
+      $select: "",
       NoPagination: false,
       ReverseTenantLookup: false,
       ReverseTenantLookupProperty: "tenantId",
@@ -77,8 +78,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
 
     savePresetApi.mutate({
       url: "/api/ExecGraphExplorerPreset",
-      data: { action: "copy", preset: currentTemplate },
-      TenantFilter: tenant,
+      data: { action: "save", preset: currentTemplate },
     });
   };
 
@@ -95,7 +95,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             ?.split(",")
             .map((item) => ({ label: item, value: item })))
         : (selectedPresets.addedFields.params.$select = []);
-
+      selectedPresets.addedFields.id = selectedPresets.id;
       selectedPresets.addedFields.params.name = selectedPresets.label;
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
     }
@@ -104,13 +104,38 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   // Schedule report function
   const handleScheduleReport = () => {
     console.log("Schedule Report:", formControl.getValues());
-    setOffCanvasContent("this should be a object");
+    setOffCanvasContent("this should be the scheduler form.");
     setOffCanvasOpen(true);
   };
-
+  const [editorValues, setEditorValues] = useState({});
   const handleImport = () => {
-    console.log("import:", formControl.getValues());
-    setOffCanvasContent("this should be a object");
+    const offCanvasContent = (
+      <>
+        <CippCodeBlock
+          type="editor"
+          onChange={(value) => setEditorValues(JSON.parse(value))}
+          code={JSON.stringify(formControl.getValues(), null, 2)}
+        />
+        <Button
+          onClick={() => {
+            let value = editorValues;
+            setEditorValues((prevCount) => {
+              value = prevCount;
+              return prevCount;
+            });
+            savePresetApi.mutate({
+              url: "/api/ExecGraphExplorerPreset",
+              data: { action: "copy", preset: value },
+            });
+          }}
+          variant="contained"
+          color="primary"
+        >
+          Import Template
+        </Button>
+      </>
+    );
+    setOffCanvasContent(offCanvasContent);
     setOffCanvasOpen(true);
   };
 

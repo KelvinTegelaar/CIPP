@@ -3,15 +3,18 @@ import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { styled } from "@mui/system"; // Correct import from @mui/system
+import { Editor } from "@monaco-editor/react";
+import { useSettings } from "../../hooks/use-settings";
 
 const CodeContainer = styled("div")`
   position: relative;
   display: block;
   max-width: 100%; /* Ensure it fits within the card */
-  word-wrap: break-word; /* Ensure long words are broken to wrap */
-  white-space: pre-wrap; /* Allow the code block to wrap */
-  word-break: break-all; /* Break long continuous strings into the next line */
-
+  padding-left: 0.5rem;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding-bottom: 1rem;
   .cipp-code-copy-button {
     position: absolute;
     right: 0.5rem;
@@ -27,6 +30,9 @@ export const CippCodeBlock = (props) => {
     showLineNumbers = false,
     startingLineNumber = 1,
     wrapLongLines = true,
+    type = "syntax",
+    editorHeight = "500px",
+    ...other
   } = props;
   const [codeCopied, setCodeCopied] = useState(false);
 
@@ -34,22 +40,36 @@ export const CippCodeBlock = (props) => {
     setCodeCopied(true);
     setTimeout(() => setCodeCopied(false), 2000);
   };
-
+  const currentTheme = useSettings()?.currentTheme?.value;
   return (
     <CodeContainer>
       <div className="cipp-code-copy-button">
         <CippCopyToClipBoard text={code} type="button" onClick={onCodeCopied} />
       </div>
-      <SyntaxHighlighter
-        lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
-        language={language}
-        style={atomDark}
-        showLineNumbers={showLineNumbers}
-        startingLineNumber={startingLineNumber}
-        wrapLongLines={wrapLongLines}
-      >
-        {code}
-      </SyntaxHighlighter>
+      {type === "editor" && (
+        <Editor
+          defaultLanguage="json"
+          defaultValue={code}
+          theme={currentTheme === "dark" ? "vs-dark" : "vs-light"}
+          height={editorHeight}
+          options={{
+            wordWrap: true,
+          }}
+          {...other}
+        />
+      )}
+      {type === "syntax" && (
+        <SyntaxHighlighter
+          lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
+          language={language}
+          style={atomDark}
+          showLineNumbers={showLineNumbers}
+          startingLineNumber={startingLineNumber}
+          wrapLongLines={wrapLongLines}
+        >
+          {code}
+        </SyntaxHighlighter>
+      )}
     </CodeContainer>
   );
 };
