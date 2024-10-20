@@ -20,6 +20,14 @@ const CippIntegrationFieldMapping = () => {
 
   const formControl = useForm({
     mode: "onChange",
+    defaultValues: fieldMapping?.data?.Mappings.map((mapping) => {
+      return {
+        [mapping.RowKey]: {
+          label: mapping.IntegrationName,
+          value: mapping.IntegrationId,
+        },
+      };
+    }),
   });
 
   const extension = extensions.find((extension) => extension.id === router.query.id);
@@ -83,19 +91,6 @@ const CippIntegrationFieldMapping = () => {
                               value: integrationField.value,
                             };
                           })}
-                          value={
-                            fieldMapping?.data?.Mappings?.filter(
-                              (mapping) => mapping.RowKey === field.FieldName
-                            ).map((mapping) => {
-                              return {
-                                label: fieldMapping?.data?.IntegrationFields.find(
-                                  (integrationField) =>
-                                    integrationField.value === mapping.IntegrationId
-                                )?.name,
-                                value: mapping.IntegrationId,
-                              };
-                            })[0]
-                          }
                           formControl={formControl}
                           multiple={false}
                           fullWidth
