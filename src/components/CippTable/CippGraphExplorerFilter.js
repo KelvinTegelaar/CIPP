@@ -69,7 +69,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   }, [endPoint, debouncedRefetch]);
 
   const savePresetApi = ApiPostCall({
-    relatedQueryKeys: "ExecGraphExplorerPreset",
+    relatedQueryKeys: "ListGraphExplorerPresets",
   });
 
   // Save preset function
@@ -78,7 +78,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
 
     savePresetApi.mutate({
       url: "/api/ExecGraphExplorerPreset",
-      data: { action: "save", preset: currentTemplate },
+      data: { action: "copy", preset: currentTemplate },
     });
   };
 
@@ -90,12 +90,20 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           selectedPresets.addedFields.params[key] == null &&
           delete selectedPresets.addedFields.params[key]
       );
+      //if $select is a blank array, set it to a string.
+      if (
+        selectedPresets.addedFields.params.$select &&
+        selectedPresets.addedFields.params.$select.length === 0
+      ) {
+        selectedPresets.addedFields.params.$select = "";
+      }
       selectedPresets.addedFields.params.$select
         ? (selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params?.$select
             ?.split(",")
             .map((item) => ({ label: item, value: item })))
         : (selectedPresets.addedFields.params.$select = []);
-      selectedPresets.addedFields.id = selectedPresets.id;
+      selectedPresets.addedFields.params.id = selectedPresets.value;
+      console.log(selectedPresets.addedFields.params.id);
       selectedPresets.addedFields.params.name = selectedPresets.label;
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
     }
@@ -107,25 +115,24 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     setOffCanvasContent("this should be the scheduler form.");
     setOffCanvasOpen(true);
   };
+
   const [editorValues, setEditorValues] = useState({});
-  const handleImport = () => {
-    const offCanvasContent = (
+  //keep the editor in sync with the form
+
+  useEffect(() => {
+    const values = formControl.getValues();
+    setOffCanvasContent(() => (
       <>
         <CippCodeBlock
           type="editor"
           onChange={(value) => setEditorValues(JSON.parse(value))}
-          code={JSON.stringify(formControl.getValues(), null, 2)}
+          code={JSON.stringify(values, null, 2)}
         />
         <Button
           onClick={() => {
-            let value = editorValues;
-            setEditorValues((prevCount) => {
-              value = prevCount;
-              return prevCount;
-            });
             savePresetApi.mutate({
               url: "/api/ExecGraphExplorerPreset",
-              data: { action: "copy", preset: value },
+              data: { action: "copy", preset: editorValues },
             });
           }}
           variant="contained"
@@ -133,12 +140,14 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
         >
           Import Template
         </Button>
+        <CippApiResults apiObject={savePresetApi} />
       </>
-    );
-    setOffCanvasContent(offCanvasContent);
-    setOffCanvasOpen(true);
-  };
+    ));
+  }, [editorValues, savePresetApi.isPending, formControl, selectedPresets]);
 
+  const handleImport = () => {
+    setOffCanvasOpen(true); // Open the offCanvas, the content will be updated by useEffect
+  };
   // Handle filter form submission
   const onSubmit = (values) => {
     values.$select = values?.$select?.map((item) => item.value)?.join(",");
