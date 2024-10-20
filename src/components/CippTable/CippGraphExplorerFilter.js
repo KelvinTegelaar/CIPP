@@ -6,7 +6,7 @@ import {
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
@@ -20,6 +20,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
   const [cardExpanded, setCardExpanded] = useState(true);
   const [offCanvasContent, setOffCanvasContent] = useState(null);
+  const [selectedPresetState, setSelectedPreset] = useState(null);
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -103,7 +104,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             .map((item) => ({ label: item, value: item })))
         : (selectedPresets.addedFields.params.$select = []);
       selectedPresets.addedFields.params.id = selectedPresets.value;
-      console.log(selectedPresets.addedFields.params.id);
+      setSelectedPreset(selectedPresets.value);
       selectedPresets.addedFields.params.name = selectedPresets.label;
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
     }
@@ -153,6 +154,13 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     values.$select = values?.$select?.map((item) => item.value)?.join(",");
     onSubmitFilter(values);
     setCardExpanded(false);
+  };
+
+  const deletePreset = (id) => {
+    savePresetApi.mutate({
+      url: "/api/ExecGraphExplorerPreset",
+      data: { action: "delete", preset: { id: selectedPresetState } },
+    });
   };
 
   return (
@@ -340,6 +348,14 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   style={{ marginRight: "8px" }}
                 >
                   Save Preset
+                </Button>
+                {/* Delete Preset Button */}
+                <Button
+                  variant="contained"
+                  onClick={() => deletePreset(selectedPresetState)}
+                  style={{ marginRight: "8px" }}
+                >
+                  Delete Preset
                 </Button>
 
                 {/* Schedule Report Button */}
