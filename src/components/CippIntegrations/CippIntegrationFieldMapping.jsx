@@ -1,4 +1,4 @@
-import { Box, Grid, CardContent, Typography, Divider } from "@mui/material";
+import { Box, Grid, CardContent, Skeleton, Typography, Divider } from "@mui/material";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import { useForm } from "react-hook-form";
 import { ApiGetCall } from "/src/api/ApiCall";
@@ -105,7 +105,22 @@ const CippIntegrationFieldMapping = () => {
         </CippFormSection>
       ) : (
         <CardContent>
-          {fieldMapping.isLoading && <Box>Loading...</Box>}
+          {fieldMapping.isLoading && (
+            <Box>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Box>
+                    <Skeleton variant="rectangular" height={60} />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box>
+                    <Skeleton variant="rectangular" height={60} />
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
           {fieldMapping.isSuccess && !extension && (
             <Grid container spacing={3}>
               <Grid item xs={12}>

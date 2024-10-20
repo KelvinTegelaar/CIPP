@@ -111,6 +111,7 @@ const Page = () => {
           title={extension.name}
           backButtonTitle="Integrations"
           headerText={extension.headerText}
+          hideTitleText={true}
           headerImage={logo}
         >
           <Box>

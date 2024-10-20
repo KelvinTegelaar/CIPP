@@ -3,7 +3,13 @@ import { Box, Container, Stack, Button, SvgIcon, Typography, Card } from "@mui/m
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import Head from "next/head";
 const CippPageCard = (props) => {
-  const { title, backButtonTitle = "Back", children } = props;
+  const {
+    title,
+    backButtonTitle = "Back",
+    children,
+    cardSize = "xl",
+    hideTitleText = false,
+  } = props;
   const router = useRouter();
 
   const handleBackClick = () => {
@@ -21,7 +27,7 @@ const CippPageCard = (props) => {
           py: 4,
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth={cardSize}>
           <Stack spacing={4}>
             <Stack spacing={2}>
               <div>
@@ -37,9 +43,11 @@ const CippPageCard = (props) => {
                   {backButtonTitle}
                 </Button>
               </div>
-              <div>
-                <Typography variant="h4">{title}</Typography>
-              </div>
+              {hideTitleText !== true && (
+                <div>
+                  <Typography variant="h4">{title}</Typography>
+                </div>
+              )}
             </Stack>
             <Card>{children}</Card>
           </Stack>
