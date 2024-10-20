@@ -1,4 +1,4 @@
-import { Box, Grid, CardContent, Typography } from "@mui/material";
+import { Box, Grid, CardContent, Typography, Divider } from "@mui/material";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import { useForm } from "react-hook-form";
 import { ApiGetCall } from "/src/api/ApiCall";
@@ -20,15 +20,22 @@ const CippIntegrationFieldMapping = () => {
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: fieldMapping?.data,
   });
 
   const extension = extensions.find((extension) => extension.id === router.query.id);
 
   useEffect(() => {
     if (fieldMapping.isSuccess) {
+      var newMappings = {};
+      fieldMapping?.data?.Mappings.map((mapping) => {
+        newMappings[mapping.RowKey] = {
+          label: mapping.IntegrationName,
+          value: mapping.IntegrationId,
+        };
+      });
+
       formControl.reset({
-        ...fieldMapping.data,
+        ...newMappings,
       });
       formControl.trigger();
     }
@@ -50,10 +57,11 @@ const CippIntegrationFieldMapping = () => {
                 <Typography key={index} variant="h4">
                   {header.Title}
                 </Typography>
-                <Typography key={index} variant="body2">
+                <Typography key={index} variant="body2" sx={{ mb: 2 }}>
                   {header.Description}
                 </Typography>
-                <Grid container spacing={3}>
+                <Divider />
+                <Grid container spacing={3} sx={{ mt: 1, mb: 3 }}>
                   {fieldMapping?.data?.CIPPFields?.filter(
                     (field) => field.FieldType === header.FieldType
                   ).map((field, index) => (
@@ -89,7 +97,6 @@ const CippIntegrationFieldMapping = () => {
                             })[0]
                           }
                           formControl={formControl}
-                          placeholder={field?.placeholder}
                           multiple={false}
                           fullWidth
                         />
