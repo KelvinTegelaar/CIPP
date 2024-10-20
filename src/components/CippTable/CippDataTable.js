@@ -68,7 +68,7 @@ export const CippDataTable = (props) => {
         setUsedData(data);
       }
     }
-  }, [data, JSON.stringify(data)]);
+  }, [data, queryKey, JSON.stringify(data)]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
@@ -78,7 +78,7 @@ export const CippDataTable = (props) => {
         getRequestData.fetchNextPage();
       }
     }
-  }, [getRequestData.data?.pages?.length, getRequestData.isFetching]);
+  }, [getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey]);
 
   useEffect(() => {
     if (getRequestData.isSuccess) {
@@ -143,7 +143,7 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData.length]);
+  }, [columns.length, usedData.length, queryKey]);
 
   const createDialog = useDialog();
 
