@@ -38,24 +38,22 @@ export const CippOffCanvas = (props) => {
         <Box
           sx={{ overflowY: "auto", maxHeight: "100%", display: "flex", flexDirection: "column" }}
         >
-          {extendedInfo && (
-            <CippPropertyListCard
-              isFetching={isFetching}
-              align="vertical"
-              title="Extended Info"
-              propertyItems={extendedInfo}
-              copyItems={true}
-              actionItems={actions}
-              data={extendedData}
-            />
-          )}
-
-          {/* Wrap children in Grid with xs={12} for full width stacking */}
-          <Grid container spacing={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                {typeof children === "function" ? children(extendedData) : children}
-              </Grid>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              {extendedInfo && (
+                <CippPropertyListCard
+                  isFetching={isFetching}
+                  align="vertical"
+                  title="Extended Info"
+                  propertyItems={extendedInfo}
+                  copyItems={true}
+                  actionItems={actions}
+                  data={extendedData}
+                />
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              {typeof children === "function" ? children(extendedData) : children}
             </Grid>
           </Grid>
         </Box>

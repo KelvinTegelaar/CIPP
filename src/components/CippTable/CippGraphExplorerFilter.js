@@ -12,9 +12,13 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 
 const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
-  const [cardExpanded, setCardExpanded] = useState(true); // State for showing/hiding the card content
+  const [offCanvasOpen, setOffCanvasOpen] = useState(false);
+  const [cardExpanded, setCardExpanded] = useState(true);
+  const [offCanvasContent, setOffCanvasContent] = useState(null);
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -81,20 +85,17 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const selectedPresets = useWatch({ control, name: "reportTemplate" });
   useEffect(() => {
     if (selectedPresets?.addedFields?.params) {
-      //remove all null values or undefined values
-      console.log(selectedPresets);
       Object.keys(selectedPresets.addedFields.params).forEach(
         (key) =>
           selectedPresets.addedFields.params[key] == null &&
           delete selectedPresets.addedFields.params[key]
       );
-      console.log(selectedPresets.addedFields.params);
-      //transform $select to an object array of {label: value:}
-      selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params.$select
-        ?.split(",")
-        .map((item) => ({ label: item, value: item }));
+      selectedPresets.addedFields.params.$select
+        ? (selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params?.$select
+            ?.split(",")
+            .map((item) => ({ label: item, value: item })))
+        : (selectedPresets.addedFields.params.$select = []);
 
-      //add the name too the form as it is outside of params
       selectedPresets.addedFields.params.name = selectedPresets.label;
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
     }
@@ -103,6 +104,14 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   // Schedule report function
   const handleScheduleReport = () => {
     console.log("Schedule Report:", formControl.getValues());
+    setOffCanvasContent("this should be a object");
+    setOffCanvasOpen(true);
+  };
+
+  const handleImport = () => {
+    console.log("import:", formControl.getValues());
+    setOffCanvasContent("this should be a object");
+    setOffCanvasOpen(true);
   };
 
   // Handle filter form submission
@@ -234,7 +243,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* Reverse Tenant Lookup Switch */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CippFormComponent
                 type="switch"
                 name="ReverseTenantLookup"
@@ -242,20 +251,25 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                 formControl={formControl}
               />
             </Grid>
-
-            {/* Reverse Tenant Lookup Property Field */}
-            <Grid item xs={12} sm={12}>
-              <CippFormComponent
-                type="textField"
-                name="ReverseTenantLookupProperty"
-                label="Reverse Tenant Lookup Property"
-                formControl={formControl}
-                placeholder="Enter the reverse tenant lookup property (e.g. tenantId)"
-              />
-            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field={"ReverseTenantLookup"}
+              compareValue={true}
+            >
+              {/* Reverse Tenant Lookup Property Field */}
+              <Grid item xs={12} sm={12}>
+                <CippFormComponent
+                  type="textField"
+                  name="ReverseTenantLookupProperty"
+                  label="Reverse Tenant Lookup Property"
+                  formControl={formControl}
+                  placeholder="Enter the reverse tenant lookup property (e.g. tenantId)"
+                />
+              </Grid>
+            </CippFormCondition>
 
             {/* No Pagination Switch */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CippFormComponent
                 type="switch"
                 name="NoPagination"
@@ -265,7 +279,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* $count Switch */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <CippFormComponent
                 type="switch"
                 name="$count"
@@ -276,6 +290,13 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
 
             {/* Buttons Row */}
             <Grid item xs={12} style={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <Grid item xs={12}>
+                  <Button variant="contained" color="primary" type="submit">
+                    Apply Filter
+                  </Button>
+                </Grid>
+              </div>
               <div>
                 {/* Save Preset Button */}
                 <Button
@@ -288,23 +309,27 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                 </Button>
 
                 {/* Schedule Report Button */}
-                <Button variant="contained" onClick={handleScheduleReport}>
+                <Button
+                  style={{ marginRight: "8px" }}
+                  variant="contained"
+                  onClick={handleScheduleReport}
+                >
                   Schedule Report
                 </Button>
+
+                {/* Import/Export Button */}
+                <Button onClick={handleImport} variant="outlined" color="primary">
+                  Import/Export
+                </Button>
               </div>
-
-              {/* Import/Export Button */}
-              <Button variant="outlined" color="primary">
-                Import/Export
-              </Button>
             </Grid>
-
-            {/* Apply Filter Button */}
             <Grid item xs={12}>
               <CippApiResults apiObject={savePresetApi} />
-              <Button variant="contained" color="primary" type="submit">
-                Apply Filter
-              </Button>
+              <CippOffCanvas
+                visible={offCanvasOpen}
+                onClose={() => setOffCanvasOpen(false)}
+                children={offCanvasContent}
+              />
             </Grid>
           </Grid>
         </Collapse>

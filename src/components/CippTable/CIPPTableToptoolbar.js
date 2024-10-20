@@ -81,7 +81,6 @@ export const CIPPTableToptoolbar = ({
               //this one is hideous, replace with custom component.
             }
             <MRT_ShowHideColumnsButton table={table} />
-            <MRT_ToggleDensePaddingButton table={table} />
             {exportEnabled && (
               <>
                 <PDFExportButton
