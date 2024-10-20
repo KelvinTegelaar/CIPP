@@ -82,15 +82,20 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   useEffect(() => {
     if (selectedPresets?.addedFields?.params) {
       //remove all null values or undefined values
+      console.log(selectedPresets);
       Object.keys(selectedPresets.addedFields.params).forEach(
         (key) =>
           selectedPresets.addedFields.params[key] == null &&
           delete selectedPresets.addedFields.params[key]
       );
+      console.log(selectedPresets.addedFields.params);
       //transform $select to an object array of {label: value:}
       selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params.$select
         ?.split(",")
         .map((item) => ({ label: item, value: item }));
+
+      //add the name too the form as it is outside of params
+      selectedPresets.addedFields.params.name = selectedPresets.label;
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
     }
   }, [selectedPresets]);
@@ -133,8 +138,8 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   api={{
                     url: "/api/ListGraphExplorerPresets",
                     dataKey: "Results",
-                    labelField: "name",
-                    valueField: "id",
+                    labelField: (option) => option.name,
+                    valueField: (option) => option.id,
                     queryKey: "ListGraphExplorerPresets",
                     addedField: { params: "params" },
                   }}
