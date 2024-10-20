@@ -53,7 +53,7 @@ const CippIntegrationFieldMapping = () => {
     <>
       {fieldMapping.isSuccess && extension ? (
         <CippFormSection
-          queryKey={`IntegrationFieldMapping-${router.query.id}`}
+          queryKey={`IntegrationFieldMapping-${router.query.id}-Post`}
           formControl={formControl}
           title={extension.name}
           backButtonTitle="Integrations"
