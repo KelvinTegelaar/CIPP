@@ -87,7 +87,6 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           selectedPresets.addedFields.params[key] == null &&
           delete selectedPresets.addedFields.params[key]
       );
-      console.log(selectedPresets.addedFields.params);
       //transform $select to an object array of {label: value:}
       selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params.$select
         ?.split(",")
