@@ -4,6 +4,8 @@ import {
   Save as SaveIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
+  Delete,
+  CalendarMonthTwoTone,
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce, set } from "lodash";
@@ -350,16 +352,19 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   Save Preset
                 </Button>
                 {/* Delete Preset Button */}
-                <Button
-                  variant="contained"
-                  onClick={() => deletePreset(selectedPresetState)}
-                  style={{ marginRight: "8px" }}
-                >
-                  Delete Preset
-                </Button>
-
+                {selectedPresetState && (
+                  <Button
+                    startIcon={<Delete />}
+                    variant="contained"
+                    onClick={() => deletePreset(selectedPresetState)}
+                    style={{ marginRight: "8px" }}
+                  >
+                    Delete Preset
+                  </Button>
+                )}
                 {/* Schedule Report Button */}
                 <Button
+                  startIcon={<CalendarMonthTwoTone />}
                   style={{ marginRight: "8px" }}
                   variant="contained"
                   onClick={handleScheduleReport}
