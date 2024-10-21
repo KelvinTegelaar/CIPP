@@ -1,22 +1,16 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import Link from "next/link";
 import { CalendarDaysIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { CopyAll, Edit } from "@mui/icons-material";
+import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
 
 //show hidden jobs will also create a banner with "These might be system jobs. Do not touch, unless you know what you are doing. or something"
 
 const Page = () => {
   const actions = [
-    {
-      label: "View Results",
-      link: "/cipp/scheduler/job?id=[id]",
-      multiPost: false,
-      icon: <EyeIcon />,
-      color: "success",
-    },
     {
       label: "Edit Job",
       link: "/cipp/scheduler/job?id=[RowKey]",
@@ -26,7 +20,7 @@ const Page = () => {
     },
     {
       label: "Clone and Edit Job",
-      link: "/cipp/scheduler/job?id=[id]&Clone=True",
+      link: "/cipp/scheduler/job?id=[RowKey]&Clone=True",
       multiPost: false,
       icon: <CopyAll />,
       color: "success",
@@ -42,6 +36,15 @@ const Page = () => {
     },
   ];
 
+  const offCanvas = {
+    children: (extendedData) => (
+      <>
+        <Typography variant="h6">Job Results</Typography>
+        <CippCodeBlock type="editor" code={JSON.stringify(extendedData.Results, null, 2)} />
+      </>
+    ),
+    actions: actions,
+  };
   const [showHiddenJobs, setShowHiddenJobs] = useState(false);
   return (
     <CippTablePage
@@ -72,6 +75,7 @@ const Page = () => {
         "ScheduledTime",
       ]}
       actions={actions}
+      offCanvas={offCanvas}
     />
   );
 };
