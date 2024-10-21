@@ -4,6 +4,8 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
+import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
+import { getCippValidator } from "../../../utils/get-cipp-validator";
 
 const Page = () => {
   const formControl = useForm({ mode: "onChange" });
@@ -116,6 +118,27 @@ const Page = () => {
               formControl={formControl}
             />
           </Grid>
+          <CippFormCondition
+            field="advancedParameters"
+            compareType="is"
+            compareValue={true}
+            formControl={formControl}
+          >
+            <Grid item xs={12} md={12}>
+              <CippFormComponent
+                type="textField"
+                name="RawJsonParameters"
+                label="Advanced Parameters (JSON Input)"
+                validators={{
+                  validate: (value) => getCippValidator(value, "json"),
+                }}
+                formControl={formControl}
+                multiline
+                rows={4}
+                placeholder={`Enter a JSON object`}
+              />
+            </Grid>
+          </CippFormCondition>
           <Grid item xs={12} md={12}>
             <CippFormComponent
               type="autoComplete"
