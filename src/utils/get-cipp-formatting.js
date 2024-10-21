@@ -5,7 +5,7 @@ import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClip
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
 import CippDataTableButton from "../components/CippTable/CippDataTableButton";
 import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
-
+import ReactTimeAgo from "react-time-ago";
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
@@ -20,6 +20,20 @@ export const getCippFormatting = (data, cellName, type) => {
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
     );
+  }
+
+  const timeAgoArray = ["ExecutedTime", "ScheduledTime"];
+  if (timeAgoArray.includes(cellName)) {
+    //convert data from unixtime to date. If conversion fails, return "No Data".
+    const date = new Date(data * 1000);
+    if (isNaN(date)) {
+      return isText ? (
+        "No Data"
+      ) : (
+        <Chip variant="outlined" label="No Data" size="small" color="info" />
+      );
+    }
+    return isText ? <ReactTimeAgo date={date} /> : <ReactTimeAgo date={date} />;
   }
 
   //domainAnalyser layouts
@@ -68,14 +82,17 @@ export const getCippFormatting = (data, cellName, type) => {
   }
 
   //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.
-  if (cellName === "tenantFilter") {
+  if (cellName === "tenantFilter" || cellName === "Tenant") {
     //check if data is an array.
+    console.log(data);
     if (Array.isArray(data)) {
       return isText
         ? data.join(", ")
         : data.map((item) => (
             <CippCopyToClipBoard key={item.value} text={item.label} type="chip" />
           ));
+    } else {
+      return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
     }
   }
 
@@ -93,9 +110,6 @@ export const getCippFormatting = (data, cellName, type) => {
     return isText ? `${data.length} new users to create` : `${data.length} new users to create`;
   }
 
-  if (data?.label) {
-    return data.label;
-  }
   if (data?.enabled === true && data?.date) {
     return isText
       ? `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`

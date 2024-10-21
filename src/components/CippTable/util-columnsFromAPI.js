@@ -7,10 +7,15 @@ const mergeKeys = (dataArray) => {
   return dataArray.reduce((acc, item) => {
     const mergeRecursive = (obj, base = {}) => {
       Object.keys(obj).forEach((key) => {
+        // If base[key] is a string, it should not be merged as an object
+        if (typeof base[key] === "string") {
+          return; // Skip further merging for this key
+        }
+
         if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
           base[key] = mergeRecursive(obj[key], base[key] || {});
         } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
-          base[key] = base[key];
+          base[key] = base[key]; // Keep existing value if it's 'FAILED'
         } else {
           base[key] = obj[key]; // Assign valid primitive values
         }
