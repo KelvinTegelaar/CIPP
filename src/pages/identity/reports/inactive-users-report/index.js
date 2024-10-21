@@ -1,14 +1,31 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Inactive Users";
+  const pageTitle = "Inactive users (6 months)";
+  const apiUrl = "/api/ListInactiveAccounts";
+  const actions = [];
+
+  const offCanvas = null;
+
+  const simpleColumns = [
+    "tenantDisplayName", 
+    "userPrincipalName", 
+    "displayName", 
+    "lastNonInteractiveSignInDateTime", 
+    "numberOfAssignedLicenses", 
+    "lastRefreshedDateTime"
+  ];
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the inactive users section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl={apiUrl}
+      apiDataKey="Results"
+      actions={actions}
+      offCanvas={offCanvas}
+      simpleColumns={simpleColumns}
+    />
   );
 };
 
