@@ -25,6 +25,7 @@ export const CippApiDialog = (props) => {
     url: "",
     waiting: false,
     queryKey: "",
+    relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
   });
 
   const actionPostRequest = ApiPostCall({
