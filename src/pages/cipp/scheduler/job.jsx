@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Typography } from "@mui/material";
 import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
@@ -6,6 +6,9 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
 import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
 import { getCippValidator } from "../../../utils/get-cipp-validator";
+import { useRouter } from "next/router";
+import { ApiGetCall } from "../../../api/ApiCall";
+import { useEffect } from "react";
 
 const Page = () => {
   const formControl = useForm({ mode: "onChange" });
@@ -17,13 +20,72 @@ const Page = () => {
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ];
+  const commands = ApiGetCall({
+    url: "/api/ListFunctionParameters?Module=CIPPCore",
+    queryKey: "ListCommands",
+  });
+
+  const router = useRouter();
+  const scheduledTaskList = ApiGetCall({
+    url: "/api/ListScheduledItems",
+    queryKey: "ListScheduledItems-Edit",
+  });
+
+  const tenantList = ApiGetCall({
+    url: "/api/ListTenants",
+    queryKey: "ListTenants",
+  });
+
+  useEffect(() => {
+    if (scheduledTaskList.isSuccess && router.query.id) {
+      const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+      const postExecution = task?.postExecution?.split(",").map((item) => {
+        return { label: item, value: item };
+      });
+
+      //find tenantfilter in tenantList, and create a label/value pair for the autocomplete
+      if (tenantList.isSuccess) {
+        //in the tenantlist, find the defaultDomainName that matches the task.tenantFilter
+        const tenantFilter = tenantList.data.find(
+          (tenant) => tenant.defaultDomainName === task?.Tenant
+        );
+        if (commands.isSuccess) {
+          const command = commands.data.find((command) => command.Function === task.Command);
+          formControl.reset({
+            tenantFilter: {
+              value: tenantFilter?.defaultDomainName,
+              label: tenantFilter?.defaultDomainName,
+            },
+            RowKey: router.query.Clone ? null : task.RowKey,
+            Name: router.query.Clone ? `${task.Name} (Clone)` : task?.Name,
+            command: { label: task.Command, value: task.Command, addedFields: command },
+            ScheduledTime: task.ScheduledTime,
+            Recurrence: task.Recurrence,
+            parameters: task.Parameters,
+            postExecution: postExecution,
+            advancedParameters: task.RawJsonParameters ? true : false,
+          });
+        }
+      }
+    }
+  }, [
+    router.query.id,
+    scheduledTaskList.isSuccess,
+    tenantList.isSuccess,
+    router.query.Clone,
+    commands.isSuccess,
+  ]);
   return (
     <CippFormPage
+      queryKey={["ListScheduledItems-Edit", "ListScheduledItems-hidden", "ListScheduledItems"]}
       backButtonTitle="Scheduler"
+      formPageType={router.query.id ? "Edit" : router.query.Clone ? "Clone" : "Add"}
       formControl={formControl}
       title="Scheduler"
       postUrl="/api/AddScheduledItem"
+      resetForm={false}
     >
+      {(scheduledTaskList.isFetching || tenantList.isLoading || commands.isLoading) && <Skeleton />}
       <Box sx={{ my: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}>
@@ -37,7 +99,7 @@ const Page = () => {
           <Grid item xs={12} md={12}>
             <CippFormComponent
               type="textField"
-              name="taskName"
+              name="Name"
               label="Task Name"
               formControl={formControl}
             />
@@ -50,19 +112,21 @@ const Page = () => {
               label="Select Command"
               multiple={false}
               formControl={formControl}
-              api={{
-                url: "/api/ListFunctionParameters?Module=CIPPCore",
-                queryKey: "ListCommands",
-                labelField: "Function",
-                valueField: "Function",
-                addedField: { description: "Synopsis", Parameters: "Parameters" },
-              }}
+              options={
+                commands.data?.map((command) => {
+                  return {
+                    label: command.Function,
+                    value: command.Function,
+                    addedFields: command,
+                  };
+                }) || []
+              }
             />
           </Grid>
           <Grid item xs={12} md={4}>
             <CippFormComponent
               type="datePicker"
-              name="startDate"
+              name="ScheduledTime"
               label="Start Date"
               fullWidth
               formControl={formControl}
@@ -71,19 +135,19 @@ const Page = () => {
           <Grid item xs={12} md={4}>
             <CippFormComponent
               type="autoComplete"
-              name="recurrence"
+              name="Recurrence"
               label="Recurrence"
               formControl={formControl}
               options={recurrenceOptions}
               multiple={false}
             />
           </Grid>
-          {selectedCommand?.addedFields?.description && (
+          {selectedCommand?.addedFields?.Synopsis && (
             <Grid item xs={12} md={12}>
               <Box sx={{ my: 1 }}>
                 <Typography variant="h6">PowerShell Command:</Typography>
                 <Typography variant="body2" color={"text.secondary"}>
-                  {selectedCommand.addedFields.description}
+                  {selectedCommand.addedFields.Synopsis}
                 </Typography>
               </Box>
             </Grid>

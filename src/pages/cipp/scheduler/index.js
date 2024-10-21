@@ -12,21 +12,21 @@ const Page = () => {
   const actions = [
     {
       label: "View Results",
-      link: "/cipp/scheduler/job?ID=[id]",
+      link: "/cipp/scheduler/job?id=[id]",
       multiPost: false,
       icon: <EyeIcon />,
       color: "success",
     },
     {
       label: "Edit Job",
-      link: "/cipp/scheduler/job?ID=[id]",
+      link: "/cipp/scheduler/job?id=[RowKey]",
       multiPost: false,
       icon: <Edit />,
       color: "success",
     },
     {
       label: "Clone and Edit Job",
-      link: "/cipp/scheduler/job?ID=[id]&Clone=True",
+      link: "/cipp/scheduler/job?id=[id]&Clone=True",
       multiPost: false,
       icon: <CopyAll />,
       color: "success",
@@ -59,7 +59,7 @@ const Page = () => {
       apiUrl={
         showHiddenJobs ? "/api/ListScheduledItems?ListHidden=True" : "/api/ListScheduledItems"
       }
-      queryKey={`ListScheduledItems-${showHiddenJobs}`}
+      queryKey={showHiddenJobs ? `ListScheduledItems-hidden` : `ListScheduledItems`}
       simpleColumns={[
         "Name",
         "Tenant",

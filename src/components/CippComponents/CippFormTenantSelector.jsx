@@ -19,7 +19,7 @@ export const CippFormTenantSelector = ({
         url: allTenants ? "/api/ListTenants?AllTenantSelector=true" : "/api/ListTenants",
         queryKey: allTenants ? "ListTenants-AllTenantSelector" : "ListTenants-notAllTenants",
         labelField: (option) => `${option.displayName} (${option.defaultDomainName})`,
-        valueField: "customerId",
+        valueField: "defaultDomainName",
       }}
       multiple={type === "single" ? false : true}
       disableClearable={true}

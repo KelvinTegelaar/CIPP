@@ -26,12 +26,14 @@ const CippFormPage = (props) => {
     formControl,
     postUrl,
     customDataformatter,
+    resetForm = true,
     ...other
   } = props;
   const router = useRouter();
 
   const postCall = ApiPostCall({
     datafromUrl: true,
+    relatedQueryKeys: queryKey,
   });
 
   const handleBackClick = () => {
@@ -40,7 +42,9 @@ const CippFormPage = (props) => {
 
   useEffect(() => {
     if (postCall.isSuccess) {
-      formControl.reset();
+      if (resetForm) {
+        formControl.reset();
+      }
     }
   }, [postCall.isSuccess]);
 
@@ -52,7 +56,6 @@ const CippFormPage = (props) => {
     postCall.mutate({
       url: postUrl,
       data: values,
-      queryKey: queryKey,
     });
   };
   return (
