@@ -1,14 +1,31 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+
+const simpleColumns = [
+  "displayName",
+  "ObjectType",
+  "createdDateTime",
+  "onPremisesProvisioningErrors"
+];
+
+const apiUrl = "/api/ListAzureADConnectStatus";
+const actions = []; // No actions specified in the original code
+
+const offCanvas = null; // No off-canvas details provided
 
 const Page = () => {
-  const pageTitle = "AAD Connect Report";
-
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the aad connect report section.</p>
-    </div>
+    <CippTablePage
+      title="Azure AD Connect Report"
+      apiUrl={apiUrl}
+      apiData={{
+        DataToReturn: "AzureADObjectsInError"
+      }}
+      apiDataKey="Results"
+      actions={actions}
+      offCanvas={offCanvas}
+      simpleColumns={simpleColumns}
+    />
   );
 };
 
