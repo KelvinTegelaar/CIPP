@@ -51,7 +51,7 @@ export const CippTablePage = (props) => {
               <CippDataTable
                 queryKey={queryKey}
                 cardButton={cardButton}
-                title={tenantIntitle ? `${title} - ${tenant}` : title}
+                title={tenantInTitle ? `${title} - ${tenant}` : title}
                 noDataButton={noDataButton}
                 actions={actions}
                 simple={false}
