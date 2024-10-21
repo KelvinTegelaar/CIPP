@@ -49,6 +49,7 @@ const CippIntegrationSettings = ({ children }) => {
           title={extension.name}
           backButtonTitle="Integrations"
           postUrl="/api/ExecExtensionsConfig"
+          resetForm={false}
         >
           {children}
 

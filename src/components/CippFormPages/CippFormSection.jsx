@@ -4,12 +4,28 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect } from "react";
 
 const CippFormSection = (props) => {
-  const { children, queryKey, formControl, postUrl, customDataformatter, relatedQueryKeys } = props;
+  const {
+    children,
+    queryKey,
+    formControl,
+    postUrl,
+    customDataformatter,
+    relatedQueryKeys,
+    resetForm = true,
+  } = props;
 
   const postCall = ApiPostCall({
     datafromUrl: true,
     relatedQueryKeys: relatedQueryKeys,
   });
+
+  useEffect(() => {
+    if (postCall.isSuccess) {
+      if (resetForm) {
+        formControl.reset();
+      }
+    }
+  }, [postCall.isSuccess]);
 
   const handleSubmit = () => {
     const values = formControl.getValues();
