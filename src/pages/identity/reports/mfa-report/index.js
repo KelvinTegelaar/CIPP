@@ -4,9 +4,6 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 const Page = () => {
   const pageTitle = "MFA Report";
   const apiUrl = "/api/ListMFAUsers";
-  const actions = [];
-
-  const offCanvas = null;
 
   const simpleColumns = [
     "UPN",
@@ -31,15 +28,7 @@ const Page = () => {
   ],
   */
 
-  return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl={apiUrl}
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={simpleColumns}
-    />
-  );
+  return <CippTablePage title={pageTitle} apiUrl={apiUrl} simpleColumns={simpleColumns} />;
 };
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
