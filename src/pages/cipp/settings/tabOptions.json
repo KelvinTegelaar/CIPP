@@ -16,10 +16,6 @@
     "path": "/cipp/settings/notifications"
   },
   {
-    "label": "Log Subscriptions",
-    "path": "/cipp/settings/logs"
-  },
-  {
     "label": "Partner Webhooks",
     "path": "/cipp/settings/partnerwebhook"
   },
