@@ -5,19 +5,19 @@ const Page = () => {
   const pageTitle = "MFA Report";
   const apiUrl = "/api/ListMFAUsers";
   const actions = [];
-  
+
   const offCanvas = null;
 
   const simpleColumns = [
-    "UPN", 
-    "AccountEnabled", 
-    "isLicensed", 
-    "MFARegistration", 
-    "PerUser", 
-    "CoveredBySD", 
-    "CoveredByCA", 
-    "MFAMethods", 
-    "CAPolicies"
+    "UPN",
+    "AccountEnabled",
+    "isLicensed",
+    "MFARegistration",
+    "PerUser",
+    "CoveredBySD",
+    "CoveredByCA",
+    "MFAMethods",
+    "CAPolicies",
   ];
 
   /* Filters not supported in the current structure, need dev attention for integration.
@@ -35,7 +35,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
