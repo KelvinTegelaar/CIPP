@@ -58,6 +58,7 @@ const CippIntegrationFieldMapping = () => {
           title={extension.name}
           backButtonTitle="Integrations"
           postUrl={`/api/ExecExtensionMapping?AddMapping=${router.query.id}Fields`}
+          resetForm={false}
         >
           <>
             {fieldMapping?.data?.CIPPFieldHeaders?.map((header, index) => (
