@@ -91,7 +91,7 @@ const Page = () => {
             <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
               <Sync />
             </SvgIcon>
-            Refresh Tenant
+            Force Refresh
           </Button>
         }
         tenantInTitle={false}
@@ -101,7 +101,7 @@ const Page = () => {
         simpleColumns={columns}
       />
       <CippApiDialog
-        title="Refresh Tenant"
+        title="Force Refresh Tenant"
         createDialog={createDialog}
         fields={[
           {

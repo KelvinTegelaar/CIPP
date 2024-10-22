@@ -1,6 +1,7 @@
 import { Button, ButtonGroup, SvgIcon, Typography } from "@mui/material";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { Dns } from "@mui/icons-material";
 
 const CippDnsSettings = () => {
   const dnsSetting = ApiGetCall({
@@ -43,6 +44,11 @@ const CippDnsSettings = () => {
       CardButton={
         <>
           <ButtonGroup disableElevation={true}>
+            <Button disabled={true} color="primary">
+              <SvgIcon fontSize="small">
+                <Dns />
+              </SvgIcon>
+            </Button>
             <DnsButtons />
           </ButtonGroup>
         </>
