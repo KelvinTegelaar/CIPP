@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";

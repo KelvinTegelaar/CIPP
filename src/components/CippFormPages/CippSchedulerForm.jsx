@@ -8,9 +8,10 @@ import { getCippValidator } from "/src/utils/get-cipp-validator";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useEffect } from "react";
+import CippFormInputArray from "../CippComponents/CippFormInputArray";
 
 const CippSchedulerForm = (props) => {
-  const { formControl } = props;
+  const { formControl, fullWidth = false } = props; // Added fullWidth prop
   const selectedCommand = useWatch({ control: formControl.control, name: "command" });
   const recurrenceOptions = [
     { value: "0", label: "Only once" },
@@ -34,7 +35,6 @@ const CippSchedulerForm = (props) => {
     url: "/api/ListTenants",
     queryKey: "ListTenants",
   });
-
   useEffect(() => {
     if (scheduledTaskList.isSuccess && router.query.id) {
       const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
@@ -42,15 +42,14 @@ const CippSchedulerForm = (props) => {
         return { label: item, value: item };
       });
 
-      //find tenantfilter in tenantList, and create a label/value pair for the autocomplete
+      // Find tenantFilter in tenantList, and create a label/value pair for the autocomplete
       if (tenantList.isSuccess) {
-        //in the tenantlist, find the defaultDomainName that matches the task.tenantFilter
         const tenantFilter = tenantList.data.find(
           (tenant) => tenant.defaultDomainName === task?.Tenant
         );
         if (commands.isSuccess) {
           const command = commands.data.find((command) => command.Function === task.Command);
-          formControl.reset({
+          const ResetParams = {
             tenantFilter: {
               value: tenantFilter?.defaultDomainName,
               label: tenantFilter?.defaultDomainName,
@@ -63,7 +62,8 @@ const CippSchedulerForm = (props) => {
             parameters: task.Parameters,
             postExecution: postExecution,
             advancedParameters: task.RawJsonParameters ? true : false,
-          });
+          };
+          formControl.reset(ResetParams);
         }
       }
     }
@@ -74,6 +74,9 @@ const CippSchedulerForm = (props) => {
     router.query.Clone,
     commands.isSuccess,
   ]);
+
+  const gridSize = fullWidth ? 12 : 4; // Adjust size based on fullWidth prop
+
   return (
     <Grid container spacing={2}>
       {(scheduledTaskList.isFetching || tenantList.isLoading || commands.isLoading) && (
@@ -92,7 +95,7 @@ const CippSchedulerForm = (props) => {
         />
       </Grid>
 
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={gridSize}>
         <CippFormComponent
           name="command"
           type="autoComplete"
@@ -110,7 +113,7 @@ const CippSchedulerForm = (props) => {
           }
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={gridSize}>
         <CippFormComponent
           type="datePicker"
           name="ScheduledTime"
@@ -119,7 +122,7 @@ const CippSchedulerForm = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={gridSize}>
         <CippFormComponent
           type="autoComplete"
           name="Recurrence"
@@ -141,7 +144,7 @@ const CippSchedulerForm = (props) => {
       )}
 
       {selectedCommand?.addedFields?.Parameters?.map((param, idx) => (
-        <Grid item xs={12} md={6} key={idx}>
+        <Grid item xs={12} md={gridSize} key={idx}>
           {param.Type === "System.Boolean" ? (
             <CippFormComponent
               type="switch"
@@ -149,8 +152,14 @@ const CippSchedulerForm = (props) => {
               label={param.Name}
               formControl={formControl}
             />
-          ) : param.Type === "System.Collections.Hashtable" ||
-            param.Type?.startsWith("System.String") ? (
+          ) : param.Type === "System.Collections.Hashtable" ? (
+            <CippFormInputArray
+              formControl={formControl}
+              name={`parameters.${param.Name}`}
+              label={`${param.Name}`}
+              key={idx}
+            />
+          ) : param.Type?.startsWith("System.String") ? (
             <CippFormComponent
               type="textField"
               name={`parameters.${param.Name}`}

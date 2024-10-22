@@ -113,9 +113,134 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     }
   }, [selectedPresets]);
 
+  const schedulerForm = useForm({
+    mode: "onChange",
+  });
+  const postCall = ApiPostCall({
+    datafromUrl: true,
+    relatedQueryKeys: [
+      "ListScheduledItems-Edit",
+      "ListScheduledItems-hidden",
+      "ListScheduledItems",
+    ],
+  });
+  const schedulerCommand = {
+    Function: "Get-GraphRequestList",
+    Synopsis: "Execute a Graph query",
+    Parameters: [
+      {
+        Name: "endpoint",
+        Type: "System.String",
+        Description: "Graph API endpoint",
+      },
+      {
+        Name: "Parameters",
+        Type: "System.Collections.Hashtable",
+        Description: "API Parameters",
+      },
+      {
+        Name: "queueId",
+        Type: "System.String",
+        Description: "Queue Id",
+      },
+      {
+        Name: "NoPagination",
+        Type: "System.Management.Automation.SwitchParameter",
+        Description: "Disable pagination",
+      },
+      {
+        Name: "CountOnly",
+        Type: "System.Management.Automation.SwitchParameter",
+        Description: "Only return count of results",
+      },
+      {
+        Name: "ReverseTenantLookup",
+        Type: "System.Management.Automation.SwitchParameter",
+        Description: "Perform reverse tenant lookup",
+      },
+      {
+        Name: "ReverseTenantLookupProperty",
+        Type: "System.String",
+        Description: "Property to perform reverse tenant lookup",
+      },
+      {
+        Name: "AsApp",
+        Type: "System.Boolean",
+        Description: null,
+      },
+    ],
+  };
   // Schedule report function
   const handleScheduleReport = () => {
-    setOffCanvasContent(<CippSchedulerForm formControl={formControl} />);
+    const formParameters = formControl.getValues();
+    const selectString = formParameters.$select
+      ? formParameters.$select?.map((item) => item.value).join(",")
+      : null;
+
+    //compose the parameters for the form based on what is available
+    const Parameters = [
+      {
+        Key: "$select",
+        Value: selectString,
+      },
+      {
+        Key: "$filter",
+        Value: formParameters.$filter,
+      },
+      {
+        Key: "$top",
+        Value: formParameters.$top,
+      },
+      {
+        Key: "$search",
+        Value: formParameters.$search,
+      },
+      {
+        Key: "$count",
+        Value: formParameters.$count,
+      },
+    ];
+    Parameters.forEach((param) => {
+      if (param.Value == null || param.Value === "") {
+        //delete the index
+        Parameters.splice(Parameters.indexOf(param), 1);
+      }
+    });
+    const resetParams = {
+      Name: "Graph Explorer Report",
+      command: {
+        label: schedulerCommand.Function,
+        value: schedulerCommand.Function,
+        addedFields: schedulerCommand,
+      },
+      parameters: {
+        endpoint: formParameters.endpoint,
+        skipCache: true,
+        NoPagination: formParameters.NoPagination,
+        Parameters: Parameters,
+      },
+    };
+    schedulerForm.reset(resetParams);
+    setOffCanvasContent(
+      <>
+        <CippSchedulerForm fullWidth formControl={schedulerForm} />
+        <CippApiResults apiObject={savePresetApi} />
+        <Grid item xs={12} sx={{ my: 2 }}>
+          <Button
+            onClick={() =>
+              postCall.mutate({
+                url: "/api/AddScheduledItem",
+                data: schedulerForm.getValues(),
+              })
+            }
+            variant="contained"
+            color="primary"
+          >
+            Schedule
+          </Button>
+        </Grid>
+      </>
+    );
     setOffCanvasOpen(true);
   };
 
