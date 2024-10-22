@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, Button, IconButton, Tooltip, Collapse } from "@mui/material";
+import { Grid, Button, IconButton, Tooltip, Collapse, Box } from "@mui/material";
 import {
   Save as SaveIcon,
   ExpandMore as ExpandMoreIcon,
@@ -17,6 +17,7 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
+import CippSchedulerForm from "../CippFormPages/CippSchedulerForm";
 
 const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
@@ -114,8 +115,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
 
   // Schedule report function
   const handleScheduleReport = () => {
-    console.log("Schedule Report:", formControl.getValues());
-    setOffCanvasContent("this should be the scheduler form.");
+    setOffCanvasContent(<CippSchedulerForm formControl={formControl} />);
     setOffCanvasOpen(true);
   };
 

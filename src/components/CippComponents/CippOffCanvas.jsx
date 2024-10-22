@@ -53,7 +53,9 @@ export const CippOffCanvas = (props) => {
               )}
             </Grid>
             <Grid item xs={12}>
-              {typeof children === "function" ? children(extendedData) : children}
+              <Box sx={{ m: 2 }}>
+                {typeof children === "function" ? children(extendedData) : children}
+              </Box>
             </Grid>
           </Grid>
         </Box>

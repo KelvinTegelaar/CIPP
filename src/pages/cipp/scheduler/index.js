@@ -7,8 +7,6 @@ import { useState } from "react";
 import { CopyAll, Edit } from "@mui/icons-material";
 import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
 
-//show hidden jobs will also create a banner with "These might be system jobs. Do not touch, unless you know what you are doing. or something"
-
 const Page = () => {
   const actions = [
     {
@@ -40,7 +38,7 @@ const Page = () => {
     children: (extendedData) => (
       <>
         <Typography variant="h6">Job Results</Typography>
-        <CippCodeBlock type="editor" code={JSON.stringify(extendedData.Results, null, 2)} />
+        <CippCodeBlock type="editor" code={extendedData.Results} />
       </>
     ),
     actions: actions,
@@ -51,7 +49,7 @@ const Page = () => {
       cardButton={
         <>
           <Button onClick={() => setShowHiddenJobs((prev) => !prev)}>
-            {showHiddenJobs ? "Hide" : "Show"} Hidden Jobs
+            {showHiddenJobs ? "Hide" : "Show"} System Jobs
           </Button>
           <Button startIcon={<CalendarDaysIcon />} component={Link} href="/cipp/scheduler/job">
             Add Job
