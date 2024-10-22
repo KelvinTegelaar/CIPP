@@ -2,9 +2,14 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import tabOptions from "./tabOptions";
+import { Button, SvgIcon, Typography } from "@mui/material";
+import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
+import { useDialog } from "/src/hooks/use-dialog";
+import { Sync } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Tenants - Backend";
+  const createDialog = useDialog();
 
   // Actions formatted as per your guidelines
   const actions = [
@@ -73,14 +78,49 @@ const Page = () => {
   ];
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      tenantInTitle={false}
-      apiUrl="/api/ExecExcludeTenant?ListAll=True"
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={columns}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        cardButton={
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={createDialog.handleOpen}
+          >
+            <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
+              <Sync />
+            </SvgIcon>
+            Refresh Tenant
+          </Button>
+        }
+        tenantInTitle={false}
+        apiUrl="/api/ExecExcludeTenant?ListAll=True"
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={columns}
+      />
+      <CippApiDialog
+        title="Refresh Tenant"
+        createDialog={createDialog}
+        fields={[
+          {
+            type: "textField",
+            name: "tenantFilter",
+            label: "Enter Default Domain Name or Tenant ID to refresh a specific tenant.",
+          },
+        ]}
+        api={{
+          url: "/api/ListTenants",
+          confirmText:
+            "This will refresh the tenant and update the tenant details. This can be used to force a tenant to reappear in the list. Run this with no Tenant Filter to refresh all tenants.",
+          type: "GET",
+          data: { TriggerRefresh: "!true", TenantFilter: "tenantFilter" },
+          replacementBehaviour: "removeNulls",
+        }}
+        row={{}}
+      />
+    </>
   );
 };
 
