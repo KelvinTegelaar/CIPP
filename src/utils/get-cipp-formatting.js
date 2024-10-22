@@ -22,11 +22,11 @@ export const getCippFormatting = (data, cellName, type) => {
     );
   }
 
-  const timeAgoArray = ["ExecutedTime", "ScheduledTime"];
+  const timeAgoArray = ["ExecutedTime", "ScheduledTime", "Timestamp"];
   if (timeAgoArray.includes(cellName)) {
-    //convert data from unixtime to date. If conversion fails, return "No Data".
-    const date = new Date(data * 1000);
-    if (isNaN(date)) {
+    // Convert data from Unix time to date. If conversion fails, return "No Data".
+    const date = typeof data === "number" ? new Date(data * 1000) : new Date(data);
+    if (isNaN(date.getTime())) {
       return isText ? (
         "No Data"
       ) : (

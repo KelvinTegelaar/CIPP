@@ -3,6 +3,7 @@ import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { useDialog } from "/src/hooks/use-dialog";
 import { SettingsBackupRestore } from "@mui/icons-material";
+import Link from "next/link";
 
 const CippBackupSettings = () => {
   const createDialog = useDialog();
@@ -16,12 +17,9 @@ const CippBackupSettings = () => {
         <Button
           variant="contained"
           size="small"
-          onClick={() =>
-            console.log(
-              "open backup dialog, table with create backup, download backup and restore backup options"
-            )
-          }
+          component={Link}
           disabled={backupAction.isPending}
+          href="/cipp/settings/backup"
         >
           <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
             <SettingsBackupRestore />
