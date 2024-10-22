@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import tabOptions from "./tabOptions";
-import { Button, SvgIcon, Typography } from "@mui/material";
+import { Button, SvgIcon } from "@mui/material";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
 import { useDialog } from "/src/hooks/use-dialog";
 import { Sync } from "@mui/icons-material";
@@ -118,7 +118,6 @@ const Page = () => {
           data: { TriggerRefresh: "!true", TenantFilter: "tenantFilter" },
           replacementBehaviour: "removeNulls",
         }}
-        row={{}}
       />
     </>
   );

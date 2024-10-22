@@ -38,12 +38,12 @@ const CippVersionProperties = () => {
       showDivider={false}
       cardButton={
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
           size="small"
           onClick={() => cippVersion.refetch()}
         >
-          <SvgIcon sx={{ me: 2 }}>
+          <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
             <Sync />
           </SvgIcon>
           Check Version
