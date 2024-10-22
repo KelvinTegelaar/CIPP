@@ -84,7 +84,6 @@ export const getCippFormatting = (data, cellName, type) => {
   //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.
   if (cellName === "tenantFilter" || cellName === "Tenant") {
     //check if data is an array.
-    console.log(data);
     if (Array.isArray(data)) {
       return isText
         ? data.join(", ")
