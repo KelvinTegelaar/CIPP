@@ -38,7 +38,7 @@ const CippPasswordSettings = () => {
   };
   return (
     <CippButtonCard
-      title="Password Settings"
+      title="Password Style"
       cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
       CardButton={
         <>

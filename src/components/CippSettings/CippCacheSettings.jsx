@@ -68,7 +68,7 @@ const CippCacheSettings = () => {
         api={{
           url: "/api/ListTenants",
           confirmText:
-            "This will refresh the tenant and update the tenant details. This can be used to force a tenant to reappear in the list. Run this with no Tenant Filter to refresh all tenants.",
+            "This will clear the cache used by CIPP. This will slow down some aspects of the application, and should only be used when instructed to do so by support.",
           type: "GET",
           data: { ClearCache: "!true", TenantsOnly: "tenantsOnly" },
           replacementBehaviour: "removeNulls",

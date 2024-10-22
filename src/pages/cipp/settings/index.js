@@ -6,7 +6,8 @@ import tabOptions from "./tabOptions";
 import CippVersionProperties from "/src/components/CippSettings/CippVersionProperties";
 import CippPasswordSettings from "/src/components/CippSettings/CippPasswordSettings";
 import CippDnsSettings from "/src/components/CippSettings/CippDnsSettings";
-import CippCacheSettings from "../../../components/CippSettings/CippCacheSettings";
+import CippCacheSettings from "/src/components/CippSettings/CippCacheSettings";
+import CippBackupSettings from "/src/components/CippSettings/CippBackupSettings";
 const Page = () => {
   return (
     <Container sx={{ pt: 3 }} maxWidth="xl">
@@ -22,6 +23,9 @@ const Page = () => {
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={4}>
           <CippCacheSettings />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} lg={4}>
+          <CippBackupSettings />
         </Grid>
       </Grid>
     </Container>

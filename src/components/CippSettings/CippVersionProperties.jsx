@@ -1,6 +1,6 @@
 import { Box, Button, Skeleton, SvgIcon } from "@mui/material";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
-import { CheckCircle, Sync, Warning } from "@mui/icons-material";
+import { CheckCircle, SystemUpdateAlt, Warning } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useEffect } from "react";
 
@@ -44,9 +44,9 @@ const CippVersionProperties = () => {
           onClick={() => cippVersion.refetch()}
         >
           <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-            <Sync />
+            <SystemUpdateAlt />
           </SvgIcon>
-          Check Version
+          Check For Updates
         </Button>
       }
       title="Version"
