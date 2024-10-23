@@ -23,7 +23,6 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
-import { useSettings } from "../../hooks/use-settings";
 
 export const CippDataTable = (props) => {
   const {
@@ -48,6 +47,7 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
     noCard = false,
+    incorrectDataMessage = "Data not in correct format",
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
@@ -55,7 +55,6 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  const settings = useSettings();
   const waitingBool = api?.url ? true : false;
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
@@ -63,14 +62,13 @@ export const CippDataTable = (props) => {
     queryKey: queryKey ? queryKey : title,
     waiting: waitingBool,
   });
-
   useEffect(() => {
     if (data) {
       if (JSON.stringify(data) !== JSON.stringify(usedData) && data.length > 0) {
         setUsedData(data);
       }
     }
-  }, [data, JSON.stringify(data)]);
+  }, [data, queryKey, JSON.stringify(data)]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
@@ -80,7 +78,7 @@ export const CippDataTable = (props) => {
         getRequestData.fetchNextPage();
       }
     }
-  }, [getRequestData.data?.pages?.length, getRequestData.isFetching]);
+  }, [getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey]);
 
   useEffect(() => {
     if (getRequestData.isSuccess) {
@@ -110,7 +108,13 @@ export const CippDataTable = (props) => {
 
       setUsedData(combinedResults || []);
     }
-  }, [getRequestData.isSuccess, getRequestData.data, api.dataKey]);
+  }, [
+    getRequestData.isSuccess,
+    getRequestData.data,
+    api.dataKey,
+    getRequestData.isFetching,
+    queryKey,
+  ]);
 
   useEffect(() => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
@@ -126,7 +130,6 @@ export const CippDataTable = (props) => {
         newVisibility[col.id] = true;
       });
     } else if (simpleColumns.length > 0) {
-      settings.currentTenant === "AllTenants" ? simpleColumns.unshift("Tenant") : null;
       finalColumns = apiColumns.map((col) => {
         newVisibility[col.id] = simpleColumns.includes(col.id);
         return col;
@@ -138,17 +141,15 @@ export const CippDataTable = (props) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
     }
-    //if the currentTenant is "allTenants", make sure we also add the Tenant column as the first column.
-
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, simpleColumns, usedData.length]);
+  }, [columns.length, usedData.length, queryKey]);
 
   const createDialog = useDialog();
 
   // Apply the modeInfo directly
-  settings.currentTenant === "AllTenants" ? simpleColumns.unshift("Tenant") : null;
-  const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns);
+
+  const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas);
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,
@@ -240,7 +241,7 @@ export const CippDataTable = (props) => {
         // Just render the table and related components without the Card
         <Scrollbar>
           {!Array.isArray(usedData) && usedData ? (
-            <ResourceUnavailable message="Data not in correct format" />
+            <ResourceUnavailable message={incorrectDataMessage} />
           ) : (
             <>
               {(getRequestData.isSuccess ||
@@ -274,7 +275,7 @@ export const CippDataTable = (props) => {
           <CardContent sx={{ padding: "1rem" }}>
             <Scrollbar>
               {!Array.isArray(usedData) && usedData ? (
-                <ResourceUnavailable message="Data not in correct format" />
+                <ResourceUnavailable message={incorrectDataMessage} />
               ) : (
                 <>
                   {(getRequestData.isSuccess ||
@@ -310,6 +311,7 @@ export const CippDataTable = (props) => {
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
+        children={offCanvas?.children}
       />
       {actionData.ready && (
         <CippApiDialog

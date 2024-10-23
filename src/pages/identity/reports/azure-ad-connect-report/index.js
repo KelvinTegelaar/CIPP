@@ -5,7 +5,7 @@ const simpleColumns = [
   "displayName",
   "ObjectType",
   "createdDateTime",
-  "onPremisesProvisioningErrors"
+  "onPremisesProvisioningErrors",
 ];
 
 const apiUrl = "/api/ListAzureADConnectStatus";
@@ -19,9 +19,8 @@ const Page = () => {
       title="Azure AD Connect Report"
       apiUrl={apiUrl}
       apiData={{
-        DataToReturn: "AzureADObjectsInError"
+        DataToReturn: "AzureADObjectsInError",
       }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

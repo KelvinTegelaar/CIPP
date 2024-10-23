@@ -17,15 +17,13 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect, useState } from "react";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
-import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
-import { Api } from "@mui/icons-material";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
-
+import _ from "lodash";
 const Page = () => {
   const router = useRouter();
   const [blockCards, setBlockCards] = useState([]);
-  const [layoutMode, setLayoutMode] = useState("");
+  const [layoutMode, setLayoutMode] = useState("Table");
   const bpaTemplateList = ApiGetCall({
     url: "/api/listBPATemplates",
     queryKey: "ListBPATemplates",
@@ -61,7 +59,10 @@ const Page = () => {
 
             const tenantData = bpaData?.data?.Data?.find((data) => data.GUID === tenantId);
             const cards = frontendFields.map((field) => {
-              const blockData = field.value.split(".").reduce((obj, key) => obj[key], tenantData);
+              //instead of this, use lodash to get the data for blockData
+              const blockData = _.get(tenantData, field.value)
+                ? _.get(tenantData, field.value)
+                : ["No Data"];
               return {
                 name: field.name,
                 value: field.value,
@@ -82,15 +83,36 @@ const Page = () => {
                 (tenant) => tenant?.defaultDomainName === tenantFilter
               )?.customerId;
 
-              const tenantData = bpaData?.data?.Data?.find((data) => data.GUID === tenantId);
-              //frontendfields is an array of arrays. We need to flatten it to a single array.
+              let tenantData =
+                currentTenant !== "AllTenants"
+                  ? bpaData?.data?.Data?.find((data) => data.GUID === tenantId)
+                  : bpaData?.data?.Data;
               const flatFrontendFields = frontendFields.flat();
-              console.log(flatFrontendFields.map((subField) => subField.value));
+              const listOfFrontEndFields = flatFrontendFields.map((subField) =>
+                //sometimes the subField contains a space. Only take the first part of the subField if it does.
+                subField?.value?.includes(" ") ? subField.value.split(" ")[0] : subField.value
+              );
+              tenantData = Array.isArray(tenantData) ? tenantData : [tenantData];
+              //filter down tenantData to only the fields listOfFrontEndFields
+              tenantData = tenantData.map((data) => {
+                const filteredData = {};
+                listOfFrontEndFields.unshift("Tenant");
+                listOfFrontEndFields.forEach((field) => {
+                  //we need to get the correct key, but the key is nested and can contain dots, or []. So we use lodash get to get the correct key.
+                  const dataField = _.get(data, field) ? _.get(data, field) : "No Data";
+                  if (dataField === "FAILED") {
+                    filteredData[field] = "Failed";
+                  } else {
+                    filteredData[field] = dataField;
+                  }
+                });
+                return filteredData;
+              });
               const cards = {
-                simpleColumns: flatFrontendFields.map((subField) => subField.value),
+                simpleColumns: listOfFrontEndFields,
                 formatter: "table",
                 name: "BPA Table Report",
-                data: [tenantData],
+                data: tenantData,
               };
               setBlockCards([cards]);
             }
@@ -98,7 +120,7 @@ const Page = () => {
         }
       }
     }
-  }, [bpaTemplateList.isSuccess, bpaData.isSuccess, currentTenant]);
+  }, [bpaTemplateList.isSuccess, bpaData.isSuccess, currentTenant, router]);
 
   const pageTitle = `BPA Report Viewer - ${currentTenant}`;
   return (
@@ -196,8 +218,9 @@ const Page = () => {
                       ) : block.formatter === "table" ? (
                         <CippDataTable
                           data={block.data}
-                          simple={true}
+                          simple={false}
                           noCard={true}
+                          incorrectDataMessage={"No data has been found for this report."}
                           simpleColumns={block?.simpleColumns}
                         />
                       ) : (

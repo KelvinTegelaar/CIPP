@@ -4,7 +4,8 @@ import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
 import CippDataTableButton from "../components/CippTable/CippDataTableButton";
-
+import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
+import ReactTimeAgo from "react-time-ago";
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
@@ -21,8 +22,67 @@ export const getCippFormatting = (data, cellName, type) => {
     );
   }
 
+  const timeAgoArray = ["ExecutedTime", "ScheduledTime", "Timestamp"];
+  if (timeAgoArray.includes(cellName)) {
+    // Convert data from Unix time to date. If conversion fails, return "No Data".
+    const date = typeof data === "number" ? new Date(data * 1000) : new Date(data);
+    if (isNaN(date.getTime())) {
+      return isText ? (
+        "No Data"
+      ) : (
+        <Chip variant="outlined" label="No Data" size="small" color="info" />
+      );
+    }
+    return isText ? <ReactTimeAgo date={date} /> : <ReactTimeAgo date={date} />;
+  }
+
+  //domainAnalyser layouts
+  if (cellName === "ReportInterval") {
+    //device by 86400 to get days, then return "days"
+    const days = data / 86400;
+    return isText ? `${days} days` : `${days} days`;
+  }
+  if (cellName === "DMARCPolicy") {
+    if (data === "s") {
+      data = "Strict";
+    }
+    if (data === "r") {
+      data = "Relaxed";
+    }
+    if (data === "afrf") {
+      data = "Authentication Failure";
+    }
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "ScorePercentage") {
+    return isText ? `${data}%` : <LinearProgressWithLabel variant="determinate" value={data} />;
+  }
+
+  if (cellName === "DMARCPercentagePass") {
+    return isText ? `${data}%` : <LinearProgressWithLabel variant="determinate" value={data} />;
+  }
+
+  if (cellName === "ScoreExplanation") {
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "DMARCActionPolicy") {
+    if (data === "") {
+      data = "No DMARC Action";
+    }
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "MailProvider") {
+    if (data === "Null") {
+      data = "Unknown";
+    }
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
   //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.
-  if (cellName === "tenantFilter") {
+  if (cellName === "tenantFilter" || cellName === "Tenant") {
     //check if data is an array.
     if (Array.isArray(data)) {
       return isText
@@ -30,6 +90,8 @@ export const getCippFormatting = (data, cellName, type) => {
         : data.map((item) => (
             <CippCopyToClipBoard key={item.value} text={item.label} type="chip" />
           ));
+    } else {
+      return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
     }
   }
 
@@ -47,9 +109,6 @@ export const getCippFormatting = (data, cellName, type) => {
     return isText ? `${data.length} new users to create` : `${data.length} new users to create`;
   }
 
-  if (data?.label) {
-    return data.label;
-  }
   if (data?.enabled === true && data?.date) {
     return isText
       ? `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`

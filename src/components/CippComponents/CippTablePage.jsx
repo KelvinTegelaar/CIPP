@@ -21,6 +21,8 @@ export const CippTablePage = (props) => {
     onChange,
     offCanvas,
     queryKey,
+    tableFilter,
+    tenantInTitle = true,
     ...other
   } = props;
   const tenant = useSettings().currentTenant;
@@ -38,6 +40,8 @@ export const CippTablePage = (props) => {
         <ReactQueryDevtools />
         <Container maxWidth={false} sx={{ height: "100%" }}>
           <Stack spacing={4} sx={{ height: "100%" }}>
+            {tableFilter}
+
             <Card
               sx={{
                 display: "flex",
@@ -47,7 +51,7 @@ export const CippTablePage = (props) => {
               <CippDataTable
                 queryKey={queryKey}
                 cardButton={cardButton}
-                title={`${title} - ${tenant}`}
+                title={tenantInTitle ? `${title} - ${tenant}` : title}
                 noDataButton={noDataButton}
                 actions={actions}
                 simple={false}

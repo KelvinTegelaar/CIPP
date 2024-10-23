@@ -1,6 +1,6 @@
 import { useSettings } from "../../hooks/use-settings";
 
-export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) => {
+export const utilTableMode = (columnVisibility, mode, actions, simpleColumns, offCanvas) => {
   const settings = useSettings();
   if (mode === true) {
     return {

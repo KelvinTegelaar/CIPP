@@ -3,10 +3,10 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { Delete, Edit } from "@mui/icons-material";
+import { CopyAll, Delete, Edit } from "@mui/icons-material";
 
 const Page = () => {
-  const pageTitle = "Best Practice Templates";
+  const pageTitle = "Best Practice Reports";
   const actions = [
     {
       label: "View Template",
@@ -26,7 +26,7 @@ const Page = () => {
     {
       label: "Clone & Edit Template",
       link: "/tenant/standards/bpa-report/builder?id=[Name]&clone=true",
-      icon: <EyeIcon />,
+      icon: <CopyAll />,
       color: "success",
       target: "_self",
     },

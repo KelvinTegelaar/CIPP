@@ -1,14 +1,21 @@
-
+import { Box, Container, Grid } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippDomainCards } from "../../../../components/CippCards/CippDomainCards";
 
 const Page = () => {
-  const pageTitle = "Individual Domain Check";
+  const pageTitle = "Deploy Named Locations";
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the individual domain check section.</p>
-    </div>
+    <Box
+      sx={{
+        flexGrow: 1,
+        py: 4,
+      }}
+    >
+      <Container maxWidth={false}>
+        <CippDomainCards />
+      </Container>
+    </Box>
   );
 };
 

@@ -78,10 +78,10 @@ export const CippAutoComplete = (props) => {
       setUsedOptions([{ label: getCippError(actionGetRequest.error), value: "error" }]);
     }
   }, [api, actionGetRequest.data]);
-
+  const rand = Math.random().toString(36).substring(5);
   return (
     <Autocomplete
-      key={defaultValue}
+      key={`${defaultValue}-${rand}`}
       disabled={disabled || actionGetRequest.isFetching}
       popupIcon={
         props.isFetching || actionGetRequest.isFetching ? (
@@ -120,7 +120,7 @@ export const CippAutoComplete = (props) => {
           : undefined
       }
       options={api ? usedOptions : options}
-      getOptionLabel={(option) => option.label || option}
+      getOptionLabel={(option) => option.label || "Label not found - Are you missing a labelField?"}
       sx={sx}
       renderInput={(params) => (
         <TextField placeholder={placeholder} required={required} label={label} {...params} />

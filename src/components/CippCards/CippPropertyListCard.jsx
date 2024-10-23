@@ -1,4 +1,13 @@
-import { Card, CardHeader, Divider, Skeleton, SvgIcon, Stack } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Skeleton,
+  SvgIcon,
+  Stack,
+  CardActions,
+} from "@mui/material";
 import { ActionList } from "../../components/action-list";
 import { ActionListItem } from "../../components/action-list-item";
 import { PropertyList } from "../../components/property-list";
@@ -19,6 +28,8 @@ export const CippPropertyListCard = (props) => {
     data,
     layout = "single",
     showDivider = true,
+    cardButton,
+    cardSx = { width: "100%", height: "100%" },
     ...other
   } = props;
   const createDialog = useDialog();
@@ -30,57 +41,22 @@ export const CippPropertyListCard = (props) => {
 
   return (
     <>
-      <Card sx={{ width: "100%" }} {...other}>
+      <Card sx={cardSx} {...other}>
         <CardHeader action={actionButton} title={title} />
-        <Divider />
+        <CardContent sx={{ p: 0, marginBottom: "auto" }}>
+          <Divider />
 
-        {layout === "single" ? (
-          <PropertyList>
-            {isFetching ? (
-              <PropertyListItem
-                key={"loading-bar"}
-                align={align}
-                label="Loading"
-                value={<Skeleton width={280} />}
-              />
-            ) : (
-              propertyItems.map((item, index) => (
-                <PropertyListItem
-                  align={align}
-                  divider={showDivider}
-                  copyItems={copyItems}
-                  key={`${index}-index-PropertyListOffCanvas`}
-                  {...item}
-                />
-              ))
-            )}
-          </PropertyList>
-        ) : (
-          // Two-column layout
-          <Stack
-            direction={{
-              xs: "column",
-              md: "row",
-            }}
-            sx={{
-              "& > *": {
-                width: {
-                  md: "50%",
-                },
-              },
-            }}
-          >
+          {layout === "single" ? (
             <PropertyList>
               {isFetching ? (
                 <PropertyListItem
                   key={"loading-bar"}
                   align={align}
-                  divider={showDivider}
                   label="Loading"
                   value={<Skeleton width={280} />}
                 />
               ) : (
-                firstHalf.map((item, index) => (
+                propertyItems.map((item, index) => (
                   <PropertyListItem
                     align={align}
                     divider={showDivider}
@@ -91,22 +67,56 @@ export const CippPropertyListCard = (props) => {
                 ))
               )}
             </PropertyList>
-            <PropertyList>
-              {secondHalf.map((item, index) => (
-                <PropertyListItem
-                  align={align}
-                  divider={showDivider}
-                  copyItems={copyItems}
-                  key={`${index}-index-PropertyListOffCanvas`}
-                  {...item}
-                />
-              ))}
-            </PropertyList>
-          </Stack>
-        )}
-
-        {showDivider && <Divider />}
-
+          ) : (
+            // Two-column layout
+            <Stack
+              direction={{
+                xs: "column",
+                md: "row",
+              }}
+              sx={{
+                "& > *": {
+                  width: {
+                    md: "50%",
+                  },
+                },
+              }}
+            >
+              <PropertyList>
+                {isFetching ? (
+                  <PropertyListItem
+                    key={"loading-bar"}
+                    align={align}
+                    divider={showDivider}
+                    label="Loading"
+                    value={<Skeleton width={280} />}
+                  />
+                ) : (
+                  firstHalf.map((item, index) => (
+                    <PropertyListItem
+                      align={align}
+                      divider={showDivider}
+                      copyItems={copyItems}
+                      key={`${index}-index-PropertyListOffCanvas`}
+                      {...item}
+                    />
+                  ))
+                )}
+              </PropertyList>
+              <PropertyList>
+                {secondHalf.map((item, index) => (
+                  <PropertyListItem
+                    align={align}
+                    divider={showDivider}
+                    copyItems={copyItems}
+                    key={`${index}-index-PropertyListOffCanvas`}
+                    {...item}
+                  />
+                ))}
+              </PropertyList>
+            </Stack>
+          )}
+        </CardContent>
         <ActionList>
           {actionItems.map((item, index) => (
             <ActionListItem
@@ -137,6 +147,12 @@ export const CippPropertyListCard = (props) => {
             api={actionData.action}
             row={actionData.data}
           />
+        )}
+        {cardButton && (
+          <>
+            <Divider />
+            <CardActions>{cardButton}</CardActions>
+          </>
         )}
       </Card>
     </>

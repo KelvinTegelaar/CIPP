@@ -2,9 +2,20 @@ import { useEffect, useState } from "react";
 import { ApiGetCall } from "../api/ApiCall";
 import { useSettings } from "./use-settings";
 import standards from "/src/data/standards.json";
+import { current } from "@reduxjs/toolkit";
 
 export function useSecureScore() {
   const currentTenant = useSettings().currentTenant;
+  if (currentTenant === "AllTenants") {
+    return {
+      controlScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
+      secureScore: { isFetching: false, isSuccess: false, data: { Results: [] } },
+      translatedData: [],
+      isFetching: true,
+      isSuccess: false,
+    };
+  }
+
   const [translatedData, setTranslatedData] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFetching, setIsFetching] = useState(false);

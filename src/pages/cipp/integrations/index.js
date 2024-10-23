@@ -8,15 +8,15 @@ import {
   CardContent,
   Container,
   Grid,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import extensions from "/src/data/Extensions";
 import { Sync } from "@mui/icons-material";
-import { useMediaPredicate } from "react-media-hook";
 import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
+import Link from "next/link";
 
 const Page = () => {
   const settings = useSettings();
@@ -61,6 +61,7 @@ const Page = () => {
           return (
             <Grid item sm={12} md={6} xl={3} key={extension.id}>
               <CardActionArea
+                component={Link}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -98,15 +99,22 @@ const Page = () => {
                   <div style={{ flexGrow: 1 }} />
                   <CardActions>
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <Box
-                        sx={{
-                          backgroundColor: isEnabled ? "success.main" : "warning.main",
-                          borderRadius: "50%",
-                          width: 8,
-                          height: 8,
-                        }}
-                      />
-                      <Typography variant="body2">{status}</Typography>
+                      {integrations.isSuccess ? (
+                        <Box
+                          sx={{
+                            backgroundColor: isEnabled ? "success.main" : "warning.main",
+                            borderRadius: "50%",
+                            width: 8,
+                            height: 8,
+                          }}
+                        />
+                      ) : (
+                        <Skeleton variant="circular" width={8} height={8} animation="pulse" />
+                      )}
+
+                      <Typography variant="body2">
+                        {integrations.isSuccess ? status : "Loading"}
+                      </Typography>
                     </Stack>
                   </CardActions>
                 </Card>

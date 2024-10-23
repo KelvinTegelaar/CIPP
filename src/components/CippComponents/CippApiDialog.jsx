@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Switch,
   TextField,
 } from "@mui/material";
 import { Stack } from "@mui/system";
@@ -15,6 +16,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { useSettings } from "../../hooks/use-settings";
+import CippFormComponent from "./CippFormComponent";
 
 export const CippApiDialog = (props) => {
   const { createDialog, title, fields, api, row, relatedQueryKeys, ...other } = props;
@@ -25,6 +27,7 @@ export const CippApiDialog = (props) => {
     url: "",
     waiting: false,
     queryKey: "",
+    relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
   });
 
   const actionPostRequest = ApiPostCall({
@@ -197,6 +200,18 @@ export const CippApiDialog = (props) => {
                               }}
                             />
                           )}
+                        />
+                      </Grid>
+                    );
+                  case "switch":
+                    return (
+                      <Grid item xs={12} md={12} key={index}>
+                        <CippFormComponent
+                          type="switch"
+                          label={fieldProps.label}
+                          name={fieldProps.name}
+                          formControl={formHook}
+                          value={fieldProps.value}
                         />
                       </Grid>
                     );

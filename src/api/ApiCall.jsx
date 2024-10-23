@@ -7,6 +7,7 @@ import { getCippError } from "../utils/get-cipp-error";
 export function ApiGetCall({
   url,
   queryKey,
+  relatedQueryKeys,
   waiting = true,
   retry = 3,
   data,
@@ -73,6 +74,19 @@ export function ApiGetCall({
     staleTime: 600000, // 10 minutes
     refetchOnWindowFocus: false,
     retry: retryFn,
+    onSuccess: () => {
+      if (relatedQueryKeys) {
+        // Take a one-second break to let the API finish, then clear related caches.
+        const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
+        //for each relatedQueryKey, invalidate the cache
+
+        setTimeout(() => {
+          clearKeys.forEach((key) => {
+            queryClient.invalidateQueries({ queryKey: [key] });
+          });
+        }, 1000);
+      }
+    },
   });
 
   return queryInfo;
@@ -107,8 +121,13 @@ export function ApiPostCall({
     onSuccess: () => {
       if (relatedQueryKeys) {
         // Take a one-second break to let the API finish, then clear related caches.
+        const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
+        //for each relatedQueryKey, invalidate the cache
+
         setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: [relatedQueryKeys] });
+          clearKeys.forEach((key) => {
+            queryClient.invalidateQueries({ queryKey: [key] });
+          });
         }, 1000);
       }
     },
