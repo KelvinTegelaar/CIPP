@@ -17,8 +17,8 @@ const CippVersionProperties = () => {
   });
 
   useEffect(() => {
-    if (version.isSuccess) {
-      cippVersion.refetch();
+    if (version.isFetched) {
+      cippVersion.waiting = true;
     }
   }, [version]);
 
@@ -41,7 +41,10 @@ const CippVersionProperties = () => {
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => cippVersion.refetch()}
+          onClick={() => {
+            version.refetch();
+            cippVersion.refetch();
+          }}
         >
           <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
             <SystemUpdateAlt />
@@ -50,46 +53,26 @@ const CippVersionProperties = () => {
         </Button>
       }
       title="Version"
+      isFetching={cippVersion.isFetching}
       cardSx={{ display: "flex", flexDirection: "column", height: "100%", width: "100%" }}
-      propertyItems={
-        cippVersion.isSuccess
-          ? [
-              {
-                label: "Frontend",
-                value: CippVersionComponent(
-                  version?.data?.version,
-                  cippVersion?.data?.RemoteCIPPVersion,
-                  cippVersion?.data?.OutOfDateCIPP
-                ),
-              },
-              {
-                label: "Backend",
-                value: CippVersionComponent(
-                  cippVersion?.data?.LocalCIPPAPIVersion,
-                  cippVersion?.data?.RemoteCIPPAPIVersion,
-                  cippVersion?.data?.OutOfDateCIPPAPI
-                ),
-              },
-            ]
-          : [
-              {
-                label: "Frontend",
-                value: (
-                  <Box width="100%">
-                    <Skeleton width="100%" />
-                  </Box>
-                ),
-              },
-              {
-                label: "Backend",
-                value: (
-                  <Box width="100%">
-                    <Skeleton width="100%" />
-                  </Box>
-                ),
-              },
-            ]
-      }
+      propertyItems={[
+        {
+          label: "Frontend",
+          value: CippVersionComponent(
+            version?.data?.version,
+            cippVersion?.data?.RemoteCIPPVersion,
+            cippVersion?.data?.OutOfDateCIPP
+          ),
+        },
+        {
+          label: "Backend",
+          value: CippVersionComponent(
+            cippVersion?.data?.LocalCIPPAPIVersion,
+            cippVersion?.data?.RemoteCIPPAPIVersion,
+            cippVersion?.data?.OutOfDateCIPPAPI
+          ),
+        },
+      ]}
     />
   );
 };

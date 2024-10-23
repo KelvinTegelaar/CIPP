@@ -49,12 +49,16 @@ export const CippPropertyListCard = (props) => {
           {layout === "single" ? (
             <PropertyList>
               {isFetching ? (
-                <PropertyListItem
-                  key={"loading-bar"}
-                  align={align}
-                  label="Loading"
-                  value={<Skeleton width={280} />}
-                />
+                <>
+                  {propertyItems.map((item, index) => (
+                    <PropertyListItem
+                      key={`${index}-index-PropertyListOffCanvas`}
+                      align={align}
+                      label={item.label}
+                      value={<Skeleton width={280} />}
+                    />
+                  ))}
+                </>
               ) : (
                 propertyItems.map((item, index) => (
                   <PropertyListItem
