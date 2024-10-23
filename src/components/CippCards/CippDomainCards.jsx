@@ -24,7 +24,6 @@ import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippPropertyListCard } from "./CippPropertyListCard";
-import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 const ResultList = ({ passes = [], warns = [], fails = [] }) => (
@@ -244,7 +243,6 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
                       value: rec.Message,
                     }))}
                   />
-                  
                 </>
               )}
 

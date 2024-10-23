@@ -17,6 +17,8 @@ export const getCippValidator = (value, type) => {
       return /^(http|https):\/\/[^ "]+$/.test(value) || "This is not a valid URL";
     case "string":
       return typeof value === "string" || "This is not a valid string";
+    case "ip":
+      return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(value) || "This is not a valid IP address";
     default:
       return true;
   }
