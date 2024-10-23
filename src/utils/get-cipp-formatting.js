@@ -22,7 +22,7 @@ export const getCippFormatting = (data, cellName, type) => {
     );
   }
 
-  const timeAgoArray = ["ExecutedTime", "ScheduledTime", "Timestamp"];
+  const timeAgoArray = ["ExecutedTime", "ScheduledTime", "Timestamp", "DateTime"];
   if (timeAgoArray.includes(cellName)) {
     // Convert data from Unix time to date. If conversion fails, return "No Data".
     const date = typeof data === "number" ? new Date(data * 1000) : new Date(data);

@@ -262,7 +262,11 @@ export const CippFormComponent = (props) => {
                 <Scrollbar>
                   <DateTimePicker
                     slotProps={{ textField: { fullWidth: true } }}
-                    views={["year", "month", "day", "hours", "minutes"]}
+                    views={
+                      other.dateTimeType === "date"
+                        ? ["year", "month", "day"]
+                        : ["year", "month", "day", "hours", "minutes"]
+                    }
                     label={label}
                     value={field.value ? new Date(field.value * 1000) : null} // Convert Unix timestamp to Date object
                     onChange={(date) => {
