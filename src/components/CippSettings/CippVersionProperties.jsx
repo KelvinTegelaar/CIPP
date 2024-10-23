@@ -17,10 +17,11 @@ const CippVersionProperties = () => {
   });
 
   useEffect(() => {
-    if (version.isFetched) {
+    if (version.isFetched && !cippVersion.isFetched) {
       cippVersion.waiting = true;
+      cippVersion.refetch();
     }
-  }, [version]);
+  }, [version, cippVersion]);
 
   const CippVersionComponent = (version, availableVersion, outOfDate) => {
     return (
