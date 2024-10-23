@@ -3,6 +3,7 @@ import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { useDialog } from "/src/hooks/use-dialog";
 import { SettingsBackupRestore } from "@mui/icons-material";
+import Link from "next/link";
 
 const CippBackupSettings = () => {
   const createDialog = useDialog();
@@ -16,12 +17,9 @@ const CippBackupSettings = () => {
         <Button
           variant="contained"
           size="small"
-          onClick={() =>
-            console.log(
-              "open backup dialog, table with create backup, download backup and restore backup options"
-            )
-          }
+          component={Link}
           disabled={backupAction.isPending}
+          href="/cipp/settings/backup"
         >
           <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
             <SettingsBackupRestore />
@@ -36,9 +34,9 @@ const CippBackupSettings = () => {
     <>
       <CippButtonCard title="Backup" cardSx={{ height: "100%" }} CardButton={<BackupButtons />}>
         <Typography variant="body2">
-          Use this button to backup the system configuration for CIPP. This will not include
-          authentication information or extension configuration. You can also set an automated daily
-          backup schedule by clicking the button below. This will create a scheduled task for you.s
+          Manage the system configuration backups for CIPP. This will not include authentication
+          information or extension configuration. You can also set an automated daily backup
+          schedule.
         </Typography>
       </CippButtonCard>
     </>
