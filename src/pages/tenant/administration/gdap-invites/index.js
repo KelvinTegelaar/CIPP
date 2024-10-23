@@ -1,14 +1,26 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+
+const pageTitle = "GDAP Invite List";
+
+const simpleColumns = [
+  "Timestamp",
+  "RowKey",
+  "InviteUrl",
+  "OnboardingUrl",
+  "RoleMappings",
+];
+
+const apiUrl = "/api/ListGDAPInvite";
 
 const Page = () => {
-  const pageTitle = "Invite List";
-
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the invite list section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl={apiUrl}
+      apiDataKey="Results"
+      simpleColumns={simpleColumns}
+    />
   );
 };
 
