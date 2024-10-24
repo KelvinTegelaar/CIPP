@@ -3,7 +3,6 @@ import {
   createTheme,
   filledInputClasses,
   inputAdornmentClasses,
-  inputBaseClasses,
   inputLabelClasses,
   SvgIcon,
   switchClasses,
@@ -20,7 +19,12 @@ export const createComponents = () => {
         root: {
           [`& .${filledInputClasses.root}`]: {
             paddingTop: 6,
+            paddingBottom: 6,
+            minHeight: "40px", // Ensure consistent height
           },
+        },
+        inputRoot: {
+          padding: "6px 12px", // Consistent padding with inputs
         },
         noOptions: {
           fontSize: 14,
@@ -237,25 +241,24 @@ export const createComponents = () => {
     MuiInputAdornment: {
       styleOverrides: {
         root: {
-          [`&.${inputAdornmentClasses.positionStart}.${inputAdornmentClasses.filled}`]: {
-            "&:not(.MuiInputAdornment-hiddenLabel)": {
-              marginTop: 0,
-            },
+          [`&.${inputAdornmentClasses.positionStart}`]: {
+            marginRight: 8, // Adjust spacing between the input and adornment
+            padding: "0 8px", // Add padding to better align with input field
+            height: "100%", // Ensure adornment height matches the input
+            display: "flex",
+            alignItems: "center", // Center the adornment vertically
           },
         },
       },
     },
     MuiInputBase: {
       styleOverrides: {
+        root: {
+          height: "40px", // Force height to match Autocomplete
+        },
         input: {
-          "&::placeholder": {
-            opacity: 1,
-          },
-          [`label[data-shrink=false] + .${inputBaseClasses.formControl} &`]: {
-            "&::placeholder": {
-              opacity: 1 + "!important",
-            },
-          },
+          fontSize: 14,
+          padding: "6px 12px", // Match padding with Autocomplete
         },
       },
     },
@@ -265,20 +268,26 @@ export const createComponents = () => {
           borderRadius: 6,
           borderStyle: "solid",
           borderWidth: 1,
+          borderColor: "rgba(0, 0, 0, 0.23)", // Default border color
           overflow: "hidden",
-          padding: "6px 12px",
+          padding: "6px 12px", // Match padding with Autocomplete
+          height: "40px", // Force height to match Autocomplete
           transition: muiTheme.transitions.create(["border-color", "box-shadow"]),
           "&:before": {
-            display: "none",
+            display: "none", // Disable the default underline on focus/hover
           },
           "&:after": {
-            display: "none",
+            display: "none", // Disable the bottom line after focus
+          },
+          "&.Mui-focused": {
+            borderColor: "#1976d2", // Highlight border on focus
+            boxShadow: "0px 0px 0px 2px rgba(25, 118, 210, 0.25)", // Subtle shadow on focus
           },
         },
         input: {
           padding: 0,
-          height: "unset",
           fontSize: 14,
+          height: "unset",
           fontWeight: 500,
           lineHeight: 1.6,
         },
@@ -289,11 +298,14 @@ export const createComponents = () => {
         root: {
           fontSize: 14,
           fontWeight: 500,
-          [`&.${inputLabelClasses.filled}`]: {
-            marginBottom: 8,
-            position: "relative",
-            transform: "none",
-          },
+          position: "absolute",
+          transform: "translate(12px, 10px) scale(1)", // Move label up to center it in the input field
+          transition: "transform 0.2s ease-out",
+          top: 0,
+          left: 0,
+          transformOrigin: "top left",
+          pointerEvents: "none",
+          zIndex: 1000,
         },
       },
     },
@@ -419,6 +431,11 @@ export const createComponents = () => {
     MuiTextField: {
       defaultProps: {
         variant: "filled",
+      },
+      styleOverrides: {
+        root: {
+          height: "40px", // Force height to match Autocomplete
+        },
       },
     },
   };

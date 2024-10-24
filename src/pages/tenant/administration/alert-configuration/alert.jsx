@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
@@ -26,10 +26,77 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js"; // Dashboard 
 
 const AlertWizard = () => {
   const router = useRouter();
-  const [alertType, setAlertType] = useState();
+  const [alertType, setAlertType] = useState("none");
   const [addedEvent, setAddedEvent] = useState([{ id: 1 }]); // Track added inputs
-  const auditFormMethods = useForm();
-  const scriptFormMethods = useForm();
+  const [recurrenceOptions, setRecurrenceOptions] = useState([
+    { value: "30m", label: "Every 30 minutes" },
+    { value: "1h", label: "Every hour" },
+    { value: "4h", label: "Every 4 hours" },
+    { value: "1d", label: "Every 1 day" },
+    { value: "7d", label: "Every 7 days" },
+    { value: "30d", label: "Every 30 days" },
+    { value: "365d", label: "Every 365 days" },
+  ]);
+
+  const formControl = useForm({ mode: "onChange" });
+  const selectedPreset = useWatch({ control: formControl.control, name: "preset" }); // Watch the preset
+  const commandValue = useWatch({ control: formControl.control, name: "command" });
+
+  useEffect(() => {
+    formControl.reset();
+  }, [alertType]);
+
+  useEffect(() => {
+    if (commandValue && commandValue.value?.recommendedRunInterval) {
+      const updatedRecurrenceOptions = recurrenceOptions.map((opt) => ({
+        ...opt,
+        label: opt.label.replace(" (Recommended)", ""), // Clear any previous "Recommended" text
+      }));
+
+      const recommendedOption = updatedRecurrenceOptions.find(
+        (opt) => opt.value === commandValue.value.recommendedRunInterval
+      );
+
+      if (recommendedOption) {
+        recommendedOption.label += " (Recommended)";
+      }
+      setRecurrenceOptions(updatedRecurrenceOptions);
+      formControl.setValue("recurrence", recommendedOption);
+    }
+  }, [commandValue]);
+
+  useEffect(() => {
+    // Logic to handle template-based form updates when a preset is selected
+    if (selectedPreset) {
+      const selectedTemplate = auditLogTemplates.find(
+        (template) => template.value === selectedPreset.value
+      );
+
+      if (selectedTemplate) {
+        // Ensure the conditions array exists and update it
+        const conditions = selectedTemplate.template.conditions || [];
+
+        conditions.forEach((condition, index) => {
+          // Ensure form structure is in place for 0th condition
+          formControl.setValue(`conditions.${index}.Property`, condition.Property || "");
+          formControl.setValue(`conditions.${index}.Operator`, condition.Operator || "");
+          formControl.setValue(`conditions.${index}.Input`, condition.Input.value || "");
+        });
+
+        // Set the logbook or other fields based on the template
+        if (selectedTemplate.template.logbook) {
+          formControl.setValue("logbook", selectedTemplate.template.logbook);
+        }
+        console.log("conditions", conditions);
+        // Ensure the addedEvent array reflects the correct number of conditions
+        setAddedEvent(
+          conditions.map((_, index) => ({
+            id: index + 1,
+          }))
+        );
+      }
+    }
+  }, [selectedPreset]);
 
   const getAuditLogSchema = (logbook) => {
     const common = auditLogSchema.Common;
@@ -48,16 +115,6 @@ const AlertWizard = () => {
   const handleScriptSubmit = (values) => {
     console.log("Script Alert Form Values:", values);
   };
-
-  const recurrenceOptions = [
-    { value: "30m", name: "Every 30 minutes" },
-    { value: "1h", name: "Every hour" },
-    { value: "4h", name: "Every 4 hours" },
-    { value: "1d", name: "Every 1 day" },
-    { value: "7d", name: "Every 7 days" },
-    { value: "30d", name: "Every 30 days" },
-    { value: "365d", name: "Every 365 days" },
-  ];
 
   const handleAddCondition = () => {
     setAddedEvent([...addedEvent, { id: addedEvent.length + 1 }]);
@@ -92,10 +149,9 @@ const AlertWizard = () => {
           </Stack>
 
           {/* Selection Cards */}
-          <Grid container>
-            <Grid item xs={12} md={6} sx={{ mr: 1 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={6}>
               <Card>
-                {/* Added maxWidth to match form components */}
                 <CardActionArea onClick={() => setAlertType("audit")}>
                   <CardContent>
                     <Typography variant="h6">Audit Log Alert</Typography>
@@ -108,7 +164,6 @@ const AlertWizard = () => {
             </Grid>
             <Grid item xs={12} md={5.9}>
               <Card>
-                {/* Added maxWidth to match form components */}
                 <CardActionArea onClick={() => setAlertType("script")}>
                   <CardContent>
                     <Typography variant="h6">Scripted CIPP Alert</Typography>
@@ -124,10 +179,7 @@ const AlertWizard = () => {
             {alertType === "audit" && (
               <Grid container spacing={3} sx={{ mt: 1 }}>
                 <Grid item xs={12}>
-                  <form
-                    id="auditAlertForm"
-                    onSubmit={auditFormMethods.handleSubmit(handleAuditSubmit)}
-                  >
+                  <form id="auditAlertForm" onSubmit={formControl.handleSubmit(handleAuditSubmit)}>
                     <Grid container spacing={3}>
                       <Grid item xs={12} md={12}>
                         <CippButtonCard title="Tenant Selector">
@@ -136,7 +188,7 @@ const AlertWizard = () => {
                           </Typography>
                           <CippFormTenantSelector
                             multiple={false}
-                            formControl={auditFormMethods}
+                            formControl={formControl}
                             allTenants={true}
                           />
                         </CippButtonCard>
@@ -151,7 +203,7 @@ const AlertWizard = () => {
                             type="autoComplete"
                             multiple={false}
                             name="preset"
-                            formControl={auditFormMethods}
+                            formControl={formControl}
                             label="Select an alert preset, or customize your own"
                             options={auditLogTemplates.map((template) => ({
                               value: template.value,
@@ -162,7 +214,7 @@ const AlertWizard = () => {
                             type="autoComplete"
                             name="logbook"
                             multiple={false}
-                            formControl={auditFormMethods}
+                            formControl={formControl}
                             label="Select the log source"
                             options={[
                               { value: "Audit.AzureActiveDirectory", label: "Azure AD" },
@@ -176,7 +228,7 @@ const AlertWizard = () => {
                                   type="autoComplete"
                                   multiple={false}
                                   name={`conditions.${event.id}.Property`}
-                                  formControl={auditFormMethods}
+                                  formControl={formControl}
                                   label="Select property"
                                   options={getAuditLogSchema("Audit.AzureActiveDirectory")}
                                 />
@@ -186,7 +238,7 @@ const AlertWizard = () => {
                                   type="autoComplete"
                                   multiple={false}
                                   name={`conditions.${event.id}.Operator`}
-                                  formControl={auditFormMethods}
+                                  formControl={formControl}
                                   label="is"
                                   options={[
                                     { value: "eq", label: "Equals to" },
@@ -200,7 +252,7 @@ const AlertWizard = () => {
                                 <CippFormComponent
                                   type="textField"
                                   name={`conditions.${event.id}.Input`}
-                                  formControl={auditFormMethods}
+                                  formControl={formControl}
                                   label="Input"
                                 />
                               </Grid>
@@ -229,7 +281,7 @@ const AlertWizard = () => {
                 <Grid item xs={12}>
                   <form
                     id="scriptAlertForm"
-                    onSubmit={scriptFormMethods.handleSubmit(handleScriptSubmit)}
+                    onSubmit={formControl.handleSubmit(handleScriptSubmit)}
                   >
                     <Grid container spacing={3}>
                       <Grid item xs={12} md={12}>
@@ -237,7 +289,7 @@ const AlertWizard = () => {
                           <Typography>
                             Select the tenants you want to include in this Alert.
                           </Typography>
-                          <CippFormTenantSelector formControl={scriptFormMethods} />
+                          <CippFormTenantSelector formControl={formControl} />
                         </CippButtonCard>
                       </Grid>
 
@@ -246,46 +298,45 @@ const AlertWizard = () => {
                           title="Alert Criteria"
                           CardButton={<Button type="submit">Save Alert</Button>}
                         >
-                          <CippFormComponent
-                            type="autoComplete"
-                            multiple={false}
-                            name="command"
-                            formControl={scriptFormMethods}
-                            label="What alerting script should run"
-                            options={alertList.map((cmd) => ({
-                              value: cmd.value,
-                              label: cmd.label,
-                            }))}
-                          />
-                          <CippFormComponent
-                            type="autoComplete"
-                            multiple={false}
-                            name="recurrence"
-                            formControl={scriptFormMethods}
-                            label="When should the alert run"
-                            options={recurrenceOptions.map((opt) => ({
-                              value: opt.value,
-                              label: opt.name,
-                            }))}
-                          />
-                          <CippFormComponent
-                            type="switch"
-                            name="webhook"
-                            formControl={scriptFormMethods}
-                            label="Webhook"
-                          />
-                          <CippFormComponent
-                            type="switch"
-                            name="email"
-                            formControl={scriptFormMethods}
-                            label="Email"
-                          />
-                          <CippFormComponent
-                            type="switch"
-                            name="psa"
-                            formControl={scriptFormMethods}
-                            label="PSA"
-                          />
+                          <Grid spacing={2} container>
+                            <Grid item xs={12} md={6}>
+                              <CippFormComponent
+                                type="autoComplete"
+                                multiple={false}
+                                name="command"
+                                formControl={formControl}
+                                label="What alerting script should run"
+                                options={alertList.map((cmd) => ({
+                                  value: cmd,
+                                  label: cmd.label,
+                                }))}
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                              <CippFormComponent
+                                type="autoComplete"
+                                multiple={false}
+                                name="recurrence"
+                                formControl={formControl}
+                                label="When should the alert run"
+                                options={recurrenceOptions} // Use the state-managed recurrenceOptions here
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={12}>
+                              <CippFormComponent
+                                type="autoComplete"
+                                name="postExecution"
+                                label="Alert via"
+                                formControl={formControl}
+                                multiple
+                                options={[
+                                  { label: "Webhook", value: "Webhook" },
+                                  { label: "Email", value: "Email" },
+                                  { label: "PSA", value: "PSA" },
+                                ]}
+                              />
+                            </Grid>
+                          </Grid>
                         </CippButtonCard>
                       </Grid>
                     </Grid>

@@ -72,6 +72,7 @@ export const CippFormComponent = (props) => {
         <>
           <div>
             <TextField
+              variant="filled"
               fullWidth
               {...other}
               {...formControl.register(convertedName, { ...validators })}
@@ -91,6 +92,7 @@ export const CippFormComponent = (props) => {
           <div>
             <TextField
               type="password"
+              variant="filled"
               fullWidth
               {...other}
               {...formControl.register(convertedName, { ...validators })}
@@ -110,6 +112,7 @@ export const CippFormComponent = (props) => {
           <div>
             <TextField
               type="number"
+              variant="filled"
               {...other}
               {...formControl.register(convertedName, { ...validators })}
               label={label}
@@ -205,6 +208,7 @@ export const CippFormComponent = (props) => {
               render={({ field }) => (
                 <CippAutoComplete
                   {...other}
+                  variant="filled"
                   defaultValue={field.value}
                   label={label}
                   onChange={(value) => field.onChange(value)}
@@ -287,6 +291,7 @@ export const CippFormComponent = (props) => {
                         fullWidth
                         error={!!errors[convertedName]}
                         helperText={errors[convertedName]?.message}
+                        variant="filled"
                       />
                     )}
                   />

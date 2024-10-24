@@ -4,6 +4,7 @@ import {
   radioClasses,
   switchClasses,
   tableCellClasses,
+  inputLabelClasses,
   tableRowClasses,
 } from "@mui/material";
 import { common } from "@mui/material/colors";
@@ -94,7 +95,18 @@ export const createComponents = ({ palette }) => {
     MuiFormLabel: {
       styleOverrides: {
         root: {
-          color: palette.text.primary,
+          color: palette.text.secondary,
+          [`&.${inputLabelClasses.shrink}`]: {
+            backgroundColor:
+              palette.mode === "dark" ? palette.background.paper : palette.background.default,
+            padding: "0 8px", // Make the label background a bit wider
+            transform: "translate(12px, -6px) scale(0.75)", // Label moves up when input is focused or filled
+          },
+          [`&.Mui-focused`]: {
+            backgroundColor: palette.primary.main, // Set the background to primary color when selected
+            color: palette.primary.contrastText, // Change the text color to contrast with the background
+            padding: "0 8px", // Keep the padding to ensure background width
+          },
         },
       },
     },
