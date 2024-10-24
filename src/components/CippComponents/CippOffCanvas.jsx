@@ -13,6 +13,7 @@ export const CippOffCanvas = (props) => {
     onClose,
     isFetching,
     children,
+    size = "sm",
   } = props;
 
   const extendedInfo = extendedInfoFields.map((field) => {
@@ -22,11 +23,27 @@ export const CippOffCanvas = (props) => {
     };
   });
 
+  var drawerWidth = 400;
+  switch (size) {
+    case "sm":
+      drawerWidth = 400;
+      break;
+    case "md":
+      drawerWidth = 600;
+      break;
+    case "lg":
+      drawerWidth = 800;
+      break;
+    case "xl":
+      drawerWidth = 1000;
+      break;
+  }
+
   return (
     <>
       <Drawer
         PaperProps={{
-          sx: { width: 400 },
+          sx: { width: drawerWidth },
         }}
         ModalProps={{
           keepMounted: false,
