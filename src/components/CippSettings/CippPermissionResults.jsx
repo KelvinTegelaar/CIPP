@@ -5,6 +5,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useState } from "react";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
+import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 
 export const CippPermissionResults = (props) => {
   const { executeCheck } = props;
@@ -106,6 +107,7 @@ export const CippPermissionResults = (props) => {
             </Grid>
           </Grid>
           <CippOffCanvas
+            size="lg"
             title="Permission Details"
             visible={offcanvasVisible}
             onClose={() => {
@@ -133,17 +135,10 @@ export const CippPermissionResults = (props) => {
 
             {results?.Results?.MissingPermissions.length > 0 && (
               <>
-                <CippPropertyListCard
+                <CippDataTable
                   title="Missing Permissions"
-                  copyItems={true}
-                  propertyItems={results?.Results?.MissingPermissions.map((permission) => {
-                    return {
-                      value: permission,
-                      label: "Microsoft Graph",
-                    };
-                  })}
-                  showDivider={false}
-                  cardSx={{ p: 0, m: 0 }}
+                  data={results?.Results?.MissingPermissions}
+                  simpleColumns={["Application", "Type", "Permission"]}
                 />
               </>
             )}
