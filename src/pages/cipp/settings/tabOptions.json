@@ -4,6 +4,10 @@
     "path": "/cipp/settings"
   },
   {
+    "label": "Permissions",
+    "path": "/cipp/settings/permissions"
+  },
+  {
     "label": "Tenants",
     "path": "/cipp/settings/tenants"
   },

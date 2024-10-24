@@ -1,14 +1,32 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Licence Report";
+  const pageTitle = "Licenses Report";
+  const apiUrl = "/api/ListLicenses";
+  
+  const actions = []; // No actions specified, setting to empty array
+
+  const offCanvas = null; // No off-canvas details provided
+
+  const simpleColumns = [
+    "Tenant",
+    "License",
+    "CountUsed",
+    "CountAvailable",
+    "TotalLicenses",
+    "TermInfo",
+  ];
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the licence report section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl={apiUrl}
+      apiDataKey="Results"
+      actions={actions}
+      offCanvas={offCanvas}
+      simpleColumns={simpleColumns}
+    />
   );
 };
 
