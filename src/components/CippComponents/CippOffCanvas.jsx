@@ -5,6 +5,7 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippOffCanvas = (props) => {
   const {
+    title = "Extended Info",
     visible,
     extendedInfoFields = [],
     extendedData,
@@ -44,7 +45,7 @@ export const CippOffCanvas = (props) => {
                 <CippPropertyListCard
                   isFetching={isFetching}
                   align="vertical"
-                  title="Extended Info"
+                  title={title}
                   propertyItems={extendedInfo}
                   copyItems={true}
                   actionItems={actions}
