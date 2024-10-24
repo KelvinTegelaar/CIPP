@@ -41,7 +41,7 @@ export const CippOffCanvas = (props) => {
         >
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              {extendedInfo && (
+              {extendedInfo.length > 0 && (
                 <CippPropertyListCard
                   isFetching={isFetching}
                   align="vertical"

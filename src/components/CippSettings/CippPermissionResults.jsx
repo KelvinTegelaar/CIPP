@@ -94,7 +94,7 @@ export const CippPermissionResults = (props) => {
                 onClick={() => {
                   setOffcanvasVisible(true);
                 }}
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 size="small"
               >
@@ -106,12 +106,12 @@ export const CippPermissionResults = (props) => {
             </Grid>
           </Grid>
           <CippOffCanvas
-            
             title="Permission Details"
             visible={offcanvasVisible}
             onClose={() => {
               setOffcanvasVisible(false);
             }}
+            extendedInfo={[]}
           >
             {results?.Results?.Links.length > 0 && (
               <CippPropertyListCard
