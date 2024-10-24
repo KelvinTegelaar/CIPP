@@ -74,6 +74,9 @@ export const CippFormComponent = (props) => {
             <TextField
               variant="filled"
               fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
               {...other}
               {...formControl.register(convertedName, { ...validators })}
               label={label}
