@@ -41,6 +41,7 @@ export const CippApiDialog = (props) => {
 
   const actionGetRequest = ApiGetCall({
     ...getRequestInfo,
+    relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
     },

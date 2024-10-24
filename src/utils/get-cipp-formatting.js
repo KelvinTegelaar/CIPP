@@ -36,8 +36,29 @@ export const getCippFormatting = (data, cellName, type) => {
     return isText ? <ReactTimeAgo date={date} /> : <ReactTimeAgo date={date} />;
   }
 
-  //domainAnalyser layouts
+  if (cellName === "RepeatsEvery") {
+    //convert 1d to "Every 1 day", 1w to "Every 1 week" etc.
+    const match = data.match(/(\d+)([a-zA-Z]+)/);
+    if (match) {
+      const value = match[1];
+      const unit = match[2];
+      const unitText =
+        unit === "d"
+          ? "day"
+          : unit === "h"
+          ? "hour"
+          : unit === "w"
+          ? "week"
+          : unit === "m"
+          ? "minutes"
+          : unit === "y"
+          ? "year"
+          : unit;
+      return isText ? `Every ${value} ${unitText}` : `Every ${value} ${unitText}`;
+    }
+  }
   if (cellName === "ReportInterval") {
+    //domainAnalyser layouts
     //device by 86400 to get days, then return "days"
     const days = data / 86400;
     return isText ? `${days} days` : `${days} days`;

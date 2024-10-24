@@ -14,6 +14,7 @@ import { Controller, useFormState } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
 import { Scrollbar } from "../scrollbar";
 import CSVReader from "../CSVReader";
+import get from "lodash/get";
 
 // Helper function to convert bracket notation to dot notation
 const convertBracketsToDots = (name) => {
@@ -83,9 +84,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {convertedName.includes(".")
-              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
-              : errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
@@ -103,9 +102,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {convertedName.includes(".")
-              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
-              : errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
@@ -122,9 +119,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {convertedName.includes(".")
-              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
-              : errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
@@ -148,9 +143,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {convertedName.includes(".")
-              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
-              : errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
@@ -166,9 +159,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {convertedName.includes(".")
-              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
-              : errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
@@ -194,9 +185,7 @@ export const CippFormComponent = (props) => {
             </RadioGroup>
           </FormControl>
           <Typography variant="subtitle3" color="error">
-            {convertedName.includes(".")
-              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
-              : errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
@@ -208,6 +197,7 @@ export const CippFormComponent = (props) => {
             <Controller
               name={convertedName}
               control={formControl.control}
+              rules={validators}
               render={({ field }) => (
                 <CippAutoComplete
                   {...other}
@@ -220,9 +210,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {convertedName.includes(".")
-              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
-              : errors[convertedName]?.message}
+            {get(errors, convertedName, {}).message}
           </Typography>
         </>
       );
@@ -253,7 +241,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
@@ -293,7 +281,7 @@ export const CippFormComponent = (props) => {
                         {...other}
                         fullWidth
                         error={!!errors[convertedName]}
-                        helperText={errors[convertedName]?.message}
+                        helperText={get(errors, convertedName, {})?.message}
                         variant="filled"
                       />
                     )}
@@ -303,7 +291,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {errors[convertedName]?.message}
+            {get(errors, convertedName, {})?.message}
           </Typography>
         </>
       );
