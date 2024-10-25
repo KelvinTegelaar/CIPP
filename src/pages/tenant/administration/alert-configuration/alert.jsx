@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
   CardContent,
   SvgIcon,
   IconButton,
+  Skeleton,
 } from "@mui/material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
@@ -24,7 +25,7 @@ import auditLogSchema from "/src/data/AuditLogSchema.json";
 import DeleteIcon from "@mui/icons-material/Delete"; // Icon for removing added inputs
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // Dashboard layout
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
-import { ApiPostCall } from "../../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 
@@ -32,10 +33,19 @@ const AlertWizard = () => {
   const apiRequest = ApiPostCall({
     relatedQueryKeys: "ListAlertsQueue",
   });
-
   const router = useRouter();
-  const [alertType, setAlertType] = useState("none");
-  const [addedEvent, setAddedEvent] = useState([{ id: 1 }]); // Track added inputs
+  const [editAlert, setAlertEdit] = useState(false);
+  useEffect(() => {
+    if (router.query.id) {
+      setAlertEdit(true);
+    }
+  }, [router]);
+
+  const existingAlert = ApiGetCall({
+    url: "/api/ListAlertsQueue",
+    relatedQueryKeys: "ListAlertsQueue",
+    waiting: !editAlert,
+  });
   const [recurrenceOptions, setRecurrenceOptions] = useState([
     { value: "30m", label: "Every 30 minutes" },
     { value: "1h", label: "Every hour" },
@@ -45,6 +55,12 @@ const AlertWizard = () => {
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ]);
+
+  const postExecutionOptions = [
+    { label: "Webhook", value: "Webhook" },
+    { label: "Email", value: "Email" },
+    { label: "PSA", value: "PSA" },
+  ];
   const actionstoTake = [
     //{ value: 'cippcommand', label: 'Execute a CIPP Command' },
     { value: "becremediate", label: "Execute a BEC Remediate" },
@@ -54,6 +70,62 @@ const AlertWizard = () => {
     { value: "generatePSA", label: "Generate a PSA ticket" },
     { value: "generateWebhook", label: "Generate a webhook" },
   ];
+
+  const logbookOptions = [
+    { value: "Audit.AzureActiveDirectory", label: "Azure AD" },
+    { value: "Audit.Exchange", label: "Exchange" },
+  ];
+
+  useEffect(() => {
+    if (existingAlert.isSuccess) {
+      const alert = existingAlert.data.find((alert) => alert.RowKey === router.query.id);
+      if (alert?.LogType === "Scripted") {
+        setAlertType("script");
+        formControl.setValue("tenantFilter", {
+          value: alert.RawAlert.Tenant,
+          label: alert.RawAlert.Tenant,
+        });
+        const usedCommand = alertList.find(
+          (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
+        );
+        formControl.setValue("command", { value: usedCommand, label: usedCommand.label });
+        formControl.setValue(
+          "recurrence",
+          recurrenceOptions.find((opt) => opt.value === alert.RawAlert.Recurrence)
+        );
+        const postExecutionValue = postExecutionOptions.filter((opt) =>
+          alert.RawAlert.PostExecution.split(",").includes(opt.value)
+        );
+        formControl.setValue("postExecution", postExecutionValue);
+      }
+      if (alert?.PartitionKey === "Webhookv2") {
+        console.log("alert");
+        setAlertType("audit");
+        console.log(alert.RawAlert);
+        const foundLogbook = logbookOptions.find(
+          (logbook) => logbook.value === alert.RawAlert.type
+        );
+        //make sure that for every condition, we spawn the field using setAddedEvent
+        setAddedEvent(
+          alert.RawAlert.Conditions.map((_, index) => ({
+            id: index,
+          }))
+        );
+
+        formControl.reset({
+          RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
+          tenantFilter: alert.RawAlert.Tenants,
+          Actions: alert.RawAlert.Actions,
+          conditions: alert.RawAlert.Conditions,
+          logbook: foundLogbook,
+        });
+      }
+    }
+  }, [existingAlert.isSuccess, router]);
+
+  const [alertType, setAlertType] = useState("none");
+  const [addedEvent, setAddedEvent] = useState([{ id: 1 }]); // Track added inputs
+
   const formControl = useForm({ mode: "onChange" });
   const selectedPreset = useWatch({ control: formControl.control, name: "preset" }); // Watch the preset
   const commandValue = useWatch({ control: formControl.control, name: "command" });
@@ -98,7 +170,11 @@ const AlertWizard = () => {
           // Ensure form structure is in place for 0th condition
           formControl.setValue(`conditions.${index}.Property`, condition.Property || "");
           formControl.setValue(`conditions.${index}.Operator`, condition.Operator || "");
-          formControl.setValue(`conditions.${index}.Input`, condition.Input || "");
+          //if Condition.Property.value is "String" then set the input value, otherwise
+          formControl.setValue(
+            `conditions.${index}.Input`,
+            condition.Property.value === "String" ? condition.Input.value : condition.Input
+          );
         });
 
         // Set the logbook or other fields based on the template
@@ -126,12 +202,13 @@ const AlertWizard = () => {
   };
 
   const handleAuditSubmit = (values) => {
-    console.log(values);
+    values.conditions = values.conditions.filter((condition) => condition.Property);
     apiRequest.mutate({ url: "/api/AddAlert", data: values });
   };
 
   const handleScriptSubmit = (values) => {
     const postObject = {
+      RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
       tenantFilter: values.tenantFilter?.value,
       Name: `${values.tenantFilter.value}: ${values.command.label}`,
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
@@ -149,9 +226,9 @@ const AlertWizard = () => {
 
   const handleRemoveCondition = (id) => {
     //remove the condition from the form
-    formControl.unregister(`conditions.${id}.Property`);
-    formControl.unregister(`conditions.${id}.Operator`);
-    formControl.unregister(`conditions.${id}.Input`);
+    const currentConditions = formControl.getValues("conditions") || [];
+    const updatedConditions = currentConditions.filter((_, index) => index !== id);
+    formControl.setValue("conditions", updatedConditions);
     setAddedEvent(addedEvent.filter((event) => event.id !== id));
   };
 
@@ -160,7 +237,6 @@ const AlertWizard = () => {
     <Box sx={{ flexGrow: 1, py: 4 }}>
       <Container maxWidth={"xl"}>
         <Stack spacing={4}>
-          {/* Back Button */}
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Button
               color="inherit"
@@ -174,13 +250,11 @@ const AlertWizard = () => {
               Back to Alerts
             </Button>
           </Stack>
-
-          {/* Header */}
+          {existingAlert.isLoading && <Skeleton />}
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-            <Typography variant="h4">Add Alert</Typography>
+            <Typography variant="h4">{editAlert ? "Edit" : "Add"} Alert</Typography>
           </Stack>
 
-          {/* Selection Cards */}
           <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
               <Card>
@@ -243,9 +317,6 @@ const AlertWizard = () => {
                                 multiple={false}
                                 name="preset"
                                 formControl={formControl}
-                                validators={{
-                                  required: { value: true, message: "This field is required" },
-                                }}
                                 label="Select an alert preset, or customize your own"
                                 options={auditLogTemplates.map((template) => ({
                                   value: template.value,
@@ -264,10 +335,7 @@ const AlertWizard = () => {
                                   required: { value: true, message: "This field is required" },
                                 }}
                                 label="Select the log source"
-                                options={[
-                                  { value: "Audit.AzureActiveDirectory", label: "Azure AD" },
-                                  { value: "Audit.Exchange", label: "Exchange" },
-                                ]}
+                                options={logbookOptions}
                               />
                             </Grid>
                           </Grid>
@@ -331,8 +399,8 @@ const AlertWizard = () => {
                                 >
                                   <CippFormComponent
                                     type="autoComplete"
-                                    multiple={propertyWatcher?.[event.id]?.Property?.multi}
-                                    name={`conditions.${event.id}.Operator`}
+                                    multiple={false}
+                                    name={`conditions.${event.id}.Input`}
                                     formControl={formControl}
                                     label="Input"
                                     options={
@@ -448,11 +516,7 @@ const AlertWizard = () => {
                                 }}
                                 formControl={formControl}
                                 multiple
-                                options={[
-                                  { label: "Webhook", value: "Webhook" },
-                                  { label: "Email", value: "Email" },
-                                  { label: "PSA", value: "PSA" },
-                                ]}
+                                options={postExecutionOptions}
                               />
                             </Grid>
                             <Grid item xs={12} md={12}>

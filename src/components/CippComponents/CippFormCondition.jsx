@@ -19,7 +19,6 @@ export const CippFormCondition = (props) => {
   if (compareValue?.value !== undefined) {
     compareValue = compareValue.value;
   }
-
   switch (compareType) {
     case "is":
       // Deep comparison for objects and arrays

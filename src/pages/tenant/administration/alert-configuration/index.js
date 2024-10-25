@@ -10,14 +10,14 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Alert",
-      link: "/tenant/standards/template?id=[GUID]",
+      link: "/tenant/administration/alert-configuration/alert?id=[RowKey]",
       icon: <EyeIcon />,
       color: "success",
       target: "_self",
     },
     {
       label: "Clone & Edit Alert",
-      link: "/tenant/standards/template?id=[GUID]&clone=true",
+      link: "/tenant/administration/alert-configuration/alert?id=[RowKey]&clone=true",
       icon: <CopyAll />,
       color: "success",
       target: "_self",

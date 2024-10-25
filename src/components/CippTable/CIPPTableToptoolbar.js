@@ -54,13 +54,13 @@ export const CIPPTableToptoolbar = ({
               <span>
                 <IconButton
                   className="MuiIconButton"
-                  onClick={() =>
-                    getRequestData?.waiting
-                      ? getRequestData.refetch()
-                      : typeof refreshFunction === "object"
-                      ? refreshFunction.refetch()
-                      : null
-                  }
+                  onClick={() => {
+                    if (typeof refreshFunction === "object") {
+                      refreshFunction.refetch();
+                    } else if (getRequestData) {
+                      getRequestData.refetch();
+                    }
+                  }}
                   disabled={
                     getRequestData?.isLoading ||
                     getRequestData?.isFetching ||
