@@ -1,10 +1,11 @@
 import { Box, Button, Chip, Stack, SvgIcon, Typography } from "@mui/material";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { useState, useEffect } from "react";
+import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { useState } from "react";
 import { CippPermissionResults } from "./CippPermissionResults";
-import { SportsScore } from "@mui/icons-material";
+import { Api, SportsScore, Sync } from "@mui/icons-material";
 import ReactTimeAgo from "react-time-ago";
+import { CippDataTable } from "../CippTable/CippDataTable";
 
 const CippPermissionCheck = (props) => {
   const { type } = props;
@@ -13,8 +14,13 @@ const CippPermissionCheck = (props) => {
   const executeCheck = ApiGetCall({
     url: "/api/ExecAccessChecks",
     data: { Type: type, SkipCache: skipCache },
-    waiting: type !== "Tenants",
+    waiting: true,
     queryKey: `ExecAccessChecks-${type}`,
+  });
+
+  const tenantCheck = ApiPostCall({
+    dataFromUrl: true,
+    relatedQueryKeys: ["ExecAccessChecks-Tenants"],
   });
 
   const handlePermissionCheck = () => {
@@ -87,7 +93,38 @@ const CippPermissionCheck = (props) => {
           <Typography variant="body2">Click the button below to start a {type} check.</Typography>
         )}
         {executeCheck.isSuccess && (
-          <>{type === "Permissions" && <CippPermissionResults executeCheck={executeCheck} />}</>
+          <>
+            {type === "Permissions" && (
+              <CippPermissionResults executeCheck={executeCheck} setSkipCache={setSkipCache} />
+            )}
+            {type === "Tenants" && (
+              <CippDataTable
+                noCard={true}
+                data={executeCheck.data?.Results}
+                isFetching={executeCheck.isFetching}
+                refreshFunction={executeCheck}
+                actions={[
+                  {
+                    label: "Check Tenant",
+                    type: "POST",
+                    url: "/api/ExecAccessChecks?Type=Tenants",
+                    data: { TenantId: "TenantId" },
+                    icon: <Sync />,
+                    noConfirm: true,
+                    relatedQueryKeys: ["ExecAccessChecks-Tenants"],
+                  },
+                ]}
+                simpleColumns={[
+                  "TenantName",
+                  "LastRun",
+                  "GraphStatus",
+                  "ExchangeStatus",
+                  "MissingRoles",
+                  "GDAPRoles",
+                ]}
+              />
+            )}
+          </>
         )}
       </CippButtonCard>
     </>
