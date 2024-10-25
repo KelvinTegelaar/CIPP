@@ -18,11 +18,6 @@ const CippPermissionCheck = (props) => {
     queryKey: `ExecAccessChecks-${type}`,
   });
 
-  const tenantCheck = ApiPostCall({
-    dataFromUrl: true,
-    relatedQueryKeys: ["ExecAccessChecks-Tenants"],
-  });
-
   const handlePermissionCheck = () => {
     setSkipCache(true);
     executeCheck.refetch();
@@ -122,6 +117,9 @@ const CippPermissionCheck = (props) => {
                   "MissingRoles",
                   "GDAPRoles",
                 ]}
+                offCanvas={{
+                  extendedInfoFields: ["TenantName", "LastRun", "GraphTest", "ExchangeTest"],
+                }}
               />
             )}
           </>
