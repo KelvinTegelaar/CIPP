@@ -54,7 +54,7 @@ export const CippPermissionResults = (props) => {
             sx={{ mt: 2 }}
             display="flex"
             alignItems={"center"}
-            alignContent={"center"}
+            justifyContent={"space-between"}
           >
             <Grid item xs={12} md={8}>
               <List>
@@ -90,7 +90,7 @@ export const CippPermissionResults = (props) => {
                 )}
               </List>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item>
               <Button
                 onClick={() => {
                   setOffcanvasVisible(true);
