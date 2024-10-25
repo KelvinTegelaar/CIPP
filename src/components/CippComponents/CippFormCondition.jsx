@@ -12,7 +12,6 @@ export const CippFormCondition = (props) => {
     return null;
   }
   let watcher = useWatch({ control: formControl.control, name: field });
-
   if (watcher?.value !== undefined) {
     watcher = watcher.value;
   }

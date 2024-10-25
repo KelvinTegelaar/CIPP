@@ -25,6 +25,8 @@ import DeleteIcon from "@mui/icons-material/Delete"; // Icon for removing added 
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // Dashboard layout
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { ApiPostCall } from "../../../../api/ApiCall";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 
 const AlertWizard = () => {
   const apiRequest = ApiPostCall({
@@ -43,11 +45,20 @@ const AlertWizard = () => {
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ]);
-
+  const actionstoTake = [
+    //{ value: 'cippcommand', label: 'Execute a CIPP Command' },
+    { value: "becremediate", label: "Execute a BEC Remediate" },
+    { value: "disableuser", label: "Disable the user in the log entry" },
+    // { value: 'generatelog', label: 'Generate a log entry' },
+    { value: "generatemail", label: "Generate an email" },
+    { value: "generatePSA", label: "Generate a PSA ticket" },
+    { value: "generateWebhook", label: "Generate a webhook" },
+  ];
   const formControl = useForm({ mode: "onChange" });
   const selectedPreset = useWatch({ control: formControl.control, name: "preset" }); // Watch the preset
   const commandValue = useWatch({ control: formControl.control, name: "command" });
   const logbookWatcher = useWatch({ control: formControl.control, name: "logbook" });
+  const propertyWatcher = useWatch({ control: formControl.control, name: "conditions" });
 
   useEffect(() => {
     formControl.reset();
@@ -87,18 +98,17 @@ const AlertWizard = () => {
           // Ensure form structure is in place for 0th condition
           formControl.setValue(`conditions.${index}.Property`, condition.Property || "");
           formControl.setValue(`conditions.${index}.Operator`, condition.Operator || "");
-          formControl.setValue(`conditions.${index}.Input`, condition.Input.value || "");
+          formControl.setValue(`conditions.${index}.Input`, condition.Input || "");
         });
 
         // Set the logbook or other fields based on the template
         if (selectedTemplate.template.logbook) {
           formControl.setValue("logbook", selectedTemplate.template.logbook);
         }
-        console.log("conditions", conditions);
         // Ensure the addedEvent array reflects the correct number of conditions
         setAddedEvent(
           conditions.map((_, index) => ({
-            id: index + 1,
+            id: index,
           }))
         );
       }
@@ -106,7 +116,6 @@ const AlertWizard = () => {
   }, [selectedPreset]);
 
   const getAuditLogSchema = (logbook) => {
-    console.log("logbook", logbook);
     const common = auditLogSchema.Common;
     const log = auditLogSchema[logbook];
     const combined = { ...common, ...log };
@@ -117,7 +126,8 @@ const AlertWizard = () => {
   };
 
   const handleAuditSubmit = (values) => {
-    console.log("Audit Alert Form Values:", values);
+    console.log(values);
+    apiRequest.mutate({ url: "/api/AddAlert", data: values });
   };
 
   const handleScriptSubmit = (values) => {
@@ -138,11 +148,14 @@ const AlertWizard = () => {
   };
 
   const handleRemoveCondition = (id) => {
+    //remove the condition from the form
+    formControl.unregister(`conditions.${id}.Property`);
+    formControl.unregister(`conditions.${id}.Operator`);
+    formControl.unregister(`conditions.${id}.Input`);
     setAddedEvent(addedEvent.filter((event) => event.id !== id));
   };
 
   const { isValid } = useFormState({ control: formControl.control });
-  console.log("the form is valid:", isValid);
   return (
     <Box sx={{ flexGrow: 1, py: 4 }}>
       <Container maxWidth={"xl"}>
@@ -287,19 +300,53 @@ const AlertWizard = () => {
                                     { value: "eq", label: "Equals to" },
                                     { value: "ne", label: "Not Equals to" },
                                     { value: "like", label: "Like" },
+                                    { value: "notlike", label: "Not like" },
+                                    { value: "notmatch", label: "Does not match" },
                                     { value: "gt", label: "Greater than" },
+                                    { value: "lt", label: "Less than" },
+                                    { value: "in", label: "In" },
+                                    { value: "notIn", label: "Not In" },
                                   ]}
                                 />
                               </Grid>
                               <Grid item xs={3}>
-                                <CippFormComponent
-                                  type="textField"
-                                  name={`conditions.${event.id}.Input`}
+                                <CippFormCondition
+                                  field={`conditions.${event.id}.Property`}
                                   formControl={formControl}
-                                  label="Input"
-                                />
+                                  compareType="is"
+                                  compareValue={"String"}
+                                >
+                                  <CippFormComponent
+                                    type="textField"
+                                    name={`conditions.${event.id}.Input`}
+                                    formControl={formControl}
+                                    label="Input"
+                                  />
+                                </CippFormCondition>
+                                <CippFormCondition
+                                  field={`conditions.${event.id}.Property`}
+                                  formControl={formControl}
+                                  compareType="contains"
+                                  compareValue={"List:"}
+                                >
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    multiple={propertyWatcher?.[event.id]?.Property?.multi}
+                                    name={`conditions.${event.id}.Operator`}
+                                    formControl={formControl}
+                                    label="Input"
+                                    options={
+                                      auditLogSchema[propertyWatcher?.[event.id]?.Property?.value]
+                                    }
+                                  />
+                                </CippFormCondition>
                               </Grid>
                               <Grid item xs={1}>
+                                <IconButton color="primary" onClick={() => handleAddCondition()}>
+                                  <SvgIcon>
+                                    <PlusIcon />
+                                  </SvgIcon>
+                                </IconButton>
                                 <IconButton
                                   color="error"
                                   onClick={() => handleRemoveCondition(event.id)}
@@ -310,9 +357,22 @@ const AlertWizard = () => {
                             </Grid>
                           ))}
 
-                          <Button onClick={handleAddCondition} sx={{ mt: 2 }}>
-                            Add Condition
-                          </Button>
+                          <Grid item xs={12} sx={{ mt: 2 }}>
+                            <CippFormComponent
+                              type="autoComplete"
+                              name="Actions"
+                              label="Actions to take"
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
+                              formControl={formControl}
+                              multiple
+                              options={actionstoTake}
+                            />
+                          </Grid>
+                          <Grid item xs={12} md={12} sx={{ mt: 2 }}>
+                            <CippApiResults apiObject={apiRequest} />
+                          </Grid>
                         </CippButtonCard>
                       </Grid>
                     </Grid>
