@@ -1,15 +1,16 @@
 import { Button, Grid, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { CheckCircle, Description } from "@mui/icons-material";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
-import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useState } from "react";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { ApiPostCall } from "../../api/ApiCall";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 
 export const CippPermissionResults = (props) => {
-  const { executeCheck } = props;
+  const { executeCheck, setSkipCache } = props;
   const results = executeCheck.data;
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
 
@@ -17,15 +18,17 @@ export const CippPermissionResults = (props) => {
 
   const addMissingPermissions = ApiPostCall({
     urlFromData: true,
+    relatedQueryKeys: ["ExecAccessChecks-Permissions"],
   });
 
   const handleAddMissingPermissions = (data) => {
+    setSkipCache(true);
     addMissingPermissions.mutate({
-      url: '/api/ExecAccessChecks',
-      data: data,
+      url: "/api/ExecPermissionRepair",
+      data: {},
+      queryKey: "RepairPermissions",
     });
-  }
-
+  };
 
   var propertyItems = [];
   accessTokenHeaders.forEach((header) => {
@@ -85,13 +88,13 @@ export const CippPermissionResults = (props) => {
                   <ListItem key={index} sx={{ py: 0 }}>
                     <Typography variant="body2">
                       <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                        <CheckCircle />
+                        <XMarkIcon />
                       </SvgIcon>
                       {error}
                     </Typography>
                   </ListItem>
                 ))}
-                {results?.Results?.MissingPermissions && (
+                {results?.Results?.MissingPermissions.length > 0 && (
                   <ListItem sx={{ py: 0 }}>
                     <Typography variant="body2">
                       <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
@@ -148,7 +151,7 @@ export const CippPermissionResults = (props) => {
                 })}
               />
             )}
-
+            <CippApiResults apiObject={addMissingPermissions} />
             {results?.Results?.MissingPermissions.length > 0 && (
               <>
                 <CippDataTable
@@ -160,13 +163,14 @@ export const CippPermissionResults = (props) => {
                       variant="contained"
                       color="primary"
                       size="small"
+                      onClick={handleAddMissingPermissions}
                       startIcon={
                         <SvgIcon fontSize="sm">
-                          <PlusIcon />
+                          <WrenchIcon />
                         </SvgIcon>
                       }
                     >
-                      Add Missing
+                      Repair Permissions
                     </Button>
                   }
                   data={results?.Results?.MissingPermissions}
