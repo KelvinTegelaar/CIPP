@@ -106,7 +106,7 @@ const CippPermissionCheck = (props) => {
                     data: { TenantId: "TenantId" },
                     icon: <Sync />,
                     noConfirm: true,
-                    relatedQueryKeys: ["ExecAccessChecks-Tenants"],
+                    relatedQueryKeys: "ExecAccessChecks-Tenants",
                   },
                 ]}
                 simpleColumns={[
