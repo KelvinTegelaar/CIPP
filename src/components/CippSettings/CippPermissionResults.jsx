@@ -1,11 +1,12 @@
 import { Button, Grid, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { CheckCircle, Description } from "@mui/icons-material";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useState } from "react";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { ApiPostCall } from "../../api/ApiCall";
 
 export const CippPermissionResults = (props) => {
   const { executeCheck } = props;
@@ -13,6 +14,18 @@ export const CippPermissionResults = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
 
   const accessTokenHeaders = ["Name", "UserPrincipalName", "IPAddress"];
+
+  const addMissingPermissions = ApiPostCall({
+    urlFromData: true,
+  });
+
+  const handleAddMissingPermissions = (data) => {
+    addMissingPermissions.mutate({
+      url: '/api/ExecAccessChecks',
+      data: data,
+    });
+  }
+
 
   var propertyItems = [];
   accessTokenHeaders.forEach((header) => {
@@ -115,6 +128,9 @@ export const CippPermissionResults = (props) => {
             }}
             extendedInfo={[]}
           >
+            <Typography variant="h4" sx={{ mx: 3 }}>
+              Permission Details
+            </Typography>
             {results?.Results?.Links.length > 0 && (
               <CippPropertyListCard
                 title="Documentation"
@@ -137,8 +153,40 @@ export const CippPermissionResults = (props) => {
               <>
                 <CippDataTable
                   title="Missing Permissions"
+                  isFetching={executeCheck.isFetching}
+                  refreshFunction={executeCheck}
+                  cardButton={
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      startIcon={
+                        <SvgIcon fontSize="sm">
+                          <PlusIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Add Missing
+                    </Button>
+                  }
                   data={results?.Results?.MissingPermissions}
                   simpleColumns={["Application", "Type", "Permission"]}
+                />
+              </>
+            )}
+
+            {results?.Results?.AccessTokenDetails?.Scope.length > 0 && (
+              <>
+                <CippDataTable
+                  title="Current Delegated Scopes"
+                  isFetching={executeCheck.isFetching}
+                  refreshFunction={executeCheck}
+                  data={results?.Results?.AccessTokenDetails?.Scope.map((scope) => {
+                    return {
+                      Scope: scope,
+                    };
+                  })}
+                  simpleColumns={["Scope"]}
                 />
               </>
             )}
