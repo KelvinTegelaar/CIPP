@@ -6,13 +6,12 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  Switch,
   TextField,
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { useSettings } from "../../hooks/use-settings";
@@ -27,12 +26,20 @@ export const CippApiDialog = (props) => {
     url: "",
     waiting: false,
     queryKey: "",
-    relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
+    relatedQueryKeys: relatedQueryKeys
+      ? relatedQueryKeys
+      : api.relatedQueryKeys
+      ? api.relatedQueryKeys
+      : title,
   });
 
   const actionPostRequest = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
+    relatedQueryKeys: relatedQueryKeys
+      ? relatedQueryKeys
+      : api.relatedQueryKeys
+      ? api.relatedQueryKeys
+      : title,
     bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
@@ -41,7 +48,11 @@ export const CippApiDialog = (props) => {
 
   const actionGetRequest = ApiGetCall({
     ...getRequestInfo,
-    relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
+    relatedQueryKeys: relatedQueryKeys
+      ? relatedQueryKeys
+      : api.relatedQueryKeys
+      ? api.relatedQueryKeys
+      : title,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
     },
@@ -166,6 +177,12 @@ export const CippApiDialog = (props) => {
 
     return null;
   }
+  useEffect(() => {
+    if (api.noConfirm) {
+      formHook.handleSubmit(onSubmit)(); // Submits the form on mount
+      createDialog.handleClose(); // Closes the dialog after submitting
+    }
+  }, [api.noConfirm]); // Run effect only when api.noConfirm changes
 
   return (
     <Dialog fullWidth maxWidth="sm" onClose={createDialog.handleClose} open={createDialog.open}>

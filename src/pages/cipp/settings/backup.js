@@ -138,6 +138,7 @@ const Page = () => {
     {
       label: "Download Backup",
       icon: <CloudDownload />,
+      noConfirm: true,
       confirmText: "Do you want to download this backup?",
       customFunction: handleDownloadBackupAction,
     },
