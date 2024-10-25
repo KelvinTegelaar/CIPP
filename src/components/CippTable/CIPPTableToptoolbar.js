@@ -24,6 +24,7 @@ export const CIPPTableToptoolbar = ({
   title,
   actions,
   exportEnabled,
+  refreshFunction,
 }) => {
   const popover = usePopover();
   const createDialog = useDialog();
@@ -43,9 +44,9 @@ export const CIPPTableToptoolbar = ({
           <>
             <Tooltip
               title={
-                getRequestData.isFetchNextPageError
+                getRequestData?.isFetchNextPageError
                   ? "Could not retrieve all data. Click to try again."
-                  : getRequestData.isFetching
+                  : getRequestData?.isFetching
                   ? "Retrieving more data..."
                   : "Refresh data"
               }
@@ -53,20 +54,33 @@ export const CIPPTableToptoolbar = ({
               <span>
                 <IconButton
                   className="MuiIconButton"
-                  onClick={() => getRequestData.refetch()}
-                  disabled={getRequestData.isLoading || getRequestData.isFetching}
+                  onClick={() =>
+                    getRequestData?.waiting
+                      ? getRequestData.refetch()
+                      : typeof refreshFunction === "object"
+                      ? refreshFunction.refetch()
+                      : null
+                  }
+                  disabled={
+                    getRequestData?.isLoading ||
+                    getRequestData?.isFetching ||
+                    refreshFunction?.isFetching
+                  }
                 >
                   <SvgIcon
                     fontSize="small"
                     sx={{
-                      animation: getRequestData.isFetching ? "spin 1s linear infinite" : "none",
+                      animation:
+                        getRequestData?.isFetching || refreshFunction?.isFetching
+                          ? "spin 1s linear infinite"
+                          : "none",
                       "@keyframes spin": {
                         "0%": { transform: "rotate(0deg)" },
                         "100%": { transform: "rotate(360deg)" },
                       },
                     }}
                   >
-                    {getRequestData.isFetchNextPageError ? (
+                    {getRequestData?.isFetchNextPageError ? (
                       <ExclamationCircleIcon color="red" />
                     ) : (
                       <Sync />

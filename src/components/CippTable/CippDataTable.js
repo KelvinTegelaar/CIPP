@@ -47,6 +47,7 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
     noCard = false,
+    refreshFunction,
     incorrectDataMessage = "Data not in correct format",
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
@@ -228,6 +229,7 @@ export const CippDataTable = (props) => {
               title={title}
               actions={actions}
               exportEnabled={exportEnabled}
+              refreshFunction={refreshFunction}
             />
           )}
         </>
