@@ -107,7 +107,7 @@ const Page = () => {
           {
             type: "textField",
             name: "tenantFilter",
-            label: "Enter Default Domain Name or Tenant ID to refresh a specific tenant.",
+            label: "Default Domain Name or Tenant ID",
           },
         ]}
         api={{
