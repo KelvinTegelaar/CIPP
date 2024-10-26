@@ -1,4 +1,4 @@
-import { Box, Button, Stack, SvgIcon, Typography } from "@mui/material";
+import { Box, Button, Chip, Stack, SvgIcon, Typography } from "@mui/material";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useState } from "react";
@@ -95,7 +95,12 @@ const CippPermissionCheck = (props) => {
   return (
     <>
       <CippButtonCard
-        title={`${type} Check`}
+        title={
+          <Stack direction="row" justifyContent={"space-between"}>
+            <Box>{type} Check</Box>
+            {importReport?.[type] && <Chip size="small" label="Imported" variant="outlined" />}
+          </Stack>
+        }
         cardSx={{
           display: "flex",
           flexDirection: "column",
@@ -132,7 +137,7 @@ const CippPermissionCheck = (props) => {
                 {importReport?.[type]?.Results && (
                   <CippDataTable
                     noCard={true}
-                    data={importReport?.[type].Results}
+                    data={importReport[type].Results}
                     actions={[]}
                     simpleColumns={[
                       "TenantName",
