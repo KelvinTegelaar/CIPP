@@ -15,6 +15,7 @@ export function ApiGetCall({
   toast = false,
   onResult, // Add a callback to handle each result as it arrives
 }) {
+  const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const MAX_RETRIES = retry;
   const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404];
