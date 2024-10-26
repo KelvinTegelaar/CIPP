@@ -1,26 +1,83 @@
-import { Button, Grid, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
-import { CheckCircle, Description } from "@mui/icons-material";
+import { Grid, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
+import { CheckCircle, Warning } from "@mui/icons-material";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
-import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { useState } from "react";
-import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
-import { ApiPostCall } from "../../api/ApiCall";
-import { CippApiResults } from "../CippComponents/CippApiResults";
 
 export const CippGDAPResults = (props) => {
   const { executeCheck, setSkipCache, offcanvasVisible, setOffcanvasVisible } = props;
-  const results = executeCheck.data;
+  const results = executeCheck?.data;
+
+  const GdapIssueValue = ({ results, type, match }) => {
+    var issues = [];
+    if (type) issues = results?.Results?.GDAPIssues.filter((issue) => issue.Type === type)?.length;
+    if (match)
+      issues = results?.Results?.GDAPIssues.filter((issue) =>
+        new RegExp(match).test(issue.Issue)
+      )?.length;
+    return (
+      <>
+        <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
+          {type && <>{type === "Warning" ? <Warning /> : <XMarkIcon />}</>}
+          {match && <>{issues > 0 ? <Warning /> : <CheckCircle />}</>}
+        </SvgIcon>
+        {issues}
+      </>
+    );
+  };
+
+  const gdapTests = [
+    {
+      resultProperty: "Memberships",
+      matchProperty: "displayName",
+      match: "AdminAgents",
+      count: 1,
+      successMessage: "User is a member of the AdminAgents group",
+      failureMessage: "User is not a member of the AdminAgents group",
+    },
+    {
+      resultProperty: "Memberships",
+      matchProperty: "displayName",
+      match: "^M365 GDAP.+",
+      count: 12,
+      successMessage: "User is a member of the 12 CIPP Recommended GDAP groups",
+      failureMessage: "User is not a member of the 12 CIPP Recommended GDAP groups",
+    },
+    {
+      resultProperty: "GDAPIssues",
+      matchProperty: "Issue",
+      match: ".+Microsoft Led Transition.+$",
+      count: 0,
+      successMessage: "No Microsoft Led Transition relationships found",
+      failureMessage: "Microsoft Led Transition relationships found",
+    },
+    {
+      resultProperty: "GDAPIssues",
+      matchProperty: "Issue",
+      match: ".+global administrator.+$",
+      count: 0,
+      successMessage: "No Global Admin relationships found",
+      failureMessage: "Global Admin relationships found",
+    },
+  ];
 
   const propertyItems = [
     {
       label: "Warnings",
-      value: results?.Results?.GDAPIssues.find((issue) => issue.Type === "Warning")?.length,
+      value: <GdapIssueValue results={results} type="Warning" />,
     },
     {
       label: "Errors",
-      value: results?.Results?.GDAPIssues.find((issue) => issue.Type === "Error")?.length,
+      value: <GdapIssueValue results={results} type="Error" />,
+    },
+    {
+      label: "Microsoft Led Transition Relationships",
+      value: <GdapIssueValue results={results} match=".+Microsoft Led Transition.+" />,
+    },
+    {
+      label: "Global Admin Relationships",
+      value: <GdapIssueValue results={results} match=".+global administrator.+" />,
     },
   ];
 
@@ -28,9 +85,11 @@ export const CippGDAPResults = (props) => {
     <>
       {propertyItems.length > 0 && (
         <CippPropertyList
-          isFetching={executeCheck.isFetching}
+          direction="row"
+          isFetching={executeCheck?.isFetching}
           propertyItems={propertyItems}
           showDivider={false}
+          layout
         />
       )}
 
@@ -38,31 +97,35 @@ export const CippGDAPResults = (props) => {
         <Skeleton variant="rectangular" height={50} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
       ) : (
         <>
-          <Grid
-            container
-            spacing={2}
-            sx={{ mt: 2 }}
-            display="flex"
-            alignItems={"bottom"}
-            justifyContent={"space-between"}
-          >
-            <Grid item xs={12} md={8}>
-              <List>
+          <List>
+            {gdapTests.map((test) => {
+              var matchedResults = results?.Results?.[test.resultProperty]?.filter((item) =>
+                new RegExp(test.match).test(item[test.matchProperty])
+              );
+
+              var testResult = false;
+              if (test.count > 1) {
+                testResult = matchedResults.length >= test.count;
+              } else {
+                testResult = matchedResults.length === test.count;
+              }
+
+              return (
                 <ListItem sx={{ py: 0 }}>
                   <Typography variant="body2">
                     <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                      <CheckCircle />
+                      {testResult ? <CheckCircle /> : <XMarkIcon />}
                     </SvgIcon>
-                    Test
+                    {testResult ? test.successMessage : test.failureMessage}
                   </Typography>
                 </ListItem>
-              </List>
-            </Grid>
-            <Grid item></Grid>
-          </Grid>
+              );
+            })}
+          </List>
+
           <CippOffCanvas
-            size="lg"
-            title="Permission Details"
+            size="xl"
+            title="GDAP Details"
             visible={offcanvasVisible}
             onClose={() => {
               setOffcanvasVisible(false);
@@ -73,18 +136,58 @@ export const CippGDAPResults = (props) => {
               GDAP Details
             </Typography>
 
-            {results?.Results?.AccessTokenDetails?.Scope.length > 0 && (
+            {results?.Results?.GDAPIssues?.length > 0 && (
               <>
                 <CippDataTable
-                  title="Current Delegated Scopes"
+                  title="GDAP Issues"
                   isFetching={executeCheck.isFetching}
                   refreshFunction={executeCheck}
-                  data={results?.Results?.AccessTokenDetails?.Scope.map((scope) => {
-                    return {
-                      Scope: scope,
-                    };
-                  })}
-                  simpleColumns={["Scope"]}
+                  data={results?.Results?.GDAPIssues}
+                  simpleColumns={["Tenant", "Type", "Issue", "Link"]}
+                />
+              </>
+            )}
+
+            {results?.Results?.MissingGroups?.length > 0 && (
+              <>
+                <CippDataTable
+                  title="Missing Groups"
+                  isFetching={executeCheck.isFetching}
+                  refreshFunction={executeCheck}
+                  data={results?.Results?.MissingGroups}
+                  simpleColumns={["Name", "Type"]}
+                />
+              </>
+            )}
+
+            {results?.Results?.Memberships?.filter(
+              (membership) => membership["@odata.type"] === "#microsoft.graph.group"
+            ).length > 0 && (
+              <>
+                <CippDataTable
+                  title="Group Memberships"
+                  isFetching={executeCheck.isFetching}
+                  refreshFunction={executeCheck}
+                  data={results?.Results?.Memberships?.filter(
+                    (membership) => membership["@odata.type"] === "#microsoft.graph.group"
+                  )}
+                  simpleColumns={["displayName"]}
+                />
+              </>
+            )}
+
+            {results?.Results?.Memberships?.filter(
+              (membership) => membership["@odata.type"] === "#microsoft.graph.directoryRole"
+            ).length > 0 && (
+              <>
+                <CippDataTable
+                  title="Directory Roles"
+                  isFetching={executeCheck.isFetching}
+                  refreshFunction={executeCheck}
+                  data={results?.Results?.Memberships?.filter(
+                    (membership) => membership["@odata.type"] === "#microsoft.graph.directoryRole"
+                  )}
+                  simpleColumns={["displayName"]}
                 />
               </>
             )}

@@ -52,7 +52,7 @@ const CippPermissionCheck = (props) => {
                 </SvgIcon>
               }
               onClick={handlePermissionCheck}
-              disabled={executeCheck.isPending}
+              disabled={executeCheck.isPending || executeCheck.isFetching}
             >
               Refresh {type} Check
             </Button>
@@ -64,6 +64,7 @@ const CippPermissionCheck = (props) => {
                 variant="outlined"
                 color="primary"
                 size="small"
+                disabled={executeCheck.isPending || executeCheck.isFetching}
               >
                 <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
                   <Description />
