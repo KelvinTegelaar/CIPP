@@ -3,13 +3,20 @@ import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useState } from "react";
 import { CippPermissionResults } from "./CippPermissionResults";
+import { CippGDAPResults } from "./CippGDAPResults";
 import { Sync } from "@mui/icons-material";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
+import { Description } from "@mui/icons-material";
 
 const CippPermissionCheck = (props) => {
   const { type } = props;
   const [skipCache, setSkipCache] = useState(false);
+  const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+  var showDetails = true;
+  if (type === "Tenants") {
+    showDetails = false;
+  }
 
   const executeCheck = ApiGetCall({
     url: "/api/ExecAccessChecks",
@@ -35,17 +42,36 @@ const CippPermissionCheck = (props) => {
           justifyContent={"space-between"}
           width={"100%"}
         >
-          <Button
-            variant="contained"
-            size="small"
-            onClick={handlePermissionCheck}
-            disabled={executeCheck.isPending}
-          >
-            <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-              <Sync />
-            </SvgIcon>
-            Refresh {type} Check
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={
+                <SvgIcon fontSize="small">
+                  <Sync />
+                </SvgIcon>
+              }
+              onClick={handlePermissionCheck}
+              disabled={executeCheck.isPending}
+            >
+              Refresh {type} Check
+            </Button>
+            {showDetails && (
+              <Button
+                onClick={() => {
+                  setOffcanvasVisible(true);
+                }}
+                variant="outlined"
+                color="primary"
+                size="small"
+              >
+                <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
+                  <Description />
+                </SvgIcon>
+                Details
+              </Button>
+            )}
+          </Stack>
           <Box component={Typography} variant="caption">
             {executeCheck.isSuccess && (
               <>
@@ -77,7 +103,20 @@ const CippPermissionCheck = (props) => {
         {executeCheck.isSuccess && (
           <>
             {type === "Permissions" && (
-              <CippPermissionResults executeCheck={executeCheck} setSkipCache={setSkipCache} />
+              <CippPermissionResults
+                executeCheck={executeCheck}
+                setSkipCache={setSkipCache}
+                offcanvasVisible={offcanvasVisible}
+                setOffcanvasVisible={setOffcanvasVisible}
+              />
+            )}
+            {type === "GDAP" && (
+              <CippGDAPResults
+                executeCheck={executeCheck}
+                setSkipCache={setSkipCache}
+                offcanvasVisible={offcanvasVisible}
+                setOffcanvasVisible={setOffcanvasVisible}
+              />
             )}
             {type === "Tenants" && (
               <CippDataTable

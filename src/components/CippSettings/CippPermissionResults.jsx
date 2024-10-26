@@ -10,9 +10,8 @@ import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 
 export const CippPermissionResults = (props) => {
-  const { executeCheck, setSkipCache } = props;
+  const { executeCheck, setSkipCache, offcanvasVisible, setOffcanvasVisible } = props;
   const results = executeCheck.data;
-  const [offcanvasVisible, setOffcanvasVisible] = useState(false);
 
   const accessTokenHeaders = ["Name", "UserPrincipalName", "IPAddress"];
 
@@ -64,64 +63,39 @@ export const CippPermissionResults = (props) => {
         <Skeleton variant="rectangular" height={50} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
       ) : (
         <>
-          <Grid
-            container
-            spacing={2}
-            sx={{ mt: 2 }}
-            display="flex"
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Grid item xs={12} md={8}>
-              <List>
-                {results?.Results?.Messages.map((message, index) => (
-                  <ListItem key={index} sx={{ py: 0 }}>
-                    <Typography variant="body2">
-                      <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                        <CheckCircle />
-                      </SvgIcon>
-                      {message}
-                    </Typography>
-                  </ListItem>
-                ))}
-                {results?.Results?.ErrorMessages.map((error, index) => (
-                  <ListItem key={index} sx={{ py: 0 }}>
-                    <Typography variant="body2">
-                      <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                        <XMarkIcon />
-                      </SvgIcon>
-                      {error}
-                    </Typography>
-                  </ListItem>
-                ))}
-                {results?.Results?.MissingPermissions.length > 0 && (
-                  <ListItem sx={{ py: 0 }}>
-                    <Typography variant="body2">
-                      <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
-                        <XMarkIcon />
-                      </SvgIcon>
-                      There are new permissions to apply.
-                    </Typography>
-                  </ListItem>
-                )}
-              </List>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={() => {
-                  setOffcanvasVisible(true);
-                }}
-                variant="outlined"
-                color="primary"
-                size="small"
-              >
-                <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-                  <Description />
-                </SvgIcon>
-                Details
-              </Button>
-            </Grid>
-          </Grid>
+          <List>
+            {results?.Results?.Messages.map((message, index) => (
+              <ListItem key={index} sx={{ py: 0 }}>
+                <Typography variant="body2">
+                  <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
+                    <CheckCircle />
+                  </SvgIcon>
+                  {message}
+                </Typography>
+              </ListItem>
+            ))}
+            {results?.Results?.ErrorMessages.map((error, index) => (
+              <ListItem key={index} sx={{ py: 0 }}>
+                <Typography variant="body2">
+                  <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
+                    <XMarkIcon />
+                  </SvgIcon>
+                  {error}
+                </Typography>
+              </ListItem>
+            ))}
+            {results?.Results?.MissingPermissions.length > 0 && (
+              <ListItem sx={{ py: 0 }}>
+                <Typography variant="body2">
+                  <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
+                    <XMarkIcon />
+                  </SvgIcon>
+                  There are new permissions to apply.
+                </Typography>
+              </ListItem>
+            )}
+          </List>
+
           <CippOffCanvas
             size="lg"
             title="Permission Details"
