@@ -5,7 +5,8 @@ import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClip
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
 import CippDataTableButton from "../components/CippTable/CippDataTableButton";
 import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
-import ReactTimeAgo from "react-time-ago";
+
+import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
@@ -24,16 +25,7 @@ export const getCippFormatting = (data, cellName, type) => {
 
   const timeAgoArray = ["ExecutedTime", "ScheduledTime", "Timestamp", "DateTime", "LastRun"];
   if (timeAgoArray.includes(cellName)) {
-    // Convert data from Unix time to date. If conversion fails, return "No Data".
-    const date = typeof data === "number" ? new Date(data * 1000) : new Date(data);
-    if (isNaN(date.getTime())) {
-      return isText ? (
-        "No Data"
-      ) : (
-        <Chip variant="outlined" label="No Data" size="small" color="info" />
-      );
-    }
-    return isText ? <ReactTimeAgo date={date} /> : <ReactTimeAgo date={date} />;
+    return <CippTimeAgo data={data} type={type} />;
   }
 
   if (cellName === "RepeatsEvery") {
