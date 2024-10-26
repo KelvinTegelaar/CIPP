@@ -43,6 +43,7 @@ export const utilTableMode = (columnVisibility, mode, actions, simpleColumns, of
       enableFacetedValues: true,
       enableStickyHeader: true,
       selectAllMode: "all",
+      enableColumnResizing: true,
       enableColumnPinning: true,
       enableStickyHeader: true,
       muiPaginationProps: {
