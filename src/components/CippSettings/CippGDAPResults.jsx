@@ -6,8 +6,14 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 
 export const CippGDAPResults = (props) => {
-  const { executeCheck, setSkipCache, offcanvasVisible, setOffcanvasVisible } = props;
-  const results = executeCheck?.data;
+  const { executeCheck, offcanvasVisible, setOffcanvasVisible, importReport } = props;
+
+  var results = {};
+  if (importReport) {
+    results = importReport;
+  } else {
+    results = executeCheck?.data;
+  }
 
   const GdapIssueValue = ({ results, type, match }) => {
     var issues = [];

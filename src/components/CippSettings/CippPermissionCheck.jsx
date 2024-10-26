@@ -10,7 +10,7 @@ import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 import { Description } from "@mui/icons-material";
 
 const CippPermissionCheck = (props) => {
-  const { type } = props;
+  const { type, importReport = false } = props;
   const [skipCache, setSkipCache] = useState(false);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   var showDetails = true;
@@ -21,7 +21,7 @@ const CippPermissionCheck = (props) => {
   const executeCheck = ApiGetCall({
     url: "/api/ExecAccessChecks",
     data: { Type: type, SkipCache: skipCache },
-    waiting: true,
+    waiting: importReport ? false : true,
     queryKey: `ExecAccessChecks-${type}`,
   });
 
@@ -52,7 +52,7 @@ const CippPermissionCheck = (props) => {
                 </SvgIcon>
               }
               onClick={handlePermissionCheck}
-              disabled={executeCheck.isPending || executeCheck.isFetching}
+              disabled={executeCheck.isPending || executeCheck.isFetching || importReport}
             >
               Refresh {type} Check
             </Button>
@@ -76,7 +76,14 @@ const CippPermissionCheck = (props) => {
           <Box component={Typography} variant="caption">
             {executeCheck.isSuccess && (
               <>
-                Last run <CippTimeAgo data={executeCheck.data?.Metadata?.LastRun} />
+                Last run{" "}
+                <CippTimeAgo
+                  data={
+                    importReport?.[type]
+                      ? importReport?.[type]?.Metadata?.LastRun
+                      : executeCheck.data?.Metadata?.LastRun
+                  }
+                />
               </>
             )}
           </Box>
@@ -106,6 +113,7 @@ const CippPermissionCheck = (props) => {
             {type === "Permissions" && (
               <CippPermissionResults
                 executeCheck={executeCheck}
+                importReport={importReport?.[type]}
                 setSkipCache={setSkipCache}
                 offcanvasVisible={offcanvasVisible}
                 setOffcanvasVisible={setOffcanvasVisible}
@@ -114,50 +122,79 @@ const CippPermissionCheck = (props) => {
             {type === "GDAP" && (
               <CippGDAPResults
                 executeCheck={executeCheck}
-                setSkipCache={setSkipCache}
+                importReport={importReport?.[type]}
                 offcanvasVisible={offcanvasVisible}
                 setOffcanvasVisible={setOffcanvasVisible}
               />
             )}
             {type === "Tenants" && (
-              <CippDataTable
-                noCard={true}
-                api={{
-                  url: "/api/ExecAccessChecks",
-                  data: { Type: "Tenants" },
-                  dataKey: "Results",
-                  queryKey: "ExecAccessChecks-Tenants",
-                }}
-                actions={[
-                  {
-                    label: "Check Tenant",
-                    type: "POST",
-                    url: "/api/ExecAccessChecks?Type=Tenants",
-                    data: { TenantId: "TenantId" },
-                    icon: <Sync />,
-                    noConfirm: true,
-                    relatedQueryKeys: "ExecAccessChecks-Tenants",
-                  },
-                ]}
-                simpleColumns={[
-                  "TenantName",
-                  "LastRun",
-                  "GraphStatus",
-                  "ExchangeStatus",
-                  "MissingRoles",
-                  "GDAPRoles",
-                ]}
-                offCanvas={{
-                  extendedInfoFields: [
-                    "TenantName",
-                    "TenantId",
-                    "DefaultDomainName",
-                    "LastRun",
-                    "GraphTest",
-                    "ExchangeTest",
-                  ],
-                }}
-              />
+              <>
+                {importReport?.[type]?.Results && (
+                  <CippDataTable
+                    noCard={true}
+                    data={importReport?.[type].Results}
+                    actions={[]}
+                    simpleColumns={[
+                      "TenantName",
+                      "LastRun",
+                      "GraphStatus",
+                      "ExchangeStatus",
+                      "MissingRoles",
+                      "GDAPRoles",
+                    ]}
+                    offCanvas={{
+                      extendedInfoFields: [
+                        "TenantName",
+                        "TenantId",
+                        "DefaultDomainName",
+                        "LastRun",
+                        "GraphTest",
+                        "ExchangeTest",
+                      ],
+                    }}
+                  />
+                )}
+                {!importReport && (
+                  <CippDataTable
+                    noCard={true}
+                    api={{
+                      url: "/api/ExecAccessChecks",
+                      data: { Type: "Tenants" },
+                      dataKey: "Results",
+                      queryKey: "ExecAccessChecks-Tenants",
+                    }}
+                    actions={[
+                      {
+                        label: "Check Tenant",
+                        type: "POST",
+                        url: "/api/ExecAccessChecks?Type=Tenants",
+                        data: { TenantId: "TenantId" },
+                        icon: <Sync />,
+                        noConfirm: true,
+                        relatedQueryKeys: "ExecAccessChecks-Tenants",
+                      },
+                    ]}
+                    simpleColumns={[
+                      "TenantName",
+                      "LastRun",
+                      "GraphStatus",
+                      "ExchangeStatus",
+                      "MissingRoles",
+                      "GDAPRoles",
+                    ]}
+                    offCanvas={{
+                      extendedInfoFields: [
+                        "TenantName",
+                        "TenantId",
+                        "DefaultDomainName",
+                        "LastRun",
+                        "GraphTest",
+                        "ExchangeTest",
+                      ],
+                    }}
+                  />
+                )}
+              </>
             )}
           </>
         )}

@@ -1,17 +1,22 @@
-import { Button, Grid, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
-import { CheckCircle, Description } from "@mui/icons-material";
+import { Button, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
+import { CheckCircle } from "@mui/icons-material";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { useState } from "react";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 
 export const CippPermissionResults = (props) => {
-  const { executeCheck, setSkipCache, offcanvasVisible, setOffcanvasVisible } = props;
-  const results = executeCheck.data;
+  const { executeCheck, setSkipCache, offcanvasVisible, setOffcanvasVisible, importReport } = props;
+
+  var results = {};
+  if (importReport) {
+    results = importReport;
+  } else {
+    results = executeCheck?.data;
+  }
 
   const accessTokenHeaders = ["Name", "UserPrincipalName", "IPAddress"];
 
