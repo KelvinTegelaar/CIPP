@@ -15,7 +15,12 @@ const CippDataTableButton = ({ data }) => {
   const dataIsNotANullArray = !Array.isArray(data) || data.length === 0;
   return (
     <>
-      <Button disabled={dataIsNotANullArray} variant="contained" onClick={handleOpenDialog}>
+      <Button
+        disabled={dataIsNotANullArray}
+        variant="contained"
+        onClick={handleOpenDialog}
+        size="small"
+      >
         {dataIsNotANullArray ? "No items" : `${data.length} items`}
       </Button>
 
