@@ -29,8 +29,6 @@ export const CippPermissionReport = (props) => {
     permissionReport.waiting = true;
     gdapReport.waiting = true;
     tenantReport.waiting = true;
-
-    // collect results into a single object and export as json
     const report = {
       Permissions: permissionReport.data,
       GDAP: gdapReport.data,
@@ -51,15 +49,13 @@ export const CippPermissionReport = (props) => {
 
   const handleImportReport = (e) => {
     const file = e.target.files[0];
-    console.log(file);
     const reader = new FileReader();
     reader.onload = (e) => {
-      console.log(e.target.result);
       const report = JSON.parse(e.target.result);
-      console.log(report);
       setImportReport(report);
     };
     reader.readAsText(file);
+    e.target.value = null;
   };
 
   return (

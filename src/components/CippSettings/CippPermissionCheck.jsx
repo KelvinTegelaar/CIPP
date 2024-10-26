@@ -5,7 +5,7 @@ import { useState } from "react";
 import { CippPermissionResults } from "./CippPermissionResults";
 import { CippGDAPResults } from "./CippGDAPResults";
 import { Sync } from "@mui/icons-material";
-import { CippDataTable } from "../CippTable/CippDataTable";
+import { CippTenantResults } from "./CippTenantResults";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 import { Description } from "@mui/icons-material";
 
@@ -14,6 +14,7 @@ const CippPermissionCheck = (props) => {
   const [skipCache, setSkipCache] = useState(false);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   var showDetails = true;
+
   if (type === "Tenants") {
     showDetails = false;
   }
@@ -110,9 +111,6 @@ const CippPermissionCheck = (props) => {
         }}
         CardButton={<CheckButton />}
       >
-        {!executeCheck.isSuccess && (
-          <Typography variant="body2">Click the button below to start a {type} check.</Typography>
-        )}
         {executeCheck.isSuccess && (
           <>
             {type === "Permissions" && (
@@ -132,75 +130,7 @@ const CippPermissionCheck = (props) => {
                 setOffcanvasVisible={setOffcanvasVisible}
               />
             )}
-            {type === "Tenants" && (
-              <>
-                {importReport?.[type]?.Results && (
-                  <CippDataTable
-                    noCard={true}
-                    data={importReport[type].Results}
-                    actions={[]}
-                    simpleColumns={[
-                      "TenantName",
-                      "LastRun",
-                      "GraphStatus",
-                      "ExchangeStatus",
-                      "MissingRoles",
-                      "GDAPRoles",
-                    ]}
-                    offCanvas={{
-                      extendedInfoFields: [
-                        "TenantName",
-                        "TenantId",
-                        "DefaultDomainName",
-                        "LastRun",
-                        "GraphTest",
-                        "ExchangeTest",
-                      ],
-                    }}
-                  />
-                )}
-                {!importReport && (
-                  <CippDataTable
-                    noCard={true}
-                    api={{
-                      url: "/api/ExecAccessChecks",
-                      data: { Type: "Tenants" },
-                      dataKey: "Results",
-                      queryKey: "ExecAccessChecks-Tenants",
-                    }}
-                    actions={[
-                      {
-                        label: "Check Tenant",
-                        type: "POST",
-                        url: "/api/ExecAccessChecks?Type=Tenants",
-                        data: { TenantId: "TenantId" },
-                        icon: <Sync />,
-                        noConfirm: true,
-                        relatedQueryKeys: "ExecAccessChecks-Tenants",
-                      },
-                    ]}
-                    simpleColumns={[
-                      "TenantName",
-                      "LastRun",
-                      "GraphStatus",
-                      "ExchangeStatus",
-                      "MissingRoles",
-                      "GDAPRoles",
-                    ]}
-                    offCanvas={{
-                      extendedInfoFields: [
-                        "TenantName",
-                        "TenantId",
-                        "DefaultDomainName",
-                        "LastRun",
-                        "GraphTest",
-                        "ExchangeTest",
-                      ],
-                    }}
-                  />
-                )}
-              </>
-            )}
+            {type === "Tenants" && <CippTenantResults importReport={importReport?.[type]} />}
           </>
         )}
       </CippButtonCard>
