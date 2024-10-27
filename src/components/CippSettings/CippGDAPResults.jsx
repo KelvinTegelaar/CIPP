@@ -1,5 +1,5 @@
 import { List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
-import { CheckCircle, Warning } from "@mui/icons-material";
+import { Cancel, CheckCircle, Warning } from "@mui/icons-material";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
@@ -7,7 +7,7 @@ import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { useEffect, useState } from "react";
 
 export const CippGDAPResults = (props) => {
-  const { executeCheck, offcanvasVisible, setOffcanvasVisible, importReport } = props;
+  const { executeCheck, offcanvasVisible, setOffcanvasVisible, importReport, setCardIcon } = props;
   const [results, setResults] = useState({});
 
   useEffect(() => {
@@ -17,6 +17,14 @@ export const CippGDAPResults = (props) => {
       setResults(executeCheck?.data);
     }
   }, [executeCheck, importReport]);
+
+  useEffect(() => {
+    if (results?.Results?.GDAPIssues?.length > 0 || results?.Results?.MissingGroups?.length > 0) {
+      setCardIcon(<Cancel />);
+    } else {
+      setCardIcon(<CheckCircle />);
+    }
+  }, [results]);
 
   const GdapIssueValue = ({ results, type, match }) => {
     var issues = [];

@@ -12,6 +12,7 @@ import { Description } from "@mui/icons-material";
 const CippPermissionCheck = (props) => {
   const { type, importReport = false } = props;
   const [skipCache, setSkipCache] = useState(false);
+  const [cardIcon, setCardIcon] = useState(null);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   var showDetails = true;
 
@@ -55,7 +56,7 @@ const CippPermissionCheck = (props) => {
               onClick={handlePermissionCheck}
               disabled={executeCheck.isPending || executeCheck.isFetching || importReport}
             >
-              Refresh {type} Check
+              Refresh
             </Button>
             {showDetails && (
               <Button
@@ -99,7 +100,10 @@ const CippPermissionCheck = (props) => {
         title={
           <Stack direction="row" justifyContent={"space-between"}>
             <Box>{type} Check</Box>
-            {importReport?.[type] && <Chip size="small" label="Imported" variant="outlined" />}
+            <Stack direction="row" spacing={2}>
+              {importReport?.[type] && <Chip size="small" label="Imported" variant="outlined" />}
+              {cardIcon && <SvgIcon>{cardIcon}</SvgIcon>}
+            </Stack>
           </Stack>
         }
         cardSx={{
@@ -120,6 +124,7 @@ const CippPermissionCheck = (props) => {
                 setSkipCache={setSkipCache}
                 offcanvasVisible={offcanvasVisible}
                 setOffcanvasVisible={setOffcanvasVisible}
+                setCardIcon={setCardIcon}
               />
             )}
             {type === "GDAP" && (
@@ -128,6 +133,7 @@ const CippPermissionCheck = (props) => {
                 importReport={importReport?.[type]}
                 offcanvasVisible={offcanvasVisible}
                 setOffcanvasVisible={setOffcanvasVisible}
+                setCardIcon={setCardIcon}
               />
             )}
             {type === "Tenants" && <CippTenantResults importReport={importReport?.[type]} />}

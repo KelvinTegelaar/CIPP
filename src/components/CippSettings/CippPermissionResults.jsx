@@ -1,5 +1,5 @@
 import { Button, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
-import { CheckCircle } from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
@@ -10,7 +10,15 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect, useState } from "react";
 
 export const CippPermissionResults = (props) => {
-  const { executeCheck, setSkipCache, offcanvasVisible, setOffcanvasVisible, importReport } = props;
+  const {
+    executeCheck,
+    setSkipCache,
+    offcanvasVisible,
+    setOffcanvasVisible,
+    importReport,
+    cardIcon,
+    setCardIcon,
+  } = props;
   const [results, setResults] = useState({});
 
   useEffect(() => {
@@ -20,6 +28,17 @@ export const CippPermissionResults = (props) => {
       setResults(executeCheck?.data);
     }
   }, [executeCheck, importReport]);
+
+  useEffect(() => {
+    if (
+      results?.Results?.MissingPermissions.length > 0 ||
+      results?.Results?.ErrorMessages.length > 0
+    ) {
+      setCardIcon(<Cancel />);
+    } else {
+      setCardIcon(<CheckCircle />);
+    }
+  }, [results]);
 
   const accessTokenHeaders = ["Name", "UserPrincipalName", "IPAddress"];
 

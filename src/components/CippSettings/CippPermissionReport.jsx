@@ -189,7 +189,7 @@ export const CippPermissionReport = (props) => {
                 </SvgIcon>
               }
             >
-              Viewing: {currentFile.name}
+              {currentFile.name}
             </Button>
           </Tooltip>
         )}
