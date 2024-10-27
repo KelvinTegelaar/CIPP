@@ -9,6 +9,7 @@ import {
   CSidebarNav,
 } from '@coreui/react'
 import { AppSidebarNav } from 'src/components/layout'
+import CIPPImage from '../assets/images/CIPP.png'
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import navigation from 'src/_nav'
@@ -38,7 +39,7 @@ const AppSidebar = () => {
       visible={sidebarShow}
     >
       <CSidebarBrand className="me-auto pt-xs-2 p-md-2" to="/">
-        <CImage className="sidebar-brand-full mt-3" src={i} height={80} />
+        <CImage className="sidebar-brand-full mt-3" src={CIPPImage} height={80} />
         <CHeaderNav className="me-2 p-2"></CHeaderNav>
       </CSidebarBrand>
       <CCloseButton
