@@ -33,16 +33,15 @@ export const CippPermissionReport = (props) => {
       /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(str);
     if (isGuid) {
       const parts = str.split("-");
-      console.log(parts);
       return parts
         .map((part, index) => (index === parts.length - 1 ? part : "*".repeat(part.length)))
         .join("-");
     } else {
+      if (typeof str !== "string") return str;
       if (str.length <= 9) return "*".repeat(str.length);
       const start = str.slice(0, 3);
       const end = str.slice(-3);
       const middle = "*".repeat(6);
-      console.log(start, middle, end);
       return `${start}${middle}${end}`;
     }
   };
@@ -65,13 +64,25 @@ export const CippPermissionReport = (props) => {
       "DefaultDomainName",
       "UserPrincipalName",
       "IPAddress",
+      "GDAPRoles",
     ];
 
     if (formData.redactCustomerData) {
       report.Tenants.Results = report?.Tenants?.Results?.map((tenant) => {
         customerProps.forEach((prop) => {
           if (tenant[prop]) {
-            tenant[prop] = redactString(tenant[prop]);
+            if (prop === "GDAPRoles") {
+              tenant[prop] = tenant[prop].map((role) => {
+                if (Array.isArray(role.Group)) {
+                  role.Group = role.Group.map((group) => group.split("@")[0]);
+                } else {
+                  role.Group = role.Group.split("@")[0];
+                }
+                return role;
+              });
+            } else {
+              tenant[prop] = redactString(tenant[prop]);
+            }
           }
         });
         return tenant;
