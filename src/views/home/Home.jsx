@@ -46,7 +46,7 @@ const TenantDashboard = () => {
   if (theme === 'impact') {
     buttonColor = 'secondary'
   } else {
-    buttonColor = 'primary'
+    buttonColor = 'secondary'
   }
 
   const {
