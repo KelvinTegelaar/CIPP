@@ -1,11 +1,14 @@
-import { Button, Stack, SvgIcon } from "@mui/material";
-import { Delete, FileDownload, FileUpload } from "@mui/icons-material";
+import { Button, Stack, SvgIcon, Tooltip } from "@mui/material";
+import { Close, FileDownload, FileUpload } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import { useState } from "react";
 
 export const CippPermissionReport = (props) => {
   const { importReport, setImportReport } = props;
+  const [importError, setImportError] = useState(false);
+  const [currentFile, setCurrentFile] = useState(null);
   const createDialog = useDialog();
   const permissionReport = ApiGetCall({
     url: "/api/ExecAccessChecks",
@@ -120,10 +123,18 @@ export const CippPermissionReport = (props) => {
 
   const handleImportReport = (e) => {
     const file = e.target.files[0];
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const report = JSON.parse(e.target.result);
+
+      if (!report.Permissions || !report.GDAP || !report.Tenants) {
+        setImportError("Invalid report format");
+        return;
+      }
+      setCurrentFile(file);
       setImportReport(report);
+      setImportError(false);
     };
     reader.readAsText(file);
     e.target.value = null;
@@ -131,7 +142,7 @@ export const CippPermissionReport = (props) => {
 
   return (
     <>
-      <Stack direction="row" spacing={1}>
+      <Stack direction="row" spacing={2}>
         <Button
           size="small"
           variant="contained"
@@ -166,18 +177,35 @@ export const CippPermissionReport = (props) => {
           />
         </Button>
         {importReport && (
+          <Tooltip title="Close report">
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              onClick={() => setImportReport(false)}
+              endIcon={
+                <SvgIcon fontSize="small">
+                  <Close />
+                </SvgIcon>
+              }
+            >
+              Viewing: {currentFile.name}
+            </Button>
+          </Tooltip>
+        )}
+        {importError && (
           <Button
             size="small"
-            variant="contained"
-            color="primary"
-            onClick={() => setImportReport(false)}
-            startIcon={
+            variant="outlined"
+            color="error"
+            onClick={() => setImportError(false)}
+            endIcon={
               <SvgIcon fontSize="small">
-                <Delete />
+                <Close />
               </SvgIcon>
             }
           >
-            Clear
+            {importError}
           </Button>
         )}
       </Stack>
