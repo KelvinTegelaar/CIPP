@@ -1,9 +1,12 @@
 import { Button, Stack, SvgIcon } from "@mui/material";
 import { Delete, FileDownload, FileUpload } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
+import { useDialog } from "../../hooks/use-dialog";
+import { CippApiDialog } from "../CippComponents/CippApiDialog";
 
 export const CippPermissionReport = (props) => {
   const { importReport, setImportReport } = props;
+  const createDialog = useDialog();
   const permissionReport = ApiGetCall({
     url: "/api/ExecAccessChecks",
     data: { Type: "Permissions" },
@@ -25,7 +28,26 @@ export const CippPermissionReport = (props) => {
     waiting: false,
   });
 
-  const handleExportReport = () => {
+  const redactString = (str) => {
+    const isGuid =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(str);
+    if (isGuid) {
+      const parts = str.split("-");
+      console.log(parts);
+      return parts
+        .map((part, index) => (index === parts.length - 1 ? part : "*".repeat(part.length)))
+        .join("-");
+    } else {
+      if (str.length <= 9) return "*".repeat(str.length);
+      const start = str.slice(0, 3);
+      const end = str.slice(-3);
+      const middle = "*".repeat(6);
+      console.log(start, middle, end);
+      return `${start}${middle}${end}`;
+    }
+  };
+
+  const handleExportReport = (row, action, formData) => {
     permissionReport.waiting = true;
     gdapReport.waiting = true;
     tenantReport.waiting = true;
@@ -34,6 +56,43 @@ export const CippPermissionReport = (props) => {
       GDAP: gdapReport.data,
       Tenants: tenantReport.data,
     };
+
+    const customerProps = [
+      "Tenant",
+      "TenantName",
+      "TenantId",
+      "DefaultDomainName",
+      "UserPrincipalName",
+      "IPAddress",
+    ];
+
+    if (formData.redactCustomerData) {
+      report.Tenants.Results = report?.Tenants?.Results?.map((tenant) => {
+        customerProps.forEach((prop) => {
+          if (tenant[prop]) {
+            tenant[prop] = redactString(tenant[prop]);
+          }
+        });
+        return tenant;
+      });
+
+      report.GDAP.Results?.GDAPIssues?.map((issue) => {
+        customerProps.forEach((prop) => {
+          if (issue[prop]) {
+            issue[prop] = redactString(issue[prop]);
+          }
+        });
+        return issue;
+      });
+
+      customerProps.forEach((prop) => {
+        if (report.Permissions.Results.AccessTokenDetails[prop]) {
+          report.Permissions.Results.AccessTokenDetails[prop] = redactString(
+            report.Permissions.Results.AccessTokenDetails[prop]
+          );
+        }
+      });
+    }
 
     const json = JSON.stringify(report);
     const blob = new Blob([json], { type: "application/json" });
@@ -59,49 +118,73 @@ export const CippPermissionReport = (props) => {
   };
 
   return (
-    <Stack direction="row" spacing={1}>
-      <Button
-        size="small"
-        variant="contained"
-        color="primary"
-        onClick={handleExportReport}
-        startIcon={
-          <SvgIcon fontSize="small">
-            <FileDownload />
-          </SvgIcon>
-        }
-      >
-        Export Report
-      </Button>
-      <Button
-        component="label"
-        size="small"
-        variant="contained"
-        color="primary"
-        startIcon={
-          <SvgIcon fontSize="small">
-            <FileUpload />
-          </SvgIcon>
-        }
-      >
-        Import Report
-        <input type="file" hidden onChange={handleImportReport} accept=".json" id="report-upload" />
-      </Button>
-      {importReport && (
+    <>
+      <Stack direction="row" spacing={1}>
         <Button
           size="small"
           variant="contained"
           color="primary"
-          onClick={() => setImportReport(false)}
+          onClick={createDialog.handleOpen}
           startIcon={
             <SvgIcon fontSize="small">
-              <Delete />
+              <FileDownload />
             </SvgIcon>
           }
         >
-          Clear
+          Export Report
         </Button>
-      )}
-    </Stack>
+        <Button
+          component="label"
+          size="small"
+          variant="contained"
+          color="primary"
+          startIcon={
+            <SvgIcon fontSize="small">
+              <FileUpload />
+            </SvgIcon>
+          }
+        >
+          Import Report
+          <input
+            type="file"
+            hidden
+            onChange={handleImportReport}
+            accept=".json"
+            id="report-upload"
+          />
+        </Button>
+        {importReport && (
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => setImportReport(false)}
+            startIcon={
+              <SvgIcon fontSize="small">
+                <Delete />
+              </SvgIcon>
+            }
+          >
+            Clear
+          </Button>
+        )}
+      </Stack>
+      <CippApiDialog
+        title="Export Diagnostic Report"
+        createDialog={createDialog}
+        fields={[
+          {
+            type: "switch",
+            name: "redactCustomerData",
+            label: "Redact Customer Data",
+          },
+        ]}
+        api={{
+          confirmText:
+            "Export a diagnostic report of the current permissions for your SAM application authentication, GDAP and Tenant data. This report will be exported as a JSON file.",
+          customFunction: handleExportReport,
+        }}
+      />
+    </>
   );
 };

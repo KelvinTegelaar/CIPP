@@ -1,19 +1,22 @@
-import { Grid, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
+import { List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { CheckCircle, Warning } from "@mui/icons-material";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { useEffect, useState } from "react";
 
 export const CippGDAPResults = (props) => {
   const { executeCheck, offcanvasVisible, setOffcanvasVisible, importReport } = props;
+  const [results, setResults] = useState({});
 
-  var results = {};
-  if (importReport) {
-    results = importReport;
-  } else {
-    results = executeCheck?.data;
-  }
+  useEffect(() => {
+    if (importReport) {
+      setResults(importReport);
+    } else {
+      setResults(executeCheck?.data);
+    }
+  }, [executeCheck, importReport]);
 
   const GdapIssueValue = ({ results, type, match }) => {
     var issues = [];
@@ -111,9 +114,9 @@ export const CippGDAPResults = (props) => {
 
               var testResult = false;
               if (test.count > 1) {
-                testResult = matchedResults.length >= test.count;
+                testResult = matchedResults?.length >= test.count;
               } else {
-                testResult = matchedResults.length === test.count;
+                testResult = matchedResults?.length === test.count;
               }
 
               return (

@@ -7,16 +7,19 @@ import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import { useEffect, useState } from "react";
 
 export const CippPermissionResults = (props) => {
   const { executeCheck, setSkipCache, offcanvasVisible, setOffcanvasVisible, importReport } = props;
+  const [results, setResults] = useState({});
 
-  var results = {};
-  if (importReport) {
-    results = importReport;
-  } else {
-    results = executeCheck?.data;
-  }
+  useEffect(() => {
+    if (importReport) {
+      setResults(importReport);
+    } else {
+      setResults(executeCheck?.data);
+    }
+  }, [executeCheck, importReport]);
 
   const accessTokenHeaders = ["Name", "UserPrincipalName", "IPAddress"];
 

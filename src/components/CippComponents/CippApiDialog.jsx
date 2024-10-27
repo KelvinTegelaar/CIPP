@@ -92,7 +92,7 @@ export const CippApiDialog = (props) => {
   const tenantFilter = useSettings().currentTenant;
   const handleActionClick = (row, action, formData) => {
     if (api.customFunction) {
-      action.customFunction(row);
+      action.customFunction(row, action, formData);
       createDialog.handleClose();
       return;
     }
