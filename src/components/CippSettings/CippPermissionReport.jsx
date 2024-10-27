@@ -58,6 +58,7 @@ export const CippPermissionReport = (props) => {
     };
 
     const customerProps = [
+      "AppId",
       "Tenant",
       "TenantName",
       "TenantId",
