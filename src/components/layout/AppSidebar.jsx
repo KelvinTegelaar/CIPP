@@ -9,7 +9,8 @@ import {
   CSidebarNav,
 } from '@coreui/react'
 import { AppSidebarNav } from 'src/components/layout'
-import CIPPImage from '../assets/images/CIPP.png'
+import CIPPImage from '../../assets/images/CIPP.png'
+
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import navigation from 'src/_nav'
