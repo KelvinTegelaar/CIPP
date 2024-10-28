@@ -597,7 +597,6 @@ export const items = [
         items: [
           { title: "Application Settings", path: "/cipp/settings" },
           { title: "Integrations", path: "/cipp/integrations" },
-          { title: "User Settings", path: "/cipp/user-settings" },
           { title: "Scheduler", path: "/cipp/scheduler" },
           { title: "Logbook", path: "/cipp/logs" },
           { title: "Statistics", path: "/cipp/statistics" },

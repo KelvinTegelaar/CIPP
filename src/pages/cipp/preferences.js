@@ -1,12 +1,12 @@
 import Head from "next/head";
 import { Box, Container, Stack, Unstable_Grid2 as Grid } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
-import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
+import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
+import CippFormComponent from "../../components/CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";
-import { useSettings } from "../../../hooks/use-settings";
-import countryList from "../../../data/countryList.json";
-import { CippSettingsSideBar } from "../../../components/CippComponents/CippSettingsSideBar";
+import { useSettings } from "../../hooks/use-settings";
+import countryList from "../../data/countryList.json";
+import { CippSettingsSideBar } from "../../components/CippComponents/CippSettingsSideBar";
 
 const Page = () => {
   const settings = useSettings();
@@ -39,7 +39,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Settings</title>
+        <title>Preferences</title>
       </Head>
       <Box
         sx={{

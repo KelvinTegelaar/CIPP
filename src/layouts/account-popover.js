@@ -23,6 +23,7 @@ import {
 import { usePopover } from "../hooks/use-popover";
 import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
+import { CogIcon } from "@heroicons/react/24/outline";
 
 export const AccountPopover = (props) => {
   const {
@@ -124,6 +125,14 @@ export const AccountPopover = (props) => {
                 )}
               </List>
             </li>
+            <ListItemButton onClick={() => router.push("/cipp/preferences")}>
+              <ListItemIcon>
+                <SvgIcon fontSize="small">
+                  <CogIcon />
+                </SvgIcon>
+              </ListItemIcon>
+              <ListItemText primary="Preferences" />
+            </ListItemButton>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon>
                 <SvgIcon fontSize="small">
