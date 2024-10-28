@@ -5,6 +5,7 @@ import tabOptions from "./tabOptions";
 import { ApiGetCall } from "/src/api/ApiCall.jsx";
 import { CippBackendCard } from "/src/components/CippSettings/CippBackendCard";
 import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
+import { CommandLineIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const backendComponents = ApiGetCall({
@@ -64,6 +65,7 @@ const Page = () => {
       },
       offcanvas: true,
       offcanvasTitle: "Command Reference",
+      offcanvasIcon: <CommandLineIcon />,
       offcanvasData: {
         FunctionAppConfig: (
           <CippCodeBlock

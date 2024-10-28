@@ -3,8 +3,6 @@ import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { Button, Stack, SvgIcon, Typography } from "@mui/material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useState } from "react";
-import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
-import { CippPropertyList } from "../CippComponents/CippPropertyList";
 import { getCippTranslation } from "/src/utils/get-cipp-translation";
 
 export const CippBackendCard = ({ backendComponents, item }) => {
@@ -33,6 +31,9 @@ export const CippBackendCard = ({ backendComponents, item }) => {
             size="small"
             onClick={() => setOpen(true)}
             disabled={backendComponents.isFetching}
+            startIcon={
+              item.offcanvasIcon ? <SvgIcon fontSize="small">{item.offcanvasIcon}</SvgIcon> : ""
+            }
           >
             {item.offcanvasTitle}
           </Button>
