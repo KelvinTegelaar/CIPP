@@ -1,20 +1,15 @@
 import PropTypes from "prop-types";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
-import { Button, ListItemText, Menu, MenuItem, SvgIcon } from "@mui/material";
-import { usePopover } from "../../hooks/use-popover";
-import { ApiPostCall } from "../api/ApiCall";
+import { Button, Link, ListItemText, Menu, MenuItem, SvgIcon } from "@mui/material";
+import { usePopover } from "../hooks/use-popover";
 
 export const BulkActionsMenu = (props) => {
-  const { disabled, onArchive, onDelete, selectedCount = 0, sx, row, actions, ...other } = props;
+  const { buttonName, sx, row, actions = [], ...other } = props;
   const popover = usePopover();
-  const deleteRequest = ApiPostCall({
-    url: "/api/DeleteDevices",
-    relatedQueryKeys: "Clients",
-  });
+
   return (
     <>
       <Button
-        disabled={disabled}
         onClick={popover.handleOpen}
         ref={popover.anchorRef}
         startIcon={
@@ -30,7 +25,7 @@ export const BulkActionsMenu = (props) => {
         }}
         {...other}
       >
-        Bulk Actions
+        {buttonName}
       </Button>
       <Menu
         anchorEl={popover.anchorRef.current}
@@ -49,23 +44,34 @@ export const BulkActionsMenu = (props) => {
           vertical: "top",
         }}
       >
-        <MenuItem
-          onClick={() =>
-            deleteRequest.mutate({
-              ids: row.map((row) => row.original.RowKey),
-            })
+        {actions.map((action, index) => {
+          if (action.link) {
+            return (
+              <MenuItem
+                key={index}
+                onClick={popover.handleClose}
+                component={Link}
+                href={action.link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <ListItemText primary={action.label} />
+              </MenuItem>
+            );
+          } else {
+            return (
+              <MenuItem key={index} onClick={action.onClick}>
+                <ListItemText primary={action.label} />
+              </MenuItem>
+            );
           }
-          sx={{ borderRadius: 1 }}
-        >
-          <ListItemText>Delete ({selectedCount})</ListItemText>
-        </MenuItem>
+        })}
       </Menu>
     </>
   );
 };
 
 BulkActionsMenu.propTypes = {
-  disabled: PropTypes.bool,
   onArchive: PropTypes.func,
   onDelete: PropTypes.func,
   selectedCount: PropTypes.number,

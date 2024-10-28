@@ -1,28 +1,16 @@
 import Head from "next/head";
 import { useState } from "react";
-import {
-  Box,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  List,
-  ListItem,
-  Skeleton,
-  Divider,
-} from "@mui/material";
+import { Box, Container, Grid, Button } from "@mui/material";
 import { CippInfoBar } from "../components/CippCards/CippInfoBar";
 import { CippChartCard } from "../components/CippCards/CippChartCard";
 import { CippPropertyListCard } from "../components/CippCards/CippPropertyListCard";
-import { ApiGetCall } from "../api/ApiCall";
 import { Layout as DashboardLayout } from "../layouts/index.js";
 import { useSettings } from "../hooks/use-settings";
 import { getCippFormatting } from "../utils/get-cipp-formatting.js";
-
+import Portals from "../data/portals";
+import { BulkActionsMenu } from "../components/bulk-actions-menu.js";
+import { CippUniversalSearch } from "../components/CippCards/CippUniversalSearch.jsx";
+import { ApiGetCall } from "../api/ApiCall.jsx";
 const Page = () => {
   const { currentTenant } = useSettings();
   const [domainVisible, setDomainVisible] = useState(false);
@@ -70,6 +58,11 @@ const Page = () => {
     },
   });
 
+  const currentTenantInfo = ApiGetCall({
+    url: "/api/ListTenants",
+    queryKey: `ListTenants`,
+  });
+
   // Top bar data
   const tenantInfo = [
     { name: "Tenant Name", data: organization.data?.displayName },
@@ -85,7 +78,15 @@ const Page = () => {
     standards.data
       ? standards.data.filter((standard) => standard.Settings?.[type] === true).length
       : 0;
-
+  const tenantLookup = currentTenantInfo.data?.find(
+    (tenant) => tenant.defaultDomainName === currentTenant
+  );
+  console.log("tenantLookup", tenantLookup);
+  const PortalMenuItems = Portals.map((portal) => ({
+    label: portal.label,
+    target: "_blank",
+    link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+  }));
   return (
     <>
       <Head>
@@ -94,6 +95,12 @@ const Page = () => {
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Container maxWidth={false}>
           <Grid container spacing={3}>
+            <Grid item xs={12} md={11}>
+              <CippUniversalSearch />
+            </Grid>
+            <Grid item xs={12} md={1}>
+              <BulkActionsMenu buttonName="Portals" actions={PortalMenuItems} />
+            </Grid>
             <Grid item xs={12} md={12}>
               <CippInfoBar data={tenantInfo} isFetching={organization.isFetching} />
             </Grid>
@@ -133,7 +140,6 @@ const Page = () => {
                 isFetching={sharepoint.isFetching}
                 chartType="donut"
                 chartSeries={[
-                  //the data is returned as a string, so we need to convert it to a number
                   Number(sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB),
                   Number(sharepoint.data?.GeoUsedStorageMB),
                 ]}
@@ -141,42 +147,38 @@ const Page = () => {
                   `Free (${
                     sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB
                   }MB)`,
-                  `Used (${sharepoint.data?.GeoUsedStorageMB}MB)`,
+                  `Used (${Number(sharepoint.data?.GeoUsedStorageMB)}MB)`,
                 ]}
               />
             </Grid>
 
+            {/* Converted Domain Names to Property List */}
             <Grid item xs={12} md={4}>
-              <Card>
-                <CardHeader title="Domain Names" />
-                <Divider />
-                <CardContent>
-                  {organization.isFetching ? (
-                    <Skeleton />
-                  ) : (
-                    <List>
-                      {organization.data?.verifiedDomains?.slice(0, 3).map((item, idx) => (
-                        <ListItem key={idx}>{item.name}</ListItem>
-                      ))}
-                      {organization.data?.verifiedDomains?.length > 3 && (
-                        <>
-                          {domainVisible &&
-                            organization.data.verifiedDomains
-                              ?.slice(3)
-                              .map((item, idx) => <ListItem key={idx}>{item.name}</ListItem>)}
-                          <Button onClick={() => setDomainVisible(!domainVisible)}>
-                            {domainVisible ? "See less" : "See more..."}
-                          </Button>
-                        </>
-                      )}
-                    </List>
-                  )}
-                </CardContent>
-              </Card>
+              <CippPropertyListCard
+                title="Domain Names"
+                showDivider={false}
+                copyItems={true}
+                isFetching={organization.isFetching}
+                propertyItems={organization.data?.verifiedDomains
+                  ?.slice(0, domainVisible ? undefined : 3)
+                  .map((domain, idx) => ({
+                    label: `Domain`,
+                    value: domain.name,
+                  }))}
+                actions={
+                  organization.data?.verifiedDomains?.length > 3 && (
+                    <Button onClick={() => setDomainVisible(!domainVisible)}>
+                      {domainVisible ? "See less" : "See more..."}
+                    </Button>
+                  )
+                }
+              />
             </Grid>
 
             <Grid item xs={12} md={4}>
               <CippPropertyListCard
+                showDivider={false}
+                copyItems={true}
                 title="Partner Relationships"
                 isFetching={partners.isFetching}
                 propertyItems={partners.data?.Results.map((partner, idx) => ({
@@ -189,6 +191,7 @@ const Page = () => {
             <Grid item xs={12} md={4}>
               <CippPropertyListCard
                 copyItems={true}
+                showDivider={false}
                 title="Tenant Capabilities"
                 isFetching={organization.isFetching}
                 propertyItems={[
@@ -208,7 +211,7 @@ const Page = () => {
                             ? "Exchange"
                             : curr.service === "AADPremiumService"
                             ? "AAD Premium"
-                            : curr.service === "WindowsDefender"
+                            : curr.service === "Windows Defender"
                             ? "Windows Defender"
                             : curr.service;
 
@@ -217,7 +220,7 @@ const Page = () => {
                         }
                         return uniqueServices;
                       }, [])
-                      .join(", "), // join the services into a comma-separated string
+                      .join(", "),
                   },
                 ]}
               />
