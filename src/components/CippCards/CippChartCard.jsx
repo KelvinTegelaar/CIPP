@@ -95,11 +95,11 @@ export const CippChartCard = ({
 }) => {
   const [range, setRange] = useState("Last 7 days");
   const chartOptions = useChartOptions(labels, chartType);
-
+  //remove any  nulls from the chartSeries
+  chartSeries = chartSeries.filter((item) => item !== null);
   const total = chartSeries.reduce((acc, value) => acc + value, 0);
-
   return (
-    <Card style={{ width: "100%" }}>
+    <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader
         action={
           actions ? (
