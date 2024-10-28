@@ -25,6 +25,7 @@ export const CippInfoBar = ({ data, isFetching }) => (
             },
             "&:nth-of-type(4)": {
               borderBottom: "none",
+              borderRight: "none",
             },
           }}
         >
