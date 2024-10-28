@@ -4,8 +4,16 @@ import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 
 export const CippWizardStepButtons = (props) => {
-  const { postUrl, lastStep, currentStep, onPreviousStep, onNextStep, formControl, ...other } =
-    props;
+  const {
+    postUrl,
+    lastStep,
+    currentStep,
+    onPreviousStep,
+    onNextStep,
+    formControl,
+    noButton = false,
+    ...other
+  } = props;
   const { isValid, isSubmitted, isSubmitting } = useFormState({ control: formControl.control });
   const sendForm = ApiPostCall({ relatedQueryKeys: "none" });
   const handleSubmit = () => {

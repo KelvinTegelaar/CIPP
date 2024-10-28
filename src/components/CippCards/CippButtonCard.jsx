@@ -8,9 +8,10 @@ export default function CippButtonCard({
   isFetching = false,
   cardSx,
   cardActions,
+  variant,
 }) {
   return (
-    <Card sx={cardSx}>
+    <Card variant={variant} sx={cardSx}>
       <CardHeader action={cardActions} title={title} />
       <Divider />
       <CardContent style={{ marginBottom: "auto" }}>

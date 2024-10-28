@@ -9,14 +9,16 @@ export const CippWizardConfirmation = (props) => {
   const { postUrl, lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const formValues = formControl.getValues();
   const formEntries = Object.entries(formValues);
+  //remove all entries in "blacklist" from showing on confirmation page
+  const blacklist = ["selectedOption", "GUID", "ID"];
 
   const tenantEntry = formEntries.find(([key]) => key === "tenantFilter" || key === "tenant");
   const userEntry = formEntries.find(([key]) =>
     ["user", "userPrincipalName", "username"].includes(key)
   );
-
   const filteredEntries = formEntries.filter(
     ([key]) =>
+      !blacklist.includes(key) &&
       key !== "tenantFilter" &&
       key !== "tenant" &&
       !["user", "userPrincipalName", "username"].includes(key)
