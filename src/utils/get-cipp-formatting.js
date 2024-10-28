@@ -28,6 +28,13 @@ export const getCippFormatting = (data, cellName, type) => {
     return <CippTimeAgo data={data} type={type} />;
   }
 
+  const passwordItems = ["password", "applicationsecret", "refreshtoken"];
+
+  if (passwordItems.includes(cellNameLower)) {
+    //return a button that shows/hides the password if it has a password. In text mode, return "Password hidden"
+    return isText ? "Password hidden" : <CippCopyToClipBoard text={data} type="password" />;
+  }
+
   if (cellName === "RepeatsEvery") {
     //convert 1d to "Every 1 day", 1w to "Every 1 week" etc.
     const match = data.match(/(\d+)([a-zA-Z]+)/);

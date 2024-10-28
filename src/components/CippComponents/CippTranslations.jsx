@@ -23,4 +23,8 @@ export const CippTranslations = {
   postalCode: "Postal Code",
   deleteTenant: "Delete Tenant",
   ScorePercentage: "Score",
+  TenantID: "Tenant ID",
+  ApplicationID: "Application ID",
+  ApplicationSecret: "Application Secret",
+  GUID: "GUID",
 };

@@ -94,10 +94,10 @@ const Page = () => {
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Container maxWidth={false}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={11}>
+            <Grid item xs={12} md={12}>
               <CippUniversalSearch />
             </Grid>
-            <Grid item xs={12} md={1}>
+            <Grid item xs={12} md={12}>
               <BulkActionsMenu buttonName="Portals" actions={PortalMenuItems} />
             </Grid>
             <Grid item xs={12} md={12}>

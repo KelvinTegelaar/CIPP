@@ -1,4 +1,4 @@
-import { MenuItem, Stack, TextField } from "@mui/material";
+import { MenuItem, Stack, TextField, Typography } from "@mui/material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 export const CippDeploymentStep = (props) => {
@@ -7,44 +7,41 @@ export const CippDeploymentStep = (props) => {
   return (
     <Stack spacing={3}>
       <Stack spacing={2}>
-        <>
-          {values.selectedOption === "samwizard" && "HELLO WORLD"}
-          <CippFormComponent
-            formControl={formControl}
-            type="textField"
-            fullWidth
-            validators={{ required: true }}
-            label="First Name"
-            name="firstName"
-          />
-          <TextField
-            fullWidth
-            select
-            required
-            label="Deployment Region. Please make sure you choose the region closest to you."
-            name="region"
-          >
-            <MenuItem value="northeurope">Europe (North)</MenuItem>
-            <MenuItem value="westeurope">Europe (West)</MenuItem>
-            <MenuItem value="uksouth">UK South</MenuItem>
-            <MenuItem value="ukwest">UK West</MenuItem>
-            <MenuItem value="eastus">US East</MenuItem>
-            <MenuItem value="westus">US West</MenuItem>
-            <MenuItem value="canadacentral">Canada (Central)</MenuItem>
-            <MenuItem value="centralus">US (Central)</MenuItem>
-            <MenuItem value="westcentralus">US (West Central)</MenuItem>
-            <MenuItem value="southcentralus">US (South Central)</MenuItem>
-            <MenuItem value="northcentralus">US (North Central)</MenuItem>
-            <MenuItem value="southafricanorth">South Africa</MenuItem>
-            <MenuItem value="australiacentral">Australia (Central)</MenuItem>
-            <MenuItem value="australiaeast">Australia (East)</MenuItem>
-            <MenuItem value="southeastasia">South East Asia</MenuItem>
-            <MenuItem value="eastasia">East Asia</MenuItem>
-            <MenuItem value="Unknown">
-              My preferred Azure region is not listed. I need a manual deployment.
-            </MenuItem>
-          </TextField>
-        </>
+        {values.selectedOption === "Manual" && (
+          <>
+            <Typography variant="body1">
+              You may enter your secrets below. Leave fields blank to retain existing values.
+            </Typography>
+            <CippFormComponent
+              formControl={formControl}
+              type="textField"
+              name="TenantID"
+              label="Tenant ID"
+              placeholder="Enter the Tenant ID. Leave blank to retain previous key."
+            />
+            <CippFormComponent
+              formControl={formControl}
+              type="textField"
+              name="ApplicationID"
+              label="Application ID"
+              placeholder="Enter the Application ID. Leave blank to retain previous key."
+            />
+            <CippFormComponent
+              formControl={formControl}
+              type="password"
+              name="ApplicationSecret"
+              label="Application Secret"
+              placeholder="Enter the application secret. Leave blank to retain previous key."
+            />
+            <CippFormComponent
+              formControl={formControl}
+              type="password"
+              name="RefreshToken"
+              label="Refresh Token"
+              placeholder="Enter the refresh token. Leave blank to retain previous key."
+            />
+          </>
+        )}
       </Stack>
       <CippWizardStepButtons
         currentStep={currentStep}
