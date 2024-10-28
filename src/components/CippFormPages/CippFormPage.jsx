@@ -27,6 +27,9 @@ const CippFormPage = (props) => {
     postUrl,
     customDataformatter,
     resetForm = true,
+    hideBackButton = false,
+    hidePageType = false,
+    addedButtons,
     ...other
   } = props;
   const router = useRouter();
@@ -72,25 +75,29 @@ const CippFormPage = (props) => {
         <Container maxWidth="lg">
           <Stack spacing={4}>
             <Stack spacing={2}>
-              <div>
-                <Button
-                  color="inherit"
-                  onClick={handleBackClick} // Go back to the previous page
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <ArrowLeftIcon />
-                    </SvgIcon>
-                  }
-                >
-                  {backButtonTitle}
-                </Button>
-              </div>
+              {!hideBackButton && (
+                <div>
+                  <Button
+                    color="inherit"
+                    onClick={handleBackClick} // Go back to the previous page
+                    startIcon={
+                      <SvgIcon fontSize="small">
+                        <ArrowLeftIcon />
+                      </SvgIcon>
+                    }
+                  >
+                    {backButtonTitle}
+                  </Button>
+                </div>
+              )}
               <div>
                 <Typography variant="h4">
-                  {formPageType} - {title}
+                  {!hidePageType && <>{formPageType} - </>}
+                  {title}
                 </Typography>
               </div>
             </Stack>
+
             <Card>
               <CardContent>
                 {children}
@@ -98,14 +105,17 @@ const CippFormPage = (props) => {
               </CardContent>
 
               <CardActions sx={{ justifyContent: "flex-end" }}>
-                <Button
-                  disabled={postCall.isPending}
-                  onClick={formControl.handleSubmit(handleSubmit)}
-                  type="submit"
-                  variant="contained"
-                >
-                  Submit
-                </Button>
+                <Stack spacing={2} direction="row">
+                  {addedButtons && addedButtons}
+                  <Button
+                    disabled={postCall.isPending}
+                    onClick={formControl.handleSubmit(handleSubmit)}
+                    type="submit"
+                    variant="contained"
+                  >
+                    Submit
+                  </Button>
+                </Stack>
               </CardActions>
             </Card>
           </Stack>
