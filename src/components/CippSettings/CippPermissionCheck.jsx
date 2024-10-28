@@ -10,7 +10,7 @@ import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 import { Description } from "@mui/icons-material";
 
 const CippPermissionCheck = (props) => {
-  const { type, importReport = false } = props;
+  const { type, importReport = false, variant } = props;
   const [skipCache, setSkipCache] = useState(false);
   const [cardIcon, setCardIcon] = useState(null);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
@@ -97,6 +97,7 @@ const CippPermissionCheck = (props) => {
   return (
     <>
       <CippButtonCard
+        variant={variant}
         title={
           <Stack direction="row" justifyContent={"space-between"}>
             <Box>{type} Check</Box>

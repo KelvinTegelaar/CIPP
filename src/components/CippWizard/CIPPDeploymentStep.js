@@ -17,6 +17,7 @@ import { ApiGetCall } from "../../api/ApiCall";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { CheckCircle } from "@mui/icons-material";
+import CippPermissionCheck from "../CippSettings/CippPermissionCheck";
 
 export const CippDeploymentStep = (props) => {
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;
@@ -130,7 +131,7 @@ export const CippDeploymentStep = (props) => {
                 isFetching={startSetupApi.isLoading}
                 CardButton={
                   <Button
-                    disabled={pollingStep >= 2}
+                    disabled={currentStepState >= 2}
                     variant="contained"
                     color="primary"
                     onClick={() => openPopup("https://microsoft.com/devicelogin")}
@@ -155,7 +156,6 @@ export const CippDeploymentStep = (props) => {
             {currentStepState >= 2 && (
               <CippButtonCard
                 variant="outlined"
-                disabled={pollingStep >= 3 || approvalUrl}
                 isFetching={checkSetupStatusApi.isLoading && pollingStep === 2}
                 title={
                   <Stack direction="row" justifyContent={"space-between"}>
@@ -175,7 +175,7 @@ export const CippDeploymentStep = (props) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    disabled={pollingStep >= 3}
+                    disabled={currentStepState >= 4}
                     onClick={() => openPopup(approvalUrl)}
                   >
                     Open Approval Link
@@ -193,12 +193,7 @@ export const CippDeploymentStep = (props) => {
             )}
 
             {/* Final Step 4 Card */}
-            {currentStepState >= 4 && (
-              <CippButtonCard title="Permissions Check" variant="outlined" isFetching={false}>
-                <Typography variant="h6">Permissions Check</Typography>
-                <Typography variant="body2">Permissions check here.</Typography>
-              </CippButtonCard>
-            )}
+            {currentStepState >= 4 && <CippPermissionCheck variant="outlined" type="Permissions" />}
           </>
         )}
 
@@ -253,7 +248,6 @@ export const CippDeploymentStep = (props) => {
       </Stack>
       <CippWizardStepButtons
         currentStep={currentStep}
-        noButton={true}
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
         formControl={formControl}
