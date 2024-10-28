@@ -81,7 +81,6 @@ const Page = () => {
   const tenantLookup = currentTenantInfo.data?.find(
     (tenant) => tenant.defaultDomainName === currentTenant
   );
-  console.log("tenantLookup", tenantLookup);
   const PortalMenuItems = Portals.map((portal) => ({
     label: portal.label,
     target: "_blank",

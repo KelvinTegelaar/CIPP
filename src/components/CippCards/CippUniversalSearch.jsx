@@ -3,21 +3,20 @@ import {
   TextField,
   Box,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
+  Grid,
   Card,
   CardContent,
   CardHeader,
   Skeleton,
+  Button,
+  Link,
 } from "@mui/material";
-import PropTypes from "prop-types";
 import { ApiGetCall } from "../../api/ApiCall";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippUniversalSearch = React.forwardRef(
   ({ onConfirm = () => {}, onChange = () => {}, maxResults = 7, value = "" }, ref) => {
     const [searchValue, setSearchValue] = useState(value);
-
     const handleChange = (event) => {
       const newValue = event.target.value;
       setSearchValue(newValue);
@@ -69,24 +68,79 @@ export const CippUniversalSearch = React.forwardRef(
 
 CippUniversalSearch.displayName = "CippUniversalSearch";
 
-const Results = ({ items = [] }) => (
-  <List>
-    {items.map((item, key) => (
-      <ResultsRow key={key} match={item} />
+const Results = ({ items = [], searchValue }) => (
+  <Grid container spacing={2} mt={2}>
+    {items.slice(0, 9).map((item, key) => (
+      <Grid item xs={12} sm={6} md={4} key={key}>
+        <ResultsRow match={item} searchValue={searchValue} />
+      </Grid>
     ))}
-  </List>
+  </Grid>
 );
 
-const ResultsRow = ({ match }) => (
-  <ListItem style={{ cursor: "pointer" }}>
-    <ListItemText
-      primary={match.displayName}
-      secondary={
-        <>
-          <Typography variant="body2">{match.userPrincipalName}</Typography>
-          <Typography variant="caption">Found in tenant {match._tenantId}</Typography>
-        </>
-      }
-    />
-  </ListItem>
-);
+const ResultsRow = ({ match, searchValue }) => {
+  const highlightMatch = (text) => {
+    const parts = text.split(new RegExp(`(${searchValue})`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchValue.toLowerCase() ? (
+        <Typography component="span" fontWeight="bold" key={index}>
+          {part}
+        </Typography>
+      ) : (
+        part
+      )
+    );
+  };
+  const currentTenantInfo = ApiGetCall({
+    url: "/api/ListTenants",
+    queryKey: `ListTenants`,
+  });
+  return (
+    <Card variant="outlined" sx={{ height: "100%" }}>
+      <CardContent>
+        <Typography variant="h6">{highlightMatch(match.displayName)}</Typography>
+        <Typography variant="body2" color="textSecondary">
+          {highlightMatch(match.userPrincipalName)}
+        </Typography>
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{ display: "flex", alignItems: "center" }}
+        >
+          Found in tenant{" "}
+          {
+            //translate match._tenantId to tenant name by finding it in currentTenantInfo, if its not there, show the ID. the prop we are matching on is customerId, the return is displayName (defaultDomainName)
+            currentTenantInfo.data?.find((tenant) => tenant.customerId === match._tenantId)
+              ?.defaultDomainName || match._tenantId
+          }
+          <Box ml={2} display="inline-flex" gap={1}>
+            <Button
+              component={Link}
+              href={`identity/administration/users/view?tenantFilter=${
+                currentTenantInfo.data?.find((tenant) => tenant.customerId === match._tenantId)
+                  ?.defaultDomainName || match._tenantId
+              }&upn=${match.userPrincipalName}`}
+              variant="outlined"
+              color="primary"
+              size="small"
+            >
+              View User
+            </Button>
+            <Button
+              component={Link}
+              href={`identity/administration/users?tenantFilter=${
+                currentTenantInfo.data?.find((tenant) => tenant.customerId === match._tenantId)
+                  ?.defaultDomainName || match._tenantId
+              }`}
+              variant="outlined"
+              color="primary"
+              size="small"
+            >
+              View Tenant
+            </Button>
+          </Box>
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
