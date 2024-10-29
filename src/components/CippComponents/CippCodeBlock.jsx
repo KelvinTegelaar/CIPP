@@ -10,7 +10,6 @@ const CodeContainer = styled("div")`
   position: relative;
   display: block;
   max-width: 100%; /* Ensure it fits within the card */
-  padding-left: 0.5rem;
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: break-all;
