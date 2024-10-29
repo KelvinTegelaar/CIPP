@@ -18,8 +18,10 @@ import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { CheckCircle } from "@mui/icons-material";
 import CippPermissionCheck from "../CippSettings/CippPermissionCheck";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const CippDeploymentStep = (props) => {
+  const queryClient = useQueryClient();
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;
   const values = formControl.getValues();
 
@@ -64,7 +66,6 @@ export const CippDeploymentStep = (props) => {
   useEffect(() => {
     if (checkSetupStatusApi.data) {
       const { step, message, url, code } = checkSetupStatusApi.data;
-      console.log(step, message, url, code);
       if (url) {
         setApprovalUrl(url);
       }
@@ -109,7 +110,6 @@ export const CippDeploymentStep = (props) => {
                 locations or other exclusions.
               </li>
             </Alert>
-
             {/* Step 1 Card */}
             {currentStepState >= 1 && (
               <CippButtonCard
@@ -151,7 +151,6 @@ export const CippDeploymentStep = (props) => {
                 )}
               </CippButtonCard>
             )}
-
             {/* Step 2 Card */}
             {currentStepState >= 2 && (
               <CippButtonCard
@@ -194,6 +193,24 @@ export const CippDeploymentStep = (props) => {
 
             {/* Final Step 4 Card */}
             {currentStepState >= 4 && <CippPermissionCheck variant="outlined" type="Permissions" />}
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setPollingStep(1);
+                  setCurrentStepState(1);
+                  setApprovalUrl(null);
+                  queryClient.removeQueries("startSAMSetup");
+                  queryClient.removeQueries("checkSetupStep1");
+                  setTimeout(() => {
+                    startSetupApi.refetch();
+                  }, 200);
+                }}
+              >
+                Start Over
+              </Button>
+            </Grid>
           </>
         )}
 
@@ -204,7 +221,7 @@ export const CippDeploymentStep = (props) => {
             </Typography>
             <Grid item xs={12}>
               <Button variant="contained" color="primary">
-                Refresh Graph Token
+                Refresh Graph Token.
               </Button>
             </Grid>
           </>
