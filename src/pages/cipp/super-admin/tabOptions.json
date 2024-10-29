@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Tenant Mode",
+    "path": "/cipp/super-admin/tenant-mode"
+  },
+  {
+    "label": "Function Offloading",
+    "path": "/cipp/super-admin/function-offloading"
+  },
+  {
+    "label": "Custom Roles",
+    "path": "/cipp/super-admin/custom-roles"
+  },
+  {
+    "label": "SAM App Roles",
+    "path": "/cipp/super-admin/sam-app-roles"
+  },
+  {
+    "label": "SAM App Permissions",
+    "path": "/cipp/super-admin/sam-app-permissions"
+  }
+]

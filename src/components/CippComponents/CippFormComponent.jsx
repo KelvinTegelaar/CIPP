@@ -169,20 +169,23 @@ export const CippFormComponent = (props) => {
         <>
           <FormControl>
             <FormLabel>{label}</FormLabel>
-            <RadioGroup {...other}>
-              {props.options.map((option, idx) => {
-                return (
-                  <FormControlLabel
-                    key={`${option.value}-${idx}`}
-                    value={option.value}
-                    defaultValue={option.value}
-                    control={<Radio />}
-                    label={option.label}
-                    {...formControl.register(convertedName, { ...validators })}
-                  />
-                );
-              })}
-            </RadioGroup>
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              rules={validators}
+              render={({ field }) => (
+                <RadioGroup {...field} {...other}>
+                  {props.options.map((option, idx) => (
+                    <FormControlLabel
+                      key={`${option.value}-${idx}`}
+                      value={option.value}
+                      control={<Radio />}
+                      label={option.label}
+                    />
+                  ))}
+                </RadioGroup>
+              )}
+            />
           </FormControl>
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}

@@ -8,6 +8,7 @@ import {
   UserIcon,
   WindowIcon,
   WrenchIcon,
+  WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import {
   AddBox,
@@ -603,6 +604,15 @@ export const items = [
           { title: "SAM Setup Wizard", path: "/onboarding" },
           { title: "Log Out", path: "/logout" },
         ],
+      },
+      {
+        title: "Advanced",
+        icon: (
+          <SvgIcon>
+            <WrenchScrewdriverIcon />
+          </SvgIcon>
+        ),
+        items: [{ title: "Super Admin", path: "/cipp/super-admin/tenant-mode" }],
       },
     ],
   },
