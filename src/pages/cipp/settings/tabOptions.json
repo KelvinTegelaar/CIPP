@@ -21,7 +21,7 @@
   },
   {
     "label": "Partner Webhooks",
-    "path": "/cipp/settings/partnerwebhook"
+    "path": "/cipp/settings/partner-webhooks"
   },
   {
     "label": "Licenses",

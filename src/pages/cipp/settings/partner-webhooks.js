@@ -3,16 +3,20 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
-import { Button, Grid, Typography, Link } from "@mui/material";
+import { Button, Card, Chip, Grid, Typography, Link, CardHeader, CardContent } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
 import { CippPropertyList } from "../../../components/CippComponents/CippPropertyList";
 import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
 import { CippTimeAgo } from "../../../components/CippComponents/CippTimeAgo";
+import { useState } from "react";
 
 const Page = () => {
   const pageTitle = "Partner Webhooks";
+  const [testRunning, setTestRunning] = useState(false);
+  const [correlationId, setCorrelationId] = useState(null);
+  const [validateRunning, setValidateRunning] = useState(false);
 
   const formControl = useForm({
     mode: "onChange",
@@ -30,6 +34,50 @@ const Page = () => {
     queryKey: "listEventTypes",
   });
 
+  const sendTest = ApiPostCall({
+    urlFromData: true,
+  });
+
+  const validateTest = ApiGetCall({
+    url: `/api/ExecPartnerWebhook`,
+    data: { Action: "ValidateTest", CorrelationId: correlationId },
+    waiting: validateRunning,
+  });
+
+  const handleStartTest = () => {
+    setTestRunning(true);
+    sendTest.mutate(
+      {
+        url: "/api/ExecPartnerWebhook?Action=SendTest",
+        data: {},
+      },
+      {
+        onSuccess: (data) => {
+          if (data?.data?.Results?.correlationId) {
+            setCorrelationId(data?.data?.Results?.correlationId);
+            console.log(data?.data?.Results?.correlationId);
+            setValidateRunning(true);
+            validateTest.refetch();
+          }
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (
+      validateRunning &&
+      validateTest.isSuccess &&
+      validateTest?.data?.Results?.status === "Submitted"
+    ) {
+      setTimeout(() => {
+        validateTest.refetch();
+      }, 1000);
+    } else {
+      setValidateRunning(false);
+    }
+  }, [validateTest.isSuccess, validateTest?.data?.Results, validateRunning]);
+
   useEffect(() => {
     if (listSubscription.isSuccess && listEventTypes.isSuccess) {
       formControl.reset({
@@ -37,6 +85,7 @@ const Page = () => {
           var event = listEventTypes?.data?.Results?.find((event) => event === eventType);
           return { label: event, value: event };
         }),
+        standardsExcludeAllTenants: listSubscription?.data?.Results?.standardsExcludeAllTenants,
       });
     }
   }, [listSubscription.isSuccess, listEventTypes.isSuccess]);
@@ -51,7 +100,7 @@ const Page = () => {
       postUrl="/api/ExecNotificationConfig"
       relatedQueryKeys={["ListNotificationConfig"]}
       addedButtons={
-        <Button variant="outlined" onClick={() => console.log("test")}>
+        <Button variant="outlined" onClick={handleStartTest}>
           Test Webhook
         </Button>
       }
@@ -98,12 +147,67 @@ const Page = () => {
             fullWidth
             label="Event Types"
             name="EventType"
-            options={listSubscription?.data?.Results?.webhookEvents.map((eventType) => {
+            options={listEventTypes?.data?.Results?.map((eventType) => {
               return { label: eventType, value: eventType };
             })}
             formControl={formControl}
           />
         </Grid>
+        <Grid item xs={12} md={12}>
+          <CippFormComponent
+            type="switch"
+            label="Exclude onboarded tenants from top-level standards"
+            name="standardsExcludeAllTenants"
+            formControl={formControl}
+          />
+        </Grid>
+        {testRunning && (
+          <Grid item xs={12} md={12} sx={{ mt: 2 }}>
+            <Card variant="outlined">
+              <CardHeader title="Test Results" />
+              <CardContent>
+                <CippPropertyList
+                  sx={{ mb: 3, mx: 0, p: 0 }}
+                  isFetching={validateTest.isFetching}
+                  propertyItems={[
+                    {
+                      label: "Response Code",
+                      value: (
+                        <Chip
+                          color={
+                            validateTest?.data?.Results?.results?.[0].responseCode === "200"
+                              ? "success"
+                              : "error"
+                          }
+                          label={validateTest?.data?.Results?.results?.[0]?.responseCode}
+                        />
+                      ),
+                    },
+                    {
+                      label: "Status",
+                      value: validateTest?.data?.Results?.status,
+                    },
+                    {
+                      label: "Response Message",
+                      value: validateTest?.data?.Results?.results?.[0]?.responseMessage,
+                    },
+
+                    {
+                      label: "Last Run",
+                      value: (
+                        <CippTimeAgo
+                          data={validateTest?.data?.Results?.results?.[0]?.dateTimeUtc + "Z"}
+                        />
+                      ),
+                    },
+                  ]}
+                  layout="double"
+                  showDivider={false}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
       </Grid>
     </CippFormPage>
   );
