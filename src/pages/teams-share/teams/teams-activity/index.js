@@ -1,14 +1,19 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Teams Activity";
+  const pageTitle = "Teams Activity List";
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the teams activity section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/ListTeamsActivity?type=TeamsUserActivityUser"
+      apiData={{
+        TenantFilter: "TenantFilter",
+      }}
+      apiDataKey="Results"
+      simpleColumns={["UPN", "LastActive", "MeetingCount", "CallCount", "TeamsChat"]}
+    />
   );
 };
 

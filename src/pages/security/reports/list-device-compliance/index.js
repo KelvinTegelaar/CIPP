@@ -1,14 +1,29 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Device Compliance";
+  const pageTitle = "Lighthouse - Device Compliance";
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the device compliance section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/ListAllTenantDeviceCompliance"
+      apiData={{
+        TenantFilter: "TenantFilter",
+      }}
+      apiDataKey="Results"
+      simpleColumns={[
+        "tenantDisplayName",
+        "managedDeviceName",
+        "complianceStatus",
+        "ownerType",
+        "osDescription",
+        "manufacturer",
+        "model",
+        "lastSyncDateTime",
+      ]}
+      queryKey="LighthouseDeviceComplianceReport"
+    />
   );
 };
 

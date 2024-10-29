@@ -1,14 +1,40 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Vulnerabilities";
+  const pageTitle = "Software Vulnerabilities Status";
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the vulnerabilities section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/ListDefenderTVM"
+      apiData={{
+        TenantFilter: "TenantFilter",
+      }}
+      apiDataKey="Results"
+      simpleColumns={[
+        "affectedDevicesCount",
+        "affectedDevices",
+        "osPlatform",
+        "softwareVendor",
+        "softwareName",
+        "vulnerabilitySeverityLevel",
+        "cvssScore",
+        "securityUpdateAvailable",
+        "exploitabilityLevel",
+        "cveId",
+      ]}
+      /* 
+      Uncomment and configure filters functionality once implemented in CippTablePage:
+      filters={[
+        { label: "# Affected Devices", filter: '"affectedDevicesCount":1' },
+        { label: "Windows 10 devices", filter: '"osPlatform":"Windows10"' },
+        { label: "Windows 11 devices", filter: '"osPlatform":"Windows11"' },
+        { label: "Vendor is Microsoft", filter: '"softwareVendor":"Microsoft"' },
+        { label: "High Severity", filter: '"vulnerabilitySeverityLevel":"High"' },
+      ]}
+      */
+    />
   );
 };
 

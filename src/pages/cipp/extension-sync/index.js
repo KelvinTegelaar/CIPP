@@ -1,14 +1,40 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import { Refresh } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Extension Sync";
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the extension sync section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/ListExtensionSync"
+      apiData={{
+        TenantFilter: "TenantFilter", // Added for tenant-specific filtering
+      }}
+      apiDataKey="Results"
+      queryKey="ExtensionSyncReport"
+      simpleColumns={[
+        "Tenant",
+        "SyncType",
+        "Name",
+        "ScheduledTime",
+        "ExecutedTime",
+        "RepeatsEvery",
+        "Results",
+      ]}
+      cardButton={
+        <Button
+          startIcon={<Refresh />}
+          onClick={() => {
+            /* Developer Note: Implement refresh functionality to refetch data */
+          }}
+        >
+          Refresh
+        </Button>
+      }
+    />
   );
 };
 
