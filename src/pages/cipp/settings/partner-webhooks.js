@@ -206,7 +206,7 @@ const Page = () => {
                   </Stack>
                 }
               />
-              <CardContent>
+              <CardContent sx={{ p: 0 }}>
                 <CippPropertyList
                   sx={{ my: 0, mx: 0, p: 0 }}
                   isFetching={validateTest.isFetching}
