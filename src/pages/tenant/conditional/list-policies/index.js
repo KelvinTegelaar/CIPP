@@ -21,8 +21,8 @@ const Page = () => {
       type: "POST",
       url: "/api/AddCATemplate",
       data: {
-        TenantFilter: "TenantFilter",
         GUID: "id",
+        //row.parse rawJSON
       },
       confirmText: "Are you sure you want to create a template based on this rule?",
       icon: <MenuBookIcon />,
@@ -33,7 +33,6 @@ const Page = () => {
       type: "POST",
       url: "/api/EditCAPolicy?State=Enabled",
       data: {
-        TenantFilter: "TenantFilter",
         GUID: "id",
       },
       confirmText: "Are you sure you want to enable this rule?",
@@ -45,7 +44,6 @@ const Page = () => {
       type: "POST",
       url: "/api/EditCAPolicy?State=Disabled",
       data: {
-        TenantFilter: "TenantFilter",
         GUID: "id",
       },
       confirmText: "Are you sure you want to disable this rule?",
@@ -57,7 +55,6 @@ const Page = () => {
       type: "POST",
       url: "/api/EditCAPolicy?State=enabledForReportingButNotEnforced",
       data: {
-        TenantFilter: "TenantFilter",
         GUID: "id",
       },
       confirmText: "Are you sure you want to set this rule to report only?",
@@ -69,7 +66,6 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveCAPolicy",
       data: {
-        TenantFilter: "TenantFilter",
         GUID: "id",
       },
       confirmText: "Are you sure you want to delete this rule?",

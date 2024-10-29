@@ -148,6 +148,16 @@ export const getCippFormatting = (data, cellName, type) => {
     );
   }
 
+  if (cellName === "state") {
+    data =
+      data === "enabled"
+        ? "Enabled"
+        : data === "enabledForReportingButNotEnforced"
+        ? "Report Only"
+        : data;
+    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
   // Handle null or undefined data
   if (data === null || data === undefined) {
     return isText ? (

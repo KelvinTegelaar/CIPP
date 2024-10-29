@@ -186,7 +186,12 @@ export const CippDeploymentStep = (props) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    disabled={currentStepState >= 4}
+                    disabled={
+                      currentStepState >= 4 ||
+                      !approvalUrl ||
+                      !approvalUrl.startsWith("https://login") ||
+                      typeof approvalUrl !== "string"
+                    }
                     onClick={() => openPopup(approvalUrl)}
                   >
                     Open Approval Link
@@ -269,6 +274,7 @@ export const CippDeploymentStep = (props) => {
 
         {values.selectedOption === "Manual" && (
           <>
+            {formControl.setValue("setKeys", true)}
             <Typography variant="body1">
               You may enter your secrets below. Leave fields blank to retain existing values.
             </Typography>
