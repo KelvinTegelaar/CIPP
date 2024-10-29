@@ -55,7 +55,6 @@ const Page = () => {
         onSuccess: (data) => {
           if (data?.data?.Results?.correlationId) {
             setCorrelationId(data?.data?.Results?.correlationId);
-            console.log(data?.data?.Results?.correlationId);
             setValidateRunning(true);
             validateTest.refetch();
           }
@@ -66,6 +65,7 @@ const Page = () => {
 
   useEffect(() => {
     if (
+      correlationId &&
       validateRunning &&
       validateTest.isSuccess &&
       validateTest?.data?.Results?.status === "Submitted"
@@ -73,8 +73,17 @@ const Page = () => {
       setTimeout(() => {
         validateTest.refetch();
       }, 1000);
-    } else {
+    } else if (
+      validateTest.isSuccess &&
+      (validateTest?.data?.Results?.status === "completed" ||
+        validateTest?.data?.Results?.status === "failed")
+    ) {
       setValidateRunning(false);
+      setCorrelationId(null);
+    } else {
+      setTimeout(() => {
+        validateTest.refetch();
+      }, 1000);
     }
   }, [validateTest.isSuccess, validateTest?.data?.Results, validateRunning]);
 
@@ -124,6 +133,7 @@ const Page = () => {
         <Grid item xs={12} md={12}>
           <CippPropertyList
             sx={{ mb: 3, mx: 0, p: 0 }}
+            isFetching={listSubscription.isFetching}
             propertyItems={[
               {
                 label: "Webhook URL",
@@ -147,6 +157,7 @@ const Page = () => {
             fullWidth
             label="Event Types"
             name="EventType"
+            isFetching={listEventTypes.isFetching}
             options={listEventTypes?.data?.Results?.map((eventType) => {
               return { label: eventType, value: eventType };
             })}
