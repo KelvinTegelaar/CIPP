@@ -68,9 +68,11 @@ const Page = () => {
       {
         onSuccess: (data) => {
           if (data?.data?.Results?.correlationId) {
-            setCorrelationId(data?.data?.Results?.correlationId);
-            setValidateRunning(true);
-            validateTest.refetch();
+            setTimeout(() => {
+              setCorrelationId(data?.data?.Results?.correlationId);
+              setValidateRunning(true);
+              validateTest.refetch();
+            }, 1000);
           }
         },
       }
@@ -120,15 +122,15 @@ const Page = () => {
       hidePageType={true}
       formControl={formControl}
       resetForm={false}
-      postUrl="/api/ExecNotificationConfig"
-      relatedQueryKeys={["ListNotificationConfig"]}
+      postUrl="/api/ExecPartnerWebhook?Action=CreateSubscription"
+      queryKey={["listSubscription", "listEventTypes"]}
       addedButtons={
         <Button variant="outlined" onClick={handleStartTest}>
           Test Webhook
         </Button>
       }
     >
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} md={12}>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
             Subscribe to Microsoft Partner center webhooks to enable automatic tenant onboarding and
@@ -205,6 +207,7 @@ const Page = () => {
                     </IconButton>
                   </Stack>
                 }
+                sx={{ pb: 0 }}
               />
               <CardContent sx={{ p: 0 }}>
                 <CippPropertyList
@@ -216,7 +219,9 @@ const Page = () => {
                       value: (
                         <Chip
                           color={
-                            validateTest?.data?.Results?.results?.[0].responseCode === "200"
+                            !validateTest?.data?.Results?.results?.[0].responseCode
+                              ? "info"
+                              : validateTest?.data?.Results?.results?.[0].responseCode === "200"
                               ? "success"
                               : "error"
                           }
