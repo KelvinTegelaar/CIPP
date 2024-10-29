@@ -3,7 +3,20 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
-import { Button, Card, Chip, Grid, Typography, Link, CardHeader, CardContent } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  Grid,
+  Stack,
+  Typography,
+  Link,
+  CardHeader,
+  CardContent,
+  IconButton,
+  SvgIcon,
+} from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
@@ -11,6 +24,7 @@ import { CippPropertyList } from "../../../components/CippComponents/CippPropert
 import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
 import { CippTimeAgo } from "../../../components/CippComponents/CippTimeAgo";
 import { useState } from "react";
+import { Close } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Partner Webhooks";
@@ -175,10 +189,26 @@ const Page = () => {
         {testRunning && (
           <Grid item xs={12} md={12} sx={{ mt: 2 }}>
             <Card variant="outlined">
-              <CardHeader title="Test Results" />
+              <CardHeader
+                title={
+                  <Stack
+                    direction="row"
+                    sx={{ display: "flex" }}
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Box>Test Results</Box>
+                    <IconButton variant="outlined" onClick={() => setTestRunning(false)}>
+                      <SvgIcon fontSize="small">
+                        <Close />
+                      </SvgIcon>
+                    </IconButton>
+                  </Stack>
+                }
+              />
               <CardContent>
                 <CippPropertyList
-                  sx={{ mb: 3, mx: 0, p: 0 }}
+                  sx={{ my: 0, mx: 0, p: 0 }}
                   isFetching={validateTest.isFetching}
                   propertyItems={[
                     {
