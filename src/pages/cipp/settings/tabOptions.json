@@ -26,9 +26,5 @@
   {
     "label": "Licenses",
     "path": "/cipp/settings/licenses"
-  },
-  {
-    "label": "Maintenance",
-    "path": "/cipp/settings/maintenance"
   }
 ]
