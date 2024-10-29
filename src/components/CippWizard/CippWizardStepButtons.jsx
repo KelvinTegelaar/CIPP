@@ -11,7 +11,8 @@ export const CippWizardStepButtons = (props) => {
     onPreviousStep,
     onNextStep,
     formControl,
-    noButton = false,
+    noNextButton = false,
+    noSubmitButton = false,
     ...other
   } = props;
   const { isValid, isSubmitted, isSubmitting } = useFormState({ control: formControl.control });
@@ -20,6 +21,7 @@ export const CippWizardStepButtons = (props) => {
     const values = formControl.getValues();
     sendForm.mutate({ url: postUrl, data: values });
   };
+
   return (
     <>
       <CippApiResults apiObject={sendForm} />
@@ -35,7 +37,7 @@ export const CippWizardStepButtons = (props) => {
             Back
           </Button>
         )}
-        {!noButton && currentStep !== lastStep && (
+        {!noNextButton && currentStep !== lastStep && (
           <Button
             size="large"
             disabled={!isValid}
@@ -46,7 +48,7 @@ export const CippWizardStepButtons = (props) => {
             Next Step
           </Button>
         )}
-        {!noButton && currentStep === lastStep && (
+        {!noSubmitButton && currentStep === lastStep && (
           <form onSubmit={formControl.handleSubmit(handleSubmit)}>
             <Button size="large" type="submit" variant="contained" disabled={sendForm.isPending}>
               {isSubmitted ? "Resubmit" : "Submit"}

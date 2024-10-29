@@ -10,7 +10,7 @@ export const CippWizardConfirmation = (props) => {
   const formValues = formControl.getValues();
   const formEntries = Object.entries(formValues);
   //remove all entries in "blacklist" from showing on confirmation page
-  const blacklist = ["selectedOption", "GUID", "ID"];
+  const blacklist = ["selectedOption", "GUID", "ID", "noSubmitButton"];
 
   const tenantEntry = formEntries.find(([key]) => key === "tenantFilter" || key === "tenant");
   const userEntry = formEntries.find(([key]) =>
@@ -68,6 +68,7 @@ export const CippWizardConfirmation = (props) => {
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
         formControl={formControl}
+        noSubmitButton={formValues?.noSubmitButton}
       />
     </Stack>
   );

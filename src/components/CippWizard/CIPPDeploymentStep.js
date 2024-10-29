@@ -19,40 +19,49 @@ import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { CheckCircle } from "@mui/icons-material";
 import CippPermissionCheck from "../CippSettings/CippPermissionCheck";
 import { useQueryClient } from "@tanstack/react-query";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 
 export const CippDeploymentStep = (props) => {
   const queryClient = useQueryClient();
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;
   const values = formControl.getValues();
 
-  const [currentStepState, setCurrentStepState] = useState(1); // Start at Step 1
-  const [pollingStep, setPollingStep] = useState(1); // Control polling by step
+  const [currentStepState, setCurrentStepState] = useState(1);
+  const [pollingStep, setPollingStep] = useState(1);
   const [approvalUrl, setApprovalUrl] = useState(true);
 
-  // Initial setup API call
   const startSetupApi = ApiGetCall({
     url: "/api/ExecSAMSetup?CreateSAM=true&partnersetup=true",
     queryKey: "startSAMSetup",
   });
 
-  // Polling for setup status based on current step
   const checkSetupStatusApi = ApiGetCall({
     url: `/api/ExecSAMSetup?CheckSetupProcess=true&step=${pollingStep}`,
     queryKey: `checkSetupStep${pollingStep}`,
     waiting: !pollingStep,
   });
-
-  // Start polling Step 1 upon successful setup creation
+  const appId = ApiGetCall({
+    url: `/api/ExecListAppId`,
+    queryKey: `ExecListAppId`,
+    waiting: values.selectedOption !== "UpdateTokens" ? false : true,
+  });
   useEffect(() => {
-    if (startSetupApi.data && startSetupApi.data.step === 1) {
+    if (
+      startSetupApi.data &&
+      startSetupApi.data.step === 1 &&
+      values.selectedOption === "CreateApp"
+    ) {
+      formControl.register("wizardStatus", {
+        required: true,
+      });
+      formControl.setValue("noSubmitButton", true);
       setPollingStep(1);
       setCurrentStepState(1);
     }
   }, [startSetupApi.data]);
 
-  // Polling logic - check for updates every 5 seconds
   useEffect(() => {
-    if (pollingStep) {
+    if (pollingStep && values.selectedOption === "CreateApp") {
       const intervalId = setInterval(() => {
         if (!checkSetupStatusApi.isFetching) {
           checkSetupStatusApi.refetch();
@@ -62,7 +71,6 @@ export const CippDeploymentStep = (props) => {
     }
   }, [pollingStep, checkSetupStatusApi]);
 
-  // Manage API responses to advance steps based on returned step value
   useEffect(() => {
     if (checkSetupStatusApi.data) {
       const { step, message, url, code } = checkSetupStatusApi.data;
@@ -74,7 +82,12 @@ export const CippDeploymentStep = (props) => {
         setPollingStep(2);
       } else if (step >= 3) {
         setCurrentStepState(4);
-        setPollingStep(null); // Stop polling as we’re at the final step
+        setPollingStep(null);
+        formControl.setValue(
+          "wizardStatus",
+          "You've executed the SAM Wizard. You may navigate away from this window."
+        );
+        formControl.trigger();
       }
     }
   }, [checkSetupStatusApi.data, currentStepState]);
@@ -110,7 +123,6 @@ export const CippDeploymentStep = (props) => {
                 locations or other exclusions.
               </li>
             </Alert>
-            {/* Step 1 Card */}
             {currentStepState >= 1 && (
               <CippButtonCard
                 title={
@@ -143,6 +155,7 @@ export const CippDeploymentStep = (props) => {
                 <Typography variant="body2" gutterBottom>
                   Click the button below and enter the provided code. This creates the CIPP
                   Application Registration in your tenant that allows you to access the Graph API.
+                  Login using your CIPP Service Account.
                 </Typography>
                 {startSetupApi.isLoading ? (
                   <Skeleton variant="rectangular" height={60} />
@@ -151,7 +164,6 @@ export const CippDeploymentStep = (props) => {
                 )}
               </CippButtonCard>
             )}
-            {/* Step 2 Card */}
             {currentStepState >= 2 && (
               <CippButtonCard
                 variant="outlined"
@@ -186,7 +198,8 @@ export const CippDeploymentStep = (props) => {
                 </Typography>
                 <Typography variant="body2" gutterBottom>
                   Please open the link below and provide the required approval, this allows the app
-                  specific permissions shown in the next screen.
+                  specific permissions shown in the next screen. Login using your CIPP Service
+                  Account.
                 </Typography>
               </CippButtonCard>
             )}
@@ -210,21 +223,48 @@ export const CippDeploymentStep = (props) => {
               >
                 Start Over
               </Button>
+              <Grid item xs={12}>
+                <CippApiResults apiObject={startSetupApi} errorsOnly={true} />
+                <CippApiResults apiObject={checkSetupStatusApi} errorsOnly={true} />
+              </Grid>
             </Grid>
           </>
         )}
 
         {values.selectedOption === "UpdateTokens" && (
-          <>
-            <Typography variant="body1" gutterBottom>
+          <CippButtonCard
+            variant="outlined"
+            title={
+              <Stack direction="row" justifyContent={"space-between"}>
+                <Box>Update Tokens</Box>
+                <Stack direction="row" spacing={2}>
+                  {appId.isLoading ? (
+                    <CircularProgress size="1rem" />
+                  ) : (
+                    <SvgIcon>
+                      <CheckCircle />
+                    </SvgIcon>
+                  )}
+                </Stack>
+              </Stack>
+            }
+            CardButton={
+              <Button
+                variant="contained"
+                disabled={appId.isLoading}
+                onClick={() => openPopup(appId.data.refreshUrl)}
+                color="primary"
+              >
+                Refresh Graph Token
+              </Button>
+            }
+          >
+            <Typography variant="body2" gutterBottom>
               Click the button below to refresh your token.
             </Typography>
-            <Grid item xs={12}>
-              <Button variant="contained" color="primary">
-                Refresh Graph Token.
-              </Button>
-            </Grid>
-          </>
+            {formControl.setValue("noSubmitButton", true)}
+            <CippApiResults apiObject={appId} errorsOnly />
+          </CippButtonCard>
         )}
 
         {values.selectedOption === "Manual" && (
@@ -267,7 +307,9 @@ export const CippDeploymentStep = (props) => {
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
+        noNextButton={values.selectedOption === "UpdateTokens"}
         formControl={formControl}
+        noSubmitButton={true}
       />
     </Stack>
   );

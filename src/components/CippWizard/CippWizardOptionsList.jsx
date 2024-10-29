@@ -1,15 +1,26 @@
 import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 
 export const CippWizardOptionsList = (props) => {
   const { onNextStep, options, title, subtext, formControl, currentStep, onPreviousStep } = props;
   const [selectedOption, setSelectedOption] = useState(null);
-
   // Register the "selectedOption" field in react-hook-form
   formControl.register("selectedOption", {
     required: true,
   });
+
+  //only perform a reset if the form has more options than 'selectedOption'
+  useEffect(() => {
+    //find if we have more properties than just 'selectedOption'
+    const formValues = formControl.getValues();
+    const formEntries = Object.entries(formValues);
+    const formKeys = formEntries.map(([key]) => key);
+    const hasMoreThanSelectedOption = formKeys.length > 1;
+    if (hasMoreThanSelectedOption) {
+      formControl.reset({ selectedOption: "" });
+    }
+  }, [formControl]);
 
   const handleOptionClick = (value) => {
     setSelectedOption(value); // Visually select the option

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getCippError } from "../../utils/get-cipp-error";
 
 export const CippApiResults = (props) => {
-  const { apiObject } = props;
+  const { apiObject, errorsOnly = false } = props;
 
   const [errorVisible, setErrorVisible] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
@@ -18,16 +18,18 @@ export const CippApiResults = (props) => {
       setErrorVisible(false);
     }
 
-    if (apiObject.isFetching || (apiObject.isIdle === false && apiObject.isPending === true)) {
-      setFetchingVisible(true);
-    } else {
-      setFetchingVisible(false);
-    }
+    if (!errorsOnly) {
+      if (apiObject.isFetching || (apiObject.isIdle === false && apiObject.isPending === true)) {
+        setFetchingVisible(true);
+      } else {
+        setFetchingVisible(false);
+      }
 
-    if (apiObject.isSuccess || partialResults.length > 0) {
-      setSuccessVisible(true);
-    } else {
-      setSuccessVisible(false);
+      if (apiObject.isSuccess || partialResults.length > 0) {
+        setSuccessVisible(true);
+      } else {
+        setSuccessVisible(false);
+      }
     }
   }, [
     apiObject.isError,
@@ -35,6 +37,7 @@ export const CippApiResults = (props) => {
     apiObject.isFetching,
     apiObject.isPending,
     partialResults.length,
+    errorsOnly,
   ]);
 
   useEffect(() => {
@@ -45,28 +48,30 @@ export const CippApiResults = (props) => {
 
   return (
     <>
-      <Collapse in={fetchingVisible}>
-        <Alert
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setFetchingVisible((prev) => !prev);
-              }}
-            >
-              <Close fontSize="inherit" />
-            </IconButton>
-          }
-          variant="outlined"
-          severity="info"
-        >
-          <Typography variant="body2">
-            <CircularProgress size={20} /> Loading...
-          </Typography>
-        </Alert>
-      </Collapse>
+      {!errorsOnly && (
+        <Collapse in={fetchingVisible}>
+          <Alert
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setFetchingVisible((prev) => !prev);
+                }}
+              >
+                <Close fontSize="inherit" />
+              </IconButton>
+            }
+            variant="outlined"
+            severity="info"
+          >
+            <Typography variant="body2">
+              <CircularProgress size={20} /> Loading...
+            </Typography>
+          </Alert>
+        </Collapse>
+      )}
       <Collapse in={errorVisible}>
         {apiObject.isError && (
           <Alert
@@ -89,35 +94,37 @@ export const CippApiResults = (props) => {
           </Alert>
         )}
       </Collapse>
-      <Collapse in={successVisible}>
-        {apiObject.data && (
-          <Alert
-            variant="filled"
-            severity="success"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setSuccessVisible((prev) => !prev);
-                }}
-              >
-                <Close fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            <ul>
-              {partialResults.map((result, index) => (
-                <li key={index}>
-                  {result.Results} THIS API IS CURRENTLY RETURNING A SINGLE OBJECT MESSAGE AND NEEDS
-                  TO BE CHANGED TO RETURN AN ARRAY WITH OBJECTS: results, copyInfo
-                </li>
-              ))}
-            </ul>
-          </Alert>
-        )}
-      </Collapse>
+      {!errorsOnly && (
+        <Collapse in={successVisible}>
+          {apiObject.data && (
+            <Alert
+              variant="filled"
+              severity="success"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setSuccessVisible((prev) => !prev);
+                  }}
+                >
+                  <Close fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              <ul>
+                {partialResults.map((result, index) => (
+                  <li key={index}>
+                    {result.Results} THIS API IS CURRENTLY RETURNING A SINGLE OBJECT MESSAGE AND
+                    NEEDS TO BE CHANGED TO RETURN AN ARRAY WITH OBJECTS: results, copyInfo
+                  </li>
+                ))}
+              </ul>
+            </Alert>
+          )}
+        </Collapse>
+      )}
     </>
   );
 };
