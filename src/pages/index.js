@@ -11,6 +11,7 @@ import Portals from "../data/portals";
 import { BulkActionsMenu } from "../components/bulk-actions-menu.js";
 import { CippUniversalSearch } from "../components/CippCards/CippUniversalSearch.jsx";
 import { ApiGetCall } from "../api/ApiCall.jsx";
+import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard.jsx";
 const Page = () => {
   const { currentTenant } = useSettings();
   const [domainVisible, setDomainVisible] = useState(false);
@@ -66,8 +67,24 @@ const Page = () => {
   // Top bar data
   const tenantInfo = [
     { name: "Tenant Name", data: organization.data?.displayName },
-    { name: "Tenant ID", data: organization.data?.id },
-    { name: "Default Domain", data: organization.data?.verifiedDomains?.[0]?.name },
+    {
+      name: "Tenant ID",
+      data: (
+        <>
+          {organization.data?.id}
+          <CippCopyToClipBoard text={organization.data?.id} />
+        </>
+      ),
+    },
+    {
+      name: "Default Domain",
+      data: (
+        <>
+          {organization.data?.verifiedDomains?.[0]?.name}
+          <CippCopyToClipBoard text={organization.data?.verifiedDomains?.[0]?.name} />
+        </>
+      ),
+    },
     {
       name: "AD Sync Enabled",
       data: getCippFormatting(organization.data?.onPremisesSyncEnabled, "dirsync"),

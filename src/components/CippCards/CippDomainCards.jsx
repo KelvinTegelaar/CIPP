@@ -9,6 +9,7 @@ import {
   Tooltip,
   Typography,
   Chip,
+  Stack,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -27,26 +28,38 @@ import { CippPropertyListCard } from "./CippPropertyListCard";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 const ResultList = ({ passes = [], warns = [], fails = [] }) => (
-  <ul>
+  <Stack direction="column" sx={{ mt: 1 }}>
     {passes.map((pass, index) => (
-      <Typography key={index} sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+      <Typography
+        variant="body2"
+        key={index}
+        sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+      >
         <CheckCircleIcon style={{ color: "green", marginRight: "4px" }} />
         {pass}
       </Typography>
     ))}
     {warns.map((warn, index) => (
-      <Typography key={index} sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+      <Typography
+        variant="body2"
+        key={index}
+        sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+      >
         <WarningIcon style={{ color: "orange", marginRight: "4px" }} />
         {warn}
       </Typography>
     ))}
     {fails.map((fail, index) => (
-      <Typography key={index} sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+      <Typography
+        variant="body2"
+        key={index}
+        sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+      >
         <ErrorIcon style={{ color: "red", marginRight: "4px" }} />
         {fail}
       </Typography>
     ))}
-  </ul>
+  </Stack>
 );
 
 // Custom MX Results Card component
@@ -478,7 +491,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 isFetching={whoisLoading}
                 info={
                   <div>
-                    <p>Registrar: {whoisData?.Registrar}</p>
+                    <Typography variant="body2">Registrar: {whoisData?.Registrar}</Typography>
                   </div>
                 }
               />
