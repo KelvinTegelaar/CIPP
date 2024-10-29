@@ -74,11 +74,12 @@ const Page = () => {
         </Grid>
         <Grid item xs={12} md={12}>
           <CippPropertyList
-            sx={{ mb: 3, mx: 0 }}
+            sx={{ mb: 3, mx: 0, p: 0 }}
             propertyItems={[
               {
                 label: "Webhook URL",
                 value: <CippCodeBlock code={listSubscription?.data?.Results?.webhookUrl} />,
+                sx: { pl: 0 },
               },
               {
                 label: "Last Updated",

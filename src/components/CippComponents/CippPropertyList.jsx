@@ -28,6 +28,7 @@ export const CippPropertyList = (props) => {
                   align={align}
                   label={item.label}
                   value={<Skeleton width={280} />}
+                  {...item}
                 />
               ))}
             </>
