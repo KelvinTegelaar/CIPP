@@ -93,7 +93,6 @@ const EditCalendarPermission = () => {
       UserToGetPermissions: values.UserToGetPermissions ? values.UserToGetPermissions.value : '',
       RemoveAccess: values.RemoveAccess ? values.RemoveAccess.value : '',
     }
-    //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditCalendarPermissions', params: shippedValues })
   }
   const initialState = {}
@@ -102,7 +101,7 @@ const EditCalendarPermission = () => {
   const formDisabled = queryError === true
 
   const UsersMapped = users?.map((user) => ({
-    value: `${user.primarySmtpAddress}`,
+    value: `${user.externalDirectoryObjectId}`,
     name: `${user.displayName} - (${user.primarySmtpAddress})`,
   }))
   UsersMapped.unshift({ value: 'Default', name: 'Default' })
