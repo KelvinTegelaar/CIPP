@@ -294,7 +294,12 @@ export const createComponents = () => {
       },
     },
     MuiFormLabel: {
-      styleOverrides: {},
+      styleOverrides: {
+        root: {
+          fontSize: 14,
+          fontWeight: 500,
+        },
+      },
     },
     MuiListItemIcon: {
       styleOverrides: {
