@@ -1,17 +1,47 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Policy Templates";
+  const pageTitle = "Available Endpoint Manager Templates";
+  
+  const actions = [
+    {
+      label: "View Template",
+      link: "/intune/templates/[id]",
+      multiPost: false,
+      icon: <EyeIcon />,
+      color: "success",
+    },
+    {
+      label: "Delete Template",
+      type: "POST",
+      url: "/api/RemoveIntuneTemplate",
+      data: { TenantFilter: "Tenant", GUID: "id" },
+      confirmText: "Do you want to delete the template?",
+      multiPost: false,
+      icon: <TrashIcon />,
+      color: "danger",
+    },
+  ];
+
+  const offCanvas = {
+    extendedInfoFields: ["displayName", "description", "Type"],
+    actions: actions,
+  };
+
+  const simpleColumns = ["displayName", "description", "Type"];
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the policy templates section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/ListIntuneTemplates?View=true"
+      apiDataKey="Results"
+      actions={actions}
+      offCanvas={offCanvas}
+      simpleColumns={simpleColumns}
+    />
   );
 };
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
 export default Page;
