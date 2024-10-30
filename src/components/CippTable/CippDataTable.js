@@ -13,7 +13,7 @@ import {
 import { ResourceUnavailable } from "../resource-unavailable";
 import { ResourceError } from "../resource-error";
 import { Scrollbar } from "../scrollbar";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
@@ -70,7 +70,6 @@ export const CippDataTable = (props) => {
       }
     }
   }, [data, queryKey, JSON.stringify(data)]);
-
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
       const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
@@ -149,14 +148,23 @@ export const CippDataTable = (props) => {
   const createDialog = useDialog();
 
   // Apply the modeInfo directly
+  const modeInfo = useMemo(
+    () => utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas),
+    [columnVisibility, simple, actions, simpleColumns, offCanvas]
+  );
 
-  const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas);
+  //create memoized version of usedColumns, and usedData
+  const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
+  const memoizedData = useMemo(() => usedData, [usedData]);
+  console.log("rerender");
   const table = useMaterialReactTable({
+    enableRowVirtualization: true,
+    enableColumnVirtualization: true,
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,
     }),
-    columns: usedColumns,
-    data: usedData,
+    columns: memoizedColumns,
+    data: memoizedData,
     state: { columnVisibility },
     renderEmptyRowsFallback: ({ table }) =>
       getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
@@ -247,11 +255,7 @@ export const CippDataTable = (props) => {
           ) : (
             <>
               {(getRequestData.isSuccess || getRequestData.data?.pages.length >= 0 || data) && (
-                <MaterialReactTable
-                  enableRowVirtualization
-                  enableColumnVirtualization
-                  table={table}
-                />
+                <MaterialReactTable table={table} />
               )}
             </>
           )}

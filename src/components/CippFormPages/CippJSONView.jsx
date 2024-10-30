@@ -46,7 +46,7 @@ const renderListItems = (data, onItemClick) => {
           disabled={value.length === 0}
           value={
             <Button variant="text" onClick={() => onItemClick(value)}>
-              {value.length} configured item{value.length > 1 ? "s" : ""}
+              {value.length} item{value.length > 1 ? "s" : ""}
             </Button>
           }
         />
@@ -123,7 +123,18 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" } }) {
         ) : (
           <Grid container spacing={2}>
             {drilldownData.slice(0, 4).map((data, index) => (
-              <Grid item xs={12} sm={3} key={index}>
+              <Grid
+                item
+                xs={12}
+                sm={3}
+                key={index}
+                sx={{
+                  borderRight: index < 3 ? "1px solid lightgrey" : "none",
+                  overflowWrap: "anywhere",
+                  whiteSpace: "pre-line",
+                  paddingRight: 2,
+                }}
+              >
                 <PropertyList>
                   {renderListItems(data, (itemData) => handleItemClick(itemData, index))}
                 </PropertyList>

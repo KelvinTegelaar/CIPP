@@ -4,7 +4,6 @@ import { Box } from "@mui/system";
 import {
   MRT_GlobalFilterTextField,
   MRT_ShowHideColumnsButton,
-  MRT_ToggleDensePaddingButton,
   MRT_ToggleFiltersButton,
   MRT_ToolbarAlertBanner,
 } from "material-react-table";
@@ -29,7 +28,7 @@ export const CIPPTableToptoolbar = ({
   const popover = usePopover();
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-
+  console.log("CIPPTableToptoolbar");
   return (
     <>
       <Box
