@@ -1,8 +1,11 @@
 import Head from "next/head";
-import { Box, Container, Stack } from "@mui/material";
+import { Box, Button, Container, Stack, SvgIcon } from "@mui/material";
 import { CippWizard } from "./CippWizard";
+import { useRouter } from "next/router";
+import { ArrowLeftIcon } from "@mui/x-date-pickers";
 
 const CippWizardPage = (props) => {
+  const router = useRouter();
   const {
     postUrl,
     initialState,
@@ -24,6 +27,17 @@ const CippWizardPage = (props) => {
         }}
       >
         <Container maxWidth="xl">
+          <Button
+            color="inherit"
+            onClick={() => router.back()}
+            startIcon={
+              <SvgIcon fontSize="small">
+                <ArrowLeftIcon />
+              </SvgIcon>
+            }
+          >
+            Back
+          </Button>
           <Stack spacing={6}>
             <Stack spacing={5}>
               <Stack spacing={1}>

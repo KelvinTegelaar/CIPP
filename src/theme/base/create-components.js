@@ -294,20 +294,7 @@ export const createComponents = () => {
       },
     },
     MuiFormLabel: {
-      styleOverrides: {
-        root: {
-          fontSize: 14,
-          fontWeight: 500,
-          position: "absolute",
-          transform: "translate(12px, 10px) scale(1)", // Move label up to center it in the input field
-          transition: "transform 0.2s ease-out",
-          top: 0,
-          left: 0,
-          transformOrigin: "top left",
-          pointerEvents: "none",
-          zIndex: 1000,
-        },
-      },
+      styleOverrides: {},
     },
     MuiListItemIcon: {
       styleOverrides: {

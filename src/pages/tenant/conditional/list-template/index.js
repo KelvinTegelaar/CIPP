@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
 
 const Page = () => {
   const pageTitle = "Available Conditional Access Templates";
@@ -17,7 +18,7 @@ const Page = () => {
       url: "/api/RemoveCATemplate",
       data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
-      color: "danger",
+      multiPost: false,
     },
   ];
 
@@ -30,19 +31,11 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListCATemplates"
-      apiData={{
-        TenantFilter: "TenantFilter",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={["displayName", "GUID"]}
       cardButton={
-        <TitleButton
-          key="template-lib"
-          href="/cipp/template-library"
-          title="Add Template Library"
-        />
+        <Button key="template-lib" href="/cipp/template-library" title="Add Template Library" />
       }
     />
   );

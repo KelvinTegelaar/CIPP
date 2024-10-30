@@ -59,30 +59,25 @@ export const CippApiDialog = (props) => {
   });
 
   const processActionData = (dataObject, row, replacementBehaviour) => {
+    if (typeof api?.dataFunction === "function") {
+      console.log("row is", row);
+      return api.dataFunction(row);
+    }
     const newData = {};
     Object.keys(dataObject).forEach((key) => {
       const value = dataObject[key];
-      // If the key starts with "!", do not replace, just pass the string as is
       if (typeof value === "string" && value.startsWith("!")) {
         newData[key] = value.slice(1); // Remove "!" and pass the key as-is
-      }
-      // If the value exists in row, replace it with the row value
-      else if (typeof value === "string" && row[value] !== undefined) {
+      } else if (typeof value === "string" && row[value] !== undefined) {
         newData[key] = row[value];
-      }
-      // If the value is an object, recursively process it
-      else if (typeof value === "object" && value !== null) {
+      } else if (typeof value === "object" && value !== null) {
         const processedValue = processActionData(value, row, replacementBehaviour);
         if (replacementBehaviour !== "removeNulls" || Object.keys(processedValue).length > 0) {
           newData[key] = processedValue;
         }
-      }
-      // If replacementBehaviour is not "removeNulls", or value exists in row, add it to newData
-      else if (replacementBehaviour !== "removeNulls") {
+      } else if (replacementBehaviour !== "removeNulls") {
         newData[key] = value;
-      }
-      // If replacementBehaviour is "removeNulls", only add the key if it exists in row
-      else if (row[value] !== undefined) {
+      } else if (row[value] !== undefined) {
         newData[key] = row[value];
       }
     });

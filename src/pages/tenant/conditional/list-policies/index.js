@@ -7,7 +7,8 @@ import {
   MenuBook as MenuBookIcon,
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
-import { Button, Link } from "@mui/material";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 // Page Component
 const Page = () => {
@@ -20,9 +21,8 @@ const Page = () => {
       label: "Create template based on rule",
       type: "POST",
       url: "/api/AddCATemplate",
-      data: {
-        GUID: "id",
-        //row.parse rawJSON
+      dataFunction: (data) => {
+        return JSON.parse(data.rawjson);
       },
       confirmText: "Are you sure you want to create a template based on this rule?",
       icon: <MenuBookIcon />,
