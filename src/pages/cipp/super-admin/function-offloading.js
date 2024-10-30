@@ -9,39 +9,24 @@ import { ApiGetCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
 
 const Page = () => {
-  const pageTitle = "Tenant Mode";
+  const pageTitle = "Function Offloading";
 
   const formControl = useForm({
     mode: "onChange",
   });
 
-  const tenantModeOptions = [
-    {
-      label: "Multi Tenant - GDAP Mode",
-      value: "default",
-    },
-    {
-      label: "Multi Tenant - Add Partner Tenant",
-      value: "PartnerTenantAvailable",
-    },
-    {
-      label: "Single Tenant - Own Tenant Mode",
-      value: "owntenant",
-    },
-  ];
-
-  const execPartnerMode = ApiGetCall({
-    url: "/api/ExecPartnerMode?Action=ListCurrent",
-    queryKey: "execPartnerMode",
+  const execOffloadFunctions = ApiGetCall({
+    url: "/api/ExecOffloadFunctions?Action=ListCurrent",
+    queryKey: "execOffloadFunctions",
   });
 
   useEffect(() => {
-    if (execPartnerMode.isSuccess) {
+    if (execOffloadFunctions.isSuccess) {
       formControl.reset({
-        TenantMode: execPartnerMode.data?.TenantMode,
+        OffloadFunctions: execOffloadFunctions.data?.OffloadFunctions,
       });
     }
-  }, [execPartnerMode.isSuccess]);
+  }, [execOffloadFunctions.isSuccess]);
 
   return (
     <CippFormPage
@@ -50,30 +35,31 @@ const Page = () => {
       hidePageType={true}
       formControl={formControl}
       resetForm={false}
-      postUrl="/api/ExecPartnerMode"
-      queryKey={"execPartnerMode"}
+      postUrl="/api/ExecOffloadFunctions"
+      queryKey={"execOffloadFunctions"}
     >
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} md={12}>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-            The configuration settings below should only be modified by a super admin. Super admins
-            can configure what tenant mode CIPP operates in. See{" "}
+            This mode enables offloading some of the more processor intensive functions to a
+            separate function app. This can be useful in environments where the CIPP server is under
+            heavy load. Please review{" "}
             <Link
-              href="https://docs.cipp.app/setup/installation/owntenant"
+              href="https://docs.cipp.app/user-documentation/cipp/settings/superadmin/function-offloading"
               target="_blank"
               rel="noreferrer"
             >
               our documentation
             </Link>{" "}
-            for more information on how to configure these modes and what they mean.
+            for more information on how to configure this for your environment.
           </Typography>
         </Grid>
         <Grid item xs={12} md={12}>
           <CippFormComponent
-            type="radio"
-            name="TenantMode"
-            options={tenantModeOptions}
+            type="switch"
+            name="OffloadFunctions"
             formControl={formControl}
+            label="Enable Function Offloading"
           />
         </Grid>
       </Grid>
