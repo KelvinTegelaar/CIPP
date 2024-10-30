@@ -278,9 +278,7 @@ export const CippDataTable = (props) => {
                 <ResourceUnavailable message={incorrectDataMessage} />
               ) : (
                 <>
-                  {(getRequestData.isSuccess ||
-                    getRequestData.data?.pages.length >= 0 ||
-                    data.length >= 1) && (
+                  {(getRequestData.isSuccess || getRequestData.data?.pages.length >= 0 || data) && (
                     <MaterialReactTable
                       enableRowVirtualization
                       enableColumnVirtualization
