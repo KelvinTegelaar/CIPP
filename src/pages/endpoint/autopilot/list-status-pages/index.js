@@ -1,17 +1,33 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Status Pages";
+  const pageTitle = "Autopilot Status Pages";
+
+  const simpleColumns = [
+    "displayName",
+    "Description",
+    "installProgressTimeoutInMinutes",
+    "showInstallationProgress",
+    "blockDeviceSetupRetryByUser",
+    "allowDeviceResetOnInstallFailure",
+    "allowDeviceUseOnInstallFailure",
+  ];
+
+  // No actions specified in the original file, so none are included here.
 
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the status pages section.</p>
-    </div>
+    <CippTablePage
+      title={pageTitle}
+      apiUrl="/api/ListAutopilotConfig?type=ESP"
+      apiData={{
+        TenantFilter: "Tenant",
+      }}
+      apiDataKey="Results"
+      simpleColumns={simpleColumns}
+    />
   );
 };
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
 export default Page;
