@@ -13,7 +13,7 @@ export const CippCAForm = (props) => {
   const [JSONData, setJSONData] = useState();
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
   useEffect(() => {
-    if (CATemplates.isSuccess && watcher.value) {
+    if (CATemplates.isSuccess && watcher?.value) {
       const template = CATemplates.data.find((template) => template.GUID === watcher.value);
       if (template) {
         setJSONData(template);

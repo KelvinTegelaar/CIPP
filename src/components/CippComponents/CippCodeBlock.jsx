@@ -53,6 +53,7 @@ export const CippCodeBlock = (props) => {
           height={editorHeight}
           options={{
             wordWrap: true,
+    
           }}
           {...other}
         />
@@ -65,6 +66,7 @@ export const CippCodeBlock = (props) => {
           showLineNumbers={showLineNumbers}
           startingLineNumber={startingLineNumber}
           wrapLongLines={wrapLongLines}
+          
         >
           {code}
         </SyntaxHighlighter>

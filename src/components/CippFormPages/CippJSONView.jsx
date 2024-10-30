@@ -11,11 +11,11 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import JsonView from "@uiw/react-json-view";
 import { PropertyListItem } from "../property-list-item";
 import { PropertyList } from "../property-list";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 
 const cleanObject = (obj) => {
   if (Array.isArray(obj)) {
@@ -113,18 +113,13 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" } }) {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Policy Details
         </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
         <IconButton onClick={toggleView} sx={{ ml: 1 }}>
           {viewJson ? <VisibilityOffIcon /> : <VisibilityIcon />}
         </IconButton>
-      </AccordionSummary>
-      <AccordionDetails>
         {viewJson ? (
-          <JsonView
-            value={cleanObject(object)}
-            collapsed={1}
-            displayDataTypes={false}
-            displayObjectSize={false}
-          />
+          <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object))} />
         ) : (
           <Grid container spacing={2}>
             {drilldownData.slice(0, 4).map((data, index) => (
