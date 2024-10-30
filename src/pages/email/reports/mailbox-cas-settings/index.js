@@ -1,16 +1,30 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Mailbox Client Access Settings";
-
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the mailbox client access settings section.</p>
-    </div>
+    <CippTablePage
+      title="Mailbox Client Access Settings"
+      apiUrl="/api/ListMailboxCAS"
+      apiData={{ TenantFilter: "Tenant" }}
+      apiDataKey="Results"
+      simpleColumns={[
+        "displayName",
+        "primarySmtpAddress",
+        "ecpenabled",
+        "ewsenabled",
+        "imapenabled",
+        "mapienabled",
+        "owaenabled",
+        "popenabled",
+        "activesyncenabled",
+      ]}
+    />
   );
 };
+
+// No actions were specified in the original code, so no actions are added here.
+// No off-canvas configuration was provided or specified in the original code.
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
