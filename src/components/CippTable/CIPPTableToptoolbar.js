@@ -28,7 +28,6 @@ export const CIPPTableToptoolbar = ({
   const popover = usePopover();
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  console.log("CIPPTableToptoolbar");
   return (
     <>
       <Box
@@ -114,10 +113,7 @@ export const CIPPTableToptoolbar = ({
         </Box>
         <Box>
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            {
-              //add information icons here when getRequest is fetiching extra pages,
-              //e.g. a page counter or just "Retrieving more data..." also show a button for load errors. Find a way to discern and infinite load error vs a regular error.
-            }
+
             {(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
               <>
                 <Button
