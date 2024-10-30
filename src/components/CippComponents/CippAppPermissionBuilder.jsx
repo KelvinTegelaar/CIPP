@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -13,9 +13,10 @@ import {
   SvgIcon,
   Stack,
   Chip,
+  Typography,
 } from "@mui/material";
 
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useDialog } from "../../hooks/use-dialog";
 import { PlusIcon, ShieldCheckIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -26,8 +27,6 @@ import { useWatch } from "react-hook-form";
 const CippAppPermissionBuilder = ({
   onSubmit,
   currentPermissions = {},
-  colSize = 8,
-  isSubmitting,
   removePermissionConfirm = false,
   appDisplayName = "CIPP-SAM",
   formControl,
@@ -44,18 +43,6 @@ const CippAppPermissionBuilder = ({
   const additionalPermissionsDialog = useDialog();
 
   const currentSelectedSp = useWatch({ control: formControl.control, name: "servicePrincipal" });
-  console.log(currentSelectedSp);
-
-  /*const {
-    data: servicePrincipals = [],
-    isFetching: spFetching,
-    isSuccess: spSuccess,
-    isUninitialized: spUninitialized,
-    refetch: refetchSpList,
-  } = useGenericGetRequestQuery({
-    path: "api/ExecServicePrincipals",
-  });
-  const [createServicePrincipal, createResult] = useLazyGenericGetRequestQuery();*/
   const {
     data: servicePrincipals = [],
     isSuccess: spSuccess,
@@ -71,24 +58,6 @@ const CippAppPermissionBuilder = ({
     var servicePrincipal = selectedApp.find((sp) => sp?.appId === appId);
     var newServicePrincipals = selectedApp.filter((sp) => sp?.appId !== appId);
 
-    /*if (removePermissionConfirm) {
-      ModalService.confirm({
-        title: "Remove Service Principal",
-        body: `Are you sure you want to remove ${servicePrincipal.displayName}?`,
-        onConfirm: () => {
-          setSelectedApp(newServicePrincipals);
-          var updatedPermissions = JSON.parse(JSON.stringify(newPermissions));
-          delete updatedPermissions.Permissions[appId];
-          setNewPermissions(updatedPermissions);
-        },
-      });
-    } else {
-      setSelectedApp(newServicePrincipals);
-      var updatedPermissions = JSON.parse(JSON.stringify(newPermissions));
-      delete updatedPermissions.Permissions[appId];
-      setNewPermissions(updatedPermissions);
-    }*/
-
     if (removePermissionConfirm) {
       removePermissionDialog.handleOpen();
     } else {
@@ -99,18 +68,13 @@ const CippAppPermissionBuilder = ({
     }
   };
 
+  const createServicePrincipal = ApiPostCall({
+    urlFromData: true,
+    relatedQueryKeys: ["execServicePrincipals"],
+  });
+
   const confirmReset = () => {
     if (removePermissionConfirm) {
-      /*ModalService.confirm({
-        title: "Reset to Default",
-        body: "Are you sure you want to reset all permissions to default?",
-        onConfirm: () => {
-          setSelectedApp([]);
-          setPermissionsImported(false);
-          setManifestVisible(false);
-          setCalloutMessage("Permissions reset to default.");
-        },
-      });*/
       resetPermissionDialog.handleOpen();
     } else {
       setSelectedApp([]);
@@ -133,12 +97,18 @@ const CippAppPermissionBuilder = ({
     if (typeof appId === "string") {
     }
 
-    /*createServicePrincipal({
-      path: "api/ExecServicePrincipals?Action=Create&AppId=" + appId,
-    }).then(() => {
-      refetchSpList();
-      setCalloutMessage(createResult?.data?.Results);
-    });*/
+    createServicePrincipal.mutate(
+      {
+        url: "api/ExecServicePrincipals?Action=Create&AppId=" + appId,
+        data: {},
+      },
+      {
+        onSuccess: () => {
+          refetchSpList();
+          setCalloutMessage(createServicePrincipal?.data?.Results);
+        },
+      }
+    );
   };
 
   const addPermissionRow = (servicePrincipal, permissionType, permission) => {
@@ -168,24 +138,6 @@ const CippAppPermissionBuilder = ({
 
   const removePermissionRow = (servicePrincipal, permissionType, permissionId, permissionValue) => {
     if (removePermissionConfirm) {
-      /*ModalService.confirm({
-        title: "Remove Permission",
-        body: `Are you sure you want to remove the permission: ${permissionValue}?`,
-        onConfirm: () => {
-          var updatedPermissions = JSON.parse(JSON.stringify(newPermissions));
-          var currentPermission = updatedPermissions?.Permissions[servicePrincipal][permissionType];
-          var newPermission = [];
-          if (currentPermission) {
-            currentPermission.map((perm) => {
-              if (perm.id !== permissionId) {
-                newPermission.push(perm);
-              }
-            });
-          }
-          updatedPermissions.Permissions[servicePrincipal][permissionType] = newPermission;
-          setNewPermissions(updatedPermissions);
-        },
-      });*/
       removePermissionDialog.handleOpen();
     } else {
       var updatedPermissions = JSON.parse(JSON.stringify(newPermissions));
@@ -447,341 +399,182 @@ const CippAppPermissionBuilder = ({
     );
   };
 
-  const ApiPermissionRow = ({ servicePrincipal = null }) => {
-    /*const {
-      data: servicePrincipalData = [],
-      isFetching: spFetching,
-      isSuccess: spIdSuccess,
-    } = useGenericGetRequestQuery({
-      path: "api/ExecServicePrincipals?Id=" + servicePrincipal.id,
-    });*/
+  const ApiPermissionRow = ({ servicePrincipal = null, spPermissions, formControl }) => {
     const [appPermissionTable, setAppPermissionTable] = useState([]);
     const [delegatedPermissionTable, setDelegatedPermissionTable] = useState([]);
+
     const currentAppPermission = useWatch({
       control: formControl.control,
-      name: "Permissions." + servicePrincipal.appId + ".applicationPermissions",
+      name: `Permissions.${servicePrincipal.appId}.applicationPermissions`,
     });
     const currentDelegatedPermission = useWatch({
       control: formControl.control,
-      name: "Permissions." + servicePrincipal.appId + ".delegatedPermissions",
+      name: `Permissions.${servicePrincipal.appId}.delegatedPermissions`,
     });
+
     const {
       data: spInfo = [],
       isSuccess: spInfoSuccess,
       isFetching: spInfoFetching,
     } = ApiGetCall({
-      url: "/api/ExecServicePrincipals?Id=" + servicePrincipal.id,
-      queryKey: "execServicePrincipals-" + servicePrincipal.id,
+      url: `/api/ExecServicePrincipals?Id=${servicePrincipal.id}`,
+      queryKey: `execServicePrincipals-${servicePrincipal.id}`,
       waiting: true,
     });
 
-    useEffect(() => {
-      if (spInfoSuccess) {
-        var appTable = [];
-        var delegatedTable = [];
-        newPermissions?.Permissions[servicePrincipal.appId]?.applicationPermissions?.map((perm) => {
-          var role = spInfo?.Results?.appRoles.find((role) => role.id === perm.id);
-          appTable.push({
-            id: perm.id,
-            value: perm.value,
-            description: role?.description,
-          });
-        });
-        newPermissions?.Permissions[servicePrincipal.appId]?.delegatedPermissions?.map((perm) => {
-          var scope = spInfo?.Results?.publishedPermissionScopes.find(
-            (scope) => scope.id === perm.id
-          );
-          delegatedTable.push({
-            id: perm.id,
-            value: perm.value,
-            description: scope?.userConsentDescription,
-          });
-        });
-      }
-      setAppPermissionTable(appTable);
-      setDelegatedPermissionTable(delegatedTable);
-    }, [newPermissions, spInfo, spInfoSuccess]);
-
     return (
       <>
-        {servicePrincipal && servicePrincipal !== null && spInfoSuccess && (
-          <Grid container>
-            <Grid item xl={12}>
-              <Grid container>
-                <Grid item xl={11}>
-                  <p className="me-1">
-                    Manage the permissions for the {servicePrincipal.displayName}.
-                  </p>
-                </Grid>
-                <Grid item xl={1} className="mx-auto"></Grid>
-              </Grid>
-              <Grid container>
-                <Grid item xl={12}>
-                  {servicePrincipal?.appRoles?.length > 0 ? (
-                    <>
-                      <Grid container>
+        {servicePrincipal && spInfoSuccess && (
+          <>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+              Manage the permissions for the {servicePrincipal.displayName}.
+            </Typography>
+            <Grid container>
+              <Grid item xl={12}>
+                <Grid container>
+                  <Grid item xl={12}>
+                    {servicePrincipal?.appRoles?.length > 0 ? (
+                      <>
                         <Grid container>
-                          <Grid item xl={6} sm={12}>
-                            {/*<RFFSelectSearch
-                              name={
-                                "Permissions." + servicePrincipal.appId + ".applicationPermissions"
-                              }
-                              label="Application Permissions"
-                              values={servicePrincipalData?.Results?.appRoles
-                                ?.filter((role) => {
-                                  return newPermissions?.Permissions[
-                                    servicePrincipal.appId
-                                  ]?.applicationPermissions?.find((perm) => perm.id === role.id)
-                                    ? false
-                                    : true;
-                                })
-                                .map((role) => ({
-                                  name: role.value,
+                          <Grid container>
+                            <Grid item xl={6} sm={12}>
+                              <CippFormComponent
+                                type="autoComplete"
+                                fullWidth
+                                label="Application Permissions"
+                                name={`Permissions.${servicePrincipal.appId}.applicationPermissions`}
+                                isFetching={spInfoFetching}
+                                options={spInfo?.Results?.appRoles?.map((role) => ({
+                                  label: role.value,
                                   value: role.id,
-                                }))
-                                .sort((a, b) => a.name.localeCompare(b.name))}
-                            />*/}
-                            <CippFormComponent
-                              type="autoComplete"
-                              fullWidth
-                              label="Application Permissions"
-                              name={
-                                "Permissions." + servicePrincipal.appId + ".applicationPermissions"
-                              }
-                              isFetching={spInfoFetching}
-                              options={spInfo?.Results?.appRoles?.map((role) => {
-                                return { label: role.value, value: role.id };
-                              })}
-                              formControl={formControl}
-                              multiple={false}
-                            />
-                          </Grid>
-                          <Grid item xl={6} sm={12} className="mt-auto">
-                            <Tooltip title="Add Permission">
-                              <IconButton
-                                onClick={() => {
-                                  addPermissionRow(
-                                    servicePrincipal.appId,
-                                    "applicationPermissions",
-                                    currentAppPermission.value
-                                  );
-                                }}
-                              >
-                                <SvgIcon fontSize="small">
-                                  <PlusIcon />
-                                </SvgIcon>
-                              </IconButton>
-                            </Tooltip>
+                                }))}
+                                formControl={formControl}
+                                multiple={false}
+                              />
+                            </Grid>
+                            <Grid item xl={6} sm={12} className="mt-auto">
+                              <Tooltip title="Add Permission">
+                                <IconButton
+                                  onClick={() =>
+                                    addPermissionRow(
+                                      servicePrincipal.appId,
+                                      "applicationPermissions",
+                                      currentAppPermission
+                                    )
+                                  }
+                                >
+                                  <SvgIcon fontSize="small">
+                                    <PlusIcon />
+                                  </SvgIcon>
+                                </IconButton>
+                              </Tooltip>
+                            </Grid>
                           </Grid>
                         </Grid>
-                      </Grid>
-                      <div className="px-4">
-                        <CippDataTable
-                          title={`${servicePrincipal.displayName} Application Permissions`}
-                          data={appPermissionTable ?? []}
-                          simpleColumns={["value", "description"]}
-                          actions={[]}
-                          /*columns={[
-                            {
-                              selector: (row) => row.value,
-                              name: "Permission",
-                              sortable: true,
-                              exportSelector: "value",
-                              maxWidth: "30%",
-                              cell: cellGenericFormatter(),
-                            },
-                            {
-                              selector: (row) => row.id,
-                              name: "Id",
-                              omit: true,
-                              exportSelector: "id",
-                            },
-                            {
-                              selector: (row) =>
-                                servicePrincipalData?.Results?.appRoles.find(
-                                  (role) => role.id === row.id
-                                ).description,
-                              name: "Description",
-                              cell: cellGenericFormatter({ wrap: true }),
-                              maxWidth: "60%",
-                            },
-                            {
-                              name: "Actions",
-                              cell: (row) => {
-                                return (
-                                  <CTooltip content="Remove Permission">
-                                    <Button
-                                      onClick={() => {
-                                        removePermissionRow(
-                                          servicePrincipal.appId,
-                                          "applicationPermissions",
-                                          row.id,
-                                          row.value
-                                        );
-                                      }}
-                                      color="danger"
-                                      variant="ghost"
-                                      size="sm"
-                                    >
-                                      <FontAwesomeIcon icon="trash" />
-                                    </Button>
-                                  </CTooltip>
-                                );
+                        <div className="px-4">
+                          <CippDataTable
+                            title={`${servicePrincipal.displayName} Application Permissions`}
+                            data={spPermissions?.applicationPermissions?.map((perm) => {
+                              return {
+                                id: perm.id,
+                                value: perm.value,
+                                description: spInfo?.Results?.appRoles.find(
+                                  (role) => role.id === perm.id
+                                )?.description,
+                              };
+                            })}
+                            simpleColumns={["value", "description"]}
+                            actions={[
+                              {
+                                label: "Delete Permission",
+                                icon: <TrashIcon />,
+                                noConfirm: true,
+                                customFunction: (row) =>
+                                  removePermissionRow(
+                                    servicePrincipal.appId,
+                                    "applicationPermissions",
+                                    row.id,
+                                    row.value
+                                  ),
                               },
-                              maxWidth: "10%",
-                            },
-                          ]}
-                          dynamicColumns={false}*/
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <>
+                            ]}
+                          />
+                        </div>
+                      </>
+                    ) : (
                       <Alert color="warning">No Application Permissions found.</Alert>
-                    </>
-                  )}
-                </Grid>
-              </Grid>
-              <Grid container>
-                <Grid item xl={12}>
-                  <hr />
-                </Grid>
-              </Grid>
-              <Grid container>
-                <Grid item xl={12}>
-                  {spInfo?.Results?.publishedPermissionScopes?.length == 0 && (
-                    <Alert color="warning">No Published Delegated Permissions found.</Alert>
-                  )}
-
-                  <Grid container>
-                    <Grid item xl={6} sm={12}>
-                      {/*<RFFSelectSearch
-                        name={"Permissions." + servicePrincipal.appId + ".delegatedPermissions"}
-                        label="Delegated Permissions"
-                        values={
-                          servicePrincipalData?.Results?.publishedPermissionScopes?.length > 0
-                            ? servicePrincipalData?.Results?.publishedPermissionScopes
-                                .filter((scopes) => {
-                                  return newPermissions?.Permissions[
-                                    servicePrincipal.appId
-                                  ]?.delegatedPermissions?.find((perm) => perm.id === scopes.id)
-                                    ? false
-                                    : true;
-                                })
-                                .map((scope) => ({
-                                  name: scope.value,
-                                  value: scope.id,
-                                }))
-                                .sort((a, b) => a.name.localeCompare(b.name))
-                            : []
-                        }
-                        allowCreate={true}
-                      />*/}
-                      <CippFormComponent
-                        type="autoComplete"
-                        fullWidth
-                        label="Delegated Permissions"
-                        name={"Permissions." + servicePrincipal.appId + ".delegatedPermissions"}
-                        isFetching={spInfoFetching}
-                        options={spInfo?.data?.Results?.publishedPermissionScopes?.map((scope) => {
-                          return { label: scope.value, value: scope.id };
-                        })}
-                        formControl={formControl}
-                        multiple={false}
-                      />
-                    </Grid>
-                    <Grid item xl={6} sm={12} className="mt-auto">
-                      <Tooltip title="Add Permission">
-                        <Button
-                          onClick={() => {
-                            addPermissionRow(
-                              servicePrincipal.appId,
-                              "delegatedPermissions",
-                              currentDelegatedPermission.value
-                            );
-                          }}
-                          className={`circular-button`}
-                        >
-                          <SvgIcon fontSize="small">
-                            <PlusIcon />
-                          </SvgIcon>
-                        </Button>
-                      </Tooltip>
-                    </Grid>
+                    )}
                   </Grid>
+                </Grid>
 
-                  <div className="px-4 mb-3">
-                    {/*<CippTable
-                      reportName={`${servicePrincipal.displayName} Delegated Permissions`}
-                      data={
-                        newPermissions?.Permissions[servicePrincipal?.appId]
-                          ?.delegatedPermissions ?? []
-                      }
-                      title="Delegated Permissions"
-                      columns={[
-                        {
-                          selector: (row) => row?.value,
-                          name: "Permission",
-                          sortable: true,
-                          exportSelector: "value",
-                          maxWidth: "30%",
-                          cell: cellGenericFormatter(),
-                        },
-                        {
-                          selector: (row) => row?.id,
-                          name: "Id",
-                          omit: true,
-                          exportSelector: "id",
-                        },
-                        {
-                          selector: (row) =>
-                            servicePrincipalData?.Results?.publishedPermissionScopes.find(
-                              (scope) => scope?.id === row?.id
-                            )?.userConsentDescription ?? "No Description",
-                          name: "Description",
-                          cell: cellGenericFormatter({ wrap: true }),
-                          maxWidth: "60%",
-                        },
-                        {
-                          name: "Actions",
-                          cell: (row) => {
-                            return (
-                              <CTooltip content="Remove Permission">
-                                <Button
-                                  onClick={() => {
-                                    removePermissionRow(
-                                      servicePrincipal.appId,
-                                      "delegatedPermissions",
-                                      row.id,
-                                      row.value
-                                    );
-                                  }}
-                                  color="danger"
-                                  variant="ghost"
-                                  size="sm"
-                                >
-                                  <FontAwesomeIcon icon="trash" />
-                                </Button>
-                              </CTooltip>
-                            );
-                          },
-                          maxWidth: "10%",
-                        },
-                      ]}
-                      dynamicColumns={false}
-                    />
-                    */}
-                    <CippDataTable
-                      title={`${servicePrincipal.displayName} Delegated Permissions`}
-                      data={delegatedPermissionTable ?? []}
-                      simpleColumns={["value", "description"]}
-                      actions={[]}
-                    />
-                  </div>
+                <Grid container>
+                  <Grid item xl={12}>
+                    <hr />
+                  </Grid>
+                </Grid>
+
+                <Grid container>
+                  <Grid item xl={12}>
+                    {spInfo?.Results?.publishedPermissionScopes?.length === 0 && (
+                      <Alert color="warning">No Published Delegated Permissions found.</Alert>
+                    )}
+                    <Grid container>
+                      <Grid item xl={6} sm={12}>
+                        <CippFormComponent
+                          type="autoComplete"
+                          fullWidth
+                          label="Delegated Permissions"
+                          name={`Permissions.${servicePrincipal.appId}.delegatedPermissions`}
+                          isFetching={spInfoFetching}
+                          options={spInfo?.Results?.publishedPermissionScopes?.map((scope) => ({
+                            label: scope.value,
+                            value: scope.id,
+                          }))}
+                          formControl={formControl}
+                          multiple={false}
+                        />
+                      </Grid>
+                      <Grid item xl={6} sm={12} className="mt-auto">
+                        <Tooltip title="Add Permission">
+                          <Button
+                            onClick={() =>
+                              addPermissionRow(
+                                servicePrincipal.appId,
+                                "delegatedPermissions",
+                                currentDelegatedPermission
+                              )
+                            }
+                            className={`circular-button`}
+                          >
+                            <SvgIcon fontSize="small">
+                              <PlusIcon />
+                            </SvgIcon>
+                          </Button>
+                        </Tooltip>
+                      </Grid>
+                    </Grid>
+
+                    <div className="px-4 mb-3">
+                      <CippDataTable
+                        title={`${servicePrincipal.displayName} Delegated Permissions`}
+                        data={spPermissions?.delegatedPermissions?.map((perm) => {
+                          return {
+                            id: perm.id,
+                            value: perm.value,
+                            description: spInfo?.Results?.publishedPermissionScopes.find(
+                              (scope) => scope.id === perm.id
+                            )?.userConsentDescription,
+                          };
+                        })}
+                        simpleColumns={["value", "description"]}
+                        actions={[]}
+                      />
+                    </div>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
+          </>
         )}
       </>
     );
@@ -820,22 +613,24 @@ const CippAppPermissionBuilder = ({
                 <Grid item>
                   <Stack direction="row" spacing={1}>
                     <Tooltip title="Add Service Principal">
-                      <Button
-                        variant="contained"
-                        onClick={(e) =>
-                          setSelectedApp([
-                            ...selectedApp,
-                            servicePrincipals?.Results?.find(
-                              (sp) => sp.appId === currentSelectedSp.value
-                            ),
-                          ])
-                        }
-                        disabled={!currentSelectedSp?.value}
-                      >
-                        <SvgIcon fontSize="small">
-                          <PlusIcon />
-                        </SvgIcon>
-                      </Button>
+                      <span>
+                        <Button
+                          variant="contained"
+                          onClick={(e) =>
+                            setSelectedApp([
+                              ...selectedApp,
+                              servicePrincipals?.Results?.find(
+                                (sp) => sp.appId === currentSelectedSp.value
+                              ),
+                            ])
+                          }
+                          disabled={!currentSelectedSp?.value}
+                        >
+                          <SvgIcon fontSize="small">
+                            <PlusIcon />
+                          </SvgIcon>
+                        </Button>
+                      </span>
                     </Tooltip>
 
                     <Tooltip title="Reset to Default">
@@ -1029,11 +824,7 @@ const CippAppPermissionBuilder = ({
                 {selectedApp &&
                   selectedApp?.length > 0 &&
                   selectedApp?.map((sp, spIndex) => (
-                    <Accordion
-                      itemKey={`sp-${spIndex}-${sp?.appId}`}
-                      key={`accordion-item-${spIndex}-${sp?.appId}`}
-                      variant="outlined"
-                    >
+                    <Accordion key={`accordion-item-${spIndex}-${sp?.appId}`} variant="outlined">
                       <AccordionSummary>
                         <Stack
                           direction="row"
@@ -1077,7 +868,12 @@ const CippAppPermissionBuilder = ({
                         </Stack>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <ApiPermissionRow servicePrincipal={sp} key={`apirow-${spIndex}`} />
+                        <ApiPermissionRow
+                          servicePrincipal={sp}
+                          spPermissions={newPermissions?.Permissions?.[sp.appId]}
+                          formControl={formControl}
+                          key={`apirow-${spIndex}`}
+                        />
                       </AccordionDetails>
                     </Accordion>
                   ))}

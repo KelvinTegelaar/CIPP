@@ -11,7 +11,7 @@ const Page = () => {
   const pageTitle = "SAM App Permissions";
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: "onBlur",
   });
 
   const execSamAppPermissions = ApiGetCall({
