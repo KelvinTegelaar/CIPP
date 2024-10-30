@@ -16,12 +16,12 @@ import {
 } from "@mui/material";
 
 import { ApiGetCall } from "/src/api/ApiCall";
-import { CippCodeBlock } from "./CippCodeBlock";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useDialog } from "../../hooks/use-dialog";
 import { PlusIcon, ShieldCheckIcon, TrashIcon } from "@heroicons/react/24/outline";
 import CippFormComponent from "./CippFormComponent";
-import { Save, SaveAlt, Undo, Upload, Warning } from "@mui/icons-material";
+import { Save, Undo, Upload, Warning } from "@mui/icons-material";
+import { useWatch } from "react-hook-form";
 
 const CippAppPermissionBuilder = ({
   onSubmit,
@@ -42,6 +42,9 @@ const CippAppPermissionBuilder = ({
   const removePermissionDialog = useDialog();
   const resetPermissionDialog = useDialog();
   const additionalPermissionsDialog = useDialog();
+
+  const currentSelectedSp = useWatch({ control: formControl.control, name: "servicePrincipal" });
+  console.log(currentSelectedSp);
 
   /*const {
     data: servicePrincipals = [],
@@ -139,6 +142,7 @@ const CippAppPermissionBuilder = ({
   };
 
   const addPermissionRow = (servicePrincipal, permissionType, permission) => {
+    console.log(servicePrincipal, permissionType, permission);
     var updatedPermissions = JSON.parse(JSON.stringify(newPermissions));
 
     if (!updatedPermissions?.Permissions[servicePrincipal]) {
@@ -428,7 +432,7 @@ const CippAppPermissionBuilder = ({
     var appRoles = newPermissions?.Permissions[appId]?.applicationPermissions;
     var delegatedPermissions = newPermissions?.Permissions[appId]?.delegatedPermissions;
 
-    var counts = `${appRoles.length}/${delegatedPermissions.length}`;
+    var counts = `${appRoles?.length ?? 0}/${delegatedPermissions?.length ?? 0}`;
     return (
       <Stack
         direction="row"
@@ -453,6 +457,14 @@ const CippAppPermissionBuilder = ({
     });*/
     const [appPermissionTable, setAppPermissionTable] = useState([]);
     const [delegatedPermissionTable, setDelegatedPermissionTable] = useState([]);
+    const currentAppPermission = useWatch({
+      control: formControl.control,
+      name: "Permissions." + servicePrincipal.appId + ".applicationPermissions",
+    });
+    const currentDelegatedPermission = useWatch({
+      control: formControl.control,
+      name: "Permissions." + servicePrincipal.appId + ".delegatedPermissions",
+    });
     const {
       data: spInfo = [],
       isSuccess: spInfoSuccess,
@@ -541,6 +553,7 @@ const CippAppPermissionBuilder = ({
                                 return { label: role.value, value: role.id };
                               })}
                               formControl={formControl}
+                              multiple={false}
                             />
                           </Grid>
                           <Grid item xl={6} sm={12} className="mt-auto">
@@ -550,12 +563,8 @@ const CippAppPermissionBuilder = ({
                                   addPermissionRow(
                                     servicePrincipal.appId,
                                     "applicationPermissions",
-                                    values.Permissions[servicePrincipal?.appId]
-                                      .applicationPermissions
+                                    currentAppPermission.value
                                   );
-                                  values.Permissions[
-                                    servicePrincipal.appId
-                                  ].applicationPermissions = "";
                                 }}
                               >
                                 <SvgIcon fontSize="small">
@@ -678,6 +687,7 @@ const CippAppPermissionBuilder = ({
                           return { label: scope.value, value: scope.id };
                         })}
                         formControl={formControl}
+                        multiple={false}
                       />
                     </Grid>
                     <Grid item xl={6} sm={12} className="mt-auto">
@@ -687,9 +697,8 @@ const CippAppPermissionBuilder = ({
                             addPermissionRow(
                               servicePrincipal.appId,
                               "delegatedPermissions",
-                              values?.Permissions[servicePrincipal.appId].delegatedPermissions
+                              currentDelegatedPermission.value
                             );
-                            values.Permissions[servicePrincipal.appId].delegatedPermissions = "";
                           }}
                           className={`circular-button`}
                         >
@@ -804,6 +813,7 @@ const CippAppPermissionBuilder = ({
                         return { label: `${sp.displayName} (${sp.appId})`, value: sp.appId };
                       })}
                       formControl={formControl}
+                      multiple={false}
                     />
                   )}
                 </Grid>
@@ -816,11 +826,11 @@ const CippAppPermissionBuilder = ({
                           setSelectedApp([
                             ...selectedApp,
                             servicePrincipals?.Results?.find(
-                              (sp) => sp.appId === values.servicePrincipal.value
+                              (sp) => sp.appId === currentSelectedSp.value
                             ),
                           ])
                         }
-                        //disabled={!values.servicePrincipal}
+                        disabled={!currentSelectedSp?.value}
                       >
                         <SvgIcon fontSize="small">
                           <PlusIcon />
