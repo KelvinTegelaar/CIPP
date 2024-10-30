@@ -9,6 +9,7 @@ const CippPageCard = (props) => {
     children,
     cardSize = "xl",
     hideTitleText = false,
+    hideBackButton = false,
   } = props;
   const router = useRouter();
 
@@ -31,17 +32,19 @@ const CippPageCard = (props) => {
           <Stack spacing={4}>
             <Stack spacing={2}>
               <div>
-                <Button
-                  color="inherit"
-                  onClick={handleBackClick} // Go back to the previous page
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <ArrowLeftIcon />
-                    </SvgIcon>
-                  }
-                >
-                  {backButtonTitle}
-                </Button>
+                {!hideBackButton && (
+                  <Button
+                    color="inherit"
+                    onClick={handleBackClick} // Go back to the previous page
+                    startIcon={
+                      <SvgIcon fontSize="small">
+                        <ArrowLeftIcon />
+                      </SvgIcon>
+                    }
+                  >
+                    {backButtonTitle}
+                  </Button>
+                )}
               </div>
               {hideTitleText !== true && (
                 <div>
