@@ -9,6 +9,7 @@ import {
   Collapse,
   Divider,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import { ExpandMore as ExpandMoreIcon, Delete, Add, Public, TableChart } from "@mui/icons-material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -108,6 +109,13 @@ const CippStandardAccordion = ({
             </Box>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
+            {standard.multiple && (
+              <Tooltip title={`Add another ${standard.label}`}>
+                <IconButton onClick={() => handleAddMultipleStandard(standardName)}>
+                  <SvgIcon component={Add} />
+                </IconButton>
+              </Tooltip>
+            )}
             <Box
               sx={{
                 backgroundColor: isConfigured ? "success.main" : "warning.main",
@@ -120,11 +128,6 @@ const CippStandardAccordion = ({
             <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
               <Delete />
             </IconButton>
-            {standard.multiple && (
-              <IconButton onClick={() => handleAddMultipleStandard(standardName)}>
-                <SvgIcon component={Add} />
-              </IconButton>
-            )}
 
             <IconButton onClick={() => handleAccordionToggle(standardName)}>
               <SvgIcon
