@@ -14,22 +14,8 @@ import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import CippIntegrationTenantMapping from "../../../components/CippIntegrations/CippIntegrationTenantMapping";
 import CippIntegrationFieldMapping from "../../../components/CippIntegrations/CippIntegrationFieldMapping";
+import { CippCardTabPanel } from "../../../components/CippComponents/CippCardTabPanel";
 
-function CardTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
-  );
-}
 function tabProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -188,18 +174,18 @@ const Page = () => {
                 {extension?.fieldMapping && <Tab label="Field Mapping" {...tabProps(2)} />}
               </Tabs>
             </Box>
-            <CardTabPanel value={value} index={0}>
+            <CippCardTabPanel value={value} index={0}>
               <CippIntegrationSettings />
-            </CardTabPanel>
+            </CippCardTabPanel>
             {extension?.mappingRequired && (
-              <CardTabPanel value={value} index={1}>
+              <CippCardTabPanel value={value} index={1}>
                 <CippIntegrationTenantMapping />
-              </CardTabPanel>
+              </CippCardTabPanel>
             )}
             {extension?.fieldMapping && (
-              <CardTabPanel value={value} index={2}>
+              <CippCardTabPanel value={value} index={2}>
                 <CippIntegrationFieldMapping />
-              </CardTabPanel>
+              </CippCardTabPanel>
             )}
           </Box>
         </CippPageCard>
