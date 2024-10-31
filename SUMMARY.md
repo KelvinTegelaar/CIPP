@@ -202,8 +202,9 @@
 
 ## 🔐 Security
 
-* [Security Policy](security/security-policy.md)
-* [Security reports](security/security-reports.md)
+* [CIPP Security and Compliance](security/cipp-security-and-compliance/README.md)
+  * [Security Policy](security/cipp-security-and-compliance/security-policy.md)
+  * [Security reports](security/cipp-security-and-compliance/security-reports.md)
 * [CIPP Community Vulnerability Disclosure Policy](security/cipp-community-vulnerability-disclosure-policy.md)
 
 ## 👩‍💻 👩💻 Dev Documentation
