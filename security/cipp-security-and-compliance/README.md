@@ -1,3 +1,10 @@
+---
+description: >-
+  Explore CIPP’s security measures, data privacy practices, and CyberDrain’s
+  approach to global security frameworks designed to protect client data and
+  ensure compliance.
+---
+
 # CIPP Security and Compliance
 
 CIPP was built with a security-first approach. Each CIPP instance is hosted in its own Azure resource group, with dedicated resources to ensure full separation between instances. Here’s an overview of the measures in place and decisions designed to keep your client data secure and support your compliance needs
