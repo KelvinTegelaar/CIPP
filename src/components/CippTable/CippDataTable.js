@@ -148,9 +148,8 @@ export const CippDataTable = (props) => {
   const createDialog = useDialog();
 
   // Apply the modeInfo directly
-  const modeInfo = useMemo(
-    () => utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas),
-    [columnVisibility, simple, actions, simpleColumns, offCanvas]
+  const [modeInfo] = useState(
+    utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas)
   );
 
   //create memoized version of usedColumns, and usedData
