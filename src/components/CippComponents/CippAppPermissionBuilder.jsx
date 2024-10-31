@@ -19,9 +19,9 @@ import {
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useDialog } from "../../hooks/use-dialog";
-import { PlusIcon, ShieldCheckIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 import CippFormComponent from "./CippFormComponent";
-import { Save, Undo, Upload, Warning } from "@mui/icons-material";
+import { Delete, Save, Undo, Upload, Warning } from "@mui/icons-material";
 import { useWatch } from "react-hook-form";
 
 const CippAppPermissionBuilder = ({
@@ -487,7 +487,7 @@ const CippAppPermissionBuilder = ({
                             actions={[
                               {
                                 label: "Delete Permission",
-                                icon: <TrashIcon />,
+                                icon: <Delete />,
                                 noConfirm: true,
                                 customFunction: (row) =>
                                   removePermissionRow(
@@ -859,7 +859,7 @@ const CippAppPermissionBuilder = ({
                                   color="error"
                                 >
                                   <SvgIcon fontSize="small">
-                                    <TrashIcon />
+                                    <Delete />
                                   </SvgIcon>
                                 </IconButton>
                               </span>
