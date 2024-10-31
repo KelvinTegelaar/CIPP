@@ -155,7 +155,6 @@ export const CippDataTable = (props) => {
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
   const memoizedData = useMemo(() => usedData, [usedData]);
-  console.log("rerender");
   const table = useMaterialReactTable({
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
