@@ -4,14 +4,10 @@ on:
   push:
     branches:
       - dev
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - dev
 
 jobs:
   build_and_deploy_job:
-    if: github.event.repository.fork == false && github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    if: github.event.repository.fork == false && github.event_name == 'push'
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
