@@ -21,7 +21,7 @@ Data is hosted in the CyberDrain B.V. (Chamber of Commerce number 86594893) Azur
 * Documentation regarding the current Secure Score state of the CyberDrain Azure Tenant
 * Sponsors can connect their SIEM/SOC directly to their own security group or Azure Storage account to be aware of any changes made to the environment.
 
-### **CyberDrain's Commitment to ISO 27001**
+### **CyberDrain's Commitment to** Global Security Standards
 
 At CyberDrain, security is our top priority. To strengthen this commitment, we’re actively working toward ISO/IEC 27001 certification—a globally recognized standard for managing information security. Here’s why ISO/IEC 27001 is a great fit for us and our clients:
 
