@@ -99,7 +99,11 @@ export const CippAutoComplete = (props) => {
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
         if (params.inputValue !== "" && creatable) {
-          filtered.push({ label: `Add option: ${params.inputValue}`, value: params.inputValue });
+          filtered.push({
+            label: `Add option: "${params.inputValue}"`,
+            value: params.inputValue,
+            manual: true,
+          });
         }
         //from the added component remove the "Add option" text
         return filtered;
@@ -111,15 +115,18 @@ export const CippAutoComplete = (props) => {
           : defaultValue
       }
       name={name}
-      onChange={
-        onChange
-          ? (event, newValue) => {
-              if (onChange) {
-                onChange(newValue, newValue?.addedFields);
-              }
-            }
-          : undefined
-      }
+      onChange={(event, newValue) => {
+        if (newValue?.manual) {
+          newValue = {
+            label: newValue.value,
+            value: newValue.value,
+          };
+        }
+
+        if (onChange) {
+          onChange(newValue, newValue?.addedFields);
+        }
+      }}
       options={api ? usedOptions : options}
       getOptionLabel={(option) => option.label || "Label not found - Are you missing a labelField?"}
       sx={sx}
