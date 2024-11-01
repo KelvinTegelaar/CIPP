@@ -7,17 +7,12 @@ const mergeKeys = (dataArray) => {
   return dataArray.reduce((acc, item) => {
     const mergeRecursive = (obj, base = {}) => {
       Object.keys(obj).forEach((key) => {
-        // If base[key] is a string, it should not be merged as an object
-        if (typeof base[key] === "string") {
-          return; // Skip further merging for this key
-        }
+        if (typeof base[key] === "string") return;
 
         if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
           base[key] = mergeRecursive(obj[key], base[key] || {});
-        } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
-          base[key] = base[key]; // Keep existing value if it's 'FAILED'
         } else {
-          base[key] = obj[key]; // Assign valid primitive values
+          base[key] = obj[key];
         }
       });
       return base;
@@ -27,28 +22,35 @@ const mergeKeys = (dataArray) => {
   }, {});
 };
 
+// Generate columns based on merged keys and cache translations
 export const utilColumnsFromAPI = (dataArray) => {
+  // Merge data structure to generate columns
   const dataSample = mergeKeys(dataArray);
+  const translationCache = {};
+
   const generateColumns = (obj, parentKey = "") => {
     return Object.keys(obj)
       .map((key) => {
         const accessorKey = parentKey ? `${parentKey}.${key}` : key;
+
         if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
           return generateColumns(obj[key], accessorKey);
         }
-
+        // Cache translation for each column header
+        if (!translationCache[accessorKey]) {
+          translationCache[accessorKey] = getCippTranslation(accessorKey);
+        }
         return {
-          header: getCippTranslation(accessorKey),
+          header: translationCache[accessorKey],
           id: accessorKey,
-          accessorFn: (row) => getCippFormatting(row[accessorKey], accessorKey, "text"),
+          accessorFn: (row) => row?.[accessorKey]?.["text"], // Function to access data from row
+          Cell: ({ row }) => row?.original?.[accessorKey]?.jsx, // Function to render cell
           ...getCippFilterVariant(key),
-          Cell: ({ row }) => {
-            return getCippFormatting(row.original[accessorKey], accessorKey);
-          },
         };
       })
       .flat();
   };
-
-  return generateColumns(dataSample);
+  const returnedData = generateColumns(dataSample);
+  console.log("Returned data", returnedData);
+  return returnedData;
 };

@@ -4,7 +4,6 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  ListItemIcon,
   ListItemText,
   MenuItem,
   Skeleton,
@@ -18,11 +17,13 @@ import { ApiGetCallWithPagination } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
-import { More, MoreHoriz } from "@mui/icons-material";
+import { MoreHoriz } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
+import isEqual from "lodash.isequal";
+import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippDataTable = (props) => {
   const {
@@ -52,6 +53,7 @@ export const CippDataTable = (props) => {
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
+  const [preEditData, setPreEditData] = useState(data);
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
@@ -63,13 +65,13 @@ export const CippDataTable = (props) => {
     queryKey: queryKey ? queryKey : title,
     waiting: waitingBool,
   });
+
   useEffect(() => {
-    if (data) {
-      if (JSON.stringify(data) !== JSON.stringify(usedData) && data?.length >= 0) {
-        setUsedData(data);
-      }
+    if (data.length && !isEqual(data, usedData)) {
+      setUsedData(data);
     }
-  }, [data, queryKey, JSON.stringify(data)]);
+  }, [data, queryKey]);
+
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
       const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
@@ -79,6 +81,19 @@ export const CippDataTable = (props) => {
       }
     }
   }, [getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey]);
+
+  const preprocessData = (dataArray) => {
+    return dataArray.map((row) => {
+      const formattedRow = {};
+      Object.keys(row).forEach((key) => {
+        formattedRow[key] = {
+          text: getCippFormatting(row[key], key, "text"),
+          jsx: getCippFormatting(row[key], key),
+        };
+      });
+      return formattedRow;
+    });
+  };
 
   useEffect(() => {
     if (getRequestData.isSuccess) {
@@ -105,8 +120,9 @@ export const CippDataTable = (props) => {
         const nestedData = getNestedValue(page, api.dataKey);
         return nestedData !== undefined ? nestedData : [];
       });
-
-      setUsedData(combinedResults || []);
+      setPreEditData(combinedResults);
+      const processedData = preprocessData(combinedResults || []);
+      setUsedData(processedData);
     }
   }, [
     getRequestData.isSuccess,
@@ -120,7 +136,7 @@ export const CippDataTable = (props) => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
       return;
     }
-    const apiColumns = utilColumnsFromAPI(usedData);
+    const apiColumns = utilColumnsFromAPI(preEditData);
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
@@ -223,8 +239,6 @@ export const CippDataTable = (props) => {
     ];
   };
   const table = useMaterialReactTable({
-    enableRowVirtualization: true,
-    enableColumnVirtualization: true,
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,
     }),
