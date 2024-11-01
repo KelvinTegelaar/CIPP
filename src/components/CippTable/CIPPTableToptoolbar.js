@@ -46,23 +46,28 @@ export const CIPPTableToptoolbar = ({
                   ? "Could not retrieve all data. Click to try again."
                   : getRequestData?.isFetching
                   ? "Retrieving more data..."
+                  : !getRequestData || !refreshFunction
+                  ? "No data to refresh"
                   : "Refresh data"
               }
             >
-              <span>
+              <div
+                onClick={() => {
+                  if (typeof refreshFunction === "object") {
+                    refreshFunction.refetch();
+                  } else if (getRequestData) {
+                    getRequestData.refetch();
+                  }
+                }}
+              >
                 <IconButton
                   className="MuiIconButton"
-                  onClick={() => {
-                    if (typeof refreshFunction === "object") {
-                      refreshFunction.refetch();
-                    } else if (getRequestData) {
-                      getRequestData.refetch();
-                    }
-                  }}
                   disabled={
                     getRequestData?.isLoading ||
                     getRequestData?.isFetching ||
-                    refreshFunction?.isFetching
+                    refreshFunction?.isFetching ||
+                    !getRequestData ||
+                    !refreshFunction
                   }
                 >
                   <SvgIcon
@@ -85,7 +90,7 @@ export const CIPPTableToptoolbar = ({
                     )}
                   </SvgIcon>
                 </IconButton>
-              </span>
+              </div>
             </Tooltip>
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
@@ -113,7 +118,6 @@ export const CIPPTableToptoolbar = ({
         </Box>
         <Box>
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
-
             {(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
               <>
                 <Button
