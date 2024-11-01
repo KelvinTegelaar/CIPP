@@ -65,7 +65,7 @@ export const CippDataTable = (props) => {
   });
   useEffect(() => {
     if (data) {
-      if (JSON.stringify(data) !== JSON.stringify(usedData) && data.length > 0) {
+      if (JSON.stringify(data) !== JSON.stringify(usedData) && data?.length >= 0) {
         setUsedData(data);
       }
     }
