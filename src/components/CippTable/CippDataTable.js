@@ -169,8 +169,14 @@ export const CippDataTable = (props) => {
                 action: action,
                 ready: true,
               });
-              createDialog.handleOpen();
-              closeMenu();
+
+              if (action?.noConfirm && action?.customFunction) {
+                action.customFunction(row.original, action, {});
+                closeMenu();
+              } else {
+                createDialog.handleOpen();
+                closeMenu();
+              }
             }}
           >
             <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
