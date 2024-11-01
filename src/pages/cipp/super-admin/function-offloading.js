@@ -13,6 +13,9 @@ const Page = () => {
 
   const formControl = useForm({
     mode: "onChange",
+    defaultValues: {
+      OffloadFunctions: false,
+    },
   });
 
   const execOffloadFunctions = ApiGetCall({
