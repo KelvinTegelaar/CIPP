@@ -428,23 +428,27 @@ const CippAppPermissionBuilder = ({
       if (spInfoSuccess && !spInitialized) {
         if (appTable.length === 0) {
           setAppTable(
-            spPermissions?.applicationPermissions?.map((perm) => ({
-              id: perm.id,
-              value: perm.value,
-              description: spInfo?.Results?.appRoles.find((role) => role.id === perm.id)
-                ?.description,
-            }))
+            spPermissions?.applicationPermissions
+              ?.sort((a, b) => a.value.localeCompare(b.value))
+              ?.map((perm) => ({
+                id: perm.id,
+                value: perm.value,
+                description: spInfo?.Results?.appRoles.find((role) => role.id === perm.id)
+                  ?.description,
+              }))
           );
         }
         if (delegatedTable.length === 0) {
           setDelegatedTable(
-            spPermissions?.delegatedPermissions?.map((perm) => ({
-              id: perm.id,
-              value: perm.value,
-              description:
-                spInfo?.Results?.publishedPermissionScopes.find((scope) => scope.id === perm.id)
-                  ?.userConsentDescription ?? "Manually added",
-            }))
+            spPermissions?.delegatedPermissions
+              ?.sort((a, b) => a.value.localeCompare(b.value))
+              ?.map((perm) => ({
+                id: perm.id,
+                value: perm.value,
+                description:
+                  spInfo?.Results?.publishedPermissionScopes.find((scope) => scope.id === perm.id)
+                    ?.userConsentDescription ?? "Manually added",
+              }))
           );
         }
         setSpInitialized(true);
