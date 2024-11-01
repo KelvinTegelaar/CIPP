@@ -20,7 +20,7 @@ import {
 
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { PlusIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, ShieldCheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import CippFormComponent from "./CippFormComponent";
 import {
   Delete,
@@ -876,9 +876,9 @@ const CippAppPermissionBuilder = ({
                 )}
               </CippOffCanvas>
               {calloutMessage && (
-                <Grid container sx={{ mb: 2 }}>
-                  <Grid item>
-                    <Alert variant="outlined" color="info">
+                <Grid container sx={{ my: 3 }}>
+                  <Grid item xs={12} xl={8}>
+                    <Alert variant="outlined" color="info" onClose={() => setCalloutMessage(null)}>
                       {calloutMessage}
                     </Alert>
                   </Grid>
@@ -997,7 +997,8 @@ const CippAppPermissionBuilder = ({
                               }
                             >
                               <div
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   removeServicePrincipal(sp.appId);
                                 }}
                               >
