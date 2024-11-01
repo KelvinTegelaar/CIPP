@@ -162,8 +162,15 @@ export const CIPPTableToptoolbar = ({
                           action: action,
                           ready: true,
                         });
-                        createDialog.handleOpen();
-                        popover.handleClose();
+
+                        if (action?.noConfirm && action.customFunction) {
+                          table
+                            .getSelectedRowModel()
+                            .rows.map((row) => action.customFunction(row.original, action, {}));
+                        } else {
+                          createDialog.handleOpen();
+                          popover.handleClose();
+                        }
                       }}
                     >
                       <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>

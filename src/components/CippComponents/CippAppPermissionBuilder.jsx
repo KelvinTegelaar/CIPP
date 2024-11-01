@@ -28,6 +28,9 @@ import { useWatch } from "react-hook-form";
 import { CippCardTabPanel } from "./CippCardTabPanel";
 import { CippApiResults } from "./CippApiResults";
 import _ from "lodash";
+import { CippCodeBlock } from "./CippCodeBlock";
+import { CippOffCanvas } from "./CippOffCanvas";
+import { FileDropzone } from "../file-dropzone";
 
 const CippAppPermissionBuilder = ({
   onSubmit,
@@ -782,27 +785,31 @@ const CippAppPermissionBuilder = ({
                   </Stack>
                 </Grid>
               </Grid>
-              {/*<CippOffcanvas
-                title="Import Manifest"
+              <CippOffCanvas
                 visible={manifestVisible}
-                onHide={() => {
+                size="lg"
+                onClose={() => {
                   setManifestVisible(false);
                 }}
               >
                 <Grid container>
                   <Grid item xl={12}>
-                    <p>
+                    <Typography variant="h4" sx={{ mb: 2 }}>
+                      Import Permission Manifest
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 3 }}>
                       Import a JSON application manifest to set permissions. This will overwrite any
-                      existing permissions.
-                    </p>
+                      existing permissions. You can obtain one from an App Registration in
+                      the Entra portal. Just click on Manifest and download the JSON file.
+                    </Typography>
                   </Grid>
                 </Grid>
                 <Grid container>
                   <Grid item xl={12}>
-                    <CippDropzone
+                    <FileDropzone
                       onDrop={onManifestImport}
-                      accept={{ "application/json": [".json"] }}
-                      dropMessage="Drag a JSON app manifest here, or click to select one."
+                      accept="application/json"
+                      caption="Drag a JSON app manifest here, or click to select one."
                       maxFiles={1}
                       returnCard={false}
                     />
@@ -836,7 +843,7 @@ const CippAppPermissionBuilder = ({
                     </Grid>
                   </>
                 )}
-              </CippOffcanvas>*/}
+              </CippOffCanvas>
               {calloutMessage && (
                 <Grid container sx={{ mb: 2 }}>
                   <Grid item>
