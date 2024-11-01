@@ -39,9 +39,11 @@ export const CSVExportButton = (props) => {
   };
   return (
     <Tooltip title="Export to CSV">
-      <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)}>
-        <BackupTableTwoTone />
-      </IconButton>
+      <span>
+        <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)}>
+          <BackupTableTwoTone />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };

@@ -40,9 +40,11 @@ export const PDFExportButton = (props) => {
   };
   return (
     <Tooltip title="Export to PDF">
-      <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)}>
-        <PictureAsPdf />
-      </IconButton>
+      <span>
+        <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)}>
+          <PictureAsPdf />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };
