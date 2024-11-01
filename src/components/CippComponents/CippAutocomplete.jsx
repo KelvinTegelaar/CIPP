@@ -20,6 +20,7 @@ export const CippAutoComplete = (props) => {
     name,
     options = [],
     onChange,
+    onCreateOption,
     required = false,
     sx,
     ...other
@@ -98,14 +99,17 @@ export const CippAutoComplete = (props) => {
       fullWidth
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
-        if (params.inputValue !== "" && creatable) {
+        const isExisting = options.some(
+          (option) => params.inputValue === option.value || params.inputValue === option.label
+        );
+        if (params.inputValue !== "" && creatable && !isExisting) {
           filtered.push({
             label: `Add option: "${params.inputValue}"`,
             value: params.inputValue,
             manual: true,
           });
         }
-        //from the added component remove the "Add option" text
+
         return filtered;
       }}
       size="small"
@@ -121,8 +125,10 @@ export const CippAutoComplete = (props) => {
             label: newValue.value,
             value: newValue.value,
           };
+          if (onCreateOption) {
+            onCreateOption(newValue, newValue?.addedFields);
+          }
         }
-
         if (onChange) {
           onChange(newValue, newValue?.addedFields);
         }

@@ -139,22 +139,14 @@ const CippAppPermissionBuilder = ({
     }
   };
 
-  const onCreateServicePrincipal = (e, appId) => {
-    if (typeof appId === "string") {
-    }
-
-    createServicePrincipal.mutate(
-      {
-        url: "api/ExecServicePrincipals?Action=Create&AppId=" + appId,
+  const onCreateServicePrincipal = (newValue) => {
+    console.log(newValue);
+    if (newValue.value) {
+      createServicePrincipal.mutate({
+        url: "/api/ExecServicePrincipals?Action=Create&AppId=" + newValue.value,
         data: {},
-      },
-      {
-        onSuccess: () => {
-          refetchSpList();
-          setCalloutMessage(createServicePrincipal?.data?.Results);
-        },
-      }
-    );
+      });
+    }
   };
 
   const savePermissionChanges = (
@@ -742,7 +734,7 @@ const CippAppPermissionBuilder = ({
                       label="Select a Service Principal or enter an AppId if not listed"
                       name="servicePrincipal"
                       createOption={true}
-                      onChange={onCreateServicePrincipal}
+                      onCreateOption={onCreateServicePrincipal}
                       isFetching={spFetching}
                       options={servicePrincipals?.Results.map((sp) => {
                         return { label: `${sp.displayName} (${sp.appId})`, value: sp.appId };
@@ -819,6 +811,9 @@ const CippAppPermissionBuilder = ({
                     </Tooltip>
                   </Stack>
                 </Grid>
+              </Grid>
+              <Grid item xs={12} sx={{ mb: 3 }}>
+                <CippApiResults apiObject={createServicePrincipal} />
               </Grid>
               <CippOffCanvas
                 visible={manifestVisible}
