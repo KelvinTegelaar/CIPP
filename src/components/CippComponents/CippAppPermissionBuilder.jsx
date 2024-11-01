@@ -449,14 +449,14 @@ const CippAppPermissionBuilder = ({
         }
         setSpInitialized(true);
       }
-    }, [spInitialized, spInfoSuccess, appTable.length, delegatedTable.length]);
+    }, [spInitialized, spInfoSuccess, appTable?.length, delegatedTable?.length]);
 
     useEffect(() => {
       if (spInfoSuccess) {
-        var appRoles = appTable.map((perm) => perm.id).sort();
-        var delegatedPermissions = delegatedTable.map((perm) => perm.id).sort();
-        var originalAppRoles = spPermissions.applicationPermissions.map((perm) => perm.id).sort();
-        var originalDelegatedPermissions = spPermissions.delegatedPermissions
+        var appRoles = appTable?.map((perm) => perm.id).sort();
+        var delegatedPermissions = delegatedTable?.map((perm) => perm.id).sort();
+        var originalAppRoles = spPermissions?.applicationPermissions.map((perm) => perm.id).sort();
+        var originalDelegatedPermissions = spPermissions?.delegatedPermissions
           .map((perm) => perm.id)
           .sort();
         if (
@@ -478,7 +478,8 @@ const CippAppPermissionBuilder = ({
           description: spInfo?.Results?.appRoles.find((role) => role.id === permission.value)
             ?.description,
         };
-        setAppTable([...appTable, newAppPermission]);
+        setAppTable([...(appTable ?? []), newAppPermission]);
+        formControl.setValue(`Permissions.${servicePrincipal.appId}.applicationPermissions`, null);
       } else {
         var newDelegatedPermission = {
           id: permission.value,
@@ -487,7 +488,8 @@ const CippAppPermissionBuilder = ({
             (scope) => scope.id === permission.value
           )?.userConsentDescription,
         };
-        setDelegatedTable([...delegatedTable, newDelegatedPermission]);
+        setDelegatedTable([...(delegatedTable ?? []), newDelegatedPermission]);
+        formControl.setValue(`Permissions.${servicePrincipal.appId}.delegatedPermissions`, null);
       }
     };
 
@@ -564,19 +566,17 @@ const CippAppPermissionBuilder = ({
                         </Grid>
                         <Grid item>
                           <Tooltip title="Add Permission">
-                            <span>
-                              <Button
-                                variant="outlined"
-                                onClick={() =>
-                                  handleAddRow("applicationPermissions", currentAppPermission)
-                                }
-                                disabled={!currentAppPermission}
-                              >
+                            <div
+                              onClick={() =>
+                                handleAddRow("applicationPermissions", currentAppPermission)
+                              }
+                            >
+                              <Button variant="outlined" disabled={!currentAppPermission}>
                                 <SvgIcon fontSize="small">
                                   <PlusIcon />
                                 </SvgIcon>
                               </Button>
-                            </span>
+                            </div>
                           </Tooltip>
                         </Grid>
                       </Grid>
@@ -628,19 +628,17 @@ const CippAppPermissionBuilder = ({
                     </Grid>
                     <Grid item sx={{ ms: 2 }}>
                       <Tooltip title="Add Permission">
-                        <span>
-                          <Button
-                            variant="outlined"
-                            onClick={() =>
-                              handleAddRow("delegatedPermissions", currentDelegatedPermission)
-                            }
-                            disabled={!currentDelegatedPermission}
-                          >
+                        <div
+                          onClick={() =>
+                            handleAddRow("delegatedPermissions", currentDelegatedPermission)
+                          }
+                        >
+                          <Button variant="outlined" disabled={!currentDelegatedPermission}>
                             <SvgIcon fontSize="small">
                               <PlusIcon />
                             </SvgIcon>
                           </Button>
-                        </span>
+                        </div>
                       </Tooltip>
                     </Grid>
                   </Grid>
@@ -711,25 +709,27 @@ const CippAppPermissionBuilder = ({
                 <Grid item>
                   <Stack direction="row" spacing={1}>
                     <Tooltip title="Add Service Principal">
-                      <span>
+                      <div
+                        onClick={(e) => {
+                          setSelectedApp([
+                            ...selectedApp,
+                            servicePrincipals?.Results?.find(
+                              (sp) => sp.appId === currentSelectedSp.value
+                            ),
+                          ]);
+                          formControl.setValue("servicePrincipal", null);
+                        }}
+                      >
                         <Button
                           variant="contained"
                           component={!currentSelectedSp?.value ? "span" : undefined}
-                          onClick={(e) =>
-                            setSelectedApp([
-                              ...selectedApp,
-                              servicePrincipals?.Results?.find(
-                                (sp) => sp.appId === currentSelectedSp.value
-                              ),
-                            ])
-                          }
                           disabled={!currentSelectedSp?.value}
                         >
                           <SvgIcon fontSize="small">
                             <PlusIcon />
                           </SvgIcon>
                         </Button>
-                      </span>
+                      </div>
                     </Tooltip>
 
                     <Tooltip title="Reset to Default">
@@ -950,11 +950,12 @@ const CippAppPermissionBuilder = ({
                                   : `Remove ${sp.displayName}`
                               }
                             >
-                              <span>
+                              <div
+                                onClick={() => {
+                                  removeServicePrincipal(sp.appId);
+                                }}
+                              >
                                 <IconButton
-                                  onClick={() => {
-                                    removeServicePrincipal(sp.appId);
-                                  }}
                                   disabled={sp.appId === "00000003-0000-0000-c000-000000000000"}
                                   color="error"
                                 >
@@ -962,7 +963,7 @@ const CippAppPermissionBuilder = ({
                                     <Delete />
                                   </SvgIcon>
                                 </IconButton>
-                              </span>
+                              </div>
                             </Tooltip>
                           </Stack>
                         </Stack>
