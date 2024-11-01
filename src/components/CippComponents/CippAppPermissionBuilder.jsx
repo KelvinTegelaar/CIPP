@@ -26,9 +26,12 @@ import CippFormComponent from "./CippFormComponent";
 import { Delete, Download, Save, Undo, Upload, WarningAmberOutlined } from "@mui/icons-material";
 import { useWatch } from "react-hook-form";
 import { CippCardTabPanel } from "./CippCardTabPanel";
+import { CippApiResults } from "./CippApiResults";
+import _ from "lodash";
 
 const CippAppPermissionBuilder = ({
   onSubmit,
+  updatePermissions,
   currentPermissions = {},
   removePermissionConfirm = false,
   appDisplayName = "CIPP-SAM",
@@ -55,6 +58,7 @@ const CippAppPermissionBuilder = ({
     data: servicePrincipals = [],
     isSuccess: spSuccess,
     isFetching: spFetching,
+    isLoading: spLoading,
     refetch: refetchSpList,
   } = ApiGetCall({
     url: "/api/ExecServicePrincipals",
@@ -682,7 +686,7 @@ const CippAppPermissionBuilder = ({
 
   return (
     <>
-      {spFetching && <Skeleton height={300} />}
+      {spLoading && <Skeleton height={300} />}
       {spSuccess && (
         <>
           <Grid container>
@@ -985,22 +989,28 @@ const CippAppPermissionBuilder = ({
               </>
             </Grid>
           </Grid>
-          <Grid container className="me-3">
-            <Grid container className="mb-3">
-              <Grid item xl={4} md={12}>
-                <Button
-                  variant="contained"
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <Save />
-                    </SvgIcon>
-                  }
-                  type="submit"
-                  //disabled={submitting}
-                >
-                  Save
-                </Button>
-              </Grid>
+
+          <Grid container sx={{ display: "flex", alignItems: "center" }}>
+            <Grid item xl={1} xs={12}>
+              <Button
+                variant="contained"
+                startIcon={
+                  <SvgIcon fontSize="small">
+                    <Save />
+                  </SvgIcon>
+                }
+                type="submit"
+                disabled={
+                  updatePermissions.isPending ||
+                  _.isEqual(currentPermissions.Permissions, newPermissions.Permissions)
+                }
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+            </Grid>
+            <Grid item xl={11} xs={12}>
+              <CippApiResults apiObject={updatePermissions} />
             </Grid>
           </Grid>
         </>
