@@ -47,9 +47,9 @@ const Page = () => {
               postUrl={"/api/execSamAppPermissions"}
               formControl={formControl}
               currentPermissions={execSamAppPermissions?.data}
-              removePermissionConfirm={false}
               onSubmit={handleUpdatePermissions}
               updatePermissions={updatePermissions}
+              removePermissionConfirm={true}
             />
           )}
         </Stack>
