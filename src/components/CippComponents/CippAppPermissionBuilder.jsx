@@ -23,7 +23,18 @@ import { CippDataTable } from "../CippTable/CippDataTable";
 import { useDialog } from "../../hooks/use-dialog";
 import { PlusIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 import CippFormComponent from "./CippFormComponent";
-import { Delete, Download, Save, Undo, Upload, WarningAmberOutlined } from "@mui/icons-material";
+import {
+  Check,
+  Delete,
+  Download,
+  Error,
+  Save,
+  Shield,
+  TaskAlt,
+  Undo,
+  Upload,
+  WarningAmberOutlined,
+} from "@mui/icons-material";
 import { useWatch } from "react-hook-form";
 import { CippCardTabPanel } from "./CippCardTabPanel";
 import { CippApiResults } from "./CippApiResults";
@@ -45,6 +56,7 @@ const CippAppPermissionBuilder = ({
   const [newPermissions, setNewPermissions] = useState({});
   const [importedManifest, setImportedManifest] = useState(null);
   const [manifestVisible, setManifestVisible] = useState(false);
+  const [manifestError, setManifestError] = useState(false);
   const [calloutMessage, setCalloutMessage] = useState(null);
   const [initialPermissions, setInitialPermissions] = useState();
   const removePermissionDialog = useDialog();
@@ -325,9 +337,32 @@ const CippAppPermissionBuilder = ({
       reader.onload = () => {
         try {
           var manifest = JSON.parse(reader.result);
-          setImportedManifest(manifest);
         } catch {
-          console.log("invalid manifest");
+          console.log("parsing error");
+          setManifestError(true);
+          return;
+        }
+        const requiredProperties = [
+          "isFallbackPublicClient",
+          "signInAudience",
+          "displayName",
+          "web",
+          "requiredResourceAccess",
+        ];
+        var isManifestValid = true;
+        requiredProperties.forEach((key) => {
+          if (!Object.keys(manifest).includes(key)) {
+            console.log("missing prop: " + key);
+            isManifestValid = false;
+            return;
+          }
+        });
+        if (isManifestValid) {
+          setImportedManifest(manifest);
+          setManifestError(false);
+        } else {
+          setManifestError(true);
+          setImportedManifest(false);
         }
       };
       reader.readAsText(file);
@@ -799,8 +834,8 @@ const CippAppPermissionBuilder = ({
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 3 }}>
                       Import a JSON application manifest to set permissions. This will overwrite any
-                      existing permissions. You can obtain one from an App Registration in
-                      the Entra portal. Just click on Manifest and download the JSON file.
+                      existing permissions. You can obtain one from an App Registration in the Entra
+                      portal. Just click on Manifest and download the JSON file.
                     </Typography>
                   </Grid>
                 </Grid>
@@ -808,18 +843,31 @@ const CippAppPermissionBuilder = ({
                   <Grid item xl={12}>
                     <FileDropzone
                       onDrop={onManifestImport}
-                      accept="application/json"
+                      accept={{
+                        "application/json": [".json"],
+                      }}
                       caption="Drag a JSON app manifest here, or click to select one."
                       maxFiles={1}
                       returnCard={false}
                     />
                   </Grid>
                 </Grid>
+                {manifestError && (
+                  <Alert color="error" icon={<Error />} sx={{ mt: 4 }}>
+                    Invalid manifest. Please ensure the manifest is in the correct format.
+                  </Alert>
+                )}
                 {importedManifest && (
                   <>
-                    <Grid container className="mt-4">
+                    <Grid container sx={{ mt: 2 }} spacing={2}>
+                      <Grid item xl={12}>
+                        <Alert color="success" icon={<TaskAlt />}>
+                          Manifest is valid. Click Import to apply the permissions.
+                        </Alert>
+                      </Grid>
                       <Grid item xl={12}>
                         <Button
+                          variant="contained"
                           onClick={() => importManifest()}
                           startIcon={
                             <SvgIcon fontSize="small">
