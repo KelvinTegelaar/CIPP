@@ -403,6 +403,7 @@ const CippAppPermissionBuilder = ({
     const [spInitialized, setSpInitialized] = useState(false);
     const [appTable, setAppTable] = useState([]);
     const [delegatedTable, setDelegatedTable] = useState([]);
+    const [permissionsChanged, setPermissionsChanged] = useState(false);
 
     const {
       data: spInfo = [],
@@ -440,15 +441,34 @@ const CippAppPermissionBuilder = ({
             spPermissions?.delegatedPermissions?.map((perm) => ({
               id: perm.id,
               value: perm.value,
-              description: spInfo?.Results?.publishedPermissionScopes.find(
-                (scope) => scope.id === perm.id
-              )?.userConsentDescription,
+              description:
+                spInfo?.Results?.publishedPermissionScopes.find((scope) => scope.id === perm.id)
+                  ?.userConsentDescription ?? "Manually added",
             }))
           );
         }
         setSpInitialized(true);
       }
     }, [spInitialized, spInfoSuccess, appTable.length, delegatedTable.length]);
+
+    useEffect(() => {
+      if (spInfoSuccess) {
+        var appRoles = appTable.map((perm) => perm.id).sort();
+        var delegatedPermissions = delegatedTable.map((perm) => perm.id).sort();
+        var originalAppRoles = spPermissions.applicationPermissions.map((perm) => perm.id).sort();
+        var originalDelegatedPermissions = spPermissions.delegatedPermissions
+          .map((perm) => perm.id)
+          .sort();
+        if (
+          JSON.stringify(appRoles) !== JSON.stringify(originalAppRoles) ||
+          JSON.stringify(delegatedPermissions) !== JSON.stringify(originalDelegatedPermissions)
+        ) {
+          setPermissionsChanged(true);
+        } else {
+          setPermissionsChanged(false);
+        }
+      }
+    }, [appTable, delegatedTable, spInfoSuccess, spPermissions]);
 
     const handleAddRow = (permissionType, permission) => {
       if (permissionType === "applicationPermissions") {
@@ -532,10 +552,12 @@ const CippAppPermissionBuilder = ({
                             label="Application Permissions"
                             name={`Permissions.${servicePrincipal.appId}.applicationPermissions`}
                             isFetching={spInfoFetching}
-                            options={spInfo?.Results?.appRoles?.map((role) => ({
-                              label: role.value,
-                              value: role.id,
-                            }))}
+                            options={spInfo?.Results?.appRoles
+                              ?.filter((role) => !appTable.find((perm) => perm.id === role.id))
+                              .map((role) => ({
+                                label: role.value,
+                                value: role.id,
+                              }))}
                             formControl={formControl}
                             multiple={false}
                           />
@@ -575,7 +597,7 @@ const CippAppPermissionBuilder = ({
                     </Stack>
                   </>
                 ) : (
-                  <Alert color="warning" icon={<WarningAmberOutlined />}>
+                  <Alert color="warning" icon={<WarningAmberOutlined />} sx={{ mb: 3 }}>
                     No Application Permissions found.
                   </Alert>
                 )}
@@ -594,10 +616,12 @@ const CippAppPermissionBuilder = ({
                         label="Delegated Permissions"
                         name={`Permissions.${servicePrincipal.appId}.delegatedPermissions`}
                         isFetching={spInfoFetching}
-                        options={spInfo?.Results?.publishedPermissionScopes?.map((scope) => ({
-                          label: scope.value,
-                          value: scope.id,
-                        }))}
+                        options={spInfo?.Results?.publishedPermissionScopes
+                          ?.filter((scope) => !delegatedTable.find((perm) => perm.id === scope.id))
+                          .map((scope) => ({
+                            label: scope.value,
+                            value: scope.id,
+                          }))}
                         formControl={formControl}
                         multiple={false}
                       />
@@ -639,7 +663,12 @@ const CippAppPermissionBuilder = ({
                 </Stack>
               </CippCardTabPanel>
 
-              <Button variant="contained" startIcon={<Save />} onClick={handleSavePermissions}>
+              <Button
+                variant="contained"
+                startIcon={<Save />}
+                onClick={handleSavePermissions}
+                disabled={!permissionsChanged}
+              >
                 Save Changes
               </Button>
             </Box>
