@@ -37,7 +37,7 @@ const Page = () => {
     <CippPageCard hideBackButton={true} title={"SAM App Permissions"}>
       <CardContent>
         <Stack spacing={2}>
-          <Typography variant="body2">Manage the permissions for the CIPP-SAM App.</Typography>
+          <Typography variant="body2">This is an advanced setting that allows you to modify the permissions used for CPV consent on customer tenants.</Typography>
           <Alert color="warning" icon={<WarningAmberOutlined />}>
             This functionality is in beta and should be treated as such. Removing permissions from
             the CIPP-SAM app is not advised.

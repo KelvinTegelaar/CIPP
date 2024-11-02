@@ -20,7 +20,7 @@ import {
 
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { PlusIcon, ShieldCheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, ShieldCheckIcon, WrenchIcon } from "@heroicons/react/24/outline";
 import CippFormComponent from "./CippFormComponent";
 import {
   Delete,
@@ -707,10 +707,11 @@ const CippAppPermissionBuilder = ({
             <Grid item xl={12} md={12} sx={{ mb: 3 }}>
               <Grid
                 container
+                spacing={2}
                 sx={{ display: "flex", alignItems: "center" }}
                 justifyContent="space-between"
               >
-                <Grid item xl={8}>
+                <Grid item xs={12} xl={8}>
                   {servicePrincipals?.Metadata?.Success && (
                     <CippFormComponent
                       type="autoComplete"
@@ -888,74 +889,72 @@ const CippAppPermissionBuilder = ({
               {newPermissions?.MissingPermissions &&
                 newPermissions?.Type === "Table" &&
                 Object.keys(newPermissions?.MissingPermissions).length > 0 && (
-                  <Grid container>
-                    <Grid item>
-                      <Alert color="warning" icon={<WarningAmberOutlined />}>
-                        <Grid container>
-                          <Grid item xl={10} sm={12}>
-                            <b>New Permissions Available</b>
-                            {Object.keys(newPermissions?.MissingPermissions).map((perm) => {
-                              // translate appid to display name
-                              var sp = servicePrincipals?.Results?.find((sp) => sp.appId === perm);
-                              return (
-                                <div key={`missing-${perm}`}>
-                                  {sp?.displayName}:{" "}
-                                  {Object.keys(newPermissions?.MissingPermissions[perm]).map(
+                  <Grid container sx={{ width: "100%", mt: 3 }}>
+                    <Grid item xs={12} xl={8}>
+                      <Alert
+                        color="warning"
+                        icon={<WarningAmberOutlined />}
+                        action={
+                          <Tooltip title="Add Missing Permissions">
+                            <IconButton
+                              onClick={() => {
+                                var updatedPermissions = JSON.parse(JSON.stringify(newPermissions));
+                                Object.keys(newPermissions?.MissingPermissions).map((perm) => {
+                                  Object.keys(newPermissions?.MissingPermissions[perm]).map(
                                     (type) => {
-                                      return (
-                                        <>
-                                          {newPermissions?.MissingPermissions[perm][type].length >
-                                            0 && (
-                                            <span key={`missing-${perm}-${type}`}>
-                                              {type == "applicationPermissions"
-                                                ? "Application"
-                                                : "Delegated"}{" "}
-                                              -{" "}
-                                              {newPermissions?.MissingPermissions[perm][type]
-                                                .map((p) => {
-                                                  return p.value;
-                                                })
-                                                .join(", ")}
-                                            </span>
-                                          )}
-                                        </>
-                                      );
-                                    }
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </Grid>
-                          <Grid item xl={2} sm={12} className="my-auto">
-                            <Tooltip text="Add Missing Permissions">
-                              <IconButton
-                                onClick={() => {
-                                  var updatedPermissions = JSON.parse(
-                                    JSON.stringify(newPermissions)
-                                  );
-                                  Object.keys(newPermissions?.MissingPermissions).map((perm) => {
-                                    Object.keys(newPermissions?.MissingPermissions[perm]).map(
-                                      (type) => {
-                                        if (!updatedPermissions.Permissions[perm][type]) {
-                                          updatedPermissions.Permissions[perm][type] = [];
-                                        }
-                                        newPermissions?.MissingPermissions[perm][type].map((p) => {
-                                          updatedPermissions.Permissions[perm][type].push(p);
-                                        });
+                                      if (!updatedPermissions.Permissions[perm][type]) {
+                                        updatedPermissions.Permissions[perm][type] = [];
                                       }
-                                    );
-                                  });
-                                  updatedPermissions.MissingPermissions = {};
-                                  setNewPermissions(updatedPermissions);
-                                }}
-                              >
-                                <SvgIcon fontSize="small">
-                                  <WrenchIcon />
-                                </SvgIcon>
-                              </IconButton>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
+                                      newPermissions?.MissingPermissions[perm][type].map((p) => {
+                                        updatedPermissions.Permissions[perm][type].push(p);
+                                      });
+                                    }
+                                  );
+                                });
+                                updatedPermissions.MissingPermissions = {};
+                                setNewPermissions(updatedPermissions);
+                              }}
+                            >
+                              <SvgIcon fontSize="small">
+                                <WrenchIcon />
+                              </SvgIcon>
+                            </IconButton>
+                          </Tooltip>
+                        }
+                      >
+                        <b>New Permissions Available</b>
+                        {Object.keys(newPermissions?.MissingPermissions).map((perm) => {
+                          // translate appid to display name
+                          var sp = servicePrincipals?.Results?.find((sp) => sp.appId === perm);
+                          return (
+                            <Typography
+                              variant="body2"
+                              textColor="secondary"
+                              key={`missing-${perm}`}
+                            >
+                              {sp?.displayName}:{" "}
+                              {Object.keys(newPermissions?.MissingPermissions[perm]).map((type) => {
+                                return (
+                                  <>
+                                    {newPermissions?.MissingPermissions[perm][type].length > 0 && (
+                                      <React.Fragment key={`missing-${perm}-${type}`}>
+                                        {type == "applicationPermissions"
+                                          ? "Application"
+                                          : "Delegated"}{" "}
+                                        -{" "}
+                                        {newPermissions?.MissingPermissions[perm][type]
+                                          .map((p) => {
+                                            return p.value;
+                                          })
+                                          .join(", ")}
+                                      </React.Fragment>
+                                    )}
+                                  </>
+                                );
+                              })}
+                            </Typography>
+                          );
+                        })}
                       </Alert>
                     </Grid>
                   </Grid>
@@ -979,7 +978,7 @@ const CippAppPermissionBuilder = ({
                           alignItems="center"
                           sx={{ width: "100%" }}
                         >
-                          <Box>{sp.displayName}</Box>
+                          <Typography variant="h6">{sp.displayName}</Typography>
                           <Stack direction="row" spacing={2}>
                             <Tooltip title="Application/Delegated">
                               <Chip
