@@ -1,7 +1,7 @@
 import { Box, Button, Chip, Stack, SvgIcon, Typography } from "@mui/material";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { ApiGetCall } from "/src/api/ApiCall";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CippPermissionResults } from "./CippPermissionResults";
 import { CippGDAPResults } from "./CippGDAPResults";
 import { Sync } from "@mui/icons-material";
@@ -29,8 +29,16 @@ const CippPermissionCheck = (props) => {
 
   const handlePermissionCheck = () => {
     setSkipCache(true);
-    executeCheck.refetch();
+    if (skipCache) {
+      executeCheck.refetch();
+    }
   };
+
+  useEffect(() => {
+    if (skipCache) {
+      executeCheck.refetch();
+    }
+  }, [skipCache]);
 
   const CheckButton = () => {
     return (
