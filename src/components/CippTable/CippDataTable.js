@@ -59,6 +59,7 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  //to prevent jumping of the table when columns are not in yet.
   const waitingBool = api?.url ? true : false;
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
@@ -66,22 +67,6 @@ export const CippDataTable = (props) => {
     queryKey: queryKey ? queryKey : title,
     waiting: waitingBool,
   });
-
-  useEffect(() => {
-    if (data.length && !isEqual(data, usedData)) {
-      setUsedData(data);
-    }
-  }, [data, queryKey]);
-
-  useEffect(() => {
-    if (getRequestData.isSuccess && !getRequestData.isFetching) {
-      const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
-      const nextLinkExists = lastPage?.Metadata?.nextLink;
-      if (nextLinkExists) {
-        getRequestData.fetchNextPage();
-      }
-    }
-  }, [getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey]);
 
   const preprocessData = (dataArray) => {
     return dataArray.map((row) => {
@@ -95,6 +80,24 @@ export const CippDataTable = (props) => {
       return formattedRow;
     });
   };
+
+  useEffect(() => {
+    if (data.length && !isEqual(data, usedData)) {
+      setPreEditData(data);
+      const processedData = preprocessData(combinedResults || []);
+      setUsedData(processedData);
+    }
+  }, [data, queryKey]);
+
+  useEffect(() => {
+    if (getRequestData.isSuccess && !getRequestData.isFetching) {
+      const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
+      const nextLinkExists = lastPage?.Metadata?.nextLink;
+      if (nextLinkExists) {
+        getRequestData.fetchNextPage();
+      }
+    }
+  }, [getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey]);
 
   useEffect(() => {
     if (getRequestData.isSuccess) {
