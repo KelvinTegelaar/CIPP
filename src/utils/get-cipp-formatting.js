@@ -21,7 +21,14 @@ export const getCippFormatting = (data, cellName, type) => {
     );
   }
 
-  const timeAgoArray = ["ExecutedTime", "ScheduledTime", "Timestamp", "DateTime", "LastRun"];
+  const timeAgoArray = [
+    "ExecutedTime",
+    "ScheduledTime",
+    "Timestamp",
+    "DateTime",
+    "LastRun",
+    "LastRefresh",
+  ];
   if (timeAgoArray.includes(cellName)) {
     return <CippTimeAgo data={data} type={type} />;
   }

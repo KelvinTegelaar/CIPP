@@ -47,12 +47,25 @@ export const CippPermissionResults = (props) => {
     relatedQueryKeys: ["ExecAccessChecks-Permissions"],
   });
 
+  const startCPVRefresh = ApiPostCall({
+    urlFromData: true,
+    relatedQueryKeys: ["ExecAccessChecks-Permissions"],
+  });
+
   const handleAddMissingPermissions = (data) => {
     setSkipCache(true);
     addMissingPermissions.mutate({
       url: "/api/ExecPermissionRepair",
       data: {},
       queryKey: "RepairPermissions",
+    });
+  };
+
+  const handleStartCPVRefresh = () => {
+    startCPVRefresh.mutate({
+      url: "/api/ExecCPVRefresh",
+      data: {},
+      queryKey: "CPVRefresh",
     });
   };
 
@@ -178,6 +191,31 @@ export const CippPermissionResults = (props) => {
                   simpleColumns={["Application", "Type", "Permission"]}
                 />
               </>
+            )}
+
+            {results?.Results?.CPVRefreshList?.length > 0 && (
+              <CippDataTable
+                title="Tenants needing CPV Refresh"
+                cardButton={
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={handleStartCPVRefresh}
+                    startIcon={
+                      <SvgIcon fontSize="sm">
+                        <WrenchIcon />
+                      </SvgIcon>
+                    }
+                  >
+                    Refresh CPV
+                  </Button>
+                }
+                isFetching={executeCheck.isFetching}
+                refreshFunction={executeCheck}
+                data={results?.Results?.CPVRefreshList}
+                simpleColumns={["DisplayName", "DefaultDomainName", "LastRefresh"]}
+              />
             )}
 
             {results?.Results?.AccessTokenDetails?.Scope.length > 0 && (
