@@ -10,9 +10,7 @@ import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
-
   // if data is a data object, return a formatted date
-
   if (cellName === "addrow") {
     return isText ? (
       "No data"
