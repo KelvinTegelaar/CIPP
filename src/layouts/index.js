@@ -99,10 +99,23 @@ export const Layout = (props) => {
     settings,
   ]);
 
-  const alertsAPI = ApiGetCall({
-    url: "/api/GetCippAlerts",
-    queryKey: "alertsDashboard",
+  const version = ApiGetCall({
+    url: "/version.json",
+    queryKey: "LocalVersion",
   });
+
+  const alertsAPI = ApiGetCall({
+    url: `/api/GetCippAlerts?localversion=${version?.data?.version}`,
+    queryKey: "alertsDashboard",
+    waiting: false,
+  });
+
+  useEffect(() => {
+    if (version.isFetched && !alertsAPI.isFetched) {
+      alertsAPI.waiting = true;
+      alertsAPI.refetch();
+    }
+  }, [version, alertsAPI]);
 
   useEffect(() => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {

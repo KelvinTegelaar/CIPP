@@ -51,18 +51,19 @@ export const CIPPTableToptoolbar = ({
         }}
       >
         <Box sx={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <Tooltip
-            title={
-              getRequestData?.isFetchNextPageError
-                ? "Could not retrieve all data. Click to try again."
-                : getRequestData?.isFetching
-                ? "Retrieving more data..."
-                : "Refresh data"
-            }
-          >
-            <span>
-              <IconButton
-                className="MuiIconButton"
+          <>
+            <Tooltip
+              title={
+                getRequestData?.isFetchNextPageError
+                  ? "Could not retrieve all data. Click to try again."
+                  : getRequestData?.isFetching
+                  ? "Retrieving more data..."
+                  : !getRequestData || !refreshFunction
+                  ? "No data to refresh"
+                  : "Refresh data"
+              }
+            >
+              <div
                 onClick={() => {
                   if (typeof refreshFunction === "object") {
                     refreshFunction.refetch();
@@ -102,35 +103,6 @@ export const CIPPTableToptoolbar = ({
           <MRT_ToggleFiltersButton table={table} />
 
           {/* Custom IconButton for Show/Hide Columns */}
-          <Tooltip title="Toggle Column Visibility">
-            <IconButton onClick={columnPopover.handleOpen} ref={columnPopover.anchorRef}>
-              <ViewColumn />
-            </IconButton>
-          </Tooltip>
-          <Menu
-            anchorEl={columnPopover.anchorRef.current}
-            open={columnPopover.open}
-            onClose={columnPopover.handleClose}
-            MenuListProps={{ dense: true }}
-          >
-            {table
-              .getAllColumns()
-              .filter((column) => !column.id.startsWith("mrt-"))
-              .map((column) => (
-                <MenuItem
-                  key={column.id}
-                  onClick={() =>
-                    setColumnVisibility({
-                      ...columnVisibility,
-                      [column.id]: !column.getIsVisible(),
-                    })
-                  }
-                >
-                  <Checkbox checked={column.getIsVisible()} />
-                  <ListItemText primary={getCippTranslation(column.id)} />
-                </MenuItem>
-              ))}
-          </Menu>
 
           {exportEnabled && (
             <>

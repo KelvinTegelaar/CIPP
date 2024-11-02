@@ -2,7 +2,7 @@ import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import { useForm } from "react-hook-form";
-import { ApiGetCall } from "../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import CippAppPermissionBuilder from "/src/components/CippComponents/CippAppPermissionBuilder";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
 import { Alert, CardContent, Skeleton, Stack, Typography } from "@mui/material";
@@ -21,6 +21,18 @@ const Page = () => {
     waiting: true,
   });
 
+  const updatePermissions = ApiPostCall({
+    urlFromData: true,
+  });
+
+  const handleUpdatePermissions = (data) => {
+    updatePermissions.mutate({
+      url: "/api/ExecSAMAppPermissions?Action=Update",
+      data: data,
+      queryKey: "execSamAppPermissions",
+    });
+  };
+
   return (
     <CippPageCard hideBackButton={true} title={"SAM App Permissions"}>
       <CardContent>
@@ -35,7 +47,9 @@ const Page = () => {
               postUrl={"/api/execSamAppPermissions"}
               formControl={formControl}
               currentPermissions={execSamAppPermissions?.data}
-              removePermissionConfirm={false}
+              onSubmit={handleUpdatePermissions}
+              updatePermissions={updatePermissions}
+              removePermissionConfirm={true}
             />
           )}
         </Stack>
