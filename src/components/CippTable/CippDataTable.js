@@ -6,7 +6,6 @@ import {
   Divider,
   ListItemText,
   MenuItem,
-  Skeleton,
   SvgIcon,
 } from "@mui/material";
 import { ResourceUnavailable } from "../resource-unavailable";
@@ -22,9 +21,7 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
-import isEqual from "lodash.isequal";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import { get } from "react-hook-form";
 
 export const CippDataTable = (props) => {
   const {
@@ -59,7 +56,6 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  //to prevent jumping of the table when columns are not in yet.
   const waitingBool = api?.url ? true : false;
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
@@ -82,12 +78,12 @@ export const CippDataTable = (props) => {
   };
 
   useEffect(() => {
-    if (data.length && !isEqual(data, usedData)) {
+    if (data.length) {
       setPreEditData(data);
-      const processedData = preprocessData(combinedResults || []);
+      const processedData = preprocessData(data || []);
       setUsedData(processedData);
     }
-  }, [data, queryKey]);
+  }, [data]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
@@ -103,7 +99,6 @@ export const CippDataTable = (props) => {
     if (getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages;
       const getNestedValue = (obj, path) => {
-        // If path is undefined or empty, return the root object itself
         if (!path) {
           return obj;
         }
@@ -135,7 +130,6 @@ export const CippDataTable = (props) => {
     getRequestData.isFetching,
     queryKey,
   ]);
-
   useEffect(() => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
       return;
@@ -171,7 +165,6 @@ export const CippDataTable = (props) => {
   const [modeInfo] = useState(
     utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas)
   );
-
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
   const memoizedData = useMemo(() => usedData, [usedData]);

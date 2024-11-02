@@ -17,6 +17,6 @@ export const getCippFilterVariant = (providedColumnKeys) => {
     case "id":
       return "text";
     default:
-      return "text";
+      return { filterVariant: "text" };
   }
 };

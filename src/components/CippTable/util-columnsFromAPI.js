@@ -51,6 +51,5 @@ export const utilColumnsFromAPI = (dataArray) => {
       .flat();
   };
   const returnedData = generateColumns(dataSample);
-  console.log("Returned data", returnedData);
   return returnedData;
 };
