@@ -67,8 +67,6 @@ export const CIPPTableToptoolbar = ({
                   ? "Could not retrieve all data. Click to try again."
                   : getRequestData?.isFetching
                   ? "Retrieving more data..."
-                  : !getRequestData || !refreshFunction
-                  ? "No data to refresh"
                   : "Refresh data"
               }
             >
@@ -86,9 +84,7 @@ export const CIPPTableToptoolbar = ({
                   disabled={
                     getRequestData?.isLoading ||
                     getRequestData?.isFetching ||
-                    refreshFunction?.isFetching ||
-                    !getRequestData ||
-                    !refreshFunction
+                    refreshFunction?.isFetching
                   }
                 >
                   <SvgIcon
@@ -113,6 +109,7 @@ export const CIPPTableToptoolbar = ({
                 </IconButton>
               </div>
             </Tooltip>
+
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
             <Tooltip title="Toggle Column Visibility">
@@ -244,7 +241,6 @@ export const CIPPTableToptoolbar = ({
             row={actionData.data}
           />
         )}
-        <MRT_ToolbarAlertBanner stackAlertBanner table={table} />
       </Box>
     </>
   );
