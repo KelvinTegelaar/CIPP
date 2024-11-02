@@ -2,9 +2,9 @@ import { IconButton, Tooltip } from "@mui/material";
 import { PictureAsPdf } from "@mui/icons-material";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { getCippFormatting } from "../utils/get-cipp-formatting";
 
 export const PDFExportButton = (props) => {
+  //CURRENTLY BROKEN BECAUSE WRONG DATA
   const { rows, columns, reportName, columnVisibility } = props;
 
   const handleExportRows = (rows) => {
@@ -19,18 +19,11 @@ export const PDFExportButton = (props) => {
       .map((c) => ({ header: c.header, dataKey: c.accessorKey }));
 
     //for every existing row, get the valid formatting using getCippFormatting.
-    const formattedData = tableData.map((row) => {
-      const formattedRow = {};
-      Object.keys(row).forEach((key) => {
-        formattedRow[key] = getCippFormatting(row[key], key, "text");
-      });
-      return formattedRow;
-    });
 
     let content = {
       startY: 100,
       columns: exportColumns,
-      body: formattedData,
+      body: tableData,
       theme: "striped",
       headStyles: { fillColor: [247, 127, 0] },
     };

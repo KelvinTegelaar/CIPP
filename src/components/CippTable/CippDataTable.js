@@ -24,6 +24,7 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
 import isEqual from "lodash.isequal";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import { get } from "react-hook-form";
 
 export const CippDataTable = (props) => {
   const {
@@ -242,9 +243,13 @@ export const CippDataTable = (props) => {
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,
     }),
+
     columns: memoizedColumns,
     data: memoizedData,
-    state: { columnVisibility },
+    state: {
+      columnVisibility,
+      showSkeletons: getRequestData.isFetching ? getRequestData.isFetching : isFetching,
+    },
     renderEmptyRowsFallback: ({ table }) =>
       getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
         <center>{getRequestData.data?.pages?.[0].Metadata?.QueueMessage}</center>
@@ -266,6 +271,7 @@ export const CippDataTable = (props) => {
               actions={actions}
               exportEnabled={exportEnabled}
               refreshFunction={refreshFunction}
+              setColumnVisibility={setColumnVisibility}
             />
           )}
         </>
@@ -293,11 +299,6 @@ export const CippDataTable = (props) => {
               message={`Error Loading data:  ${getCippError(getRequestData.error)}`}
             />
           )}
-          {isFetching || (getRequestData.isFetching && !getRequestData.data) ? (
-            <>
-              <Skeleton />
-            </>
-          ) : null}
         </Scrollbar>
       ) : (
         // Render the table inside a Card
@@ -310,7 +311,9 @@ export const CippDataTable = (props) => {
                 <ResourceUnavailable message={incorrectDataMessage} />
               ) : (
                 <>
-                  {(getRequestData.isSuccess || getRequestData.data?.pages.length >= 0 || data) && (
+                  {(getRequestData.isSuccess ||
+                    getRequestData.data?.pages.length >= 0 ||
+                    (data && !getRequestData.isError)) && (
                     <MaterialReactTable
                       enableRowVirtualization
                       enableColumnVirtualization
@@ -325,11 +328,6 @@ export const CippDataTable = (props) => {
                   message={`Error Loading data:  ${getCippError(getRequestData.error)}`}
                 />
               )}
-              {isFetching || (getRequestData.isFetching && !getRequestData.data) ? (
-                <>
-                  <Skeleton />
-                </>
-              ) : null}
             </Scrollbar>
           </CardContent>
         </Card>
