@@ -64,6 +64,7 @@ export const CippDataTable = (props) => {
     waiting: waitingBool,
   });
 
+  //reconsider this. this breaks row.original in multiple places such as actions.
   const preprocessData = (dataArray) => {
     return dataArray.map((row) => {
       const formattedRow = {};
@@ -168,73 +169,7 @@ export const CippDataTable = (props) => {
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
   const memoizedData = useMemo(() => usedData, [usedData]);
-  const useActionMenuItems = (actions, setActionData, createDialog, row, closeMenu) =>
-    useMemo(
-      () =>
-        actions.map((action, index) => (
-          <MenuItem
-            sx={{ color: action.color }}
-            key={`actions-list-row-${index}`}
-            onClick={() => {
-              console.log(row);
-              setActionData({
-                data: row.original,
-                action: action,
-                ready: true,
-              });
 
-              if (action?.noConfirm && action?.customFunction) {
-                action.customFunction(row.original, action, {});
-                closeMenu();
-              } else {
-                createDialog.handleOpen();
-                closeMenu();
-              }
-            }}
-          >
-            <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-              {action.icon}
-            </SvgIcon>
-            <ListItemText>{action.label}</ListItemText>
-          </MenuItem>
-        )),
-      [actions, setActionData, row, closeMenu] // include row and closeMenu in dependencies
-    );
-
-  // Pass `row` to `useActionMenuItems` in `renderRowActionMenuItems`
-  const renderRowActionMenuItems = ({
-    closeMenu,
-    row,
-    offCanvas,
-    setOffCanvasData,
-    setOffcanvasVisible,
-  }) => {
-    const actionMenuItems = useActionMenuItems(
-      actions,
-      setActionData,
-      createDialog,
-      row,
-      closeMenu
-    );
-    return [
-      ...actionMenuItems,
-      offCanvas && (
-        <MenuItem
-          key="actions-list-row-more"
-          onClick={() => {
-            closeMenu();
-            setOffCanvasData(row.original);
-            setOffcanvasVisible(true);
-          }}
-        >
-          <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-            <MoreHoriz />
-          </SvgIcon>
-          More Info
-        </MenuItem>
-      ),
-    ];
-  };
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,
@@ -253,7 +188,58 @@ export const CippDataTable = (props) => {
     onColumnVisibilityChange: setColumnVisibility,
     ...modeInfo,
 
-    renderRowActionMenuItems,
+    renderRowActionMenuItems: actions
+      ? ({ closeMenu, row }) => [
+          actions.map((action, index) => (
+            <MenuItem
+              sx={{ color: action.color }}
+              key={`actions-list-row-${index}`}
+              onClick={() => {
+                setActionData({
+                  data: row.original,
+                  action: action,
+                  ready: true,
+                });
+                createDialog.handleOpen();
+                closeMenu();
+              }}
+            >
+              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                {action.icon}
+              </SvgIcon>
+              <ListItemText>{action.label}</ListItemText>
+            </MenuItem>
+          )),
+          offCanvas && (
+            <MenuItem
+              key={`actions-list-row-more`}
+              onClick={() => {
+                closeMenu();
+                setOffCanvasData(row.original);
+                setOffcanvasVisible(true);
+              }}
+            >
+              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                <MoreHoriz />
+              </SvgIcon>
+              More Info
+            </MenuItem>
+          ),
+        ]
+      : offCanvas && (
+          <MenuItem
+            onClick={() => {
+              closeMenu();
+              setOffCanvasData(row.original);
+              setOffcanvasVisible(true);
+            }}
+          >
+            <ListItemIcon>
+              <More fontSize="small" />
+            </ListItemIcon>
+            More Info
+          </MenuItem>
+        ),
     renderTopToolbar: ({ table }) => {
       return (
         <>
