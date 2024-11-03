@@ -1,6 +1,6 @@
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import toast from 'react-hot-toast';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
 import {
   Avatar,
   Box,
@@ -12,44 +12,27 @@ import {
   Stack,
   TextField,
   Typography,
-  Unstable_Grid2 as Grid
-} from '@mui/material';
-import { useMockedUser } from '../../../hooks/use-mocked-user';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useMockedUser } from "../../../hooks/use-mocked-user";
 
-const companySizeOptions = ['1-10', '11-30', '31-50', '50+'];
+const companySizeOptions = ["1-10", "11-30", "31-50", "50+"];
 
 const initialValues = {
-  companyName: 'Devias IO',
-  companySize: '1-10',
-  email: 'chen.simmons@devias.io',
-  jobTitle: 'Operation',
-  name: 'Chen Simmons',
-  submit: null
+  companyName: "Devias IO",
+  companySize: "1-10",
+  email: "chen.simmons@devias.io",
+  jobTitle: "Operation",
+  name: "Chen Simmons",
+  submit: null,
 };
 
 const validationSchema = Yup.object({
-  companyName: Yup
-    .string()
-    .max(255)
-    .required('Company name is required'),
-  companySize: Yup
-    .string()
-    .max(255)
-    .oneOf(companySizeOptions)
-    .required('Company size is required'),
-  email: Yup
-    .string()
-    .max(255)
-    .email('Must be a valid email')
-    .required('Email is required'),
-  jobTitle: Yup
-    .string()
-    .max(255)
-    .required('Job name is required'),
-  name: Yup
-    .string()
-    .max(255)
-    .required('Name is required')
+  companyName: Yup.string().max(255).required("Company name is required"),
+  companySize: Yup.string().max(255).oneOf(companySizeOptions).required("Company size is required"),
+  email: Yup.string().max(255).email("Must be a valid email").required("Email is required"),
+  jobTitle: Yup.string().max(255).required("Job name is required"),
+  name: Yup.string().max(255).required("Name is required"),
 });
 
 export const AccountDetails = (props) => {
@@ -59,7 +42,7 @@ export const AccountDetails = (props) => {
     validationSchema,
     onSubmit: async (values, helpers) => {
       try {
-        toast.success('Settings saved');
+        toast.success("Settings saved");
         helpers.resetForm();
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
@@ -69,66 +52,35 @@ export const AccountDetails = (props) => {
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
-    }
+    },
   });
 
   return (
     <Card>
       <CardContent>
-        <Grid
-          container
-          spacing={4}
-        >
-          <Grid
-            xs={12}
-            md={5}
-          >
-            <Typography variant="h6">
-              Settings
-            </Typography>
+        <Grid container spacing={4}>
+          <Grid xs={12} md={5}>
+            <Typography variant="h6">Settings</Typography>
           </Grid>
-          <Grid
-            xs={12}
-            md={7}
-          >
-            <Stack
-              alignItems="center"
-              direction="row"
-              spacing={2}
-              sx={{ mb: 3 }}
-            >
+          <Grid xs={12} md={7}>
+            <Stack alignItems="center" direction="row" spacing={2} sx={{ mb: 3 }}>
               <Avatar
                 src={user.avatar}
                 sx={{
                   height: 64,
-                  width: 64
+                  width: 64,
                 }}
               />
               <Stack spacing={1}>
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  spacing={1}
-                >
-                  <Button
-                    size="small"
-                    type="button"
-                    variant="outlined"
-                  >
+                <Stack alignItems="center" direction="row" spacing={1}>
+                  <Button size="small" type="button" variant="outlined">
                     Change
                   </Button>
-                  <Button
-                    color="inherit"
-                    size="small"
-                    type="button"
-                  >
+                  <Button color="inherit" size="small" type="button">
                     Delete
                   </Button>
                 </Stack>
-                <Typography
-                  color="text.secondary"
-                  variant="caption"
-                >
+                <Typography color="text.secondary" variant="caption">
                   Recommended dimensions: 200x200, maximum file size: 5MB
                 </Typography>
               </Stack>
@@ -188,29 +140,19 @@ export const AccountDetails = (props) => {
                   value={formik.values.companySize}
                 >
                   {companySizeOptions.map((option) => (
-                    <MenuItem
-                      key={option}
-                      value={option}
-                    >
+                    <MenuItem key={option} value={option}>
                       {option}
                     </MenuItem>
                   ))}
                 </TextField>
               </Stack>
               {formik.errors.submit && (
-                <FormHelperText
-                  error
-                  sx={{ mt: 2 }}
-                >
+                <FormHelperText error sx={{ mt: 2 }}>
                   {formik.errors.submit}
                 </FormHelperText>
               )}
               <Box sx={{ mt: 2 }}>
-                <Button
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                >
+                <Button size="large" type="submit" variant="contained">
                   Save settings
                 </Button>
               </Box>

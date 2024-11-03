@@ -1,7 +1,7 @@
-import ArrowRightIcon from '@heroicons/react/24/outline/ArrowRightIcon';
-import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon';
-import ReceiptPercentIcon from '@heroicons/react/24/outline/ReceiptPercentIcon';
-import UsersIcon from '@heroicons/react/24/outline/UsersIcon';
+import ArrowRightIcon from "@heroicons/react/24/outline/ArrowRightIcon";
+import LockClosedIcon from "@heroicons/react/24/outline/LockClosedIcon";
+import ReceiptPercentIcon from "@heroicons/react/24/outline/ReceiptPercentIcon";
+import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
 import {
   Avatar,
   Box,
@@ -12,9 +12,8 @@ import {
   Stack,
   SvgIcon,
   Typography,
-  Unstable_Grid2 as Grid
-} from '@mui/material';
-
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
 const data = [
   {
     icon: (
@@ -22,9 +21,9 @@ const data = [
         <UsersIcon />
       </SvgIcon>
     ),
-    label: 'Users',
-    linkLabel: 'Reports',
-    value: 3450
+    label: "Users",
+    linkLabel: "Reports",
+    value: 3450,
   },
   {
     icon: (
@@ -32,9 +31,9 @@ const data = [
         <LockClosedIcon />
       </SvgIcon>
     ),
-    label: 'Logins',
-    linkLabel: 'Analytics',
-    value: 68
+    label: "Logins",
+    linkLabel: "Analytics",
+    value: 68,
   },
   {
     icon: (
@@ -42,67 +41,50 @@ const data = [
         <ReceiptPercentIcon />
       </SvgIcon>
     ),
-    label: 'Invoices',
-    linkLabel: 'Transactions',
-    value: 3120
-  }
+    label: "Invoices",
+    linkLabel: "Transactions",
+    value: 3120,
+  },
 ];
 
 export const Stats1 = () => (
   <Box sx={{ p: 3 }}>
-    <Grid
-      container
-      spacing={3}
-    >
+    <Grid container spacing={3}>
       {data.map((item) => {
         return (
-          <Grid
-            xs={12}
-            md={4}
-            key={item.label}
-          >
-            <Card sx={{ height: '100%' }}>
-              <Stack
-                alignItems="center"
-                direction="row"
-                spacing={2}
-                sx={{ p: 2 }}
-              >
+          <Grid xs={12} md={4} key={item.label}>
+            <Card sx={{ height: "100%" }}>
+              <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
                 <Avatar
                   sx={{
-                    backgroundColor: 'primary.main',
-                    color: 'primary.contrastText',
+                    backgroundColor: "primary.main",
+                    color: "primary.contrastText",
                     height: 56,
-                    width: 56
+                    width: 56,
                   }}
                 >
                   {item.icon}
                 </Avatar>
                 <div>
-                  <Typography
-                    color="text.secondary"
-                    variant="overline"
-                  >
+                  <Typography color="text.secondary" variant="overline">
                     {item.label}
                   </Typography>
-                  <Typography variant="h6">
-                    {item.value}
-                  </Typography>
+                  <Typography variant="h6">{item.value}</Typography>
                 </div>
               </Stack>
               <Divider />
               <CardActions
                 sx={{
                   px: 3,
-                  py: 1
+                  py: 1,
                 }}
               >
                 <Button
-                  endIcon={(
+                  endIcon={
                     <SvgIcon fontSize="small">
                       <ArrowRightIcon />
                     </SvgIcon>
-                  )}
+                  }
                   size="small"
                 >
                   {item.linkLabel}

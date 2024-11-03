@@ -1,5 +1,6 @@
 import Head from "next/head";
-import { Box, Container, Stack, Unstable_Grid2 as Grid } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
 import CippFormComponent from "../../components/CippComponents/CippFormComponent";

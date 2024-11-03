@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import { Card, CardContent, Container, Stack, Unstable_Grid2 as Grid } from "@mui/material";
+import { Card, CardContent, Container, Stack } from "@mui/material";
 import { WizardBusinessStep } from "../../../../components/CippWizard/CippWizardOptionsList";
 import { WizardConfirmationStep } from "../../../../components/CippWizard/CippWizardConfirmation";
 import { WizardNotificationsStep } from "../../../../components/CippWizard/CippPSASyncOptions";
 import { WizardProfileStep } from "../../../../components/CippWizard/CippPSACredentialsStep";
 import { WizardSteps } from "../../../../components/CippWizard/wizard-steps";
+import Grid from "@mui/material/Grid2";
 
 const steps = [
   {

@@ -1,4 +1,5 @@
-import { Card, Stack, SvgIcon, Typography, Unstable_Grid2 as Grid, Skeleton } from "@mui/material";
+import { Card, Stack, SvgIcon, Typography, Skeleton } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 export const CippInfoBar = ({ data, isFetching }) => (
   <Card>

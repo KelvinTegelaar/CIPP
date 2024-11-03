@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
-import { Card, CardContent, Container, Stack, Unstable_Grid2 as Grid } from "@mui/material";
+import { Card, CardContent, Container, Stack } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import { WizardSteps } from "./wizard-steps";
 import { useForm } from "react-hook-form";
 

@@ -1,6 +1,6 @@
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import toast from 'react-hot-toast';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
 import {
   Box,
   Button,
@@ -10,26 +10,18 @@ import {
   Stack,
   TextField,
   Typography,
-  Unstable_Grid2 as Grid
-} from '@mui/material';
+} from "@mui/material";
 
+import Grid from "@mui/material/Grid2";
 const initialValues = {
-  newPassword: '',
-  password: '',
-  submit: null
+  newPassword: "",
+  password: "",
+  submit: null,
 };
 
 const validationSchema = Yup.object({
-  newPassword: Yup
-    .string()
-    .min(7)
-    .max(255)
-    .required('New password is required'),
-  password: Yup
-    .string()
-    .min(7)
-    .max(255)
-    .required('Old password is required')
+  newPassword: Yup.string().min(7).max(255).required("New password is required"),
+  password: Yup.string().min(7).max(255).required("Old password is required"),
 });
 
 export const AccountPassword = (props) => {
@@ -38,7 +30,7 @@ export const AccountPassword = (props) => {
     validationSchema,
     onSubmit: async (values, helpers) => {
       try {
-        toast.success('Password changed');
+        toast.success("Password changed");
         helpers.resetForm();
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
@@ -48,28 +40,17 @@ export const AccountPassword = (props) => {
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
-    }
+    },
   });
 
   return (
     <Card>
       <CardContent>
-        <Grid
-          container
-          spacing={4}
-        >
-          <Grid
-            xs={12}
-            md={5}
-          >
-            <Typography variant="h6">
-              Change password
-            </Typography>
+        <Grid container spacing={4}>
+          <Grid xs={12} md={5}>
+            <Typography variant="h6">Change password</Typography>
           </Grid>
-          <Grid
-            xs={12}
-            md={7}
-          >
+          <Grid xs={12} md={7}>
             <form onSubmit={formik.handleSubmit}>
               <Stack spacing={2}>
                 <TextField
@@ -96,19 +77,12 @@ export const AccountPassword = (props) => {
                 />
               </Stack>
               {formik.errors.submit && (
-                <FormHelperText
-                  error
-                  sx={{ mt: 2 }}
-                >
+                <FormHelperText error sx={{ mt: 2 }}>
                   {formik.errors.submit}
                 </FormHelperText>
               )}
               <Box sx={{ mt: 2 }}>
-                <Button
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                >
+                <Button size="large" type="submit" variant="contained">
                   Change password
                 </Button>
               </Box>
