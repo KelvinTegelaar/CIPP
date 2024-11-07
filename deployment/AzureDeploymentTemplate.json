@@ -22,13 +22,6 @@
       "metadata": {
         "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token"
       }
-    },
-    "GithubAPIRepository": {
-      "defaultValue": "https://github.com/KelvinTegelaar/CIPP-API",
-      "type": "string",
-      "metadata": {
-        "description": "URL to your Github backend fork."
-      }
     }
   },
   "variables": {
@@ -57,7 +50,7 @@
             "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
             "permissions": {
               "keys": [],
-              "secrets": ["all"],
+              "secrets": [ "all" ],
               "certificates": []
             }
           }
@@ -116,7 +109,7 @@
           ]
         }
       ],
-      "dependsOn": ["[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"]
+      "dependsOn": [ "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]" ]
     },
     {
       "apiVersion": "2015-08-01",
@@ -135,7 +128,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
         "siteConfig": {
           "Use32BitWorkerProcess": false,
-          "powerShellVersion": "7.2",
+          "powerShellVersion": "7.4",
           "appSettings": [
             {
               "name": "AzureWebJobsStorage",
@@ -154,20 +147,8 @@
               "value": "~4"
             },
             {
-              "name": "ApplicationID",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ApplicationId)')]"
-            },
-            {
-              "name": "ApplicationSecret",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ApplicationSecret)')]"
-            },
-            {
-              "name": "RefreshToken",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/RefreshToken)')]"
-            },
-            {
-              "name": "TenantID",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/tenantid)')]"
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
             },
             {
               "name": "FUNCTIONS_WORKER_RUNTIME",
@@ -175,24 +156,19 @@
             }
           ]
         }
-      },
-      "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "web",
-          "type": "sourcecontrols",
-          "dependsOn": ["[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"],
-          "properties": {
-            "RepoUrl": "[parameters('GithubAPIRepository')]",
-            "repositoryToken": "[parameters('GithubToken')]",
-            "token": "[parameters('GithubToken')]",
-
-            "branch": "master",
-            "publishRunbook": true,
-            "IsManualIntegration": true
-          }
-        }
-      ]
+      }
+    },
+    {
+      "name": "[concat(variables('funcAppName'), '/ZipDeploy')]",
+      "type": "Microsoft.Web/sites/extensions",
+      "apiVersion": "2021-02-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"
+      ],
+      "properties": {
+        "packageUri": "https://cippreleases.blob.core.windows.net/cipp-api/latest.zip"
+      }
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
@@ -200,7 +176,7 @@
       "name": "[variables('funcStorageName')]",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName": "funStorageName"
+        "displayName": "funcStorageName"
       },
       "sku": {
         "name": "Standard_LRS"
