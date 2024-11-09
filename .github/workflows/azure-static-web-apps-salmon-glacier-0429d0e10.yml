@@ -5,9 +5,9 @@ on:
     branches:
       - main
 
-pull_request:
-  types: [opened, synchronize, reopened, closed]
-  branches:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
       - main
 
 jobs:
