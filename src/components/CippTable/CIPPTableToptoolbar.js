@@ -10,11 +10,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import {
-  MRT_GlobalFilterTextField,
-  MRT_ToggleFiltersButton,
-  MRT_ToolbarAlertBanner,
-} from "material-react-table";
+import { MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from "material-react-table";
 import { PDFExportButton } from "../pdfExportButton";
 import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { usePopover } from "../../hooks/use-popover";
@@ -204,7 +200,9 @@ export const CIPPTableToptoolbar = ({
                       key={index}
                       onClick={() => {
                         setActionData({
-                          data: table.getSelectedRowModel().rows.map((row) => row.original),
+                          data: table
+                            .getSelectedRowModel()
+                            .rows.map((row) => row.original.original),
                           action: action,
                           ready: true,
                         });
@@ -212,7 +210,9 @@ export const CIPPTableToptoolbar = ({
                         if (action?.noConfirm && action.customFunction) {
                           table
                             .getSelectedRowModel()
-                            .rows.map((row) => action.customFunction(row.original, action, {}));
+                            .rows.map((row) =>
+                              action.customFunction(row.original.original, action, {})
+                            );
                         } else {
                           createDialog.handleOpen();
                           popover.handleClose();

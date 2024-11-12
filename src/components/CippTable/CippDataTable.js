@@ -65,25 +65,10 @@ export const CippDataTable = (props) => {
     waiting: waitingBool,
   });
 
-  //reconsider this. this breaks row.original in multiple places such as actions.
-  const preprocessData = (dataArray) => {
-    return dataArray.map((row) => {
-      const formattedRow = {};
-      Object.keys(row).forEach((key) => {
-        formattedRow[key] = {
-          text: getCippFormatting(row[key], key, "text"),
-          jsx: getCippFormatting(row[key], key),
-        };
-      });
-      return formattedRow;
-    });
-  };
-
   useEffect(() => {
     if (data.length) {
       setPreEditData(data);
-      const processedData = preprocessData(data || []);
-      setUsedData(processedData);
+      setUsedData(data);
     }
   }, [data]);
 
@@ -122,8 +107,7 @@ export const CippDataTable = (props) => {
         return nestedData !== undefined ? nestedData : [];
       });
       setPreEditData(combinedResults);
-      const processedData = preprocessData(combinedResults || []);
-      setUsedData(processedData);
+      setUsedData(combinedResults);
     }
   }, [
     getRequestData.isSuccess,
@@ -136,7 +120,7 @@ export const CippDataTable = (props) => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
       return;
     }
-    const apiColumns = utilColumnsFromAPI(preEditData);
+    const apiColumns = utilColumnsFromAPI(usedData);
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
