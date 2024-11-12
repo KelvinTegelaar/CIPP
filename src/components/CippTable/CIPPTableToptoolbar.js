@@ -149,14 +149,14 @@ export const CIPPTableToptoolbar = ({
               onClose={columnPopover.handleClose}
               MenuListProps={{ dense: true }}
             >
-              <MenuItem onClick={resetToDefaultVisibility}>
-                <ListItemText primary="Reset to default columns" />
-              </MenuItem>
               <MenuItem onClick={resetToPreferedVisibility}>
                 <ListItemText primary="Reset to preferred columns" />
               </MenuItem>
               <MenuItem onClick={saveAsPreferedColumns}>
                 <ListItemText primary="Save as preferred columns" />
+              </MenuItem>
+              <MenuItem onClick={resetToDefaultVisibility}>
+                <ListItemText primary="Delete preferred columns" />
               </MenuItem>
               {table
                 .getAllColumns()
