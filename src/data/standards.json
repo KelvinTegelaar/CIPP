@@ -600,6 +600,43 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.GuestInvite",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "This setting controls who can invite guests to your directory to collaborate on resources secured by your company, such as SharePoint sites or Azure resources.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "label": "Who can send invites?",
+        "name": "standards.GuestInvite.allowInvitesFrom",
+        "options": [
+          {
+            "label": "Everyone",
+            "value": "everyone"
+          },
+          {
+            "label": "Admins, Guest inviters and All Members",
+            "value": "adminsGuestInvitersAndAllMembers"
+          },
+          {
+            "label": "Admins and Guest inviters",
+            "value": "adminsAndGuestInviters"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          }
+        ]
+      }
+    ],
+    "label": "Guest Invite setting",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.UndoOauth",
     "cat": "Entra (AAD) Standards",
     "tag": ["highimpact"],
