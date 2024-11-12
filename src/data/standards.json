@@ -2431,6 +2431,11 @@
             "value": "OrganizerOnlyUserOverride"
           }
         ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToJoinMeeting",
+        "label": "Allow anonymous users to join meeting"
       }
     ],
     "label": "Define Global Meeting Policy for Teams",
