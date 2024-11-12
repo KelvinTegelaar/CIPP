@@ -2600,7 +2600,7 @@
     "docsDescription": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
     "addedComponent": [
       {
-        "type": "AutoComplete",
+        "type": "autoComplete",
         "name": "standards.TeamsEnrollUser.EnrollUserOverride",
         "label": "Voice and Face Enrollment",
         "options": [
