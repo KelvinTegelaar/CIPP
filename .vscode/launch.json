@@ -15,7 +15,7 @@
       "type": "node-terminal"
     },
     {
-      "command": "npm start",
+      "command": "yarn run dev",
       "name": "Run Frontend",
       "request": "launch",
       "type": "node-terminal",

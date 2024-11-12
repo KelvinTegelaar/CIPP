@@ -32,7 +32,7 @@
       "command": "func start --verbose",
       "isBackground": true,
       "options": {
-        "cwd": "${workspaceFolder}/../CoW-API"
+        "cwd": "${workspaceFolder}/../CIPP-API"
       },
       "problemMatcher": {
         "pattern": [
