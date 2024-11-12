@@ -2573,6 +2573,35 @@
     "recommendedBy": ["CIS 3.0"]
   },
   {
+    "name": "standards.TeamsEnrollUser",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
+    "docsDescription": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
+    "addedComponent": [
+      {
+        "type": "AutoComplete",
+        "name": "standards.TeamsEnrollUser.EnrollUserOverride",
+        "label": "Voice and Face Enrollment",
+        "options": [
+          {
+            "label": "Disabled",
+            "value": "Disabled"
+          },
+          {
+            "label": "Enabled",
+            "value": "Enabled"
+          }
+        ]
+      }
+    ],
+    "label": "Default voice and face enrollment",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -Identity Global -EnrollUserOverride $false",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.TeamsExternalAccessPolicy",
     "cat": "Teams Standards",
     "tag": ["mediumimpact"],
