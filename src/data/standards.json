@@ -2025,6 +2025,40 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.IntuneComplianceSettings",
+    "cat": "Intune Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the mark devices with no compliance policy assigned as compliance/non compliant and Compliance status validity period.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.IntuneComplianceSettings.secureByDefault",
+        "label": "Mark devices with no compliance policy as",
+        "options": [
+          {
+            "label": "Compliant",
+            "value": "false"
+          },
+          {
+            "label": "Non-Compliant",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.IntuneComplianceSettings.deviceComplianceCheckinThresholdDays",
+        "label": "Compliance status validity period (days)"
+      }
+    ],
+    "label": "Set Intune Compliance Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": ["mediumimpact"],
