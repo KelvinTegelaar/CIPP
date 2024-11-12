@@ -22,7 +22,6 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
-import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippDataTable = (props) => {
   const {
@@ -52,7 +51,6 @@ export const CippDataTable = (props) => {
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
-  const [preEditData, setPreEditData] = useState(data);
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
@@ -67,7 +65,6 @@ export const CippDataTable = (props) => {
 
   useEffect(() => {
     if (data.length) {
-      setPreEditData(data);
       setUsedData(data);
     }
   }, [data]);
@@ -106,7 +103,6 @@ export const CippDataTable = (props) => {
         const nestedData = getNestedValue(page, api.dataKey);
         return nestedData !== undefined ? nestedData : [];
       });
-      setPreEditData(combinedResults);
       setUsedData(combinedResults);
     }
   }, [
@@ -249,7 +245,6 @@ export const CippDataTable = (props) => {
   return (
     <>
       {noCard ? (
-        // Just render the table and related components without the Card
         <Scrollbar>
           {!Array.isArray(usedData) && usedData ? (
             <ResourceUnavailable message={incorrectDataMessage} />

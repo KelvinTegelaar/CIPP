@@ -16,9 +16,11 @@ import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outl
 import { usePopover } from "../../hooks/use-popover";
 import { CSVExportButton } from "../csvExportButton";
 import { useDialog } from "../../hooks/use-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { useSettings } from "../../hooks/use-settings";
+import { useRouter } from "next/router";
 
 export const CIPPTableToptoolbar = ({
   table,
@@ -33,16 +35,42 @@ export const CIPPTableToptoolbar = ({
 }) => {
   const popover = usePopover();
   const columnPopover = usePopover();
-
+  const settings = useSettings();
+  const router = useRouter();
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
 
+  const pageName = router.asPath.split("/").slice(1).join("/");
+
+  //useEffect to set the column visibility to the preferred columns if they exist
+  useEffect(() => {
+    if (settings.columnDefaults[pageName]) {
+      setColumnVisibility(settings.columnDefaults[pageName]);
+    }
+  }, [settings.columnDefaults[pageName], router, columnVisibility, usedColumns]);
+
   const resetToDefaultVisibility = () => {
-    const defaultVisibility = {}; // Define your default visibility object here
-    table.getAllColumns().forEach((column) => {
-      defaultVisibility[column.id] = true; // Set default visibility for each column
+    settings.handleUpdate({
+      columnDefaults: {
+        ...settings.columnDefaults,
+        [pageName]: false,
+      },
     });
-    setColumnVisibility(defaultVisibility);
+    //reload the page to reset the columns, use next shallow routing to prevent full page reload
+    router.replace(router.asPath, undefined, { shallow: true });
+  };
+
+  const resetToPreferedVisibility = () => {
+    setColumnVisibility(settings.columnDefaults[pageName]);
+  };
+
+  const saveAsPreferedColumns = () => {
+    settings.handleUpdate({
+      columnDefaults: {
+        ...settings.columnDefaults,
+        [pageName]: columnVisibility,
+      },
+    });
   };
 
   return (
@@ -120,7 +148,13 @@ export const CIPPTableToptoolbar = ({
               MenuListProps={{ dense: true }}
             >
               <MenuItem onClick={resetToDefaultVisibility}>
-                <ListItemText primary="Reset to Default" />
+                <ListItemText primary="Reset to default columns" />
+              </MenuItem>
+              <MenuItem onClick={resetToPreferedVisibility}>
+                <ListItemText primary="Reset to preferred columns" />
+              </MenuItem>
+              <MenuItem onClick={saveAsPreferedColumns}>
+                <ListItemText primary="Save as preferred columns" />
               </MenuItem>
               {table
                 .getAllColumns()
@@ -142,7 +176,6 @@ export const CIPPTableToptoolbar = ({
             </Menu>
             {exportEnabled && (
               <>
-                {console.log(table.getFilteredRowModel().rows)}
                 <PDFExportButton
                   rows={table.getFilteredRowModel().rows}
                   columns={usedColumns}
