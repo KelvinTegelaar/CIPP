@@ -2507,6 +2507,26 @@
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToJoinMeeting",
         "label": "Allow anonymous users to join meeting"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.MeetingChatEnabledType",
+        "label": "Meeting chat policy",
+        "options": [
+          {
+            "label": "On for everyone",
+            "value": "Enabled"
+          },
+          {
+            "label": "On for everyone but anonymous users",
+            "value": "EnabledExceptAnonymous"
+          },
+          {
+            "label": "Off for everyone",
+            "value": "Disabled"
+          }
+        ]
       }
     ],
     "label": "Define Global Meeting Policy for Teams",
