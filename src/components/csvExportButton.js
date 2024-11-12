@@ -13,9 +13,7 @@ export const CSVExportButton = (props) => {
 
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
-    const columnKeys = columns
-      .filter((c) => columnVisibility[c.accessorKey])
-      .map((c) => c.accessorKey);
+    const columnKeys = columns.filter((c) => columnVisibility[c.id]).map((c) => c.id);
     rowData.forEach((row) => {
       Object.keys(row).forEach((key) => {
         if (!columnKeys.includes(key)) {
