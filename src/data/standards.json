@@ -600,6 +600,43 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.GuestInvite",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "This setting controls who can invite guests to your directory to collaborate on resources secured by your company, such as SharePoint sites or Azure resources.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "label": "Who can send invites?",
+        "name": "standards.GuestInvite.allowInvitesFrom",
+        "options": [
+          {
+            "label": "Everyone",
+            "value": "everyone"
+          },
+          {
+            "label": "Admins, Guest inviters and All Members",
+            "value": "adminsGuestInvitersAndAllMembers"
+          },
+          {
+            "label": "Admins and Guest inviters",
+            "value": "adminsAndGuestInviters"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          }
+        ]
+      }
+    ],
+    "label": "Guest Invite setting",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.UndoOauth",
     "cat": "Entra (AAD) Standards",
     "tag": ["highimpact"],
@@ -1988,6 +2025,40 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.IntuneComplianceSettings",
+    "cat": "Intune Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the mark devices with no compliance policy assigned as compliance/non compliant and Compliance status validity period.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.IntuneComplianceSettings.secureByDefault",
+        "label": "Mark devices with no compliance policy as",
+        "options": [
+          {
+            "label": "Compliant",
+            "value": "false"
+          },
+          {
+            "label": "Non-Compliant",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.IntuneComplianceSettings.deviceComplianceCheckinThresholdDays",
+        "label": "Compliance status validity period (days)"
+      }
+    ],
+    "label": "Set Intune Compliance Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": ["mediumimpact"],
@@ -2431,6 +2502,31 @@
             "value": "OrganizerOnlyUserOverride"
           }
         ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToJoinMeeting",
+        "label": "Allow anonymous users to join meeting"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.MeetingChatEnabledType",
+        "label": "Meeting chat policy",
+        "options": [
+          {
+            "label": "On for everyone",
+            "value": "Enabled"
+          },
+          {
+            "label": "On for everyone but anonymous users",
+            "value": "EnabledExceptAnonymous"
+          },
+          {
+            "label": "Off for everyone",
+            "value": "Disabled"
+          }
+        ]
       }
     ],
     "label": "Define Global Meeting Policy for Teams",
@@ -2495,6 +2591,35 @@
     "impactColour": "info",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
     "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsEnrollUser",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
+    "docsDescription": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "standards.TeamsEnrollUser.EnrollUserOverride",
+        "label": "Voice and Face Enrollment",
+        "options": [
+          {
+            "label": "Disabled",
+            "value": "Disabled"
+          },
+          {
+            "label": "Enabled",
+            "value": "Enabled"
+          }
+        ]
+      }
+    ],
+    "label": "Default voice and face enrollment",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -Identity Global -EnrollUserOverride $false",
+    "recommendedBy": []
   },
   {
     "name": "standards.TeamsExternalAccessPolicy",
