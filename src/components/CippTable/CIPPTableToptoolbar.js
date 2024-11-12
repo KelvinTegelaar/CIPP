@@ -142,6 +142,7 @@ export const CIPPTableToptoolbar = ({
             </Menu>
             {exportEnabled && (
               <>
+                {console.log(table.getFilteredRowModel().rows)}
                 <PDFExportButton
                   rows={table.getFilteredRowModel().rows}
                   columns={usedColumns}

@@ -2,9 +2,9 @@ import { IconButton, Tooltip } from "@mui/material";
 import { PictureAsPdf } from "@mui/icons-material";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { getCippFormatting } from "../utils/get-cipp-formatting";
 
 export const PDFExportButton = (props) => {
-  //CURRENTLY BROKEN BECAUSE WRONG DATA
   const { rows, columns, reportName, columnVisibility } = props;
 
   const handleExportRows = (rows) => {
@@ -13,17 +13,25 @@ export const PDFExportButton = (props) => {
     const orientation = "landscape"; // portrait or landscape
     const doc = new jsPDF(orientation, unit, size);
     const tableData = rows.map((row) => row.original);
+    console.log("tableData is", tableData);
     //only export coluymns that are visible
     const exportColumns = columns
-      .filter((c) => columnVisibility[c.accessorKey])
-      .map((c) => ({ header: c.header, dataKey: c.accessorKey }));
-
+      .filter((c) => columnVisibility[c.id])
+      .map((c) => ({ header: c.header, dataKey: c.id }));
     //for every existing row, get the valid formatting using getCippFormatting.
+    const formattedData = tableData.map((row) => {
+      const formattedRow = {};
+      Object.keys(row).forEach((key) => {
+        console.log("getting data", row[key], key);
+        formattedRow[key] = getCippFormatting(row[key], key, "text");
+      });
+      return formattedRow;
+    });
 
     let content = {
       startY: 100,
       columns: exportColumns,
-      body: tableData,
+      body: formattedData,
       theme: "striped",
       headStyles: { fillColor: [247, 127, 0] },
     };
