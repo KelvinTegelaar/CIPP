@@ -7,6 +7,7 @@ import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect } from "react";
 
 import CippAddEditUser from "../../../../components/CippFormPages/CippAddEditUser";
+import { padding } from "@mui/system";
 const Page = () => {
   const userSettingsDefaults = useSettings();
 
@@ -17,7 +18,7 @@ const Page = () => {
       usageLocation: userSettingsDefaults.usageLocation,
     },
   });
-  
+
   const formValues = useWatch({ control: formControl.control, name: "userProperties" });
   useEffect(() => {
     if (formValues) {
@@ -49,35 +50,34 @@ const Page = () => {
         postUrl="/api/AddUser"
       >
         <Box sx={{ my: 2 }}>
-          <Grid item xs={12}>
-            <CippFormUserSelector
-              sx={{ mb: "1rem" }}
-              formControl={formControl}
-              name="userProperties"
-              label="Copy properties from another user"
-              multiple={false}
-              select={
-                "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,postalCode,companyName,mobilePhone,businessPhones,usageLocation"
-              }
-              addedField={{
-                groupType: "calculatedGroupType",
-                displayName: "displayName",
-                userPrincipalName: "userPrincipalName",
-                id: "id",
-                givenName: "givenName",
-                surname: "surname",
-                mailNickname: "mailNickname",
-                jobTitle: "jobTitle",
-                department: "department",
-                streetAddress: "streetAddress",
-                postalCode: "postalCode",
-                companyName: "companyName",
-                mobilePhone: "mobilePhone",
-                businessPhones: "businessPhones",
-                usageLocation: "usageLocation",
-              }}
-            />
-          </Grid>
+          <CippFormUserSelector
+            formControl={formControl}
+            name="userProperties"
+            label="Copy properties from another user"
+            multiple={false}
+            select={
+              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,postalCode,companyName,mobilePhone,businessPhones,usageLocation"
+            }
+            addedField={{
+              groupType: "calculatedGroupType",
+              displayName: "displayName",
+              userPrincipalName: "userPrincipalName",
+              id: "id",
+              givenName: "givenName",
+              surname: "surname",
+              mailNickname: "mailNickname",
+              jobTitle: "jobTitle",
+              department: "department",
+              streetAddress: "streetAddress",
+              postalCode: "postalCode",
+              companyName: "companyName",
+              mobilePhone: "mobilePhone",
+              businessPhones: "businessPhones",
+              usageLocation: "usageLocation",
+            }}
+          />
+        </Box>
+        <Box sx={{ my: 2 }}>
           <CippAddEditUser formControl={formControl} userSettingsDefaults={userSettingsDefaults} />
         </Box>
       </CippFormPage>

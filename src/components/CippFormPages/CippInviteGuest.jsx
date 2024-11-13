@@ -19,7 +19,7 @@ const CippInviteUser = (props) => {
           type="textField"
           fullWidth
           label="E-mail Address"
-          name="email"
+          name="mail"
           formControl={formControl}
         />
       </Grid>

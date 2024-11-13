@@ -84,7 +84,7 @@ const CippAddEditUser = (props) => {
         >
           <Grid item xs={12}>
             <CippFormComponent
-              type="textField"
+              type="password"
               fullWidth
               label="Password"
               name="password"

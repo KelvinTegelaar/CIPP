@@ -3,8 +3,6 @@ import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
-
-import CippAddEditUser from "../../../../components/CippFormPages/CippAddEditUser";
 import CippInviteUser from "../../../../components/CippFormPages/CippInviteGuest";
 const Page = () => {
   const userSettingsDefaults = useSettings();

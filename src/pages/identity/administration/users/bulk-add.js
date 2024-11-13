@@ -66,7 +66,7 @@ const Page = () => {
           tenantFilter: initialState.currentTenant,
         }}
         steps={steps}
-        postUrl="/api/ExecBulkAdd"
+        postUrl="/api/AddUserBulk"
         wizardTitle="Bulk Add User Wizard"
       />
     </>
