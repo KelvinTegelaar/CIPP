@@ -1,12 +1,14 @@
-import { Grid, InputAdornment, Typography } from "@mui/material";
+import { InputAdornment, Typography } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
 import countryList from "/src/data/CountryList.json";
 import { CippFormLicenseSelector } from "/src/components/CippComponents/CippFormLicenseSelector";
+import Grid from "@mui/material/Grid";
+
 const CippAddEditUser = (props) => {
-  const { formControl, userSettingsDefaults, formtype = "add" } = props;
+  const { formControl, userSettingsDefaults, formType = "add" } = props;
 
   return (
     <Grid container spacing={2}>
@@ -118,6 +120,14 @@ const CippAddEditUser = (props) => {
       </Grid>
       <Grid item xs={12}>
         <CippFormComponent
+          type="switch"
+          label="Remove all licenses"
+          name="removeLicenses"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <CippFormComponent
           type="textField"
           fullWidth
           label="Job Title"
@@ -210,7 +220,7 @@ const CippAddEditUser = (props) => {
           multiple={false}
         />
       </Grid>
-      {formtype === "add" && (
+      {formType === "add" && (
         <Grid item xs={12}>
           <CippFormComponent
             type="switch"

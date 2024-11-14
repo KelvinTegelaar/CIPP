@@ -33,6 +33,7 @@ const Page = () => {
       console.log(user);
       formControl.reset({
         ...user,
+        tenantFilter: userSettingsDefaults.currentTenant,
         licenses: user.assignedLicenses.map((license) => ({
           label: getCippLicenseTranslation([license]),
           value: license.skuId,
@@ -40,12 +41,12 @@ const Page = () => {
       });
       formControl.trigger();
     }
-  }, [userRequest.isSuccess]);
+  }, [userRequest.isSuccess, userRequest.data, userRequest.isLoading]);
 
   return (
     <>
       <CippFormPage
-        queryKey={`Users-${userSettingsDefaults.currentTenant}`}
+        queryKey={[`ListUsers-${userId}`, `Licenses-${userSettingsDefaults.currentTenant}`]}
         formControl={formControl}
         title={
           userRequest.isSuccess ? (
