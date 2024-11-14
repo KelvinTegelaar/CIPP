@@ -52,7 +52,7 @@ export const CIPPTableToptoolbar = ({
   const resetToDefaultVisibility = () => {
     settings.handleUpdate({
       columnDefaults: {
-        ...settings.columnDefaults,
+        ...settings?.columnDefaults,
         [pageName]: false,
       },
     });
@@ -62,14 +62,14 @@ export const CIPPTableToptoolbar = ({
 
   const resetToPreferedVisibility = () => {
     if (settings?.columnDefaults[pageName]) {
-      setColumnVisibility(settings.columnDefaults[pageName]);
+      setColumnVisibility(settings?.columnDefaults[pageName]);
     }
   };
 
   const saveAsPreferedColumns = () => {
     settings.handleUpdate({
       columnDefaults: {
-        ...settings.columnDefaults,
+        ...settings?.columnDefaults,
         [pageName]: columnVisibility,
       },
     });
