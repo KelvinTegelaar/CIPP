@@ -70,8 +70,11 @@ const CippAddEditUser = (props) => {
           rows={4}
         />
       </Grid>
+
       <Grid item xs={12}>
         <Typography variant="h6">Settings</Typography>
+      </Grid>
+      <Grid item xs={6}>
         <CippFormComponent
           type="switch"
           label="Create password manually"
@@ -94,6 +97,8 @@ const CippAddEditUser = (props) => {
             />
           </Grid>
         </CippFormCondition>
+      </Grid>
+      <Grid item xs={6}>
         <CippFormComponent
           type="switch"
           label="Require password change at next logon"

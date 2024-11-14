@@ -44,10 +44,10 @@ export const CIPPTableToptoolbar = ({
 
   //useEffect to set the column visibility to the preferred columns if they exist
   useEffect(() => {
-    if (settings.columnDefaults[pageName]) {
-      setColumnVisibility(settings.columnDefaults[pageName]);
+    if (settings?.columnDefaults[pageName]) {
+      setColumnVisibility(settings?.columnDefaults[pageName]);
     }
-  }, [settings.columnDefaults[pageName], router, usedColumns]);
+  }, [settings?.columnDefaults[pageName], router, usedColumns]);
 
   const resetToDefaultVisibility = () => {
     settings.handleUpdate({
@@ -61,7 +61,7 @@ export const CIPPTableToptoolbar = ({
   };
 
   const resetToPreferedVisibility = () => {
-    if (settings.columnDefaults[pageName]) {
+    if (settings?.columnDefaults[pageName]) {
       setColumnVisibility(settings.columnDefaults[pageName]);
     }
   };
