@@ -64,10 +64,10 @@ const Page = () => {
             <CippAddEditUser
               formControl={formControl}
               userSettingsDefaults={userSettingsDefaults}
+              formType="edit"
             />
           )}
         </Box>
-        
       </CippFormPage>
     </>
   );

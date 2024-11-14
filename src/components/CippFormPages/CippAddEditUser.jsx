@@ -6,7 +6,7 @@ import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUse
 import countryList from "/src/data/CountryList.json";
 import { CippFormLicenseSelector } from "/src/components/CippComponents/CippFormLicenseSelector";
 const CippAddEditUser = (props) => {
-  const { formControl, userSettingsDefaults } = props;
+  const { formControl, userSettingsDefaults, formtype = "add" } = props;
 
   return (
     <Grid container spacing={2}>
@@ -191,56 +191,70 @@ const CippAddEditUser = (props) => {
         </Grid>
       ))}
 
-      <Grid item xs={12}></Grid>
       {/* Set Manager */}
       <Grid item xs={12}>
         <CippFormUserSelector
           formControl={formControl}
           name="setManager"
           label="Set Manager"
+          valueField="userPrincipalName"
           multiple={false}
         />
       </Grid>
       {/* Schedule User Creation */}
       <Grid item xs={12}>
-        <CippFormComponent
-          type="switch"
-          label="Schedule user creation"
-          name="Scheduled.enabled"
+        <CippFormUserSelector
           formControl={formControl}
+          name="copyFrom"
+          label="Copy groups from user"
+          multiple={false}
         />
-        <CippFormCondition
-          formControl={formControl}
-          field="Scheduled.enabled"
-          compareType="is"
-          compareValue={true}
-        >
-          <Grid item xs={12}>
-            <label>Scheduled creation Date</label>
-            <CippFormComponent type="datePicker" name="Scheduled.date" formControl={formControl} />
-          </Grid>
-          <Grid item xs={12}>
-            <CippFormComponent
-              type="switch"
-              label="Send results to Webhook"
-              name="webhook"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              label="Send results to E-mail"
-              name="email"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              label="Send results to PSA"
-              name="psa"
-              formControl={formControl}
-            />
-          </Grid>
-        </CippFormCondition>
       </Grid>
+      {formtype === "add" && (
+        <Grid item xs={12}>
+          <CippFormComponent
+            type="switch"
+            label="Schedule user creation"
+            name="Scheduled.enabled"
+            formControl={formControl}
+          />
+          <CippFormCondition
+            formControl={formControl}
+            field="Scheduled.enabled"
+            compareType="is"
+            compareValue={true}
+          >
+            <Grid item xs={12}>
+              <label>Scheduled creation Date</label>
+              <CippFormComponent
+                type="datePicker"
+                name="Scheduled.date"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <CippFormComponent
+                type="switch"
+                label="Send results to Webhook"
+                name="webhook"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Send results to E-mail"
+                name="email"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Send results to PSA"
+                name="psa"
+                formControl={formControl}
+              />
+            </Grid>
+          </CippFormCondition>
+        </Grid>
+      )}
     </Grid>
   );
 };

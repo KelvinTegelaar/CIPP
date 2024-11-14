@@ -11,6 +11,7 @@ export const CippFormUserSelector = ({
   type = "multiple",
   select,
   addedField,
+  valueField,
   ...other
 }) => {
   const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
@@ -27,7 +28,7 @@ export const CippFormUserSelector = ({
         url: "/api/ListGraphRequest",
         dataKey: "Results",
         labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
-        valueField: "id",
+        valueField: valueField ? valueField : "id",
         queryKey: `ListUsers-${currentTenant?.value}`,
         data: {
           Endpoint: "users",

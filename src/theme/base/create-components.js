@@ -252,9 +252,6 @@ export const createComponents = () => {
     },
     MuiInputBase: {
       styleOverrides: {
-        root: {
-          // No height setting here, leave height management to input styles
-        },
         input: {
           fontSize: 14,
           height: "40px", // Apply height only to single-line inputs
@@ -286,7 +283,7 @@ export const createComponents = () => {
           // Remove height here entirely to prevent forcing it on multiline
         },
         input: {
-          padding: 0,
+          padding: "0 12px", // Adds padding to the left and right of the text
           fontSize: 14,
           height: "40px", // Height for single-line input fields only
           "&.MuiInputBase-inputMultiline": {
