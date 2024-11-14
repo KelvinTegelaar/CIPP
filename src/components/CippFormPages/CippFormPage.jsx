@@ -53,6 +53,13 @@ const CippFormPage = (props) => {
 
   const handleSubmit = () => {
     const values = formControl.getValues();
+    //remove all empty values or blanks
+    Object.keys(values).forEach((key) => {
+      if (values[key] === "" || values[key] === null) {
+        delete values[key];
+      }
+    });
+
     if (customDataformatter) {
       customDataformatter(values);
     }

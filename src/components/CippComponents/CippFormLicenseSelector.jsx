@@ -29,7 +29,7 @@ export const CippFormLicenseSelector = ({
           `${getCippLicenseTranslation([option])} (${
             option.prepaidUnits.enabled - option.consumedUnits
           } available)`,
-        valueField: "id",
+        valueField: "skuId",
         queryKey: `ListLicenses-${currentTenant?.value}`,
         data: {
           Endpoint: "subscribedSkus",

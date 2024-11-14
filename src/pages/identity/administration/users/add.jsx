@@ -7,7 +7,6 @@ import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect } from "react";
 
 import CippAddEditUser from "../../../../components/CippFormPages/CippAddEditUser";
-import { padding } from "@mui/system";
 const Page = () => {
   const userSettingsDefaults = useSettings();
 
