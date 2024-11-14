@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useEffect } from "react";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
+import { getCippLicenseTranslation } from "/src/utils/get-cipp-license-translation";
+
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
@@ -28,8 +30,13 @@ const Page = () => {
   useEffect(() => {
     if (userRequest.isSuccess) {
       const user = userRequest.data?.[0];
+      console.log(user);
       formControl.reset({
         ...user,
+        licenses: user.assignedLicenses.map((license) => ({
+          label: getCippLicenseTranslation([license]),
+          value: license.skuId,
+        })),
       });
       formControl.trigger();
     }
@@ -60,6 +67,7 @@ const Page = () => {
             />
           )}
         </Box>
+        
       </CippFormPage>
     </>
   );

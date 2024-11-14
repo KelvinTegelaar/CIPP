@@ -3,7 +3,6 @@ import {
   createTheme,
   filledInputClasses,
   inputAdornmentClasses,
-  inputLabelClasses,
   SvgIcon,
   switchClasses,
   tableCellClasses,
@@ -20,11 +19,12 @@ export const createComponents = () => {
           [`& .${filledInputClasses.root}`]: {
             paddingTop: 6,
             paddingBottom: 6,
-            minHeight: "40px", // Ensure consistent height
           },
         },
         inputRoot: {
-          padding: "6px 12px", // Consistent padding with inputs
+          height: "42px",
+          paddingTop: 6,
+          paddingBottom: 6,
         },
         noOptions: {
           fontSize: 14,
@@ -243,7 +243,6 @@ export const createComponents = () => {
         root: {
           [`&.${inputAdornmentClasses.positionStart}`]: {
             marginRight: 8, // Adjust spacing between the input and adornment
-            padding: "0 8px", // Add padding to better align with input field
             height: "100%", // Ensure adornment height matches the input
             display: "flex",
             alignItems: "center", // Center the adornment vertically
@@ -254,11 +253,14 @@ export const createComponents = () => {
     MuiInputBase: {
       styleOverrides: {
         root: {
-          height: "40px", // Force height to match Autocomplete
+          // No height setting here, leave height management to input styles
         },
         input: {
           fontSize: 14,
-          padding: "6px 12px", // Match padding with Autocomplete
+          height: "40px", // Apply height only to single-line inputs
+          "&.MuiInputBase-inputMultiline": {
+            height: "unset", // Allow textareas to be flexible
+          },
         },
       },
     },
@@ -268,26 +270,28 @@ export const createComponents = () => {
           borderRadius: 6,
           borderStyle: "solid",
           borderWidth: 1,
-          borderColor: "rgba(0, 0, 0, 0.23)", // Default border color
+          borderColor: "rgba(0, 0, 0, 0.23)",
           overflow: "hidden",
-          padding: "6px 12px", // Match padding with Autocomplete
-          height: "40px", // Force height to match Autocomplete
           transition: muiTheme.transitions.create(["border-color", "box-shadow"]),
           "&:before": {
-            display: "none", // Disable the default underline on focus/hover
+            display: "none",
           },
           "&:after": {
-            display: "none", // Disable the bottom line after focus
+            display: "none",
           },
           "&.Mui-focused": {
-            borderColor: "#1976d2", // Highlight border on focus
-            boxShadow: "0px 0px 0px 2px rgba(25, 118, 210, 0.25)", // Subtle shadow on focus
+            borderColor: "#1976d2",
+            boxShadow: "0px 0px 0px 2px rgba(25, 118, 210, 0.25)",
           },
+          // Remove height here entirely to prevent forcing it on multiline
         },
         input: {
           padding: 0,
           fontSize: 14,
-          height: "unset",
+          height: "40px", // Height for single-line input fields only
+          "&.MuiInputBase-inputMultiline": {
+            height: "unset", // Exclude multiline inputs (textareas) from fixed height
+          },
           fontWeight: 500,
           lineHeight: 1.6,
         },
@@ -426,7 +430,10 @@ export const createComponents = () => {
       },
       styleOverrides: {
         root: {
-          height: "40px", // Force height to match Autocomplete
+          // Remove height settings from root, handled in input styles
+          "& .MuiInputBase-inputMultiline": {
+            height: "unset", // Exclude textareas from fixed height settings
+          },
         },
       },
     },
