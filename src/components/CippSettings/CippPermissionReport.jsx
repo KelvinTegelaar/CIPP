@@ -61,9 +61,11 @@ export const CippPermissionReport = (props) => {
 
     const customerProps = [
       "AppId",
+      "CustomerId",
       "Tenant",
       "TenantName",
       "TenantId",
+      "DisplayName",
       "DefaultDomainName",
       "UserPrincipalName",
       "IPAddress",
@@ -98,6 +100,15 @@ export const CippPermissionReport = (props) => {
           }
         });
         return issue;
+      });
+
+      report.Permissions.Results.CPVRefreshList.map((cpv) => {
+        customerProps.forEach((prop) => {
+          if (cpv[prop]) {
+            cpv[prop] = redactString(cpv[prop]);
+          }
+        });
+        return cpv;
       });
 
       customerProps.forEach((prop) => {
