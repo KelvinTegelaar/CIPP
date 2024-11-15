@@ -192,7 +192,7 @@ export const CippPermissionResults = (props) => {
                 />
               </>
             )}
-
+            <CippApiResults apiObject={startCPVRefresh} />
             {results?.Results?.CPVRefreshList?.length > 0 && (
               <CippDataTable
                 title="Tenants needing CPV Refresh"
