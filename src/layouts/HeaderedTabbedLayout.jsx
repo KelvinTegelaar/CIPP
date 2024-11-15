@@ -39,7 +39,7 @@ export const HeaderedTabbedLayout = (props) => {
       }}
     >
       <Container maxWidth="xl" sx={{ height: "100%" }}>
-        <Stack spacing={4} sx={{ height: "100%" }}>
+        <Stack spacing={1} sx={{ height: "100%" }}>
           <Stack spacing={2}>
             <div>
               <Button
