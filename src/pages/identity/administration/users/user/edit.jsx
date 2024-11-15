@@ -1,4 +1,3 @@
-import { Box, CircularProgress, Skeleton } from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
@@ -7,8 +6,12 @@ import CippAddEditUser from "/src/components/CippFormPages/CippAddEditUser";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useEffect } from "react";
-import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
+import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { getCippLicenseTranslation } from "/src/utils/get-cipp-license-translation";
+import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
+import { Mail } from "@mui/icons-material";
+import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
+import tabOptions from "./tabOptions";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -30,7 +33,6 @@ const Page = () => {
   useEffect(() => {
     if (userRequest.isSuccess) {
       const user = userRequest.data?.[0];
-      console.log(user);
       formControl.reset({
         ...user,
         tenantFilter: userSettingsDefaults.currentTenant,
@@ -43,34 +45,48 @@ const Page = () => {
     }
   }, [userRequest.isSuccess, userRequest.data, userRequest.isLoading]);
 
+  // Set the title and subtitle for the layout
+  const title = userRequest.isSuccess ? userRequest.data?.[0]?.displayName : "Loading...";
+
+  const subtitle = userRequest.isSuccess
+    ? [
+        {
+          icon: <Mail />,
+          text: userRequest.data?.[0]?.userPrincipalName,
+        },
+        {
+          icon: <CalendarIcon />,
+          text: `Created: ${new Date(userRequest.data?.[0]?.createdDateTime).toLocaleDateString()}`,
+        },
+      ]
+    : [];
+
   return (
-    <>
+    <HeaderedTabbedLayout
+      tabOptions={tabOptions}
+      title={title}
+      subtitle={subtitle}
+      isFetching={userRequest.isLoading}
+    >
       <CippFormPage
         queryKey={[`ListUsers-${userId}`, `Licenses-${userSettingsDefaults.currentTenant}`]}
         formControl={formControl}
-        title={
-          userRequest.isSuccess ? (
-            `${userRequest.data?.[0]?.displayName} (${userRequest.data?.[0]?.userPrincipalName})`
-          ) : (
-            <CircularProgress />
-          )
-        }
-        backButtonTitle="User Overview"
+        title={title}
+        hideBackButton={true}
+        hideTitle={true}
         formPageType="Edit"
         postUrl="/api/EditUser"
       >
-        <Box sx={{ my: 2 }}>
-          {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 3]} />}
-          {userRequest.isSuccess && (
-            <CippAddEditUser
-              formControl={formControl}
-              userSettingsDefaults={userSettingsDefaults}
-              formType="edit"
-            />
-          )}
-        </Box>
+        {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 3]} />}
+        {userRequest.isSuccess && (
+          <CippAddEditUser
+            formControl={formControl}
+            userSettingsDefaults={userSettingsDefaults}
+            formType="edit"
+          />
+        )}
       </CippFormPage>
-    </>
+    </HeaderedTabbedLayout>
   );
 };
 

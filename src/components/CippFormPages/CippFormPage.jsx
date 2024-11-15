@@ -29,6 +29,7 @@ const CippFormPage = (props) => {
     resetForm = true,
     hideBackButton = false,
     hidePageType = false,
+    hideTitle = false,
     addedButtons,
     ...other
   } = props;
@@ -81,29 +82,32 @@ const CippFormPage = (props) => {
       >
         <Container maxWidth="lg">
           <Stack spacing={4}>
-            <Stack spacing={2}>
-              {!hideBackButton && (
+            {!hideTitle && (
+              <Stack spacing={2}>
+                {!hideBackButton && (
+                  <div>
+                    <Button
+                      color="inherit"
+                      onClick={handleBackClick} // Go back to the previous page
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <ArrowLeftIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      {backButtonTitle}
+                    </Button>
+                  </div>
+                )}
+
                 <div>
-                  <Button
-                    color="inherit"
-                    onClick={handleBackClick} // Go back to the previous page
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <ArrowLeftIcon />
-                      </SvgIcon>
-                    }
-                  >
-                    {backButtonTitle}
-                  </Button>
+                  <Typography variant="h4">
+                    {!hidePageType && <>{formPageType} - </>}
+                    {title}
+                  </Typography>
                 </div>
-              )}
-              <div>
-                <Typography variant="h4">
-                  {!hidePageType && <>{formPageType} - </>}
-                  {title}
-                </Typography>
-              </div>
-            </Stack>
+              </Stack>
+            )}
 
             <Card>
               <CardContent>

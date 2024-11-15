@@ -1,38 +1,39 @@
-import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon';
-import PropTypes from 'prop-types';
-import { Button, Menu, MenuItem, SvgIcon } from '@mui/material';
-import { usePopover } from '../hooks/use-popover';
+import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
+import PropTypes from "prop-types";
+import { Button, Menu, MenuItem, SvgIcon } from "@mui/material";
+import { usePopover } from "../hooks/use-popover";
 
 export const ActionsMenu = (props) => {
-  const { actions = [], label = 'Actions', ...other } = props;
+  const { actions = [], label = "Actions", ...other } = props;
   const popover = usePopover();
 
   return (
     <>
       <Button
-        endIcon={(
+        endIcon={
           <SvgIcon fontSize="small">
             <ChevronDownIcon />
           </SvgIcon>
-        )}
+        }
         onClick={popover.handleOpen}
         ref={popover.anchorRef}
         size="large"
-        variant="contained"
-        {...other}>
+        variant="outlined"
+        {...other}
+      >
         {label}
       </Button>
       <Menu
         anchorEl={popover.anchorRef.current}
         anchorOrigin={{
-          horizontal: 'right',
-          vertical: 'bottom'
+          horizontal: "right",
+          vertical: "bottom",
         }}
         open={popover.open}
         onClose={popover.handleClose}
         transformOrigin={{
-          horizontal: 'right',
-          vertical: 'top'
+          horizontal: "right",
+          vertical: "top",
         }}
       >
         {actions.map((item) => (
@@ -53,5 +54,5 @@ export const ActionsMenu = (props) => {
 
 ActionsMenu.propTypes = {
   actions: PropTypes.array,
-  label: PropTypes.string
+  label: PropTypes.string,
 };

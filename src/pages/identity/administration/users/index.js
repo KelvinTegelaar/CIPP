@@ -18,7 +18,7 @@ const Page = () => {
     },
     {
       label: "Edit User",
-      link: "/identity/administration/users/edit?userId=[id]",
+      link: "/identity/administration/users/user/edit?userId=[id]",
       icon: <Edit />,
       color: "success",
       target: "_self",

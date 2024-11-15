@@ -12,7 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import { ArrowRightIcon, CubeIcon } from "@heroicons/react/24/outline";
-import Grid from "@mui/material/Grid";
 
 export const CippInfoCard = (props) => {
   const { isFetching, actionLink, actionText, value, icon, label, cardSize, ...other } = props;

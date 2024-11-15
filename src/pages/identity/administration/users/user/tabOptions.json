@@ -1,0 +1,30 @@
+[
+  {
+    "label": "View",
+    "path": "/identity/administration/users/user"
+  },
+  {
+    "label": "Edit",
+    "path": "/identity/administration/users/user/edit"
+  },
+  {
+    "label": "Exchange Settings",
+    "path": "/cipp/settings/tenants"
+  },
+  {
+    "label": "BEC Remediation",
+    "path": "/cipp/settings/backend"
+  },
+  {
+    "label": "Devices",
+    "path": "/cipp/settings/notifications"
+  },
+  {
+    "label": "OneDrive",
+    "path": "/cipp/settings/partner-webhooks"
+  },
+  {
+    "label": "Conditional Access",
+    "path": "/cipp/settings/licenses"
+  }
+]
