@@ -78,9 +78,9 @@ export const PropertyListItem = (props) => {
         }
         sx={{
           alignItems: "flex-start",
-          display: "flex",
           flexDirection: align === "vertical" ? "column" : "row",
           my: 0,
+          width: "100%",
         }}
       />
     </ListItem>
