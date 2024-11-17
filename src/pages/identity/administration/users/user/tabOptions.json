@@ -8,23 +8,25 @@
     "path": "/identity/administration/users/user/edit"
   },
   {
-    "label": "Exchange Settings",
-    "path": "/cipp/settings/tenants"
+    "label": "Compromise Remediation",
+    "path": "/identity/administration/users/user/bec"
   },
   {
-    "label": "BEC Remediation",
-    "path": "/cipp/settings/backend"
+    "label": "Exchange",
+    "path": "/identity/administration/users/user/exchange"
   },
+
   {
     "label": "Devices",
-    "path": "/cipp/settings/notifications"
+    "path": "/identity/administration/users/user/devices"
+  },
+
+  {
+    "label": "Conditional Access",
+    "path": "/identity/administration/users/user/conditional-access"
   },
   {
     "label": "OneDrive",
-    "path": "/cipp/settings/partner-webhooks"
-  },
-  {
-    "label": "Conditional Access",
-    "path": "/cipp/settings/licenses"
+    "path": "/identity/administration/users/user/onedrive"
   }
 ]

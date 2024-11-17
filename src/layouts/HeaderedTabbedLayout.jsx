@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import ArrowLeftIcon from "@heroicons/react/24/outline/ArrowLeftIcon";
 import {
@@ -21,10 +22,18 @@ export const HeaderedTabbedLayout = (props) => {
 
   const router = useRouter();
   const pathname = usePathname();
-
+  const queryParams = router.query;
   const handleTabsChange = useCallback(
     (event, value) => {
-      router.push(value);
+      //if we have query params, we need to append them to the new path
+      router.push(
+        {
+          pathname: value,
+          query: queryParams,
+        },
+        undefined,
+        { shallow: true }
+      );
     },
     [router]
   );

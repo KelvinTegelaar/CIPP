@@ -12,6 +12,8 @@ import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { Mail } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
+import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
+import ReactTimeAgo from "react-time-ago";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -52,11 +54,18 @@ const Page = () => {
     ? [
         {
           icon: <Mail />,
-          text: userRequest.data?.[0]?.userPrincipalName,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
         },
         {
           icon: <CalendarIcon />,
-          text: `Created: ${new Date(userRequest.data?.[0]?.createdDateTime).toLocaleDateString()}`,
+          text: (
+            <>
+              Created:{" "}
+              <ReactTimeAgo
+                date={new Date(userRequest.data?.[0]?.createdDateTime).toLocaleDateString()}
+              />{" "}
+            </>
+          ),
         },
       ]
     : [];

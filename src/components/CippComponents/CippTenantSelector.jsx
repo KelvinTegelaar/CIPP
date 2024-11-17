@@ -40,9 +40,9 @@ export const CippTenantSelector = (props) => {
   });
 
   useEffect(() => {
+    if (!router.isReady) return;
     if (currentTenant?.value) {
       const query = { ...router.query };
-
       if (query.tenantFilter !== currentTenant.value) {
         query.tenantFilter = currentTenant.value;
         router.replace(
@@ -58,9 +58,8 @@ export const CippTenantSelector = (props) => {
         currentTenant: currentTenant.value,
       });
     }
-  }, [currentTenant, router]);
+  }, [currentTenant, router.query]);
 
-  // Refetch tenant details when tenant or offcanvas visibility changes
   useEffect(() => {
     if (tenant && currentTenant?.value) {
       tenantDetails.refetch();
