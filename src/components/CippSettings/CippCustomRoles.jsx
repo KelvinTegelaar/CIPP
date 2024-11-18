@@ -19,7 +19,7 @@ import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormT
 import { Save } from "@mui/icons-material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm, useWatch } from "react-hook-form";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 export const CippCustomRoles = () => {
   const updatePermissions = ApiPostCall({
@@ -79,30 +79,36 @@ export const CippCustomRoles = () => {
       }
 
       var currentPermissions = customRoleList.find((role) => role.RowKey === currentRole?.value);
+
+      var newAllowedTenants = [];
+      currentPermissions?.AllowedTenants.map((tenant) => {
+        var tenantInfo = tenants.find((t) => t.customerId === tenant);
+        var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
+        if (tenantInfo?.displayName) {
+          newAllowedTenants.push({
+            label: label,
+            value: tenantInfo.defaultDomainName,
+          });
+        }
+      });
+
+      var newBlockedTenants = [];
+      currentPermissions?.BlockedTenants.map((tenant) => {
+        var tenantInfo = tenants.find((t) => t.customerId === tenant);
+        var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
+        if (tenantInfo?.displayName) {
+          newBlockedTenants.push({
+            label: label,
+            value: tenantInfo.defaultDomainName,
+          });
+        }
+      });
+
       formControl.reset({
         Permissions: currentPermissions?.Permissions,
         RoleName: currentRole,
-        allowedTenants: currentPermissions?.AllowedTenants.map((tenant) => {
-          var tenantInfo = tenants.find((t) => t.customerId === tenant);
-          var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
-          if (tenantInfo) {
-            return {
-              label: label,
-              value: tenantInfo.defaultDomainName,
-            };
-          }
-        }),
-        blockedTenants: currentPermissions?.BlockedTenants.map((tenant) => {
-          var tenantInfo = tenants.find((t) => t.customerId === tenant);
-          var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
-
-          if (tenantInfo) {
-            return {
-              label: label,
-              value: tenant,
-            };
-          }
-        }),
+        allowedTenants: newAllowedTenants,
+        blockedTenants: newBlockedTenants,
       });
     }
   }, [currentRole, customRoleList, customRoleListSuccess, tenantsSuccess]);
@@ -141,40 +147,34 @@ export const CippCustomRoles = () => {
     }
   }, [selectedTenant, blockedTenants]);
 
-  const handleSubmit = async (values) => {
-    //filter on only objects that are 'true'
-    /*genericPostRequest({
-      path: "/api/ExecCustomRole?Action=AddUpdate",
-      values: {
-        RoleName: values.RoleName.value,
-        Permissions: values.Permissions,
-        AllowedTenants: selectedTenant.map((tenant) => tenant.value),
-        BlockedTenants: blockedTenants.map((tenant) => tenant.value),
-      },
-    }).then(() => {
-      refetchCustomRoleList();
-    });*/
-
-    var allowedTenantIds = allowedTenants.map((tenant) => {
-      var tenant = tenants.find((t) => t.defaultDomainName === tenant.value);
-      return tenant.customerId;
+  const handleSubmit = () => {
+    var allowedTenantIds = [];
+    selectedTenant.map((tenant) => {
+      var tenant = tenants.find((t) => t.defaultDomainName === tenant?.value);
+      if (tenant?.customerId) {
+        allowedTenantIds.push(tenant.customerId);
+      }
     });
 
-    var blockedTenantIds = blockedTenants.map((tenant) => {
-      var tenant = tenants.find((t) => t.defaultDomainName === tenant.value);
-      return tenant.customerId;
+    var blockedTenantIds = [];
+    blockedTenants.map((tenant) => {
+      var tenant = tenants.find((t) => t.defaultDomainName === tenant?.value);
+      if (tenant?.customerId) {
+        blockedTenantIds.push(tenant.customerId);
+      }
     });
 
     updatePermissions.mutate({
       url: "/api/ExecCustomRole?Action=AddUpdate",
       data: {
-        RoleName: values.RoleName.value,
-        Permissions: values.Permissions,
+        RoleName: currentRole.value,
+        Permissions: selectedPermissions,
         AllowedTenants: allowedTenantIds,
         BlockedTenants: blockedTenantIds,
       },
     });
   };
+
   const handleDelete = async (values) => {
     /*ModalService.confirm({
       title: "Delete Custom Role",
@@ -191,87 +191,6 @@ export const CippCustomRoles = () => {
       },
     });*/
   };
-
-  /*const WhenFieldChanges = ({ field, set }) => (
-    <Field name={set} subscription={{}}>
-      {(
-        // No subscription. We only use Field to get to the change function
-        { input: { onChange } }
-      ) => (
-        <FormSpy subscription={{}}>
-          {({ form }) => (
-            <OnChange name={field}>
-              {(value) => {
-                if (field === "RoleName" && value?.value) {
-                  let customRole = customRoleList.filter(function (obj) {
-                    return obj.RowKey === value.value;
-                  });
-                  if (customRole[0]?.RowKey === "CIPP-API") {
-                    setCippApiRoleSelected(true);
-                  } else {
-                    setCippApiRoleSelected(false);
-                  }
-
-                  if (customRole === undefined || customRole === null || customRole.length === 0) {
-                    return false;
-                  } else {
-                    if (set === "AllowedTenants") {
-                      setSelectedTenant(customRole[0][set]);
-                      var selectedTenantList = [];
-                      tenants.map((tenant) => {
-                        if (customRole[0][set].includes(tenant.customerId)) {
-                          selectedTenantList.push({
-                            label: tenant.displayName,
-                            value: tenant.customerId,
-                          });
-                        }
-                      });
-
-                      tenantSelectorRef.current.setValue(selectedTenantList);
-                    } else if (set === "BlockedTenants") {
-                      setBlockedTenants(customRole[0][set]);
-                      var blockedTenantList = [];
-                      tenants.map((tenant) => {
-                        if (customRole[0][set].includes(tenant.customerId)) {
-                          blockedTenantList.push({
-                            label: tenant.displayName,
-                            value: tenant.customerId,
-                          });
-                        }
-                      });
-
-                      blockedTenantSelectorRef.current.setValue(blockedTenantList);
-                    } else {
-                      onChange(customRole[0][set]);
-                    }
-                  }
-                }
-                if (field === "Defaults") {
-                  let newPermissions = {};
-                  Object.keys(apiPermissions).forEach((cat) => {
-                    Object.keys(apiPermissions[cat]).forEach((obj) => {
-                      var newval = "";
-                      if (cat == "CIPP" && obj == "Core" && value == "None") {
-                        newval = "Read";
-                      } else {
-                        newval = value;
-                      }
-                      newPermissions[`${cat}${obj}`] = `${cat}.${obj}.${newval}`;
-                    });
-                  });
-                  onChange(newPermissions);
-                }
-              }}
-            </OnChange>
-          )}
-        </FormSpy>
-      )}
-    </Field>
-  );
-  WhenFieldChanges.propTypes = {
-    field: PropTypes.node,
-    set: PropTypes.string,
-  };*/
 
   const ApiPermissionRow = ({ obj, cat }) => {
     const [offcanvasVisible, setOffcanvasVisible] = useState(false);
@@ -293,7 +212,7 @@ export const CippCustomRoles = () => {
       >
         <Typography variant="h6">{obj}</Typography>
 
-        <Stack direction="row" spacing={1} xl={8}>
+        <Stack direction="row" spacing={3} xl={8}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
               <InformationCircleIcon />
@@ -318,25 +237,43 @@ export const CippCustomRoles = () => {
             formControl={formControl}
           />
         </Stack>
-        {/*<CippOffCanvas visible={offcanvasVisible} hideFunction={() => setOffcanvasVisible(false)}>
-          <h4 className="mt-2">{`${cat}.${obj}`}</h4>
-          <p>
-            Listed below are the available API endpoints based on permission level, ReadWrite level
-            includes endpoints under Read.
-          </p>
-          {[apiPermissions[cat][obj]].map((permissions, key) => {
-            var sections = Object.keys(permissions).map((type) => {
-              var items = [];
-              for (var api in permissions[type]) {
-                items.push({ heading: "", content: permissions[type][api] });
-              }
-              return (
-                <OffcanvasListSection items={items} key={key} title={type} showCardTitle={false} />
-              );
-            });
-            return sections;
-          })}
-        </CippOffCanvas>*/}
+        <CippOffCanvas
+          visible={offcanvasVisible}
+          onClose={() => {
+            setOffcanvasVisible(false);
+          }}
+        >
+          <Stack spacing={2}>
+            <Typography variant="h3" sx={{ mx: 3 }}>
+              {`${cat}.${obj}`}
+            </Typography>
+            <Typography variant="body1" sx={{ mx: 3 }}>
+              Listed below are the available API endpoints based on permission level, ReadWrite
+              level includes endpoints under Read.
+            </Typography>
+            {[apiPermissions[cat][obj]].map((permissions, key) => {
+              var sections = Object.keys(permissions).map((type) => {
+                var items = [];
+                for (var api in permissions[type]) {
+                  items.push({ heading: "", content: permissions[type][api] });
+                }
+                return (
+                  <Stack key={key} spacing={2}>
+                    <Typography variant="h4">{type}</Typography>
+                    <Stack spacing={1}>
+                      {items.map((item, idx) => (
+                        <Stack key={idx} spacing={1}>
+                          <Typography variant="body2">{item.content}</Typography>
+                        </Stack>
+                      ))}
+                    </Stack>
+                  </Stack>
+                );
+              });
+              return sections;
+            })}
+          </Stack>
+        </CippOffCanvas>
       </Stack>
     );
   };
@@ -405,7 +342,7 @@ export const CippCustomRoles = () => {
           >
             <Typography variant="body2">Set All Permissions</Typography>
 
-            <Box sx={{ pr: 3 }}>
+            <Box sx={{ pr: 5 }}>
               <CippFormComponent
                 type="radio"
                 name="Defaults"
@@ -455,7 +392,7 @@ export const CippCustomRoles = () => {
               <h5>Allowed Tenants</h5>
               <ul>
                 {selectedTenant.map((tenant, idx) => (
-                  <li key={idx}>{tenant.label}</li>
+                  <li key={idx}>{tenant?.label}</li>
                 ))}
               </ul>
             </>
@@ -465,7 +402,7 @@ export const CippCustomRoles = () => {
               <h5>Blocked Tenants</h5>
               <ul>
                 {blockedTenants.map((tenant, idx) => (
-                  <li key={idx}>{tenant.label}</li>
+                  <li key={idx}>{tenant?.label}</li>
                 ))}
               </ul>
             </>
@@ -479,9 +416,10 @@ export const CippCustomRoles = () => {
                     ?.sort()
                     .map((cat, idx) => (
                       <>
-                        {!selectedPermissions[cat].includes("None") && (
-                          <li key={idx}>{selectedPermissions[cat]}</li>
-                        )}
+                        {selectedPermissions?.[cat] &&
+                          !selectedPermissions?.[cat]?.includes("None") && (
+                            <li key={idx}>{selectedPermissions[cat]}</li>
+                          )}
                       </>
                     ))}
               </ul>
@@ -490,40 +428,37 @@ export const CippCustomRoles = () => {
         </Box>
       </Stack>
 
-      <Grid container className="mb-3">
-        <Grid item xl={4} md={12}>
+      <Stack direction="row" spacing={2} justifyContent="flex-end">
+        {currentRole && (
           <Button
             className="me-2"
-            type="submit"
-            variant="contained"
+            type="button"
+            variant="outlined"
+            onClick={() => handleDelete({ RoleName: currentRole })}
             startIcon={
               <SvgIcon fontSize="small">
-                <Save />
+                <TrashIcon />
               </SvgIcon>
             }
           >
-            Save
+            Delete
           </Button>
-          {/*<FormSpy subscription={{ values: true }}>
-                {({ values }) => {
-                  return (
-                    <CButton
-                      className="me-1"
-                      onClick={() => handleDelete(values)}
-                      disabled={!values["RoleName"]}
-                    >
-                      <FontAwesomeIcon
-                        icon={postResults.isFetching ? "circle-notch" : "trash"}
-                        spin={postResults.isFetching}
-                        className="me-2"
-                      />
-                      Delete
-                    </CButton>
-                  );
-                }}
-              </FormSpy>*/}
-        </Grid>
-      </Grid>
+        )}
+        <Button
+          className="me-2"
+          type="submit"
+          variant="contained"
+          disabled={updatePermissions.isPending || customRoleListFetching || !currentRole}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <Save />
+            </SvgIcon>
+          }
+          onClick={handleSubmit}
+        >
+          Save
+        </Button>
+      </Stack>
     </>
   );
 };
