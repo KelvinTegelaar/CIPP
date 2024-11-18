@@ -44,6 +44,7 @@ const CippExchangeSettingsForm = (props) => {
     datafromUrl: true,
     relatedQueryKeys: [`Mailbox-${userId}`],
   });
+
   const handleSubmit = (type) => {
     const values = formControl.getValues();
     const data = {

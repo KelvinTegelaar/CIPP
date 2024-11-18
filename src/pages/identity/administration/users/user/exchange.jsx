@@ -36,11 +36,35 @@ const Page = () => {
     waiting: waiting,
   });
 
+  const oooRequest = ApiGetCall({
+    url: `/api/ListOoO?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
+    queryKey: `ooo-${userId}`,
+  });
+
   const calPermissions = ApiGetCall({
     url: `/api/ListCalendarPermissions?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `CalendarPermissions-${userId}`,
     waiting: waiting,
   });
+
+  useEffect(() => {
+    if (oooRequest.isSuccess) {
+      formControl.setValue("ooo.ExternalMessage", oooRequest.data?.ExternalMessage);
+      formControl.setValue("ooo.InternalMessage", oooRequest.data?.InternalMessage);
+      formControl.setValue("ooo.AutoReplyState", {
+        value: oooRequest.data?.AutoReplyState,
+        label: oooRequest.data?.AutoReplyState,
+      });
+      formControl.setValue(
+        "ooo.StartTime",
+        new Date(oooRequest.data?.StartTime).getTime() / 1000 || null
+      );
+      formControl.setValue(
+        "ooo.EndTime",
+        new Date(oooRequest.data?.EndTime).getTime() / 1000 || null
+      );
+    }
+  }, [oooRequest.isSuccess]);
 
   useEffect(() => {
     //if userId is defined, we can fetch the user data
