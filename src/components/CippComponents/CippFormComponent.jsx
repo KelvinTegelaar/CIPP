@@ -14,6 +14,15 @@ import { Controller, useFormState } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
 import CSVReader from "../CSVReader";
 import get from "lodash/get";
+import {
+  MenuButtonBold,
+  MenuButtonCode,
+  MenuButtonItalic,
+  MenuControlsContainer,
+  MenuDivider,
+  MenuSelectHeading,
+  RichTextEditor,
+} from "mui-tiptap";
 import StarterKit from "@tiptap/starter-kit";
 
 // Helper function to convert bracket notation to dot notation
@@ -181,7 +190,6 @@ export const CippFormComponent = (props) => {
                       value={option.value}
                       control={<Radio />}
                       label={option.label}
-                      {...option}
                     />
                   ))}
                 </RadioGroup>
@@ -228,13 +236,25 @@ export const CippFormComponent = (props) => {
               control={formControl.control}
               rules={validators}
               render={({ field }) => (
-                <MUIEditor
-                  {...other}
-                  extensions={[StarterKit]}
-                  content={field.value}
-                  label={label}
-                  onChange={field.onChange}
-                />
+                <>
+                  <label>{label}</label>
+                  <RichTextEditor
+                    {...other}
+                    ref={field.ref}
+                    extensions={[StarterKit]}
+                    content={field.value}
+                    onUpdate={({ editor }) => field.onChange(editor.getHTML())} // Update react-hook-form on change
+                    label={label}
+                    renderControls={() => (
+                      <MenuControlsContainer>
+                        <MenuSelectHeading />
+                        <MenuDivider />
+                        <MenuButtonBold />
+                        <MenuButtonItalic />
+                      </MenuControlsContainer>
+                    )}
+                  />
+                </>
               )}
             />
           </div>
