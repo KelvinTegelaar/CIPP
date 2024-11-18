@@ -20,6 +20,8 @@ import { Save } from "@mui/icons-material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm, useWatch } from "react-hook-form";
 import { InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import { useDialog } from "../../hooks/use-dialog";
 
 export const CippCustomRoles = () => {
   const updatePermissions = ApiPostCall({
@@ -35,17 +37,15 @@ export const CippCustomRoles = () => {
   const formControl = useForm({
     mode: "onBlur",
   });
+
+  const createDialog = useDialog();
   const currentRole = useWatch({ control: formControl.control, name: "RoleName" });
   const selectedTenant = useWatch({ control: formControl.control, name: "allowedTenants" });
   const blockedTenants = useWatch({ control: formControl.control, name: "blockedTenants" });
   const setDefaults = useWatch({ control: formControl.control, name: "Defaults" });
   const selectedPermissions = useWatch({ control: formControl.control, name: "Permissions" });
 
-  const {
-    data: apiPermissions = [],
-    isFetching,
-    isSuccess,
-  } = ApiGetCall({
+  const { data: apiPermissions = [] } = ApiGetCall({
     url: "/api/ExecAPIPermissionList",
     queryKey: "apiPermissions",
   });
@@ -60,11 +60,7 @@ export const CippCustomRoles = () => {
     queryKey: "customRoleList",
   });
 
-  const {
-    data: tenants = [],
-    isFetching: tenantsFetching,
-    isSuccess: tenantsSuccess,
-  } = ApiGetCall({
+  const { data: tenants = [], isSuccess: tenantsSuccess } = ApiGetCall({
     url: "/api/ListTenants?AllTenantSelector=true",
     queryKey: "ListTenants-AllTenantSelector",
   });
@@ -173,23 +169,6 @@ export const CippCustomRoles = () => {
         BlockedTenants: blockedTenantIds,
       },
     });
-  };
-
-  const handleDelete = async (values) => {
-    /*ModalService.confirm({
-      title: "Delete Custom Role",
-      body: "Are you sure you want to delete this custom role? Any users with this role will have their permissions reset to the default for their base role.",
-      onConfirm: () => {
-        genericPostRequest({
-          path: "/api/ExecCustomRole?Action=Delete",
-          values: {
-            RoleName: values.RoleName.value,
-          },
-        }).then(() => {
-          refetchCustomRoleList();
-        });
-      },
-    });*/
   };
 
   const ApiPermissionRow = ({ obj, cat }) => {
@@ -428,13 +407,30 @@ export const CippCustomRoles = () => {
         </Box>
       </Stack>
 
+      <CippApiDialog
+        createDialog={createDialog}
+        title="Delete Custom Role"
+        api={{
+          confirmText:
+            "Are you sure you want to delete this custom role? Any users with this role will have their permissions reset to the default for their base role.",
+          url: "/api/ExecCustomRole?Action=Delete",
+          type: "POST",
+          data: {
+            RoleName: `!${currentRole?.value}`,
+          },
+          relatedQueryKeys: ["customRoleList"],
+        }}
+        row={{}}
+        formControl={formControl}
+        relatedQueryKeys={"customRoleList"}
+      />
       <Stack direction="row" spacing={2} justifyContent="flex-end">
         {currentRole && (
           <Button
             className="me-2"
             type="button"
             variant="outlined"
-            onClick={() => handleDelete({ RoleName: currentRole })}
+            onClick={createDialog.handleOpen}
             startIcon={
               <SvgIcon fontSize="small">
                 <TrashIcon />
