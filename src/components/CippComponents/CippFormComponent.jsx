@@ -257,39 +257,37 @@ export const CippFormComponent = (props) => {
               name={convertedName}
               control={formControl.control}
               render={({ field }) => (
-                <Scrollbar>
-                  <DateTimePicker
-                    slotProps={{ textField: { fullWidth: true } }}
-                    views={
-                      other.dateTimeType === "date"
-                        ? ["year", "month", "day"]
-                        : ["year", "month", "day", "hours", "minutes"]
+                <DateTimePicker
+                  slotProps={{ textField: { fullWidth: true } }}
+                  views={
+                    other.dateTimeType === "date"
+                      ? ["year", "month", "day"]
+                      : ["year", "month", "day", "hours", "minutes"]
+                  }
+                  label={label}
+                  value={field.value ? new Date(field.value * 1000) : null} // Convert Unix timestamp to Date object
+                  onChange={(date) => {
+                    if (date) {
+                      const unixTimestamp = Math.floor(date.getTime() / 1000); // Convert to Unix timestamp
+                      field.onChange(unixTimestamp); // Pass the Unix timestamp to the form
+                    } else {
+                      field.onChange(null); // Handle the case where no date is selected
                     }
-                    label={label}
-                    value={field.value ? new Date(field.value * 1000) : null} // Convert Unix timestamp to Date object
-                    onChange={(date) => {
-                      if (date) {
-                        const unixTimestamp = Math.floor(date.getTime() / 1000); // Convert to Unix timestamp
-                        field.onChange(unixTimestamp); // Pass the Unix timestamp to the form
-                      } else {
-                        field.onChange(null); // Handle the case where no date is selected
-                      }
-                    }}
-                    ampm={false}
-                    minutesStep={15}
-                    inputFormat="yyyy/MM/dd HH:mm" // Display format
-                    renderInput={(inputProps) => (
-                      <TextField
-                        {...inputProps}
-                        {...other}
-                        fullWidth
-                        error={!!errors[convertedName]}
-                        helperText={get(errors, convertedName, {})?.message}
-                        variant="filled"
-                      />
-                    )}
-                  />
-                </Scrollbar>
+                  }}
+                  ampm={false}
+                  minutesStep={15}
+                  inputFormat="yyyy/MM/dd HH:mm" // Display format
+                  renderInput={(inputProps) => (
+                    <TextField
+                      {...inputProps}
+                      {...other}
+                      fullWidth
+                      error={!!errors[convertedName]}
+                      helperText={get(errors, convertedName, {})?.message}
+                      variant="filled"
+                    />
+                  )}
+                />
               )}
             />
           </div>
