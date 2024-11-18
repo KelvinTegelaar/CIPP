@@ -17,6 +17,7 @@ import { Forward } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
@@ -186,6 +187,9 @@ const CippExchangeSettingsForm = (props) => {
             }
             formControl={formControl}
           />
+          <Grid item size={12}>
+            <CippApiResults apiObject={postRequest} />
+          </Grid>
           <Grid>
             <Button onClick={() => handleSubmit("permissions")} variant="contained">
               Submit
@@ -243,6 +247,9 @@ const CippExchangeSettingsForm = (props) => {
             ]}
             formControl={formControl}
           />
+          <Grid item size={12}>
+            <CippApiResults apiObject={postRequest} />
+          </Grid>
           <Grid>
             <Button onClick={() => handleSubmit("calendar")} variant="contained">
               Submit
@@ -312,6 +319,9 @@ const CippExchangeSettingsForm = (props) => {
             name="forwarding.KeepCopy"
             formControl={formControl}
           />
+          <Grid item size={12}>
+            <CippApiResults apiObject={postRequest} />
+          </Grid>
           <Grid>
             <Button onClick={() => handleSubmit("forwarding")} variant="contained">
               Submit
@@ -377,6 +387,9 @@ const CippExchangeSettingsForm = (props) => {
                 multiline
                 rows={4}
               />
+            </Grid>
+            <Grid item size={12}>
+              <CippApiResults apiObject={postRequest} />
             </Grid>
             <Grid>
               <Button onClick={() => handleSubmit("ooo")} variant="contained">
