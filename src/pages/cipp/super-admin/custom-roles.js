@@ -2,6 +2,7 @@ import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
+import { CippCustomRoles } from "/src/components/CippSettings/CippCustomRoles";
 import { Alert, CardContent, Stack, Typography } from "@mui/material";
 import { WarningAmberOutlined } from "@mui/icons-material";
 
@@ -19,6 +20,7 @@ const Page = () => {
             This functionality is in beta and should be treated as such. The custom role must be
             added to the user in SWA in conjunction with the base role. (e.g. editor,mycustomrole)
           </Alert>
+          <CippCustomRoles />
         </Stack>
       </CardContent>
     </CippPageCard>

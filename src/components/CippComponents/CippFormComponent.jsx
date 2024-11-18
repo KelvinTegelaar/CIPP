@@ -181,6 +181,7 @@ export const CippFormComponent = (props) => {
                       value={option.value}
                       control={<Radio />}
                       label={option.label}
+                      {...option}
                     />
                   ))}
                 </RadioGroup>
