@@ -14,13 +14,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { Forward } from "@mui/icons-material";
-import { ApiGetCall } from "../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
-  const { formControl, currentSettings, calPermissions } = props;
+  const { formControl, currentSettings, userId } = props;
   // State to manage the expanded panels
   const [expandedPanel, setExpandedPanel] = useState(null);
 
@@ -40,14 +40,35 @@ const CippExchangeSettingsForm = (props) => {
     queryKey: `UserNames-${userSettingsDefaults.currentTenant}`,
   });
 
+  const postRequest = ApiPostCall({
+    datafromUrl: true,
+    relatedQueryKeys: [`Mailbox-${userId}`],
+  });
   const handleSubmit = (type) => {
     const values = formControl.getValues();
-    const permissions = values[type];
     const data = {
-      UserId: currentSettings.UserId,
-      Permissions: permissions,
+      tenantFilter: userSettingsDefaults.currentTenant,
+      userid: currentSettings.Mailbox[0].UserPrincipalName,
+      ...values[type],
     };
-    console.log(data);
+
+    //remove all nulls and undefined values
+    Object.keys(data).forEach((key) => {
+      if (data[key] === "" || data[key] === null) {
+        delete data[key];
+      }
+    });
+    const url = {
+      permissions: "/api/ExecEditMailboxPermissions",
+      calendar: "/api/ExecEditCalendarPermissions",
+      forwarding: "/api/ExecEmailForward",
+      ooo: "/api/ExecSetOoO",
+    };
+    postRequest.mutate({
+      url: url[type],
+      data: data,
+      queryKey: "MailboxPermissions",
+    });
   };
 
   // Data for each section
@@ -63,7 +84,7 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             multiple
             label="Remove Full Access"
-            name="RemoveFullAccess"
+            name="permissions.RemoveFullAccess"
             options={
               usersList?.data?.Results?.filter((user) =>
                 currentSettings?.Permissions?.some(
@@ -81,7 +102,7 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             multiple
             label="Add Full Access - Automapping Enabled"
-            name="AddFullAccess"
+            name="permissions.AddFullAccess"
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -94,7 +115,7 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             multiple
             label="Add Full Access - Automapping Disabled"
-            name="AddFullAccessNoAutoMap"
+            name="permissions.AddFullAccessNoAutoMap"
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -107,7 +128,7 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             multiple
             label="Add Send-as Permissions"
-            name="AddSendAs"
+            name="permissions.AddSendAs"
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -120,7 +141,7 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             multiple
             label="Remove Send-as Permissions"
-            name="RemoveSendAs"
+            name="permissions.RemoveSendAs"
             options={
               usersList?.data?.Results?.filter((user) =>
                 currentSettings?.Permissions?.some(
@@ -137,7 +158,7 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             multiple
             label="Add Send On Behalf Permissions"
-            name="AddSendOnBehalf"
+            name="permissions.AddSendOnBehalf"
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -150,7 +171,7 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             multiple
             label="Remove Send On Behalf Permissions"
-            name="RemoveSendOnBehalf"
+            name="permissions.RemoveSendOnBehalf"
             options={
               usersList?.data?.Results?.filter((user) =>
                 currentSettings?.Permissions?.some(
@@ -182,14 +203,19 @@ const CippExchangeSettingsForm = (props) => {
           <CippFormComponent
             type="autoComplete"
             label="Remove Access"
-            name="RemoveAccess"
-            options={[]}
+            name="calendar.RemoveAccess"
+            options={
+              usersList?.data?.Results?.map((user) => ({
+                value: user.userPrincipalName,
+                label: `${user.displayName} (${user.userPrincipalName})`,
+              })) || []
+            }
             formControl={formControl}
           />
           <CippFormComponent
             type="autoComplete"
             label="Add Access"
-            name="UserToGetPermissions"
+            name="calendar.UserToGetPermissions"
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -201,7 +227,7 @@ const CippExchangeSettingsForm = (props) => {
           <CippFormComponent
             type="autoComplete"
             label="Permission Level"
-            name="Permissions"
+            name="calendar.Permissions"
             options={[
               { value: "Author", label: "Author" },
               { value: "Contributor", label: "Contributor" },
@@ -216,6 +242,11 @@ const CippExchangeSettingsForm = (props) => {
             ]}
             formControl={formControl}
           />
+          <Grid>
+            <Button onClick={() => handleSubmit("calendar")} variant="contained">
+              Submit
+            </Button>
+          </Grid>
         </Stack>
       ),
     },
@@ -228,7 +259,7 @@ const CippExchangeSettingsForm = (props) => {
         <Stack spacing={2}>
           <CippFormComponent
             type="radio"
-            name="forwardOption"
+            name="forwarding.forwardOption"
             formControl={formControl}
             options={[
               { label: "Forward to Internal Address", value: "internalAddress" },
@@ -242,14 +273,14 @@ const CippExchangeSettingsForm = (props) => {
 
           <CippFormCondition
             formControl={formControl}
-            field="forwardOption"
+            field="forwarding.forwardOption"
             compareType="is"
             compareValue="internalAddress"
           >
             <CippFormComponent
               type="autoComplete"
               label="Select User"
-              name="ForwardInternal"
+              name="forwarding.ForwardInternal"
               options={
                 usersList?.data?.Results?.map((user) => ({
                   value: user.userPrincipalName,
@@ -262,14 +293,14 @@ const CippExchangeSettingsForm = (props) => {
 
           <CippFormCondition
             formControl={formControl}
-            field="forwardOption"
+            field="forwarding.forwardOption"
             compareType="is"
             compareValue="ExternalAddress"
           >
             <CippFormComponent
               type="textField"
               label="External Email Address"
-              name="ForwardExternal"
+              name="forwarding.ForwardExternal"
               formControl={formControl}
             />
           </CippFormCondition>
@@ -277,9 +308,14 @@ const CippExchangeSettingsForm = (props) => {
           <CippFormComponent
             type="switch"
             label="Keep a Copy of the Forwarded Mail in the Source Mailbox"
-            name="KeepCopy"
+            name="forwarding.KeepCopy"
             formControl={formControl}
           />
+          <Grid>
+            <Button onClick={() => handleSubmit("forwarding")} variant="contained">
+              Submit
+            </Button>
+          </Grid>
         </Stack>
       ),
     },
@@ -290,40 +326,63 @@ const CippExchangeSettingsForm = (props) => {
       subtext: "Set automatic replies for when you are away",
       formContent: (
         <Stack spacing={2}>
-          <CippFormComponent
-            type="switch"
-            label="Auto Reply State"
-            name="AutoReplyState"
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="datePicker"
-            label="Start Date/Time"
-            name="StartTime"
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="datePicker"
-            label="End Date/Time"
-            name="EndTime"
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="textField"
-            label="Internal Message"
-            name="InternalMessage"
-            formControl={formControl}
-            multiline
-            rows={4}
-          />
-          <CippFormComponent
-            type="textField"
-            label="External Message"
-            name="ExternalMessage"
-            formControl={formControl}
-            multiline
-            rows={4}
-          />
+          <Grid container spacing={2}>
+            <Grid item size={12}>
+              <CippFormComponent
+                type="autoComplete"
+                name="ooo.AutoReplyState"
+                label="Auto Reply State"
+                multiple={false}
+                formControl={formControl}
+                options={[
+                  { label: "Enabled", value: "Enabled" },
+                  { label: "Disabled", value: "Disabled" },
+                  { label: "Scheduled", value: "Scheduled" },
+                ]}
+              />
+            </Grid>
+            <Grid item size={6}>
+              <CippFormComponent
+                type="datePicker"
+                label="Start Date/Time"
+                name="ooo.StartTime"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid item size={6}>
+              <CippFormComponent
+                type="datePicker"
+                label="End Date/Time"
+                name="ooo.EndTime"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid item size={12}>
+              <CippFormComponent
+                type="textField"
+                label="Internal Message"
+                name="ooo.InternalMessage"
+                formControl={formControl}
+                multiline
+                rows={4}
+              />
+            </Grid>
+            <Grid item size={12}>
+              <CippFormComponent
+                type="textField"
+                label="External Message"
+                name="ooo.ExternalMessage"
+                formControl={formControl}
+                multiline
+                rows={4}
+              />
+            </Grid>
+            <Grid>
+              <Button onClick={() => handleSubmit("ooo")} variant="contained">
+                Submit
+              </Button>
+            </Grid>
+          </Grid>
         </Stack>
       ),
     },

@@ -11,7 +11,6 @@ import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
 import Grid from "@mui/material/Grid2";
-import { Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippExchangeInfoCard";
 import { useEffect, useState } from "react";
@@ -145,7 +144,6 @@ const Page = () => {
             </Grid>
             <Grid item size={8}>
               <Stack spacing={3}>
-                <Typography variant="h6">Permissions</Typography>
                 <CippBannerListCard
                   isFetching={userRequest.isLoading}
                   items={permissions}
@@ -157,6 +155,7 @@ const Page = () => {
                   isCollapsible={calPermissions.data?.length !== 0}
                 />
                 <CippExchangeSettingsForm
+                  userId={userId}
                   calPermissions={calPermissions.data}
                   currentSettings={userRequest.data?.[0]}
                   formControl={formControl}
