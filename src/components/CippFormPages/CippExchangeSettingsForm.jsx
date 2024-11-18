@@ -360,7 +360,7 @@ const CippExchangeSettingsForm = (props) => {
             </Grid>
             <Grid item size={12}>
               <CippFormComponent
-                type="textField"
+                type="richText"
                 label="Internal Message"
                 name="ooo.InternalMessage"
                 formControl={formControl}
@@ -370,7 +370,7 @@ const CippExchangeSettingsForm = (props) => {
             </Grid>
             <Grid item size={12}>
               <CippFormComponent
-                type="textField"
+                type="richText"
                 label="External Message"
                 name="ooo.ExternalMessage"
                 formControl={formControl}

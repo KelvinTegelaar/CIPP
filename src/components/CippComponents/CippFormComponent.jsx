@@ -12,9 +12,9 @@ import {
 import { CippAutoComplete } from "./CippAutocomplete";
 import { Controller, useFormState } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
-import { Scrollbar } from "../scrollbar";
 import CSVReader from "../CSVReader";
 import get from "lodash/get";
+import StarterKit from "@tiptap/starter-kit";
 
 // Helper function to convert bracket notation to dot notation
 const convertBracketsToDots = (name) => {
@@ -208,6 +208,31 @@ export const CippFormComponent = (props) => {
                   defaultValue={field.value}
                   label={label}
                   onChange={(value) => field.onChange(value)}
+                />
+              )}
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {get(errors, convertedName, {}).message}
+          </Typography>
+        </>
+      );
+
+    case "richText":
+      return (
+        <>
+          <div>
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              rules={validators}
+              render={({ field }) => (
+                <MUIEditor
+                  {...other}
+                  extensions={[StarterKit]}
+                  content={field.value}
+                  label={label}
+                  onChange={field.onChange}
                 />
               )}
             />
