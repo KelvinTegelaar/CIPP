@@ -5,7 +5,6 @@ import { PropertyListItem } from "/src/components/property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { Check as CheckIcon, Close as CloseIcon } from "@mui/icons-material";
 import { LinearProgressWithLabel } from "../linearProgressWithLabel";
-import { getCippTranslation } from "../../utils/get-cipp-translation";
 
 export const CippExchangeInfoCard = (props) => {
   const { exchangeData, isFetching = false, ...other } = props;
@@ -32,7 +31,7 @@ export const CippExchangeInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={120} />
             ) : (
-              getCippTranslation(exchangeData?.RecipientTypeDetails) || "N/A"
+              exchangeData?.RecipientTypeDetails || "N/A"
             )
           }
         />
