@@ -1,66 +1,46 @@
-import React, { useRef, useState } from "react";
-/*import {
-  CButton,
-  CCallout,
-  CCol,
-  CForm,
-  CRow,
-  CAccordion,
-  CAccordionHeader,
-  CAccordionBody,
-  CAccordionItem,
-} from "@coreui/react";
-*/
+import React, { useEffect, useRef, useState } from "react";
+
 import {
+  Box,
   Button,
   Alert,
-  Grid,
   Typography,
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Stack,
+  SvgIcon,
 } from "@mui/material";
 
-//import { Field, Form, FormSpy } from "react-final-form";
-//import { RFFCFormRadioList, RFFSelectSearch } from "src/components/forms";
-// import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from "src/store/api/app";
+import Grid from "@mui/material/Grid2";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-//import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-//import { TenantSelectorMultiple, ModalService, CippOffcanvas } from "src/components/utilities";
-import { CippOffCanvas } from "/src/components/utilities/CippOffCanvas";
-import { CippTenantSelector } from "/src/components/CippComponents/CippTenantSelector";
+import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
+import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
+import { Save } from "@mui/icons-material";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { useForm, useWatch } from "react-hook-form";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
-//import { OnChange } from "react-final-form-listeners";
-//import { useListTenantsQuery } from "src/store/api/tenants";
-//import { OffcanvasListSection } from "src/components/utilities/CippListOffcanvas";
-//import CippButtonCard from "src/components/contentcards/CippButtonCard";
-import { CippButtonCard } from "/src/components/CippCards/CippButtonCard";
-import { Warning } from "@mui/icons-material";
-
-const CippCustomRoles = () => {
-  //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery();
+export const CippCustomRoles = () => {
   const updatePermissions = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: ["customRoleList"],
   });
 
-  const [selectedTenant, setSelectedTenant] = useState([]);
-  const [blockedTenants, setBlockedTenants] = useState([]);
-  const tenantSelectorRef = useRef();
-  const blockedTenantSelectorRef = useRef();
-  const { data: tenants = [], tenantsFetching } = useListTenantsQuery({
-    showAllTenantSelector: true,
-  });
   const [allTenantSelected, setAllTenantSelected] = useState(false);
   const [cippApiRoleSelected, setCippApiRoleSelected] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [updateDefaults, setUpdateDefaults] = useState(false);
 
-  /* const {
-    data: apiPermissions = [],
-    isFetching,
-    isSuccess,
-  } = useGenericGetRequestQuery({
-    path: "api/ExecAPIPermissionList",
-  });*/
+  const formControl = useForm({
+    mode: "onBlur",
+  });
+  const currentRole = useWatch({ control: formControl.control, name: "RoleName" });
+  const selectedTenant = useWatch({ control: formControl.control, name: "allowedTenants" });
+  const blockedTenants = useWatch({ control: formControl.control, name: "blockedTenants" });
+  const setDefaults = useWatch({ control: formControl.control, name: "Defaults" });
+  const selectedPermissions = useWatch({ control: formControl.control, name: "Permissions" });
+
   const {
     data: apiPermissions = [],
     isFetching,
@@ -70,14 +50,6 @@ const CippCustomRoles = () => {
     queryKey: "apiPermissions",
   });
 
-  /*const {
-    data: customRoleList = [],
-    isFetching: customRoleListFetching,
-    isSuccess: customRoleListSuccess,
-    refetch: refetchCustomRoleList,
-  } = useGenericGetRequestQuery({
-    path: "api/ExecCustomRole",
-  });*/
   const {
     data: customRoleList = [],
     isFetching: customRoleListFetching,
@@ -88,27 +60,86 @@ const CippCustomRoles = () => {
     queryKey: "customRoleList",
   });
 
-  const handleTenantChange = (e) => {
+  const {
+    data: tenants = [],
+    isFetching: tenantsFetching,
+    isSuccess: tenantsSuccess,
+  } = ApiGetCall({
+    url: "/api/ListTenants?AllTenantSelector=true",
+    queryKey: "ListTenants-AllTenantSelector",
+  });
+
+  useEffect(() => {
+    if (customRoleListSuccess && tenantsSuccess && selectedRole !== currentRole?.value) {
+      setSelectedRole(currentRole?.value);
+      if (currentRole?.value === "cipp-api") {
+        setCippApiRoleSelected(true);
+      } else {
+        setCippApiRoleSelected(false);
+      }
+
+      var currentPermissions = customRoleList.find((role) => role.RowKey === currentRole?.value);
+      formControl.reset({
+        Permissions: currentPermissions?.Permissions,
+        RoleName: currentRole,
+        allowedTenants: currentPermissions?.AllowedTenants.map((tenant) => {
+          var tenantInfo = tenants.find((t) => t.customerId === tenant);
+          var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
+          if (tenantInfo) {
+            return {
+              label: label,
+              value: tenantInfo.defaultDomainName,
+            };
+          }
+        }),
+        blockedTenants: currentPermissions?.BlockedTenants.map((tenant) => {
+          var tenantInfo = tenants.find((t) => t.customerId === tenant);
+          var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
+
+          if (tenantInfo) {
+            return {
+              label: label,
+              value: tenant,
+            };
+          }
+        }),
+      });
+    }
+  }, [currentRole, customRoleList, customRoleListSuccess, tenantsSuccess]);
+
+  useEffect(() => {
+    if (updateDefaults !== setDefaults) {
+      setUpdateDefaults(setDefaults);
+      var newPermissions = {};
+      Object.keys(apiPermissions).forEach((cat) => {
+        Object.keys(apiPermissions[cat]).forEach((obj) => {
+          var newval = "";
+          if (cat == "CIPP" && obj == "Core" && setDefaults == "None") {
+            newval = "Read";
+          } else {
+            newval = setDefaults;
+          }
+          newPermissions[`${cat}${obj}`] = `${cat}.${obj}.${newval}`;
+        });
+      });
+      console.log(newPermissions);
+      formControl.setValue("Permissions", newPermissions);
+    }
+  }, [setDefaults, updateDefaults]);
+
+  useEffect(() => {
     var alltenant = false;
-    e.map((tenant) => {
-      if (tenant.value === "AllTenants") {
+    selectedTenant?.map((tenant) => {
+      if (tenant?.value === "AllTenants") {
         alltenant = true;
       }
     });
-    if (alltenant && blockedTenants.length === 0) {
+    if (alltenant && (blockedTenants?.length === 0 || !blockedTenants)) {
       setAllTenantSelected(true);
     } else {
       setAllTenantSelected(false);
     }
-    setSelectedTenant(e);
-  };
-
-  const handleBlockedTenantChange = (e) => {
-    setBlockedTenants(e);
-    if (e.length > 0) {
-      setAllTenantSelected(false);
-    }
-  };
+  }, [selectedTenant, blockedTenants]);
 
   const handleSubmit = async (values) => {
     //filter on only objects that are 'true'
@@ -124,13 +155,23 @@ const CippCustomRoles = () => {
       refetchCustomRoleList();
     });*/
 
+    var allowedTenantIds = allowedTenants.map((tenant) => {
+      var tenant = tenants.find((t) => t.defaultDomainName === tenant.value);
+      return tenant.customerId;
+    });
+
+    var blockedTenantIds = blockedTenants.map((tenant) => {
+      var tenant = tenants.find((t) => t.defaultDomainName === tenant.value);
+      return tenant.customerId;
+    });
+
     updatePermissions.mutate({
       url: "/api/ExecCustomRole?Action=AddUpdate",
       data: {
         RoleName: values.RoleName.value,
         Permissions: values.Permissions,
-        AllowedTenants: selectedTenant.map((tenant) => tenant.value),
-        BlockedTenants: blockedTenants.map((tenant) => tenant.value),
+        AllowedTenants: allowedTenantIds,
+        BlockedTenants: blockedTenantIds,
       },
     });
   };
@@ -243,25 +284,24 @@ const CippCustomRoles = () => {
     var group = [{ items: items }];
 
     return (
-      <>
-        <Grid item md={4}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <h5>{obj}</h5>
-          </div>
-        </Grid>
-        <Grid item xl={2}>
-          <CButton onClick={() => setOffcanvasVisible(true)} variant="ghost" size="sm" color="info">
-            <FontAwesomeIcon icon="info-circle" />
-          </CButton>
-        </Grid>
-        <Grid item>
-          <RFFCFormRadioList
+      <Stack
+        direction="row"
+        display="flex"
+        alignItems="center"
+        justifyContent={"space-between"}
+        width={"100%"}
+      >
+        <Typography variant="h6">{obj}</Typography>
+
+        <Stack direction="row" spacing={1} xl={8}>
+          <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
+            <SvgIcon fontSize="small">
+              <InformationCircleIcon />
+            </SvgIcon>
+          </Button>
+          <CippFormComponent
+            type="radio"
+            row={true}
             name={`Permissions.${cat}${obj}`}
             options={[
               {
@@ -275,10 +315,10 @@ const CippCustomRoles = () => {
                 value: `${cat}.${obj}.ReadWrite`,
               },
             ]}
-            inline={true}
+            formControl={formControl}
           />
-        </Grid>
-        <CippOffCanvas visible={offcanvasVisible} hideFunction={() => setOffcanvasVisible(false)}>
+        </Stack>
+        {/*<CippOffCanvas visible={offcanvasVisible} hideFunction={() => setOffcanvasVisible(false)}>
           <h4 className="mt-2">{`${cat}.${obj}`}</h4>
           <p>
             Listed below are the available API endpoints based on permission level, ReadWrite level
@@ -296,188 +336,175 @@ const CippCustomRoles = () => {
             });
             return sections;
           })}
-        </CippOffCanvas>
-      </>
+        </CippOffCanvas>*/}
+      </Stack>
     );
-  };
-  ApiPermissionRow.propTypes = {
-    obj: PropTypes.node,
-    cat: PropTypes.node,
   };
 
   return (
-    <CippButtonCard title="Custom Roles" titleType="big" isFetching={isFetching || tenantsFetching}>
-      <>
-        <Grid container className="mb-3">
-          <Grid item xl={8} md={12} className="mb-3">
-            <div className="mb-3">
-              {/*<RFFSelectSearch
-                          name="RoleName"
-                          label="Custom Role"
-                          values={customRoleList.map((role) => ({
-                            name: role.RowKey,
-                            value: role.RowKey,
-                          }))}
-                          isLoading={customRoleListFetching}
-                          refreshFunction={() => refetchCustomRoleList()}
-                          allowCreate={true}
-                          placeholder="Select an existing role or enter a custom role name"
-                        />
-                        <WhenFieldChanges field="RoleName" set="Permissions" />
-                        <WhenFieldChanges field="RoleName" set="AllowedTenants" />
-                        <WhenFieldChanges field="RoleName" set="BlockedTenants" />*/}
-              {cippApiRoleSelected && (
-                <CCallout color="info">
-                  This role will limit access for the CIPP-API integration. It is not intended to be
-                  used for users.
-                </CCallout>
-              )}
-            </div>
-            <div className="mb-3">
-              <h5>Allowed Tenants</h5>
-              <TenantSelectorMultiple
-                ref={tenantSelectorRef}
-                values={selectedTenant}
-                AllTenants={true}
-                valueIsDomain={true}
-                onChange={(e) => handleTenantChange(e)}
-              />
-              {allTenantSelected && (
-                <CCallout color="warning">
-                  All tenants selected, no tenant restrictions will be applied.
-                </CCallout>
-              )}
-            </div>
-            <div className="mb-3">
-              <h5>Blocked Tenants</h5>
-              <TenantSelectorMultiple
-                ref={blockedTenantSelectorRef}
-                values={blockedTenants}
-                AllTenants={false}
-                valueIsDomain={true}
-                onChange={(e) => handleBlockedTenantChange(e)}
-              />
-            </div>
+    <>
+      <Stack spacing={3} xl={8} md={12} direction="row">
+        <Box>
+          <Stack spacing={1} sx={{ mb: 3 }}>
+            <CippFormComponent
+              type="autoComplete"
+              name="RoleName"
+              label="Custom Role"
+              options={customRoleList.map((role) => ({
+                label: role.RowKey,
+                value: role.RowKey,
+              }))}
+              isLoading={customRoleListFetching}
+              refreshFunction={() => refetchCustomRoleList()}
+              creatable={true}
+              formControl={formControl}
+              multiple={false}
+              fullWidth={true}
+            />
+            {cippApiRoleSelected && (
+              <Alert color="info">
+                This role will limit access for the CIPP-API integration. It is not intended to be
+                used for users.
+              </Alert>
+            )}
+          </Stack>
+          <Stack spacing={1} sx={{ my: 3 }}>
+            <CippFormTenantSelector
+              label="Allowed Tenants"
+              formControl={formControl}
+              type="multiple"
+              allTenants={true}
+              name="allowedTenants"
+              fullWidth={true}
+            />
+            {allTenantSelected && (
+              <Alert color="warning">
+                All tenants selected, no tenant restrictions will be applied.
+              </Alert>
+            )}
+          </Stack>
+          <Box sx={{ mb: 3 }}>
+            <CippFormTenantSelector
+              label="Blocked Tenants"
+              formControl={formControl}
+              type="multiple"
+              allTenants={false}
+              name="blockedTenants"
+              fullWidth={true}
+            />
+          </Box>
 
-            <h5>API Permissions</h5>
-            <Grid container className="mt-4 px-2">
-              <Grid item md={4}>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <h5>Set All Permissions</h5>
-                </div>
-              </Grid>
-              <Grid item xl={2}></Grid>
-              <Grid item>
-                <RFFCFormRadioList
-                  name="Defaults"
-                  options={[
-                    {
-                      label: "None",
-                      value: "None",
-                    },
-                    { label: "Read", value: "Read" },
-                    {
-                      label: "Read / Write",
-                      value: "ReadWrite",
-                    },
-                  ]}
-                  inline={true}
-                />
-                <WhenFieldChanges field="Defaults" set="Permissions" />
-              </Grid>
-            </Grid>
-            <CAccordion alwaysOpen>
-              <>
-                {Object.keys(apiPermissions)
-                  .sort()
-                  .map((cat, catIndex) => (
-                    <CAccordionItem itemKey={"role-" + catIndex} key={`accordion-item-${catIndex}`}>
-                      <CAccordionHeader>{cat}</CAccordionHeader>
-                      <CAccordionBody>
-                        {Object.keys(apiPermissions[cat])
-                          .sort()
-                          .map((obj, index) => {
-                            return (
-                              <Grid container key={`row-${catIndex}-${index}`} className="mb-3">
-                                <ApiPermissionRow obj={obj} cat={cat} />
-                              </Grid>
-                            );
-                          })}
-                      </CAccordionBody>
-                    </CAccordionItem>
-                  ))}
-              </>
-            </CAccordion>
-          </Grid>
+          <Typography variant="h5">API Permissions</Typography>
+          <Stack
+            direction="row"
+            display="flex"
+            alignItems="center"
+            justifyContent={"space-between"}
+            width={"100%"}
+            sx={{ my: 2 }}
+          >
+            <Typography variant="body2">Set All Permissions</Typography>
 
-          <Grid item xl={4} md={12}>
-            {/*<FormSpy subscription={{ values: true }}>
-                        {({ values }) => {
+            <Box sx={{ pr: 3 }}>
+              <CippFormComponent
+                type="radio"
+                name="Defaults"
+                options={[
+                  {
+                    label: "None",
+                    value: "None",
+                  },
+                  { label: "Read", value: "Read" },
+                  {
+                    label: "Read / Write",
+                    value: "ReadWrite",
+                  },
+                ]}
+                formControl={formControl}
+                row={true}
+              />
+            </Box>
+          </Stack>
+          <Box>
+            <>
+              {Object.keys(apiPermissions)
+                .sort()
+                .map((cat, catIndex) => (
+                  <Accordion variant="outlined" key={`accordion-item-${catIndex}`}>
+                    <AccordionSummary>{cat}</AccordionSummary>
+                    <AccordionDetails>
+                      {Object.keys(apiPermissions[cat])
+                        .sort()
+                        .map((obj, index) => {
                           return (
-                            <>
-                              {values["RoleName"] && selectedTenant.length > 0 && (
-                                <>
-                                  <h5>Allowed Tenants</h5>
-                                  <ul>
-                                    {selectedTenant.map((tenant, idx) => (
-                                      <li key={idx}>{tenant.label}</li>
-                                    ))}
-                                  </ul>
-                                </>
-                              )}
-                              {values["RoleName"] && blockedTenants.length > 0 && (
-                                <>
-                                  <h5>Blocked Tenants</h5>
-                                  <ul>
-                                    {blockedTenants.map((tenant, idx) => (
-                                      <li key={idx}>{tenant.label}</li>
-                                    ))}
-                                  </ul>
-                                </>
-                              )}
-                              {values["RoleName"] && values["Permissions"] && (
-                                <>
-                                  <h5>Selected Permissions</h5>
-                                  <ul>
-                                    {values["Permissions"] &&
-                                      Object.keys(values["Permissions"])
-                                        ?.sort()
-                                        .map((cat, idx) => (
-                                          <>
-                                            {!values["Permissions"][cat].includes("None") && (
-                                              <li key={idx}>{values["Permissions"][cat]}</li>
-                                            )}
-                                          </>
-                                        ))}
-                                  </ul>
-                                </>
-                              )}
-                            </>
+                            <Grid container key={`row-${catIndex}-${index}`} className="mb-3">
+                              <ApiPermissionRow obj={obj} cat={cat} />
+                            </Grid>
                           );
-                        }}
-                      </FormSpy>*/}
-          </Grid>
-        </Grid>
+                        })}
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+            </>
+          </Box>
+        </Box>
 
-        <Grid container className="me-3">
-          {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
-          <Grid container className="mb-3">
-            <Grid item xl={4} md={12}>
-              <CButton className="me-2" type="submit" disabled={submitting}>
-                <FontAwesomeIcon
-                  icon={postResults.isFetching ? "circle-notch" : "save"}
-                  spin={postResults.isFetching}
-                  className="me-2"
-                />
-                Save
-              </CButton>
-              {/*<FormSpy subscription={{ values: true }}>
+        <Box xl={4} md={12}>
+          {selectedRole && selectedTenant?.length > 0 && (
+            <>
+              <h5>Allowed Tenants</h5>
+              <ul>
+                {selectedTenant.map((tenant, idx) => (
+                  <li key={idx}>{tenant.label}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {selectedRole && blockedTenants?.length > 0 && (
+            <>
+              <h5>Blocked Tenants</h5>
+              <ul>
+                {blockedTenants.map((tenant, idx) => (
+                  <li key={idx}>{tenant.label}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {selectedRole && selectedPermissions && (
+            <>
+              <h5>Selected Permissions</h5>
+              <ul>
+                {selectedPermissions &&
+                  Object.keys(selectedPermissions)
+                    ?.sort()
+                    .map((cat, idx) => (
+                      <>
+                        {!selectedPermissions[cat].includes("None") && (
+                          <li key={idx}>{selectedPermissions[cat]}</li>
+                        )}
+                      </>
+                    ))}
+              </ul>
+            </>
+          )}
+        </Box>
+      </Stack>
+
+      <Grid container className="mb-3">
+        <Grid item xl={4} md={12}>
+          <Button
+            className="me-2"
+            type="submit"
+            variant="contained"
+            startIcon={
+              <SvgIcon fontSize="small">
+                <Save />
+              </SvgIcon>
+            }
+          >
+            Save
+          </Button>
+          {/*<FormSpy subscription={{ values: true }}>
                 {({ values }) => {
                   return (
                     <CButton
@@ -495,11 +522,9 @@ const CippCustomRoles = () => {
                   );
                 }}
               </FormSpy>*/}
-            </Grid>
-          </Grid>
         </Grid>
-      </>
-    </CippButtonCard>
+      </Grid>
+    </>
   );
 };
 

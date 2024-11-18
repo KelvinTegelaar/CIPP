@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getCippError } from "../../utils/get-cipp-error";
 
 export const CippApiResults = (props) => {
-  const { apiObject, errorsOnly = false } = props;
+  const { apiObject, errorsOnly = false, alertSx = {} } = props;
 
   const [errorVisible, setErrorVisible] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
@@ -51,6 +51,7 @@ export const CippApiResults = (props) => {
       {!errorsOnly && (
         <Collapse in={fetchingVisible}>
           <Alert
+            sx={alertSx}
             action={
               <IconButton
                 aria-label="close"
@@ -75,6 +76,7 @@ export const CippApiResults = (props) => {
       <Collapse in={errorVisible}>
         {apiObject.isError && (
           <Alert
+            sx={alertSx}
             variant="filled"
             severity="error"
             action={
@@ -98,6 +100,7 @@ export const CippApiResults = (props) => {
         <Collapse in={successVisible}>
           {apiObject.data && (
             <Alert
+              sx={alertSx}
               variant="filled"
               severity="success"
               action={
