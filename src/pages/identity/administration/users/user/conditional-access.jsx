@@ -1,44 +1,39 @@
+import { useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Mail } from "@mui/icons-material";
+import { Mail, Forward } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
-import { CippUserInfoCard } from "../../../../../components/CippCards/CippUserInfoCard";
-import { Typography } from "@mui/material";
-import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
+import { Box, Stack, Typography, Button, CircularProgress } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import countryList from "/src/data/countryList";
+import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { useForm } from "react-hook-form";
+import CippButtonCard from "../../../../../components/CippCards/CippButtonCard";
+import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
+import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { userId } = router.query;
 
+  const tenant = userSettingsDefaults.currentTenant;
+  const currentSettings = userSettingsDefaults.currentSettings; // Assuming currentSettings is part of useSettings
+
+  // State for form parameters
+  const [formParams, setFormParams] = useState(null);
+
+  // Fetch user details for the header
   const userRequest = ApiGetCall({
-    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
+    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${tenant}`,
     queryKey: `ListUsers-${userId}`,
-  });
-
-  const MFARequest = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      Endpoint: `/users/${userId}/authentication/methods`,
-      tenantFilter: userSettingsDefaults.currentTenant,
-      noPagination: true,
-      $top: 99,
-    },
-    queryKey: `MFA-${userId}`,
-  });
-
-  const signInLogs = ApiGetCall({
-    url: `/api/ListUserSigninLogs?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}&top=1`,
-    queryKey: `ListSignIns-${userId}`,
   });
 
   // Set the title and subtitle for the layout
@@ -54,274 +49,33 @@ const Page = () => {
           icon: <CalendarIcon />,
           text: (
             <>
-              Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />{" "}
+              Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
             </>
           ),
         },
       ]
     : [];
 
-  const data = userRequest.data?.[0];
+  // Initialize React Hook Form
+  const formControl = useForm();
 
-  // Prepare the sign-in log item
-  let signInLogItem = null;
-  let conditionalAccessPoliciesItems = [];
-  let mfaDevicesItems = [];
-
-  if (signInLogs.isSuccess && signInLogs.data && signInLogs.data.length > 0) {
-    const signInData = signInLogs.data[0];
-
-    signInLogItem = {
-      id: 1,
-      cardLabelBox: {
-        cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-        cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-          month: "short",
-          year: "numeric",
-        }),
-      },
-      text: `Login ${signInData.status.errorCode === 0 ? "successful" : "failed"} from ${
-        signInData.ipAddress || "unknown location"
-      }`,
-      subtext: `Logged into application ${signInData.resourceDisplayName || "Unknown Application"}`,
-      statusColor: signInData.status.errorCode === 0 ? "success.main" : "error.main",
-      statusText: signInData.status.errorCode === 0 ? "Success" : "Failed",
-      propertyItems: [
-        {
-          label: "Client App Used",
-          value: signInData.clientAppUsed || "N/A",
-        },
-        {
-          label: "Device Detail",
-          value:
-            signInData.deviceDetail?.operatingSystem || signInData.deviceDetail?.browser || "N/A",
-        },
-        {
-          label: "MFA Type used",
-          value: signInData.mfaDetail?.authMethod || "N/A",
-        },
-        {
-          label: "Additional Details",
-          value: signInData.status?.additionalDetails || "N/A",
-        },
-      ],
-    };
-
-    // Prepare the conditional access policies items
-    if (
-      signInData.appliedConditionalAccessPolicies &&
-      Array.isArray(signInData.appliedConditionalAccessPolicies)
-    ) {
-      // Filter policies where result is "success"
-      const appliedPolicies = signInData.appliedConditionalAccessPolicies.filter(
-        (policy) => policy.result === "success"
-      );
-
-      if (appliedPolicies.length > 0) {
-        conditionalAccessPoliciesItems = appliedPolicies.map((policy) => ({
-          id: policy.id,
-          cardLabelBox: {
-            cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-            cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-              month: "short",
-              year: "numeric",
-            }),
-          },
-          text: policy.displayName,
-          subtext: `Policy applied: ${policy.result}`,
-          statusColor: "success.main",
-          statusText: "Applied",
-          propertyItems: [
-            {
-              label: "Grant Controls",
-              value:
-                policy.enforcedGrantControls.length > 0
-                  ? policy.enforcedGrantControls.join(", ")
-                  : "None",
-            },
-            {
-              label: "Session Controls",
-              value:
-                policy.enforcedSessionControls.length > 0
-                  ? policy.enforcedSessionControls.join(", ")
-                  : "None",
-            },
-            {
-              label: "Conditions Satisfied",
-              value: policy.conditionsSatisfied || "N/A",
-            },
-          ],
-        }));
-      } else {
-        // No applied policies
-        conditionalAccessPoliciesItems = [
-          {
-            id: 1,
-            cardLabelBox: {
-              cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-              cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-                month: "short",
-                year: "numeric",
-              }),
-            },
-            text: "No conditional access policies applied",
-            subtext: "No conditional access policies were applied during this sign-in.",
-            statusColor: "warning.main",
-            statusText: "No Policies Applied",
-            propertyItems: [],
-          },
-        ];
-      }
-    } else {
-      // appliedConditionalAccessPolicies is missing or not an array
-      conditionalAccessPoliciesItems = [
-        {
-          id: 1,
-          cardLabelBox: {
-            cardLabelBoxHeader: new Date(signInData.createdDateTime).getDate().toString(),
-            cardLabelBoxText: new Date(signInData.createdDateTime).toLocaleString("default", {
-              month: "short",
-              year: "numeric",
-            }),
-          },
-          text: "No conditional access policies available",
-          subtext: "No conditional access policies data is available for this sign-in.",
-          statusColor: "warning.main",
-          statusText: "No Data",
-          propertyItems: [],
-        },
-      ];
-    }
-  } else if (signInLogs.isError) {
-    signInLogItem = {
-      id: 1,
-      cardLabelBox: "!",
-      text: "Error loading sign-in logs. Do you have a P1 license?",
-      subtext: signInLogs.error.message,
-      statusColor: "error.main",
-      statusText: "Error",
-      propertyItems: [],
-    };
-
-    // Handle error for conditional access policies
-    conditionalAccessPoliciesItems = [
-      {
-        id: 1,
-        cardLabelBox: "!",
-        text: "Error loading conditional access policies. Do you have a P1 license?",
-        subtext: signInLogs.error.message,
-        statusColor: "error.main",
-        statusText: "Error",
-        propertyItems: [],
-      },
-    ];
-  } else if (signInLogs.isSuccess && (!signInLogs.data || signInLogs.data.length === 0)) {
-    signInLogItem = {
-      id: 1,
-      cardLabelBox: "-",
-      text: "No sign-in logs available",
-      subtext:
-        "There are no sign-in logs for this user, or you do not have a P1 license to detect this data.",
-      statusColor: "warning.main",
-      statusText: "No Data",
-      propertyItems: [],
-    };
-
-    conditionalAccessPoliciesItems = [
-      {
-        id: 1,
-        cardLabelBox: "-",
-        text: "No conditional access policies available",
-        subtext:
-          "There are no conditional access policies for this user, or you do not have a P1 license to detect this data.",
-        statusColor: "warning.main",
-        statusText: "No Data",
-        propertyItems: [],
-      },
-    ];
-  }
-
-  // Prepare MFA devices items
-  if (MFARequest.isSuccess && MFARequest.data) {
-    const mfaResults = MFARequest.data.Results || [];
-
-    // Exclude password authentication method
-    const mfaDevices = mfaResults.filter(
-      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod"
-    );
-
-    if (mfaDevices.length > 0) {
-      mfaDevicesItems = mfaDevices.map((device, index) => ({
-        id: index,
-        cardLabelBox: {
-          cardLabelBoxHeader: <Check />,
-        },
-        text: device.displayName || "MFA Device",
-        subtext: device.deviceTag || device.clientAppName || "Unknown device",
-        statusColor: "success.main",
-        statusText: "Enabled",
-        propertyItems: [
-          {
-            label: "Device Name",
-            value: device.displayName || "N/A",
-          },
-          {
-            label: "App Version",
-            value: device.phoneAppVersion || "N/A",
-          },
-          {
-            label: "Created Date",
-            value: device.createdDateTime
-              ? new Date(device.createdDateTime).toLocaleString()
-              : "N/A",
-          },
-          {
-            label: "Authentication Method",
-            value: device["@odata.type"].split(".").pop() || "N/A",
-          },
-        ],
-      }));
-    } else {
-      // No MFA devices other than password
-      mfaDevicesItems = [
-        {
-          id: 1,
-          cardLabelBox: "-",
-          text: "No MFA devices available",
-          subtext: "The user does not have any MFA devices registered.",
-          statusColor: "warning.main",
-          statusText: "No Devices",
-          propertyItems: [],
-        },
-      ];
-    }
-  } else if (MFARequest.isError) {
-    // Error fetching MFA devices
-    mfaDevicesItems = [
-      {
-        id: 1,
-        cardLabelBox: "!",
-        text: "Error loading MFA devices",
-        subtext: MFARequest.error.message,
-        statusColor: "error.main",
-        statusText: "Error",
-        propertyItems: [],
-      },
-    ];
-  } else if (MFARequest.isSuccess && (!MFARequest.data || !MFARequest.data.Results)) {
-    // No MFA devices data available
-    mfaDevicesItems = [
-      {
-        id: 1,
-        cardLabelBox: "-",
-        text: "No MFA devices available",
-        subtext: "The user does not have any MFA devices registered.",
-        statusColor: "warning.main",
-        statusText: "No Devices",
-        propertyItems: [],
-      },
-    ];
-  }
+  const postRequest = ApiPostCall({
+    url: "/api/ExecCACheck",
+    relatedQueryKeys: `ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`,
+  });
+  console.log(postRequest);
+  const onSubmit = (data) => {
+    //add userId and tenantFilter to the object
+    data.userId = {};
+    data.userId["value"] = userId;
+    data.tenantFilter = tenant;
+    setFormParams(data);
+    postRequest.mutate({
+      url: "/api/ExecCACheck",
+      data: data,
+      queryKey: `ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`,
+    });
+  };
 
   return (
     <HeaderedTabbedLayout
@@ -339,30 +93,150 @@ const Page = () => {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item size={4}>
-              <CippUserInfoCard user={data} isFetching={userRequest.isLoading} />
+            {/* Form Section */}
+            <Grid item xs={12} md={4}>
+              <CippButtonCard
+                title={"Test Conditional Access Policy"}
+                CardButton={
+                  <Button type="submit" variant="contained" form="ca-test-form">
+                    Test policies
+                  </Button>
+                }
+                cardLabelBox={currentSettings?.ForwardAndDeliver ? <Forward /> : "-"} // Optional: Display an icon or placeholder
+              >
+                {/* Form Starts Here */}
+                <form id="ca-test-form" onSubmit={formControl.handleSubmit(onSubmit)}>
+                  <Typography variant="body2" sx={{ mb: 2 }}>
+                    Test your conditional access policies before putting them in production. The
+                    returned results will show you if the user is allowed or denied access based on
+                    the policy.
+                  </Typography>
+
+                  <Stack spacing={2}>
+                    {/* Mandatory Parameters */}
+                    <Typography variant="subtitle1">Mandatory Parameters:</Typography>
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Select the application to test"
+                      name="includeApplications"
+                      multiple={false}
+                      api={{
+                        tenantFilter: tenant,
+                        url: "/api/ListGraphRequest",
+                        dataKey: "Results",
+                        labelField: (option) => `${option.displayName}`,
+                        valueField: "id",
+                        queryKey: `ServicePrincipals-${tenant}`,
+                        data: {
+                          Endpoint: "ServicePrincipals",
+                          manualPagination: true,
+                          $select: "id,displayName",
+                          $count: true,
+                          $orderby: "displayName",
+                          $top: 999,
+                        },
+                      }}
+                      formControl={formControl}
+                    />
+
+                    {/* Optional Parameters */}
+                    <Typography variant="subtitle1">Optional Parameters:</Typography>
+
+                    {/* Test from this country */}
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Test from this country"
+                      name="country"
+                      options={countryList.map(({ Code, Name }) => ({
+                        value: Code,
+                        label: Name,
+                      }))}
+                      formControl={formControl}
+                    />
+
+                    {/* Test from this IP */}
+                    <CippFormComponent
+                      type="textField"
+                      label="Test from this IP"
+                      name="IpAddress"
+                      placeholder="8.8.8.8"
+                      formControl={formControl}
+                    />
+
+                    {/* Device Platform */}
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Select the device platform to test"
+                      name="devicePlatform"
+                      options={[
+                        { value: "Windows", label: "Windows" },
+                        { value: "iOS", label: "iOS" },
+                        { value: "Android", label: "Android" },
+                        { value: "MacOS", label: "MacOS" },
+                        { value: "Linux", label: "Linux" },
+                      ]}
+                      formControl={formControl}
+                    />
+
+                    {/* Client Application Type */}
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Select the client application type to test"
+                      name="clientAppType"
+                      options={[
+                        { value: "all", label: "All" },
+                        { value: "Browser", label: "Browser" },
+                        {
+                          value: "mobileAppsAndDesktopClients",
+                          label: "Mobile apps and desktop clients",
+                        },
+                        { value: "exchangeActiveSync", label: "Exchange ActiveSync" },
+                        { value: "easSupported", label: "EAS supported" },
+                        { value: "other", label: "Other clients" },
+                      ]}
+                      formControl={formControl}
+                    />
+
+                    {/* Sign-in risk level */}
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Select the sign-in risk level of the user signing in"
+                      name="SignInRiskLevel"
+                      options={[
+                        { value: "low", label: "Low" },
+                        { value: "medium", label: "Medium" },
+                        { value: "high", label: "High" },
+                        { value: "none", label: "None" },
+                      ]}
+                      formControl={formControl}
+                    />
+
+                    {/* User risk level */}
+                    <CippFormComponent
+                      type="autoComplete"
+                      label="Select the user risk level of the user signing in"
+                      name="userRiskLevel"
+                      options={[
+                        { value: "low", label: "Low" },
+                        { value: "medium", label: "Medium" },
+                        { value: "high", label: "High" },
+                        { value: "none", label: "None" },
+                      ]}
+                      formControl={formControl}
+                    />
+                    <CippApiResults apiObject={postRequest} />
+                  </Stack>
+                </form>
+              </CippButtonCard>
             </Grid>
-            <Grid item size={8}>
-              <Stack spacing={3}>
-                <Typography variant="h6">Latest Logon</Typography>
-                <CippBannerListCard
-                  isFetching={signInLogs.isLoading}
-                  items={signInLogItem ? [signInLogItem] : []}
-                  isCollapsible={signInLogItem ? true : false}
-                />
-                <Typography variant="h6">Applied Conditional Access Policies</Typography>
-                <CippBannerListCard
-                  isFetching={signInLogs.isLoading}
-                  items={conditionalAccessPoliciesItems}
-                  isCollapsible={conditionalAccessPoliciesItems.length > 0 ? true : false}
-                />
-                <Typography variant="h6">Multi-Factor Authentication Devices</Typography>
-                <CippBannerListCard
-                  isFetching={MFARequest.isLoading}
-                  items={mfaDevicesItems}
-                  isCollapsible={mfaDevicesItems.length > 0 ? true : false}
-                />
-              </Stack>
+            <Grid item xs={12} md={8}>
+              <CippDataTable
+                queryKey={`ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`}
+                title={"CA Test Results"}
+                simple={true}
+                simpleColumns={["displayName", "state", "policyApplies", "reasons"]}
+                data={postRequest.data?.data?.Results?.value}
+              />
             </Grid>
           </Grid>
         </Box>

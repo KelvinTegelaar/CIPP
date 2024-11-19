@@ -24,9 +24,5 @@
   {
     "label": "Conditional Access",
     "path": "/identity/administration/users/user/conditional-access"
-  },
-  {
-    "label": "OneDrive",
-    "path": "/identity/administration/users/user/onedrive"
   }
 ]
