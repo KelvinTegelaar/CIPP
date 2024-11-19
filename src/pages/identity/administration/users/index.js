@@ -26,7 +26,7 @@ const Page = () => {
     {
       label: "Research Compromised Account",
       type: "GET",
-      url: "/identity/administration/ViewBec?userId=userId&Tenant=Tenant&ID=userPrincipalName",
+      link: "/identity/administration/users/user/bec?userId=[id]",
       confirmText: "Are you sure you want to research this compromised account?",
       multiPost: false,
     },

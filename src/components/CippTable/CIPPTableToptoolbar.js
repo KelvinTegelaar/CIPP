@@ -231,36 +231,38 @@ export const CIPPTableToptoolbar = ({
                     vertical: "top",
                   }}
                 >
-                  {actions?.map((action, index) => (
-                    <MenuItem
-                      key={index}
-                      onClick={() => {
-                        setActionData({
-                          data: table
-                            .getSelectedRowModel()
-                            .rows.map((row) => row.original.original),
-                          action: action,
-                          ready: true,
-                        });
+                  {actions
+                    ?.filter((action) => !action.link)
+                    .map((action, index) => (
+                      <MenuItem
+                        key={index}
+                        onClick={() => {
+                          setActionData({
+                            data: table
+                              .getSelectedRowModel()
+                              .rows.map((row) => row.original.original),
+                            action: action,
+                            ready: true,
+                          });
 
-                        if (action?.noConfirm && action.customFunction) {
-                          table
-                            .getSelectedRowModel()
-                            .rows.map((row) =>
-                              action.customFunction(row.original.original, action, {})
-                            );
-                        } else {
-                          createDialog.handleOpen();
-                          popover.handleClose();
-                        }
-                      }}
-                    >
-                      <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                        {action.icon}
-                      </SvgIcon>
-                      <ListItemText>{action.label}</ListItemText>
-                    </MenuItem>
-                  ))}
+                          if (action?.noConfirm && action.customFunction) {
+                            table
+                              .getSelectedRowModel()
+                              .rows.map((row) =>
+                                action.customFunction(row.original.original, action, {})
+                              );
+                          } else {
+                            createDialog.handleOpen();
+                            popover.handleClose();
+                          }
+                        }}
+                      >
+                        <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                          {action.icon}
+                        </SvgIcon>
+                        <ListItemText>{action.label}</ListItemText>
+                      </MenuItem>
+                    ))}
                 </Menu>
               </>
             )}
