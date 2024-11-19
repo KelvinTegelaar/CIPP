@@ -21,7 +21,7 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
-  const { formControl, currentSettings, userId } = props;
+  const { formControl, currentSettings, userId, calPermissions } = props;
   // State to manage the expanded panels
   const [expandedPanel, setExpandedPanel] = useState(null);
 
@@ -227,6 +227,12 @@ const CippExchangeSettingsForm = (props) => {
                 label: `${user.displayName} (${user.userPrincipalName})`,
               })) || []
             }
+            formControl={formControl}
+          />
+          <CippFormComponent
+            type="hidden"
+            name="calendar.FolderName"
+            value={calPermissions?.[0]?.FolderName}
             formControl={formControl}
           />
           <CippFormComponent

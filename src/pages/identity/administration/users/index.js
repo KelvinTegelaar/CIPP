@@ -11,7 +11,7 @@ const Page = () => {
   const actions = [
     {
       label: "View User",
-      link: "/identity/administration/users/user/view?userId=[id]",
+      link: "/identity/administration/users/user?userId=[id]",
       multiPost: false,
       icon: <EyeIcon />,
       color: "success",
