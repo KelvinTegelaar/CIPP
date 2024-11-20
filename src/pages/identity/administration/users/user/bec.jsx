@@ -198,7 +198,7 @@ const Page = () => {
                 isFetching={false}
                 title={
                   <Stack direction="row" justifyContent={"space-between"}>
-                    <Box>Check 0: Loading data</Box>
+                    <Box>Loading data</Box>
                     <CircularProgress size={20} />
                   </Stack>
                 }
@@ -240,7 +240,7 @@ const Page = () => {
                   isFetching={false}
                   title={
                     <Stack direction="row" justifyContent={"space-between"}>
-                      <Box>Check 0: Log information</Box>
+                      <Box>Log information</Box>
                       <Stack direction="row" spacing={2}>
                         <SvgIcon color="success">
                           <CheckCircle />
@@ -524,7 +524,7 @@ const Page = () => {
                   isFetching={false}
                   title={
                     <Stack direction="row" justifyContent={"space-between"}>
-                      <Box>Check 6: Report Data</Box>
+                      <Box>Report</Box>
                       <Stack direction="row" spacing={2}>
                         {becPollingCall.data ? (
                           <SvgIcon color="success">
