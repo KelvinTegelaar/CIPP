@@ -5,7 +5,7 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { useDialog } from "../../hooks/use-dialog";
 
 export default function CippRemediationCard(props) {
-  const { userPrincipalName, isFetching, userId, tenantFilter } = props;
+  const { userPrincipalName, isFetching, userId, tenantFilter, restartProcess } = props;
   const createDialog = useDialog();
   return (
     <CippButtonCard
@@ -15,7 +15,7 @@ export default function CippRemediationCard(props) {
         </Typography>
       }
       cardActions={
-        <Button size="small" onClick={() => console.log("Refresh Data")} disabled={isFetching}>
+        <Button size="small" onClick={() => restartProcess()} disabled={isFetching}>
           Refresh Data
         </Button>
       }
