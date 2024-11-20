@@ -66,6 +66,7 @@ const Page = () => {
         Endpoint: "identityProtection/riskDetections",
         manualPagination: true,
         $count: true,
+        NoPagination: true,
         $top: 999,
       }}
       apiDataKey="Results"
