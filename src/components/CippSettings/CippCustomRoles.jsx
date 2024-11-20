@@ -17,6 +17,7 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { Save } from "@mui/icons-material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm, useWatch } from "react-hook-form";
 import { InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -347,7 +348,7 @@ export const CippCustomRoles = () => {
                 .sort()
                 .map((cat, catIndex) => (
                   <Accordion variant="outlined" key={`accordion-item-${catIndex}`}>
-                    <AccordionSummary>{cat}</AccordionSummary>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>{cat}</AccordionSummary>
                     <AccordionDetails>
                       {Object.keys(apiPermissions[cat])
                         .sort()

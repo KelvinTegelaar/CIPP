@@ -26,6 +26,7 @@ import {
   Delete,
   Download,
   Error,
+  ExpandMore,
   Save,
   TaskAlt,
   Undo,
@@ -970,13 +971,13 @@ const CippAppPermissionBuilder = ({
                       variant="outlined"
                       onChange={handleChange(sp.appId)}
                     >
-                      <AccordionSummary>
+                      <AccordionSummary expandIcon={<ExpandMore />}>
                         <Stack
                           direction="row"
                           spacing={2}
                           justifyContent="space-between"
                           alignItems="center"
-                          sx={{ width: "100%" }}
+                          sx={{ width: "100%", mr: 1 }}
                         >
                           <Typography variant="h6">{sp.displayName}</Typography>
                           <Stack direction="row" spacing={2}>
