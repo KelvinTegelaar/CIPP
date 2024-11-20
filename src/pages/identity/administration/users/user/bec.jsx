@@ -15,6 +15,8 @@ import Grid from "@mui/material/Grid2";
 import CippRemediationCard from "../../../../../components/CippCards/CippRemediationCard";
 import CippButtonCard from "../../../../../components/CippCards/CippButtonCard";
 import { SvgIcon, Typography, CircularProgress } from "@mui/material";
+import { PropertyList } from "../../../../../components/property-list";
+import { PropertyListItem } from "../../../../../components/property-list-item";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -95,13 +97,13 @@ const Page = () => {
     if (!becPollingCall.data) return null;
     if (becPollingCall.data.NewRules && becPollingCall.data.NewRules.length > 0) {
       // Example condition to check for potential breach
-      const hasPotentialBreach = becPollingCall.data.NewRules.some(
-        (rule) => /* your condition here */ false
+      const hasPotentialBreach = becPollingCall.data.NewRules.some((rule) =>
+        rule.MoveToFolder?.includes("RSS")
       );
       if (hasPotentialBreach) {
         return "Potential Breach found. The rules for this user contain classic signs of a breach.";
       }
-      return "Suspicious rules have been found. Please review the list below and take action as needed.";
+      return "Rules have been found. Please review the list below and take action as needed.";
     }
     return "No new rules found.";
   };
@@ -268,7 +270,7 @@ const Page = () => {
                   isFetching={false}
                   title={
                     <Stack direction="row" justifyContent={"space-between"}>
-                      <Box>Check 1: Recently added rules</Box>
+                      <Box>Check 1: Mailbox Rules</Box>
                       <Stack direction="row" spacing={2}>
                         {becPollingCall.data &&
                         becPollingCall.data.NewRules &&
@@ -293,8 +295,11 @@ const Page = () => {
                     becPollingCall.data.NewRules &&
                     becPollingCall.data.NewRules.length > 0 && (
                       <Box mt={2}>
-                        {/* Replace with your component to display rules */}
-                        {/* Example: <RuleList rules={becPollingCall.data.NewRules} /> */}
+                        <PropertyList>
+                          {becPollingCall.data.NewRules.map((rule) => (
+                            <PropertyListItem label={rule.Name} value={rule.Description} />
+                          ))}
+                        </PropertyList>
                       </Box>
                     )}
                 </CippButtonCard>
@@ -330,8 +335,14 @@ const Page = () => {
                     becPollingCall.data.NewUsers &&
                     becPollingCall.data.NewUsers.length > 0 && (
                       <Box mt={2}>
-                        {/* Replace with your component to display users */}
-                        {/* Example: <UserList users={becPollingCall.data.NewUsers} /> */}
+                        <PropertyList>
+                          {becPollingCall.data.NewUsers.map((user) => (
+                            <PropertyListItem
+                              label={user.userPrincipalName}
+                              value={user.createdDateTime}
+                            />
+                          ))}
+                        </PropertyList>
                       </Box>
                     )}
                 </CippButtonCard>
@@ -367,8 +378,14 @@ const Page = () => {
                     becPollingCall.data.AddedApps &&
                     becPollingCall.data.AddedApps.length > 0 && (
                       <Box mt={2}>
-                        {/* Replace with your component to display applications */}
-                        {/* Example: <AppList apps={becPollingCall.data.AddedApps} /> */}
+                        <PropertyList>
+                          {becPollingCall.data.AddedApps.map((app) => (
+                            <PropertyListItem
+                              label={`${app.displayName} - ${app.appId}`}
+                              value={app.createdDateTime}
+                            />
+                          ))}
+                        </PropertyList>
                       </Box>
                     )}
                 </CippButtonCard>
@@ -404,8 +421,99 @@ const Page = () => {
                     becPollingCall.data.MailboxPermissionChanges &&
                     becPollingCall.data.MailboxPermissionChanges.length > 0 && (
                       <Box mt={2}>
-                        {/* Replace with your component to display mailbox permissions */}
-                        {/* Example: <MailboxPermissionList permissions={becPollingCall.data.MailboxPermissionChanges} /> */}
+                        <PropertyList>
+                          {becPollingCall.data.MailboxPermissionChanges.map((permission) => (
+                            <PropertyListItem
+                              label={permission.UserKey}
+                              value={`${permission.Operation} - ${permission.Permissions}`}
+                            />
+                          ))}
+                        </PropertyList>
+                      </Box>
+                    )}
+                </CippButtonCard>
+
+                <CippButtonCard
+                  variant="outlined"
+                  isFetching={false}
+                  title={
+                    <Stack direction="row" justifyContent={"space-between"}>
+                      <Box>Check 5: MFA Devices</Box>
+                      <Stack direction="row" spacing={2}>
+                        {becPollingCall.data &&
+                        becPollingCall.data.MFADevices &&
+                        becPollingCall.data.MFADevices.length > 0 ? (
+                          <SvgIcon color="success">
+                            <CheckCircle />
+                          </SvgIcon>
+                        ) : (
+                          <SvgIcon color="disabled">
+                            <CheckCircle />
+                          </SvgIcon>
+                        )}
+                      </Stack>
+                    </Stack>
+                  }
+                >
+                  <Typography variant="body2" gutterBottom>
+                    MFA Devices have been found. Please review the list below and take action as
+                    required
+                  </Typography>
+                  {/* Optionally, display list of mailbox permission changes */}
+                  {becPollingCall.data &&
+                    becPollingCall.data.MFADevices &&
+                    becPollingCall.data.MFADevices.length > 0 && (
+                      <Box mt={2}>
+                        <PropertyList>
+                          {becPollingCall.data.MFADevices.map((permission) => (
+                            <PropertyListItem
+                              label={permission["@odata.type"]}
+                              value={`${permission.displayName} - Registered at ${permission.createdDateTime}`}
+                            />
+                          ))}
+                        </PropertyList>
+                      </Box>
+                    )}
+                </CippButtonCard>
+
+                <CippButtonCard
+                  variant="outlined"
+                  isFetching={false}
+                  title={
+                    <Stack direction="row" justifyContent={"space-between"}>
+                      <Box>Check 6: Password Changes</Box>
+                      <Stack direction="row" spacing={2}>
+                        {becPollingCall.data &&
+                        becPollingCall.data.ChangedPasswords &&
+                        becPollingCall.data.ChangedPasswords.length > 0 ? (
+                          <SvgIcon color="success">
+                            <CheckCircle />
+                          </SvgIcon>
+                        ) : (
+                          <SvgIcon color="disabled">
+                            <CheckCircle />
+                          </SvgIcon>
+                        )}
+                      </Stack>
+                    </Stack>
+                  }
+                >
+                  <Typography variant="body2" gutterBottom>
+                    Latest password changes for the tenant can be seen below
+                  </Typography>
+                  {/* Optionally, display list of mailbox permission changes */}
+                  {becPollingCall.data &&
+                    becPollingCall.data.ChangedPasswords &&
+                    becPollingCall.data.ChangedPasswords.length > 0 && (
+                      <Box mt={2}>
+                        <PropertyList>
+                          {becPollingCall.data.ChangedPasswords.map((permission) => (
+                            <PropertyListItem
+                              label={permission.displayName}
+                              value={`${permission.lastPasswordChangeDateTime}`}
+                            />
+                          ))}
+                        </PropertyList>
                       </Box>
                     )}
                 </CippButtonCard>
