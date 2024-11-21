@@ -5,7 +5,8 @@ export const getCippTranslation = (field) => {
     CippTranslations[field] ||
     field
       .replace(/([A-Z]+)(?=[A-Z][a-z])|([A-Z])/g, " $1$2")
-      .replace(/^./, (str) => str.toUpperCase())
+      .replace(/(^|\.)(\w)/g, (_, dot, char) => dot + char.toUpperCase())
       .replace(/[_]/g, " ")
+      .replace(/\./g, " - ")
   );
 };
