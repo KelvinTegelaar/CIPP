@@ -30,12 +30,24 @@ const Page = () => {
 
   useEffect(() => {
     if (execSAMRoles.isSuccess && tenantsSuccess) {
+      var selectedTenants = [];
+      execSAMRoles.data?.Tenants.map((tenant) => {
+        var tenantObj = false;
+        if (tenant?.value) {
+          tenantObj = tenants.find((t) => t?.defaultDomainName === tenant?.value);
+        } else {
+          tenantObj = tenants.find((t) => t?.defaultDomainName === tenant);
+        }
+        if (tenantObj) {
+          selectedTenants.push({
+            value: tenantObj?.defaultDomainName,
+            label: tenantObj?.displayName,
+          });
+        }
+      });
       formControl.reset({
         Roles: execSAMRoles.data?.Roles,
-        Tenants: execSAMRoles.data?.Tenants.map((tenant) => {
-          var tenantObj = tenants.find((t) => t.defaultDomainName === tenant);
-          return { value: tenantObj.defaultDomainName, label: tenantObj.displayName };
-        }),
+        Tenants: selectedTenants,
       });
     }
   }, [execSAMRoles.isSuccess, tenantsSuccess]);
