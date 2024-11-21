@@ -116,10 +116,10 @@ const ResultsRow = ({ match, searchValue }) => {
           <Box ml={2} display="inline-flex" gap={1}>
             <Button
               component={Link}
-              href={`identity/administration/users/view?tenantFilter=${
+              href={`identity/administration/users/user?tenantFilter=${
                 currentTenantInfo.data?.find((tenant) => tenant.customerId === match._tenantId)
                   ?.defaultDomainName || match._tenantId
-              }&upn=${match.userPrincipalName}`}
+              }&userId=${match.userPrincipalName}`}
               variant="outlined"
               color="primary"
               size="small"
