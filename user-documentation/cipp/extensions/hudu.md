@@ -54,6 +54,55 @@ After the API settings are set you can now map Hudu Assets to Microsoft 365 / CI
 3. Click Save Mappings
 
 
+#### Custom CSS
+In some cases the information provided in the M365 Rich Text Field is cut off or formatted incorrectly, use this custom CSS code in your Hudu settings to help format it:
+
+```
+.card__item table{
+	border-collapse: collapse;
+	margin: 5px 0;
+	font-size: 0.8em;
+	font-family: sans-serif;
+	min-width: 400px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.card__item h2, .card__item p{
+	font-size: 0.8em;
+	font-family: sans-serif;
+}
+.card__item th, .card__item td {
+	padding: 5px 5px;
+	width:auto;
+}
+.card__item thead tr {
+	text-align: left;
+}
+.card__item tr {
+	border-bottom: 1px solid #dddddd;
+}
+
+.custom-fast-fact.custom-fast-fact--warning {
+    background: #f5c086;
+}
+ .custom-fast-fact.custom-fast-fact--datto-low {
+     background: #2C81C8;
+}
+ .custom-fast-fact.custom-fast-fact--datto-moderate {
+     background: #F7C210;
+}
+
+ .custom-fast-fact.custom-fast-fact--datto-high {
+     background: #F68218;
+}
+
+ .custom-fast-fact.custom-fast-fact--datto-critical {
+     background: #EC422E;
+}
+
+.nasa__block {
+   height:auto;
+}
+```
 
 #### Special Thanks
 
