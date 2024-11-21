@@ -7,6 +7,7 @@ import CippDataTableButton from "../components/CippTable/CippDataTableButton";
 import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
 import { isoDuration, en } from "@musement/iso-duration";
 import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
+import { getCippRoleTranslation } from "./get-cipp-role-translation";
 
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
@@ -203,6 +204,11 @@ export const getCippFormatting = (data, cellName, type) => {
   // Handle assigned licenses
   if (cellName === "assignedLicenses") {
     return isText ? getCippLicenseTranslation(data) : getCippLicenseTranslation(data);
+  }
+
+  // Handle roleDefinitionId
+  if (cellName === "roleDefinitionId") {
+    return getCippRoleTranslation(data);
   }
 
   // Handle boolean data
