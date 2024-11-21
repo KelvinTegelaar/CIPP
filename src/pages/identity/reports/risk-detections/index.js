@@ -1,4 +1,3 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
@@ -16,18 +15,18 @@ const Page = () => {
 
   const offCanvas = {
     extendedInfoFields: [
-      "userId", 
-      "userDisplayName", 
-      "userPrincipalName", 
-      "detectedDateTime", 
-      "location", 
-      "ipAddress", 
-      "riskLevel", 
-      "riskState", 
-      "riskDetail", 
-      "riskEventType", 
-      "detectionTimingType", 
-      "activity"
+      "userId",
+      "userDisplayName",
+      "userPrincipalName",
+      "detectedDateTime",
+      "location",
+      "ipAddress",
+      "riskLevel",
+      "riskState",
+      "riskDetail",
+      "riskEventType",
+      "detectionTimingType",
+      "activity",
     ],
     actions: actions,
   };
@@ -43,7 +42,7 @@ const Page = () => {
     "riskType",
     "riskEventType",
     "detectionTimingType",
-    "activity"
+    "activity",
   ];
 
   // Note to Developer: Add necessary filter logic here
@@ -63,6 +62,12 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
+      apiData={{
+        Endpoint: "identityProtection/riskDetections",
+        manualPagination: true,
+        $count: true,
+        $top: 999,
+      }}
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}

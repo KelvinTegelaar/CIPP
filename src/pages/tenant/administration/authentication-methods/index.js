@@ -1,4 +1,3 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
@@ -7,19 +6,14 @@ const Page = () => {
   const apiUrl = "/api/ListGraphRequest";
 
   // Columns configuration based on provided structure
-  const simpleColumns = [
-    "id",
-    "state",
-    "includeTargets",
-    "excludeTargets",
-  ];
+  const simpleColumns = ["id", "state", "includeTargets", "excludeTargets"];
 
   const actions = [
     {
       label: "Enable Policy",
       type: "POST",
       url: "/api/SetAuthMethod",
-      data: { state: "enabled", id: "id", TenantFilter: "defaultDomainName" },
+      data: { state: "enabled", id: "id" },
       confirmText: "Are you sure you want to enable this policy?",
       multiPost: false,
     },
@@ -27,7 +21,7 @@ const Page = () => {
       label: "Disable Policy",
       type: "POST",
       url: "/api/SetAuthMethod",
-      data: { state: "disabled", id: "id", TenantFilter: "defaultDomainName" },
+      data: { state: "disabled", id: "id" },
       confirmText: "Are you sure you want to disable this policy?",
       multiPost: false,
     },
@@ -44,11 +38,11 @@ const Page = () => {
       apiUrl={apiUrl}
       apiData={{
         Endpoint: "authenticationMethodsPolicy",
-        TenantFilter: "defaultDomainName",  // Dynamically pass tenant here
       }}
-      apiDataKey="Results"
+      apiDataKey="Results.0.authenticationMethodConfigurations"
       simpleColumns={simpleColumns}
       offCanvas={offCanvas}
+      actions={actions}
       dynamicColumns={false}
     />
   );

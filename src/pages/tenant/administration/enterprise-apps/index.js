@@ -5,7 +5,6 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 const Page = () => {
   const pageTitle = "Enterprise Applications";
   const apiUrl = "/api/ListGraphRequest";
-
   const actions = [];
 
   const offCanvas = {
@@ -24,7 +23,6 @@ const Page = () => {
   ];
 
   const apiParams = {
-    TenantFilter: "tenant?.defaultDomainName",  // dynamically use the tenant filter
     Endpoint: "servicePrincipals",
     Parameters: {
       $filter: "tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')",
@@ -37,11 +35,11 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
+      apiData={apiParams}
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      params={apiParams}  // Adding API parameters here
     />
   );
 };

@@ -170,7 +170,7 @@ export const items = [
             path: "/tenant/administration/appapproval",
           },
           { title: "IP Database", path: "/tenant/tools/geoiplookup" },
-          { title: "Tenant Lookup", path: "/tenant/administration/tenantlookup" },
+          { title: "Tenant Lookup", path: "/tenant/tools/tenantlookup" },
           {
             title: "Individual Domain Check",
             path: "/tenant/standards/individual-domains",

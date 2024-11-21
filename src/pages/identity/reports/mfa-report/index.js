@@ -4,7 +4,6 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 const Page = () => {
   const pageTitle = "MFA Report";
   const apiUrl = "/api/ListMFAUsers";
-
   const simpleColumns = [
     "UPN",
     "AccountEnabled",

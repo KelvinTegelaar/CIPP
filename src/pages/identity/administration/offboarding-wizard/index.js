@@ -26,6 +26,7 @@ const Page = () => {
         title: "Select the users to offboard",
         name: "user",
         placeholder: "Select User",
+        type: "multiple",
         api: {
           url: "/api/ListGraphRequest",
           dataKey: "Results",

@@ -1,4 +1,3 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
@@ -11,18 +10,17 @@ const Page = () => {
 
   // Columns definition based on provided structure
   const simpleColumns = [
-    "Tenant",                         // Tenant name
-    "TenantInfo.displayName",          // Partner name
-    "isServiceProvider",               // Service provider status
-    "isInMultiTenantOrganization",     // Multi-tenant status
-    "TenantInfo"                       // Partner information
+    "Tenant", // Tenant name
+    "TenantInfo.displayName", // Partner name
+    "isServiceProvider", // Service provider status
+    "isInMultiTenantOrganization", // Multi-tenant status
+    "TenantInfo", // Partner information
   ];
 
   // API Data configuration for the request
   const apiData = {
-    Endpoint: "policies/crossTenantAccessPolicy/partners",  // API endpoint for partner relationships
-    ReverseTenantLookup: true,  // Reverse lookup for tenant details
-    TenantFilter: "defaultTenantId",  // Tenant customerId (can be replaced dynamically if needed)
+    Endpoint: "policies/crossTenantAccessPolicy/partners", // API endpoint for partner relationships
+    ReverseTenantLookup: true, // Reverse lookup for tenant details
   };
 
   return (
@@ -31,8 +29,8 @@ const Page = () => {
       apiUrl={apiUrl}
       apiDataKey="Results"
       simpleColumns={simpleColumns}
-      apiData={apiData}  // Corrected API data passed here
-      dynamicColumns={false}  // No dynamic column toggling
+      apiData={apiData} // Corrected API data passed here
+      dynamicColumns={false} // No dynamic column toggling
     />
   );
 };
