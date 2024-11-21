@@ -36,7 +36,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListGroupTemplates"
-      apiDataKey="Results"
       actions={actions}
       cardButton={
         <>

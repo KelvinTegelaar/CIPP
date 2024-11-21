@@ -3,8 +3,7 @@ import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
-
-import CippAddGroupForm from "../../../../components/CippFormPages/CippAddGroupForm";
+import CippAddGroupTemplateForm from "../../../../components/CippFormPages/CippAddGroupTemplateForm";
 const Page = () => {
   const userSettingsDefaults = useSettings();
 
@@ -25,7 +24,7 @@ const Page = () => {
         postUrl="/api/AddGroupTemplate"
       >
         <Box sx={{ my: 2 }}>
-          <CippAddGroupForm formControl={formControl} />
+          <CippAddGroupTemplateForm formControl={formControl} />
         </Box>
       </CippFormPage>
     </>
