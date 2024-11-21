@@ -5,8 +5,9 @@ import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClip
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
 import CippDataTableButton from "../components/CippTable/CippDataTableButton";
 import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
-
+import { isoDuration, en } from "@musement/iso-duration";
 import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
+
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
@@ -28,9 +29,26 @@ export const getCippFormatting = (data, cellName, type) => {
     "DateTime",
     "LastRun",
     "LastRefresh",
+    "createdDateTime",
+    "activatedDateTime",
+    "endDateTime",
   ];
   if (timeAgoArray.includes(cellName)) {
     return <CippTimeAgo data={data} type={type} />;
+  }
+
+  const durationArray = ["autoExtendDuration"];
+  if (durationArray.includes(cellName)) {
+    isoDuration.setLocales(
+      {
+        en,
+      },
+      {
+        fallbackLocale: "en",
+      }
+    );
+    const duration = isoDuration(data);
+    return duration.humanize("en");
   }
 
   const passwordItems = ["password", "applicationsecret", "refreshtoken"];

@@ -28,6 +28,7 @@
     "@mui/material": "6.1.6",
     "@mui/system": "6.1.6",
     "@mui/x-date-pickers": "7.22.1",
+    "@musement/iso-duration": "^1.0.0",
     "@react-pdf/renderer": "3.1.2",
     "@reduxjs/toolkit": "1.9.2",
     "@tanstack/react-query": "^5.51.11",

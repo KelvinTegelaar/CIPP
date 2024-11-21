@@ -7,14 +7,12 @@ const actions = [
   {
     label: "Start Onboarding",
     color: "primary",
-    link:
-      "/tenant/administration/tenant-onboarding-wizard?tableFilter=Complex: id eq [id]",
+    link: "/tenant/administration/tenant-onboarding-wizard?tableFilter=Complex: id eq [id]",
   },
   {
     label: "Open Relationship in Partner Center",
     color: "info",
-    link:
-      "https://partner.microsoft.com/en-us/dashboard/commerce2/customers/[customer.tenantId]/adminrelationships/[id]",
+    link: "https://partner.microsoft.com/en-us/dashboard/commerce2/customers/[customer.tenantId]/adminrelationships/[id]",
     external: true,
   },
   {
@@ -33,9 +31,8 @@ const actions = [
   },
   {
     label: "Terminate Relationship",
-    color: "danger",
+    color: "error",
     modal: true,
-    icon: <FontAwesomeIcon icon={faTrashAlt} className="me-2" />,
     modalUrl: "/api/ExecDeleteGDAPRelationship?GDAPID=[id]",
     modalMessage: "Are you sure you want to delete this relationship?",
   },
@@ -60,6 +57,7 @@ const simpleColumns = [
 const apiUrl = "/api/ListGraphRequest";
 const apiData = {
   Endpoint: "tenantRelationships/delegatedAdminRelationships",
+  tenantFilter: "",
   $top: 300,
 };
 
@@ -67,6 +65,7 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
+      tenantInTitle={false}
       apiUrl={apiUrl}
       apiData={apiData}
       apiDataKey="Results"

@@ -1436,6 +1436,11 @@
     "@babel/runtime" "^7.25.7"
     "@mui/utils" "^5.16.6 || ^6.0.0"
 
+"@musement/iso-duration@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@musement/iso-duration/-/iso-duration-1.0.0.tgz#b45ba8acb0b998488744e41da15a391e5f550c48"
+  integrity sha512-gTJOmIXfsh5AyOdsUwkYcAIdWd9fCa/e0dV7mfV/B+oDOoJne5ciNMazDdQacylbWTQpF5aMdp2xrHVEwiryfg==
+
 "@next/env@13.5.6":
   version "13.5.6"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.5.6.tgz#c1148e2e1aa166614f05161ee8f77ded467062bc"
