@@ -10,6 +10,7 @@ const Page = () => {
 
   const actions = [
     {
+      //tested
       label: "View User",
       link: "/identity/administration/users/user?userId=[id]",
       multiPost: false,
@@ -17,6 +18,7 @@ const Page = () => {
       color: "success",
     },
     {
+      //tested
       label: "Edit User",
       link: "/identity/administration/users/user/edit?userId=[id]",
       icon: <Edit />,
@@ -24,6 +26,7 @@ const Page = () => {
       target: "_self",
     },
     {
+      //tested
       label: "Research Compromised Account",
       type: "GET",
       link: "/identity/administration/users/user/bec?userId=[id]",
@@ -31,6 +34,8 @@ const Page = () => {
       multiPost: false,
     },
     {
+      //tested
+
       label: "Create Temporary Access Password",
       type: "GET",
       url: "/api/ExecCreateTAP",
@@ -39,6 +44,7 @@ const Page = () => {
       multiPost: false,
     },
     {
+      //tested
       label: "Rerequire MFA registration",
       type: "GET",
       url: "/api/ExecResetMFA",
@@ -47,6 +53,7 @@ const Page = () => {
       multiPost: false,
     },
     {
+      //tested
       label: "Send MFA Push",
       type: "POST",
       url: "/api/ExecSendPush",
@@ -55,35 +62,52 @@ const Page = () => {
       multiPost: false,
     },
     {
+      //tested
       label: "Set Per-User MFA",
       type: "POST",
       url: "/api/ExecPerUserMFA",
+      fields: [
+        {
+          type: "autoComplete",
+          name: "State",
+          label: "State",
+          options: [
+            { label: "Enforced", value: "Enforced" },
+            { label: "Enabled", value: "Enabled" },
+            { label: "Disabled", value: "Disabled" },
+          ],
+          multiple: false,
+        },
+      ],
       data: { userId: "userPrincipalName" },
       confirmText: "Are you sure you want to set per-user MFA for these users?",
       multiPost: false,
     },
     {
+      //tested
       label: "Convert to Shared Mailbox",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecConvertToSharedMailbox",
       data: { ID: "userPrincipalName" },
       confirmText: "Are you sure you want to convert this user to a shared mailbox?",
       multiPost: false,
     },
     {
+      //tested
       label: "Enable Online Archive",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecEnableArchive",
       data: { ID: "userPrincipalName" },
       confirmText: "Are you sure you want to enable the online archive for this user?",
       multiPost: false,
     },
     {
+      //tested
       label: "Set Out of Office",
       type: "POST",
       url: "/api/ExecSetOoO",
-      data: { user: "userPrincipalName", AutoReplyState: "Enabled" },
-      fields: [{ type: "textArea", name: "message", label: "Out of Office Message" }],
+      data: { userId: "userPrincipalName", AutoReplyState: { value: "Enabled" } },
+      fields: [{ type: "richText", name: "input", label: "Out of Office Message" }],
       confirmText: "Are you sure you want to set the out of office?",
       multiPost: false,
     },
@@ -97,6 +121,7 @@ const Page = () => {
           type: "autoComplete",
           name: "groupId",
           label: "Select a group to add the user to",
+          multiple: false,
           api: {
             url: "/api/ListGroups",
             labelField: "displayName",

@@ -190,73 +190,16 @@ export const CippApiDialog = (props) => {
           <Grid container spacing={2}>
             {fields &&
               fields.map((fieldProps, index) => {
-                switch (fieldProps.type) {
-                  case "autoComplete":
-                    return (
-                      <Grid item xs={12} md={12} key={index}>
-                        <Controller
-                          key={index}
-                          name={fieldProps.name}
-                          control={formHook.control}
-                          render={({ field, formState }) => (
-                            <CippAutoComplete
-                              label={fieldProps.label}
-                              required
-                              api={fieldProps.api}
-                              creatable={false}
-                              multiple={false}
-                              placeholder={fieldProps.label}
-                              options={fieldProps.options}
-                              onChange={(value, addedFields) => {
-                                field.onChange(value.value);
-                                setAddedFieldData((prev) => ({ ...prev, ...addedFields }));
-                              }}
-                            />
-                          )}
-                        />
-                      </Grid>
-                    );
-                  case "switch":
-                    return (
-                      <Grid item xs={12} md={12} key={index}>
-                        <CippFormComponent
-                          type="switch"
-                          label={fieldProps.label}
-                          name={fieldProps.name}
-                          formControl={formHook}
-                          value={fieldProps.value}
-                        />
-                      </Grid>
-                    );
-                  case "textField":
-                    return (
-                      <Grid item xs={12} md={12} key={index}>
-                        <TextField
-                          label={fieldProps.label}
-                          key={index}
-                          multiline={false}
-                          fullWidth
-                          name={fieldProps.name}
-                          {...formHook.register(fieldProps.name)}
-                        />
-                      </Grid>
-                    );
-                  case "textArea":
-                    return (
-                      <Grid item xs={12} md={12} key={index}>
-                        <TextField
-                          key={index}
-                          multiline
-                          fullWidth
-                          rows={4}
-                          {...fieldProps}
-                          {...formHook.register(fieldProps.name)}
-                        />
-                      </Grid>
-                    );
-                  default:
-                    return null;
-                }
+                return (
+                  <Grid item xs={12} key={index}>
+                    <CippFormComponent
+                      formControl={formHook}
+                      addedFieldData={addedFieldData}
+                      setAddedFieldData={setAddedFieldData}
+                      {...fieldProps}
+                    />
+                  </Grid>
+                );
               })}
           </Grid>
         </DialogContent>

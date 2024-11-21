@@ -12,7 +12,6 @@ import {
   Link,
 } from "@mui/material";
 import { ApiGetCall } from "../../api/ApiCall";
-import { useSettings } from "../../hooks/use-settings";
 
 export const CippUniversalSearch = React.forwardRef(
   ({ onConfirm = () => {}, onChange = () => {}, maxResults = 7, value = "" }, ref) => {
