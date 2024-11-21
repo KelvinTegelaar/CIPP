@@ -16,7 +16,7 @@ const mergeKeys = (dataArray) => {
           base[key] = mergeRecursive(obj[key], base[key] || {});
         } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
           base[key] = base[key]; // Keep existing value if it's 'FAILED'
-        } else {
+        } else if (obj[key] !== undefined && obj[key] !== null) {
           base[key] = obj[key]; // Assign valid primitive values
         }
       });
@@ -29,6 +29,7 @@ const mergeKeys = (dataArray) => {
 
 export const utilColumnsFromAPI = (dataArray) => {
   const dataSample = mergeKeys(dataArray);
+
   const generateColumns = (obj, parentKey = "") => {
     return Object.keys(obj)
       .map((key) => {
@@ -40,10 +41,16 @@ export const utilColumnsFromAPI = (dataArray) => {
         return {
           header: getCippTranslation(accessorKey),
           id: accessorKey,
-          accessorFn: (row) => getCippFormatting(row[accessorKey], accessorKey, "text"),
+          accessorFn: (row) => {
+            const value = accessorKey.split(".").reduce((acc, part) => acc && acc[part], row);
+            return getCippFormatting(value, accessorKey, "text");
+          },
           ...getCippFilterVariant(key),
           Cell: ({ row }) => {
-            return getCippFormatting(row.original[accessorKey], accessorKey);
+            const value = accessorKey
+              .split(".")
+              .reduce((acc, part) => acc && acc[part], row.original);
+            return getCippFormatting(value, accessorKey);
           },
         };
       })
