@@ -27,4 +27,13 @@ export const CippTranslations = {
   ApplicationID: "Application ID",
   ApplicationSecret: "Application Secret",
   GUID: "GUID",
+  portal_m365: "M365 Portal",
+  portal_exchange: "Exchange Portal",
+  portal_entra: "Entra Portal",
+  portal_teams: "Teams Portal",
+  portal_azure: "Azure Portal",
+  portal_intune: "Intune Portal",
+  portal_security: "Security Portal",
+  portal_compliance: "Compliance Portal",
+  portal_sharepoint: "Sharepoint Portal",
 };

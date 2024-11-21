@@ -1,46 +1,47 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-
-// Developer note: Portals column logic has been omitted as per instructions. 
-// The column mapping should be handled using the get translation file or similar method in the future.
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { useEffect } from "react";
 
 const Page = () => {
+  //this page is special and requires us to craft the columns and DashboardLayout
   const pageTitle = "Tenants";
-  const apiUrl = "/api/ListTenants";
-  
-  // Columns definition as per the new structure
+  const tenantData = ApiGetCall({
+    url: "/api/listTenants",
+    queryKey: "ListTenants",
+  });
+
+  useEffect(() => {
+    if (tenantData.isSuccess) {
+      tenantData.data.forEach((tenant) => {
+        Object.assign(tenant, {
+          portal_m365: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${tenant.customerId}&CSDEST=o365admincenter`,
+          portal_exchange: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${tenant.defaultDomainName}`,
+          portal_entra: `https://entra.microsoft.com/${tenant.defaultDomainName}`,
+          portal_teams: `https://admin.teams.microsoft.com/?delegatedOrg=${tenant.defaultDomainName}`,
+          portal_azure: `https://portal.azure.com/${tenant.defaultDomainName}`,
+          portal_intune: `https://intune.microsoft.com/${tenant.defaultDomainName}`,
+          portal_security: `https://security.microsoft.com/?tid=${tenant.tenantId}`,
+          portal_compliance: `https://compliance.microsoft.com/?tid=${tenant.tenantId}`,
+          portal_sharepoint: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${tenant.tenantId}&CSDEST=SharePoint`,
+        });
+      });
+    }
+  }, [tenantData.isSuccess]);
+
   const simpleColumns = [
     "displayName",
     "defaultDomainName",
-    "customerId",
+    "portal_m365",
+    "portal_exchange",
+    "portal_entra",
+    "portal_teams",
+    "portal_azure",
+    "portal_intune",
+    "portal_security",
+    "portal_compliance",
   ];
-
-  // Developer Note: If portal-specific columns are required, add the portal mapping logic here 
-  // or handle it through a future translation file.
-
-  return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl={apiUrl}
-      apiDataKey="Results"
-      simpleColumns={simpleColumns}
-      offCanvas={{
-        extendedInfoFields: ["displayName", "defaultDomainName", "customerId"],
-      }}
-      dynamicColumns={false}   // No dynamic column toggling
-
-      // Developer Note: 
-      // If there's a requirement to include actions like "Add Tenant", 
-      // a Material UI Button can be added here within a cardButton prop.
-      // Example:
-      // cardButton={
-      //   <Button variant="contained" color="primary" href="/tenants/add">
-      //     Add Tenant
-      //   </Button>
-      // }
-    />
-  );
+  return <CippTablePage title={pageTitle} simpleColumns={simpleColumns} data={tenantData.data} />;
 };
 
 // Adding the layout for Dashboard

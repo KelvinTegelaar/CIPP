@@ -1,5 +1,5 @@
-import { Cancel, Check } from "@mui/icons-material";
-import { Chip, Link } from "@mui/material";
+import { Cancel, Check, CompassCalibration, LaptopWindows, Shield } from "@mui/icons-material";
+import { Chip, Link, SvgIcon } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
@@ -8,6 +8,7 @@ import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
 import { isoDuration, en } from "@musement/iso-duration";
 import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
 import { getCippRoleTranslation } from "./get-cipp-role-translation";
+import { CogIcon, ServerIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
 
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
@@ -20,6 +21,31 @@ export const getCippFormatting = (data, cellName, type) => {
       <Box component="span">
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
+    );
+  }
+
+  const portalIcons = {
+    portal_m365: CogIcon,
+    portal_exchange: CogIcon,
+    portal_entra: UserIcon,
+    portal_teams: UsersIcon,
+    portal_azure: ServerIcon,
+    portal_intune: LaptopWindows,
+    portal_security: Shield,
+    portal_compliance: CompassCalibration,
+  };
+
+  //if the cellName starts with portal_, return text, or a link with an icon
+  if (cellName.startsWith("portal_")) {
+    const IconComponent = portalIcons[cellName];
+    return isText ? (
+      data
+    ) : (
+      <Link href={data} target="_blank" rel="noreferrer">
+        <SvgIcon color="action" fontSize="small">
+          <IconComponent />
+        </SvgIcon>
+      </Link>
     );
   }
 
