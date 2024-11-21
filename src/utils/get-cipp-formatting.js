@@ -1,4 +1,11 @@
-import { Cancel, Check, CompassCalibration, LaptopWindows, Shield } from "@mui/icons-material";
+import {
+  Cancel,
+  Check,
+  CompassCalibration,
+  LaptopWindows,
+  MailOutline,
+  Shield,
+} from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
@@ -26,7 +33,7 @@ export const getCippFormatting = (data, cellName, type) => {
 
   const portalIcons = {
     portal_m365: CogIcon,
-    portal_exchange: CogIcon,
+    portal_exchange: MailOutline,
     portal_entra: UserIcon,
     portal_teams: UsersIcon,
     portal_azure: ServerIcon,
