@@ -17,6 +17,7 @@ import { Error, Update, Close as CloseIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { closeToast } from "../store/toasts";
 import { useState } from "react";
+import ReactTimeAgo from "react-time-ago";
 
 const getContent = (notification) => {
   return (
@@ -125,7 +126,7 @@ export const NotificationsPopover = () => {
           }}
         >
           {notificationsToShow.map((notification) => {
-            const createdAt = format(new Date(notification.createdAt), "MMM dd, yyyy");
+            const createdAt = <ReactTimeAgo date={notification.createdAt} />;
 
             return (
               <Stack key={notification.id} spacing={1} sx={{ p: 2 }}>

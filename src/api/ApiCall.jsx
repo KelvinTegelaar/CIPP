@@ -18,7 +18,7 @@ export function ApiGetCall({
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const MAX_RETRIES = retry;
-  const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404];
+  const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404, 500];
   const retryFn = (failureCount, error) => {
     let returnRetry = true;
     if (failureCount >= MAX_RETRIES) {
@@ -27,13 +27,14 @@ export function ApiGetCall({
     if (isAxiosError(error) && HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)) {
       returnRetry = false;
     }
-
+    console.log(error);
     if (returnRetry === false && toast) {
       dispatch(
         showToast({
-          message: getCippError(error),
-          title: "Error",
-          toastError: error,
+          message: `${getCippError(error)}`,
+          title: `${
+            error.config?.params?.tenantFilter ? error.config?.params?.tenantFilter : ""
+          } Error`,
         })
       );
     }

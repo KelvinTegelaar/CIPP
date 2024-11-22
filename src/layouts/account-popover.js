@@ -6,10 +6,12 @@ import ArrowRightOnRectangleIcon from "@heroicons/react/24/outline/ArrowRightOnR
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import UserIcon from "@heroicons/react/24/outline/UserIcon";
 import {
+  Avatar,
   Box,
   FormControlLabel,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -53,6 +55,18 @@ export const AccountPopover = (props) => {
     }
   }, [router, popover]);
 
+  const defaultAvatar = (
+    <Avatar
+      sx={{
+        height: 40,
+        width: 40,
+      }}
+      variant="rounded"
+    >
+      {orgData.data?.userDetails?.[0] || ""}
+    </Avatar>
+  );
+
   return (
     <>
       <Stack
@@ -64,17 +78,10 @@ export const AccountPopover = (props) => {
         sx={{ cursor: "pointer" }}
         {...other}
       >
+        {defaultAvatar}
         <>
-          {mdDown && (
-            <SvgIcon color="action" fontSize="small">
-              <UserIcon />
-            </SvgIcon>
-          )}
           {!mdDown && (
             <>
-              <SvgIcon color="action" fontSize="small">
-                <UserIcon />
-              </SvgIcon>
               <Box sx={{ minWidth: 100 }}>
                 <Typography color="neutral.400" variant="caption">
                   {orgData.data?.Org?.Domain}

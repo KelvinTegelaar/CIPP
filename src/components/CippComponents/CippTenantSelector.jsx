@@ -37,6 +37,7 @@ export const CippTenantSelector = (props) => {
     data: { tenantFilter: currentTenant?.value },
     queryKey: `TenantDetails-${currentTenant?.value}`,
     waiting: false,
+    toast: true,
   });
 
   useEffect(() => {
