@@ -8,10 +8,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListDefenderTVM"
-      apiData={{
-        TenantFilter: "TenantFilter",
-      }}
-      apiDataKey="Results"
       simpleColumns={[
         "affectedDevicesCount",
         "affectedDevices",

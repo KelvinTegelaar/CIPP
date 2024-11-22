@@ -1,9 +1,10 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Available Endpoint Manager Templates";
-  
+
   const actions = [
     {
       label: "View Template",
@@ -35,7 +36,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListIntuneTemplates?View=true"
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

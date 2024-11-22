@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Book } from "@mui/icons-material";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "App Protection & Configuration Policies";
@@ -10,12 +12,11 @@ const Page = () => {
       type: "POST",
       url: "/api/AddIntuneTemplate",
       data: {
-        TenantFilter: "Tenant",
         ID: "id",
         URLName: "managedAppPolicies",
       },
       confirmText: "Are you sure you want to create a template based on this policy?",
-      icon: <BookIcon />, // Placeholder for developer-provided icon
+      icon: <Book />,
       color: "info",
     },
     {
@@ -23,12 +24,11 @@ const Page = () => {
       type: "POST",
       url: "/api/RemovePolicy",
       data: {
-        TenantFilter: "Tenant",
         ID: "id",
         URLName: "managedAppPolicies",
       },
       confirmText: "Are you sure you want to delete this policy?",
-      icon: <TrashIcon />, // Placeholder for developer-provided icon
+      icon: <TrashIcon />,
       color: "danger",
     },
   ];
@@ -43,18 +43,13 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = [
-    "displayName",
-    "isAssigned",
-    "lastModifiedDateTime",
-  ];
+  const simpleColumns = ["displayName", "isAssigned", "lastModifiedDateTime"];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListGraphRequest"
       apiData={{
-        TenantFilter: "Tenant",
         Endpoint: "deviceAppManagement/managedAppPolicies",
         $orderby: "displayName",
       }}

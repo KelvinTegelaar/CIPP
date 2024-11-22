@@ -102,7 +102,8 @@ const Page = () => {
         GUID: "id",
         Action: "windowsDefenderUpdateSignatures",
       },
-      confirmText: "Are you sure you want to update the Windows Defender signatures for this device?",
+      confirmText:
+        "Are you sure you want to update the Windows Defender signatures for this device?",
     },
   ];
 
@@ -115,7 +116,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListDevices"
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[

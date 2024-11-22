@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
+import { LaptopMac } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Applications";
@@ -15,7 +17,7 @@ const Page = () => {
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users?",
-      icon: <UserIcon />, // Placeholder icon for developer customization
+      icon: <UserIcon />,
       color: "info",
     },
     {
@@ -28,7 +30,7 @@ const Page = () => {
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all devices?",
-      icon: <PagerIcon />, // Placeholder icon for developer customization
+      icon: <LaptopMac />,
       color: "info",
     },
     {
@@ -41,7 +43,7 @@ const Page = () => {
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users and devices?",
-      icon: <GlobeIcon />, // Placeholder icon for developer customization
+      icon: <GlobeAltIcon />,
       color: "info",
     },
     {
@@ -53,7 +55,7 @@ const Page = () => {
         ID: "id",
       },
       confirmText: "Are you sure you want to delete this application?",
-      icon: <TrashIcon />, // Placeholder icon for developer customization
+      icon: <TrashIcon />,
       color: "danger",
     },
   ];
@@ -86,10 +88,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListApps"
-      apiData={{
-        TenantFilter: "Tenant",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

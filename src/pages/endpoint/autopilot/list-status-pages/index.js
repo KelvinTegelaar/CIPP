@@ -20,10 +20,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListAutopilotConfig?type=ESP"
-      apiData={{
-        TenantFilter: "Tenant",
-      }}
-      apiDataKey="Results"
       simpleColumns={simpleColumns}
     />
   );

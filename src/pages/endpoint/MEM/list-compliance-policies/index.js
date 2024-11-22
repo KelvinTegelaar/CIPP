@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Book, LaptopChromebook } from "@mui/icons-material";
+import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Intune Compliance Policies";
@@ -15,7 +17,7 @@ const Page = () => {
         URLName: "deviceCompliancePolicies",
       },
       confirmText: "Are you sure you want to create a template based on this policy?",
-      icon: <BookIcon />, // Placeholder for developer-provided icon
+      icon: <Book />,
       color: "info",
     },
     {
@@ -29,7 +31,7 @@ const Page = () => {
         type: "deviceCompliancePolicies",
       },
       confirmText: "Are you sure you want to assign this policy to all users?",
-      icon: <UserIcon />, // Placeholder for developer-provided icon
+      icon: <UserIcon />,
       color: "info",
     },
     {
@@ -43,7 +45,7 @@ const Page = () => {
         type: "deviceCompliancePolicies",
       },
       confirmText: "Are you sure you want to assign this policy to all devices?",
-      icon: <PagerIcon />, // Placeholder for developer-provided icon
+      icon: <LaptopChromebook />,
       color: "info",
     },
     {
@@ -57,7 +59,7 @@ const Page = () => {
         type: "deviceCompliancePolicies",
       },
       confirmText: "Are you sure you want to assign this policy to all users and devices?",
-      icon: <GlobeIcon />, // Placeholder for developer-provided icon
+      icon: <GlobeAltIcon />,
       color: "info",
     },
     {
@@ -70,7 +72,7 @@ const Page = () => {
         URLName: "deviceCompliancePolicies",
       },
       confirmText: "Are you sure you want to delete this policy?",
-      icon: <TrashIcon />, // Placeholder for developer-provided icon
+      icon: <TrashIcon />,
       color: "danger",
     },
   ];
@@ -85,24 +87,19 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = [
-    "displayName",
-    "description",
-    "lastModifiedDateTime",
-  ];
+  const simpleColumns = ["displayName", "description", "lastModifiedDateTime"];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListGraphRequest"
+      apiDataKey="Results"
       apiData={{
-        TenantFilter: "Tenant",
         Endpoint: "deviceManagement/deviceCompliancePolicies",
         $orderby: "displayName",
         $count: true,
         $expand: "assignments",
       }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

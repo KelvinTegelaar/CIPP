@@ -62,28 +62,10 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListAPDevices"
-      apiData={{
-        TenantFilter: "Tenant",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      additionalButtons={[
-        {
-          label: "Deploy Autopilot Device",
-          href: "/endpoint/autopilot/add-device",
-        },
-        {
-          label: "Sync Devices",
-          onClick: () =>
-            ExecuteGetRequest({
-              path: "/api/ExecSyncAPDevices",
-              data: { tenantFilter: "Tenant" },
-            }),
-          icon: <SyncIcon />, // Placeholder for the sync icon
-        },
-      ]}
+      //add autopilot device button
     />
   );
 };

@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Book, LaptopChromebook } from "@mui/icons-material";
+import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Configuration Policies";
@@ -15,7 +17,7 @@ const Page = () => {
         URLName: "URLName",
       },
       confirmText: "Are you sure you want to create a template based on this policy?",
-      icon: <BookIcon />, // Placeholder icon for developer replacement
+      icon: <Book />,
       color: "info",
     },
     {
@@ -29,7 +31,7 @@ const Page = () => {
         type: "URLName",
       },
       confirmText: "Are you sure you want to assign this policy to all users?",
-      icon: <UserIcon />, // Placeholder icon for developer replacement
+      icon: <UserIcon />,
       color: "info",
     },
     {
@@ -43,7 +45,7 @@ const Page = () => {
         type: "URLName",
       },
       confirmText: "Are you sure you want to assign this policy to all devices?",
-      icon: <PagerIcon />, // Placeholder icon for developer replacement
+      icon: <LaptopChromebook />,
       color: "info",
     },
     {
@@ -57,7 +59,7 @@ const Page = () => {
         type: "URLName",
       },
       confirmText: "Are you sure you want to assign this policy to all users and devices?",
-      icon: <GlobeIcon />, // Placeholder icon for developer replacement
+      icon: <GlobeAltIcon />,
       color: "info",
     },
     {
@@ -70,7 +72,7 @@ const Page = () => {
         URLName: "URLName",
       },
       confirmText: "Are you sure you want to delete this policy?",
-      icon: <TrashIcon />, // Placeholder icon for developer replacement
+      icon: <TrashIcon />,
       color: "danger",
     },
   ];
@@ -98,7 +100,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListIntunePolicy?type=ESP"
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

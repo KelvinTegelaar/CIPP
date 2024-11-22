@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Autopilot Profiles";
@@ -7,7 +8,7 @@ const Page = () => {
   const actions = [
     {
       label: "View JSON",
-      icon: <EyeIcon />, // Placeholder icon for developer customization
+      icon: <EyeIcon />,
       color: "success",
       offCanvas: true,
     },
@@ -36,10 +37,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListAutopilotConfig?type=ApProfile"
-      apiData={{
-        TenantFilter: "Tenant",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
