@@ -56,10 +56,6 @@ export const items = [
           { title: "Groups", path: "/identity/administration/groups" },
           { title: "Devices", path: "/identity/administration/devices" },
           {
-            title: "Deploy Group Template",
-            path: "/identity/administration/deploy-group-template",
-          },
-          {
             title: "Group Templates",
             path: "/identity/administration/group-templates",
           },

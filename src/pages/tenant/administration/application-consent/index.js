@@ -1,15 +1,13 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+
+const simpleColumns = ["Tenant", "Name", "ApplicationID", "ObjectID", "Scope", "StartTime"];
+
+const apiUrl = "/api/ListOAuthApps";
+const pageTitle = "Consented Applications";
 
 const Page = () => {
-  const pageTitle = "Consented Applications";
-
-  return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the consented applications section.</p>
-    </div>
-  );
+  return <CippTablePage title={pageTitle} apiUrl={apiUrl} simpleColumns={simpleColumns} />;
 };
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
