@@ -16,6 +16,7 @@ import {
   Delete,
   CalendarMonthTwoTone,
   CopyAll,
+  KeyboardOptionKeyTwoTone,
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce, set } from "lodash";
@@ -29,6 +30,23 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import CippSchedulerForm from "../CippFormPages/CippSchedulerForm";
 import defaultPresets from "../../data/GraphExplorerPresets";
+import { lighten, darken, styled } from "@mui/system";
+
+
+const GroupHeader = styled("div")(({ theme }) => ({
+  position: "sticky",
+  top: "-8px",
+  padding: "4px 10px",
+  color: theme.palette.primary.main,
+  backgroundColor: lighten(theme.palette.primary.light, 0.85),
+  ...theme.applyStyles("dark", {
+    backgroundColor: darken(theme.palette.primary.main, 0.8),
+  }),
+}));
+
+const GroupItems = styled("ul")({
+  padding: 0,
+});
 
 const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
@@ -81,16 +99,16 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
         label: item.name,
         value: item.id,
         addedFields: item,
+        type: "Built-In",
       });
     });
     if (presetList.isSuccess && presetList.data?.Results.length > 0) {
-      // append preset options to defaults and include divider option
-      presetOptionList.push({ label: "------------------", value: "", disabled: true });
       presetList.data.Results.forEach((item) => {
         presetOptionList.push({
           label: item.name,
           value: item.id,
           addedFields: item,
+          type: "Custom",
         });
       });
     }
@@ -408,6 +426,13 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   multiple={false}
                   formControl={formControl}
                   options={presetOptions}
+                  groupBy={(option) => option.type}
+                  renderGroup={(params) => (
+                    <li key={params.key}>
+                      <GroupHeader>{params.group}</GroupHeader>
+                      <GroupItems>{params.children}</GroupItems>
+                    </li>
+                  )}
                   placeholder="Select a preset"
                 />
               </Grid>
@@ -420,7 +445,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   placeholder="Enter Graph API endpoint"
                 />
               </Grid>
-              <Divider />
+
               <Grid item xs={12}>
                 <CippFormComponent
                   type="autoComplete"

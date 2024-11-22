@@ -145,6 +145,7 @@ export const CippAutoComplete = (props) => {
           {...params}
         />
       )}
+      {...other}
     />
   );
 };
