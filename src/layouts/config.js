@@ -279,10 +279,6 @@ export const items = [
             title: "Consented Applications",
             path: "/tenant/administration/application-consent",
           },
-          {
-            title: "Service Health",
-            path: "/tenant/administration/service-health",
-          },
         ],
       },
     ],
