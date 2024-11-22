@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Alert, Box, Collapse, IconButton, Link, Typography, useMediaQuery } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useSettings } from "../hooks/use-settings";
 import { Footer } from "./footer";
@@ -8,7 +8,8 @@ import { MobileNav } from "./mobile-nav";
 import { SideNav } from "./side-nav";
 import { TopNav } from "./top-nav";
 import { ApiGetCall } from "../api/ApiCall";
-import { Close } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { showToast } from "../store/toasts";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -123,14 +124,24 @@ export const Layout = (props) => {
     }
   }, [alertsAPI.isSuccess, alertsAPI.data, alertsAPI.isFetching]);
 
-  const handleAlertClose = (index) => {
-    setFetchingVisible((prevState) =>
-      prevState.map((visible, idx) => (idx === index ? !visible : visible))
-    );
-  };
-
-  // Determine if there are any undismissed alerts
-  const hasUndismissedAlerts = fetchingVisible.some((visible) => visible);
+  const dispatch = useDispatch();
+  //if there are alerts, send them to our toast component
+  useEffect(() => {
+    if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
+      if (alertsAPI.data.length > 0) {
+        alertsAPI.data.forEach((alert) => {
+          console.log(alert);
+          dispatch(
+            showToast({
+              message: alert.Alert,
+              title: alert.title,
+              toastError: alert,
+            })
+          );
+        });
+      }
+    }
+  }, [alertsAPI.isSuccess]);
 
   return (
     <>
@@ -145,36 +156,6 @@ export const Layout = (props) => {
         }}
       >
         <LayoutContainer>
-          {alertsAPI.isSuccess && !alertsAPI.isFetching && hasUndismissedAlerts && (
-            <Box sx={{ paddingTop: "1rem" }}>
-              {alertsAPI.isSuccess &&
-                !alertsAPI.isFetching &&
-                alertsAPI.data.map((alert, idx) => (
-                  <Collapse key={idx} in={fetchingVisible[idx]} sx={{ padding: "0.5rem" }}>
-                    <Alert
-                      action={
-                        <IconButton
-                          aria-label="close"
-                          color="inherit"
-                          size="small"
-                          onClick={() => handleAlertClose(idx)}
-                        >
-                          <Close fontSize="inherit" />
-                        </IconButton>
-                      }
-                      severity={alert.type}
-                    >
-                      <Typography variant="body2">
-                        {alert.Alert}{" "}
-                        <Link target="_blank" href={alert.link}>
-                          link
-                        </Link>
-                      </Typography>
-                    </Alert>
-                  </Collapse>
-                ))}
-            </Box>
-          )}
           {children}
           <Footer />
         </LayoutContainer>

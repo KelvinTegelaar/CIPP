@@ -10,6 +10,7 @@ import { useSettings } from "../hooks/use-settings";
 import { paths } from "../paths";
 import { AccountPopover } from "./account-popover";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
+import { NotificationsPopover } from "./notifications-popover";
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
@@ -85,6 +86,7 @@ export const TopNav = (props) => {
               </SvgIcon>
             </IconButton>
           )}
+          <NotificationsPopover />
           <AccountPopover />
         </Stack>
       </Stack>

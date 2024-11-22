@@ -1,10 +1,10 @@
-import { format, subHours, subMinutes } from "date-fns";
+import { format } from "date-fns";
 import BellIcon from "@heroicons/react/24/outline/BellIcon";
 import SparklesIcon from "@heroicons/react/24/outline/SparklesIcon";
-import SpeakerWaveIcon from "@heroicons/react/24/outline/SpeakerWaveIcon";
 import {
   Badge,
   Box,
+  Button,
   Divider,
   IconButton,
   Popover,
@@ -13,74 +13,83 @@ import {
   Typography,
 } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
-
-const now = new Date();
-
-const notifications = [
-  {
-    id: "cf61492ca564264b53db0717",
-    createdAt: subMinutes(now, 15).getTime(),
-    type: "newCustomer",
-  },
-  {
-    id: "260bbcfa0a682e94bbda6ee3",
-    createdAt: subHours(subMinutes(now, 42), 1).getTime(),
-    content: "You can now edit your resources without leaving the page",
-    title: "Inline Edit is now available",
-    type: "newFeature",
-  },
-  {
-    id: "266a0d67c47eaafbf0790472",
-    content: "Version 5.0 comes Custom DNS feature",
-    createdAt: subHours(subMinutes(now, 26), 4).getTime(),
-    title: "Beta Custom DNS",
-    type: "newFeature",
-  },
-];
+import { Error, Update, Close as CloseIcon } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { closeToast } from "../store/toasts";
+import { useState } from "react";
 
 const getContent = (notification) => {
-  switch (notification.type) {
-    case "newCustomer":
-      return (
-        <>
-          <Stack alignItems="center" direction="row" spacing={2}>
-            <SvgIcon color="warning" fontSize="small">
-              <SparklesIcon />
-            </SvgIcon>
-            <Typography variant="subtitle2">New Customer</Typography>
-          </Stack>
-        </>
-      );
-
-    case "newFeature":
-      return (
-        <>
-          <Stack alignItems="center" direction="row" spacing={2}>
-            <SvgIcon color="info" fontSize="small">
-              <SpeakerWaveIcon />
-            </SvgIcon>
-            <Typography variant="subtitle2">{notification.title}</Typography>
-          </Stack>
-          {notification.content && (
-            <Typography color="text.secondary" sx={{ mt: 1 }} variant="body2">
-              {notification.content}
-            </Typography>
+  return (
+    <>
+      <Stack alignItems="center" direction="row" spacing={2}>
+        <SvgIcon
+          color={
+            notification.type === "error"
+              ? "warning"
+              : notification.type === "update"
+              ? "info"
+              : "indigo"
+          }
+          fontSize="small"
+        >
+          {notification.type === "update" ? (
+            <Update />
+          ) : notification.type === "error" ? (
+            <Error />
+          ) : (
+            <SparklesIcon />
           )}
-        </>
-      );
-
-    default:
-      return null;
-  }
+        </SvgIcon>
+        <Typography variant="subtitle2">{notification.subtitle}</Typography>
+      </Stack>
+      {notification.content && (
+        <Typography color="text.secondary" sx={{ mt: 1 }} variant="body2">
+          {notification.content}
+        </Typography>
+      )}
+    </>
+  );
 };
 
 export const NotificationsPopover = () => {
+  const dispatch = useDispatch();
+  const toasts = useSelector((state) => state.toasts.toasts);
+  const [page, setPage] = useState(0);
+
+  // Map toasts to notifications
+  const notifications = toasts.map((toast) => {
+    return {
+      id: toast.index, // Ensure that 'id' corresponds to the identifier used in your store
+      type: toast.toastError?.type || "info",
+      subtitle: toast.title,
+      content: toast.message,
+      createdAt: toast.date,
+      link: toast.toastError?.link,
+    };
+  });
+
+  // Reverse the array so the most recent notifications are at the top
+  notifications.reverse();
+
+  const notificationsToShow = notifications.slice(0, (page + 1) * 5);
+
   const popover = usePopover();
+
+  const BadgeColour = notifications.some((notification) => notification.type === "error")
+    ? "warning"
+    : notifications.some((notification) => notification.type === "update")
+    ? "primary"
+    : "info";
 
   return (
     <>
-      <Badge color="success" variant="dot">
-        <IconButton color="inherit" onClick={popover.handleOpen} ref={popover.anchorRef}>
+      <Badge color={BadgeColour} variant="dot" invisible={notifications.length === 0}>
+        <IconButton
+          color="inherit"
+          onClick={popover.handleOpen}
+          ref={popover.anchorRef}
+          disabled={notifications.length === 0}
+        >
           <SvgIcon color="action" fontSize="small">
             <BellIcon />
           </SvgIcon>
@@ -115,19 +124,46 @@ export const NotificationsPopover = () => {
             p: 0,
           }}
         >
-          {notifications.map((notification) => {
-            const createdAt = format(notification.createdAt, "MMM dd, yyyy");
+          {notificationsToShow.map((notification) => {
+            const createdAt = format(new Date(notification.createdAt), "MMM dd, yyyy");
 
             return (
               <Stack key={notification.id} spacing={1} sx={{ p: 2 }}>
-                {getContent(notification)}
-                <Typography color="text.secondary" variant="caption">
-                  {createdAt}
-                </Typography>
+                <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                  <Box>
+                    {getContent(notification)}
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
+                      <Typography color="text.secondary" variant="caption">
+                        {createdAt}
+                      </Typography>
+                      {notification.link && (
+                        <Button
+                          size="small"
+                          onClick={() => {
+                            window.open(notification.link, "_blank");
+                          }}
+                        >
+                          More Info
+                        </Button>
+                      )}
+                    </Stack>
+                  </Box>
+                  <IconButton
+                    size="small"
+                    onClick={() => dispatch(closeToast({ index: notification.id }))}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
               </Stack>
             );
           })}
         </Stack>
+        {notifications.length > notificationsToShow.length && (
+          <Box sx={{ p: 2, textAlign: "center" }}>
+            <Button onClick={() => setPage(page + 1)}>Load More</Button>
+          </Box>
+        )}
       </Popover>
     </>
   );
