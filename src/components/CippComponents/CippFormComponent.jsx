@@ -302,6 +302,7 @@ export const CippFormComponent = (props) => {
             <Controller
               name={convertedName}
               control={formControl.control}
+              rules={validators}
               render={({ field }) => (
                 <DateTimePicker
                   slotProps={{ textField: { fullWidth: true } }}
