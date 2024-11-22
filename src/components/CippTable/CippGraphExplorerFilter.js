@@ -1,14 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Grid,
-  Button,
-  IconButton,
-  Tooltip,
-  Collapse,
-  Box,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Grid, Button, IconButton, Tooltip, Collapse, Typography, Divider } from "@mui/material";
 import {
   Save as SaveIcon,
   ExpandMore as ExpandMoreIcon,
@@ -16,7 +7,6 @@ import {
   Delete,
   CalendarMonthTwoTone,
   CopyAll,
-  KeyboardOptionKeyTwoTone,
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce, set } from "lodash";
@@ -31,7 +21,6 @@ import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import CippSchedulerForm from "../CippFormPages/CippSchedulerForm";
 import defaultPresets from "../../data/GraphExplorerPresets";
 import { lighten, darken, styled } from "@mui/system";
-
 
 const GroupHeader = styled("div")(({ theme }) => ({
   position: "sticky",
@@ -406,7 +395,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <CippButtonCard
         title="Graph Explorer Filter"
-        cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
+        cardSx={{ width: "100%", height: "100%" }}
         cardActions={
           <Tooltip title="Expand/Collapse">
             <IconButton onClick={() => setCardExpanded(!cardExpanded)}>
@@ -576,8 +565,9 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                 label="Share Preset"
               />
             </Grid>
-
-            {/* Buttons Row */}
+          </Grid>
+          <Divider sx={{ mt: 2, mb: 2 }} />
+          <Grid container>
             <Grid item xs={12} style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
                 <Grid item xs={12}>
