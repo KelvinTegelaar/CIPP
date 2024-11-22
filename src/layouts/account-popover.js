@@ -4,14 +4,12 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ArrowRightOnRectangleIcon from "@heroicons/react/24/outline/ArrowRightOnRectangleIcon";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
-import UserIcon from "@heroicons/react/24/outline/UserIcon";
 import {
   Avatar,
   Box,
   FormControlLabel,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
