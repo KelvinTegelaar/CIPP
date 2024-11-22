@@ -23,7 +23,7 @@ const Page = () => {
       apiData={apiFilter}
       queryKey={queryKey}
       Key={`${apiFilter.endpoint}-${apiFilter.$select}`}
-      simpleColumns={apiFilter.$select ? apiFilter.$select.split(",") : []}
+      simpleColumns={apiFilter?.$select != "" ? apiFilter?.$select?.split(",") : []}
     />
   );
 };

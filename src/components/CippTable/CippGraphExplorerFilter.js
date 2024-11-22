@@ -28,6 +28,7 @@ import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import CippSchedulerForm from "../CippFormPages/CippSchedulerForm";
+import defaultPresets from "../../data/GraphExplorerPresets";
 
 const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
@@ -35,6 +36,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [offCanvasContent, setOffCanvasContent] = useState(null);
   const [selectedPresetState, setSelectedPreset] = useState(null);
   const [presetOwner, setPresetOwner] = useState(false);
+  const [presetOptions, setPresetOptions] = useState([]);
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -65,6 +67,35 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     },
     waiting: false,
   });
+
+  // API call for available presets
+  const presetList = ApiGetCall({
+    url: "/api/ListGraphExplorerPresets",
+    queryKey: "ListGraphExplorerPresets",
+  });
+
+  useEffect(() => {
+    var presetOptionList = [];
+    defaultPresets.forEach((item) => {
+      presetOptionList.push({
+        label: item.name,
+        value: item.id,
+        addedFields: item,
+      });
+    });
+    if (presetList.isSuccess && presetList.data?.Results.length > 0) {
+      // append preset options to defaults and include divider option
+      presetOptionList.push({ label: "------------------", value: "", disabled: true });
+      presetList.data.Results.forEach((item) => {
+        presetOptionList.push({
+          label: item.name,
+          value: item.id,
+          addedFields: item,
+        });
+      });
+    }
+    setPresetOptions(presetOptionList);
+  }, [defaultPresets, presetList.isSuccess]);
 
   // Debounced refetch when endpoint, put in in a useEffect dependand on endpoint
   const debouncedRefetch = useCallback(
@@ -285,6 +316,9 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     if (newvals.NoPagination === false) {
       delete newvals.NoPagination;
     }
+    if (newvals.$count === false) {
+      delete newvals.$count;
+    }
     Object.keys(newvals).forEach((key) => {
       if (values[key] === "" || values[key] === null) {
         delete newvals[key];
@@ -327,7 +361,18 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   };
   // Handle filter form submission
   const onSubmit = (values) => {
-    values.$select = values?.$select?.map((item) => item.value)?.join(",");
+    if (values.$select && Array.isArray(values.$select) && values.$select.length > 0) {
+      values.$select = values?.$select?.map((item) => item.value)?.join(",");
+    }
+    if (values.ReverseTenantLookup === false) {
+      delete values.ReverseTenantLookup;
+    }
+    if (values.NoPagination === false) {
+      delete values.NoPagination;
+    }
+    if (values.$count === false) {
+      delete values.$count;
+    }
     onSubmitFilter(values);
     setCardExpanded(false);
   };
@@ -362,14 +407,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   label="Select a Report Preset"
                   multiple={false}
                   formControl={formControl}
-                  api={{
-                    url: "/api/ListGraphExplorerPresets",
-                    dataKey: "Results",
-                    labelField: (option) => option.name,
-                    valueField: (option) => option.id,
-                    queryKey: "ListGraphExplorerPresets",
-                    addedField: { params: "params", IsMyPreset: "IsMyPreset", id: "id" },
-                  }}
+                  options={presetOptions}
                   placeholder="Select a preset"
                 />
               </Grid>
