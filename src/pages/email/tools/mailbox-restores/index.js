@@ -65,22 +65,12 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = [
-    "Name",
-    "Status",
-    "TargetMailbox",
-    "WhenCreated",
-    "WhenChanged",
-  ];
+  const simpleColumns = ["Name", "Status", "TargetMailbox", "WhenCreated", "WhenChanged"];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListMailboxRestores"
-      apiData={{
-        TenantFilter: "Tenant",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

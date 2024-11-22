@@ -4,9 +4,6 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 const Page = () => {
   const pageTitle = "List of Safe Attachment Filters";
   const apiUrl = "/api/ListSafeAttachmentsFilters";
-  const apiData = {
-    params: { TenantFilter: "tenant.defaultDomainName" }, // Tenant parameter managed within CippTablePage and passed automatically
-  };
 
   // Actions converted from legacy code:
   const actions = [
@@ -52,13 +49,7 @@ const Page = () => {
 
   // Off-canvas setting including extended info fields for detailed rule information display:
   const offCanvas = {
-    extendedInfoFields: [
-      "RuleName",
-      "Name",
-      "State",
-      "WhenCreated",
-      "WhenChanged",
-    ],
+    extendedInfoFields: ["RuleName", "Name", "State", "WhenCreated", "WhenChanged"],
     actions: actions, // Attaching actions to offCanvas per original design
   };
 
@@ -88,8 +79,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
-      apiDataKey="Results"
-      apiData={apiData}
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Edit } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Contacts";
@@ -20,33 +21,19 @@ const Page = () => {
       label: "Edit Contact",
       link: "/email/administration/edit-contact/[id]",
       multiPost: false,
-      icon: <EditIcon />, // Placeholder icon
+      icon: <Edit />,
       color: "warning",
     },
   ];
 
-  const offCanvas = {
-    extendedInfoFields: ["displayName", "mail"],
-    actions: actions,
-  };
 
-  const simpleColumns = [
-    "displayName",
-    "mail",
-    "companyName",
-    "onPremisesSyncEnabled",
-  ];
+  const simpleColumns = ["displayName", "mail", "companyName", "onPremisesSyncEnabled"];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListContacts"
-      apiData={{
-        TenantFilter: "Tenant",
-      }}
-      apiDataKey="Results"
       actions={actions}
-      offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       titleButton={{
         label: "Add Contact",

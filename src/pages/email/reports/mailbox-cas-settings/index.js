@@ -6,8 +6,6 @@ const Page = () => {
     <CippTablePage
       title="Mailbox Client Access Settings"
       apiUrl="/api/ListMailboxCAS"
-      apiData={{ TenantFilter: "Tenant" }}
-      apiDataKey="Results"
       simpleColumns={[
         "displayName",
         "primarySmtpAddress",

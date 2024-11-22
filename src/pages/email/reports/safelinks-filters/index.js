@@ -11,10 +11,6 @@ const Page = () => {
     <CippTablePage
       title="List of Safe Link Filters"
       apiUrl="/api/ListSafeLinksFilters"
-      apiData={{
-        TenantFilter: "tenant.defaultDomainName",
-      }}
-      apiDataKey="Results"
       actions={[
         {
           label: "Enable Rule",
@@ -40,13 +36,7 @@ const Page = () => {
         },
       ]}
       offCanvas={{
-        extendedInfoFields: [
-          "RuleName",
-          "Name",
-          "State",
-          "WhenCreated",
-          "WhenChanged",
-        ],
+        extendedInfoFields: ["RuleName", "Name", "State", "WhenCreated", "WhenChanged"],
         actions: [
           {
             label: "Enable Rule",

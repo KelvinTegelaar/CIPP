@@ -23,10 +23,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListTeams?type=list"
-      apiData={{
-        TenantFilter: "TenantFilter",
-      }}
-      apiDataKey="Results"
       actions={actions}
       simpleColumns={["displayName", "description", "visibility", "mailNickname", "id"]}
     />

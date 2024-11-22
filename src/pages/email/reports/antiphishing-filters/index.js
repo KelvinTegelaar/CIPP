@@ -59,8 +59,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListAntiPhishingFilters"
-      apiData={{ TenantFilter: "TenantFilter" }} // API data includes TenantFilter to match original parameters
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[

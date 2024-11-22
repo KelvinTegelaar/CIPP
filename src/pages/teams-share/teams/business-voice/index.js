@@ -4,7 +4,8 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 const Page = () => {
   const pageTitle = "Teams Business Voice";
 
-  const actions = [ // the modal dropdowns that were added below may not exist yet, and will need to be tested.
+  const actions = [
+    // the modal dropdowns that were added below may not exist yet, and will need to be tested.
     {
       label: "Assign User",
       type: "POST",
@@ -66,7 +67,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListTeamsVoice"
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
@@ -84,7 +84,8 @@ const Page = () => {
       filterlist={[
         {
           filterName: "Unassigned User Numbers",
-          filter: "Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment",
+          filter:
+            "Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment",
         },
       ]}
     />

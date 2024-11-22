@@ -88,10 +88,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListSites?type=SharePointSiteUsage"
-      apiData={{
-        TenantFilter: "TenantFilter",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[

@@ -85,10 +85,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/Listspamfilter"
-      apiData={{
-        TenantFilter: "Tenant",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

@@ -8,16 +8,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListRoomLists"
-      apiData={{
-        TenantFilter: "TenantFilter", // Added for tenant-specific filtering
-      }}
-      apiDataKey="Results"
-      queryKey="RoomListsReport"
-      simpleColumns={[
-        "displayName",
-        "geoCoordinates",
-        "placeId",
-      ]}
+      simpleColumns={["displayName", "geoCoordinates", "placeId"]}
     />
   );
 };

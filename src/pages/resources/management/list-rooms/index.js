@@ -10,18 +10,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListRooms"
-      apiData={{
-        TenantFilter: "TenantFilter", // Ensures tenant-specific filtering
-      }}
-      apiDataKey="Results"
-      queryKey="RoomsReport"
-      simpleColumns={[
-        "displayName",
-        "building",
-        "floorNumber",
-        "capacity",
-        "bookingType",
-      ]}
+      simpleColumns={["displayName", "building", "floorNumber", "capacity", "bookingType"]}
       cardButton={
         <Button component={Link} href="/resources/management/add-room">
           Add Room

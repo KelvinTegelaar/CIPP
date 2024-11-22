@@ -7,8 +7,6 @@ const Page = () => {
       title="Mailbox Statistics"
       apiUrl="/api/ListGraphRequest"
       apiData={{
-        /* The tenant filter is set dynamically; it should align with tenant-specific data handling in CippTablePage */
-        TenantFilter: "tenant.defaultDomainName", // placeholder for tenant data, assumed passed directly
         Endpoint: "reports/getMailboxUsageDetail(period='D7')",
         $format: "application/json",
       }}

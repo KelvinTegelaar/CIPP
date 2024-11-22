@@ -15,8 +15,6 @@ const Page = () => {
     <CippTablePage
       title="Shared Mailbox with Enabled Account"
       apiUrl="/api/ListSharedMailboxAccountEnabled"
-      apiData={{ TenantFilter: "Tenant" }}
-      apiDataKey="Results"
       actions={[
         {
           label: "Block Sign In",
@@ -27,7 +25,12 @@ const Page = () => {
         },
       ]}
       offCanvas={{
-        extendedInfoFields: ["UserPrincipalName", "displayName", "accountEnabled", "onPremisesSyncEnabled"],
+        extendedInfoFields: [
+          "UserPrincipalName",
+          "displayName",
+          "accountEnabled",
+          "onPremisesSyncEnabled",
+        ],
       }}
       simpleColumns={[
         "UserPrincipalName",

@@ -8,10 +8,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListTeamsActivity?type=TeamsUserActivityUser"
-      apiData={{
-        TenantFilter: "TenantFilter",
-      }}
-      apiDataKey="Results"
       simpleColumns={["UPN", "LastActive", "MeetingCount", "CallCount", "TeamsChat"]}
     />
   );
