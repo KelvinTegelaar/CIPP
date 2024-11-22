@@ -15,6 +15,7 @@ import {
   ExpandLess as ExpandLessIcon,
   Delete,
   CalendarMonthTwoTone,
+  CopyAll,
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce, set } from "lodash";
@@ -33,6 +34,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [cardExpanded, setCardExpanded] = useState(true);
   const [offCanvasContent, setOffCanvasContent] = useState(null);
   const [selectedPresetState, setSelectedPreset] = useState(null);
+  const [presetOwner, setPresetOwner] = useState(false);
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -89,16 +91,20 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   // Save preset function
   const handleSavePreset = () => {
     const currentTemplate = formControl.getValues();
-
+    if (!presetOwner && currentTemplate?.id) {
+      delete currentTemplate.id;
+    }
     savePresetApi.mutate({
       url: "/api/ExecGraphExplorerPreset",
-      data: { action: "copy", preset: currentTemplate },
+      data: { action: presetOwner ? "Save" : "Copy", preset: currentTemplate },
     });
   };
 
   const selectedPresets = useWatch({ control, name: "reportTemplate" });
   useEffect(() => {
     if (selectedPresets?.addedFields?.params) {
+      console.log(selectedPresets.addedFields);
+      setPresetOwner(selectedPresets?.addedFields?.IsMyPreset ?? false);
       Object.keys(selectedPresets.addedFields.params).forEach(
         (key) =>
           selectedPresets.addedFields.params[key] == null &&
@@ -129,6 +135,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
       selectedPresets.addedFields.params.id = selectedPresets.value;
       setSelectedPreset(selectedPresets.value);
       selectedPresets.addedFields.params.name = selectedPresets.label;
+
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
     }
   }, [selectedPresets]);
@@ -302,7 +309,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           onClick={() => {
             savePresetApi.mutate({
               url: "/api/ExecGraphExplorerPreset",
-              data: { action: "copy", preset: editorValues },
+              data: { action: "Copy", preset: editorValues },
             });
           }}
           variant="contained"
@@ -328,7 +335,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const deletePreset = (id) => {
     savePresetApi.mutate({
       url: "/api/ExecGraphExplorerPreset",
-      data: { action: "delete", preset: { id: selectedPresetState } },
+      data: { action: "Delete", preset: { id: selectedPresetState } },
     });
   };
 
@@ -361,7 +368,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                     labelField: (option) => option.name,
                     valueField: (option) => option.id,
                     queryKey: "ListGraphExplorerPresets",
-                    addedField: { params: "params" },
+                    addedField: { params: "params", IsMyPreset: "IsMyPreset", id: "id" },
                   }}
                   placeholder="Select a preset"
                 />
@@ -522,10 +529,10 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                 <Button
                   variant="contained"
                   onClick={handleSavePreset}
-                  startIcon={<SaveIcon />}
+                  startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
                   style={{ marginRight: "8px" }}
                 >
-                  Save Preset
+                  {presetOwner ? "Save" : "Copy"} Preset
                 </Button>
                 {/* Delete Preset Button */}
                 {selectedPresetState && (
@@ -534,6 +541,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                     variant="contained"
                     onClick={() => deletePreset(selectedPresetState)}
                     style={{ marginRight: "8px" }}
+                    disabled={!presetOwner}
                   >
                     Delete Preset
                   </Button>
