@@ -35,10 +35,19 @@ const CippSchedulerForm = (props) => {
     ],
   });
 
-  const handleSubmit = (onSubmit) => {
+  const handleSubmit = () => {
+    console.log("Submitting form");
+    const values = formControl.getValues();
+    //remove all empty values or blanks
+    Object.keys(values).forEach((key) => {
+      if (values[key] === "" || values[key] === null) {
+        delete values[key];
+      }
+    });
+
     postCall.mutate({
       url: "/api/AddScheduledItem",
-      data: schedulerForm.getValues(),
+      data: values,
     });
   };
 
@@ -254,12 +263,11 @@ const CippSchedulerForm = (props) => {
           ]}
         />
       </Grid>
-      <CippApiResults apiObject={postCall} />
       <Grid item xs={12} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
         <Button
           onClick={() => {
             formControl.trigger();
-            formControl.handleSubmit(handleSubmit);
+            handleSubmit();
           }}
           disabled={postCall.isPending}
           variant="contained"

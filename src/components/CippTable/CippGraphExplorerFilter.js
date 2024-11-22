@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, Button, IconButton, Tooltip, Collapse, Box, Typography } from "@mui/material";
+import {
+  Grid,
+  Button,
+  IconButton,
+  Tooltip,
+  Collapse,
+  Box,
+  Typography,
+  Divider,
+} from "@mui/material";
 import {
   Save as SaveIcon,
   ExpandMore as ExpandMoreIcon,
@@ -34,6 +43,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
       ReverseTenantLookupProperty: "tenantId",
       $count: false,
       manualPagination: false,
+      IsShared: false,
     },
   });
 
@@ -101,7 +111,17 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
       ) {
         selectedPresets.addedFields.params.$select = "";
       }
-      selectedPresets.addedFields.params.$select
+
+      // if $select is an array, extract the values and comma separate
+      if (
+        Array.isArray(selectedPresets.addedFields.params.$select) &&
+        selectedPresets.addedFields.params.$select.length > 0
+      ) {
+        selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params.$select
+          .map((item) => item.value)
+          .join(",");
+      }
+      selectedPresets.addedFields.params.$select !== ""
         ? (selectedPresets.addedFields.params.$select = selectedPresets.addedFields.params?.$select
             ?.split(",")
             .map((item) => ({ label: item, value: item })))
@@ -208,7 +228,10 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
       }
     });
     const resetParams = {
-      Name: "Graph Explorer Report",
+      tenantFilter: tenant,
+      Name: formParameters.name
+        ? `Graph Explorer - ${formParameters.name}`
+        : "Graph Explorer Report",
       command: {
         label: schedulerCommand.Function,
         value: schedulerCommand.Function,
@@ -241,10 +264,35 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const [editorValues, setEditorValues] = useState({});
   //keep the editor in sync with the form
 
+  function getPresetProps(values) {
+    var newvals = Object.assign({}, values);
+    if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
+      newvals.$select = newvals?.$select.map((p) => p.value).join(",");
+    }
+    delete newvals["reportTemplate"];
+    delete newvals["tenantFilter"];
+    delete newvals["IsShared"];
+    if (newvals.ReverseTenantLookup === false) {
+      delete newvals.ReverseTenantLookup;
+    }
+    if (newvals.NoPagination === false) {
+      delete newvals.NoPagination;
+    }
+    Object.keys(newvals).forEach((key) => {
+      if (values[key] === "" || values[key] === null) {
+        delete newvals[key];
+      }
+    });
+    return newvals;
+  }
+
   useEffect(() => {
-    const values = formControl.getValues();
+    var values = getPresetProps(formControl.getValues());
     setOffCanvasContent(() => (
       <>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Import / Export Graph Explorer Preset
+        </Typography>
         <CippCodeBlock
           type="editor"
           onChange={(value) => setEditorValues(JSON.parse(value))}
@@ -327,7 +375,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   placeholder="Enter Graph API endpoint"
                 />
               </Grid>
-
+              <Divider />
               <Grid item xs={12}>
                 <CippFormComponent
                   type="autoComplete"
@@ -406,7 +454,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* Reverse Tenant Lookup Switch */}
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <CippFormComponent
                 type="switch"
                 name="ReverseTenantLookup"
@@ -432,7 +480,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </CippFormCondition>
 
             {/* No Pagination Switch */}
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <CippFormComponent
                 type="switch"
                 name="NoPagination"
@@ -442,12 +490,20 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* $count Switch */}
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <CippFormComponent
                 type="switch"
                 name="$count"
                 label="Use $count"
                 formControl={formControl}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <CippFormComponent
+                name="IsShared"
+                type="switch"
+                formControl={formControl}
+                label="Share Preset"
               />
             </Grid>
 
@@ -460,6 +516,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                   </Button>
                 </Grid>
               </div>
+
               <div>
                 {/* Save Preset Button */}
                 <Button
