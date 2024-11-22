@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, Button, IconButton, Tooltip, Collapse, Box } from "@mui/material";
+import { Grid, Button, IconButton, Tooltip, Collapse, Box, Typography } from "@mui/material";
 import {
   Save as SaveIcon,
   ExpandMore as ExpandMoreIcon,
@@ -116,57 +116,58 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const schedulerForm = useForm({
     mode: "onChange",
   });
-  const postCall = ApiPostCall({
-    datafromUrl: true,
-    relatedQueryKeys: [
-      "ListScheduledItems-Edit",
-      "ListScheduledItems-hidden",
-      "ListScheduledItems",
-    ],
-  });
+
   const schedulerCommand = {
     Function: "Get-GraphRequestList",
     Synopsis: "Execute a Graph query",
     Parameters: [
       {
-        Name: "endpoint",
+        Name: "Endpoint",
         Type: "System.String",
         Description: "Graph API endpoint",
+        Required: true,
       },
       {
         Name: "Parameters",
         Type: "System.Collections.Hashtable",
         Description: "API Parameters",
+        Required: false,
       },
       {
         Name: "queueId",
         Type: "System.String",
         Description: "Queue Id",
+        Required: false,
       },
       {
         Name: "NoPagination",
         Type: "System.Management.Automation.SwitchParameter",
         Description: "Disable pagination",
+        Required: false,
       },
       {
         Name: "CountOnly",
         Type: "System.Management.Automation.SwitchParameter",
         Description: "Only return count of results",
+        Required: false,
       },
       {
         Name: "ReverseTenantLookup",
         Type: "System.Management.Automation.SwitchParameter",
         Description: "Perform reverse tenant lookup",
+        Required: false,
       },
       {
         Name: "ReverseTenantLookupProperty",
         Type: "System.String",
         Description: "Property to perform reverse tenant lookup",
+        Required: false,
       },
       {
         Name: "AsApp",
         Type: "System.Boolean",
         Description: null,
+        Required: false,
       },
     ],
   };
@@ -214,31 +215,24 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
         addedFields: schedulerCommand,
       },
       parameters: {
-        endpoint: formParameters.endpoint,
+        Endpoint: formParameters.endpoint,
         skipCache: true,
         NoPagination: formParameters.NoPagination,
         Parameters: Parameters,
+      },
+      advancedParameters: false,
+      Recurrence: {
+        value: 0,
+        label: "Only once",
       },
     };
     schedulerForm.reset(resetParams);
     setOffCanvasContent(
       <>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Schedule Graph Explorer Report
+        </Typography>
         <CippSchedulerForm fullWidth formControl={schedulerForm} />
-        <CippApiResults apiObject={savePresetApi} />
-        <Grid item xs={12} sx={{ my: 2 }}>
-          <Button
-            onClick={() =>
-              postCall.mutate({
-                url: "/api/AddScheduledItem",
-                data: schedulerForm.getValues(),
-              })
-            }
-            variant="contained"
-            color="primary"
-          >
-            Schedule
-          </Button>
-        </Grid>
       </>
     );
     setOffCanvasOpen(true);
@@ -507,6 +501,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
               <CippApiResults apiObject={savePresetApi} />
               <CippOffCanvas
                 visible={offCanvasOpen}
+                size="md"
                 onClose={() => setOffCanvasOpen(false)}
                 children={offCanvasContent}
               />

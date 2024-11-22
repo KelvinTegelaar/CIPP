@@ -14,8 +14,8 @@ const Page = () => {
       formPageType={router.query.id ? "Edit" : router.query.Clone ? "Clone" : "Add"}
       formControl={formControl}
       title="Scheduler"
-      postUrl="/api/AddScheduledItem"
       resetForm={false}
+      hideSubmit={true}
     >
       <CippSchedulerForm formControl={formControl} />
     </CippFormPage>

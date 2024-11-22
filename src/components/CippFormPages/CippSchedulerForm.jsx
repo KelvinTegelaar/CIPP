@@ -1,18 +1,47 @@
 import React from "react";
-import { Box, Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Grid, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { getCippValidator } from "/src/utils/get-cipp-validator";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { useEffect } from "react";
 import CippFormInputArray from "../CippComponents/CippFormInputArray";
+import { CippApiResults } from "../CippComponents/CippApiResults";
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 
 const CippSchedulerForm = (props) => {
   const { formControl, fullWidth = false } = props; // Added fullWidth prop
   const selectedCommand = useWatch({ control: formControl.control, name: "command" });
+
+  const fieldRequired = (field) => {
+    if (field?.Required) {
+      return {
+        required: { value: true, message: "This field is required" },
+      };
+    } else {
+      return {};
+    }
+  };
+
+  const postCall = ApiPostCall({
+    datafromUrl: true,
+    relatedQueryKeys: [
+      "ListScheduledItems-Edit",
+      "ListScheduledItems-hidden",
+      "ListScheduledItems",
+    ],
+  });
+
+  const handleSubmit = (onSubmit) => {
+    postCall.mutate({
+      url: "/api/AddScheduledItem",
+      data: schedulerForm.getValues(),
+    });
+  };
+
   const recurrenceOptions = [
     { value: "0", label: "Only once" },
     { value: "1d", label: "Every 1 day" },
@@ -120,6 +149,9 @@ const CippSchedulerForm = (props) => {
           label="Start Date"
           fullWidth
           formControl={formControl}
+          validators={{
+            required: { value: true, message: "You must set a start date." },
+          }}
         />
       </Grid>
       <Grid item xs={12} md={gridSize}>
@@ -130,6 +162,7 @@ const CippSchedulerForm = (props) => {
           formControl={formControl}
           options={recurrenceOptions}
           multiple={false}
+          disableClearable={true}
         />
       </Grid>
       {selectedCommand?.addedFields?.Synopsis && (
@@ -144,31 +177,39 @@ const CippSchedulerForm = (props) => {
       )}
 
       {selectedCommand?.addedFields?.Parameters?.map((param, idx) => (
-        <Grid item xs={12} md={gridSize} key={idx}>
-          {param.Type === "System.Boolean" ? (
-            <CippFormComponent
-              type="switch"
-              name={`parameters.${param.Name}`}
-              label={param.Name}
-              formControl={formControl}
-            />
-          ) : param.Type === "System.Collections.Hashtable" ? (
-            <CippFormInputArray
-              formControl={formControl}
-              name={`parameters.${param.Name}`}
-              label={`${param.Name}`}
-              key={idx}
-            />
-          ) : param.Type?.startsWith("System.String") ? (
-            <CippFormComponent
-              type="textField"
-              name={`parameters.${param.Name}`}
-              label={param.Name}
-              formControl={formControl}
-              placeholder={`Enter a value for ${param.Name}`}
-            />
-          ) : null}
-        </Grid>
+        <CippFormCondition
+          field="advancedParameters"
+          compareType="isNot"
+          compareValue={true}
+          formControl={formControl}
+        >
+          <Grid item xs={12} md={gridSize} key={idx}>
+            {param.Type === "System.Boolean" ? (
+              <CippFormComponent
+                type="switch"
+                name={`parameters.${param.Name}`}
+                label={param.Name}
+                formControl={formControl}
+              />
+            ) : param.Type === "System.Collections.Hashtable" ? (
+              <CippFormInputArray
+                formControl={formControl}
+                name={`parameters.${param.Name}`}
+                label={`${param.Name}`}
+                key={idx}
+              />
+            ) : param.Type?.startsWith("System.String") ? (
+              <CippFormComponent
+                type="textField"
+                name={`parameters.${param.Name}`}
+                label={param.Name}
+                formControl={formControl}
+                placeholder={`Enter a value for ${param.Name}`}
+                validators={fieldRequired(param)}
+              />
+            ) : null}
+          </Grid>
+        </CippFormCondition>
       ))}
       <Grid item xs={12} md={12}>
         <CippFormComponent
@@ -212,6 +253,26 @@ const CippSchedulerForm = (props) => {
             { label: "PSA", value: "PSA" },
           ]}
         />
+      </Grid>
+      <CippApiResults apiObject={postCall} />
+      <Grid item xs={12} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          onClick={() => {
+            formControl.trigger();
+            formControl.handleSubmit(handleSubmit);
+          }}
+          disabled={postCall.isPending}
+          variant="contained"
+          color="primary"
+          type="submit"
+          startIcon={
+            <SvgIcon fontSize="small">
+              <CalendarDaysIcon />
+            </SvgIcon>
+          }
+        >
+          {router.query.id ? "Edit" : "Add"} Schedule
+        </Button>
       </Grid>
     </Grid>
   );

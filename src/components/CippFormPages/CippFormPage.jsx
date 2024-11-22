@@ -30,6 +30,7 @@ const CippFormPage = (props) => {
     hideBackButton = false,
     hidePageType = false,
     hideTitle = false,
+    hideSubmit = false,
     addedButtons,
     ...other
   } = props;
@@ -114,20 +115,21 @@ const CippFormPage = (props) => {
                 {children}
                 <CippApiResults apiObject={postCall} />
               </CardContent>
-
-              <CardActions sx={{ justifyContent: "flex-end" }}>
-                <Stack spacing={2} direction="row">
-                  {addedButtons && addedButtons}
-                  <Button
-                    disabled={postCall.isPending}
-                    onClick={formControl.handleSubmit(handleSubmit)}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Submit
-                  </Button>
-                </Stack>
-              </CardActions>
+              {!hideSubmit && (
+                <CardActions sx={{ justifyContent: "flex-end" }}>
+                  <Stack spacing={2} direction="row">
+                    {addedButtons && addedButtons}
+                    <Button
+                      disabled={postCall.isPending}
+                      onClick={formControl.handleSubmit(handleSubmit)}
+                      type="submit"
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                  </Stack>
+                </CardActions>
+              )}
             </Card>
           </Stack>
         </Container>
