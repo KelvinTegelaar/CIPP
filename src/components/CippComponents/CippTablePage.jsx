@@ -39,7 +39,7 @@ export const CippTablePage = (props) => {
       >
         <ReactQueryDevtools />
         <Container maxWidth={false} sx={{ height: "100%" }}>
-          <Stack spacing={4} sx={{ height: "100%" }}>
+          <Stack spacing={2} sx={{ height: "100%" }}>
             {tableFilter}
 
             <Card

@@ -970,6 +970,7 @@ const CippAppPermissionBuilder = ({
                       key={`accordion-item-${spIndex}-${sp?.appId}`}
                       variant="outlined"
                       onChange={handleChange(sp.appId)}
+                      slotProps={{ transition: { unmountOnExit: true } }}
                     >
                       <AccordionSummary expandIcon={<ExpandMore />}>
                         <Stack
