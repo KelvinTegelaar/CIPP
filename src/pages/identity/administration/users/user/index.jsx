@@ -340,7 +340,11 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             <Grid item size={4}>
-              <CippUserInfoCard user={data} isFetching={userRequest.isLoading} />
+              <CippUserInfoCard
+                user={data}
+                tenant={userSettingsDefaults.currentTenant}
+                isFetching={userRequest.isLoading}
+              />
             </Grid>
             <Grid item size={8}>
               <Stack spacing={3}>

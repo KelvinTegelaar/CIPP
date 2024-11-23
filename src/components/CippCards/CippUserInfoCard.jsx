@@ -5,7 +5,7 @@ import { PropertyListItem } from "/src/components/property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippUserInfoCard = (props) => {
-  const { user, isFetching = false, ...other } = props;
+  const { user, tenant, isFetching = false, ...other } = props;
 
   return (
     <Card {...other}>
@@ -29,6 +29,7 @@ export const CippUserInfoCard = (props) => {
               width: 64,
             }}
             variant="circular"
+            src={`/api/ListUserPhoto?TenantFilter=${tenant}&UserId=${user?.id}`}
           >
             {user?.displayName?.[0] + user?.surname?.[0] || ""}
           </Avatar>

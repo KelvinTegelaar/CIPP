@@ -60,6 +60,11 @@ export const AccountPopover = (props) => {
         width: 40,
       }}
       variant="rounded"
+      src={
+        orgData.data?.clientPrincipal?.userDetails
+          ? `/api/ListUserPhoto?UserID=${orgData.data?.clientPrincipal?.userDetails}`
+          : ""
+      }
     >
       {orgData.data?.userDetails?.[0] || ""}
     </Avatar>
