@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { CheckCircle, Mail } from "@mui/icons-material";
+import { CheckCircle, Download, Mail } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
@@ -14,7 +14,7 @@ import { Box, Stack } from "@mui/system";
 import Grid from "@mui/material/Grid2";
 import CippRemediationCard from "../../../../../components/CippCards/CippRemediationCard";
 import CippButtonCard from "../../../../../components/CippCards/CippButtonCard";
-import { SvgIcon, Typography, CircularProgress } from "@mui/material";
+import { SvgIcon, Typography, CircularProgress, Button } from "@mui/material";
 import { PropertyList } from "../../../../../components/property-list";
 import { PropertyListItem } from "../../../../../components/property-list-item";
 
@@ -545,8 +545,8 @@ const Page = () => {
                   </Typography>
                   {/* Implement download functionality */}
                   {becPollingCall.data && (
-                    <Box mt={2}>
-                      <button
+                    <Box sx={{ mt: 2 }}>
+                      <Button
                         onClick={() => {
                           const blob = new Blob([JSON.stringify(becPollingCall.data, null, 2)], {
                             type: "application/json",
@@ -558,17 +558,15 @@ const Page = () => {
                           link.click();
                           URL.revokeObjectURL(url);
                         }}
-                        style={{
-                          padding: "8px 16px",
-                          backgroundColor: "#1976d2",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
+                        variant="contained"
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <Download />
+                          </SvgIcon>
+                        }
                       >
                         Download Report
-                      </button>
+                      </Button>
                     </Box>
                   )}
                 </CippButtonCard>
