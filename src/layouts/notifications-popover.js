@@ -14,8 +14,8 @@ import {
 import { usePopover } from "../hooks/use-popover";
 import { Error, Update, Close as CloseIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { closeToast } from "../store/toasts";
-import { useState } from "react";
+import { closeToast, resetToast } from "../store/toasts";
+import { useEffect, useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 
 const getContent = (notification) => {
@@ -80,6 +80,12 @@ export const NotificationsPopover = () => {
     : notifications.some((notification) => notification.type === "update")
     ? "primary"
     : "info";
+
+  useEffect(() => {
+    if (notifications.length === 0 && popover.open) {
+      popover.handleClose();
+    }
+  }, [notifications, popover]);
 
   return (
     <>
@@ -159,11 +165,28 @@ export const NotificationsPopover = () => {
             );
           })}
         </Stack>
-        {notifications.length > notificationsToShow.length && (
-          <Box sx={{ p: 2, textAlign: "center" }}>
-            <Button onClick={() => setPage(page + 1)}>Load More</Button>
-          </Box>
-        )}
+        <Stack sx={{ pb: 1 }} spacing={1} direction="row" justifyContent="center">
+          {notifications.length > notificationsToShow.length && (
+            <Button onClick={() => setPage(page + 1)} variant="contained" size="small">
+              Load More
+            </Button>
+          )}
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => {
+              dispatch(resetToast());
+              popover.handleClose();
+            }}
+            startIcon={
+              <SvgIcon fontSize="small">
+                <CloseIcon />
+              </SvgIcon>
+            }
+          >
+            Clear All
+          </Button>
+        </Stack>
       </Popover>
     </>
   );
