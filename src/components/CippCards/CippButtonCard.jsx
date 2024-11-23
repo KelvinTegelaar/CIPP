@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -11,6 +11,7 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useState } from "react";
 
 export default function CippButtonCard({
   title,
@@ -23,6 +24,13 @@ export default function CippButtonCard({
   component = "card",
   accordionExpanded = false,
 }) {
+  const [cardExpanded, setCardExpanded] = useState(accordionExpanded);
+  useEffect(() => {
+    if (accordionExpanded !== cardExpanded) {
+      setCardExpanded(accordionExpanded);
+    }
+  }, [accordionExpanded]);
+
   return (
     <Card variant={variant} sx={cardSx}>
       {component === "card" && (
@@ -37,8 +45,11 @@ export default function CippButtonCard({
         </>
       )}
       {component === "accordion" && (
-        <Accordion expanded={accordionExpanded}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Accordion expanded={cardExpanded}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            onClick={() => setCardExpanded(!cardExpanded)}
+          >
             <CardHeader action={cardActions} title={title} sx={{ pl: 1, py: 0 }} />
           </AccordionSummary>
           <Divider />
