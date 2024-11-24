@@ -1,4 +1,6 @@
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import tabOptions from "../tabOptions";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
@@ -24,11 +26,11 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
-      apiDataKey="Results"
       actions={actions}
       simpleColumns={simpleColumns}
+      tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="/tenant/administration/gdap-role-wizard">
+        <Button component={Link} href="/gdap-management/roles/add">
           Map GDAP Roles
         </Button>
       }
@@ -36,6 +38,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;

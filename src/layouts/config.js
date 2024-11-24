@@ -137,7 +137,7 @@ export const items = [
       },
       {
         title: "Configuration Backup",
-        path: "/cipp/gdap",
+        path: "/tenant/backup",
         icon: (
           <SvgIcon>
             <Download />
@@ -239,28 +239,12 @@ export const items = [
       },
       {
         title: "GDAP Management",
-        path: "/cipp/gdap",
+        path: "/tenant/gdap-management/relationships",
         icon: (
           <SvgIcon>
             <UserIcon />
           </SvgIcon>
         ),
-        items: [
-          {
-            title: "Invite Wizard",
-            path: "/tenant/administration/gdap-invite-wizard",
-          },
-          { title: "Invite List", path: "/tenant/administration/gdap-invites" },
-          {
-            title: "GDAP Relationships",
-            path: "/tenant/administration/gdap-relationships",
-          },
-          {
-            title: "Role Wizard",
-            path: "/tenant/administration/gdap-role-wizard",
-          },
-          { title: "GDAP Roles", path: "/tenant/administration/gdap-roles" },
-        ],
       },
       {
         title: "Reports",

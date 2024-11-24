@@ -1,13 +1,14 @@
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-
-const pageTitle = "GDAP Relationship List";
+import tabOptions from "./tabOptions";
+import CippTablePage from "/src/components/CippComponents/CippTablePage";
+const pageTitle = "Relationships";
 
 const actions = [
   {
     label: "Start Onboarding",
     color: "primary",
-    link: "/tenant/administration/tenant-onboarding-wizard?tableFilter=Complex: id eq [id]",
+    link: "/tenant/gdap-management/onboarding/wizard?id=[id]",
   },
   {
     label: "Open Relationship in Partner Center",
@@ -39,7 +40,6 @@ const actions = [
 ];
 
 const offCanvas = {
-  extendedInfoFields: ["InviteUrl", "accessDetails.unifiedRoles.roleDefinitionId"],
   actions: actions,
 };
 
@@ -76,6 +76,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;

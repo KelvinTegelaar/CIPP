@@ -1,4 +1,6 @@
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import tabOptions from "../tabOptions";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
@@ -8,19 +10,19 @@ const pageTitle = "Tenant Onboarding";
 const actions = [
   {
     label: "Cancel Onboarding",
-    modal: true,
-    modalType: "POST",
-    modalBody: { id: "[RowKey]" },
-    modalUrl: "/api/ExecOnboardTenant?Cancel=true",
-    modalMessage: "Are you sure you want to cancel these onboardings?",
+    type: "POST",
+    url: "/api/ExecOnboardTenant",
+    data: { id: "RowKey", Cancel: true },
+    confirmText: "Are you sure you want to cancel these onboardings?",
+    multiPost: true,
   },
   {
     label: "Retry Onboarding",
-    modal: true,
-    modalType: "POST",
-    modalBody: { id: "[RowKey]" },
-    modalUrl: "/api/ExecOnboardTenant?Retry=true",
-    modalMessage: "Are you sure you want to retry these onboardings?",
+    type: "POST",
+    url: "/api/ExecOnboardTenant",
+    data: { id: "RowKey", Retry: true },
+    confirmText: "Are you sure you want to retry these onboardings?",
+    multiPost: true,
   },
 ];
 
@@ -39,11 +41,11 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
-      apiDataKey="Results"
       actions={actions}
       simpleColumns={simpleColumns}
+      tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="/tenant/administration/tenant-onboarding-wizard">
+        <Button component={Link} href="/gdap-management/onboarding/wizard">
           Start Tenant Onboarding
         </Button>
       }
@@ -51,6 +53,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;
