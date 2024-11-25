@@ -135,7 +135,7 @@ export const CIPPTableToptoolbar = ({
                 </IconButton>
               </div>
             </Tooltip>
-
+             
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
             <Tooltip title="Toggle Column Visibility">

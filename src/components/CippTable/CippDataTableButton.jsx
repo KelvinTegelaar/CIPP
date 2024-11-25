@@ -33,7 +33,7 @@ const CippDataTableButton = ({ data }) => {
           maxWidth="lg"
         >
           <DialogContent>
-            <CippDataTable title="Data" data={dialogData} simple={false} />
+            <CippDataTable noCard={true} title="Data" data={dialogData} simple={false} />
           </DialogContent>
         </Dialog>
       ))}

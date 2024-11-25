@@ -70,7 +70,6 @@ export const NotificationsPopover = () => {
 
   // Reverse the array so the most recent notifications are at the top
   notifications.reverse();
-
   const notificationsToShow = notifications.slice(0, (page + 1) * 5);
 
   const popover = usePopover();
@@ -90,12 +89,7 @@ export const NotificationsPopover = () => {
   return (
     <>
       <Badge color={BadgeColour} variant="dot" invisible={notifications.length === 0}>
-        <IconButton
-          color="inherit"
-          onClick={popover.handleOpen}
-          ref={popover.anchorRef}
-          disabled={notifications.length === 0}
-        >
+        <IconButton color="inherit" onClick={popover.handleOpen} ref={popover.anchorRef}>
           <SvgIcon color="action" fontSize="small">
             <BellIcon />
           </SvgIcon>
