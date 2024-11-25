@@ -36,7 +36,6 @@ const CippSchedulerForm = (props) => {
   });
 
   const handleSubmit = () => {
-    console.log("Submitting form");
     const values = formControl.getValues();
     //remove all empty values or blanks
     Object.keys(values).forEach((key) => {

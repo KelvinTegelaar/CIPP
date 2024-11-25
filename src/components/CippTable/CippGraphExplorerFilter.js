@@ -142,7 +142,6 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
   const selectedPresets = useWatch({ control, name: "reportTemplate" });
   useEffect(() => {
     if (selectedPresets?.addedFields?.params) {
-      console.log(selectedPresets.addedFields);
       setPresetOwner(selectedPresets?.addedFields?.IsMyPreset ?? false);
       Object.keys(selectedPresets.addedFields.params).forEach(
         (key) =>

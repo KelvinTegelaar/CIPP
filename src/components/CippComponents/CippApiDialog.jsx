@@ -60,7 +60,6 @@ export const CippApiDialog = (props) => {
 
   const processActionData = (dataObject, row, replacementBehaviour) => {
     if (typeof api?.dataFunction === "function") {
-      console.log("row is", row);
       return api.dataFunction(row);
     }
     const newData = {};

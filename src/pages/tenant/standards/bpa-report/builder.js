@@ -103,7 +103,6 @@ const Page = () => {
     // Helper function to recursively clean data while preserving necessary structure
     const cleanData = (data) => {
       if (Array.isArray(data)) {
-        console.log("Array Data:", data);
         return data
           .map(cleanData)
           .filter((item) => item !== null && item !== undefined && item !== "");
@@ -177,7 +176,6 @@ const Page = () => {
   };
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
   };
   return (
     <>

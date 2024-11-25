@@ -19,7 +19,6 @@ export const CippWizardGroupTemplates = (props) => {
   ];
   useEffect(() => {
     if (watcher?.value) {
-      console.log("watcher", watcher);
       formControl.setValue("groupType", watcher.addedFields.groupType);
       formControl.setValue("Displayname", watcher.addedFields.Displayname);
       formControl.setValue("Description", watcher.addedFields.Description);

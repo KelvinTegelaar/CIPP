@@ -141,7 +141,6 @@ const CippAppPermissionBuilder = ({
   };
 
   const onCreateServicePrincipal = (newValue) => {
-    console.log(newValue);
     if (newValue.value) {
       createServicePrincipal.mutate({
         url: "/api/ExecServicePrincipals?Action=Create&AppId=" + newValue.value,
@@ -315,7 +314,6 @@ const CippAppPermissionBuilder = ({
         try {
           var manifest = JSON.parse(reader.result);
         } catch {
-          console.log("parsing error");
           setManifestError(true);
           return;
         }
@@ -329,7 +327,6 @@ const CippAppPermissionBuilder = ({
         var isManifestValid = true;
         requiredProperties.forEach((key) => {
           if (!Object.keys(manifest).includes(key)) {
-            console.log("missing prop: " + key);
             isManifestValid = false;
             return;
           }

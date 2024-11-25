@@ -27,7 +27,6 @@ export function ApiGetCall({
     if (isAxiosError(error) && HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)) {
       returnRetry = false;
     }
-    console.log(error);
     if (returnRetry === false && toast) {
       dispatch(
         showToast({

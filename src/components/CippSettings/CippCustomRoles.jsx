@@ -125,7 +125,6 @@ export const CippCustomRoles = () => {
           newPermissions[`${cat}${obj}`] = `${cat}.${obj}.${newval}`;
         });
       });
-      console.log(newPermissions);
       formControl.setValue("Permissions", newPermissions);
     }
   }, [setDefaults, updateDefaults]);

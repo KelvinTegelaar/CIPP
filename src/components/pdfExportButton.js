@@ -13,7 +13,7 @@ export const PDFExportButton = (props) => {
     const orientation = "landscape"; // portrait or landscape
     const doc = new jsPDF(orientation, unit, size);
     const tableData = rows.map((row) => row.original);
-    console.log("tableData is", tableData);
+
     //only export coluymns that are visible
     const exportColumns = columns
       .filter((c) => columnVisibility[c.id])
@@ -22,7 +22,6 @@ export const PDFExportButton = (props) => {
     const formattedData = tableData.map((row) => {
       const formattedRow = {};
       Object.keys(row).forEach((key) => {
-        console.log("getting data", row[key], key);
         formattedRow[key] = getCippFormatting(row[key], key, "text");
       });
       return formattedRow;

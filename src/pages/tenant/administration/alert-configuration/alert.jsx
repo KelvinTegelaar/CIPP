@@ -99,9 +99,7 @@ const AlertWizard = () => {
         formControl.setValue("postExecution", postExecutionValue);
       }
       if (alert?.PartitionKey === "Webhookv2") {
-        console.log("alert");
         setAlertType("audit");
-        console.log(alert.RawAlert);
         const foundLogbook = logbookOptions.find(
           (logbook) => logbook.value === alert.RawAlert.type
         );

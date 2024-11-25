@@ -130,7 +130,6 @@ export const Layout = (props) => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
       if (alertsAPI.data.length > 0) {
         alertsAPI.data.forEach((alert) => {
-          console.log(alert);
           dispatch(
             showToast({
               message: alert.Alert,

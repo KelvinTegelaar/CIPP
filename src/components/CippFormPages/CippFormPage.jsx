@@ -36,10 +36,24 @@ const CippFormPage = (props) => {
   } = props;
   const router = useRouter();
 
+  //check if there are
   const postCall = ApiPostCall({
     datafromUrl: true,
     relatedQueryKeys: queryKey,
   });
+
+  useEffect(() => {
+    delete router.query.tenantFilter;
+
+    if (router.query) {
+      console.log(router.query);
+      const resetValues = {
+        ...formControl.getValues(),
+        ...router.query,
+      };
+      formControl.reset(resetValues);
+    }
+  }, [router]);
 
   const handleBackClick = () => {
     router.back(); // Navigate to the previous page when the button is clicked

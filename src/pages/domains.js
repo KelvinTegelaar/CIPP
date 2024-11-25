@@ -134,7 +134,6 @@ const Page = () => {
             <Button color="inherit" onClick={createDialog.handleClose}>
               Cancel
             </Button>
-            {console.log(ref)}
             <Button variant="contained" type="submit">
               Add Domain
             </Button>
