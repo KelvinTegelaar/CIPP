@@ -125,8 +125,7 @@ const Page = () => {
             <Alert severity="warning">
               <Typography variant="subtitle">
                 The Company Administrator role is a highly privileged role that should be used with
-                caution. GDAP Relationships with this role will not be eligible for automatic
-                renewal.
+                caution. GDAP Relationships with this role will not be eligible for auto-extend.
               </Typography>
             </Alert>
           )}

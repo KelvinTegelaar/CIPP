@@ -4,12 +4,37 @@ import tabOptions from "../tabOptions";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-const pageTitle = "GDAP Role List";
+const pageTitle = "GDAP Role Mappings";
 
 const actions = [
   {
+    label: "Add to Template",
+    icon: <PlusIcon />,
+    type: "POST",
+    url: "/api/ExecAddGDAPRoleTemplate",
+    confirmText: "Select a template to add the selected role mapping(s) to.",
+    data: { GroupId: "GroupId" },
+    fields: [
+      {
+        type: "autoComplete",
+        name: "TemplateId",
+        label: "Select a template",
+        creatable: true,
+        multiple: false,
+        api: {
+          url: "/api/ListGDAPRoleTemplates",
+          labelField: "RowKey",
+          valueField: "RowKey",
+        },
+      },
+    ],
+    multiPost: false,
+  },
+  {
     label: "Delete Mapping",
+    icon: <TrashIcon />,
     modal: true,
     modalUrl: "/api/ExecDeleteGDAPRoleMapping?&GroupId=[GroupId]",
     modalMessage:
