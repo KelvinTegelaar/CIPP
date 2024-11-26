@@ -10,10 +10,10 @@ const pageTitle = "GDAP Role Templates";
 const actions = [
   {
     label: "Delete Template",
-    url: "/api/ExecGDAPRoleTemplate",
-    data: { GroupId: "GroupId", action: "Delete" },
-    confirmText:
-      "Are you sure you want to delete this role mapping? (Note: This does not delete the associated security groups or modify any GDAP relationships.)",
+    url: "/api/ExecGDAPRoleTemplate?Action=Delete",
+    type: "POST",
+    data: { TemplateId: "TemplateId" },
+    confirmText: "Are you sure you want to delete this Role Template?",
   },
 ];
 
