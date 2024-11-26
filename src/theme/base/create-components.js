@@ -22,7 +22,7 @@ export const createComponents = () => {
           },
         },
         inputRoot: {
-          height: "42px",
+          minHeight: "42px",
           paddingTop: 6,
           paddingBottom: 6,
         },
@@ -257,6 +257,9 @@ export const createComponents = () => {
           height: "40px", // Apply height only to single-line inputs
           "&.MuiInputBase-inputMultiline": {
             height: "unset", // Allow textareas to be flexible
+          },
+          "&.MuiAutocomplete-input": {
+            height: "unset", // Allow autocomplete to be flexible
           },
         },
       },
