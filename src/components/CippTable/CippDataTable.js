@@ -230,6 +230,7 @@ export const CippDataTable = (props) => {
               columnVisibility={columnVisibility}
               getRequestData={getRequestData}
               usedColumns={usedColumns}
+              usedData={usedData}
               title={title}
               actions={actions}
               exportEnabled={exportEnabled}

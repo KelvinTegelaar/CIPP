@@ -1,4 +1,4 @@
-import { Sync, ViewColumn } from "@mui/icons-material";
+import { DeveloperMode, Sync, ViewColumn } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -8,8 +8,9 @@ import {
   MenuItem,
   SvgIcon,
   Tooltip,
+  Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, Stack } from "@mui/system";
 import { MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from "material-react-table";
 import { PDFExportButton } from "../pdfExportButton";
 import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
@@ -21,11 +22,14 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { useSettings } from "../../hooks/use-settings";
 import { useRouter } from "next/router";
+import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
+import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 
 export const CIPPTableToptoolbar = ({
   table,
   getRequestData,
   usedColumns,
+  usedData,
   columnVisibility,
   setColumnVisibility,
   title,
@@ -39,6 +43,7 @@ export const CIPPTableToptoolbar = ({
   const router = useRouter();
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  const [offcanvasVisible, setOffcanvasVisible] = useState(false);
 
   const pageName = router.asPath.split("/").slice(1).join("/");
 
@@ -192,6 +197,28 @@ export const CIPPTableToptoolbar = ({
                 />
               </>
             )}
+            <Tooltip title="View API Response">
+              <IconButton onClick={() => setOffcanvasVisible(true)}>
+                <DeveloperMode />
+              </IconButton>
+            </Tooltip>
+            <CippOffCanvas
+              size="xl"
+              title="API Response"
+              visible={offcanvasVisible}
+              onClose={() => {
+                setOffcanvasVisible(false);
+              }}
+            >
+              <Stack spacing={2}>
+                <Typography variant="h4">API Response</Typography>
+                <CippCodeBlock
+                  type="editor"
+                  code={JSON.stringify(usedData, null, 2)}
+                  editorHeight="1000px"
+                />
+              </Stack>
+            </CippOffCanvas>
           </>
         </Box>
         <Box>
