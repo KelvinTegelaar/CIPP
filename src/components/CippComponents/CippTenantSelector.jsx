@@ -59,7 +59,7 @@ export const CippTenantSelector = (props) => {
         currentTenant: currentTenant.value,
       });
     }
-  }, [currentTenant, router.query]);
+  }, [currentTenant?.value]);
 
   useEffect(() => {
     if (tenant && currentTenant?.value) {
