@@ -23,6 +23,7 @@ export const CippTablePage = (props) => {
     queryKey,
     tableFilter,
     tenantInTitle = true,
+    sx = { flexGrow: 1, py: 4 },
     ...other
   } = props;
   const tenant = useSettings().currentTenant;
@@ -31,12 +32,7 @@ export const CippTablePage = (props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <Box
-        sx={{
-          flexGrow: 1,
-          py: 4,
-        }}
-      >
+      <Box sx={sx}>
         <ReactQueryDevtools />
         <Container maxWidth={false} sx={{ height: "100%" }}>
           <Stack spacing={2} sx={{ height: "100%" }}>
