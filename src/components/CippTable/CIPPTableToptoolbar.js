@@ -135,7 +135,7 @@ export const CIPPTableToptoolbar = ({
                 </IconButton>
               </div>
             </Tooltip>
-             
+
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
             <Tooltip title="Toggle Column Visibility">
@@ -238,9 +238,7 @@ export const CIPPTableToptoolbar = ({
                         key={index}
                         onClick={() => {
                           setActionData({
-                            data: table
-                              .getSelectedRowModel()
-                              .rows.map((row) => row.original.original),
+                            data: table.getSelectedRowModel().rows.map((row) => row.original),
                             action: action,
                             ready: true,
                           });
