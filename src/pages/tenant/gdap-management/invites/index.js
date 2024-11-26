@@ -6,9 +6,7 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 
 const pageTitle = "GDAP Invites";
-
 const simpleColumns = ["Timestamp", "RowKey", "InviteUrl", "OnboardingUrl", "RoleMappings"];
-
 const apiUrl = "/api/ListGDAPInvite";
 
 const Page = () => {
@@ -18,6 +16,7 @@ const Page = () => {
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
       tenantInTitle={false}
+      queryKey="ListGDAPInvite"
     />
   );
 };

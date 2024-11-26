@@ -30,10 +30,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="/gdap-management/roles/add">
+        <Button component={Link} href="/tenant/gdap-management/roles/add">
           Map GDAP Roles
         </Button>
       }
+      queryKey="ListGDAPRoles"
     />
   );
 };
