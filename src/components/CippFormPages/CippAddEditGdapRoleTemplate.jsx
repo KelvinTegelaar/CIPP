@@ -19,6 +19,7 @@ export const CippAddEditGdapRoleTemplate = (props) => {
           name="templateId"
           label="Template Name"
           type="textField"
+          required={true}
         />
       </Box>
       <CippFormComponent

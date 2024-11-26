@@ -3,8 +3,13 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { CippAddEditGdapRoleTemplate } from "/src/components/CippFormPages/CippAddEditGdapRoleTemplate";
 import { ApiGetCall } from "/src/api/ApiCall";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
 
 const Page = () => {
+  const router = useRouter();
+  const { templateId } = router.query;
   const formControl = useForm({
     mode: "onChange",
   });
@@ -12,6 +17,31 @@ const Page = () => {
     url: "/api/ListGDAPRoles",
     queryKey: "ListGDAPRoles",
   });
+
+  const availableTemplates = ApiGetCallWithPagination({
+    url: `/api/ExecGDAPRoleTemplate`,
+    queryKey: `ListGDAPRoleTemplates`,
+  });
+
+  useEffect(() => {
+    if (availableTemplates.isSuccess) {
+      const template = availableTemplates?.data?.pages?.[0]?.Results.find(
+        (template) => template.TemplateId === templateId
+      );
+      var newRoleMappings = [];
+      template.RoleMappings.map((roleMapping) =>
+        newRoleMappings.push({
+          label: roleMapping.GroupName,
+          value: roleMapping.GroupId,
+        })
+      );
+      formControl.reset({
+        templateId: template.TemplateId,
+        roleMappings: newRoleMappings,
+      });
+    }
+  }, [availableTemplates.isSuccess, availableTemplates.data]);
+
   return (
     <>
       <CippFormPage
@@ -19,7 +49,7 @@ const Page = () => {
         formControl={formControl}
         title="GDAP Role Template"
         backButtonTitle="GDAP Role Templates"
-        postUrl="/api/ExecGDAPRoleTemplate?Action=Add"
+        postUrl="/api/ExecGDAPRoleTemplate?Action=Edit"
         customDataformatter={(values) => {
           var newRoleMappings = [];
           values.roleMappings.map((roleMapping) => {

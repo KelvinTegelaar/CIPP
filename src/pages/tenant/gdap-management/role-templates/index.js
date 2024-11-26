@@ -7,17 +7,24 @@ import Link from "next/link";
 import { ApiGetCallWithPagination, ApiPostCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { Box, Stack } from "@mui/system";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import { Edit } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "GDAP Role Templates";
   const [createDefaults, setCreateDefaults] = useState(false);
   const actions = [
     {
+      label: "Edit Template",
+      link: "/tenant/gdap-management/role-templates/edit?templateId=[TemplateId]",
+      icon: <Edit />,
+    },
+    {
       label: "Delete Template",
       url: "/api/ExecGDAPRoleTemplate?Action=Delete",
       type: "POST",
+      icon: <TrashIcon />,
       data: { TemplateId: "TemplateId" },
       confirmText: "Are you sure you want to delete this Role Template?",
     },
