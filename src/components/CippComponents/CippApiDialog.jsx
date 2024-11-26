@@ -105,7 +105,7 @@ export const CippApiDialog = (props) => {
       if (action.type === "POST") {
         actionPostRequest.mutate({
           url: action.url,
-          bulkRequest: true,
+          bulkRequest: action.multiPost,
           data: bulkData,
         });
       } else if (action.type === "GET") {
@@ -114,7 +114,7 @@ export const CippApiDialog = (props) => {
           waiting: true,
           queryKey: Date.now(),
           data: bulkData,
-          bulkRequest: true,
+          bulkRequest: action.multiPost,
         });
       }
     } else {
