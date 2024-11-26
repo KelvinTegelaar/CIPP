@@ -261,6 +261,9 @@ export const createComponents = () => {
           "&.MuiAutocomplete-input": {
             height: "unset", // Allow autocomplete to be flexible
           },
+          "&.MuiOutlinedInput-input": {
+            padding: 0, // remove extra padding on outlined input
+          },
         },
       },
     },
