@@ -4,8 +4,12 @@
     "path": "/tenant/gdap-management/relationships"
   },
   {
-    "label": "Roles",
+    "label": "Role Mappings",
     "path": "/tenant/gdap-management/roles"
+  },
+  {
+    "label": "Role Templates",
+    "path": "/tenant/gdap-management/role-templates"
   },
   {
     "label": "Invites",

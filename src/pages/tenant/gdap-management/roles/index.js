@@ -13,9 +13,14 @@ const actions = [
     label: "Add to Template",
     icon: <PlusIcon />,
     type: "POST",
-    url: "/api/ExecAddGDAPRoleTemplate",
+    url: "/api/ExecGDAPRoleTemplate?Action=Add",
     confirmText: "Select a template to add the selected role mapping(s) to.",
-    data: { GroupId: "GroupId" },
+    data: {
+      GroupName: "GroupName",
+      GroupId: "GroupId",
+      RoleName: "RoleName",
+      roleDefinitionId: "roleDefinitionId",
+    },
     fields: [
       {
         type: "autoComplete",
