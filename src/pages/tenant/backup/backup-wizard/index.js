@@ -10,6 +10,9 @@ const Page = () => {
       apiUrl="/api/ListScheduledItems"
       cardButton={
         <>
+          <Button component={Link} href="/tenant/backup/backup-wizard/restore">
+            Restore Configuration Backup
+          </Button>
           <Button component={Link} href="/tenant/backup/backup-wizard/add">
             Add Configuration Backup Task
           </Button>
