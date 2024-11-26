@@ -68,17 +68,15 @@ const CippFormPage = (props) => {
   }, [postCall.isSuccess]);
 
   const handleSubmit = () => {
-    const values = formControl.getValues();
+    const values = customDataformatter
+      ? customDataformatter(formControl.getValues())
+      : formControl.getValues();
     //remove all empty values or blanks
     Object.keys(values).forEach((key) => {
       if (values[key] === "" || values[key] === null) {
         delete values[key];
       }
     });
-
-    if (customDataformatter) {
-      customDataformatter(values);
-    }
     postCall.mutate({
       url: postUrl,
       data: values,
