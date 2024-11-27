@@ -8,6 +8,7 @@ import {
   RFFCFormRadioList,
   RFFCFormSwitch,
   RFFSelectSearch,
+  RFFCFormSelect,
 } from 'src/components/forms'
 import {
   useGenericGetRequestQuery,
@@ -22,10 +23,10 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { TenantSelector } from 'src/components/utilities'
 import arrayMutators from 'final-form-arrays'
 import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 import { useListUsersQuery } from 'src/store/api/users'
 import GDAPRoles from 'src/data/GDAPRoles'
 import { CippDatatable, cellDateFormatter } from 'src/components/tables'
+import { useListDomainsQuery } from 'src/store/api/domains'
 
 const DeployJITAdmin = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -36,14 +37,22 @@ const DeployJITAdmin = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const {
+    data: domains = [],
+    isFetching: domainsIsFetching,
+    error: domainsError,
+  } = useListDomainsQuery({ tenantDomain })
 
   const onSubmit = (values) => {
     const startTime = Math.floor(startDate.getTime() / 1000)
     const endTime = Math.floor(endDate.getTime() / 1000)
+
     const shippedValues = {
       TenantFilter: tenantDomain,
-      UserId: values.UserId?.value,
-      UserPrincipalName: values.UserPrincipalName,
+      UserId: values.UserId?.value.id,
+      UserPrincipalName: values.username
+        ? `${values.username}@${values.domain}`
+        : values.UserId?.value.userPrincipalName,
       FirstName: values.FirstName,
       LastName: values.LastName,
       useraction: values.useraction,
@@ -134,8 +143,24 @@ const DeployJITAdmin = () => {
                           </CCol>
                         </CRow>
                         <CRow>
+                          <CCol md={6}>
+                            <RFFCFormInput type="text" name="username" label="Username" />
+                          </CCol>
                           <CCol>
-                            <RFFCFormInput label="User Principal Name" name="UserPrincipalName" />
+                            {domainsIsFetching && <CSpinner />}
+                            {!domainsIsFetching && (
+                              <RFFCFormSelect
+                                name="domain"
+                                label="Domain"
+                                defaultValue={tenantDomain}
+                                placeholder={!domainsIsFetching ? 'Select domain' : 'Loading...'}
+                                values={domains?.map((domain) => ({
+                                  value: domain.id,
+                                  label: domain.id,
+                                }))}
+                              />
+                            )}
+                            {domainsError && <span>Failed to load list of domains</span>}
                           </CCol>
                         </CRow>
                       </Condition>
@@ -145,7 +170,7 @@ const DeployJITAdmin = () => {
                             <RFFSelectSearch
                               label={'Users in ' + tenantDomain}
                               values={users?.Results?.map((user) => ({
-                                value: user.id,
+                                value: { userPrincipalName: user.userPrincipalName, id: user.id },
                                 name: `${user.displayName} <${user.userPrincipalName}>`,
                               }))}
                               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
