@@ -223,7 +223,7 @@ export const CIPPTableToptoolbar = ({
         </Box>
         <Box>
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            {(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
+            {actions && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
               <>
                 <Button
                   onClick={popover.handleOpen}

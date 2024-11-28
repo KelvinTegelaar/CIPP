@@ -48,6 +48,7 @@ export const CippDataTable = (props) => {
     noCard = false,
     refreshFunction,
     incorrectDataMessage = "Data not in correct format",
+    onChange,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
@@ -145,7 +146,7 @@ export const CippDataTable = (props) => {
 
   // Apply the modeInfo directly
   const [modeInfo] = useState(
-    utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas)
+    utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas, onChange)
   );
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
@@ -242,6 +243,13 @@ export const CippDataTable = (props) => {
       );
     },
   });
+
+  useEffect(() => {
+    if (onChange && table.getSelectedRowModel().rows) {
+      //get the rows.[x].original and return that.
+      onChange(table.getSelectedRowModel().rows.map((row) => row.original));
+    }
+  }, [table.getSelectedRowModel().rows]);
 
   return (
     <>

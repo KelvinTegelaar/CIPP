@@ -19,6 +19,11 @@ export const getCippValidator = (value, type) => {
       return typeof value === "string" || "This is not a valid string";
     case "ip":
       return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(value) || "This is not a valid IP address";
+    case "guid":
+      return (
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value) ||
+        "This is not a valid GUID"
+      );
     default:
       return true;
   }

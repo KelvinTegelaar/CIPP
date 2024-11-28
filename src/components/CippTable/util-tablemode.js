@@ -1,6 +1,13 @@
 import { useSettings } from "../../hooks/use-settings";
 
-export const utilTableMode = (columnVisibility, mode, actions, simpleColumns, offCanvas) => {
+export const utilTableMode = (
+  columnVisibility,
+  mode,
+  actions,
+  simpleColumns,
+  offCanvas,
+  onChange
+) => {
   const settings = useSettings();
   if (mode === true) {
     return {
@@ -37,7 +44,7 @@ export const utilTableMode = (columnVisibility, mode, actions, simpleColumns, of
     };
   } else {
     return {
-      enableRowSelection: actions ? true : false,
+      enableRowSelection: actions || onChange ? true : false,
       enableRowActions: actions ? true : false,
       enableSelectAll: true,
       enableFacetedValues: true,

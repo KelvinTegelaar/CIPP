@@ -24,6 +24,7 @@ import {
   RichTextEditor,
 } from "mui-tiptap";
 import StarterKit from "@tiptap/starter-kit";
+import { CippDataTable } from "../CippTable/CippDataTable";
 
 // Helper function to convert bracket notation to dot notation
 const convertBracketsToDots = (name) => {
@@ -75,6 +76,32 @@ export const CippFormComponent = (props) => {
           {...other}
           {...formControl.register(convertedName, { ...validators })}
         />
+      );
+
+    case "cippDataTable":
+      return (
+        <>
+          <div>
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              render={({ field }) => (
+                <>
+                  <label>{label}</label>
+                  <CippDataTable
+                    noCard={true}
+                    {...other}
+                    onChange={(value) => field.onChange(value)}
+                    simple={false}
+                  />
+                </>
+              )}
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {get(errors, convertedName, {})?.message}
+          </Typography>
+        </>
       );
 
     case "textField":
