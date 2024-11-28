@@ -3,6 +3,7 @@ import CippWizardStepButtons from "./CippWizardStepButtons";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { getCippValidator } from "../../utils/get-cipp-validator";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 export const CippWizardAppApproval = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
@@ -28,16 +29,23 @@ export const CippWizardAppApproval = (props) => {
         name="CopyPermissions"
         formControl={formControl}
       />
-      <CippFormComponent
-        type="cippDataTable"
-        name="permissions"
-        title="Domains"
-        label="Select your permissions"
-        queryKey="GraphpermissionsList"
-        api={{ url: "/permissionsList.json" }}
-        simpleColumns={["displayName", "description"]}
+      <CippFormCondition
+        field="CopyPermissions"
+        compareType="is"
+        compareValue={false}
         formControl={formControl}
-      />
+      >
+        <CippFormComponent
+          type="cippDataTable"
+          name="permissions"
+          title="Domains"
+          label="Select your permissions"
+          queryKey="GraphpermissionsList"
+          api={{ url: "/permissionsList.json" }}
+          simpleColumns={["displayName", "description"]}
+          formControl={formControl}
+        />
+      </CippFormCondition>
       <CippWizardStepButtons
         postUrl={postUrl}
         currentStep={currentStep}

@@ -8,7 +8,6 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 export const CippWizardConfirmation = (props) => {
   const { postUrl, lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const formValues = formControl.getValues();
-  console.log(formValues);
   const formEntries = Object.entries(formValues);
   //remove all entries in "blacklist" from showing on confirmation page
   const blacklist = ["selectedOption", "GUID", "ID", "noSubmitButton"];

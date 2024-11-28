@@ -4,17 +4,23 @@ import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
 import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippWizardAppApproval } from "../../../../components/CippWizard/CippWizardAppApproval";
+import { Alert } from "@mui/material";
 
 const Page = () => {
-  const initialState = useSettings();
   const steps = [
     {
       title: "Step 1",
       description: "Tenant Selection",
       component: CippTenantStep,
       componentProps: {
+        preText: (
+          <Alert severity="info">
+            Did you know you can also deploy applications by using our standards? Use the standard
+            if you have to deploy an application to all your tenants
+          </Alert>
+        ),
         allTenants: false,
-        type: "single",
+        type: "multiple",
       },
     },
     {
@@ -32,10 +38,10 @@ const Page = () => {
   return (
     <>
       <CippWizardPage
-        initialState={{ ...initialState.offboardingDefaults, ...{ Scheduled: { enabled: false } } }}
+        initialState={{ CopyPermissions: true }}
         steps={steps}
-        postUrl="/api/ExecOffboardUser"
-        wizardTitle="User Offboarding Wizard"
+        postUrl="/api/ExecAddMultiTenantApp"
+        wizardTitle="Application Approval Wizard"
       />
     </>
   );

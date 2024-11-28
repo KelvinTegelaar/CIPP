@@ -168,7 +168,11 @@ export const getCippFormatting = (data, cellName, type) => {
             <CippCopyToClipBoard key={item.value} text={item.label} type="chip" />
           ));
     } else {
-      return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+      return isText ? (
+        data
+      ) : (
+        <Chip variant="outlined" label={data.label} size="small" color="info" />
+      );
     }
   }
 

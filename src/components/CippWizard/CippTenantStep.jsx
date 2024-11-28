@@ -10,10 +10,12 @@ export const CippTenantStep = (props) => {
     formControl,
     currentStep,
     onPreviousStep,
+    preText,
   } = props;
 
   return (
     <Stack spacing={3}>
+      {preText}
       <label>Select a tenant</label>
       <CippFormTenantSelector formControl={formControl} allTenants={allTenants} type={type} />
       <CippWizardStepButtons
