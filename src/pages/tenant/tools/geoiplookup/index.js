@@ -13,11 +13,14 @@ import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import { Search } from "@mui/icons-material";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "../../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { getCippValidator } from "../../../../utils/get-cipp-validator";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
+import { useSettings } from "../../../../hooks/use-settings";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
+  const currentTenant = useSettings().currentTenant;
   const actions = [];
   const formControl = useForm({ mode: "onBlur" });
   const ip = useWatch({ control: formControl.control, name: "ipAddress" });
@@ -28,12 +31,20 @@ const Page = () => {
     waiting: false,
   });
 
+  const addGeoIP = ApiPostCall({
+    relatedQueryKeys: [`geoiplookup-${ip}`, "ListIPWhitelist"],
+  });
+
   const handleAddToWhitelist = () => {
-    console.log(`Add IP ${ip} to Whitelist`);
+    addGeoIP.mutate({
+      url: `/api/ExecAddTrustedIP?IP=${ip}&TenantFilter=${currentTenant}&State=Trusted`,
+    });
   };
 
   const handleRemoveFromWhitelist = () => {
-    console.log(`Remove IP ${ip} from Whitelist`);
+    addGeoIP.mutate({
+      url: `/api/ExecAddTrustedIP?IP=${ip}&TenantFilter=${currentTenant}&State=NotTrusted`,
+    });
   };
 
   return (
@@ -142,6 +153,9 @@ const Page = () => {
                       Remove from Whitelist
                     </Button>
                   </Grid>
+                  <Grid item xs={12}>
+                    <CippApiResults apiObject={addGeoIP} />
+                  </Grid>
                 </Grid>
               </CippButtonCard>
             </Grid>
@@ -152,8 +166,7 @@ const Page = () => {
               api={{ url: "/api/ListIPWhitelist" }}
               queryKey={"ListIPWhitelist"}
               simple={false}
-              simpleColumns={["tenantfilter", "trustedIps", "state"]}
-              actions={actions}
+              simpleColumns={["PartitionKey", "state", "RowKey"]}
             />
           </Grid>
         </Grid>
