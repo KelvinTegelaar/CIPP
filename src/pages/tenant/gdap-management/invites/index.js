@@ -12,6 +12,11 @@ const apiUrl = "/api/ListGDAPInvite";
 const Page = () => {
   return (
     <CippTablePage
+      cardButton={
+        <Button component={Link} href="/tenant/gdap-management/invites/add">
+          New Invite
+        </Button>
+      }
       title={pageTitle}
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
