@@ -11,7 +11,6 @@ const Page = () => {
       url: "/api/ExecNamedLocation",
       data: {
         namedLocationId: "id",
-        TenantFilter: "TenantFilter",
         change: "addLocation",
       },
       confirmText: "Enter a two-letter country code, e.g., US.",
@@ -22,7 +21,6 @@ const Page = () => {
       url: "/api/ExecNamedLocation",
       data: {
         namedLocationId: "id",
-        TenantFilter: "TenantFilter",
         change: "removeLocation",
       },
       confirmText: "Enter a two-letter country code, e.g., US.",
@@ -33,7 +31,6 @@ const Page = () => {
       url: "/api/ExecNamedLocation",
       data: {
         namedLocationId: "id",
-        TenantFilter: "TenantFilter",
         change: "addIp",
       },
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
@@ -44,7 +41,6 @@ const Page = () => {
       url: "/api/ExecNamedLocation",
       data: {
         namedLocationId: "id",
-        TenantFilter: "TenantFilter",
         change: "removeIp",
       },
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
@@ -60,10 +56,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListNamedLocations"
-      apiData={{
-        TenantFilter: "TenantFilter",
-      }}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
