@@ -70,6 +70,7 @@ const Page = () => {
       apiUrl={apiUrl}
       apiData={apiData}
       apiDataKey="Results"
+      queryKey="ListGDAPRelationships"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

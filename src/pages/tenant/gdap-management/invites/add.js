@@ -80,7 +80,7 @@ const Page = () => {
                 type="autoComplete"
                 api={{
                   url: "/api/ExecGDAPRoleTemplate",
-                  queryKey: "ListGDAPRoleTemplates",
+                  queryKey: "ListGDAPRoleTemplatesAutocomplete",
                   dataKey: "Results",
                   labelField: (option) => option.TemplateId,
                   valueField: (option) => option.RoleMappings,
