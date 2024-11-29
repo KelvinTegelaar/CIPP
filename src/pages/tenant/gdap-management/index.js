@@ -173,7 +173,7 @@ const Page = () => {
         )}
         <Grid size={{ xs: 12, sm: 6 }}>
           <CippButtonCard
-            title="GDAP Onboarding Status"
+            title="GDAP Setup"
             cardSx={{ display: "flex", flexDirection: "column", height: "100%", width: "100%" }}
           >
             <WizardSteps
@@ -194,7 +194,7 @@ const Page = () => {
                   description: "Create invites based on your Role Templates.",
                 },
                 {
-                  title: "Onboarding Complete",
+                  title: "Setup Complete",
                   description: "You're ready to start adding your tenants using CIPP.",
                 },
               ]}
