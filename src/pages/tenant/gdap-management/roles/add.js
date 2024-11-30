@@ -80,7 +80,7 @@ const Page = () => {
         backButtonTitle="GDAP Roles"
         postUrl="/api/ExecAddGDAPRole"
       >
-        <Stack spacing={1} sx={{ mt: 2 }}>
+        <Stack spacing={2}>
           <Alert severity="info">
             <Typography variant="subtitle">
               For each role you select a new group will be created inside of your partner tenant
@@ -123,10 +123,8 @@ const Page = () => {
           />
           {selectedRoles?.some((role) => role.value === "62e90394-69f5-4237-9190-012177145e10") && (
             <Alert severity="warning">
-              <Typography variant="subtitle">
-                The Company Administrator role is a highly privileged role that should be used with
-                caution. GDAP Relationships with this role will not be eligible for auto-extend.
-              </Typography>
+              The Company Administrator role is a highly privileged role that should be used with
+              caution. GDAP Relationships with this role will not be eligible for auto-extend.
             </Alert>
           )}
           {selectedRoles?.length > 0 && (

@@ -45,7 +45,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="/gdap-management/onboarding/wizard">
+        <Button component={Link} href="/tenant/gdap-management/onboarding/start">
           Start Tenant Onboarding
         </Button>
       }
