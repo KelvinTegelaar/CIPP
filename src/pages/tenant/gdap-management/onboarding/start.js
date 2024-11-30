@@ -9,10 +9,12 @@ import { CippPropertyList } from "/src/components/CippComponents/CippPropertyLis
 import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { getCippFormatting } from "/src/utils/get-cipp-formatting";
+import { router } from "next/router";
 
 const Page = () => {
   const [currentRelationship, setCurrentRelationship] = useState(null);
   const [currentInvite, setCurrentInvite] = useState(null);
+  const queryId = router.query.id;
   const formControl = useForm({
     mode: "onChange",
   });
@@ -34,7 +36,6 @@ const Page = () => {
       );
       setCurrentRelationship(selectedRelationship);
       setCurrentInvite(invite);
-      console.log(invite);
     }
   }, [currentInvites.isSuccess, selectedRelationship, currentRelationship]);
 
@@ -78,7 +79,6 @@ const Page = () => {
               },
             }}
             multiple={false}
-            creatable={false}
             required={true}
           />
           {currentRelationship?.value && !currentInvite && (
