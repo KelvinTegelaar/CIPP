@@ -4,7 +4,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 const Page = () => {
   const pageTitle = "Licenses Report";
   const apiUrl = "/api/ListLicenses";
-  
+
   const actions = []; // No actions specified, setting to empty array
 
   const offCanvas = null; // No off-canvas details provided
@@ -22,7 +22,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
-      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

@@ -223,10 +223,6 @@ export const items = [
             title: "Named Locations",
             path: "/tenant/conditional/list-named-locations",
           },
-          {
-            title: "Deploy Named Locations",
-            path: "/tenant/conditional/deploy-named-location",
-          },
         ],
       },
       {
