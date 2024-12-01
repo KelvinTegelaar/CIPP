@@ -42,6 +42,7 @@ const Page = () => {
     urlFromData: true,
     relatedQueryKeys: "ListGDAPRoleTemplates",
   });
+  
 
   useEffect(() => {
     if (currentTemplates.isSuccess) {

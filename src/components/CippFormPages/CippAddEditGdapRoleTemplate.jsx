@@ -27,6 +27,7 @@ export const CippAddEditGdapRoleTemplate = (props) => {
         name="roleMappings"
         label="Select GDAP Role Mappings"
         type="autoComplete"
+        isFetching={availableRoles?.isFetching}
         options={availableRoles?.data?.map((role) => ({
           label: role.GroupName,
           value: role.GroupId,

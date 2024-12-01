@@ -10,7 +10,7 @@ const Page = () => {
   });
   const availableRoles = ApiGetCall({
     url: "/api/ListGDAPRoles",
-    queryKey: "ListGDAPRoles",
+    queryKey: "ListGDAPRolesAutocomplete",
   });
   return (
     <>

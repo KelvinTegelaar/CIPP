@@ -8,7 +8,7 @@ const pageTitle = "GDAP Relationships";
 const actions = [
   {
     label: "Start Onboarding",
-    link: "/tenant/gdap-management/onboarding/wizard?id=[id]",
+    link: "/tenant/gdap-management/onboarding/start?id=[id]",
     color: "primary",
   },
   {
@@ -70,6 +70,7 @@ const Page = () => {
       apiUrl={apiUrl}
       apiData={apiData}
       apiDataKey="Results"
+      queryKey="ListGDAPRelationships"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

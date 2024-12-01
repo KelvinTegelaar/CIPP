@@ -1,5 +1,9 @@
 [
   {
+    "label": "Overview",
+    "path": "/tenant/gdap-management"
+  },
+  {
     "label": "Relationships",
     "path": "/tenant/gdap-management/relationships"
   },
