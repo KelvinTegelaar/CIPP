@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button, Link } from "@mui/material";
 
 const Page = () => {
   const pageTitle = "Named Locations";
@@ -58,6 +59,13 @@ const Page = () => {
       apiUrl="/api/ListNamedLocations"
       actions={actions}
       offCanvas={offCanvas}
+      cardButton={
+        <>
+          <Button component={Link} href="list-named-locations/add">
+            Add Named Location
+          </Button>
+        </>
+      }
       simpleColumns={[
         "displayName",
         "includeUnknownCountriesAndRegions",
