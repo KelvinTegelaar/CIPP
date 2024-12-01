@@ -1,14 +1,31 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
-  const pageTitle = "CA Vacation Mode";
-
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the ca vacation mode section.</p>
-    </div>
+    <CippTablePage
+      cardButton={
+        <>
+          <Button component={Link} href="deploy-vacation/add">
+            Add Vacation Schedule
+          </Button>
+        </>
+      }
+      title="Vacation Mode"
+      apiUrl="/api/ListScheduledItems?Type=Set-CIPPCAExclusion"
+      queryKey="VacationMode"
+      tenantInTitle={false}
+      simpleColumns={[
+        "Name",
+        "TaskState",
+        "ScheduledTime",
+        "Parameters.ExclusionType",
+        "Parameters.UserName",
+        "Parameters.PolicyId",
+      ]}
+    />
   );
 };
 

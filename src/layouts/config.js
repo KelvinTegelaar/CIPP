@@ -212,14 +212,6 @@ export const items = [
         items: [
           { title: "CA Policies", path: "/tenant/conditional/list-policies" },
           {
-            title: "Deploy CA Policies",
-            path: "/tenant/conditional/deploy",
-          },
-          {
-            title: "CA Policy Tester",
-            path: "/tenant/conditional/test-policy",
-          },
-          {
             title: "CA Vacation Mode",
             path: "/tenant/conditional/deploy-vacation",
           },

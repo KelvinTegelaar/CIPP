@@ -1,6 +1,7 @@
 import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippFormUserSelector = ({
   formControl,
@@ -15,6 +16,7 @@ export const CippFormUserSelector = ({
   ...other
 }) => {
   const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
+  const selectedTenant = useSettings().currentTenant;
   return (
     <CippFormComponent
       name={name}
@@ -24,12 +26,12 @@ export const CippFormUserSelector = ({
       multiple={multiple}
       api={{
         addedField: addedField,
-        tenantFilter: currentTenant ? currentTenant.value : undefined,
+        tenantFilter: currentTenant ? currentTenant.value : selectedTenant,
         url: "/api/ListGraphRequest",
         dataKey: "Results",
         labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
         valueField: valueField ? valueField : "id",
-        queryKey: `ListUsers-${currentTenant?.value}`,
+        queryKey: `ListUsers-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
         data: {
           Endpoint: "users",
           manualPagination: true,
