@@ -1,5 +1,5 @@
-import React from "react";
-import { Grid, Divider } from "@mui/material";
+import React, { useEffect } from "react";
+import { Grid, Divider, Button } from "@mui/material";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
@@ -7,6 +7,7 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import languageList from "/src/data/languageList.json";
+import { ApiPostCall } from "../../../../api/ApiCall";
 const ApplicationDeploymentForm = () => {
   const formControl = useForm({
     mode: "onChange",
@@ -22,12 +23,56 @@ const ApplicationDeploymentForm = () => {
     name: "appType",
   });
 
+  const searchQuerySelection = useWatch({
+    control: formControl.control,
+    name: "packageSearch",
+  });
+
+  useEffect(() => {
+    //if the searchQuerySelection was succesful, fill in the fields.
+    console.log(searchQuerySelection);
+    if (searchQuerySelection) {
+      formControl.setValue("packagename", searchQuerySelection.value.packagename);
+      formControl.setValue("applicationName", searchQuerySelection.value.applicationName);
+      formControl.setValue("description", searchQuerySelection.value.description);
+      searchQuerySelection.value.customRepo
+        ? formControl.setValue("customRepo", searchQuerySelection.value.customRepo)
+        : null;
+    }
+  }, [searchQuerySelection]);
+
   const postUrl = {
     mspApp: "/api/AddMSPApp",
     StoreApp: "/api/AddStoreApp",
     winGetApp: "/api/AddwinGetApp",
     chocolateyApp: "/api/AddChocoApp",
     officeApp: "/api/AddOfficeApp",
+  };
+
+  const ChocosearchResults = ApiPostCall({
+    urlfromData: true,
+  });
+
+  const winGetSearchResults = ApiPostCall({
+    urlfromData: true,
+  });
+
+  const searchApp = (searchText, type) => {
+    if (type === "choco") {
+      ChocosearchResults.mutate({
+        url: `/api/ListAppsRepository`,
+        data: { search: searchText },
+        queryKey: `SearchApp-${searchText}-${type}`,
+      });
+    }
+
+    if (type === "StoreApp") {
+      winGetSearchResults.mutate({
+        url: `/api/ListPotentialApps`,
+        data: { searchString: searchText, type: "WinGet" },
+        queryKey: `SearchApp-${searchText}-${type}`,
+      });
+    }
   };
 
   return (
@@ -313,7 +358,38 @@ const ApplicationDeploymentForm = () => {
           compareType="is"
           compareValue="StoreApp"
         >
-          {/* Since we cannot make API calls, we'll simulate a search function */}
+          <Grid item xs={12} md={6}>
+            <CippFormComponent
+              type="textField"
+              label="Search Packages"
+              name="searchQuery"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              onClick={() => {
+                searchApp(formControl.getValues("searchQuery"), "StoreApp");
+              }}
+            >
+              Search
+            </Button>
+          </Grid>
+
+          <Grid item xs={12}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Select Package"
+              name="packageSearch"
+              options={winGetSearchResults.data?.data?.map((item) => ({
+                value: item,
+                label: `${item.applicationName} - ${item.packagename}`,
+              }))}
+              multiple={false}
+              formControl={formControl}
+              isFetching={winGetSearchResults.isLoading}
+            />
+          </Grid>
           <Grid item xs={12} md={6}>
             <CippFormComponent
               type="textField"
@@ -392,7 +468,42 @@ const ApplicationDeploymentForm = () => {
           compareType="is"
           compareValue="chocolateyApp"
         >
-          {/* Since we cannot make API calls, we'll simulate a search function */}
+          <Grid item xs={12} md={6}>
+            <CippFormComponent
+              type="textField"
+              label="Search Packages"
+              name="searchQuery"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              onClick={() => {
+                searchApp(formControl.getValues("searchQuery"), "choco");
+              }}
+            >
+              Search
+            </Button>
+          </Grid>
+
+          <Grid item xs={12}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Select Package"
+              name="packageSearch"
+              options={
+                ChocosearchResults.isSuccess &&
+                ChocosearchResults.data?.data?.Results?.map((item) => ({
+                  value: item,
+                  label: `${item.applicationName} - ${item.packagename}`,
+                }))
+              }
+              multiple={false}
+              formControl={formControl}
+              isFetching={ChocosearchResults.isLoading}
+            />
+          </Grid>
+
           <Grid item xs={12} md={6}>
             <CippFormComponent
               type="textField"

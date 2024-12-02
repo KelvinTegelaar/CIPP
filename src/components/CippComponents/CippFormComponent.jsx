@@ -240,6 +240,7 @@ export const CippFormComponent = (props) => {
               render={({ field }) => (
                 <CippAutoComplete
                   {...other}
+                  isFetching={other.isFetching}
                   variant="filled"
                   defaultValue={field.value}
                   label={label}
