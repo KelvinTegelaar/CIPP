@@ -14,6 +14,9 @@ import { router } from "next/router";
 const Page = () => {
   const [currentRelationship, setCurrentRelationship] = useState(null);
   const [currentInvite, setCurrentInvite] = useState(null);
+  const [rolesMissingFromMapping, setRolesMissingFromMapping] = useState([]);
+  const [rolesMissingFromRelationship, setRolesMissingFromRelationship] = useState([]);
+
   const queryId = router.query.id;
   const formControl = useForm({
     mode: "onChange",
@@ -38,6 +41,11 @@ const Page = () => {
   const selectedRelationship = useWatch({
     control: formControl.control,
     name: "id",
+  });
+
+  const selectedRole = useWatch({
+    control: formControl.control,
+    name: "gdapRoles",
   });
 
   useEffect(() => {
@@ -85,6 +93,47 @@ const Page = () => {
     selectedRelationship,
     currentRelationship,
   ]);
+
+  useEffect(() => {
+    if (currentRelationship?.value && (currentInvite || selectedRole)) {
+      var currentRoles = [];
+      if (currentInvite?.RoleMappings) {
+        currentRoles = currentInvite?.RoleMappings;
+      } else {
+        currentRoles = selectedRole.value;
+      }
+
+      var relationshipRoles = currentRelationship.addedFields.accessDetails.unifiedRoles;
+      var missingRoles = [];
+      var missingRolesRelationship = [];
+      console.log(currentRoles, relationshipRoles);
+
+      currentRoles.forEach((role) => {
+        if (
+          !relationshipRoles.find(
+            (relationshipRole) => relationshipRole.roleDefinitionId === role.roleDefinitionId
+          )
+        ) {
+          missingRoles.push(role);
+        }
+      });
+
+      relationshipRoles.forEach((role) => {
+        if (
+          !currentRoles.find(
+            (currentRole) => currentRole.roleDefinitionId === role.roleDefinitionId
+          )
+        ) {
+          // lookup role from GDAPRoles
+          var role = GDAPRoles.find((gdapRole) => gdapRole.ObjectId === role.roleDefinitionId);
+          missingRolesRelationship.push(role);
+        }
+      });
+
+      setRolesMissingFromMapping(missingRoles);
+      setRolesMissingFromRelationship(missingRolesRelationship);
+    }
+  }, [selectedRole, currentInvite, currentRelationship]);
 
   return (
     <>
@@ -223,6 +272,23 @@ const Page = () => {
                   ]}
                 />
               </Box>
+              {(currentInvite || selectedRole) && rolesMissingFromMapping.length > 0 && (
+                <Alert severity="warning">
+                  The following roles are not available in the selected relationship and will not be
+                  mapped: {rolesMissingFromMapping.map((role) => role.RoleName).join(", ")}
+                </Alert>
+              )}
+              {(currentInvite || selectedRole) && rolesMissingFromRelationship.length > 0 && (
+                <Alert severity="warning">
+                  The following roles are not mapped with the current template:{" "}
+                  {rolesMissingFromRelationship.map((role) => role.Name).join(", ")}
+                </Alert>
+              )}
+              {(currentInvite || selectedRole) &&
+                rolesMissingFromMapping.length === 0 &&
+                rolesMissingFromRelationship.length === 0 && (
+                  <Alert severity="success">All roles are mapped correctly</Alert>
+                )}
             </>
           )}
         </Stack>
