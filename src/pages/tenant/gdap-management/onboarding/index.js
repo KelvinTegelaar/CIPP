@@ -44,6 +44,7 @@ const Page = () => {
       actions={actions}
       simpleColumns={simpleColumns}
       tenantInTitle={false}
+      queryKey="ListTenantOnboarding"
       cardButton={
         <Button component={Link} href="/tenant/gdap-management/onboarding/start">
           Start Tenant Onboarding
