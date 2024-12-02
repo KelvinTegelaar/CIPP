@@ -6,7 +6,7 @@ import { CippFormComponent } from "/src/components/CippComponents/CippFormCompon
 import GDAPRoles from "/src/data/GDAPRoles";
 import { Box, Stack } from "@mui/system";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
-import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { getCippFormatting } from "/src/utils/get-cipp-formatting";
 import { router } from "next/router";
@@ -14,6 +14,9 @@ import { router } from "next/router";
 const Page = () => {
   const [currentRelationship, setCurrentRelationship] = useState(null);
   const [currentInvite, setCurrentInvite] = useState(null);
+  const [rolesMissingFromMapping, setRolesMissingFromMapping] = useState([]);
+  const [rolesMissingFromRelationship, setRolesMissingFromRelationship] = useState([]);
+
   const queryId = router.query.id;
   const formControl = useForm({
     mode: "onChange",
@@ -24,20 +27,113 @@ const Page = () => {
     queryKey: "ListGDAPInvite",
   });
 
+  const relationshipList = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      TenantFilter: "",
+      Endpoint: "tenantRelationships/delegatedAdminRelationships",
+      $filter:
+        "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
+    },
+    queryKey: "GDAPRelationships",
+  });
+
   const selectedRelationship = useWatch({
     control: formControl.control,
     name: "id",
   });
 
+  const selectedRole = useWatch({
+    control: formControl.control,
+    name: "gdapRoles",
+  });
+
   useEffect(() => {
-    if (currentInvites.isSuccess && selectedRelationship !== currentRelationship) {
+    if (
+      relationshipList.isSuccess &&
+      currentInvites.isSuccess &&
+      selectedRelationship !== currentRelationship
+    ) {
+      var formValue = selectedRelationship;
+      if (!selectedRelationship?.value) {
+        var relationship = relationshipList.data?.Results?.find(
+          (relationship) => relationship.id === selectedRelationship
+        );
+
+        if (relationship) {
+          formValue = {
+            label:
+              (relationship?.customer?.displayName ?? "Pending Invite") +
+              " - (" +
+              relationship?.id +
+              ")",
+            value: relationship?.id,
+            addedFields: {
+              customer: relationship?.customer,
+              id: relationship?.id,
+              createdDateTime: relationship?.createdDateTime,
+              accessDetails: relationship?.accessDetails,
+              status: relationship?.status,
+              autoExtendDuration: relationship?.autoExtendDuration,
+              lastModifiedDateTime: relationship?.lastModifiedDateTime,
+            },
+          };
+          formControl.setValue("id", formValue);
+        }
+      }
       const invite = currentInvites?.data?.pages?.[0]?.find(
-        (invite) => invite.RowKey === selectedRelationship?.value
+        (invite) => invite.RowKey === formValue?.value
       );
-      setCurrentRelationship(selectedRelationship);
+      setCurrentRelationship(formValue);
       setCurrentInvite(invite);
     }
-  }, [currentInvites.isSuccess, selectedRelationship, currentRelationship]);
+  }, [
+    relationshipList.isSuccess,
+    currentInvites.isSuccess,
+    selectedRelationship,
+    currentRelationship,
+  ]);
+
+  useEffect(() => {
+    if (currentRelationship?.value && (currentInvite || selectedRole)) {
+      var currentRoles = [];
+      if (currentInvite?.RoleMappings) {
+        currentRoles = currentInvite?.RoleMappings;
+      } else {
+        currentRoles = selectedRole.value;
+      }
+
+      var relationshipRoles = currentRelationship.addedFields.accessDetails.unifiedRoles;
+      var missingRoles = [];
+      var missingRolesRelationship = [];
+      console.log(currentRoles, relationshipRoles);
+
+      currentRoles.forEach((role) => {
+        if (
+          !relationshipRoles.find(
+            (relationshipRole) => relationshipRole.roleDefinitionId === role.roleDefinitionId
+          )
+        ) {
+          missingRoles.push(role);
+        }
+      });
+
+      relationshipRoles.forEach((role) => {
+        if (
+          !currentRoles.find(
+            (currentRole) => currentRole.roleDefinitionId === role.roleDefinitionId
+          )
+        ) {
+          // lookup role from GDAPRoles
+          var role = GDAPRoles.find((gdapRole) => gdapRole.ObjectId === role.roleDefinitionId);
+          missingRolesRelationship.push(role);
+        }
+      });
+
+      setRolesMissingFromMapping(missingRoles);
+      setRolesMissingFromRelationship(missingRolesRelationship);
+    }
+  }, [selectedRole, currentInvite, currentRelationship]);
 
   return (
     <>
@@ -45,7 +141,7 @@ const Page = () => {
         queryKey="ListGDAPInvite"
         formControl={formControl}
         title="Tenant Onboarding"
-        backButtonTitle="GDAP Invites"
+        backButtonTitle="Tenant Onboarding"
         postUrl="/api/ExecOnboardTenant"
         formPageType="Start"
       >
@@ -92,7 +188,7 @@ const Page = () => {
               <CippFormComponent
                 formControl={formControl}
                 name="gdapRoles"
-                label="Select GDAP Role Template"
+                label="Assign a GDAP Role Template"
                 type="autoComplete"
                 api={{
                   url: "/api/ExecGDAPRoleTemplate",
@@ -176,6 +272,23 @@ const Page = () => {
                   ]}
                 />
               </Box>
+              {(currentInvite || selectedRole) && rolesMissingFromMapping.length > 0 && (
+                <Alert severity="warning">
+                  The following roles are not available in the selected relationship and will not be
+                  mapped: {rolesMissingFromMapping.map((role) => role.RoleName).join(", ")}
+                </Alert>
+              )}
+              {(currentInvite || selectedRole) && rolesMissingFromRelationship.length > 0 && (
+                <Alert severity="warning">
+                  The following roles are not mapped with the current template:{" "}
+                  {rolesMissingFromRelationship.map((role) => role.Name).join(", ")}
+                </Alert>
+              )}
+              {(currentInvite || selectedRole) &&
+                rolesMissingFromMapping.length === 0 &&
+                rolesMissingFromRelationship.length === 0 && (
+                  <Alert severity="success">All roles are mapped correctly</Alert>
+                )}
             </>
           )}
         </Stack>
