@@ -1,4 +1,12 @@
-import { Alert, Button, List, ListItem, SvgIcon, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Step,
+  Stepper,
+  Typography,
+} from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
@@ -11,6 +19,8 @@ import { useEffect, useState } from "react";
 import { getCippFormatting } from "/src/utils/get-cipp-formatting";
 import { router } from "next/router";
 import cippDefaults from "/src/data/CIPPDefaultGDAPRoles";
+import { WizardSteps } from "/src/components/CippWizard/wizard-steps";
+import { ExpandMore } from "@mui/icons-material";
 
 const Page = () => {
   const [currentRelationship, setCurrentRelationship] = useState(null);
@@ -18,6 +28,8 @@ const Page = () => {
   const [rolesMissingFromMapping, setRolesMissingFromMapping] = useState([]);
   const [rolesMissingFromRelationship, setRolesMissingFromRelationship] = useState([]);
   const [missingDefaults, setMissingDefaults] = useState(false);
+  const [currentOnboarding, setCurrentOnboarding] = useState(null);
+  const [activeStep, setActiveStep] = useState(0);
 
   const queryId = router.query.id;
   const formControl = useForm({
@@ -40,6 +52,10 @@ const Page = () => {
     queryKey: "GDAPRelationships",
   });
 
+  const onboardingList = ApiGetCallWithPagination({
+    url: "/api/ListTenantOnboarding",
+  });
+
   const selectedRelationship = useWatch({
     control: formControl.control,
     name: "id",
@@ -54,6 +70,7 @@ const Page = () => {
     if (
       relationshipList.isSuccess &&
       currentInvites.isSuccess &&
+      onboardingList.isSuccess &&
       selectedRelationship !== currentRelationship
     ) {
       var formValue = selectedRelationship;
@@ -61,7 +78,6 @@ const Page = () => {
         var relationship = relationshipList.data?.Results?.find(
           (relationship) => relationship.id === selectedRelationship
         );
-
         if (relationship) {
           formValue = {
             label:
@@ -86,12 +102,32 @@ const Page = () => {
       const invite = currentInvites?.data?.pages?.[0]?.find(
         (invite) => invite.RowKey === formValue?.value
       );
+
+      const onboarding = onboardingList.data?.pages?.[0]?.find(
+        (onboarding) => onboarding.RowKey === formValue?.value
+      );
+      if (onboarding) {
+        setCurrentOnboarding(onboarding);
+        var currentStep = {};
+        var stepCount = 0;
+        onboarding.OnboardingSteps.map((step) => {
+          if (step.Status !== "pending") {
+            currentStep = step;
+            stepCount++;
+          }
+        });
+        setActiveStep(stepCount);
+      } else {
+        setCurrentOnboarding(null);
+        setActiveStep(0);
+      }
       setCurrentRelationship(formValue);
       setCurrentInvite(invite ?? null);
     }
   }, [
     relationshipList.isSuccess,
     currentInvites.isSuccess,
+    onboardingList.isSuccess,
     selectedRelationship,
     currentRelationship,
   ]);
@@ -214,7 +250,7 @@ const Page = () => {
               <Alert severity="warning">
                 The selected relationship does not contain all the default roles. CIPP may not
                 function correctly if this is the only relationship with the tenant. Onboarding will
-                fail unless you select to ignore the missing default roles.
+                fail unless you ignore the missing default roles.
               </Alert>
               <CippFormComponent
                 formControl={formControl}
@@ -227,77 +263,15 @@ const Page = () => {
           )}
           {currentRelationship?.value && (
             <>
-              <Box>
-                <Typography variant="h6">Current Relationship Details</Typography>
-                <CippPropertyList
-                  layout="double"
-                  propertyItems={[
-                    {
-                      label: "Customer",
-                      value:
-                        currentRelationship?.addedFields?.customer?.displayName ?? "Pending Invite",
-                    },
-                    {
-                      label: "Status",
-                      value: getCippFormatting(
-                        currentRelationship?.addedFields?.status,
-                        "status",
-                        "text"
-                      ),
-                    },
-                    {
-                      label: "Auto Extend Duration",
-                      value:
-                        currentRelationship?.addedFields?.autoExtendDuration == "PT0S"
-                          ? "Not eligible for auto-extend"
-                          : getCippFormatting(
-                              currentRelationship?.addedFields?.autoExtendDuration,
-                              "autoExtendDuration",
-                              "text"
-                            ),
-                    },
-                    {
-                      label: "Pending Invite",
-                      value: currentInvite?.RowKey ? "Yes" : "No",
-                    },
-                    {
-                      label: "Created Date",
-                      value: getCippFormatting(
-                        currentRelationship?.addedFields?.createdDateTime,
-                        "createdDateTime",
-                        "date"
-                      ),
-                    },
-                    {
-                      label: "Last Modified Date",
-                      value: getCippFormatting(
-                        currentRelationship?.addedFields?.lastModifiedDateTime,
-                        "lastModifiedDateTime",
-                        "date"
-                      ),
-                    },
-                    {
-                      label: "Invite URL",
-                      value: getCippFormatting(
-                        "https://admin.microsoft.com/AdminPortal/Home#/partners/invitation/granularAdminRelationships/" +
-                          currentRelationship.value,
-                        "InviteUrl",
-                        "url"
-                      ),
-                    },
-                    {
-                      label: "Access Details",
-                      value: getCippFormatting(
-                        currentInvite
-                          ? currentInvite.RoleMappings
-                          : currentRelationship?.addedFields?.accessDetails.unifiedRoles,
-                        "unifiedRoles",
-                        "object"
-                      ),
-                    },
-                  ]}
-                />
-              </Box>
+              {currentRelationship?.addedFields?.accessDetails?.unifiedRoles.some(
+                (role) => role.roleDefinitionId === "62e90394-69f5-4237-9190-012177145e10"
+              ) && (
+                <Alert severity="warning">
+                  The Company Administrator role is a highly privileged role that should be used
+                  with caution. GDAP Relationships with this role will not be eligible for
+                  auto-extend.
+                </Alert>
+              )}
               {(currentInvite || selectedRole) && rolesMissingFromMapping.length > 0 && (
                 <Alert severity="warning">
                   The following roles are not available in the selected relationship and will not be
@@ -315,14 +289,97 @@ const Page = () => {
                 rolesMissingFromRelationship.length === 0 && (
                   <Alert severity="success">All roles are mapped correctly</Alert>
                 )}
-              {currentRelationship?.addedFields?.accessDetails?.unifiedRoles.some(
-                (role) => role.roleDefinitionId === "62e90394-69f5-4237-9190-012177145e10"
-              ) && (
-                <Alert severity="warning">
-                  The Company Administrator role is a highly privileged role that should be used
-                  with caution. GDAP Relationships with this role will not be eligible for
-                  auto-extend.
-                </Alert>
+              <Accordion variant="outlined" defaultExpanded={true}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography variant="h6">Current Relationship Details</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <CippPropertyList
+                    layout="double"
+                    showDivider={false}
+                    propertyItems={[
+                      {
+                        label: "Customer",
+                        value:
+                          currentRelationship?.addedFields?.customer?.displayName ??
+                          "Pending Invite",
+                      },
+                      {
+                        label: "Status",
+                        value: getCippFormatting(
+                          currentRelationship?.addedFields?.status,
+                          "status",
+                          "text"
+                        ),
+                      },
+                      {
+                        label: "Auto Extend Duration",
+                        value:
+                          currentRelationship?.addedFields?.autoExtendDuration == "PT0S"
+                            ? "Not eligible for auto-extend"
+                            : getCippFormatting(
+                                currentRelationship?.addedFields?.autoExtendDuration,
+                                "autoExtendDuration",
+                                "text"
+                              ),
+                      },
+                      {
+                        label: "Pending Invite",
+                        value: currentInvite?.RowKey ? "Yes" : "No",
+                      },
+                      {
+                        label: "Created Date",
+                        value: getCippFormatting(
+                          currentRelationship?.addedFields?.createdDateTime,
+                          "createdDateTime",
+                          "date"
+                        ),
+                      },
+                      {
+                        label: "Last Modified Date",
+                        value: getCippFormatting(
+                          currentRelationship?.addedFields?.lastModifiedDateTime,
+                          "lastModifiedDateTime",
+                          "date"
+                        ),
+                      },
+                      {
+                        label: "Invite URL",
+                        value: getCippFormatting(
+                          "https://admin.microsoft.com/AdminPortal/Home#/partners/invitation/granularAdminRelationships/" +
+                            currentRelationship.value,
+                          "InviteUrl",
+                          "url"
+                        ),
+                      },
+                      {
+                        label: "Access Details",
+                        value: getCippFormatting(
+                          currentInvite
+                            ? currentInvite.RoleMappings
+                            : currentRelationship?.addedFields?.accessDetails.unifiedRoles,
+                          "unifiedRoles",
+                          "object"
+                        ),
+                      },
+                    ]}
+                  />
+                </AccordionDetails>
+              </Accordion>
+
+              {currentOnboarding && (
+                <>
+                  <WizardSteps
+                    activeStep={activeStep}
+                    orientation="vertical"
+                    steps={
+                      currentOnboarding?.OnboardingSteps.map((step) => ({
+                        title: step.Title,
+                        description: step.Message,
+                      })) ?? []
+                    }
+                  />
+                </>
               )}
             </>
           )}
