@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid2";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
 import { ApiPostCall, ApiGetCallWithPagination } from "../../../api/ApiCall";
 import {
+  Add,
   AdminPanelSettings,
   Group,
   HourglassBottom,
@@ -19,6 +20,7 @@ import { CippApiResults } from "../../../components/CippComponents/CippApiResult
 import { useEffect, useState } from "react";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { WizardSteps } from "/src/components/CippWizard/wizard-steps";
+import Link from "next/link";
 
 const Page = () => {
   const [createDefaults, setCreateDefaults] = useState(false);
@@ -51,7 +53,7 @@ const Page = () => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: "ListGDAPRoleTemplates",
+    relatedQueryKeys: ["ListGDAPRoleTemplates", "ListGDAPRoles"],
   });
 
   useEffect(() => {
@@ -87,6 +89,7 @@ const Page = () => {
     relationships.isSuccess,
     mappedRoles.isSuccess,
     roleTemplates.isSuccess,
+    roleTemplates.isFetching,
     pendingInvites.isSuccess,
   ]);
 
@@ -141,35 +144,51 @@ const Page = () => {
             ]}
           />
         </Grid>
-        {createDefaults && (
+        {activeStep === 4 && (
           <Grid size={12}>
-            <Box>
-              <Alert severity="warning">
-                The CIPP Defaults template is missing from the GDAP Role Templates. Create it now?
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() =>
-                    createCippDefaults.mutate({
-                      url: "/api/ExecAddGDAPRole",
-                      data: { TemplateId: "CIPP Defaults" },
-                    })
-                  }
-                  sx={{ ml: 2 }}
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <PlusIcon />
-                    </SvgIcon>
-                  }
-                >
-                  Create CIPP Defaults
-                </Button>
-              </Alert>
-            </Box>
-            <Box>
-              <CippApiResults apiObject={createCippDefaults} />
-            </Box>
+            <Button
+              LinkComponent={Link}
+              href="/tenant/gdap-management/invites/add"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              Add a Tenant
+            </Button>
           </Grid>
+        )}
+        {createDefaults && (
+          <>
+            <Grid size={12}>
+              <Box>
+                <Alert severity="warning">
+                  The CIPP Defaults template is missing from the GDAP Role Templates. Create it now?
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() =>
+                      createCippDefaults.mutate({
+                        url: "/api/ExecAddGDAPRole",
+                        data: { TemplateId: "CIPP Defaults" },
+                      })
+                    }
+                    sx={{ ml: 2 }}
+                    startIcon={
+                      <SvgIcon fontSize="small">
+                        <PlusIcon />
+                      </SvgIcon>
+                    }
+                  >
+                    Create CIPP Defaults
+                  </Button>
+                </Alert>
+              </Box>
+            </Grid>
+            <Grid size={12}>
+              <Box>
+                <CippApiResults apiObject={createCippDefaults} />
+              </Box>
+            </Grid>
+          </>
         )}
         <Grid size={{ xs: 12, sm: 6 }}>
           <CippButtonCard

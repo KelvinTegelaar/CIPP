@@ -10,12 +10,14 @@ import { ApiGetCall, ApiGetCallWithPagination } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { getCippFormatting } from "/src/utils/get-cipp-formatting";
 import { router } from "next/router";
+import cippDefaults from "/src/data/CIPPDefaultGDAPRoles";
 
 const Page = () => {
   const [currentRelationship, setCurrentRelationship] = useState(null);
   const [currentInvite, setCurrentInvite] = useState(null);
   const [rolesMissingFromMapping, setRolesMissingFromMapping] = useState([]);
   const [rolesMissingFromRelationship, setRolesMissingFromRelationship] = useState([]);
+  const [missingDefaults, setMissingDefaults] = useState(false);
 
   const queryId = router.query.id;
   const formControl = useForm({
@@ -85,7 +87,7 @@ const Page = () => {
         (invite) => invite.RowKey === formValue?.value
       );
       setCurrentRelationship(formValue);
-      setCurrentInvite(invite);
+      setCurrentInvite(invite ?? null);
     }
   }, [
     relationshipList.isSuccess,
@@ -95,20 +97,18 @@ const Page = () => {
   ]);
 
   useEffect(() => {
-    if (currentRelationship?.value && (currentInvite || selectedRole)) {
+    if (currentRelationship?.value) {
       var currentRoles = [];
       if (currentInvite?.RoleMappings) {
         currentRoles = currentInvite?.RoleMappings;
       } else {
-        currentRoles = selectedRole.value;
+        currentRoles = selectedRole?.value;
       }
-
       var relationshipRoles = currentRelationship.addedFields.accessDetails.unifiedRoles;
       var missingRoles = [];
       var missingRolesRelationship = [];
-      console.log(currentRoles, relationshipRoles);
 
-      currentRoles.forEach((role) => {
+      currentRoles?.forEach((role) => {
         if (
           !relationshipRoles.find(
             (relationshipRole) => relationshipRole.roleDefinitionId === role.roleDefinitionId
@@ -118,9 +118,9 @@ const Page = () => {
         }
       });
 
-      relationshipRoles.forEach((role) => {
+      relationshipRoles?.forEach((role) => {
         if (
-          !currentRoles.find(
+          !currentRoles?.find(
             (currentRole) => currentRole.roleDefinitionId === role.roleDefinitionId
           )
         ) {
@@ -130,6 +130,13 @@ const Page = () => {
         }
       });
 
+      var missingDefaults = [];
+      relationshipRoles.forEach((role) => {
+        if (!cippDefaults.find((defaultRole) => defaultRole.value === role.roleDefinitionId)) {
+          missingDefaults.push(role);
+        }
+      });
+      setMissingDefaults(missingDefaults.length > 0);
       setRolesMissingFromMapping(missingRoles);
       setRolesMissingFromRelationship(missingRolesRelationship);
     }
@@ -202,6 +209,22 @@ const Page = () => {
               />
             </>
           )}
+          {missingDefaults && (
+            <>
+              <Alert severity="warning">
+                The selected relationship does not contain all the default roles. CIPP may not
+                function correctly if this is the only relationship with the tenant. Onboarding will
+                fail unless you select to ignore the missing default roles.
+              </Alert>
+              <CippFormComponent
+                formControl={formControl}
+                name="ignoreMissingRoles"
+                label="Ignore Missing Default Roles"
+                type="switch"
+                value={false}
+              />
+            </>
+          )}
           {currentRelationship?.value && (
             <>
               <Box>
@@ -224,11 +247,14 @@ const Page = () => {
                     },
                     {
                       label: "Auto Extend Duration",
-                      value: getCippFormatting(
-                        currentRelationship?.addedFields?.autoExtendDuration,
-                        "autoExtendDuration",
-                        "text"
-                      ),
+                      value:
+                        currentRelationship?.addedFields?.autoExtendDuration == "PT0S"
+                          ? "Not eligible for auto-extend"
+                          : getCippFormatting(
+                              currentRelationship?.addedFields?.autoExtendDuration,
+                              "autoExtendDuration",
+                              "text"
+                            ),
                     },
                     {
                       label: "Pending Invite",
@@ -289,6 +315,15 @@ const Page = () => {
                 rolesMissingFromRelationship.length === 0 && (
                   <Alert severity="success">All roles are mapped correctly</Alert>
                 )}
+              {currentRelationship?.addedFields?.accessDetails?.unifiedRoles.some(
+                (role) => role.roleDefinitionId === "62e90394-69f5-4237-9190-012177145e10"
+              ) && (
+                <Alert severity="warning">
+                  The Company Administrator role is a highly privileged role that should be used
+                  with caution. GDAP Relationships with this role will not be eligible for
+                  auto-extend.
+                </Alert>
+              )}
             </>
           )}
         </Stack>

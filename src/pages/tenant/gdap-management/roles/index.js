@@ -29,9 +29,10 @@ const actions = [
         creatable: true,
         multiple: false,
         api: {
-          url: "/api/ListGDAPRoleTemplates",
-          labelField: "RowKey",
-          valueField: "RowKey",
+          url: "/api/ExecGDAPRoleTemplate",
+          labelField: "TemplateId",
+          valueField: "TemplateId",
+          dataKey: "Results",
         },
       },
     ],
