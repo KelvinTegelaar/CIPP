@@ -2,6 +2,8 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
 import { LaptopMac } from "@mui/icons-material";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Applications";
@@ -91,24 +93,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      additionalButtons={[
-        {
-          label: "Add Choco app",
-          href: "/endpoint/applications/add-choco-app",
-        },
-        {
-          label: "Add Store app",
-          href: "/endpoint/applications/add-winget-app",
-        },
-        {
-          label: "Add Office app",
-          href: "/endpoint/applications/add-office-app",
-        },
-        {
-          label: "Add MSP app",
-          href: "/endpoint/applications/add-rmm-app",
-        },
-      ]}
+      cardButton={
+        <>
+          <Button component={Link} href="/endpoint/applications/list/add">
+            Add Application
+          </Button>
+        </>
+      }
     />
   );
 };

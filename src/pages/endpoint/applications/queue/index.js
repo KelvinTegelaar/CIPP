@@ -1,6 +1,8 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { CheckmarkIcon } from "react-hot-toast";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Queued Applications";
@@ -33,7 +35,13 @@ const Page = () => {
       actions={actions}
       simpleColumns={simpleColumns}
       tenantInTitle={false}
-      //still needs a card button for deploy now + a button to the wizard.
+      cardButton={
+        <>
+          <Button component={Link} href="/endpoint/applications/list/add">
+            Add Application
+          </Button>
+        </>
+      }
     />
   );
 };
