@@ -79,7 +79,7 @@ const ApplicationDeploymentForm = () => {
     <CippFormPage
       resetForm={false}
       queryKey="Queued Applications"
-      title="Application Deployment Wizard"
+      title="Application Deployment"
       formControl={formControl}
       postUrl={postUrl[applicationType?.value]}
       backButtonTitle="Applications"

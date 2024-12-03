@@ -3,10 +3,11 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
-import { Grid, Typography, Link } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Tenant Mode";

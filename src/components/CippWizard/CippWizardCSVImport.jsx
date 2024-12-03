@@ -16,6 +16,7 @@ export const CippWizardCSVImport = (props) => {
     fields,
     name,
     manualFields = true,
+    nameToCSVMapping,
   } = props;
   const tableData = useWatch({ control: formControl.control, name: name });
   const [newTableData, setTableData] = useState([]);
@@ -55,7 +56,12 @@ export const CippWizardCSVImport = (props) => {
       >
         Download Example CSV
       </Link>
-      <CippFormComponent type="CSVReader" name={name} formControl={formControl} />
+      <CippFormComponent
+        nameToCSVMapping={nameToCSVMapping}
+        type="CSVReader"
+        name={name}
+        formControl={formControl}
+      />
       <Grid container spacing={2}>
         {manualFields &&
           fields.map((field) => (
@@ -80,6 +86,7 @@ export const CippWizardCSVImport = (props) => {
         data={tableData}
         simple={false}
         simpleColumns={fields}
+        noCard={true}
       />
       <CippWizardStepButtons
         currentStep={currentStep}

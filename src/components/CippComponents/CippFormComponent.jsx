@@ -293,6 +293,27 @@ export const CippFormComponent = (props) => {
       );
 
     case "CSVReader":
+      const remapData = (data, nameToCSVMapping) => {
+        if (nameToCSVMapping && data) {
+          const csvHeaderToNameMapping = Object.entries(nameToCSVMapping).reduce(
+            (acc, [internalKey, csvHeader]) => {
+              acc[csvHeader] = internalKey;
+              return acc;
+            },
+            {}
+          );
+
+          return data.map((row) => {
+            const newRow = {};
+            for (const [key, value] of Object.entries(row)) {
+              const newKey = csvHeaderToNameMapping[key] || key;
+              newRow[newKey] = value;
+            }
+            return newRow;
+          });
+        }
+        return data;
+      };
       return (
         <>
           <div>
@@ -304,10 +325,12 @@ export const CippFormComponent = (props) => {
                   <CSVReader
                     config={{ header: true, skipEmptyLines: true }}
                     onFileLoaded={(data) => {
-                      field.onChange(data);
+                      const remappedData = remapData(data, other.nameToCSVMapping);
+                      field.onChange(remappedData);
                     }}
                     onDrop={(data) => {
-                      field.onChange(data);
+                      const remappedData = remapData(data, other.nameToCSVMapping);
+                      field.onChange(remappedData);
                     }}
                     {...other}
                   >

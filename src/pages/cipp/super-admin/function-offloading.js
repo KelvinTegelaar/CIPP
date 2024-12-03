@@ -3,11 +3,12 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
-import { Typography, Link } from "@mui/material";
+import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Function Offloading";

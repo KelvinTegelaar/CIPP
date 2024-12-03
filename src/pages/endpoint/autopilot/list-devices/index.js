@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Autopilot Devices";
@@ -65,7 +67,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      //add autopilot device button
+      cardButton={
+        <>
+          <Button component={Link} href="/endpoint/autopilot/add-device">
+            Add Autopilot Devices
+          </Button>
+        </>
+      }
     />
   );
 };
