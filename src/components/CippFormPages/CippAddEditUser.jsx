@@ -3,7 +3,7 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
-import countryList from "/src/data/CountryList.json";
+import countryList from "/src/data/countryList.json";
 import { CippFormLicenseSelector } from "/src/components/CippComponents/CippFormLicenseSelector";
 import Grid from "@mui/material/Grid";
 

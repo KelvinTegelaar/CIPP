@@ -8,7 +8,7 @@ const Page = () => {
   const actions = [
     {
       label: "Research Compromised Account",
-      link: "/identity/administration/ViewBec?userId=[userId]&tenantDomain=[tenantDomain]&ID=[userPrincipalName]",
+      link: "/identity/administration/users/user/bec?userId=[userId]&tenantFilter=[Tenant]",
       color: "info",
     },
   ];
@@ -66,6 +66,7 @@ const Page = () => {
         Endpoint: "identityProtection/riskDetections",
         manualPagination: true,
         $count: true,
+        NoPagination: true,
         $top: 999,
       }}
       apiDataKey="Results"
