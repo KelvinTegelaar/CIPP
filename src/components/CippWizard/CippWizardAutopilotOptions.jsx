@@ -10,7 +10,7 @@ export const CippWizardAutopilotOptions = (props) => {
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
             <CippFormComponent
-              type="textfield"
+              type="textField"
               label="Group Name (Leave blank to automatically generate)"
               fullWidth
               name="GroupName"
