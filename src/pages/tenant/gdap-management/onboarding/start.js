@@ -59,6 +59,7 @@ const Page = () => {
 
   const onboardingList = ApiGetCallWithPagination({
     url: "/api/ListTenantOnboarding",
+    queryKey: "ListTenantOnboarding",
   });
 
   const startOnboarding = ApiPostCall({
@@ -150,11 +151,11 @@ const Page = () => {
     currentInvites.isSuccess,
     onboardingList.isSuccess,
     selectedRelationship,
-    currentRelationship,
   ]);
 
   useEffect(() => {
     if (currentRelationship?.value) {
+      console.log("useEffect");
       var currentRoles = [];
       if (currentInvite?.RoleMappings) {
         currentRoles = currentInvite?.RoleMappings;
@@ -203,10 +204,11 @@ const Page = () => {
     // poll onboarding status
     if (
       pollOnboarding &&
-      (startOnboarding?.data?.data?.Status !== "succeeded" ||
-        startOnboarding?.data?.data?.Status !== "failed")
+      startOnboarding.isSuccess &&
+      startOnboarding?.data?.data?.Status !== "succeeded" &&
+      startOnboarding?.data?.data?.Status !== "failed"
     ) {
-      console.log(startOnboarding?.data?.data);
+      console.log(startOnboarding?.data?.data?.Status);
       const interval = setInterval(() => {
         startOnboarding.mutate({
           url: "/api/ExecOnboardTenant",
@@ -218,12 +220,12 @@ const Page = () => {
       return () => clearInterval(interval);
     }
     if (
-      startOnboarding.data?.Status === "succeeded" ||
-      startOnboarding?.data?.Status === "failed"
+      startOnboarding?.data?.data?.Status === "succeeded" ||
+      startOnboarding?.data?.data?.Status === "failed"
     ) {
       setPollOnboarding(false);
     }
-  }, [pollOnboarding, startOnboarding.isSuccess, startOnboarding.data]);
+  }, [pollOnboarding, startOnboarding.isSuccess, startOnboarding?.data?.data]);
 
   const handleSubmit = () => {
     var data = {
