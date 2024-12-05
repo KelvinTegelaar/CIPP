@@ -27,16 +27,6 @@ const AutopilotProfileForm = () => {
     },
   });
 
-  const selectedTenants = useWatch({
-    control: formControl.control,
-    name: "selectedTenants",
-  });
-
-  const handleSubmit = (data) => {
-    console.log(data);
-    // Here you can implement the submission logic
-  };
-
   return (
     <CippFormPage
       resetForm={false}
@@ -45,7 +35,6 @@ const AutopilotProfileForm = () => {
       formControl={formControl}
       postUrl="/api/AddAutopilotConfig"
       backButtonTitle="Autopilot Profiles"
-      onSubmit={formControl.handleSubmit(handleSubmit)}
     >
       <Grid container spacing={2}>
         {/* Tenant Selector */}

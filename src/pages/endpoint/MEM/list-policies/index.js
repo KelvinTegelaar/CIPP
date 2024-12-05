@@ -12,7 +12,6 @@ const Page = () => {
       type: "POST",
       url: "/api/AddIntuneTemplate",
       data: {
-        TenantFilter: "Tenant",
         ID: "id",
         URLName: "URLName",
       },
@@ -26,7 +25,6 @@ const Page = () => {
       url: "/api/ExecAssignPolicy",
       data: {
         AssignTo: "allLicensedUsers",
-        TenantFilter: "Tenant",
         ID: "id",
         type: "URLName",
       },
@@ -40,7 +38,6 @@ const Page = () => {
       url: "/api/ExecAssignPolicy",
       data: {
         AssignTo: "AllDevices",
-        TenantFilter: "Tenant",
         ID: "id",
         type: "URLName",
       },
@@ -54,7 +51,6 @@ const Page = () => {
       url: "/api/ExecAssignPolicy",
       data: {
         AssignTo: "AllDevicesAndUsers",
-        TenantFilter: "Tenant",
         ID: "id",
         type: "URLName",
       },

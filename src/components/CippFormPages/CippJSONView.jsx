@@ -16,6 +16,7 @@ import { PropertyList } from "../property-list";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
+import { ApiPostCall } from "../../api/ApiCall";
 
 const cleanObject = (obj) => {
   if (Array.isArray(obj)) {
@@ -75,10 +76,61 @@ const renderListItems = (data, onItemClick) => {
   });
 };
 
-function CippJsonView({ object = { "No Data Selected": "No Data Selected" } }) {
+function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, type }) {
   const [viewJson, setViewJson] = useState(false);
   const [drilldownData, setDrilldownData] = useState([]);
 
+  const renderIntuneItems = (data) => {
+    const items = [];
+
+    // The first propertylistItem should always be the policy name
+    const policyNameKey = ["Name", "DisplayName", "displayName", "name"].find((key) => key in data);
+    if (policyNameKey) {
+      items.push(
+        <PropertyListItem key="policyName" label="Policy Name" value={data[policyNameKey]} />
+      );
+    }
+
+    // Generate items based on the type of policy
+    if (data.omaSettings) {
+      data.omaSettings.forEach((omaSetting, index) => {
+        items.push(
+          <PropertyListItem
+            key={`omaSetting-${index}`}
+            label={`${omaSetting.displayName} (${omaSetting.omaUri})`}
+            value={omaSetting.value}
+          />
+        );
+      });
+    } else if (data.settings) {
+      data.settings.forEach((setting, index) => {
+        //connect to https://raw.githubusercontent.com/cyberdrain/intune-change-tracking/refs/heads/main/settings/${setting.settingInstance.settingDefinitionId}.json to get the right data
+        const label = setting.settingInstance.settingDefinitionId;
+        const value = setting.settingInstance?.choiceSettingValue?.value;
+        items.push(<PropertyListItem key={`setting-${index}`} label={label} value={value} />);
+      });
+    } else if (data.added) {
+      items.push(
+        <PropertyListItem
+          key="legacyPolicy"
+          label="Legacy Policy"
+          value="This is a legacy policy and the settings can only be shown in JSON format. Press the eye icon to view the JSON."
+        />
+      );
+    } else {
+      Object.entries(data).forEach(([key, value]) => {
+        items.push(
+          <PropertyListItem
+            key={key}
+            label={getCippTranslation(key)}
+            value={getCippFormatting(value, key)}
+          />
+        );
+      });
+    }
+
+    return items;
+  };
   useEffect(() => {
     const blacklist = [
       "selectedOption",
@@ -126,18 +178,21 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" } }) {
               <Grid
                 item
                 xs={12}
-                sm={3}
+                sm={type === "intune" ? 12 : 3}
                 key={index}
                 sx={{
-                  borderRight: index < 3 ? "1px solid lightgrey" : "none",
+                  borderRight: index < 3 && type !== "intune" ? "1px solid lightgrey" : "none",
                   overflowWrap: "anywhere",
                   whiteSpace: "pre-line",
                   paddingRight: 2,
                 }}
               >
-                <PropertyList>
-                  {renderListItems(data, (itemData) => handleItemClick(itemData, index))}
-                </PropertyList>
+                {type !== "intune" && (
+                  <PropertyList>
+                    {renderListItems(data, (itemData) => handleItemClick(itemData, index))}
+                  </PropertyList>
+                )}
+                {type === "intune" && <PropertyList>{renderIntuneItems(data)}</PropertyList>}
               </Grid>
             ))}
           </Grid>

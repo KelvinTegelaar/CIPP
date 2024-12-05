@@ -1,4 +1,3 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 
 const Page = () => {
@@ -7,7 +6,7 @@ const Page = () => {
   return (
     <div>
       <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the add policy template section.</p>
+      <p>This no longer exists.</p>
     </div>
   );
 };
