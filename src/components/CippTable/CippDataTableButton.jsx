@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent, Button } from "@mui/material";
 import { CippDataTable } from "./CippDataTable";
-const CippDataTableButton = ({ data }) => {
+const CippDataTableButton = ({ data, title }) => {
   const [openDialogs, setOpenDialogs] = useState([]);
 
   const handleOpenDialog = () => {
@@ -21,6 +21,7 @@ const CippDataTableButton = ({ data }) => {
         onClick={handleOpenDialog}
         size="small"
       >
+        {title ? title + " " : ""}
         {dataIsNotANullArray ? "No items" : `${data.length} items`}
       </Button>
 

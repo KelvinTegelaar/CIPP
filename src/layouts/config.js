@@ -227,7 +227,7 @@ export const items = [
       },
       {
         title: "GDAP Management",
-        path: "/tenant/gdap-management/relationships",
+        path: "/tenant/gdap-management/",
         icon: (
           <SvgIcon>
             <UserIcon />

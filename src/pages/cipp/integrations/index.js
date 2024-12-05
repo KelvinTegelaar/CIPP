@@ -37,7 +37,13 @@ const Page = () => {
         sx={{ mb: 3, mt: 3 }}
       >
         <Typography variant="h4">Integrations</Typography>
-        <Button variant="contained" color="primary" startIcon={<Sync />}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Sync />}
+          LinkComponent={Link}
+          href="/cipp/integrations/sync"
+        >
           Sync Jobs
         </Button>
       </Stack>

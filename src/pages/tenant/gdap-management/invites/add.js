@@ -111,8 +111,8 @@ const Page = () => {
                       showDivider={false}
                       propertyItems={selectedTemplate.value.map((role) => {
                         return {
-                          label: `Role: ${role.RoleName}`,
-                          value: `Group: ${role.GroupName}`,
+                          label: `${role.RoleName}`,
+                          value: `Mapped to '${role.GroupName}'`,
                         };
                       })}
                     />
