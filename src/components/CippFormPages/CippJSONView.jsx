@@ -16,8 +16,7 @@ import { PropertyList } from "../property-list";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
-import { ApiPostCall } from "../../api/ApiCall";
-
+import intuneCollection from "/src/data/intuneCollection.json";
 const cleanObject = (obj) => {
   if (Array.isArray(obj)) {
     return obj
@@ -79,7 +78,6 @@ const renderListItems = (data, onItemClick) => {
 function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, type }) {
   const [viewJson, setViewJson] = useState(false);
   const [drilldownData, setDrilldownData] = useState([]);
-
   const renderIntuneItems = (data) => {
     const items = [];
 
@@ -103,10 +101,19 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
         );
       });
     } else if (data.settings) {
+      //use setting.settingInstance.settingDefinitionId to get the label from the intuneCollection. the name should match the id property in the intuneCollection. The displayName is the label
+
       data.settings.forEach((setting, index) => {
-        //connect to https://raw.githubusercontent.com/cyberdrain/intune-change-tracking/refs/heads/main/settings/${setting.settingInstance.settingDefinitionId}.json to get the right data
-        const label = setting.settingInstance.settingDefinitionId;
-        const value = setting.settingInstance?.choiceSettingValue?.value;
+        const intuneObj = intuneCollection.find(
+          (item) => item.id === setting.settingInstance.settingDefinitionId
+        );
+        console.log(setting.settingInstance);
+        const label = intuneObj?.displayName || setting.settingInstance.settingDefinitionId;
+        const value = setting.settingInstance?.simpleSettingValue?.value
+          ? setting.settingInstance?.simpleSettingValue?.value
+          : intuneObj?.options?.find(
+              (option) => option.id === setting.settingInstance.choiceSettingValue?.value
+            )?.displayName;
         items.push(<PropertyListItem key={`setting-${index}`} label={label} value={value} />);
       });
     } else if (data.added) {
