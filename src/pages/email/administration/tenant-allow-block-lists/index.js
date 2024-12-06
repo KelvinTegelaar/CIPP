@@ -48,7 +48,7 @@ const Page = () => {
       }}
       cardButton={
         <>
-          <Button component={Link} href="/email/administration/tenant-allow-block-list/add">
+          <Button component={Link} href="/email/administration/tenant-allow-block-lists/add">
             Add Entry
           </Button>
         </>
