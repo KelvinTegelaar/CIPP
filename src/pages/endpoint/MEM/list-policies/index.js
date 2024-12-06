@@ -60,10 +60,9 @@ const Page = () => {
     },
     {
       label: "Delete Policy",
-      type: "POST",
+      type: "GET",
       url: "/api/RemovePolicy",
       data: {
-        TenantFilter: "Tenant",
         ID: "id",
         URLName: "URLName",
       },

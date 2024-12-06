@@ -101,8 +101,6 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
         );
       });
     } else if (data.settings) {
-      //use setting.settingInstance.settingDefinitionId to get the label from the intuneCollection. the name should match the id property in the intuneCollection. The displayName is the label
-
       data.settings.forEach((setting, index) => {
         const intuneObj = intuneCollection.find(
           (item) => item.id === setting.settingInstance.settingDefinitionId

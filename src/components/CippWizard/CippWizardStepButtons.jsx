@@ -13,10 +13,11 @@ export const CippWizardStepButtons = (props) => {
     formControl,
     noNextButton = false,
     noSubmitButton = false,
+    queryKeys,
     ...other
   } = props;
   const { isValid, isSubmitted, isSubmitting } = useFormState({ control: formControl.control });
-  const sendForm = ApiPostCall({ relatedQueryKeys: "none" });
+  const sendForm = ApiPostCall({ relatedQueryKeys: queryKeys });
   const handleSubmit = () => {
     const values = formControl.getValues();
     sendForm.mutate({ url: postUrl, data: values });

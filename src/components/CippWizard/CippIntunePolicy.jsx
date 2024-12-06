@@ -5,6 +5,7 @@ import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { useWatch } from "react-hook-form";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 export const CippIntunePolicy = (props) => {
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;
@@ -16,9 +17,13 @@ export const CippIntunePolicy = (props) => {
     if (CATemplates.isSuccess && watcher?.value) {
       const template = CATemplates.data.find((template) => template.GUID === watcher.value);
       if (template) {
+        console.log(template);
         const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null;
         setJSONData(jsonTemplate);
         formControl.setValue("RAWJson", template.RAWJson);
+        formControl.setValue("displayName", template.Displayname);
+        formControl.setValue("description", template.Description);
+        formControl.setValue("TemplateType", template.Type);
       }
     }
   }, [watcher]);
@@ -52,37 +57,36 @@ export const CippIntunePolicy = (props) => {
         />
         <CippJsonView object={JSONData} type="intune" />
 
-        <CippFormComponent
-          type="radio"
-          name="replacename"
-          label="How should groups and users be handled?"
+        <Grid item xs={12}>
+          <CippFormComponent
+            type="radio"
+            name="AssignTo"
+            options={[
+              { label: "Do not assign", value: "On" },
+              { label: "Assign to all users", value: "allLicensedUsers" },
+              { label: "Assign to all devices", value: "AllDevices" },
+              { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
+              { label: "Assign to Custom Group", value: "customGroup" },
+            ]}
+            formControl={formControl}
+          />
+        </Grid>
+        <CippFormCondition
           formControl={formControl}
-          options={[
-            { value: "leave", label: "Leave the groups and users as is" },
-            { value: "displayName", label: "Replace by display name" },
-            { value: "AllUsers", label: "Remove all exclusions, apply to all users" },
-          ]}
-        />
-
-        <CippFormComponent
-          type="radio"
-          name="newstate"
-          label="Policy State"
-          formControl={formControl}
-          options={[
-            { value: "donotchange", label: "Do not change state" },
-            { value: "Enabled", label: "Set to enabled" },
-            { value: "Disabled", label: "Set to disabled" },
-            { value: "enabledForReportingButNotEnforced", label: "Set to report only" },
-          ]}
-        />
-
-        <CippFormComponent
-          type="switch"
-          name="overwrite"
-          label="Overwrite Existing Policy"
-          formControl={formControl}
-        />
+          field="AssignTo"
+          compareType="is"
+          compareValue="customGroup"
+        >
+          <Grid item xs={12}>
+            <CippFormComponent
+              type="textField"
+              label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+              name="customGroup"
+              formControl={formControl}
+              validators={{ required: "Please specify custom group names" }}
+            />
+          </Grid>
+        </CippFormCondition>
       </Stack>
       <CippWizardStepButtons
         currentStep={currentStep}

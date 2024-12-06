@@ -77,10 +77,7 @@ export function ApiGetCall({
     retry: retryFn,
     onSuccess: () => {
       if (relatedQueryKeys) {
-        // Take a one-second break to let the API finish, then clear related caches.
         const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
-        //for each relatedQueryKey, invalidate the cache
-
         setTimeout(() => {
           clearKeys.forEach((key) => {
             queryClient.invalidateQueries({ queryKey: [key] });
@@ -121,14 +118,15 @@ export function ApiPostCall({
     },
     onSuccess: () => {
       if (relatedQueryKeys) {
-        // Take a one-second break to let the API finish, then clear related caches.
         const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
-        //for each relatedQueryKey, invalidate the cache
-
         setTimeout(() => {
-          clearKeys.forEach((key) => {
-            queryClient.invalidateQueries({ queryKey: [key] });
-          });
+          if (relatedQueryKeys === "*") {
+            queryClient.invalidateQueries();
+          } else {
+            clearKeys.forEach((key) => {
+              queryClient.invalidateQueries({ queryKey: [key] });
+            });
+          }
         }, 1000);
       }
     },

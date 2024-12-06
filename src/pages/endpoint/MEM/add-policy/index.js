@@ -27,9 +27,10 @@ const Page = () => {
   return (
     <>
       <CippWizardPage
+        queryKeys={[["Configuration Policies"]]}
         steps={steps}
         wizardTitle="Apply Policy Wizard"
-        postUrl={"/api/ExecSAMSetup"}
+        postUrl={"/api/AddPolicy"}
       />
     </>
   );
