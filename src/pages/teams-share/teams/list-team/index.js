@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Teams";
@@ -25,6 +27,13 @@ const Page = () => {
       apiUrl="/api/ListTeams?type=list"
       actions={actions}
       simpleColumns={["displayName", "description", "visibility", "mailNickname", "id"]}
+      cardButton={
+        <>
+          <Button component={Link} href="/teams-share/teams/list-team/add">
+            Add Team
+          </Button>
+        </>
+      }
     />
   );
 };
