@@ -26,7 +26,6 @@ const Page = () => {
     },
   ];
 
-
   const simpleColumns = ["displayName", "mail", "companyName", "onPremisesSyncEnabled"];
 
   return (
@@ -35,13 +34,13 @@ const Page = () => {
       apiUrl="/api/ListContacts"
       actions={actions}
       simpleColumns={simpleColumns}
-      titleButton={{
-        label: "Add Contact",
-        href: "/email/administration/add-contact",
-      }}
-      /* Developer Note:
-      Bulk removal is available in actionsList with "Remove selected Contacts."
-      Uncomment if needed when `CippTablePage` bulk actions support is confirmed. */
+      cardButton={
+        <>
+          <Button component={Link} href="/email/administration/contacts/add">
+            Add contact
+          </Button>
+        </>
+      }
     />
   );
 };

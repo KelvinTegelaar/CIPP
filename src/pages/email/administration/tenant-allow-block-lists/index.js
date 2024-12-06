@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Tenant Allow/Block Lists";
@@ -41,9 +43,16 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       titleButton={{
-        label: "New Entry",
-        href: "/email/administration/add-tenant-allow-block-list",
+        label: "Add",
+        href: "/email/administration/tenant-allow-block-list/add",
       }}
+      cardButton={
+        <>
+          <Button component={Link} href="/email/administration/tenant-allow-block-list/add">
+            Add Entry
+          </Button>
+        </>
+      }
     />
   );
 };
