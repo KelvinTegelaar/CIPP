@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Mailbox Restores";
@@ -74,11 +76,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      /* 
-      Filters included in the original file:
-      { filterName: 'Completed', filter: 'Complex: Status eq Completed' }
-
-      Developer Note: Uncomment and adjust if filters are required in CippTablePage. */
+      cardButton={
+        <>
+          <Button component={Link} href="/email/tools/mailbox-restores/add">
+            New Restore Job
+          </Button>
+        </>
+      }
     />
   );
 };
