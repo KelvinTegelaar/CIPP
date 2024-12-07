@@ -124,13 +124,6 @@ const Page = () => {
   );
 };
 
-/* Comment to Developer:
- - The filter includes a dropdown for filtering consent requests by status.
- - Dynamic filter parameters are passed to the API via the `apiData` prop.
- - Off-canvas details and actions are implemented based on the original functionality.
- - Entra link uses the `TenantFilter` parameter dynamically.
-*/
-
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

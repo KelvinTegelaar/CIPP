@@ -20,20 +20,10 @@ const Page = () => {
         "exploitabilityLevel",
         "cveId",
       ]}
-      /* 
-      Uncomment and configure filters functionality once implemented in CippTablePage:
-      filters={[
-        { label: "# Affected Devices", filter: '"affectedDevicesCount":1' },
-        { label: "Windows 10 devices", filter: '"osPlatform":"Windows10"' },
-        { label: "Windows 11 devices", filter: '"osPlatform":"Windows11"' },
-        { label: "Vendor is Microsoft", filter: '"softwareVendor":"Microsoft"' },
-        { label: "High Severity", filter: '"vulnerabilitySeverityLevel":"High"' },
-      ]}
-      */
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

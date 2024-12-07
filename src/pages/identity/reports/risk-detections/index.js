@@ -69,11 +69,9 @@ const Page = () => {
         NoPagination: true,
         $top: 999,
       }}
-      // apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      /* filters={filters} // Dev to implement filter logic */
     />
   );
 };

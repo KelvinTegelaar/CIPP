@@ -9,7 +9,7 @@ const Page = () => {
   const pageTitle = "Best Practice Reports";
   const actions = [
     {
-      label: "View Template",
+      label: "View Report",
       link: "/tenant/standards/bpa-report/view?id=[Name]",
       icon: <EyeIcon />,
       color: "success",

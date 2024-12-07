@@ -8,27 +8,23 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListDefenderState"
-      apiData={{
-        TenantFilter: "TenantFilter",
-      }}
-      apiDataKey="Results"
       simpleColumns={[
-        "managedDeviceName",
-        "malwareProtectionEnabled",
-        "realTimeProtectionEnabled",
-        "networkInspectionSystemEnabled",
-        "managedDeviceHealthState",
-        "quickScanOverdue",
-        "fullScanOverdue",
-        "signatureUpdateOverdue",
-        "rebootRequired",
-        "attentionRequired",
+        "deviceName",
+        "windowsProtectionState.malwareProtectionEnabled",
+        "windowsProtectionState.realTimeProtectionEnabled",
+        "windowsProtectionState.networkInspectionSystemEnabled",
+        "windowsProtectionState.deviceState",
+        "windowsProtectionState.quickScanOverdue",
+        "windowsProtectionState.fullScanOverdue",
+        "windowsProtectionState.signatureUpdateOverdue",
+        "windowsProtectionState.rebootRequired",
+        "windowsProtectionState.lastReportedDateTime",
       ]}
       queryKey="DefenderStateReport"
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;
