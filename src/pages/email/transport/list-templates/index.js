@@ -1,6 +1,8 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Transport Rule Templates";
@@ -37,10 +39,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      titleButton={{
-        label: "Add Template",
-        href: "/email/transport/add-template",
-      }}
+      cardButton={
+        <>
+          <Button component={Link} href="/email/transport/list-rules/add">
+            Add Template
+          </Button>
+        </>
+      }
     />
   );
 };
