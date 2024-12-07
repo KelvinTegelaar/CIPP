@@ -242,19 +242,12 @@ const Page = () => {
               />
             </Grid>
           </Grid>
-
-          {currentTenant?.customerId === "AllTenants" && (
-            <Card>
-              <CardHeader title="All Tenants" />
-              <CardContent>Select a Tenant to show the dashboard</CardContent>
-            </Card>
-          )}
         </Container>
       </Box>
     </>
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

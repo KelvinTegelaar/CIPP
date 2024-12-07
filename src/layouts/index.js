@@ -10,6 +10,8 @@ import { TopNav } from "./top-nav";
 import { ApiGetCall } from "../api/ApiCall";
 import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
+import { Box, Container, Grid } from "@mui/system";
+import { CippImageCard } from "../components/CippCards/CippImageCard";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -67,12 +69,13 @@ const LayoutContainer = styled("div")({
 });
 
 export const Layout = (props) => {
-  const { children } = props;
+  const { children, allTenantsSupport = true } = props;
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const settings = useSettings();
   const mobileNav = useMobileNav();
   const [userSettingsComplete, setUserSettingsComplete] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState([]);
+  const currentTenant = settings?.currentTenant;
 
   const handleNavPin = useCallback(() => {
     settings.handleUpdate({
@@ -155,7 +158,25 @@ export const Layout = (props) => {
         }}
       >
         <LayoutContainer>
-          {children}
+          {currentTenant === "AllTenants" && !allTenantsSupport ? (
+            <Box sx={{ flexGrow: 1, py: 4 }}>
+              <Container maxWidth={false}>
+                <Grid container spacing={3}>
+                  <Grid item size={6}>
+                    <CippImageCard
+                      title="Not supported"
+                      imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
+                      text={
+                        "The page does not support all Tenants, please select a different tenant using the tenant selector."
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Container>
+            </Box>
+          ) : (
+            children
+          )}
           <Footer />
         </LayoutContainer>
       </LayoutRoot>
