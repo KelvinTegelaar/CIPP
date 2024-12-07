@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Spam Filters";
@@ -88,10 +90,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      titleButton={{
-        label: "Deploy Spam Filter",
-        href: "/email/spamfilter/deploy",
-      }}
+      cardButton={
+        <>
+          <Button component={Link} href="/email/spamfilter/list-spamfilter/add">
+            Deploy Spamfilter
+          </Button>
+        </>
+      }
     />
   );
 };

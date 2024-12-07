@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Connector List";
@@ -82,16 +84,13 @@ const Page = () => {
         label: "Deploy Connector",
         href: "/email/connectors/deploy-connector",
       }}
-      /* Developer Note:
-      This component includes filter configurations that should be added in the 
-      future when filter functionality is integrated. Filters include:
-      - Enabled connectors
-      - Disabled connectors
-      - Inbound connectors
-      - Outbound connectors
-      - Transport rule connectors
-      - Non-transport rule connectors
-      */
+      cardButton={
+        <>
+          <Button component={Link} href="/email/connectors/list-connectors/add">
+            Deploy Connector
+          </Button>
+        </>
+      }
     />
   );
 };

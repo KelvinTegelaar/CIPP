@@ -42,7 +42,7 @@ const Page = () => {
       cardButton={
         <>
           <Button component={Link} href="/email/transport/list-rules/add">
-            Add Template
+            Deploy Template
           </Button>
         </>
       }

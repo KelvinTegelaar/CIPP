@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Transport Rules";
@@ -61,18 +63,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      titleButton={{
-        label: "Deploy Transport Rule",
-        href: "/email/transport/deploy-rules",
-      }}
-      /* 
-      Filters were included in the original file as:
-      { filterName: 'Enabled rules', filter: 'Complex: State eq Enabled' },
-      { filterName: 'Disabled rules', filter: 'Complex: State eq Disabled' }
-
-      Developer Note: Filters may need to be added based on these filter names and logic. 
-      Uncomment and adjust if `CippTablePage` supports filter options.
-      */
+      cardButton={
+        <>
+          <Button component={Link} href="/email/transport/list-rules/add">
+            Deploy Template
+          </Button>
+        </>
+      }
     />
   );
 };
