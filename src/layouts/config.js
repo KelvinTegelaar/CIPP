@@ -498,15 +498,15 @@ export const items = [
       },
       {
         title: "Resource Management",
-        path: "/resources/management",
+        path: "/email/resources/management",
         icon: (
           <SvgIcon>
             <BusAlert />
           </SvgIcon>
         ),
         items: [
-          { title: "Rooms", path: "/resources/management/list-rooms" },
-          { title: "Room Lists", path: "/resources/management/room-lists" },
+          { title: "Rooms", path: "/email/resources/management/list-rooms" },
+          { title: "Room Lists", path: "/email/resources/management/room-lists" },
         ],
       },
       {

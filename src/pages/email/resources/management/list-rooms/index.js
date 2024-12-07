@@ -12,7 +12,7 @@ const Page = () => {
       apiUrl="/api/ListRooms"
       simpleColumns={["displayName", "building", "floorNumber", "capacity", "bookingType"]}
       cardButton={
-        <Button component={Link} href="/resources/management/add-room">
+        <Button component={Link} href="/email/resources/management/list-rooms/add">
           Add Room
         </Button>
       }

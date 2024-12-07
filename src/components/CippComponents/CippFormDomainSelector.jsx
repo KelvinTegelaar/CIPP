@@ -1,6 +1,7 @@
 import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippFormDomainSelector = ({
   formControl,
@@ -11,6 +12,7 @@ export const CippFormDomainSelector = ({
   ...other
 }) => {
   const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
+  const selectedTenant = useSettings().currentTenant;
   return (
     <CippFormComponent
       name={name}
@@ -20,8 +22,8 @@ export const CippFormDomainSelector = ({
       multiple={false}
       api={{
         autoSelectFirstItem: true,
-        tenantFilter: currentTenant?.value,
-        queryKey: `ListDomains-${currentTenant?.value}`,
+        tenantFilter: currentTenant ? currentTenant.value : selectedTenant,
+        queryKey: `ListUsers-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
         url: "/api/ListGraphRequest",
         dataKey: "Results",
         labelField: (option) => `${option.id}`,
