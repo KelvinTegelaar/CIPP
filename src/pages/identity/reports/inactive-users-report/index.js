@@ -9,19 +9,19 @@ const Page = () => {
   const offCanvas = null;
 
   const simpleColumns = [
-    "tenantDisplayName", 
-    "userPrincipalName", 
-    "displayName", 
-    "lastNonInteractiveSignInDateTime", 
-    "numberOfAssignedLicenses", 
-    "lastRefreshedDateTime"
+    "tenantDisplayName",
+    "userPrincipalName",
+    "displayName",
+    "lastNonInteractiveSignInDateTime",
+    "numberOfAssignedLicenses",
+    "lastRefreshedDateTime",
   ];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
-      apiDataKey="Results"
+      // apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
