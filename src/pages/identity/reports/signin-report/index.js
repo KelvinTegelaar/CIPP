@@ -19,7 +19,7 @@ const Page = () => {
     "authenticationRequirement",
     "errorCode",
     "additionalDetails",
-    "locationcipp"
+    "locationcipp",
   ];
 
   // Developer Note: The original page had a form submission logic before the table
@@ -92,7 +92,7 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={apiUrl}
-        apiDataKey="Results"
+        // apiDataKey="Results"
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
