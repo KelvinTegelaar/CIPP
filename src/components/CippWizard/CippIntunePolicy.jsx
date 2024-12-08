@@ -17,7 +17,6 @@ export const CippIntunePolicy = (props) => {
     if (CATemplates.isSuccess && watcher?.value) {
       const template = CATemplates.data.find((template) => template.GUID === watcher.value);
       if (template) {
-        console.log(template);
         const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null;
         setJSONData(jsonTemplate);
         formControl.setValue("RAWJson", template.RAWJson);

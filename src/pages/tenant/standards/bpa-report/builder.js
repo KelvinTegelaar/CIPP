@@ -148,7 +148,6 @@ const Page = () => {
     processAutoComplete(cleanedData); // Apply the processing to the cleaned data
 
     const jsonConfig = JSON.stringify(cleanedData, null, 2);
-    console.log("Cleaned Form Data:", jsonConfig);
     addBPATemplate.mutate({ url: "/api/AddBPATemplate", data: cleanedData });
   };
 
@@ -175,8 +174,7 @@ const Page = () => {
     }
   };
 
-  const onSubmit = (data) => {
-  };
+  const onSubmit = (data) => {};
   return (
     <>
       <Head>

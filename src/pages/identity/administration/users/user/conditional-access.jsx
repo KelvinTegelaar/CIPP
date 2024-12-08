@@ -63,7 +63,6 @@ const Page = () => {
     url: "/api/ExecCACheck",
     relatedQueryKeys: `ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`,
   });
-  console.log(postRequest);
   const onSubmit = (data) => {
     //add userId and tenantFilter to the object
     data.userId = {};

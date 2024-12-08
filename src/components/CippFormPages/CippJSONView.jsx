@@ -105,7 +105,6 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
         const intuneObj = intuneCollection.find(
           (item) => item.id === setting.settingInstance.settingDefinitionId
         );
-        console.log(setting.settingInstance);
         const label = intuneObj?.displayName || setting.settingInstance.settingDefinitionId;
         const value = setting.settingInstance?.simpleSettingValue?.value
           ? setting.settingInstance?.simpleSettingValue?.value

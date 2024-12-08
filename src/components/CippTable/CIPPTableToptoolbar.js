@@ -99,7 +99,6 @@ export const CIPPTableToptoolbar = ({
     if (filterType === "reset") {
       table.resetGlobalFilter();
       table.resetColumnFilters();
-      console.log(table);
     }
   };
   return (

@@ -52,7 +52,6 @@ const Page = () => {
 
   const NextBackupRun = (props) => {
     const date = new Date(props.date * 1000);
-    console.log(date);
     if (isNaN(date)) {
       return "Not Scheduled";
     } else {
@@ -104,12 +103,10 @@ const Page = () => {
       },
       {
         onSuccess: (data) => {
-          console.log(data.data);
           const jsonString = data?.data?.[0]?.Backup;
           if (!jsonString) {
             return;
           }
-          console.log(jsonString);
           const blob = new Blob([jsonString], { type: "application/json" });
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");

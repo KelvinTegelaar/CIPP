@@ -30,7 +30,6 @@ const ApplicationDeploymentForm = () => {
 
   useEffect(() => {
     //if the searchQuerySelection was succesful, fill in the fields.
-    console.log(searchQuerySelection);
     if (searchQuerySelection) {
       formControl.setValue("packagename", searchQuerySelection.value.packagename);
       formControl.setValue("applicationName", searchQuerySelection.value.applicationName);

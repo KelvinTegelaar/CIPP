@@ -2,18 +2,18 @@ import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import Link from "next/link";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Groups";
   const actions = [
     {
+      //tested
       label: "Edit Group",
-      type: "LINK",
-      link: "/[tenant]/identity/groups/[id]",
-      linkParams: {
-        tenant: "TenantFilter",
-        id: "mail",
-      },
+      link: "/identity/administration/groups/edit?groupId=[id]",
+      multiPost: false,
+      icon: <EyeIcon />,
+      color: "success",
     },
     {
       label: "Hide from Global Address List",

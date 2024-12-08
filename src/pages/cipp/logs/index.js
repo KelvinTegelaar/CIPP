@@ -42,7 +42,6 @@ const Page = () => {
   const onSubmit = (data) => {
     // Set filter states based on form submission
     setFilterEnabled(data.toggleSwitch);
-    console.log(data.startDate);
     setDateFilter(
       data.startDate
         ? new Date(data.startDate * 1000).toISOString().split("T")[0].replace(/-/g, "")

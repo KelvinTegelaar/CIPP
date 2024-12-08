@@ -171,9 +171,7 @@ const createPlaceholderPages = () => {
     if (!fs.existsSync(filePath)) {
       // Write the placeholder page
       fs.writeFileSync(filePath, placeholderTemplate(title), "utf8");
-      console.log(`Created placeholder page at ${filePath}`);
     } else {
-      console.log(`Placeholder page already exists at ${filePath}`);
     }
   });
 };

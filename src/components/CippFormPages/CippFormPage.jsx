@@ -46,7 +46,6 @@ const CippFormPage = (props) => {
     delete router.query.tenantFilter;
 
     if (router.query) {
-      console.log(router.query);
       const resetValues = {
         ...formControl.getValues(),
         ...router.query,
