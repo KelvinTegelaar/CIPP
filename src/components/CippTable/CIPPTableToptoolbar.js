@@ -89,17 +89,17 @@ export const CIPPTableToptoolbar = ({
   };
 
   const setTableFilter = (filter, filterType) => {
-    if (filterType === "reset") {
-      table.setGlobalFilter("");
-      table.setShowColumnFilters(false);
-      return;
-    }
     if (filterType === "global" || filterType === undefined) {
       table.setGlobalFilter(filter);
     }
     if (filterType === "column") {
       table.setShowColumnFilters(true);
       table.setColumnFilters(filter);
+    }
+    if (filterType === "reset") {
+      table.resetGlobalFilter();
+      table.resetColumnFilters();
+      console.log(table);
     }
   };
   return (
