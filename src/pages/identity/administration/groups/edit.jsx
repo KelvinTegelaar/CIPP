@@ -88,7 +88,7 @@ const EditGroup = () => {
       <Grid item xs={12} md={6}>
         <CippFormPage
           formControl={formControl}
-          queryKey="EditGroup"
+          queryKey={`ListGroups-${groupId}`}
           title="Group"
           formPageType="Edit"
           backButtonTitle="Group Overview"
