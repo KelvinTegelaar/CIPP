@@ -26,6 +26,7 @@ import { getCippError } from "../../utils/get-cipp-error";
 export const CippDataTable = (props) => {
   const {
     queryKey,
+    cardSx,
     data = [],
     columns = [],
     api = {},

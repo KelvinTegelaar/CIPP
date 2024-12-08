@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Divider, Typography } from "@mui/material";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippFormContactSelector } from "../../../../components/CippComponents/CippFormContactSelector";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 
 const EditGroup = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const EditGroup = () => {
     queryKey: `ListGroups-${groupId}`,
     waiting: false,
   });
-
+  const [combinedData, setCombinedData] = useState([]);
   useEffect(() => {
     if (groupId) {
       groupInfo.refetch();
@@ -38,6 +39,20 @@ const EditGroup = () => {
     if (groupInfo.isSuccess) {
       const group = groupInfo.data?.groupInfo;
       if (group) {
+        const combinedData = [
+          ...(groupInfo.data?.owners?.map((o) => ({
+            type: "Owner",
+            userPrincipalName: o.userPrincipalName,
+            displayName: o.displayName,
+          })) || []),
+          ...(groupInfo.data?.members?.map((m) => ({
+            type: "Member",
+            userPrincipalName: m.userPrincipalName,
+            displayName: m.displayName,
+          })) || []),
+        ];
+        setCombinedData(combinedData);
+
         formControl.reset({
           tenantId: tenantFilter,
           allowExternal: group.allowExternal,
@@ -61,7 +76,7 @@ const EditGroup = () => {
             ) {
               return "Distribution List";
             }
-            return null; // Default case, if no condition is met
+            return null;
           })(),
         });
       }
@@ -69,12 +84,13 @@ const EditGroup = () => {
   }, [groupInfo.isSuccess]);
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={1}>
       <Grid item xs={12} md={6}>
         <CippFormPage
           formControl={formControl}
           queryKey="EditGroup"
-          title="Edit Group"
+          title="Group"
+          formPageType="Edit"
           backButtonTitle="Group Overview"
           postUrl="/api/EditGroup"
         >
@@ -89,14 +105,7 @@ const EditGroup = () => {
                 valueField="userPrincipalName"
               />
             </Grid>
-            <Grid item xs={12}>
-              <CippFormContactSelector
-                formControl={formControl}
-                name="AddContact"
-                label="Add Contact"
-                multiple={true}
-              />
-            </Grid>
+
             {/* AddOwners */}
             <Grid item xs={12}>
               <CippFormUserSelector
@@ -106,6 +115,14 @@ const EditGroup = () => {
                 multiple={true}
                 labelField={(option) => `${option.displayName} (${option.userPrincipalName})`}
                 valueField="userPrincipalName"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <CippFormContactSelector
+                formControl={formControl}
+                name="AddContact"
+                label="Add Contact"
+                multiple={true}
               />
             </Grid>
             <Divider sx={{ my: 2, width: "100%" }} />
@@ -143,8 +160,6 @@ const EditGroup = () => {
                 multiple={true}
               />
             </Grid>
-
-            {/* RemoveContacts */}
             <Grid item xs={12}>
               <CippFormContactSelector
                 formControl={formControl}
@@ -155,8 +170,6 @@ const EditGroup = () => {
             </Grid>
 
             <Divider sx={{ my: 2, width: "100%" }} />
-
-            {/* Conditional fields */}
             {(groupType === "Microsoft 365" || groupType === "Distribution List") && (
               <Grid item xs={12}>
                 <CippFormComponent
@@ -180,6 +193,15 @@ const EditGroup = () => {
             )}
           </Grid>
         </CippFormPage>
+      </Grid>
+      <Grid sx={{ mt: 19 }} item md={5}>
+        <CippDataTable
+          sx={{ width: "100%" }}
+          title="Members"
+          data={combinedData}
+          isFetching={groupInfo.isFetching}
+          simpleColumns={["type", "userPrincipalName", "displayName"]}
+        />
       </Grid>
     </Grid>
   );
