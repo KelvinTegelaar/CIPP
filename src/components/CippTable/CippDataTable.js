@@ -49,6 +49,7 @@ export const CippDataTable = (props) => {
     refreshFunction,
     incorrectDataMessage = "Data not in correct format",
     onChange,
+    filters,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
@@ -237,6 +238,7 @@ export const CippDataTable = (props) => {
               exportEnabled={exportEnabled}
               refreshFunction={refreshFunction}
               setColumnVisibility={setColumnVisibility}
+              filters={filters}
             />
           )}
         </>
@@ -246,7 +248,6 @@ export const CippDataTable = (props) => {
 
   useEffect(() => {
     if (onChange && table.getSelectedRowModel().rows) {
-      //get the rows.[x].original and return that.
       onChange(table.getSelectedRowModel().rows.map((row) => row.original));
     }
   }, [table.getSelectedRowModel().rows]);

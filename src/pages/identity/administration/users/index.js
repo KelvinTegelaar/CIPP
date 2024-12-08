@@ -275,6 +275,29 @@ const Page = () => {
         "proxyAddresses",
         "assignedLicenses",
       ]}
+      filters={[
+        {
+          filterName: "Account Enabled",
+          //true or false filters by yes/no
+          value: [{ id: "accountEnabled", value: "Yes" }],
+          type: "column",
+        },
+        {
+          filterName: "Account Disabled",
+          value: [{ id: "accountEnabled", value: "No" }],
+          type: "column",
+        },
+        {
+          filterName: "Guest Accounts",
+          value: [{ id: "userType", value: "Guest" }],
+          type: "column",
+        },
+        {
+          //no type means its a text filter.
+          filterName: "User Account",
+          value: "Complex: isResourceAccount eq false",
+        },
+      ]}
     />
   );
 };
