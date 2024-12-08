@@ -87,12 +87,11 @@ const Page = () => {
               )
             ) ? (
               <Alert severity="success">
-                This relationship has all the CIPP recommended roles for a GDAP relationship.
+                This relationship has all the CIPP recommended roles.
               </Alert>
             ) : (
               <Alert severity="warning">
-                This relationship does not have all the CIPP recommended roles for a GDAP
-                relationship. See the{" "}
+                This relationship does not have all the CIPP recommended roles. See the{" "}
                 <Link
                   href="https://docs.cipp.app/setup/gdap/recommended-roles"
                   target="_blank"
