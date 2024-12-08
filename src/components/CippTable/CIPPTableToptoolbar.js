@@ -13,7 +13,12 @@ import {
 import { Box, Stack } from "@mui/system";
 import { MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from "material-react-table";
 import { PDFExportButton } from "../pdfExportButton";
-import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  ExclamationCircleIcon,
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 import { usePopover } from "../../hooks/use-popover";
 import { CSVExportButton } from "../csvExportButton";
 import { useDialog } from "../../hooks/use-dialog";
@@ -159,9 +164,11 @@ export const CIPPTableToptoolbar = ({
             </Tooltip>
 
             <MRT_GlobalFilterTextField table={table} />
-            <Tooltip title="preset filters">
+            <Tooltip title="Preset Filters">
               <IconButton onClick={filterPopover.handleOpen} ref={filterPopover.anchorRef}>
-                <FilterTiltShift />
+                <SvgIcon>
+                  <MagnifyingGlassIcon />
+                </SvgIcon>
               </IconButton>
             </Tooltip>
             <Menu
