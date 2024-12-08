@@ -36,4 +36,5 @@ export const CippTranslations = {
   portal_security: "Security Portal",
   portal_compliance: "Compliance Portal",
   portal_sharepoint: "Sharepoint Portal",
+  "@odata.type": "Type",
 };

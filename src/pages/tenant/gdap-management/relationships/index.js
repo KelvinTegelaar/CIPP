@@ -1,11 +1,16 @@
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import tabOptions from "./tabOptions";
+import tabOptions from "../tabOptions";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
 
 const pageTitle = "GDAP Relationships";
 
 const actions = [
+  {
+    label: "View Relationship",
+    link: "/tenant/gdap-management/relationships/relationship?id=[id]",
+    color: "primary",
+  },
   {
     label: "Start Onboarding",
     link: "/tenant/gdap-management/onboarding/start?id=[id]",

@@ -16,6 +16,7 @@ import { isoDuration, en } from "@musement/iso-duration";
 import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
 import { getCippRoleTranslation } from "./get-cipp-role-translation";
 import { CogIcon, ServerIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { getCippTranslation } from "./get-cipp-translation";
 
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
@@ -222,6 +223,13 @@ export const getCippFormatting = (data, cellName, type) => {
         ? "Report Only"
         : data;
     return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "@odata.type") {
+    if (data.startsWith("#microsoft.graph")) {
+      data = data.replace("#microsoft.graph.", "");
+    }
+    return getCippTranslation(data, "odataType");
   }
 
   // Handle null or undefined data

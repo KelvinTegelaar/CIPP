@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import GDAPRoles from "/src/data/GDAPRoles";
 import { Box, Stack } from "@mui/system";
 import Grid from "@mui/material/Grid2";
@@ -35,6 +35,7 @@ const Page = () => {
   const [currentOnboarding, setCurrentOnboarding] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [pollOnboarding, setPollOnboarding] = useState(false);
+  const [showOnboardingStatus, setShowOnboardingStatus] = useState(false);
 
   const queryId = router.query.id;
   const formControl = useForm({
@@ -69,7 +70,7 @@ const Page = () => {
       var currentStep = {};
       var stepCount = 0;
       data.OnboardingSteps.map((step) => {
-        if (step.Status !== "pending") {
+        if (step.Status !== "pending" && step.Status !== "running") {
           currentStep = step;
           stepCount++;
         }
@@ -129,17 +130,20 @@ const Page = () => {
         (onboarding) => onboarding.RowKey === formValue?.value
       );
       if (onboarding) {
+        console.log("set onboarding");
         setCurrentOnboarding(onboarding);
         var currentStep = {};
         var stepCount = 0;
         onboarding.OnboardingSteps.map((step) => {
-          if (step.Status !== "pending") {
+          if (step.Status !== "pending" && step.Status !== "running") {
             currentStep = step;
             stepCount++;
           }
         });
+        setShowOnboardingStatus(true);
         setActiveStep(stepCount);
-      } else {
+      } else if (currentOnboarding !== null) {
+        setShowOnboardingStatus(false);
         setCurrentOnboarding(null);
         setActiveStep(0);
       }
@@ -226,6 +230,10 @@ const Page = () => {
   }, [pollOnboarding, startOnboarding.isSuccess, startOnboarding?.data?.data]);
 
   const handleSubmit = () => {
+    formControl.trigger();
+    if (formControl.formState.errors.id) {
+      return;
+    }
     var data = {
       id: currentRelationship?.value,
     };
@@ -242,9 +250,14 @@ const Page = () => {
       data: data,
     });
     setPollOnboarding(true);
+    setShowOnboardingStatus(true);
   };
 
   const handleRetry = () => {
+    formControl.trigger();
+    if (formControl.formState.errors.id) {
+      return;
+    }
     var data = {
       id: currentRelationship?.value,
       retry: true,
@@ -266,12 +279,7 @@ const Page = () => {
 
   return (
     <>
-      <CippPageCard
-        formControl={formControl}
-        title="Start Tenant Onboarding"
-        backButtonTitle="Tenant Onboarding"
-        postUrl="/api/ExecOnboardTenant"
-      >
+      <CippPageCard title="Start Tenant Onboarding" backButtonTitle="Tenant Onboarding">
         <CardContent>
           <Grid container spacing={4}>
             <Grid size={{ sm: 12, md: 6 }}>
@@ -462,7 +470,7 @@ const Page = () => {
                 )}
               </Stack>
             </Grid>
-            {currentOnboarding && (
+            {showOnboardingStatus && (
               <Grid size={{ sm: 12, md: 6 }}>
                 <Stack spacing={2}>
                   <Box>
