@@ -42,14 +42,22 @@ export const utilColumnsFromAPI = (dataArray) => {
           header: getCippTranslation(accessorKey),
           id: accessorKey,
           accessorFn: (row) => {
-            const value = accessorKey.split(".").reduce((acc, part) => acc && acc[part], row);
+            let value;
+            if (accessorKey.startsWith("@odata")) {
+              value = row[accessorKey];
+            } else {
+              value = accessorKey.split(".").reduce((acc, part) => acc && acc[part], row);
+            }
             return getCippFormatting(value, accessorKey, "text");
           },
           ...getCippFilterVariant(key),
           Cell: ({ row }) => {
-            const value = accessorKey
-              .split(".")
-              .reduce((acc, part) => acc && acc[part], row.original);
+            let value;
+            if (accessorKey.startsWith("@odata")) {
+              value = row.original[accessorKey];
+            } else {
+              value = accessorKey.split(".").reduce((acc, part) => acc && acc[part], row.original);
+            }
             return getCippFormatting(value, accessorKey);
           },
         };
