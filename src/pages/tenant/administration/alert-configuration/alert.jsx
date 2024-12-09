@@ -20,7 +20,6 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import alertList from "/src/data/alerts.json";
-//case Correct
 import auditLogTemplates from "/src/data/AuditLogTemplates";
 import auditLogSchema from "/src/data/AuditLogSchema.json";
 import DeleteIcon from "@mui/icons-material/Delete"; // Icon for removing added inputs
