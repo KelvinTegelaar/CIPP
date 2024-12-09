@@ -18,7 +18,6 @@ export const CippOffCanvas = (props) => {
 
   const extendedInfo = extendedInfoFields.map((field) => {
     const value = field.split(".").reduce((acc, part) => acc && acc[part], extendedData);
-    console.log("value", value);
     if (value === undefined || value === null) {
       if (extendedData?.[field] !== undefined && extendedData?.[field] !== null) {
         return {

@@ -135,7 +135,6 @@ const Page = () => {
         (onboarding) => onboarding.RowKey === formValue?.value
       );
       if (onboarding) {
-        console.log("set onboarding");
         setCurrentOnboarding(onboarding);
         var stepCount = 0;
         onboarding.OnboardingSteps.map((step) => {
