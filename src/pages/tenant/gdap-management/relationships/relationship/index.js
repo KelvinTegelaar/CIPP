@@ -43,8 +43,9 @@ const Page = () => {
 
   // Set the title and subtitle for the layout
   const title = relationshipRequest.isSuccess
-    ? relationshipRequest.data?.Results?.[0]?.customer?.displayName ??
-      "No Customer Set" + " - " + relationshipRequest.data?.Results?.[0]?.displayName
+    ? (relationshipRequest.data?.Results?.[0]?.customer?.displayName ?? "No Customer Set") +
+      " - " +
+      relationshipRequest.data?.Results?.[0]?.displayName
     : "Loading...";
 
   const subtitle = relationshipRequest.isSuccess
