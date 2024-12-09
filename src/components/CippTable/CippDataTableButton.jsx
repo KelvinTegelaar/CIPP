@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent, Button } from "@mui/material";
 import { CippDataTable } from "./CippDataTable";
-const CippDataTableButton = ({ data, title }) => {
+const CippDataTableButton = ({ data, title, tableTitle = "Data" }) => {
   const [openDialogs, setOpenDialogs] = useState([]);
 
   const handleOpenDialog = () => {
@@ -33,8 +33,13 @@ const CippDataTableButton = ({ data, title }) => {
           fullWidth
           maxWidth="lg"
         >
-          <DialogContent>
-            <CippDataTable noCard={true} title="Data" data={dialogData} simple={false} />
+          <DialogContent sx={tableTitle !== "Data" && { p: 0 }}>
+            <CippDataTable
+              noCard={tableTitle === "Data"}
+              title={tableTitle}
+              data={dialogData}
+              simple={false}
+            />
           </DialogContent>
         </Dialog>
       ))}

@@ -306,7 +306,11 @@ export const getCippFormatting = (data, cellName, type) => {
 
   // Handle objects
   if (typeof data === "object" && data !== null) {
-    return isText ? JSON.stringify(data) : <CippDataTableButton data={data} />;
+    return isText ? (
+      JSON.stringify(data)
+    ) : (
+      <CippDataTableButton data={data} tableTitle={getCippTranslation(cellName)} />
+    );
   }
 
   // Default case: return data as-is

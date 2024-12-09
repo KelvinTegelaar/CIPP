@@ -1,6 +1,10 @@
 import { CippTranslations } from "../components/CippComponents/CippTranslations";
 
 export const getCippTranslation = (field) => {
+  if (field === null || field === undefined) {
+    return "No data";
+  }
+
   return (
     CippTranslations[field] ||
     field

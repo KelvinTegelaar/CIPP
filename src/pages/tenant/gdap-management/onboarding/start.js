@@ -475,10 +475,10 @@ const Page = () => {
                 <Stack spacing={2}>
                   <Box>
                     <Typography variant="h4">
-                      Onboarding Status: {getCippTranslation(currentOnboarding.Status)}
+                      Onboarding Status: {getCippTranslation(currentOnboarding?.Status)}
                     </Typography>
                     <Typography variant="subtitle2" color="textSecondary">
-                      Updated {getCippFormatting(currentOnboarding.Timestamp, "Timestamp", "date")}
+                      Updated {getCippFormatting(currentOnboarding?.Timestamp, "Timestamp", "date")}
                     </Typography>
                   </Box>
                   <Box>
