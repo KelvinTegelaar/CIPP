@@ -3,8 +3,9 @@ import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import Grid from "@mui/material/Grid2";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
-import { ApiPostCall } from "../../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import {
   Accordion,
   AccordionDetails,
@@ -14,6 +15,9 @@ import {
   CardActions,
   CardContent,
   CircularProgress,
+  List,
+  Link,
+  ListItem,
   SvgIcon,
   Typography,
 } from "@mui/material";
@@ -21,9 +25,11 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import NextLink from "next/link";
 
 const Page = () => {
   const [inviteData, setInviteData] = useState([]);
+  const [createDefaults, setCreateDefaults] = useState(false);
 
   const formControl = useForm({
     mode: "onChange",
@@ -32,7 +38,24 @@ const Page = () => {
     },
   });
 
+  const createCippDefaults = ApiPostCall({
+    urlFromData: true,
+    relatedQueryKeys: ["ListGDAPRoleTemplatesAutocomplete"],
+  });
+
+  const templateList = ApiGetCall({
+    url: "/api/ExecGDAPRoleTemplate",
+    queryKey: "ListGDAPRoleTemplatesAutocomplete",
+  });
   const selectedTemplate = useWatch({ control: formControl.control, name: "roleMappings" });
+
+  useEffect(() => {
+    if (templateList?.data?.Results?.length === 0) {
+      setCreateDefaults(true);
+    } else {
+      setCreateDefaults(false);
+    }
+  }, [templateList.isSuccess]);
 
   const addInvites = ApiPostCall({
     urlFromData: true,
@@ -40,6 +63,9 @@ const Page = () => {
   });
 
   const handleSubmit = (values) => {
+    formControl.trigger();
+    console.log(formControl.formState);
+    if (!formControl.formState.isValid) return;
     const eachInvite = Array.from({ length: values.inviteCount }, (_, i) => ({
       roleMappings: values.roleMappings.value,
     }));
@@ -70,8 +96,65 @@ const Page = () => {
   return (
     <>
       <CippPageCard title="GDAP Invite" backButtonTitle="GDAP Invites">
-        <CardContent sx={{ my: 2 }}>
+        <CardContent sx={{ mb: 2 }}>
           <Grid container spacing={2}>
+            <Grid size={12}>
+              <Alert severity="info">
+                <Typography variant="body2">
+                  Use this form to generate invites for the selected GDAP Role Template. After
+                  generating the invite, you will receive two URLs:
+                </Typography>
+                <List dense={true} sx={{ listStyleType: "disc", listStylePosition: "inside" }}>
+                  <ListItem sx={{ display: "list-item" }}>
+                    The Invite link is to send to a client or accept as a Global Administrator on
+                    the customer tenant.
+                  </ListItem>
+                  <ListItem sx={{ display: "list-item" }}>
+                    The Onboarding link is for a CIPP Administrator to complete the onboarding
+                    process.
+                  </ListItem>
+                </List>
+                <Typography variant="body2">
+                  The onboarding process will also run on a nightly schedule. For automated
+                  onboardings, please check out{" "}
+                  <Link component={NextLink} href="/cipp/settings/partner-webhooks">
+                    Partner Webhooks
+                  </Link>{" "}
+                  in Application Settings.
+                </Typography>
+              </Alert>
+            </Grid>
+            {createDefaults && (
+              <>
+                <Grid size={12}>
+                  <Alert severity="warning">
+                    The CIPP Defaults template is missing from the GDAP Role Templates. Create it
+                    now?
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={() =>
+                        createCippDefaults.mutate({
+                          url: "/api/ExecAddGDAPRole",
+                          data: { TemplateId: "CIPP Defaults" },
+                        })
+                      }
+                      sx={{ ml: 2 }}
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <PlusIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Create CIPP Defaults
+                    </Button>
+                  </Alert>
+                </Grid>
+                <Grid size={12}>
+                  <CippApiResults apiObject={createCippDefaults} />
+                </Grid>
+              </>
+            )}
             <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 formControl={formControl}
@@ -88,6 +171,14 @@ const Page = () => {
                 multiple={false}
                 creatable={false}
                 required={true}
+                validators={{
+                  validate: (value) => {
+                    if (!value) {
+                      return "Please select a GDAP Role Template";
+                    }
+                    return true;
+                  },
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
