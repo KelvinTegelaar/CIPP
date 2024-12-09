@@ -1,5 +1,4 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
@@ -11,25 +10,41 @@ import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
 import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
-import { Alert, Divider, Link, Typography } from "@mui/material";
+import { Alert, Link } from "@mui/material";
 import CIPPDefaultGDAPRoles from "/src/data/CIPPDefaultGDAPRoles.json";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Schedule } from "@mui/icons-material";
+import { useEffect, useState } from "react";
 
 const Page = () => {
   const router = useRouter();
   const { id } = router.query;
+  const [relationshipProperties, setRelationshipProperties] = useState([]);
 
   const relationshipRequest = ApiGetCall({
     url: `/api/ListGraphRequest?Endpoint=tenantRelationships/delegatedAdminRelationships/${id}`,
     queryKey: `ListRelationships-${id}`,
   });
 
+  const getRelationshipType = (relationshipName) => {
+    if (relationshipName.startsWith("MLT_")) {
+      return "Microsoft-Led Transition (MLT)";
+    } else if (
+      relationshipName.startsWith("CIPP_") ||
+      relationshipName.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+    ) {
+      return "CIPP";
+    } else if (relationshipName.startsWith("LHSetup_")) {
+      return "Lighthouse";
+    } else {
+      return "Manual";
+    }
+  };
+
   // Set the title and subtitle for the layout
   const title = relationshipRequest.isSuccess
-    ? relationshipRequest.data?.Results?.[0]?.customer?.displayName +
-      " - " +
-      relationshipRequest.data?.Results?.[0]?.displayName
+    ? relationshipRequest.data?.Results?.[0]?.customer?.displayName ??
+      "No Customer Set" + " - " + relationshipRequest.data?.Results?.[0]?.displayName
     : "Loading...";
 
   const subtitle = relationshipRequest.isSuccess
@@ -48,7 +63,70 @@ const Page = () => {
       ]
     : [];
 
-  const data = relationshipRequest?.data?.Results?.[0];
+  useEffect(() => {
+    if (relationshipRequest.isSuccess) {
+      const data = relationshipRequest?.data?.Results?.[0];
+
+      var properties = [
+        {
+          label: "Customer",
+          value: data?.customer?.displayName ?? "N/A",
+        },
+        {
+          label: "Tenant ID",
+          value: data?.customer?.tenantId ?? "N/A",
+        },
+        {
+          label: "Relationship Type",
+          value: getRelationshipType(data?.displayName),
+        },
+        {
+          label: "Relationship ID",
+          value: (
+            <>
+              {data?.id}
+              <CippCopyToClipBoard text={data?.id} />
+            </>
+          ),
+        },
+        {
+          label: "Status",
+          value: getCippTranslation(data?.status, "status"),
+        },
+        {
+          label: "Auto Extend Duration",
+          value:
+            data?.autoExtendDuration == "PT0S"
+              ? "Not eligible for auto-extend"
+              : getCippFormatting(data?.autoExtendDuration, "autoExtendDuration", "text"),
+        },
+        {
+          label: "Activated Date",
+          value: getCippFormatting(data?.activatedDateTime, "activatedDateTime", "date"),
+        },
+        {
+          label: "Last Modified Date",
+          value: getCippFormatting(data?.lastModifiedDateTime, "lastModifiedDateTime", "date"),
+        },
+        {
+          label: "End Date",
+          value: getCippFormatting(data?.endDateTime, "endDateTime", "date"),
+        },
+      ];
+      if (data?.status === "approvalPending") {
+        properties.push({
+          label: "Invite URL",
+          value: getCippFormatting(
+            "https://admin.microsoft.com/AdminPortal/Home#/partners/invitation/granularAdminRelationships/" +
+              data?.id,
+            "InviteUrl",
+            "url"
+          ),
+        });
+      }
+      setRelationshipProperties(properties);
+    }
+  }, [relationshipRequest.isSuccess]);
 
   return (
     <HeaderedTabbedLayout
@@ -66,14 +144,14 @@ const Page = () => {
           }}
         >
           <Stack spacing={3}>
-            {data?.displayName.startsWith("MLT_") && (
+            {relationshipRequest?.data?.Results?.[0]?.displayName.startsWith("MLT_") && (
               <Alert severity="warning">
                 This relationship is a Microsoft-Led Transition (MLT) relationship and only has Read
                 permissions.
               </Alert>
             )}
             {/* create alert for relationship with global administrator */}
-            {data?.accessDetails?.unifiedRoles?.find((role) => {
+            {relationshipRequest?.data?.Results?.[0]?.accessDetails?.unifiedRoles?.find((role) => {
               return role.roleDefinitionId === "62e90394-69f5-4237-9190-012177145e10";
             }) && (
               <Alert severity="warning">
@@ -82,7 +160,7 @@ const Page = () => {
               </Alert>
             )}
             {CIPPDefaultGDAPRoles.every((role) =>
-              data?.accessDetails?.unifiedRoles?.some(
+              relationshipRequest?.data?.Results?.[0]?.accessDetails?.unifiedRoles?.some(
                 (relationshipRole) => relationshipRole.roleDefinitionId === role.value
               )
             ) ? (
@@ -108,63 +186,16 @@ const Page = () => {
                   layout="double"
                   title="Relationship Details"
                   showDivider={false}
-                  propertyItems={[
-                    {
-                      label: "ID",
-                      value: (
-                        <>
-                          {data?.id}
-                          <CippCopyToClipBoard text={data?.id} />
-                        </>
-                      ),
-                    },
-                    {
-                      label: "Status",
-                      value: getCippTranslation(data?.status, "status"),
-                    },
-                    {
-                      label: "Auto Extend Duration",
-                      value:
-                        data?.autoExtendDuration == "PT0S"
-                          ? "Not eligible for auto-extend"
-                          : getCippFormatting(
-                              data?.autoExtendDuration,
-                              "autoExtendDuration",
-                              "text"
-                            ),
-                    },
-                    {
-                      label: "Activated Date",
-                      value: getCippFormatting(
-                        data?.activatedDateTime,
-                        "activatedDateTime",
-                        "date"
-                      ),
-                    },
-                    {
-                      label: "Last Modified Date",
-                      value: getCippFormatting(
-                        data?.lastModifiedDateTime,
-                        "lastModifiedDateTime",
-                        "date"
-                      ),
-                    },
-                    {
-                      label: "End Date",
-                      value: getCippFormatting(data?.endDateTime, "endDateTime", "date"),
-                    },
-                  ]}
+                  propertyItems={relationshipProperties}
                 />
               </Grid>
               <Grid item size={{ xs: 12, md: 4 }}>
                 <CippDataTable
                   title="Approved Roles"
                   simple={true}
-                  data={data?.accessDetails.unifiedRoles}
+                  data={relationshipRequest?.data?.Results?.[0]?.accessDetails.unifiedRoles}
                   simpleColumns={["roleDefinitionId"]}
                 />
-
-                {/* create an alert if the relationship name starts with MLT_ */}
               </Grid>
             </Grid>
           </Stack>

@@ -4,6 +4,10 @@ import ReactTimeAgo from "react-time-ago";
 export const CippTimeAgo = ({ data, type = "text", timeStyle = "round-minute" }) => {
   const isText = type === "text";
   const date = typeof data === "number" ? new Date(data * 1000) : new Date(data);
+
+  if (date.getTime() === 0) {
+    return "Never";
+  }
   if (isNaN(date.getTime())) {
     return isText ? (
       "No Data"

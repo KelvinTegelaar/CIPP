@@ -4,6 +4,7 @@ import tabOptions from "../tabOptions";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { Cancel, Replay } from "@mui/icons-material";
 
 const pageTitle = "Tenant Onboarding";
 
@@ -15,6 +16,7 @@ const actions = [
     data: { id: "RowKey", Cancel: true },
     confirmText: "Are you sure you want to cancel these onboardings?",
     multiPost: true,
+    icon: <Cancel />,
   },
   {
     label: "Retry Onboarding",
@@ -23,6 +25,7 @@ const actions = [
     data: { id: "RowKey", Retry: true },
     confirmText: "Are you sure you want to retry these onboardings?",
     multiPost: true,
+    icon: <Replay />,
   },
 ];
 
