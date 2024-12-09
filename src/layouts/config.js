@@ -122,14 +122,6 @@ export const items = [
             path: "/tenant/administration/authentication-methods",
           },
           {
-            title: "Tenant Onboarding",
-            path: "/tenant/administration/tenant-onboarding",
-          },
-          {
-            title: "Tenant Offboarding",
-            path: "/tenant/administration/tenant-offboarding-wizard",
-          },
-          {
             title: "Partner Relationships",
             path: "/tenant/administration/partner-relationships",
           },
@@ -143,10 +135,7 @@ export const items = [
             <Download />
           </SvgIcon>
         ),
-        items: [
-          { title: "Backup Wizard", path: "/tenant/backup/backup-wizard" },
-          { title: "Restore Wizard", path: "/tenant/backup/restore-wizard" },
-        ],
+        items: [{ title: "Backups", path: "/tenant/backup/backup-wizard" }],
       },
       {
         title: "Tools",
@@ -170,10 +159,6 @@ export const items = [
           {
             title: "Individual Domain Check",
             path: "/tenant/standards/individual-domains",
-          },
-          {
-            title: "BPA Report Builder",
-            path: "/tenant/tools/bpa-report-builder",
           },
         ],
       },
