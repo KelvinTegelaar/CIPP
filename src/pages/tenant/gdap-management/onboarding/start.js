@@ -67,15 +67,20 @@ const Page = () => {
     urlFromData: true,
     onResult: (data) => {
       setCurrentOnboarding(data);
-      var currentStep = {};
       var stepCount = 0;
       data.OnboardingSteps.map((step) => {
-        if (step.Status !== "pending" && step.Status !== "running") {
-          currentStep = step;
+        if (step.Status !== "pending" && step.Status !== "running" && step.Status !== "failed") {
           stepCount++;
         }
       });
       setActiveStep(stepCount);
+
+      if (data?.Status === "succeeded" || data?.Status === "failed") {
+        var runningSteps = data.OnboardingSteps.find((step) => step.Status === "running");
+        if (!runningSteps) {
+          setPollOnboarding(false);
+        }
+      }
     },
   });
 
@@ -132,11 +137,9 @@ const Page = () => {
       if (onboarding) {
         console.log("set onboarding");
         setCurrentOnboarding(onboarding);
-        var currentStep = {};
         var stepCount = 0;
         onboarding.OnboardingSteps.map((step) => {
-          if (step.Status !== "pending" && step.Status !== "running") {
-            currentStep = step;
+          if (step.Status !== "pending" && step.Status !== "running" && step.Status !== "failed") {
             stepCount++;
           }
         });
@@ -205,12 +208,7 @@ const Page = () => {
 
   useEffect(() => {
     // poll onboarding status
-    if (
-      pollOnboarding &&
-      startOnboarding.isSuccess &&
-      startOnboarding?.data?.data?.Status !== "succeeded" &&
-      startOnboarding?.data?.data?.Status !== "failed"
-    ) {
+    if (pollOnboarding && startOnboarding.isSuccess) {
       const interval = setInterval(() => {
         startOnboarding.mutate({
           url: "/api/ExecOnboardTenant",
@@ -220,12 +218,6 @@ const Page = () => {
         });
       }, 5000);
       return () => clearInterval(interval);
-    }
-    if (
-      startOnboarding?.data?.data?.Status === "succeeded" ||
-      startOnboarding?.data?.data?.Status === "failed"
-    ) {
-      setPollOnboarding(false);
     }
   }, [pollOnboarding, startOnboarding.isSuccess, startOnboarding?.data?.data]);
 
@@ -491,6 +483,7 @@ const Page = () => {
                       currentOnboarding?.OnboardingSteps.map((step) => ({
                         title: step.Title,
                         description: step.Message,
+                        error: step.Status === "failed",
                       })) ?? []
                     }
                   />

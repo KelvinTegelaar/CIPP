@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { ClearIcon } from "@mui/x-date-pickers";
 
 const WizardStepConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.vertical}`]: {
@@ -29,8 +30,28 @@ const WizardStepConnector = styled(StepConnector)(({ theme }) => ({
 }));
 
 const WizardStepIcon = (props) => {
-  const { active, completed } = props;
+  const { active, completed, error } = props;
 
+  if (error) {
+    return (
+      <Box
+        sx={{
+          alignItems: "center",
+          backgroundColor: "error.main",
+          borderRadius: "50%",
+          color: "primary.contrastText",
+          display: "flex",
+          height: 36,
+          justifyContent: "center",
+          width: 36,
+        }}
+      >
+        <SvgIcon fontSize="small">
+          <ClearIcon />
+        </SvgIcon>
+      </Box>
+    );
+  }
   if (active) {
     return (
       <Box
@@ -58,7 +79,6 @@ const WizardStepIcon = (props) => {
       </Box>
     );
   }
-
   if (completed) {
     return (
       <Box
@@ -106,7 +126,7 @@ export const WizardSteps = (props) => {
       >
         {steps.map((step) => (
           <Step key={step.title}>
-            <StepLabel StepIconComponent={WizardStepIcon}>
+            <StepLabel error={step.error ?? false} slots={{ stepIcon: WizardStepIcon }}>
               <Typography variant="subtitle2">{step.title}</Typography>
               <Typography color="text.secondary" variant="body2">
                 {step.description}
