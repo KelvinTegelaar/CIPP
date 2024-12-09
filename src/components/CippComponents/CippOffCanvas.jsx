@@ -17,10 +17,31 @@ export const CippOffCanvas = (props) => {
   } = props;
 
   const extendedInfo = extendedInfoFields.map((field) => {
-    return {
-      label: getCippTranslation(field),
-      value: getCippFormatting(extendedData?.[field], field, "text"),
-    };
+    const value = field.split(".").reduce((acc, part) => acc && acc[part], extendedData);
+    console.log("value", value);
+    if (value === undefined || value === null) {
+      if (extendedData?.[field] !== undefined && extendedData?.[field] !== null) {
+        return {
+          label: getCippTranslation(field),
+          value: getCippFormatting(extendedData[field], field, "text"),
+        };
+      } else {
+        return {
+          label: getCippTranslation(field),
+          value: "N/A",
+        };
+      }
+    } else if (Array.isArray(value)) {
+      return {
+        label: getCippTranslation(field),
+        value: getCippFormatting(value, field, "array"),
+      };
+    } else {
+      return {
+        label: getCippTranslation(field),
+        value: getCippFormatting(value, field, "text"),
+      };
+    }
   });
 
   var drawerWidth = 400;

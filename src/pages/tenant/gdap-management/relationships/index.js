@@ -2,6 +2,14 @@ import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "../tabOptions";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { EyeIcon, ShieldExclamationIcon } from "@heroicons/react/24/outline";
+import {
+  AdminPanelSettings,
+  GppBad,
+  HourglassBottom,
+  OpenInNew,
+  PlayArrow,
+} from "@mui/icons-material";
 
 const pageTitle = "GDAP Relationships";
 
@@ -10,17 +18,19 @@ const actions = [
     label: "View Relationship",
     link: "/tenant/gdap-management/relationships/relationship?id=[id]",
     color: "primary",
+    icon: <EyeIcon />,
   },
   {
     label: "Start Onboarding",
     link: "/tenant/gdap-management/onboarding/start?id=[id]",
     color: "primary",
+    icon: <PlayArrow />,
   },
   {
     label: "Open Relationship in Partner Center",
     link: "https://partner.microsoft.com/en-us/dashboard/commerce2/customers/[customer.tenantId]/adminrelationships/[id]",
     color: "info",
-    external: true,
+    icon: <OpenInNew />,
   },
   {
     label: "Enable automatic extension",
@@ -28,6 +38,7 @@ const actions = [
     url: "/api/ExecAutoExtendGDAP?ID=[id]",
     confirmText: "Are you sure you want to enable auto-extend for this relationship?",
     color: "info",
+    icon: <HourglassBottom />,
   },
   {
     label: "Remove Global Administrator from Relationship",
@@ -35,6 +46,7 @@ const actions = [
     url: "/api/ExecGDAPRemoveGArole?&GDAPID=[id]",
     confirmText: "Are you sure you want to remove Global Administrator from this relationship?",
     color: "danger",
+    icon: <AdminPanelSettings />,
   },
   {
     label: "Terminate Relationship",
@@ -42,12 +54,9 @@ const actions = [
     url: "/api/ExecDeleteGDAPRelationship?GDAPID=[id]",
     confirmText: "Are you sure you want to terminate this relationship?",
     color: "error",
+    icon: <GppBad />,
   },
 ];
-
-const offCanvas = {
-  actions: actions,
-};
 
 const simpleColumns = [
   "customer.displayName",
@@ -57,8 +66,13 @@ const simpleColumns = [
   "activatedDateTime",
   "endDateTime",
   "autoExtendDuration",
-  "accessDetails.unifiedRoles.roleDefinitionId",
+  "accessDetails.unifiedRoles",
 ];
+
+const offCanvas = {
+  actions: actions,
+  extendedInfoFields: simpleColumns,
+};
 
 const apiUrl = "/api/ListGraphRequest";
 const apiData = {

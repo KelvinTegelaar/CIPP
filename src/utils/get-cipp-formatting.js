@@ -73,20 +73,6 @@ export const getCippFormatting = (data, cellName, type) => {
     return <CippTimeAgo data={data} type={type} />;
   }
 
-  const durationArray = ["autoExtendDuration"];
-  if (durationArray.includes(cellName)) {
-    isoDuration.setLocales(
-      {
-        en,
-      },
-      {
-        fallbackLocale: "en",
-      }
-    );
-    const duration = isoDuration(data);
-    return duration.humanize("en");
-  }
-
   const passwordItems = ["password", "applicationsecret", "refreshtoken"];
 
   if (passwordItems.includes(cellNameLower)) {
@@ -283,6 +269,20 @@ export const getCippFormatting = (data, cellName, type) => {
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
     );
+  }
+
+  const durationArray = ["autoExtendDuration"];
+  if (durationArray.includes(cellName)) {
+    isoDuration.setLocales(
+      {
+        en,
+      },
+      {
+        fallbackLocale: "en",
+      }
+    );
+    const duration = isoDuration(data);
+    return duration.humanize("en");
   }
 
   //if string starts with http, return a link

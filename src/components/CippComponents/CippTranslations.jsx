@@ -37,4 +37,5 @@ export const CippTranslations = {
   portal_compliance: "Compliance Portal",
   portal_sharepoint: "Sharepoint Portal",
   "@odata.type": "Type",
+  roleDefinitionId: "GDAP Role",
 };
