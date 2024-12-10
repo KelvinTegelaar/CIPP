@@ -22,5 +22,9 @@
   {
     "label": "Onboarding",
     "path": "/tenant/gdap-management/onboarding"
+  },
+  {
+    "label": "Offboarding",
+    "path": "/tenant/gdap-management/offboarding"
   }
 ]
