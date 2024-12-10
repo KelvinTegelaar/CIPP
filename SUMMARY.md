@@ -257,3 +257,7 @@
 * [Autopilot & Intune](sip-and-cipp/autopilot-and-intune.md)
 * [Rise of the CIPPs](sip-and-cipp/rise-of-the-cipps.md)
 * [From Fork to Feature](sip-and-cipp/from-fork-to-feature.md)
+
+***
+
+* [CIPP New Interface Kickoff: Alpha Brief](cipp-new-interface-kickoff-alpha-brief.md)
