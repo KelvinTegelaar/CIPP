@@ -138,6 +138,7 @@ const CippSchedulerForm = (props) => {
           type="autoComplete"
           label="Select Command"
           multiple={false}
+          required={true}
           formControl={formControl}
           options={
             commands.data?.map((command) => {
@@ -148,6 +149,14 @@ const CippSchedulerForm = (props) => {
               };
             }) || []
           }
+          validators={{
+            validate: (value) => {
+              if (!value) {
+                return "Please select a Command";
+              }
+              return true;
+            },
+          }}
         />
       </Grid>
       <Grid item xs={12} md={gridSize}>

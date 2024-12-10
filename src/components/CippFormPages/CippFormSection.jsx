@@ -47,7 +47,7 @@ const CippFormSection = (props) => {
 
       <CardActions sx={{ justifyContent: "flex-end" }}>
         <Button
-          disabled={postCall.isPending}
+          disabled={postCall.isPending || !formControl.formState.isValid}
           onClick={formControl.handleSubmit(handleSubmit)}
           type="submit"
           variant="contained"

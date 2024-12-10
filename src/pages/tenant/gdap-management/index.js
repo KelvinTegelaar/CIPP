@@ -110,83 +110,50 @@ const Page = () => {
             data={[
               {
                 icon: <SupervisorAccount />,
-                data: relationships.data?.pages
-                  ?.map((page) => page?.Results?.length)
-                  .reduce((a, b) => a + b, 0),
+                data:
+                  relationships.data?.pages
+                    ?.map((page) => page?.Results?.length)
+                    .reduce((a, b) => a + b, 0) ?? 0,
                 name: "GDAP Relationships",
                 color: "secondary",
               },
               {
                 icon: <AdminPanelSettings />,
-                data: mappedRoles.data?.pages
-                  ?.map((page) => page?.length)
-                  .reduce((a, b) => a + b, 0),
+                data:
+                  mappedRoles.data?.pages?.map((page) => page?.length).reduce((a, b) => a + b, 0) ??
+                  0,
                 name: "Mapped Admin Roles",
                 color: "green",
               },
               {
                 icon: <Layers />,
-                data: roleTemplates.data?.pages
-                  ?.map((page) => page?.Results.length)
-                  .reduce((a, b) => a + b, 0),
+                data:
+                  roleTemplates.data?.pages
+                    ?.map((page) => page?.Results.length)
+                    .reduce((a, b) => a + b, 0) ?? 0,
                 name: "Role Templates",
               },
               {
                 icon: <HourglassBottom />,
-                data: pendingInvites.data?.pages
-                  ?.map((page) => page?.length)
-                  .reduce((a, b) => a + b, 0),
+                data:
+                  pendingInvites.data?.pages
+                    ?.map((page) => page?.length)
+                    .reduce((a, b) => a + b, 0) ?? 0,
                 name: "Pending Invites",
               },
             ]}
           />
         </Grid>
-        {activeStep === 4 && (
-          <Grid size={12}>
-            <Button
-              LinkComponent={Link}
-              href="/tenant/gdap-management/invites/add"
-              startIcon={<Add />}
-              variant="contained"
-            >
-              Add a Tenant
-            </Button>
-          </Grid>
-        )}
-        {createDefaults && (
-          <>
-            <Grid size={12}>
-              <Box>
-                <Alert severity="warning">
-                  You're missing the CIPP Default templates, to get started we'll need to create them.
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() =>
-                      createCippDefaults.mutate({
-                        url: "/api/ExecAddGDAPRole",
-                        data: { TemplateId: "CIPP Defaults" },
-                      })
-                    }
-                    sx={{ ml: 2 }}
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <PlusIcon />
-                      </SvgIcon>
-                    }
-                  >
-                    Create CIPP Defaults
-                  </Button>
-                </Alert>
-              </Box>
-            </Grid>
-            <Grid size={12}>
-              <Box>
-                <CippApiResults apiObject={createCippDefaults} />
-              </Box>
-            </Grid>
-          </>
-        )}
+        <Grid size={12}>
+          <Button
+            LinkComponent={Link}
+            href="/tenant/gdap-management/invites/add"
+            startIcon={<Add />}
+            variant="contained"
+          >
+            Add a Tenant
+          </Button>
+        </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <CippButtonCard
             title="GDAP Setup"

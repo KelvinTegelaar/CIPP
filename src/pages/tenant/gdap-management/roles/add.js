@@ -70,6 +70,14 @@ const Page = () => {
             multiple={true}
             creatable={false}
             required={true}
+            validators={{
+              validate: (value) => {
+                if (!value || value.length === 0) {
+                  return "Please select at least one GDAP Role";
+                }
+                return true;
+              },
+            }}
           />
           {selectedRoles?.some((role) => role.value === "62e90394-69f5-4237-9190-012177145e10") && (
             <Alert severity="warning">

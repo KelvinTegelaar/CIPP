@@ -36,6 +36,7 @@ const Page = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [pollOnboarding, setPollOnboarding] = useState(false);
   const [showOnboardingStatus, setShowOnboardingStatus] = useState(false);
+  const [invalidRelationship, setInvalidRelationship] = useState(false);
 
   const queryId = router.query.id;
   const formControl = useForm({
@@ -102,10 +103,11 @@ const Page = () => {
       selectedRelationship !== currentRelationship
     ) {
       var formValue = selectedRelationship;
-      if (!selectedRelationship?.value) {
+      if (!selectedRelationship?.value && queryId) {
         var relationship = relationshipList.data?.Results?.find(
-          (relationship) => relationship.id === selectedRelationship
+          (relationship) => relationship.id === queryId
         );
+
         if (relationship) {
           formValue = {
             label:
@@ -125,6 +127,9 @@ const Page = () => {
             },
           };
           formControl.setValue("id", formValue);
+          setInvalidRelationship(false);
+        } else {
+          setInvalidRelationship(true);
         }
       }
       const invite = currentInvites?.data?.pages?.[0]?.find(
@@ -157,6 +162,7 @@ const Page = () => {
     currentInvites.isSuccess,
     onboardingList.isSuccess,
     selectedRelationship,
+    queryId,
   ]);
 
   useEffect(() => {
@@ -202,6 +208,7 @@ const Page = () => {
       setMissingDefaults(missingDefaults.length > 0);
       setRolesMissingFromMapping(missingRoles);
       setRolesMissingFromRelationship(missingRolesRelationship);
+      setInvalidRelationship(false);
     }
   }, [selectedRole, currentInvite, currentRelationship]);
 
@@ -221,7 +228,7 @@ const Page = () => {
   }, [pollOnboarding, startOnboarding.isSuccess, startOnboarding?.data?.data]);
 
   const handleSubmit = () => {
-    formControl.trigger();
+    console.log(formControl);
     if (formControl.formState.errors.id) {
       return;
     }
@@ -233,7 +240,7 @@ const Page = () => {
       data.gdapRoles = selectedRole?.value;
     }
     if (formControl.getValues("ignoreMissingRoles")) {
-      data.IgnoreMissingRoles = formControl.getValues("ignoreMissingRoles");
+      data.ignoreMissingRoles = Boolean(formControl.getValues("ignoreMissingRoles"));
     }
 
     startOnboarding.mutate({
@@ -245,7 +252,6 @@ const Page = () => {
   };
 
   const handleRetry = () => {
-    formControl.trigger();
     if (formControl.formState.errors.id) {
       return;
     }
@@ -258,7 +264,7 @@ const Page = () => {
       data.gdapRoles = selectedRole?.value;
     }
     if (formControl.getValues("ignoreMissingRoles")) {
-      data.IgnoreMissingRoles = formControl.getValues("ignoreMissingRoles");
+      data.IgnoreMissingRoles = Boolean(formControl.getValues("ignoreMissingRoles"));
     }
 
     startOnboarding.mutate({
@@ -275,6 +281,17 @@ const Page = () => {
           <Grid container spacing={4}>
             <Grid size={{ sm: 12, md: 6 }}>
               <Stack spacing={2}>
+                <Alert severity="info">
+                  This page will allow you to start the onboarding process for a tenant. To proceed,
+                  select a GDAP Relationship from the dropdown below. If the relationship has not
+                  been mapped, you will be prompted to select a GDAP Role Template.
+                </Alert>
+                {invalidRelationship && (
+                  <Alert severity="error">
+                    The selected relationship ({queryId}) is not eligible for onboarding. Please
+                    select a different relationship.
+                  </Alert>
+                )}
                 <CippFormComponent
                   formControl={formControl}
                   name="id"
@@ -307,8 +324,16 @@ const Page = () => {
                     },
                   }}
                   multiple={false}
-                  creatable={false}
+                  creatable={true}
                   required={true}
+                  validators={{
+                    validate: (value) => {
+                      if (!value) {
+                        return "Please select a GDAP Relationship";
+                      }
+                      return true;
+                    },
+                  }}
                 />
                 {currentRelationship?.value && !currentInvite && (
                   <>
@@ -331,6 +356,14 @@ const Page = () => {
                         valueField: "RoleMappings",
                       }}
                       required={true}
+                      validators={{
+                        validate: (value) => {
+                          if (!value) {
+                            return "Please select a GDAP Role Template";
+                          }
+                          return true;
+                        },
+                      }}
                       multiple={false}
                     />
                   </>
@@ -494,15 +527,33 @@ const Page = () => {
         <CardActions sx={{ justifyContent: "flex-end" }}>
           <Stack spacing={1} direction="row">
             {currentOnboarding && (
-              <Button variant="outlined" onClick={() => handleRetry()} startIcon={<Replay />}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  formControl.trigger();
+                  handleRetry();
+                }}
+                startIcon={<Replay />}
+                disabled={
+                  !formControl.formState.isValid ||
+                  currentOnboarding?.Status === "succeeded" ||
+                  currentOnboarding?.Status === "failed" ||
+                  currentOnboarding?.Status === "queued" ||
+                  currentOnboarding?.Status === "running"
+                }
+              >
                 Retry
               </Button>
             )}
             <Button
               variant="contained"
-              onClick={() => handleSubmit()}
+              onClick={() => {
+                formControl.trigger();
+                handleSubmit();
+              }}
               startIcon={<PlayArrow />}
               disabled={
+                !formControl.formState.isValid ||
                 currentOnboarding?.Status === "succeeded" ||
                 currentOnboarding?.Status === "failed" ||
                 currentOnboarding?.Status === "queued" ||

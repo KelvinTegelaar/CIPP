@@ -36,6 +36,14 @@ export const CippAddEditGdapRoleTemplate = (props) => {
         multiple={true}
         creatable={false}
         required={true}
+        validators={{
+          validate: (value) => {
+            if (!value || value.length === 0) {
+              return "Please select at least one GDAP Role Mapping";
+            }
+            return true;
+          },
+        }}
       />
     </Stack>
   );
