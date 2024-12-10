@@ -17,15 +17,15 @@ This page displays all applied standards in a table format for each tenant. The 
 * **Developer Note:** For a full list of current and future standards in JSON format, reference the [standards.json](https://github.com/KelvinTegelaar/CIPP/blob/main/src/data/standards.json) file or review the category-specific subpages below.
 {% endhint %}
 
-## Meet the Standards
+## **Table Columns**
 
-More details about the currently available standards can be found on the [List Standards](./) page and it's respective sub pages (listed in the standard categories below) based on their categories. The tables contain the following columns:
+Each of the separate standards pages have a table listing of their respective standards that includes the following columns:
 
 * **Standard Name**: The name of the standard.
-* **Description**: A brief description of the standard. This will help you understand what the standard does.
-* **Recommended By**: The organization that recommends the standard. This can be CIS, CIPP, or any other organization.
-* **APIName**: The API name of the standard. Useful for identifying the standard in the logbook.
-* **PowerShell Equivalent**: The PowerShell command that can be used to apply the standard.
+* **Description**: A brief explanation of what the standard does.
+* **Recommended By**: The organization recommending the standard (e.g., CIS, CIPP).
+* **API Name**: Useful for logs and automation.
+* **PowerShell Equivalent**: The PowerShell command used to apply the standard manually.
 
 ## **Standard Categories**
 

@@ -7,27 +7,47 @@ description: >-
 
 # Standards
 
-## Overview
+## **Overview**
 
-The Standards page provides the ability for you to apply or reapply specific standards to your entire client base. Standards are collections of configuration items applied to your M365 tenants. The standards in CIPP make sure your tenant is in a specific baseline by reapplying the setting every 3 hours. This prevents admins from making an accidental change that could impact security. Some of the standards are explained below.
+Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours**. This automatic enforcement prevents unauthorized changes and helps maintain security.
 
-{% hint style="danger" %}
-**Important Points on Standards Configuration:**
-
-* **Companion Policies:** Some standards require companion policies in Microsoft Intune to be effective. Ensure all necessary policies are set up to achieve the desired results.
-* **Deselecting Standards:** Deselecting a standard prevents it from being applied but does not disable the current setting. e.g.: If you deselect `Enable FIDO2 capabilities`, the standard will stop enforcing it, but if it was already enabled, it remains on.
-* **Precedence of Standards:** Tenant-level standards override `AllTenants` standards. e.g.: If `Enable or disable 'external' warning in Outlook` is set to `false` for a specific tenant, it will stay disabled for that tenant even if the `AllTenants` standard is `true`.
-* **Application Cadence:** Standards reapply to your tenants every **three hours** by default. If a setting covered by a standard changes the next time the standards apply the value specified in the standard takes precedence.
+{% hint style="info" %}
+**Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects, detailed in the video and walkthrough on[ this page](../../../setup/implementation-guide/).
 {% endhint %}
 
-### Impact levels
+### **Key Options**:
 
-* **Low Impact** changes have no user-facing impact or minimal impact.
-* **Medium Impact** changes have a user impact mitigated with a little communication.
-* **High Impact** changes should require thought and planning. Should ideally co-ordinate deployment with customers - may have significant impacts on how users interact with Microsoft 365.
+* **Report**: Logs the current configuration.
+* **Alert**: Sends notifications via ticket, email, or webhook.
+* **Remediate**: Applies the configuration to the tenant.
 
-### Feature Requests / Ideas
+**Note**: Disabling the "Remediate" option prevents future enforcement but does not undo previously applied changes.
 
-Plans exist to implement more standardised options and settings, along with an alerting system supporting Remote Monitoring and Management (RMM) systems, webhooks or, e-mail.
+{% hint style="warning" %}
+**Important Considerations:**
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+* **Companion Policies** Some standards rely on additional policies in tools like **Microsoft Intune** to be fully effective. Ensure all required companion policies are configured to achieve the desired results.
+* **Deselecting Standards** Deselecting a standard prevents it from being enforced in future cycles, but it does not undo its current configuration.
+  * **Example:** If you deselect `"Enable FIDO2 capabilities`," the standard will stop enforcing this policy. However, if FIDO2 was already enabled, it will remain enabled.
+* **Precedence of Standards:** Tenant-level standards override All Tenants standards. Example: If "`Enable or disable 'external' warning in Outlook`" is set to "false" for a specific tenant, it will stay disabled even if the All Tenants standard sets it to "true."
+* **Application Cadence:** Standards reapply **every three hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle.
+{% endhint %}
+
+## **Impact Levels**
+
+Each standard is labeled based on the level of change it introduces and its impact on users:
+
+* **Low Impact**: Minimal or no user-facing effects.
+* **Medium Impact**: May require some communication with users to prepare them for changes.
+* **High Impact**: Significant changes that could affect daily workflows; coordinate with clients before applying.
+
+## **Where to Next?**
+
+* Learn how to configure and apply standards for the first time on the[ **Standards Setup**](../../../setup/implementation-guide/standards-setup.md) page.
+* Explore specific standards and their details on the [**List Standards**](list-standards/) page.
+
+{% hint style="info" %}
+Plans exist to implement more standardized options and settings, along with an alerting system supporting RMM systems, webhooks or, e-mail.
+{% endhint %}
+
+{% include "../../../.gitbook/includes/feature-request.md" %}
