@@ -1,6 +1,8 @@
 # Troubleshooting instructions
 
+{% hint style="danger" %}
 <mark style="color:red;">**You must always supply all information requested in this document.**</mark>&#x20;
+{% endhint %}
 
 To ensure we can assist you with any CIPP issue, complete details are essential. This includes all three mandatory screenshots: Permissions Check, GDAP Check, and Tenant Access Check. Without these, we cannot offer support, as they are the foundation for understanding and resolving your issue.
 

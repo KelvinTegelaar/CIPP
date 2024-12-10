@@ -2,7 +2,7 @@
 description: Review Sharepoint sites and usage
 ---
 
-# Sharepoint
+# SharePoint
 
 This page lists SharePoint site usage. You can also see file count, activity and general usage, in addition to the resource allocations for the site.
 
@@ -19,6 +19,4 @@ This page lists SharePoint site usage. You can also see file count, activity and
 
 
 
-### Feature Requests / Ideas
-
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}

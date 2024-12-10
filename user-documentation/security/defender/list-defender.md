@@ -23,10 +23,8 @@ This page lists the defender status for all enrolled devices in a tenant. This i
 
 
 
-### Feature Requests / Ideas
-
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
-
 ### Known Issues / Limitations
 
 * You must be a current Microsoft Lighthouse partner, and your tenants must be on-boarded to Lighthouse to use this functionality
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

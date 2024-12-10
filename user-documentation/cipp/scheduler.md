@@ -28,3 +28,7 @@ Scheduled tasks run every 15 minutes on their planned time. A recurring task wil
    * Use the "Webhook", "E-mail", and "PSA" switches to decide where you would like the results to be sent after execution. By not selecting any field the data is only stored in the CIPP scheduler database.
 6. **Saving the Task**:
    * After filling in all the necessary details, click on the "Save" or "Submit" button to schedule the task.
+
+
+
+{% include "../../.gitbook/includes/feature-request.md" %}

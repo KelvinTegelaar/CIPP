@@ -39,6 +39,6 @@ For the latest version of this documentation you can check out Gradient's docume
 3. Review and Press Finish
 4. Navigate back to CIPP and click Force Sync to import usage
 
-### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

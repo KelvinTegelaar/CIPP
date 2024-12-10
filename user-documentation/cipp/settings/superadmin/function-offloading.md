@@ -20,15 +20,15 @@ This guide explains how to deploy additional function apps for CyberDrain Improv
 
 Before starting, ensure you have the following:
 
-- An existing deployment of CIPP in your Azure portal.
-- Access to an Azure subscription with an existing resource group.
-- Understanding of Azure function app deployments.
+* An existing deployment of CIPP in your Azure portal.
+* Access to an Azure subscription with an existing resource group.
+* Understanding of Azure function app deployments.
 
 ### ARM Template Overview
 
 #### Parameters Used
 
-- **backendFuncType**: The type of function app to deploy. Valid values are `proc`, `auditlog`, `standards`, and `usertasks`. For the first offloading function, you should always deploy the `proc` type. You can deploy additional function apps for specific workloads beyond that.
+* **backendFuncType**: The type of function app to deploy. Valid values are `proc`, `auditlog`, `standards`, and `usertasks`. For the first offloading function, you should always deploy the `proc` type. You can deploy additional function apps for specific workloads beyond that.
 
 #### ARM Template for Offloading
 
@@ -180,27 +180,19 @@ You can deploy the ARM template to your Azure resource group using the Azure Por
 To deploy a custom ARM template using the Azure Portal, follow these steps:
 
 1. **Navigate to the Azure Portal**: Go to [https://portal.azure.com](https://portal.azure.com) and sign in with your credentials.
-
 2. **Deploy**: In the search bar at the top of the portal, type **"Deploy a custom template"** and select the result that appears.
-
 3. **Template Options**:
-
-   - On the **Custom deployment** page, click the **Build your own template in the editor** option.
-
+   * On the **Custom deployment** page, click the **Build your own template in the editor** option.
 4. **Paste the ARM Template**:
-
-   - Delete any default content in the editor, then paste your ARM template.
-   - Once the template is pasted, click **Save**.
-
+   * Delete any default content in the editor, then paste your ARM template.
+   * Once the template is pasted, click **Save**.
 5. **Configure Parameters**:
-
-   - Select the **backend function type**.
-   - Click **Review + Create**.
-
+   * Select the **backend function type**.
+   * Click **Review + Create**.
 6. **Deploy**:
-   - Review the deployment settings and parameters.
-   - Ensure there are no template validation failures.
-   - Click **Create** to initiate the deployment process.
+   * Review the deployment settings and parameters.
+   * Ensure there are no template validation failures.
+   * Click **Create** to initiate the deployment process.
 
 Once the deployment starts, you can monitor its progress through the **Notifications** section in the Azure Portal.
 
@@ -231,3 +223,7 @@ After successful deployment of the offloading function apps, follow these steps 
 
 1. Navigate to CIPP > Application Settings > SuperAdmin
 2. Under Function Offloading, toggle the Offload Functions button and hit Save.
+
+
+
+{% include "../../../../.gitbook/includes/feature-request.md" %}

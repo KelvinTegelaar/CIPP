@@ -1,6 +1,6 @@
 # NinjaOne
 
-{% hint style="info" %}
+{% hint style="warning" %}
 Please Note the NinjaOne CIPP integration requires NinjaOne version 5.6 or above. This will be rolling out regionally starting the end of November and going through mid-December.
 {% endhint %}
 
@@ -104,3 +104,6 @@ After the API settings are set you can now map NinjaOne items to Microsoft 365 /
 3. If the field is not displayed, make sure you have configured the correct API Permissions, Definition Scope and Type in NinjaOne.
 4. Click Save Mappings
 
+
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

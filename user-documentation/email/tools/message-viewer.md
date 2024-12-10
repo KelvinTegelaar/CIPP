@@ -4,8 +4,8 @@ The Message Viewer is a tool that allows users to view and analyze EML (Electron
 
 ## Features
 
-- **Message Preview**: The tool provides a preview of the selected EML file in HTML or Text format, displaying the sender, recipient, subject, and date of the email.
-- **Attachment Extraction**: If the email contains attachments, users can preview or download them to their local system.
+* **Message Preview**: The tool provides a preview of the selected EML file in HTML or Text format, displaying the sender, recipient, subject, and date of the email.
+* **Attachment Extraction**: If the email contains attachments, users can preview or download them to their local system.
 
 ## Usage
 
@@ -13,6 +13,6 @@ The Message Viewer is a tool that allows users to view and analyze EML (Electron
 2. The email will be parsed and displayed.
 3. Click on the View Headers or View Source to see the raw message data.
 
-### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=enhancement%2Cno-priority&projects=&template=feature.yml&title=%5BFeature+Request%5D%3A+) on GitHub.
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

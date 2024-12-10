@@ -1,8 +1,8 @@
 ---
-description: Configuring the HaloPSA integration
+description: Configuring the Halo PSA Ticketing integration
 ---
 
-# HaloPSA
+# Halo PSA Ticketing
 
 #### Creating an API application in Halo
 
@@ -15,11 +15,10 @@ description: Configuring the HaloPSA integration
 6. Set the **Authentication Method** to _Client ID and Secret (Services)_.
 7. Store the **Client ID** and **Client Secret** securely.
 8. Set the **Login Type** and **Agent to login as** appropriately.\
-   _This setting will determine who appears to be responsible for these API calls. You may want to create a dedicated agent user for this purpose._
-   _This agent needs to be an administrator in Halo, other roles maybe possible but have not been tested_
-10. Select the **Permissions** tab.
-11. Grant the application the permissions required for your purposes.\
-    _Generally speaking you want to limit the API to only the permissions it needs. For CIPP this currently requires read:tickets, edit:tickets, read:customers, edit:customers._
+   &#xNAN;_&#x54;his setting will determine who appears to be responsible for these API calls. You may want to create a dedicated agent user for this purpose._ _This agent needs to be an administrator in Halo, other roles maybe possible but have not been tested_
+9. Select the **Permissions** tab.
+10. Grant the application the permissions required for your purposes.\
+    &#xNAN;_&#x47;enerally speaking you want to limit the API to only the permissions it needs. For CIPP this currently requires read:tickets, edit:tickets, read:customers, edit:customers._
 
 #### Enter credentials in CIPP
 
@@ -28,13 +27,14 @@ Enter the information found in **Settings** > **CIPP** > **Extensions Settings**
 After entering the credentials, click **Test Extension.** If the test is successful Alerts will automatically become a HaloPSA ticket.
 
 #### Ticket Type
+
 To get the Ticket Type ID, follow these steps:
+
 1. Navigate to Configuration -> Tickets -> Ticket Type
 2. Click on the desired ticket type and then the URL will display the ticket type ID.
 
-Example:
-https://{halo instance url}/config/tickets/tickettype?id=**1**
+Example: https://{halo instance url}/config/tickets/tickettype?id=**1**
 
-### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

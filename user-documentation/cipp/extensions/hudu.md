@@ -53,8 +53,8 @@ After the API settings are set you can now map Hudu Assets to Microsoft 365 / CI
 2. For each field you wish to populate in Hudu select the asset layout from the dropdown menu. For users it is recommended to use the "People" template to prevent synchronisation issues.
 3. Click Save Mappings
 
-
 #### Custom CSS
+
 In some cases the information provided in the M365 Rich Text Field is cut off or formatted incorrectly, use this custom CSS code in your Hudu settings to help format it:
 
 ```
@@ -107,3 +107,7 @@ In some cases the information provided in the M365 Rich Text Field is cut off or
 #### Special Thanks
 
 Special thanks to Luke Whitelock and his [HuduM365Automation](https://github.com/lwhitelock/HuduM365Automation) function app code.
+
+
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

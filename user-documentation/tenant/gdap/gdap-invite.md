@@ -7,7 +7,7 @@ This will ensure that the correct roles are mapped to the GDAP relationship, and
 The invite wizard is part of the Tenant Onboarding flow, unless an already existing pending invite is selected.
 {% endhint %}
 
-{% hint style="info" %}
+{% hint style="warning" %}
 **Please note:** Any other user that needs to gain access to your Microsoft CSP Tenants will need to be manually added to these groups.\
 To easily add users to these groups, you can do the following
 
@@ -16,10 +16,10 @@ To easily add users to these groups, you can do the following
 * Add the created group to the individual GDAP security groups that CIPP created for you. Ex. M365 GDAP Exchange Administrator
 {% endhint %}
 
-If multiple invites are generated, but not used, the unused ones can be found on the GDAP Relationship List page. Here onboarding of the tenant can be started again. The invite needs to be accepted by a Global Administrator in the customer tenant.
+If multiple invites are generated, but not used, the unused ones can either be found on the [GDAP Relationships](gdap-relationships.md) page or on the [Invite list](gdap-invites.md) page. Here onboarding of the tenant can be started again. The invite needs to be accepted by a Global Administrator in the customer tenant.
 
-Roles can be selected from the list of available mapped roles, or you can use the CIPP Use CIPP recommended roles and settings.
+All mapped [GDAP roles](gdap-roles.md) can be selected from the list, or you can the "Use CIPP recommended roles and settings" option to go with the recommended roles.
 
-### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

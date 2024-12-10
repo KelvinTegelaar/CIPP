@@ -72,7 +72,7 @@ You can install the CIPP API Powershell module using PowerShell 7.x. The module 
 Install-Module -Name CIPPAPIModule
 ```
 
-You will first need to set your CIPP API Details using the following command: 
+You will first need to set your CIPP API Details using the following command:
 
 ```powershell
 Set-CIPPAPIDetails -CIPPClientID "YourClientIDGoesHere" -CIPPClientSecret "YourClientSecretGoesHere" -CIPPAPIUrl "https://your.cipp.apiurl" -TenantID "YourTenantID"
@@ -87,3 +87,5 @@ Get-CIPPLogs
 Further documentation for the module and each of its available functions can be found [here](https://github.com/BNWEIN/CIPPAPIModule/)
 
 
+
+{% include "../.gitbook/includes/feature-request.md" %}

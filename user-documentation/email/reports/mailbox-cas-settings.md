@@ -2,6 +2,11 @@
 
 This report lists all users and the status of various Client Access Settings on their mailbox, such as IMAP / OWA / POP.
 
-### Feature Requests / Ideas
+### Use cases
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+* Finding users where MAPI has erroneously disabled and is causing Outlook connectivity issues
+* Ensuring POP and IMAP is disabled for all users
+
+
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

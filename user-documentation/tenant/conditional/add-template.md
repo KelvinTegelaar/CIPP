@@ -1,6 +1,8 @@
+---
+hidden: true
+---
+
 # Add Template
-
-
 
 ### Feature Requests / Ideas
 

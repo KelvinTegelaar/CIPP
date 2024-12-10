@@ -2,7 +2,7 @@
 description: Review all Conditional Access Polcies per tenant
 ---
 
-# Policies
+# CA Policies
 
 This page lists all the Conditional Access Policies on the selected tenant. This lists everything that's available in the Microsoft Endpoint Manager (MEM) portal, including the applications the CA applies to and used built-in controls.
 
@@ -41,6 +41,6 @@ Under the three dots for Conditional Access policies you'll find these actions:
 
 Creating a template includes all properties of the conditional policy templated; Inclusions and exclusions are translated and stored in CIPP for redeployment. When redeploying the template on any tenant every setting is included, such as Conditional Access Named locations, Authentication strengths, and any other setting.
 
-### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -32,6 +32,4 @@ While navigating the Roles page, please consider the following:
 
 
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. If you have any feature requests or ideas to improve the Roles page, please raise them on our [GitHub issues page](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+).
+{% include "../../../.gitbook/includes/feature-request.md" %}

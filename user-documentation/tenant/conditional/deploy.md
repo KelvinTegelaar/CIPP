@@ -1,4 +1,4 @@
-# Deploy Conditional Access
+# Deploy CA Policies
 
 ### Deploying a Conditional Access Policy
 
@@ -8,6 +8,4 @@ Using the Deploy Conditional access Wizard you can change several settings in th
 
 
 
-### Feature Requests / Ideas
-
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -19,3 +19,7 @@ Fields are as follows:
 * **Scheduled End Date**: Set the date and time for when the exclusion should end. This determines when the original CA policy settings will be restored.
 
 Click `Set Vacation Mode` to finalize the schedule.
+
+
+
+{% include "../../../.gitbook/includes/feature-request.md" %}

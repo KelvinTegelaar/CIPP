@@ -1,4 +1,4 @@
-﻿# Rooms
+# Rooms
 
 {% hint style="danger" %}
 **Please note:** Newly created, updated and converted rooms will not be shown in the list immediately, and can take up to 24 hours to be visible.
@@ -8,12 +8,12 @@ This page lists all the rooms that are available in the tenant.
 
 ## Actions
 
-- Add Room
+* Add Room
 
 ### Coming Soon / In Development
 
-- Edit room
+* Edit room
 
-### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=enhancement%2Cno-priority&projects=&template=feature.yml&title=%5BFeature+Request%5D%3A+) on GitHub.
+
+{% include "../../../.gitbook/includes/feature-request.md" %}
