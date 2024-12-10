@@ -72,13 +72,10 @@ const Page = () => {
 
   useEffect(() => {
     if (mappedRoles.isSuccess && roleTemplates.isSuccess && pendingInvites.isSuccess) {
-      // if mapped roles exist, move to next step
       if (mappedRoles?.data?.pages?.[0]?.length > 0) {
         setActiveStep(1);
-        // if role templates exist, move to next step
         if (roleTemplates?.data?.pages?.[0]?.Results?.length > 0) {
           setActiveStep(2);
-          // if pending invites exist, move to next step
           if (pendingInvites?.data?.pages?.[0]?.length > 0) {
             setActiveStep(4);
           }
@@ -161,7 +158,7 @@ const Page = () => {
             <Grid size={12}>
               <Box>
                 <Alert severity="warning">
-                  The CIPP Defaults template is missing from the GDAP Role Templates. Create it now?
+                  You're missing the CIPP Default templates, to get started we'll need to create them.
                   <Button
                     size="small"
                     variant="outlined"
