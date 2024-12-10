@@ -34,7 +34,7 @@ const Page = () => {
         hidePageType={true}
         postUrl="/api/ExecOffboardTenant"
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid size={12}>
             <Alert severity="info">
               This page is used to offboard a tenant. Please select the tenant and the actions to be
