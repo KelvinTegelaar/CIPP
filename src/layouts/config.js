@@ -139,7 +139,7 @@ export const items = [
       },
       {
         title: "Tools",
-        path: "/tenant/administration",
+        path: "/tenant/tools",
         icon: (
           <SvgIcon>
             <AddBoxOutlined />
@@ -188,7 +188,7 @@ export const items = [
       },
       {
         title: "Conditional Access",
-        path: "/tenant/administration",
+        path: "/tenant/conditional",
         icon: (
           <SvgIcon>
             <Key />
