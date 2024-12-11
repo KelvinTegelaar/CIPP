@@ -101,7 +101,7 @@ const Page = () => {
                         $count: true,
                       },
                       dataKey: "Results",
-                      queryKey: "ListVendorApps",
+                      queryKey: "ListVendorApps-" + tenantId.value,
                       labelField: (app) => {
                         const vendor = vendorTenantList.find(
                           (v) => v?.vendorTenantId === app?.appOwnerOrganizationId
