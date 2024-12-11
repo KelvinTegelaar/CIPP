@@ -7,6 +7,10 @@ import { CippFormComponent } from "/src/components/CippComponents/CippFormCompon
 import vendorTenantList from "/src/data/vendorTenantList";
 import { Box, Grid, Stack } from "@mui/system";
 import { Alert, Divider, Typography } from "@mui/material";
+import { ApiGetCall } from "/src/api/ApiCall";
+import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
+import { ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { Apps, Description, Widgets } from "@mui/icons-material";
 
 const Page = () => {
   const formControl = useForm({
@@ -24,10 +28,54 @@ const Page = () => {
     name: "tenantFilter",
   });
 
+  const gdapRelationships = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: "tenantRelationships/delegatedAdminRelationships",
+      tenantFilter: "",
+      $top: 300,
+    },
+    queryKey: "ListGDAPRelationship",
+  });
+
+  const cspContracts = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: "contracts",
+      tenantFilter: "",
+      $top: 300,
+    },
+    queryKey: "ListContracts",
+  });
+
+  const mspApps = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: "servicePrincipals",
+      TenantFilter: tenantId?.value,
+      $filter: `appOwnerOrganizationId eq %tenantid%`,
+      $select: "id,displayName,appId,appOwnerOrganizationId",
+      $count: true,
+    },
+    queryKey: "ListMSPApps-" + tenantId?.value,
+  });
+
+  const vendorApps = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: "servicePrincipals",
+      TenantFilter: tenantId?.value,
+      $filter: vendorGraphFilter,
+      $select: "id,displayName,appId,appOwnerOrganizationId",
+      $count: true,
+    },
+    queryKey: "ListVendorApps-" + tenantId?.value,
+  });
+
   return (
     <>
       <CippFormPage
-        queryKey="ListGDAPRoles"
+        queryKey={["ListAllTenants", "TenantSelector"]}
         formControl={formControl}
         title="Tenant Offboarding"
         hideBackButton={true}
@@ -78,7 +126,42 @@ const Page = () => {
                 <Divider />
               </Grid>
               <Grid size={12}>
-                <Typography variant="h6">Select offboarding actions to perform</Typography>
+                <CippInfoBar
+                  isFetching={gdapRelationships.isFetching || cspContracts.isFetching}
+                  data={[
+                    {
+                      name: "GDAP Relationships",
+                      data:
+                        gdapRelationships.data?.Results?.filter(
+                          (relationship) => relationship?.customer?.tenantId === tenantId.value
+                        )?.length ?? 0,
+                      icon: <ShieldCheckIcon />,
+                    },
+                    {
+                      name: "CSP Contract",
+                      data:
+                        cspContracts.data?.Results?.filter(
+                          (contract) => contract?.customerId === tenantId.value
+                        )?.length === 1
+                          ? "Yes"
+                          : "No",
+                      icon: <Description />,
+                    },
+                    {
+                      name: "MSP Applications",
+                      data: mspApps.data?.Results?.length ?? 0,
+                      icon: <Widgets />,
+                    },
+                    {
+                      name: "Vendor Applications",
+                      data: 0,
+                      icon: <Apps />,
+                    },
+                  ]}
+                />
+              </Grid>
+              <Grid size={12}>
+                <Typography variant="h6">Offboarding actions to perform</Typography>
                 <Typography variant="subtitle2" color="text.secondary">
                   The tenant will not be fully offboarded unless all the relationships/contracts are
                   terminated.
@@ -89,7 +172,7 @@ const Page = () => {
                   <CippFormComponent
                     formControl={formControl}
                     name="vendorApplications"
-                    label="Select Vendor Applications to Remove"
+                    label="Vendor Applications to Remove"
                     type="autoComplete"
                     api={{
                       url: "/api/ListGraphRequest",
@@ -110,18 +193,21 @@ const Page = () => {
                       },
                       valueField: "appId",
                     }}
+                    disabled={vendorApps?.data?.Results?.length > 0 ? false : true}
                   />
                   <CippFormComponent
                     formControl={formControl}
                     name="RemoveCSPGuestUsers"
                     label="Remove all guest users originating from the CSP tenant."
                     type="switch"
+                    disabled={mspApps?.data?.Results?.length > 0 ? false : true}
                   />
                   <CippFormComponent
                     formControl={formControl}
                     name="RemoveCSPnotificationContacts"
                     label="Remove all notification contacts originating from the CSP tenant (technical, security, marketing notifications)."
                     type="switch"
+                    disabled={mspApps?.data?.Results?.length > 0 ? false : true}
                   />
                 </Stack>
               </Grid>
@@ -136,18 +222,33 @@ const Page = () => {
                         name="RemoveMultitenantCSPApps"
                         label="Remove all multitenant applications originating from CSP tenant (including CIPP-SAM)."
                         type="switch"
+                        disabled={mspApps?.data?.Results?.length > 0 ? false : true}
                       />
                       <CippFormComponent
                         formControl={formControl}
                         name="TerminateGDAP"
                         label="Terminate all active GDAP relationships (will send email to tenant admins and contacts)."
                         type="switch"
+                        disabled={
+                          gdapRelationships?.data?.Results?.find(
+                            (relationship) => relationship?.customer?.tenantId === tenantId.value
+                          )
+                            ? false
+                            : true
+                        }
                       />
                       <CippFormComponent
                         formControl={formControl}
                         name="TerminateContract"
                         label="Terminate contract relationship (reseller, etc)."
                         type="switch"
+                        disabled={
+                          cspContracts?.data?.Results?.find(
+                            (contact) => contact.customerId === tenantId.value
+                          )
+                            ? false
+                            : true
+                        }
                       />
                     </Stack>
                   </Box>

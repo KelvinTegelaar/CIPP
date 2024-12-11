@@ -55,7 +55,7 @@ const Page = () => {
       formControl={formControl}
       resetForm={false}
       postUrl="/api/ExecPartnerMode"
-      queryKey={"execPartnerMode"}
+      queryKey={["execPartnerMode", "TenantSelector"]}
     >
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} md={12}>
