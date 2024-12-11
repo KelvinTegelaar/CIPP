@@ -77,7 +77,7 @@ const Page = () => {
       setActiveStep(stepCount);
 
       if (data?.Status === "succeeded" || data?.Status === "failed") {
-        var runningSteps = data.OnboardingSteps.find((step) => step.Status === "running");
+        var runningSteps = data.OnboardingSteps?.find((step) => step.Status === "running");
         if (!runningSteps) {
           setPollOnboarding(false);
         }
@@ -179,7 +179,7 @@ const Page = () => {
 
       currentRoles?.forEach((role) => {
         if (
-          !relationshipRoles.find(
+          !relationshipRoles?.find(
             (relationshipRole) => relationshipRole.roleDefinitionId === role.roleDefinitionId
           )
         ) {
@@ -194,14 +194,14 @@ const Page = () => {
           )
         ) {
           // lookup role from GDAPRoles
-          var role = GDAPRoles.find((gdapRole) => gdapRole.ObjectId === role.roleDefinitionId);
+          var role = GDAPRoles?.find((gdapRole) => gdapRole.ObjectId === role.roleDefinitionId);
           missingRolesRelationship.push(role);
         }
       });
 
       var missingDefaults = [];
       relationshipRoles.forEach((role) => {
-        if (!cippDefaults.find((defaultRole) => defaultRole.value === role.roleDefinitionId)) {
+        if (!cippDefaults?.find((defaultRole) => defaultRole.value === role.roleDefinitionId)) {
           missingDefaults.push(role);
         }
       });
