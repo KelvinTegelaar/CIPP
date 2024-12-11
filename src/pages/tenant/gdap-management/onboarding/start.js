@@ -127,6 +127,7 @@ const Page = () => {
             },
           };
           formControl.setValue("id", formValue);
+          formControl.trigger();
           setInvalidRelationship(false);
         } else {
           setInvalidRelationship(true);
