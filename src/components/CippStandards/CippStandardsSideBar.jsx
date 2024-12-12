@@ -20,6 +20,7 @@ import _ from "lodash";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import ReactTimeAgo from "react-time-ago";
 
 const StyledTimelineDot = (props) => {
   const { complete } = props;
@@ -129,17 +130,35 @@ const CippStandardsSideBar = ({
               />
             </>
           )}
-          {updatedAt && (
-            <Typography
-              sx={{
-                color: "text.secondary",
-                display: "block",
-              }}
-              variant="caption"
-            >
-              Updated {updatedAt}
-            </Typography>
+          {updatedAt.date && (
+            <>
+              <Typography
+                sx={{
+                  color: "text.secondary",
+                  display: "block",
+                }}
+                variant="caption"
+              >
+                Last Updated <ReactTimeAgo date={updatedAt?.date} /> by {updatedAt?.user}
+              </Typography>
+            </>
           )}
+          <CippFormComponent
+            type="switch"
+            name="runManually"
+            label="Do not run on schedule"
+            formControl={formControl}
+            placeholder="Enter a name for the template"
+            fullWidth
+          />
+          <Typography
+            sx={{
+              color: "text.secondary",
+            }}
+            variant="caption"
+          >
+            This setting allows you to create this template and run it only by using "Run Now".
+          </Typography>
         </Stack>
       </CardContent>
       <Divider />
@@ -193,6 +212,7 @@ const CippStandardsSideBar = ({
             templateName: "templateName",
             standards: "standards",
             ...(edit ? { GUID: "GUID" } : {}),
+            runManually: "runManually",
           },
         }}
         row={formControl.getValues()}

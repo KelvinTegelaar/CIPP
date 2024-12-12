@@ -3,7 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete } from "@mui/icons-material";
+import { CopyAll, Delete, PlayArrow } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Standard Templates";
@@ -22,6 +22,29 @@ const Page = () => {
       icon: <CopyAll />,
       color: "success",
       target: "_self",
+    },
+    {
+      label: "Run Template Now (Currently Selected Tenant only)",
+      type: "GET",
+      url: "/api/ExecStandardsRun",
+      icon: <PlayArrow />,
+      data: {
+        TemplateId: "GUID",
+      },
+      confirmText: "Are you sure you want to force a run of this template?",
+      multiPost: false,
+    },
+    {
+      label: "Run Template Now (All Tenants in Template)",
+      type: "GET",
+      url: "/api/ExecStandardsRun",
+      icon: <PlayArrow />,
+      data: {
+        TemplateId: "GUID",
+        tenantFilter: "allTenants",
+      },
+      confirmText: "Are you sure you want to force a run of this template?",
+      multiPost: false,
     },
     {
       label: "Delete Template",
@@ -46,7 +69,14 @@ const Page = () => {
         </Button>
       }
       actions={actions}
-      simpleColumns={["templateName", "tenantFilter", "excludedTenants", "standards"]}
+      simpleColumns={[
+        "templateName",
+        "tenantFilter",
+        "excludedTenants",
+        "updatedAt",
+        "updatedBy",
+        "runManually",
+      ]}
       queryKey="listStandardTemplates"
     />
   );

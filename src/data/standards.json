@@ -2896,6 +2896,23 @@
           "valueField": "GUID",
           "queryKey": "languages"
         }
+      },
+      {
+        "name": "AssignTo",
+        "label": "Who should this template be assigned to?",
+        "type": "radio",
+        "options": [
+          { "label": "Do not assign", "value": "On" },
+          { "label": "Assign to all users", "value": "allLicensedUsers" },
+          { "label": "Assign to all devices", "value": "AllDevices" },
+          { "label": "Assign to all users and devices", "value": "AllDevicesAndUsers" },
+          { "label": "Assign to Custom Group", "value": "customGroup" }
+        ]
+      },
+      {
+        "type": "textField",
+        "name": "customGroup",
+        "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
       }
     ]
   },
@@ -2950,39 +2967,14 @@
         }
       },
       {
-        "name": "userReplacement",
-        "label": "If your policy has groups or users, how should they be handled? Excluded roles will not be affected.",
-        "type": "radio",
-        "row": true,
-        "options": [
-          { "label": "Leave the groups and users in the policy as is", "value": "option1" },
-          {
-            "label": "Replace the group and users with the same groups and users based on their display name",
-            "value": "option2"
-          }
-        ]
-      },
-      {
         "name": "state",
         "label": "What state should we deploy this template in?",
         "type": "radio",
         "options": [
-          {
-            "label": "Do not change state - Template contains the state information",
-            "value": "option1"
-          },
-          {
-            "label": "Set to Enabled",
-            "value": "option2"
-          },
-          {
-            "label": "Set to Disabled",
-            "value": "option3"
-          },
-          {
-            "label": "Set to Report Only",
-            "value": "option2"
-          }
+          { "value": "donotchange", "label": "Do not change state" },
+          { "value": "Enabled", "label": "Set to enabled" },
+          { "value": "Disabled", "label": "Set to disabled" },
+          { "value": "enabledForReportingButNotEnforced", "label": "Set to report only" }
         ]
       }
     ]

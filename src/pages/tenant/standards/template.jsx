@@ -21,7 +21,7 @@ const Page = () => {
   const [expanded, setExpanded] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStandards, setSelectedStandards] = useState({});
-
+  const [updatedAt, setUpdatedAt] = useState(false);
   const existingTemplate = ApiGetCall({
     url: `/api/listStandardTemplates`,
     data: { id: router.query.id },
@@ -41,19 +41,21 @@ const Page = () => {
         formControl.setValue("templateName", `${apiData.templateName} (Clone)`);
         formControl.setValue("GUID", "");
       }
-
+      //set the updated at date and user
+      setUpdatedAt({
+        date: apiData.updatedAt,
+        user: apiData.updatedBy,
+      });
       // Transform standards from the API to match the format for selectedStandards
       const standardsFromApi = apiData.standards;
       const transformedStandards = {};
 
       Object.keys(standardsFromApi).forEach((key) => {
         if (Array.isArray(standardsFromApi[key])) {
-          // Handle array standards, like ConditionalAccessTemplate
           standardsFromApi[key].forEach((_, index) => {
             transformedStandards[`standards.${key}[${index}]`] = true;
           });
         } else {
-          // Handle object standards or simple key-value pairs
           transformedStandards[`standards.${key}`] = true;
         }
       });
@@ -190,6 +192,7 @@ const Page = () => {
                 formControl={formControl}
                 selectedStandards={selectedStandards}
                 edit={editMode}
+                updatedAt={updatedAt}
               />
             </Grid>
             <Grid item xs={12} lg={8}>

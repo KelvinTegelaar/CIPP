@@ -1,19 +1,10 @@
 import { useRouter } from "next/router"; // Import Next.js router
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { CippAutoComplete } from "./CippAutocomplete";
+import { useForm } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
 
