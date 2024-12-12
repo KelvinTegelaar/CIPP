@@ -116,7 +116,7 @@ export const CippMessageViewer = ({ emailSource }) => {
           .map((c) => c.charCodeAt(0))
       );
     }
-    console.log(attachment);
+
     var fileName = attachment?.name ?? "attachment";
     const blob = new Blob([fileBytes], { type: contentType ?? "application/octet-stream" });
     const url = URL.createObjectURL(blob);
@@ -339,7 +339,6 @@ export const CippMessageViewer = ({ emailSource }) => {
 
               {emlContent.attachments && emlContent.attachments.length > 0 && (
                 <Grid container spacing={2} sx={{ mb: 2 }}>
-                  {console.log(emlContent.attachments)}
                   <Grid item size={12}>
                     <Stack spacing={1} direction="row">
                       {emlContent?.attachments?.map((attachment, index) => (
