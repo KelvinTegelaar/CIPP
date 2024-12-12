@@ -1,22 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-//import PropTypes from "prop-types";
-//import { CippPage, CippMasonry, CippMasonryItem, CippContentCard } from "src/components/layout";
-import { parseEml, readEml, GBKUTF8, decode } from "eml-parse-js";
-import { useMediaPredicate } from "react-media-hook";
-//import { useSelector } from "react-redux";
-//import { CellDate } from "src/components/tables";
-//import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-/*import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCol,
-  CDropdown,
-  CDropdownMenu,
-  CDropdownToggle,
-  CLink,
-  CRow,
-} from "@coreui/react";*/
+import { readEml } from "eml-parse-js";
 
 import {
   Button,
@@ -24,18 +7,17 @@ import {
   CardContent,
   Menu,
   MenuItem,
-  Link,
   Typography,
   SvgIcon,
   CardHeader,
-  Divider,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   IconButton,
+  Tooltip,
 } from "@mui/material";
-import { Box, Grid, Stack } from "@mui/system";
+import { Box, Grid, Stack, ThemeProvider } from "@mui/system";
+import { createTheme } from "@mui/material/styles";
 
 import {
   Image,
@@ -55,13 +37,19 @@ import {
   Close,
 } from "@mui/icons-material";
 
-//import ReactTimeAgo from "react-time-ago";
 import { CippTimeAgo } from "./CippTimeAgo";
 import { CippCodeBlock } from "./CippCodeBlock";
 import DOMPurify from "dompurify";
 import ReactHtmlParser from "react-html-parser";
 import { FileDropzone } from "/src/components/file-dropzone.js";
 import CippPageCard from "../CippCards/CippPageCard";
+import {
+  MoonIcon,
+  ShieldCheckIcon,
+  ShieldExclamationIcon,
+  SunIcon,
+} from "@heroicons/react/24/outline";
+import { useSettings } from "/src/hooks/use-settings";
 
 export const CippMessageViewer = ({ emailSource }) => {
   const [emlContent, setEmlContent] = useState(null);
@@ -72,6 +60,29 @@ export const CippMessageViewer = ({ emailSource }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [dialogTitle, setDialogTitle] = useState("");
+
+  const currentTheme = useSettings()?.currentTheme?.value;
+  const [darkMode, setDarkMode] = useState(currentTheme === "dark");
+
+  const theme = createTheme({
+    palette: {
+      background: {
+        default: darkMode ? "#121212" : "#ffffff",
+        paper: darkMode ? "#1d1d1d" : "#f5f5f5",
+      },
+      text: {
+        primary: darkMode ? "#ffffff" : "#000000",
+        secondary: darkMode ? "#b0bec5" : "#757575",
+      },
+      action: {
+        active: darkMode ? "#ffffff" : "#000000",
+      },
+    },
+  });
+
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
 
   const getAttachmentIcon = (contentType) => {
     if (contentType.includes("image")) {
@@ -301,21 +312,73 @@ export const CippMessageViewer = ({ emailSource }) => {
                       <Typography variant="subtitle2" color="textSecondary">
                         &lt;{emlContent?.from?.email}&gt;
                       </Typography>
+
+                      {(() => {
+                        const authResults = emlContent?.headers?.["Authentication-Results"] || "";
+                        const dmarcPass = authResults ? authResults.includes("dmarc=pass") : false;
+                        const dkimPass = authResults ? authResults.includes("dkim=pass") : false;
+                        const spfPass = authResults ? authResults.includes("spf=pass") : false;
+                        const arcPass = authResults ? authResults.includes("arc=pass") : false;
+                        const daraPass = authResults ? authResults.includes("dara=pass") : false;
+                        const allPass = dmarcPass && dkimPass && spfPass && arcPass && daraPass;
+                        const somePass = dmarcPass || dkimPass || spfPass || arcPass || daraPass;
+                        const noResults = authResults === "";
+                        const color = noResults
+                          ? ""
+                          : allPass
+                          ? "green"
+                          : somePass
+                          ? "orange"
+                          : "red";
+                        const icon = noResults ? (
+                          <ShieldExclamationIcon />
+                        ) : allPass ? (
+                          <ShieldCheckIcon />
+                        ) : somePass ? (
+                          <ShieldExclamationIcon />
+                        ) : (
+                          <ShieldExclamationIcon />
+                        );
+
+                        return (
+                          <Tooltip
+                            title={
+                              noResults
+                                ? "No authentication results available"
+                                : `DMARC: ${dmarcPass ? "pass" : "fail"}, DKIM: ${
+                                    dkimPass ? "pass" : "fail"
+                                  }, SPF: ${spfPass ? "pass" : "fail"}, ARC: ${
+                                    arcPass ? "pass" : "fail"
+                                  }, DARA: ${daraPass ? "pass" : "fail"}`
+                            }
+                            placement="top"
+                          >
+                            <SvgIcon fontSize="small" sx={{ color }} style={{ cursor: "pointer" }}>
+                              {icon}
+                            </SvgIcon>
+                          </Tooltip>
+                        );
+                      })()}
                     </Stack>
                   </Box>
-                  {emlContent?.to?.length > 0 && (
+
+                  {emlContent?.to && (
                     <Box>
                       <Typography variant="subtitle2">
                         <b>To:</b>{" "}
-                        {emlContent?.to?.map((to) => to.name + " <" + to.email + ">").join(", ")}
+                        {Array.isArray(emlContent.to)
+                          ? emlContent.to.map((to) => to.name + " <" + to.email + ">").join(", ")
+                          : emlContent.to.name + " <" + emlContent.to.email + ">"}
                       </Typography>
                     </Box>
                   )}
-                  {emlContent?.cc?.length > 0 && (
+                  {emlContent?.cc && (
                     <div>
                       <small>
                         <b>CC:</b>{" "}
-                        {emlContent?.cc?.map((cc) => cc.name + " <" + cc.email + ">").join(", ")}
+                        {Array.isArray(emlContent.cc)
+                          ? emlContent.cc.map((cc) => cc.name + " <" + cc.email + ">").join(", ")
+                          : emlContent.cc.name + " <" + emlContent.cc.email + ">"}
                       </small>
                     </div>
                   )}
@@ -388,14 +451,22 @@ export const CippMessageViewer = ({ emailSource }) => {
               {(emlContent?.text || emlContent?.html) && (
                 <Grid container spacing={2}>
                   <Grid item size={12}>
-                    <Divider />
-                  </Grid>
-                  <Grid item size={12}>
                     {messageHtml ? (
-                      <div className="mt-4">{messageHtml}</div>
+                      <ThemeProvider theme={theme}>
+                        <Card variant="outlined">
+                          <CardContent>
+                            <Box display="flex" justifyContent="flex-end" mb={1}>
+                              <IconButton variant="text" onClick={toggleDarkMode}>
+                                <SvgIcon>{darkMode ? <SunIcon /> : <MoonIcon />}</SvgIcon>
+                              </IconButton>
+                            </Box>
+                            {messageHtml}
+                          </CardContent>
+                        </Card>
+                      </ThemeProvider>
                     ) : (
                       <div className="mt-4">
-                        <CippCodeBlock
+                        <CodeBlock
                           code={emlContent?.text ?? "No text"}
                           language="plain"
                           showLineNumbers={false}
