@@ -320,8 +320,8 @@ export const CippMessageViewer = ({ emailSource }) => {
                         const spfPass = authResults ? authResults.includes("spf=pass") : false;
                         const arcPass = authResults ? authResults.includes("arc=pass") : false;
                         const daraPass = authResults ? authResults.includes("dara=pass") : false;
-                        const allPass = dmarcPass && dkimPass && spfPass && arcPass && daraPass;
-                        const somePass = dmarcPass || dkimPass || spfPass || arcPass || daraPass;
+                        const allPass = dmarcPass && dkimPass && spfPass && arcPass;
+                        const somePass = dmarcPass || dkimPass || spfPass || arcPass;
                         const noResults = authResults === "";
                         const color = noResults
                           ? ""
@@ -345,7 +345,13 @@ export const CippMessageViewer = ({ emailSource }) => {
                             title={
                               noResults
                                 ? "No authentication results available"
-                                : `DMARC: ${dmarcPass ? "pass" : "fail"}, DKIM: ${
+                                : `${
+                                    allPass
+                                      ? "All authentication checks successful"
+                                      : somePass
+                                      ? "Some authentication checks failed"
+                                      : "None of the authentication checks passed"
+                                  } - DMARC: ${dmarcPass ? "pass" : "fail"}, DKIM: ${
                                     dkimPass ? "pass" : "fail"
                                   }, SPF: ${spfPass ? "pass" : "fail"}, ARC: ${
                                     arcPass ? "pass" : "fail"
