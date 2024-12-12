@@ -304,7 +304,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                   justifyContent: "space-between",
                 }}
               >
-                <Grid item size={{ md: 12, lg: 10 }}>
+                <Grid item size={{ xs: 12, md: 9 }}>
                   <Box display="flex" alignItems="center">
                     <AccountCircle fontSize="large" sx={{ mr: 1 }} />
                     <Stack direction="row" spacing={0.5} alignItems="center" display="flex">
@@ -388,7 +388,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                     </div>
                   )}
                 </Grid>
-                <Grid item xs={12} lg={2}>
+                <Grid item size={{ xs: 12, md: 3 }}>
                   <Stack direction="row" spacing={0.5} justifyContent="flex-end">
                     <Typography variant="subtitle2">
                       {emlContent.date && isValidDate(emlContent.date)
