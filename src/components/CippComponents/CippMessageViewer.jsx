@@ -29,6 +29,11 @@ import {
   SvgIcon,
   CardHeader,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
 } from "@mui/material";
 import { Box, Grid, Stack } from "@mui/system";
 
@@ -47,6 +52,7 @@ import {
   Download,
   Visibility,
   AccountCircle,
+  Close,
 } from "@mui/icons-material";
 
 //import ReactTimeAgo from "react-time-ago";
@@ -63,6 +69,9 @@ export const CippMessageViewer = ({ emailSource }) => {
   const [messageHtml, setMessageHtml] = useState("");
   const [emlHeaders, setEmlHeaders] = useState(null);
   const [anchorEl, setAnchorEl] = useState({});
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState("");
 
   const getAttachmentIcon = (contentType) => {
     if (contentType.includes("image")) {
@@ -115,36 +124,29 @@ export const CippMessageViewer = ({ emailSource }) => {
     if (newTab) {
       if (contentType.includes("rfc822")) {
         var content = fileBytes;
-        const nestedMessage = <MessageViewer emailSource={content} />;
-        ModalService.open({
-          body: nestedMessage,
-          title: fileName,
-          size: "lg",
-        });
+        const nestedMessage = <CippMessageViewer emailSource={content} />;
+        setDialogContent(nestedMessage);
+        setDialogTitle(fileName);
+        setDialogOpen(true);
       } else if (contentType.includes("pdf")) {
         const embeddedPdf = (
           <object data={url} type="application/pdf" width="100%" height="600px" />
         );
-        ModalService.open({
-          body: embeddedPdf,
-          title: fileName,
-          size: "lg",
-        });
+        setDialogContent(embeddedPdf);
+        setDialogTitle(fileName);
+        setDialogOpen(true);
       } else if (contentType.includes("image")) {
         const embeddedImage = <img src={url} alt={fileName} style={{ maxWidth: "100%" }} />;
-        ModalService.open({
-          body: embeddedImage,
-          title: fileName,
-          size: "lg",
-        });
+        setDialogContent(embeddedImage);
+        setDialogTitle(fileName);
+        setDialogOpen(true);
       } else if (contentType.includes("text")) {
         const textContent = fileBytes;
-        ModalService.open({
-          data: textContent,
-          componentType: "codeblock",
-          title: fileName,
-          size: "lg",
-        });
+        setDialogContent(
+          <CippCodeBlock code={textContent} language="plain" showLineNumbers={false} />
+        );
+        setDialogTitle(fileName);
+        setDialogOpen(true);
         setTimeout(() => {
           URL.revokeObjectURL(url);
         }, 1000);
@@ -166,12 +168,9 @@ export const CippMessageViewer = ({ emailSource }) => {
   }
 
   const showEmailModal = (emailSource, title = "Email Source") => {
-    ModalService.open({
-      data: emailSource,
-      componentType: "codeblock",
-      title: title,
-      size: "lg",
-    });
+    setDialogContent(<CippCodeBlock code={emailSource} language="plain" showLineNumbers={false} />);
+    setDialogTitle(title);
+    setDialogOpen(true);
   };
 
   const EmailButtons = (emailHeaders, emailSource) => {
@@ -366,7 +365,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                             onClose={() => setAnchorEl({ ...anchorEl, [index]: null })}
                           >
                             <MenuItem onClick={() => downloadAttachment(attachment)}>
-                              <Download />
+                              <Download sx={{ mr: 1 }} />
                               Download
                             </MenuItem>
                             {(attachment?.contentType === undefined ||
@@ -375,7 +374,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                               attachment?.contentType?.includes("image") ||
                               attachment?.contentType?.includes("rfc822")) && (
                               <MenuItem onClick={() => downloadAttachment(attachment, true)}>
-                                <Visibility className="me-2" />
+                                <Visibility sx={{ mr: 1 }} />
                                 View
                               </MenuItem>
                             )}
@@ -411,6 +410,24 @@ export const CippMessageViewer = ({ emailSource }) => {
           </Card>
         </>
       )}
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg" fullWidth>
+        <DialogTitle sx={{ py: 2 }}>
+          {dialogTitle}
+          <IconButton
+            aria-label="close"
+            onClick={() => setDialogOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>{dialogContent}</DialogContent>
+      </Dialog>
     </>
   );
 };
@@ -432,10 +449,9 @@ const CippMessageViewerPage = () => {
   return (
     <CippPageCard title="Message Viewer" hideBackButton={true}>
       <FileDropzone
-        title="Load Message"
         onDrop={onDrop}
         accept={{ "message/rfc822": [".eml"] }}
-        dropMessage="Drag an EML file or click to add"
+        caption="Drag an EML file or click to add"
         maxFiles={1}
       />
       {emlFile && <CippMessageViewer emailSource={emlFile} />}
