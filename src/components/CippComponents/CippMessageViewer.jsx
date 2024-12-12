@@ -319,7 +319,6 @@ export const CippMessageViewer = ({ emailSource }) => {
                         const dkimPass = authResults ? authResults.includes("dkim=pass") : false;
                         const spfPass = authResults ? authResults.includes("spf=pass") : false;
                         const arcPass = authResults ? authResults.includes("arc=pass") : false;
-                        const daraPass = authResults ? authResults.includes("dara=pass") : false;
                         const allPass = dmarcPass && dkimPass && spfPass && arcPass;
                         const somePass = dmarcPass || dkimPass || spfPass || arcPass;
                         const noResults = authResults === "";
@@ -355,7 +354,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                                     dkimPass ? "pass" : "fail"
                                   }, SPF: ${spfPass ? "pass" : "fail"}, ARC: ${
                                     arcPass ? "pass" : "fail"
-                                  }, DARA: ${daraPass ? "pass" : "fail"}`
+                                  }`
                             }
                             placement="top"
                           >
