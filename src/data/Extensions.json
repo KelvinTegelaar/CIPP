@@ -25,6 +25,53 @@
     "mappingRequired": false
   },
   {
+    "name": "Sherweb",
+    "id": "Sherweb",
+    "type": "Sherweb",
+    "cat": "CSP",
+    "logo": "/assets/integrations/sherweb.png",
+    "logoDark": "/assets/integrations/sherweb_dark.png",
+    "description": "Enable the Sherweb integration to manage your CSP licensing from CIPP.",
+    "helpText": "This integration allows you to manage your CSP licensing from CIPP. Purchase new licenses while adding or editing users in CIPP. Not a Sherweb partner? Sign up for the Sherweb Cloud Services for MSPs program.",
+    "links": [
+      {
+        "name": "Sherweb Cloud Services for MSPs",
+        "url": "https://info.sherweb.com/sherweb-cloud-services-for-msps"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "Sherweb.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "Sherweb.clientId",
+        "label": "Client ID",
+        "placeholder": "Enter your Sherweb Client ID"
+      },
+      {
+        "type": "password",
+        "name": "Sherweb.clientSecret",
+        "label": "Client Secret",
+        "placeholder": "Enter your Sherweb Client Secret"
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.AllowedCustomRoles",
+        "label": "Select custom roles that are allowed to purchase licenses",
+        "api": {
+          "url": "/api/ExecCustomRole",
+          "queryKey": "CustomRoles",
+          "labelField": "RowKey",
+          "valueField": "RowKey"
+        },
+        "multiple": true
+      }
+    ]
+  },
+  {
     "name": "Gradient",
     "id": "Gradient",
     "type": "Gradient",

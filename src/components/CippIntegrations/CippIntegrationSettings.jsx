@@ -65,6 +65,7 @@ const CippIntegrationSettings = ({ children }) => {
                     formControl={formControl}
                     placeholder={setting?.placeholder}
                     fullWidth
+                    {...setting}
                   />
                 </Box>
               </Grid>
