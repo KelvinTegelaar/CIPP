@@ -2,10 +2,11 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { useEffect, useState } from "react";
 import { Dialog, DialogTitle, DialogContent, IconButton, Skeleton } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { Block, Close, Done, DoneAll } from "@mui/icons-material";
 import { CippMessageViewer } from "/src/components/CippComponents/CippMessageViewer.jsx";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useSettings } from "/src/hooks/use-settings";
+import { EyeIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Quarantine Management";
@@ -52,6 +53,7 @@ const Page = () => {
         Type: "Release",
       },
       confirmText: "Are you sure you want to release this message?",
+      icon: <Done />,
     },
     {
       label: "Deny",
@@ -63,6 +65,7 @@ const Page = () => {
         Type: "Deny",
       },
       confirmText: "Are you sure you want to deny this message?",
+      icon: <Block />,
     },
     {
       label: "Release & Allow Sender",
@@ -76,11 +79,13 @@ const Page = () => {
       },
       confirmText:
         "Are you sure you want to release this email and add the sender to the whitelist?",
+      icon: <DoneAll />,
     },
     {
       label: "View Message",
       noConfirm: true,
       customFunction: viewMessage,
+      icon: <EyeIcon />,
     },
   ];
 

@@ -95,7 +95,7 @@ const Page = () => {
   };
 
   return (
-    <Container>
+    <>
       <Stack spacing={2} sx={{ p: 3, mt: 1 }}>
         <CippButtonCard
           component="accordion"
@@ -176,7 +176,7 @@ const Page = () => {
           />
         </DialogContent>
       </Dialog>
-    </Container>
+    </>
   );
 };
 
