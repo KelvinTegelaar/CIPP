@@ -62,7 +62,7 @@ export const CippMessageViewer = ({ emailSource }) => {
   const [emlError, setEmlError] = useState(false);
   const [messageHtml, setMessageHtml] = useState("");
   const [emlHeaders, setEmlHeaders] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState({});
 
   const getAttachmentIcon = (contentType) => {
     if (contentType.includes("image")) {
@@ -107,7 +107,8 @@ export const CippMessageViewer = ({ emailSource }) => {
           .map((c) => c.charCodeAt(0))
       );
     }
-    var fileName = attachment.name;
+    console.log(attachment);
+    var fileName = attachment?.name ?? "attachment";
     const blob = new Blob([fileBytes], { type: contentType ?? "application/octet-stream" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -222,6 +223,32 @@ export const CippMessageViewer = ({ emailSource }) => {
         if (ReadEmlJson.html) {
           var sanitizedHtml = DOMPurify.sanitize(ReadEmlJson.html);
           var parsedHtml = ReactHtmlParser(sanitizedHtml);
+          if (ReadEmlJson.attachments) {
+            ReadEmlJson.attachments.forEach((attachment) => {
+              if (attachment.id) {
+                var cid = attachment.id.match(/<(.*)>/)[1];
+                var base64 = attachment.data64;
+                if (base64) {
+                  const replaceCidWithBase64 = (element) => {
+                    if (typeof element === "object" && element !== null) {
+                      if (element.props.src === "cid:" + cid) {
+                        return <img src={"data:image/png;base64," + base64} alt={cid} />;
+                      } else if (element.props.children) {
+                        return React.cloneElement(element, {
+                          children: React.Children.map(
+                            element.props.children,
+                            replaceCidWithBase64
+                          ),
+                        });
+                      }
+                    }
+                    return element;
+                  };
+                  parsedHtml = parsedHtml.map(replaceCidWithBase64);
+                }
+              }
+            });
+          }
           setMessageHtml(parsedHtml);
         } else {
           setMessageHtml(null);
@@ -313,15 +340,17 @@ export const CippMessageViewer = ({ emailSource }) => {
 
               {emlContent.attachments && emlContent.attachments.length > 0 && (
                 <Grid container spacing={2} sx={{ mb: 2 }}>
+                  {console.log(emlContent.attachments)}
                   <Grid item size={12}>
                     <Stack spacing={1} direction="row">
                       {emlContent?.attachments?.map((attachment, index) => (
-                        <>
+                        <React.Fragment key={index}>
                           <Button
-                            key={index}
                             variant="contained"
                             size="small"
-                            onClick={(event) => setAnchorEl(event.currentTarget)}
+                            onClick={(event) =>
+                              setAnchorEl({ ...anchorEl, [index]: event.currentTarget })
+                            }
                             startIcon={
                               <SvgIcon fontSize="small">
                                 {getAttachmentIcon(attachment?.contentType ?? "text/plain")}
@@ -332,9 +361,9 @@ export const CippMessageViewer = ({ emailSource }) => {
                           </Button>
 
                           <Menu
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={() => setAnchorEl(null)}
+                            anchorEl={anchorEl[index]}
+                            open={Boolean(anchorEl[index])}
+                            onClose={() => setAnchorEl({ ...anchorEl, [index]: null })}
                           >
                             <MenuItem onClick={() => downloadAttachment(attachment)}>
                               <Download />
@@ -351,7 +380,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                               </MenuItem>
                             )}
                           </Menu>
-                        </>
+                        </React.Fragment>
                       ))}
                     </Stack>
                   </Grid>
