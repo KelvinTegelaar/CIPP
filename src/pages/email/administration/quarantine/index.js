@@ -1,8 +1,45 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { useEffect, useState } from "react";
+import { Dialog, DialogTitle, DialogContent, IconButton, Skeleton } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { CippMessageViewer } from "/src/components/CippComponents/CippMessageViewer.jsx";
+import { ApiGetCall } from "/src/api/ApiCall";
+import { useSettings } from "/src/hooks/use-settings";
 
 const Page = () => {
   const pageTitle = "Quarantine Management";
+  const tenantFilter = useSettings().currentTenant;
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [messageId, setMessageId] = useState(null);
+
+  const getMessageContents = ApiGetCall({
+    url: "/api/ListMailQuarantineMessage",
+    data: {
+      tenantFilter: tenantFilter,
+      Identity: messageId,
+    },
+    waiting: false,
+    queryKey: `ListMailQuarantineMessage-${messageId}`,
+  });
+
+  const viewMessage = (row) => {
+    console.log(row);
+    const id = row.Identity;
+    setMessageId(id);
+    getMessageContents.waiting = true;
+    getMessageContents.refetch();
+    setDialogOpen(true);
+  };
+
+  useEffect(() => {
+    if (getMessageContents.isSuccess) {
+      setDialogContent(<CippMessageViewer emailSource={getMessageContents?.data?.Message} />);
+    } else {
+      setDialogContent(<Skeleton variant="rectangular" height={400} />);
+    }
+  }, [getMessageContents.isSuccess]);
 
   const actions = [
     {
@@ -40,6 +77,11 @@ const Page = () => {
       confirmText:
         "Are you sure you want to release this email and add the sender to the whitelist?",
     },
+    {
+      label: "View Message",
+      noConfirm: true,
+      customFunction: viewMessage,
+    },
   ];
 
   const offCanvas = {
@@ -58,13 +100,28 @@ const Page = () => {
   ];
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListMailQuarantine"
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={simpleColumns}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl="/api/ListMailQuarantine"
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={simpleColumns}
+      />
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg" fullWidth>
+        <DialogTitle sx={{ py: 2 }}>
+          Quarantine Message
+          <IconButton
+            aria-label="close"
+            onClick={() => setDialogOpen(false)}
+            sx={{ position: "absolute", right: 8, top: 8 }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>{dialogContent}</DialogContent>
+      </Dialog>
+    </>
   );
 };
 
