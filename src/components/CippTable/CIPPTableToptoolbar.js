@@ -126,6 +126,8 @@ export const CIPPTableToptoolbar = ({
                 onClick={() => {
                   if (typeof refreshFunction === "object") {
                     refreshFunction.refetch();
+                  } else if (typeof refreshFunction === "function") {
+                    refreshFunction();
                   } else if (getRequestData) {
                     getRequestData.refetch();
                   }
