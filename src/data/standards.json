@@ -2888,7 +2888,7 @@
       {
         "type": "autoComplete",
         "multiple": false,
-        "name": "intuneTemplate",
+        "name": "TemplateList",
         "label": "Select Intune Template",
         "api": {
           "url": "/api/ListIntuneTemplates",
@@ -2956,7 +2956,7 @@
     "addedComponent": [
       {
         "type": "autoComplete",
-        "name": "caTemplate",
+        "name": "TemplateList",
         "multiple": false,
         "label": "Select Conditional Access Template",
         "api": {
