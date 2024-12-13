@@ -1,11 +1,16 @@
-import { Button } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { CopyAll, Delete, PlayArrow } from "@mui/icons-material";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
+import { Grid } from "@mui/system";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
+  const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });
+
   const pageTitle = "Standard Templates";
   const actions = [
     {
@@ -58,7 +63,37 @@ const Page = () => {
       multiPost: false,
     },
   ];
-
+  const conversionApi = ApiPostCall({ relatedQueryKeys: "listStandardTemplates" });
+  const handleConversion = () => {
+    conversionApi.mutate({
+      url: "/api/execStandardConvert",
+      data: {},
+    });
+  };
+  const tableFilter = (
+    <div>
+      {oldStandards.isSuccess && (
+        <Grid container spacing={2}>
+          <Alert severity="warning">
+            <Grid item size={10}>
+              You have legacy standards available. Press the button to convert these standards to
+              the new format. This will create a new template for each standard you had, but will
+              disable the schedule. After conversion, please check the new templates to ensure they
+              are correct.
+            </Grid>
+            <Grid item size={2}>
+              <Button onClick={() => handleConversion()} variant={"contained"}>
+                Convert Legacy Standards
+              </Button>
+            </Grid>
+          </Alert>
+          <Grid item size={8}>
+            <CippApiResults apiObject={conversionApi} />
+          </Grid>
+        </Grid>
+      )}
+    </div>
+  );
   return (
     <CippTablePage
       title={pageTitle}
@@ -69,6 +104,7 @@ const Page = () => {
         </Button>
       }
       actions={actions}
+      tableFilter={tableFilter}
       simpleColumns={[
         "templateName",
         "tenantFilter",
