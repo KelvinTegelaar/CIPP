@@ -36,7 +36,7 @@ const Page = () => {
       dateFilter: "relative",
       days: 2,
       endDate: Math.floor(Date.now() / 1000),
-      startDate: Math.floor(new Date().setDate(new Date().getDate() - 2) / 1000),
+      startDate: Math.floor(new Date().getTime() / 1000) - 2 * 24 * 60 * 60,
     },
     mode: "onChange",
   });
