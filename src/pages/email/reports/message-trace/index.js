@@ -180,7 +180,7 @@ const Page = () => {
                     type="datePicker"
                     name="startDate"
                     label="Start Date"
-                    dateTimeType="date"
+                    dateTimeType="datetime"
                     formControl={formControl}
                     disabled={isMessageIdSet}
                   />
@@ -190,7 +190,7 @@ const Page = () => {
                     type="datePicker"
                     name="endDate"
                     label="End Date"
-                    dateTimeType="date"
+                    dateTimeType="datetime"
                     formControl={formControl}
                     disabled={isMessageIdSet}
                   />
