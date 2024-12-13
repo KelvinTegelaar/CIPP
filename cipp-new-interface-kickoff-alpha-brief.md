@@ -153,7 +153,8 @@ Install the following tools:
     ```
 * **GitHub Fork Issues**:
   * If you don’t see the `interface-rewrite` branch, ensure your fork includes it.
-  * Alternatively, create a new branch from Kelvin’s repository and set it as your `interface-rewrite` branch.
+  * Use **`git fetch --all`** or ensure your fork is updated with Kelvin’s repo.
+* **Linux users:** Use your terminal to launch if “_Launch in Windows Terminal_” isn’t an option.
 * If you prefer GUI tools, you can use **GitHub Desktop** to manage branches and fetch remotes. Ensure you fetch all remotes to see the latest branches.
 
 We appreciate your collaboration and look forward to your feedback. Happy testing! 😊&#x20;
