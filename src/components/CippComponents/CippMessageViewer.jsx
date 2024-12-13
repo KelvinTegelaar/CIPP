@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardContent,
+  GlobalStyles,
   Menu,
   MenuItem,
   Typography,
@@ -63,6 +64,10 @@ export const CippMessageViewer = ({ emailSource }) => {
 
   const currentTheme = useSettings()?.currentTheme?.value;
   const [darkMode, setDarkMode] = useState(currentTheme === "dark");
+
+  const emailStyle = (
+    <GlobalStyles styles={{ a: { color: darkMode ? "#bb86fc" : "#1a73e8" } }} />
+  );
 
   const theme = createTheme({
     palette: {
@@ -458,6 +463,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                   <Grid item size={12}>
                     {messageHtml ? (
                       <ThemeProvider theme={theme}>
+                        {emailStyle}
                         <Card variant="outlined">
                           <CardContent>
                             <Box display="flex" justifyContent="flex-end" mb={1}>
