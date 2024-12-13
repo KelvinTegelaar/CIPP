@@ -83,20 +83,30 @@ const Page = () => {
 
   const onSubmit = () => {
     const formData = formControl.getValues();
+    var data = {
+      tenantFilter: tenantFilter,
+    };
+
+    if (formData.messageId) {
+      data.messageId = formData.messageId;
+    } else {
+      data.fromIP = formData.fromIP;
+      data.recipient = formData.recipient;
+      data.sender = formData.sender;
+      data.status = formData.status;
+      data.toIP = formData.toIP;
+
+      if (formControl.watch("dateFilter") === "startEnd") {
+        data.startDate = formData.startDate;
+        data.endDate = formData.endDate;
+      } else {
+        data.days = formData.days;
+      }
+    }
+
     messageTrace.mutate({
       url: apiUrl,
-      data: {
-        tenantFilter: tenantFilter,
-        days: formData.days,
-        endDate: formData.endDate,
-        fromIP: formData.fromIP,
-        messageId: formData.messageId,
-        recipient: formData.recipient,
-        sender: formData.sender,
-        startDate: formData.startDate,
-        status: formData.status,
-        toIP: formData.toIP,
-      },
+      data: data,
     });
   };
 
@@ -109,6 +119,8 @@ const Page = () => {
       /^([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:)$/.test(value) ||
       "This is not a valid IP address",
   };
+
+  const isMessageIdSet = !!formControl.watch("messageId");
 
   return (
     <>
@@ -130,6 +142,7 @@ const Page = () => {
                   { label: "Start / End", value: "startEnd" },
                 ]}
                 formControl={formControl}
+                disabled={isMessageIdSet}
               />
             </Grid>
             {formControl.watch("dateFilter") === "relative" && (
@@ -139,6 +152,7 @@ const Page = () => {
                   name="days"
                   label="Number of days to search"
                   formControl={formControl}
+                  disabled={isMessageIdSet}
                 />
               </Grid>
             )}
@@ -151,6 +165,7 @@ const Page = () => {
                     label="Start Date"
                     dateTimeType="date"
                     formControl={formControl}
+                    disabled={isMessageIdSet}
                   />
                 </Grid>
                 <Grid item size={{ xs: 12, md: 6 }}>
@@ -160,6 +175,7 @@ const Page = () => {
                     label="End Date"
                     dateTimeType="date"
                     formControl={formControl}
+                    disabled={isMessageIdSet}
                   />
                 </Grid>
               </>
@@ -173,6 +189,7 @@ const Page = () => {
                 name="sender"
                 label="Sender"
                 formControl={formControl}
+                disabled={isMessageIdSet}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -184,6 +201,7 @@ const Page = () => {
                 name="recipient"
                 label="Recipient"
                 formControl={formControl}
+                disabled={isMessageIdSet}
               />
             </Grid>
             <Grid item size={{ xs: 12, md: 6 }}>
@@ -211,6 +229,7 @@ const Page = () => {
                 ]}
                 multiple={true}
                 formControl={formControl}
+                disabled={isMessageIdSet}
               />
             </Grid>
             <Grid item size={{ xs: 12, md: 6 }}>
@@ -220,6 +239,7 @@ const Page = () => {
                 label="From IP"
                 formControl={formControl}
                 validators={isIPAddress}
+                disabled={isMessageIdSet}
               />
             </Grid>
             <Grid item size={{ xs: 12, md: 6 }}>
@@ -229,6 +249,7 @@ const Page = () => {
                 label="To IP"
                 formControl={formControl}
                 validators={isIPAddress}
+                disabled={isMessageIdSet}
               />
             </Grid>
 
