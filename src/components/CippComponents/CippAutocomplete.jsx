@@ -99,7 +99,7 @@ export const CippAutoComplete = (props) => {
       fullWidth
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
-        const isExisting = options?.some(
+        const isExisting = options.length > 0 && options.some(
           (option) => params.inputValue === option.value || params.inputValue === option.label
         );
         if (params.inputValue !== "" && creatable && !isExisting) {

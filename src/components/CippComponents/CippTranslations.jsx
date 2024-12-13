@@ -38,4 +38,6 @@ export const CippTranslations = {
   portal_sharepoint: "Sharepoint Portal",
   "@odata.type": "Type",
   roleDefinitionId: "GDAP Role",
+  FromIP: "From IP",
+  ToIP: "To IP",
 };

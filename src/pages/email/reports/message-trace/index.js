@@ -33,8 +33,10 @@ const Page = () => {
   const [traceDetails, setTraceDetails] = useState([]);
   const formControl = useForm({
     defaultValues: {
+      dateFilter: "relative",
       days: 2,
     },
+    mode: "onChange",
   });
 
   const messageTrace = ApiPostCall({
@@ -86,10 +88,26 @@ const Page = () => {
       data: {
         tenantFilter: tenantFilter,
         days: formData.days,
-        sender: formData.sender,
+        endDate: formData.endDate,
+        fromIP: formData.fromIP,
+        messageId: formData.messageId,
         recipient: formData.recipient,
+        sender: formData.sender,
+        startDate: formData.startDate,
+        status: formData.status,
+        toIP: formData.toIP,
       },
     });
+  };
+
+  const isIPAddress = {
+    validate: (value) =>
+      !value ||
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        value
+      ) ||
+      /^([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:)$/.test(value) ||
+      "This is not a valid IP address",
   };
 
   return (
@@ -103,12 +121,49 @@ const Page = () => {
           <Grid container spacing={2}>
             <Grid item size={12}>
               <CippFormComponent
-                type="number"
-                name="days"
-                label="Number of days to search"
+                type="radio"
+                row
+                name="dateFilter"
+                label="Date Filter Type"
+                options={[
+                  { label: "Relative", value: "relative" },
+                  { label: "Start / End", value: "startEnd" },
+                ]}
                 formControl={formControl}
               />
             </Grid>
+            {formControl.watch("dateFilter") === "relative" && (
+              <Grid item size={12}>
+                <CippFormComponent
+                  type="number"
+                  name="days"
+                  label="Number of days to search"
+                  formControl={formControl}
+                />
+              </Grid>
+            )}
+            {formControl.watch("dateFilter") === "startEnd" && (
+              <>
+                <Grid item size={{ xs: 12, md: 6 }}>
+                  <CippFormComponent
+                    type="datePicker"
+                    name="startDate"
+                    label="Start Date"
+                    dateTimeType="date"
+                    formControl={formControl}
+                  />
+                </Grid>
+                <Grid item size={{ xs: 12, md: 6 }}>
+                  <CippFormComponent
+                    type="datePicker"
+                    name="endDate"
+                    label="End Date"
+                    dateTimeType="date"
+                    formControl={formControl}
+                  />
+                </Grid>
+              </>
+            )}
             <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="autoComplete"
@@ -131,7 +186,7 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item size={12}>
+            <Grid item size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="messageId"
@@ -139,6 +194,44 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
+            <Grid item size={{ xs: 12, md: 6 }}>
+              <CippFormComponent
+                type="autoComplete"
+                name="status"
+                label="Status"
+                options={[
+                  { label: "None", value: "None" },
+                  { label: "Getting Status", value: "GettingStatus" },
+                  { label: "Failed", value: "Failed" },
+                  { label: "Pending", value: "Pending" },
+                  { label: "Delivered", value: "Delivered" },
+                  { label: "Expanded", value: "Expanded" },
+                  { label: "Quarantined", value: "Quarantined" },
+                  { label: "Filtered As Spam", value: "FilteredAsSpam" },
+                ]}
+                multiple={true}
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid item size={{ xs: 12, md: 6 }}>
+              <CippFormComponent
+                type="textField"
+                name="fromIP"
+                label="From IP"
+                formControl={formControl}
+                validators={isIPAddress}
+              />
+            </Grid>
+            <Grid item size={{ xs: 12, md: 6 }}>
+              <CippFormComponent
+                type="textField"
+                name="toIP"
+                label="To IP"
+                formControl={formControl}
+                validators={isIPAddress}
+              />
+            </Grid>
+
             {/* Submit Button */}
             <Grid item size={12}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
@@ -148,7 +241,18 @@ const Page = () => {
           </Grid>
         </CippButtonCard>
         <CippDataTable
-          title={pageTitle}
+          title={
+            pageTitle +
+            (formControl.watch("messageId")
+              ? ` - ID: ${formControl.watch("messageId")}`
+              : formControl.watch("dateFilter") === "relative"
+              ? ` - Last ${formControl.watch("days")} Days`
+              : ` - ${new Date(
+                  formControl.watch("startDate") * 1000
+                ).toLocaleDateString()} to ${new Date(
+                  formControl.watch("endDate") * 1000
+                ).toLocaleDateString()}`)
+          }
           simpleColumns={simpleColumns}
           data={searchResults}
           isFetching={messageTrace.isPending}
