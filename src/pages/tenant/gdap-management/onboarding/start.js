@@ -538,13 +538,7 @@ const Page = () => {
                   handleRetry();
                 }}
                 startIcon={<Replay />}
-                disabled={
-                  !formControl.formState.isValid ||
-                  currentOnboarding?.Status === "succeeded" ||
-                  currentOnboarding?.Status === "failed" ||
-                  currentOnboarding?.Status === "queued" ||
-                  currentOnboarding?.Status === "running"
-                }
+                disabled={!formControl.formState.isValid || currentOnboarding?.Status === "running"}
               >
                 Retry
               </Button>
