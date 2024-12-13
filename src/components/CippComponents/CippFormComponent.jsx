@@ -385,6 +385,7 @@ export const CippFormComponent = (props) => {
                       variant="filled"
                     />
                   )}
+                  {...other}
                 />
               )}
             />
