@@ -15,7 +15,7 @@ import { useSettings } from "/src/hooks/use-settings";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { useState } from "react";
-import { Search, Close } from "@mui/icons-material";
+import { Search, Close, ClearAll } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import { DocumentTextIcon } from "@heroicons/react/24/outline";
 
@@ -107,6 +107,21 @@ const Page = () => {
     messageTrace.mutate({
       url: apiUrl,
       data: data,
+    });
+  };
+
+  const onClear = () => {
+    formControl.reset({
+      dateFilter: "relative",
+      days: 2,
+      endDate: null,
+      fromIP: "",
+      messageId: "",
+      recipient: [],
+      sender: [],
+      startDate: null,
+      status: [],
+      toIP: "",
     });
   };
 
@@ -253,10 +268,13 @@ const Page = () => {
               />
             </Grid>
 
-            {/* Submit Button */}
-            <Grid item size={12}>
+            {/* Submit and Clear Buttons */}
+            <Grid item size={12} sx={{ display: "flex", gap: 1 }}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
                 Search
+              </Button>
+              <Button onClick={onClear} variant="outlined" startIcon={<ClearAll />}>
+                Clear
               </Button>
             </Grid>
           </Grid>
