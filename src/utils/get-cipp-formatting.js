@@ -74,6 +74,8 @@ export const getCippFormatting = (data, cellName, type) => {
     "createdAt",
     "Received",
     "Date",
+    "WhenCreated",
+    "WhenChanged",
   ];
   if (timeAgoArray.includes(cellName)) {
     return <CippTimeAgo data={data} type={type} />;
