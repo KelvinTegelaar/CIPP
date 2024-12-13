@@ -33,9 +33,7 @@ const Page = () => {
   const [traceDetails, setTraceDetails] = useState([]);
   const formControl = useForm({
     defaultValues: {
-      days: 1,
-      sender: "",
-      recipient: "",
+      days: 2,
     },
   });
 
@@ -103,7 +101,6 @@ const Page = () => {
           accordionExpanded={true}
         >
           <Grid container spacing={2}>
-            {/* Date Filter Type */}
             <Grid item size={12}>
               <CippFormComponent
                 type="number"
@@ -112,26 +109,36 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
-            {/* Sender Filter */}
             <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
-                type="textField"
+                type="autoComplete"
+                freeSolo
+                multiple={true}
+                creatable={true}
                 name="sender"
                 label="Sender"
                 formControl={formControl}
               />
             </Grid>
-
-            {/* Recipient Filter */}
             <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
-                type="textField"
+                type="autoComplete"
+                freeSolo
+                multiple={true}
+                creatable={true}
                 name="recipient"
                 label="Recipient"
                 formControl={formControl}
               />
             </Grid>
-
+            <Grid item size={12}>
+              <CippFormComponent
+                type="textField"
+                name="messageId"
+                label="Message ID"
+                formControl={formControl}
+              />
+            </Grid>
             {/* Submit Button */}
             <Grid item size={12}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>

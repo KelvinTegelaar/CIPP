@@ -99,7 +99,7 @@ export const CippAutoComplete = (props) => {
       fullWidth
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
-        const isExisting = options.some(
+        const isExisting = options?.some(
           (option) => params.inputValue === option.value || params.inputValue === option.label
         );
         if (params.inputValue !== "" && creatable && !isExisting) {
@@ -120,13 +120,28 @@ export const CippAutoComplete = (props) => {
       }
       name={name}
       onChange={(event, newValue) => {
-        if (newValue?.manual) {
-          newValue = {
-            label: newValue.value,
-            value: newValue.value,
-          };
-          if (onCreateOption) {
-            onCreateOption(newValue, newValue?.addedFields);
+        if (Array.isArray(newValue)) {
+          newValue = newValue.map((item) => {
+            if (item?.manual || !item?.label) {
+              item = {
+                label: item?.label ? item.value : item,
+                value: item?.label ? item.value : item,
+              };
+              if (onCreateOption) {
+                onCreateOption(item, item?.addedFields);
+              }
+            }
+            return item;
+          });
+        } else {
+          if (newValue?.manual || !newValue?.label) {
+            newValue = {
+              label: newValue?.label ? newValue.value : newValue,
+              value: newValue?.label ? newValue.value : newValue,
+            };
+            if (onCreateOption) {
+              onCreateOption(newValue, newValue?.addedFields);
+            }
           }
         }
         if (onChange) {
