@@ -277,7 +277,7 @@ const Page = () => {
           },
           {
             label: "Authentication Method",
-            value: device["@odata.type"].split(".").pop() || "N/A",
+            value: device["@odata.type"]?.split(".").pop() || "N/A",
           },
         ],
       }));

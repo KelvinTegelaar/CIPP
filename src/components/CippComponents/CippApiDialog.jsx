@@ -22,6 +22,7 @@ export const CippApiDialog = (props) => {
       : api.relatedQueryKeys
       ? api.relatedQueryKeys
       : title,
+    bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
     },
@@ -39,7 +40,6 @@ export const CippApiDialog = (props) => {
       setPartialResults((prevResults) => [...prevResults, result]);
     },
   });
-
   const actionGetRequest = ApiGetCall({
     ...getRequestInfo,
     relatedQueryKeys: relatedQueryKeys
@@ -47,6 +47,7 @@ export const CippApiDialog = (props) => {
       : api.relatedQueryKeys
       ? api.relatedQueryKeys
       : title,
+    bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
     },

@@ -150,7 +150,7 @@ const Page = () => {
     },
     {
       label: "Disable Email Forwarding",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecEmailForward",
       data: {
         username: "userPrincipalName",
@@ -163,7 +163,7 @@ const Page = () => {
     },
     {
       label: "Block Sign In",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecDisableUser",
       data: { ID: "id" },
       confirmText: "Are you sure you want to block the sign-in for this user?",
@@ -171,7 +171,7 @@ const Page = () => {
     },
     {
       label: "Unblock Sign In",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecDisableUser",
       data: { ID: "id", Enable: true },
       confirmText: "Are you sure you want to unblock sign-in for this user?",

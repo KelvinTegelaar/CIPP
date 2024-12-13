@@ -5,11 +5,9 @@ import { createOptions as createLightOptions } from "./light/create-options";
 
 export const createTheme = (config) => {
   let theme = createMuiTheme(
-    // Base options available for both dark and light palette modes
     createBaseOptions({
       direction: config.direction,
     }),
-    // Options based on selected palette mode, color preset and contrast
     config.paletteMode === "dark"
       ? createDarkOptions({
           colorPreset: config.colorPreset,
@@ -23,37 +21,17 @@ export const createTheme = (config) => {
       components: {
         MuiCssBaseline: {
           styleOverrides: {
-            body: {
+            // Set global custom scrollbar variables
+            html: {
               "--sb-track-color": "#232E33",
               "--sb-thumb-color": "#6BAF8D",
               "--sb-size": "7px",
-
-              "&::-webkit-scrollbar": {
-                width: "var(--sb-size)",
-              },
-              "&::-webkit-scrollbar-track": {
-                backgroundColor: "var(--sb-track-color)",
-                borderRadius: "4px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "var(--sb-thumb-color)",
-                borderRadius: "4px",
-              },
-              "&::-webkit-scrollbar:horizontal": {
-                height: "var(--sb-size)", // Set height for the horizontal scrollbar
-              },
-              "@supports not selector(::-webkit-scrollbar)": {
-                scrollbarColor: "var(--sb-thumb-color) var(--sb-track-color)",
-              },
             },
-            // Targeting MaterialReactTable scrollable container
-            ".MuiTableContainer-root": {
-              "--sb-track-color": "#232E33",
-              "--sb-thumb-color": "#6BAF8D",
-              "--sb-size": "7px",
-
+            // Apply global scrollbar styles to every element
+            "html, body, *": {
               "&::-webkit-scrollbar": {
                 width: "var(--sb-size)",
+                height: "var(--sb-size)",
               },
               "&::-webkit-scrollbar-track": {
                 backgroundColor: "var(--sb-track-color)",
@@ -64,7 +42,7 @@ export const createTheme = (config) => {
                 borderRadius: "4px",
               },
               "&::-webkit-scrollbar:horizontal": {
-                height: "var(--sb-size)", // Custom height for the horizontal scrollbar in the table
+                height: "var(--sb-size)",
               },
               "@supports not selector(::-webkit-scrollbar)": {
                 scrollbarColor: "var(--sb-thumb-color) var(--sb-track-color)",

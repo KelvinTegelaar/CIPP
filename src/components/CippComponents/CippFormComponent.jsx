@@ -265,7 +265,7 @@ export const CippFormComponent = (props) => {
               rules={validators}
               render={({ field }) => (
                 <>
-                  <label>{label}</label>
+                  <Typography variant="subtitle2">{label}</Typography>
                   <RichTextEditor
                     {...other}
                     ref={field.ref}
