@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
+import { useCallback } from "react";
+import PropTypes from "prop-types";
+import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
 import {
   Button,
   Chip,
@@ -12,29 +12,28 @@ import {
   IconButton,
   Stack,
   SvgIcon,
-  Typography
-} from '@mui/material';
-import { useFilters } from '../hooks/use-filters';
-import { FilterDialogItem } from './filter-dialog-item';
+  Typography,
+} from "@mui/material";
+import { useFilters } from "../hooks/use-filters";
+import { FilterDialogItem } from "./filter-dialog-item";
 
 export const FilterDialog = (props) => {
   const {
-    // Initial filters, we use the controlled state
-    filters = [], onApply, onClear, onClose, open = false, operators = [], properties = []
+    filters = [],
+    onApply,
+    onClear,
+    onClose,
+    open = false,
+    operators = [],
+    properties = [],
   } = props;
   const filtersController = useFilters(operators, properties, filters);
 
   const handleApply = useCallback(() => {
-    // Allow the apply action only when every filter is considered valid.
-    // Check the controller to configure the validation process.
     if (filtersController.valid) {
       onApply?.(filtersController.filters);
     }
-  }, [
-    filtersController.filters,
-    filtersController.valid,
-    onApply
-  ]);
+  }, [filtersController.filters, filtersController.valid, onApply]);
 
   const displayClear = filters.length > 0;
 
@@ -45,24 +44,19 @@ export const FilterDialog = (props) => {
       PaperProps={{
         sx: {
           maxWidth: 500,
-          width: '100%'
-        }
+          width: "100%",
+        },
       }}
     >
       <DialogTitle
         sx={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          display: 'flex'
+          alignItems: "center",
+          justifyContent: "space-between",
+          display: "flex",
         }}
       >
-        <Typography variant="inherit">
-          Filter
-        </Typography>
-        <IconButton
-          onClick={onClose}
-          size="small"
-        >
+        <Typography variant="inherit">Filter</Typography>
+        <IconButton onClick={onClose} size="small">
           <SvgIcon fontSize="small">
             <XMarkIcon />
           </SvgIcon>
@@ -71,15 +65,11 @@ export const FilterDialog = (props) => {
       <DialogContent>
         <Stack
           spacing={2}
-          divider={(
+          divider={
             <Divider textAlign="left">
-              <Chip
-                color="primary"
-                label="AND"
-                size="small"
-              />
+              <Chip color="primary" label="AND" size="small" />
             </Divider>
-          )}
+          }
         >
           {filtersController.filters.map((filter, index) => {
             const displayAdd = filtersController.filters.length === index + 1;
@@ -105,18 +95,11 @@ export const FilterDialog = (props) => {
       </DialogContent>
       <DialogActions>
         {displayClear && (
-          <Button
-            color="error"
-            onClick={onClear}
-          >
+          <Button color="error" onClick={onClear}>
             Clear ({filters.length})
           </Button>
         )}
-        <Button
-          disabled={!filtersController.valid}
-          onClick={handleApply}
-          variant="contained"
-        >
+        <Button disabled={!filtersController.valid} onClick={handleApply} variant="contained">
           Apply
         </Button>
       </DialogActions>
@@ -130,5 +113,5 @@ FilterDialog.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
   operators: PropTypes.array,
-  properties: PropTypes.array
+  properties: PropTypes.array,
 };

@@ -70,6 +70,9 @@ export function ApiGetCall(props) {
             "Content-Type": "application/json",
           },
         });
+        if (onResult) {
+          onResult(response.data); // Emit each result as it arrives
+        }
         return response.data;
       }
     },

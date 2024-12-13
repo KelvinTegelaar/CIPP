@@ -66,6 +66,7 @@ const Page = () => {
       label: "Set Per-User MFA",
       type: "POST",
       url: "/api/ExecPerUserMFA",
+      data: { userId: "userPrincipalName" },
       fields: [
         {
           type: "autoComplete",
@@ -79,7 +80,6 @@ const Page = () => {
           multiple: false,
         },
       ],
-      data: { userId: "userPrincipalName" },
       confirmText: "Are you sure you want to set per-user MFA for these users?",
       multiPost: false,
     },
@@ -106,7 +106,11 @@ const Page = () => {
       label: "Set Out of Office",
       type: "POST",
       url: "/api/ExecSetOoO",
-      data: { userId: "userPrincipalName", AutoReplyState: { value: "Enabled" } },
+      data: {
+        userId: "userPrincipalName",
+        AutoReplyState: { value: "Enabled" },
+        tenantFilter: "Tenant",
+      },
       fields: [{ type: "richText", name: "input", label: "Out of Office Message" }],
       confirmText: "Are you sure you want to set the out of office?",
       multiPost: false,
