@@ -128,6 +128,15 @@ export const items = [
         ],
       },
       {
+        title: "GDAP Management",
+        path: "/tenant/gdap-management/",
+        icon: (
+          <SvgIcon>
+            <UserIcon />
+          </SvgIcon>
+        ),
+      },
+      {
         title: "Configuration Backup",
         path: "/tenant/backup",
         icon: (
@@ -171,11 +180,7 @@ export const items = [
           </SvgIcon>
         ),
         items: [
-          {
-            title: "Edit Standards",
-            path: "/tenant/standards/list-applied-standards",
-          },
-          { title: "List Standards", path: "/tenant/standards/list-standards" },
+          { title: "Standards", path: "/tenant/standards/list-standards" },
           {
             title: "Best Practice Analyser",
             path: "/tenant/standards/bpa-report",
@@ -210,15 +215,7 @@ export const items = [
           },
         ],
       },
-      {
-        title: "GDAP Management",
-        path: "/tenant/gdap-management/",
-        icon: (
-          <SvgIcon>
-            <UserIcon />
-          </SvgIcon>
-        ),
-      },
+
       {
         title: "Reports",
         path: "/tenant/reports",
@@ -561,7 +558,13 @@ export const items = [
             <WrenchScrewdriverIcon />
           </SvgIcon>
         ),
-        items: [{ title: "Super Admin", path: "/cipp/super-admin/tenant-mode" }],
+        items: [
+          { title: "Super Admin", path: "/cipp/super-admin/tenant-mode" },
+          {
+            title: "Exchange Cmdlets",
+            path: "/cipp/advanced/exchange-cmdlets",
+          },
+        ],
       },
     ],
   },
