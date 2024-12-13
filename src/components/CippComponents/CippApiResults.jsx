@@ -89,7 +89,6 @@ export const CippApiResults = (props) => {
 
   const allResults = useMemo(() => {
     const apiResults = extractAllResults(apiObject.data);
-    console.log("Extracted Results:", apiResults);
     return apiResults;
   }, [apiObject]);
 

@@ -179,11 +179,10 @@ const Page = () => {
     },
     {
       label: "Reset Password (Must Change)",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecResetPass",
       data: {
         MustChange: true,
-
         ID: "id",
         displayName: "displayName",
       },
@@ -193,11 +192,10 @@ const Page = () => {
     },
     {
       label: "Reset Password",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecResetPass",
       data: {
         MustChange: false,
-
         ID: "id",
         displayName: "displayName",
       },
