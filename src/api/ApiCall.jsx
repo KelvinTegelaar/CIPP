@@ -4,17 +4,18 @@ import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
 import { getCippError } from "../utils/get-cipp-error";
 
-export function ApiGetCall({
-  url,
-  queryKey,
-  relatedQueryKeys,
-  waiting = true,
-  retry = 3,
-  data,
-  bulkRequest = false,
-  toast = false,
-  onResult, // Add a callback to handle each result as it arrives
-}) {
+export function ApiGetCall(props) {
+  const {
+    url,
+    queryKey,
+    relatedQueryKeys,
+    waiting = true,
+    retry = 3,
+    data,
+    bulkRequest = false,
+    toast = false,
+    onResult,
+  } = props;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const MAX_RETRIES = retry;
@@ -90,13 +91,11 @@ export function ApiGetCall({
   return queryInfo;
 }
 
-export function ApiPostCall({
-  relatedQueryKeys,
-  onResult, // Add a callback to handle each result as it arrives
-}) {
+export function ApiPostCall({ relatedQueryKeys, onResult }) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async ({ url, bulkRequest, data }) => {
+    mutationFn: async (props) => {
+      const { url, data, bulkRequest } = props;
       if (bulkRequest && Array.isArray(data)) {
         const results = [];
         for (let i = 0; i < data.length; i++) {

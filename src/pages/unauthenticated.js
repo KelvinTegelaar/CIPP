@@ -9,7 +9,6 @@ const Page = () => {
     url: "/.auth/me",
     queryKey: "me",
   });
-  console.log(orgData.data);
   return (
     <>
       <DashboardLayout>

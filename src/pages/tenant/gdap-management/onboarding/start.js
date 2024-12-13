@@ -233,7 +233,6 @@ const Page = () => {
   }, [pollOnboarding, startOnboarding.isSuccess, startOnboarding?.data?.data]);
 
   const handleSubmit = () => {
-    console.log(formControl);
     if (formControl.formState.errors.id) {
       return;
     }

@@ -26,7 +26,6 @@ import { getCippError } from "../../utils/get-cipp-error";
 export const CippDataTable = (props) => {
   const {
     queryKey,
-    cardSx,
     data = [],
     columns = [],
     api = {},
@@ -246,6 +245,7 @@ export const CippDataTable = (props) => {
               refreshFunction={refreshFunction}
               setColumnVisibility={setColumnVisibility}
               filters={filters}
+              queryKeys={queryKey}
             />
           )}
         </>

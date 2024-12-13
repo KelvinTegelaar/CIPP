@@ -96,7 +96,7 @@ export const CippApiDialog = (props) => {
       if (action.type === "POST") {
         actionPostRequest.mutate({
           url: action.url,
-          bulkRequest: action.multiPost,
+          bulkRequest: api.multiPost === false,
           data: bulkData,
         });
       } else if (action.type === "GET") {

@@ -64,7 +64,6 @@ const Page = () => {
 
   const handleSubmit = (values) => {
     formControl.trigger();
-    console.log(formControl.formState);
     if (!formControl.formState.isValid) return;
     const eachInvite = Array.from({ length: values.inviteCount }, (_, i) => ({
       roleMappings: values.roleMappings.value,

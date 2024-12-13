@@ -16,7 +16,6 @@ import { PDFExportButton } from "../pdfExportButton";
 import {
   ChevronDownIcon,
   ExclamationCircleIcon,
-  MagnifyingGlassCircleIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { usePopover } from "../../hooks/use-popover";
@@ -42,6 +41,7 @@ export const CIPPTableToptoolbar = ({
   filters,
   exportEnabled,
   refreshFunction,
+  queryKeys,
 }) => {
   const popover = usePopover();
   const columnPopover = usePopover();
@@ -347,6 +347,7 @@ export const CIPPTableToptoolbar = ({
             fields={actionData.action?.fields}
             api={actionData.action}
             row={actionData.data}
+            relatedQueryKeys={queryKeys}
           />
         )}
       </Box>
