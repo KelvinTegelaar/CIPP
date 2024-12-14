@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -94,10 +94,19 @@ export const CippChartCard = ({
   actions,
 }) => {
   const [range, setRange] = useState("Last 7 days");
+  const [barSeries, setBarSeries] = useState(false);
   const chartOptions = useChartOptions(labels, chartType);
-  //remove any  nulls from the chartSeries
   chartSeries = chartSeries.filter((item) => item !== null);
   const total = chartSeries.reduce((acc, value) => acc + value, 0);
+  useEffect(() => {
+    if (chartType === "bar") {
+      setBarSeries(
+        labels.map((label, index) => ({
+          data: [{ x: label, y: chartSeries[index] }],
+        }))
+      );
+    }
+  }, [chartType, chartSeries, labels]);
   return (
     <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader
@@ -119,7 +128,12 @@ export const CippChartCard = ({
         {isFetching ? (
           <Skeleton variant="rounded" sx={{ height: 280 }} />
         ) : (
-          <Chart height={280} options={chartOptions} series={chartSeries} type={chartType} />
+          <Chart
+            height={280}
+            options={chartOptions}
+            series={barSeries ? barSeries : chartSeries}
+            type={chartType}
+          />
         )}
         <Stack
           alignItems="center"

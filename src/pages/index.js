@@ -12,6 +12,7 @@ import { BulkActionsMenu } from "../components/bulk-actions-menu.js";
 import { CippUniversalSearch } from "../components/CippCards/CippUniversalSearch.jsx";
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard.jsx";
+
 const Page = () => {
   const { currentTenant } = useSettings();
   const [domainVisible, setDomainVisible] = useState(false);
@@ -44,9 +45,8 @@ const Page = () => {
   });
 
   const standards = ApiGetCall({
-    url: "/api/ListStandards",
-    queryKey: `${currentTenant}-ListStandards`,
-    data: { ShowConsolidated: true, TenantFilter: currentTenant },
+    url: "/api/ListStandardTemplates",
+    queryKey: `${currentTenant}-ListStandardTemplates`,
   });
 
   const partners = ApiGetCall({
@@ -91,10 +91,54 @@ const Page = () => {
     },
   ];
 
-  const filteredStandardsCount = (type) =>
-    standards.data
-      ? standards.data.filter((standard) => standard.Settings?.[type] === true).length
-      : 0;
+  // Helper to get action counts for the current tenant
+  function getActionCountsForTenant(standardsData, currentTenant) {
+    if (!standardsData) return { remediateCount: 0, alertCount: 0, reportCount: 0, total: 0 };
+
+    // Identify which templates apply:
+    const applicableTemplates = standardsData.filter((template) => {
+      const tenantInFilter = template.tenantFilter.some((tf) => tf.value === currentTenant);
+      const allTenantsTemplate =
+        template.tenantFilter.some((tf) => tf.value === "AllTenants") &&
+        !template.excludedTenants?.some((et) => et.value === currentTenant);
+      return tenantInFilter || allTenantsTemplate;
+    });
+
+    // Combine standards from all applicable templates:
+    let combinedStandards = {};
+    for (const template of applicableTemplates) {
+      for (const [standardKey, standardValue] of Object.entries(template.standards)) {
+        combinedStandards[standardKey] = standardValue;
+      }
+    }
+
+    // Count each action type:
+    let remediateCount = 0;
+    let alertCount = 0;
+    let reportCount = 0;
+
+    for (const [, standard] of Object.entries(combinedStandards)) {
+      const actions = standard.action || [];
+      actions.forEach((actionObj) => {
+        if (actionObj.value === "Remediate") {
+          remediateCount++;
+        } else if (actionObj.value === "Alert") {
+          alertCount++;
+        } else if (actionObj.value === "Report") {
+          reportCount++;
+        }
+      });
+    }
+
+    const total = Object.keys(combinedStandards).length;
+    return { remediateCount, alertCount, reportCount, total };
+  }
+
+  const { remediateCount, alertCount, reportCount, total } = getActionCountsForTenant(
+    standards.data,
+    currentTenant
+  );
+
   const tenantLookup = currentTenantInfo.data?.find(
     (tenant) => tenant.defaultDomainName === currentTenant
   );
@@ -103,6 +147,7 @@ const Page = () => {
     target: "_blank",
     link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
   }));
+
   return (
     <>
       <Head>
@@ -139,14 +184,9 @@ const Page = () => {
               <CippChartCard
                 title="Standards Set"
                 isFetching={standards.isFetching}
-                chartType="line"
-                chartSeries={[
-                  standards.data ? filteredStandardsCount("remediate") : 0,
-                  standards.data ? filteredStandardsCount("alert") : 0,
-                  standards.data ? filteredStandardsCount("report") : 0,
-                  standards.data?.length || 0,
-                ]}
-                labels={["Remediation", "Alert", "Report", "Total Available"]}
+                chartType="bar"
+                chartSeries={[remediateCount, alertCount, reportCount]}
+                labels={["Remediation", "Alert", "Report"]}
               />
             </Grid>
 
