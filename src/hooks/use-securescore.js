@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { ApiGetCall } from "../api/ApiCall";
 import { useSettings } from "./use-settings";
 import standards from "/src/data/standards.json";
-import { current } from "@reduxjs/toolkit";
 
 export function useSecureScore() {
   const currentTenant = useSettings().currentTenant;
@@ -90,11 +89,11 @@ export function useSecureScore() {
           (secureScoreData.currentScore / secureScoreData.maxScore) * 100
         ),
         percentageVsAllTenants: Math.round(
-          (secureScoreData.averageComparativeScores?.[0].averageScore / secureScoreData.maxScore) *
+          (secureScoreData.averageComparativeScores?.[0]?.averageScore / secureScoreData.maxScore) *
             100
         ),
         percentageVsSimilar: Math.round(
-          (secureScoreData.averageComparativeScores?.[1].averageScore / secureScoreData.maxScore) *
+          (secureScoreData.averageComparativeScores?.[1]?.averageScore / secureScoreData.maxScore) *
             100
         ),
         controlScores: updatedControlScores,
