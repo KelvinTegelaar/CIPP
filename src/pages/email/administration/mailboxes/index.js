@@ -8,51 +8,47 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Calendar permissions",
-      link: "/email/administration/edit-calendar-permissions?userId=[UPN]&tenantDomain=[TenantFilter]",
+      link: "/identity/administration/users/user/exchange?userId=[UPN]",
       color: "info",
     },
     {
       label: "Research Compromised Account",
-      link: "/identity/administration/ViewBec?userId=[UPN]&tenantDomain=[TenantFilter]",
+      link: "/identity/administration/users/user/bec?userId=[UPN]",
       color: "info",
     },
     {
       label: "Send MFA Push",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecSendPush",
       data: {
-        TenantFilter: "TenantFilter",
-        UserEmail: "[UPN]",
+        UserEmail: "mail",
       },
       confirmText: "Are you sure you want to send an MFA request?",
     },
     {
       label: "Convert to Shared Mailbox",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecConvertToSharedMailbox",
       data: {
-        TenantFilter: "TenantFilter",
-        ID: "[UPN]",
+        ID: "UPN",
       },
       confirmText: "Are you sure you want to convert this mailbox to a shared mailbox?",
     },
     {
       label: "Convert to Room Mailbox",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecConvertToRoomMailbox",
       data: {
-        TenantFilter: "TenantFilter",
-        ID: "[UPN]",
+        ID: "UPN",
       },
       confirmText: "Are you sure you want to convert this mailbox to a room mailbox?",
     },
     {
       label: "Hide from Global Address List",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecHideFromGAL",
       data: {
-        TenantFilter: "TenantFilter",
-        ID: "[UPN]",
+        ID: "UPN",
         HidefromGAL: true,
       },
       confirmText:
@@ -60,22 +56,20 @@ const Page = () => {
     },
     {
       label: "Unhide from Global Address List",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecHideFromGAL",
       data: {
-        TenantFilter: "TenantFilter",
-        ID: "[UPN]",
+        ID: "UPN",
       },
       confirmText:
         "Are you sure you want to unhide this mailbox from the global address list? This will not work if the user is AD Synced.",
     },
     {
       label: "Start Managed Folder Assistant",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecStartManagedFolderAssistant",
       data: {
-        TenantFilter: "TenantFilter",
-        ID: "[UPN]",
+        ID: "UPN",
       },
       confirmText: "Are you sure you want to start the managed folder assistant for this user?",
     },

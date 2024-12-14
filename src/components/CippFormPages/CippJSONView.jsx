@@ -17,6 +17,7 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import intuneCollection from "/src/data/intuneCollection.json";
+
 const cleanObject = (obj) => {
   if (Array.isArray(obj)) {
     return obj
@@ -78,10 +79,9 @@ const renderListItems = (data, onItemClick) => {
 function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, type }) {
   const [viewJson, setViewJson] = useState(false);
   const [drilldownData, setDrilldownData] = useState([]);
+
   const renderIntuneItems = (data) => {
     const items = [];
-
-    // The first propertylistItem should always be the policy name
     const policyNameKey = ["Name", "DisplayName", "displayName", "name"].find((key) => key in data);
     if (policyNameKey) {
       items.push(
@@ -89,7 +89,6 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
       );
     }
 
-    // Generate items based on the type of policy
     if (data.omaSettings) {
       data.omaSettings.forEach((omaSetting, index) => {
         items.push(
@@ -102,16 +101,64 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
       });
     } else if (data.settings) {
       data.settings.forEach((setting, index) => {
+        const settingInstance = setting.settingInstance;
         const intuneObj = intuneCollection.find(
-          (item) => item.id === setting.settingInstance.settingDefinitionId
+          (item) => item.id === settingInstance.settingDefinitionId
         );
-        const label = intuneObj?.displayName || setting.settingInstance.settingDefinitionId;
-        const value = setting.settingInstance?.simpleSettingValue?.value
-          ? setting.settingInstance?.simpleSettingValue?.value
-          : intuneObj?.options?.find(
-              (option) => option.id === setting.settingInstance.choiceSettingValue?.value
-            )?.displayName;
-        items.push(<PropertyListItem key={`setting-${index}`} label={label} value={value} />);
+
+        // Handle groupSettingCollectionInstance
+        if (
+          settingInstance["@odata.type"] ===
+            "#microsoft.graph.deviceManagementConfigurationGroupSettingCollectionInstance" &&
+          settingInstance.groupSettingCollectionValue
+        ) {
+          settingInstance.groupSettingCollectionValue.forEach((groupValue, gIndex) => {
+            if (groupValue.children && Array.isArray(groupValue.children)) {
+              groupValue.children.forEach((child, cIndex) => {
+                const childIntuneObj = intuneCollection.find(
+                  (item) => item.id === child.settingDefinitionId
+                );
+                const label = childIntuneObj?.displayName || child.settingDefinitionId;
+                let value;
+                if (child.choiceSettingValue && child.choiceSettingValue.value) {
+                  value =
+                    childIntuneObj?.options?.find(
+                      (option) => option.id === child.choiceSettingValue.value
+                    )?.displayName || child.choiceSettingValue.value;
+                }
+                items.push(
+                  <PropertyListItem
+                    key={`setting-${index}-group-${gIndex}-child-${cIndex}`}
+                    label={label}
+                    value={value}
+                  />
+                );
+              });
+            }
+          });
+        } else if (settingInstance?.simpleSettingValue?.value) {
+          const label = intuneObj?.displayName || settingInstance.settingDefinitionId;
+          const value = settingInstance.simpleSettingValue.value;
+          items.push(<PropertyListItem key={`setting-${index}`} label={label} value={value} />);
+        } else if (settingInstance?.choiceSettingValue?.value) {
+          const label = intuneObj?.displayName || settingInstance.settingDefinitionId;
+          const optionValue =
+            intuneObj?.options?.find(
+              (option) => option.id === settingInstance.choiceSettingValue.value
+            )?.displayName || settingInstance.choiceSettingValue.value;
+          items.push(
+            <PropertyListItem key={`setting-${index}`} label={label} value={optionValue} />
+          );
+        } else {
+          const label = intuneObj?.displayName || settingInstance.settingDefinitionId;
+          items.push(
+            <PropertyListItem
+              key={`setting-${index}`}
+              label={label}
+              value="This setting could not be resolved"
+            />
+          );
+        }
       });
     } else if (data.added) {
       items.push(
@@ -135,6 +182,7 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
 
     return items;
   };
+
   useEffect(() => {
     const blacklist = [
       "selectedOption",

@@ -1,23 +1,17 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 
 const Page = () => {
   const pageTitle = "Available Endpoint Manager Templates";
 
   const actions = [
     {
-      label: "View Template",
-      link: "/intune/templates/[id]",
-      multiPost: false,
-      icon: <EyeIcon />,
-      color: "success",
-    },
-    {
       label: "Delete Template",
-      type: "POST",
+      type: "GET",
       url: "/api/RemoveIntuneTemplate",
-      data: { TenantFilter: "Tenant", GUID: "id" },
+      data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
       multiPost: false,
       icon: <TrashIcon />,
@@ -26,8 +20,8 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["displayName", "description", "Type"],
-    actions: actions,
+    children: (row) => <CippJsonView object={row} type={"intune"} />,
+    size: "lg",
   };
 
   const simpleColumns = ["displayName", "description", "Type"];

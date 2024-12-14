@@ -99,7 +99,7 @@ const ApplicationDeploymentForm = () => {
             options={[
               { label: "MSP Vendor App", value: "mspApp" },
               { label: "Store App", value: "StoreApp" },
-              { label: "WinGet App", value: "winGetApp" },
+              // uncomment after release { label: "WinGet App", value: "winGetApp" },
               { label: "Chocolatey App", value: "chocolateyApp" },
               { label: "Microsoft Office", value: "officeApp" },
             ]}

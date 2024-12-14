@@ -298,10 +298,17 @@ export const getCippFormatting = (data, cellName, type) => {
     return isText ? (
       data
     ) : (
-      <Link href={data} target="_blank" rel="noreferrer">
-        URL
-      </Link>
+      <>
+        <Link href={data} target="_blank" rel="noreferrer">
+          URL
+        </Link>
+        <CippCopyToClipBoard text={data} />
+      </>
     );
+  }
+
+  if (cellName === "AutoMapUrl") {
+    return isText ? data : <CippCopyToClipBoard text={data} />;
   }
 
   // Handle arrays of strings

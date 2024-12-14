@@ -15,7 +15,7 @@ export const CippCopyToClipBoard = (props) => {
         <CopyToClipboard text={props.text}>
           <Tooltip title="Copy to clipboard">
             <IconButton size="small">
-              <SvgIcon>
+              <SvgIcon fontSize="small">
                 <CopyAll />
               </SvgIcon>
             </IconButton>

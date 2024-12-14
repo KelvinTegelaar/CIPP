@@ -9,12 +9,13 @@ const Page = () => {
   const actions = [
     {
       label: "Add location to named location",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecNamedLocation",
       data: {
         namedLocationId: "id",
         change: "addLocation",
       },
+      fields: [{ type: "textField", name: "input", label: "Country Code" }],
       confirmText: "Enter a two-letter country code, e.g., US.",
     },
     {
@@ -25,6 +26,7 @@ const Page = () => {
         namedLocationId: "id",
         change: "removeLocation",
       },
+      fields: [{ type: "textField", name: "input", label: "Country Code" }],
       confirmText: "Enter a two-letter country code, e.g., US.",
     },
     {
@@ -35,6 +37,7 @@ const Page = () => {
         namedLocationId: "id",
         change: "addIp",
       },
+      fields: [{ type: "textField", name: "input", label: "IP" }],
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
     },
     {
@@ -45,6 +48,8 @@ const Page = () => {
         namedLocationId: "id",
         change: "removeIp",
       },
+      fields: [{ type: "textField", name: "input", label: "IP" }],
+
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
     },
   ];

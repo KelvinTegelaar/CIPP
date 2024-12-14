@@ -9,6 +9,7 @@ import {
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 
 // Page Component
 const Page = () => {
@@ -30,7 +31,7 @@ const Page = () => {
     },
     {
       label: "Enable Rule",
-      type: "POST",
+      type: "GET",
       url: "/api/EditCAPolicy?State=Enabled",
       data: {
         GUID: "id",
@@ -41,7 +42,7 @@ const Page = () => {
     },
     {
       label: "Disable Rule",
-      type: "POST",
+      type: "GET",
       url: "/api/EditCAPolicy?State=Disabled",
       data: {
         GUID: "id",
@@ -52,7 +53,7 @@ const Page = () => {
     },
     {
       label: "Set rule to report only",
-      type: "POST",
+      type: "GET",
       url: "/api/EditCAPolicy?State=enabledForReportingButNotEnforced",
       data: {
         GUID: "id",
@@ -63,7 +64,7 @@ const Page = () => {
     },
     {
       label: "Delete Rule",
-      type: "POST",
+      type: "GET",
       url: "/api/RemoveCAPolicy",
       data: {
         GUID: "id",
@@ -76,8 +77,8 @@ const Page = () => {
 
   // Off-canvas configuration
   const offCanvas = {
-    extendedInfoFields: ["displayName", "state"],
-    actions: actions,
+    children: (row) => <CippJsonView object={JSON.parse(row?.rawjson ? row.rawjson : null)} />,
+    size: "xl",
   };
 
   // Columns for CippTablePage

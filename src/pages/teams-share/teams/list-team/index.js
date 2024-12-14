@@ -8,14 +8,8 @@ const Page = () => {
 
   const actions = [
     {
-      label: "View Team Settings",
-      link: "/teams-share/teams/view-team-settings?tenantDomain=TenantFilter&groupId=[id]",
-      multiPost: false,
-      color: "success",
-    },
-    {
       label: "Edit Group",
-      link: "/identity/administration/groups/edit?groupId=[id]&tenantDomain=TenantFilter",
+      link: "/identity/administration/groups/edit?groupId=[id]",
       multiPost: false,
       color: "warning",
     },

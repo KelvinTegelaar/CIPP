@@ -3,28 +3,16 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 
 const Page = () => {
   const pageTitle = "Autopilot Profiles";
 
-  const actions = [
-    {
-      label: "View JSON",
-      icon: <EyeIcon />,
-      color: "success",
-      offCanvas: true,
-    },
-  ];
+  const actions = [];
 
   const offCanvas = {
-    extendedInfoFields: [
-      "displayName",
-      "Description",
-      "language",
-      "extractHardwareHash",
-      "deviceNameTemplate",
-    ],
-    actions: actions,
+    children: (row) => <CippJsonView object={row} type="intune" />,
+    size: "xl",
   };
 
   const simpleColumns = [
