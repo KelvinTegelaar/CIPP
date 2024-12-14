@@ -47,7 +47,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    customComponent: MailboxRestoreDetails,
+    children: (data) => <MailboxRestoreDetails data={data} />,
     actions: actions,
     size: "lg",
   };
