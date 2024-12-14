@@ -198,7 +198,7 @@ export const Layout = (props) => {
                 </DialogContent>
               </Dialog>
               {!setupCompleted && (
-                <Box sx={{ flexGrow: 1, py: 4 }}>
+                <Box sx={{ flexGrow: 1, py: 2 }}>
                   <Container maxWidth={false}>
                     <Alert severity="info">
                       Setup has not been completed.

@@ -117,7 +117,7 @@ export const CippGDAPResults = (props) => {
           <List>
             {gdapTests.map((test) => {
               var matchedResults = results?.Results?.[test.resultProperty]?.filter((item) =>
-                new RegExp(test.match).test(item[test.matchProperty])
+                new RegExp(test.match)?.test(item?.[test.matchProperty])
               );
 
               var testResult = false;
@@ -178,7 +178,7 @@ export const CippGDAPResults = (props) => {
             )}
 
             {results?.Results?.Memberships?.filter(
-              (membership) => membership["@odata.type"] === "#microsoft.graph.group"
+              (membership) => membership?.["@odata.type"] === "#microsoft.graph.group"
             ).length > 0 && (
               <>
                 <CippDataTable
@@ -186,7 +186,7 @@ export const CippGDAPResults = (props) => {
                   isFetching={executeCheck.isFetching}
                   refreshFunction={executeCheck}
                   data={results?.Results?.Memberships?.filter(
-                    (membership) => membership["@odata.type"] === "#microsoft.graph.group"
+                    (membership) => membership?.["@odata.type"] === "#microsoft.graph.group"
                   )}
                   simpleColumns={["displayName"]}
                 />
@@ -194,7 +194,7 @@ export const CippGDAPResults = (props) => {
             )}
 
             {results?.Results?.Memberships?.filter(
-              (membership) => membership["@odata.type"] === "#microsoft.graph.directoryRole"
+              (membership) => membership?.["@odata.type"] === "#microsoft.graph.directoryRole"
             ).length > 0 && (
               <>
                 <CippDataTable
@@ -202,7 +202,7 @@ export const CippGDAPResults = (props) => {
                   isFetching={executeCheck.isFetching}
                   refreshFunction={executeCheck}
                   data={results?.Results?.Memberships?.filter(
-                    (membership) => membership["@odata.type"] === "#microsoft.graph.directoryRole"
+                    (membership) => membership?.["@odata.type"] === "#microsoft.graph.directoryRole"
                   )}
                   simpleColumns={["displayName"]}
                 />
