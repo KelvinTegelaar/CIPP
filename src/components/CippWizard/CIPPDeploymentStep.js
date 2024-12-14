@@ -85,7 +85,7 @@ export const CippDeploymentStep = (props) => {
         setPollingStep(null);
         formControl.setValue(
           "wizardStatus",
-          "You've executed the SAM Wizard. You may navigate away from this window."
+          "You've executed the Setup Wizard. You may navigate away from this window."
         );
         formControl.trigger();
       }

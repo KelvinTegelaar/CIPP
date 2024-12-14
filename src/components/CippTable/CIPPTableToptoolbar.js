@@ -1,4 +1,4 @@
-import { DeveloperMode, FilterTiltShift, Sync, ViewColumn } from "@mui/icons-material";
+import { DeveloperMode, Sync, ViewColumn } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -42,6 +42,7 @@ export const CIPPTableToptoolbar = ({
   exportEnabled,
   refreshFunction,
   queryKeys,
+  data,
 }) => {
   const popover = usePopover();
   const columnPopover = usePopover();
@@ -128,6 +129,8 @@ export const CIPPTableToptoolbar = ({
                     refreshFunction.refetch();
                   } else if (typeof refreshFunction === "function") {
                     refreshFunction();
+                  } else if (data && !getRequestData) {
+                    //do nothing because data was sent native.
                   } else if (getRequestData) {
                     getRequestData.refetch();
                   }
