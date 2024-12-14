@@ -21,9 +21,10 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
-  const { formControl, currentSettings, userId, calPermissions } = props;
+  const { formControl, currentSettings, userId, calPermissions, isFetching } = props;
   // State to manage the expanded panels
   const [expandedPanel, setExpandedPanel] = useState(null);
+  const [relatedQueryKeys, setRelatedQueryKeys] = useState([]);
 
   const handleExpand = (panel) => {
     setExpandedPanel((prev) => (prev === panel ? null : panel));
@@ -43,10 +44,20 @@ const CippExchangeSettingsForm = (props) => {
 
   const postRequest = ApiPostCall({
     datafromUrl: true,
-    relatedQueryKeys: [`Mailbox-${userId}`, `CalendarPermissions-${userId}`, `ooo-${userId}`],
+    relatedQueryKeys: relatedQueryKeys,
   });
 
   const handleSubmit = (type) => {
+    if (type === "permissions") {
+      setRelatedQueryKeys([`Mailbox-${userId}`]);
+    } else if (type === "calendar") {
+      setRelatedQueryKeys([`CalendarPermissions-${userId}`]);
+    } else if (type === "forwarding") {
+      setRelatedQueryKeys([`Mailbox-${userId}`]);
+    } else if (type === "ooo") {
+      setRelatedQueryKeys([`ooo-${userId}`]);
+    }
+
     const values = formControl.getValues();
     const data = {
       tenantFilter: userSettingsDefaults.currentTenant,
@@ -71,6 +82,9 @@ const CippExchangeSettingsForm = (props) => {
       data: data,
       queryKey: "MailboxPermissions",
     });
+
+    // Reset the form
+    formControl.reset();
   };
 
   // Data for each section
@@ -84,9 +98,9 @@ const CippExchangeSettingsForm = (props) => {
         <Stack spacing={2}>
           <CippFormComponent
             type="autoComplete"
-            multiple={false}
             label="Remove Full Access"
             name="permissions.RemoveFullAccess"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.filter((user) =>
                 currentSettings?.Permissions?.some(
@@ -102,9 +116,9 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple={false}
             label="Add Full Access - Automapping Enabled"
             name="permissions.AddFullAccess"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -115,9 +129,9 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple={false}
             label="Add Full Access - Automapping Disabled"
             name="permissions.AddFullAccessNoAutoMap"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -128,9 +142,9 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple={false}
             label="Add Send-as Permissions"
             name="permissions.AddSendAs"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -141,9 +155,9 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple={false}
             label="Remove Send-as Permissions"
             name="permissions.RemoveSendAs"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.filter((user) =>
                 currentSettings?.Permissions?.some(
@@ -158,9 +172,9 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple={false}
             label="Add Send On Behalf Permissions"
             name="permissions.AddSendOnBehalf"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -171,9 +185,9 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple={false}
             label="Remove Send On Behalf Permissions"
             name="permissions.RemoveSendOnBehalf"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.filter((user) =>
                 currentSettings?.Permissions?.some(
@@ -191,7 +205,11 @@ const CippExchangeSettingsForm = (props) => {
             <CippApiResults apiObject={postRequest} />
           </Grid>
           <Grid>
-            <Button onClick={() => handleSubmit("permissions")} variant="contained">
+            <Button
+              onClick={() => handleSubmit("permissions")}
+              variant="contained"
+              disabled={!formControl.formState.isValid || postRequest.isPending}
+            >
               Submit
             </Button>
           </Grid>
@@ -209,6 +227,8 @@ const CippExchangeSettingsForm = (props) => {
             type="autoComplete"
             label="Remove Access"
             name="calendar.RemoveAccess"
+            multiple={false}
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.filter((user) =>
                 calPermissions?.some((perm) => perm.User === user.displayName)
@@ -217,13 +237,13 @@ const CippExchangeSettingsForm = (props) => {
                 label: `${user.displayName} (${user.userPrincipalName})`,
               })) || []
             }
-            multiple={false}
             formControl={formControl}
           />
           <CippFormComponent
             type="autoComplete"
             label="Add Access"
             name="calendar.UserToGetPermissions"
+            isFetching={isFetching || usersList.isFetching}
             options={
               usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
@@ -239,30 +259,47 @@ const CippExchangeSettingsForm = (props) => {
             value={calPermissions?.[0]?.FolderName}
             formControl={formControl}
           />
-          <CippFormComponent
-            type="autoComplete"
-            label="Permission Level"
-            name="calendar.Permissions"
-            options={[
-              { value: "Author", label: "Author" },
-              { value: "Contributor", label: "Contributor" },
-              { value: "Editor", label: "Editor" },
-              { value: "Owner", label: "Owner" },
-              { value: "NonEditingAuthor", label: "Non Editing Author" },
-              { value: "PublishingAuthor", label: "Publishing Author" },
-              { value: "PublishingEditor", label: "Publishing Editor" },
-              { value: "Reviewer", label: "Reviewer" },
-              { value: "LimitedDetails", label: "Limited Details" },
-              { value: "AvailabilityOnly", label: "Availability Only" },
-            ]}
-            multiple={false}
+          <CippFormCondition
             formControl={formControl}
-          />
+            field="calendar.UserToGetPermissions"
+            compareType="hasValue"
+            compareValue={true}
+          >
+            <CippFormComponent
+              type="autoComplete"
+              label="Permission Level"
+              name="calendar.Permissions"
+              required={true}
+              validators={{
+                validate: (value) =>
+                  value ? true : "Select the permission level for the calendar",
+              }}
+              isFetching={isFetching || usersList.isFetching}
+              options={[
+                { value: "Author", label: "Author" },
+                { value: "Contributor", label: "Contributor" },
+                { value: "Editor", label: "Editor" },
+                { value: "Owner", label: "Owner" },
+                { value: "NonEditingAuthor", label: "Non Editing Author" },
+                { value: "PublishingAuthor", label: "Publishing Author" },
+                { value: "PublishingEditor", label: "Publishing Editor" },
+                { value: "Reviewer", label: "Reviewer" },
+                { value: "LimitedDetails", label: "Limited Details" },
+                { value: "AvailabilityOnly", label: "Availability Only" },
+              ]}
+              multiple={false}
+              formControl={formControl}
+            />
+          </CippFormCondition>
           <Grid item size={12}>
             <CippApiResults apiObject={postRequest} />
           </Grid>
           <Grid>
-            <Button onClick={() => handleSubmit("calendar")} variant="contained">
+            <Button
+              onClick={() => handleSubmit("calendar")}
+              variant="contained"
+              disabled={!formControl.formState.isValid || postRequest.isPending}
+            >
               Submit
             </Button>
           </Grid>
@@ -334,7 +371,11 @@ const CippExchangeSettingsForm = (props) => {
             <CippApiResults apiObject={postRequest} />
           </Grid>
           <Grid>
-            <Button onClick={() => handleSubmit("forwarding")} variant="contained">
+            <Button
+              onClick={() => handleSubmit("forwarding")}
+              variant="contained"
+              disabled={!formControl.formState.isValid || postRequest.isPending}
+            >
               Submit
             </Button>
           </Grid>
@@ -403,7 +444,11 @@ const CippExchangeSettingsForm = (props) => {
               <CippApiResults apiObject={postRequest} />
             </Grid>
             <Grid>
-              <Button onClick={() => handleSubmit("ooo")} variant="contained">
+              <Button
+                onClick={() => handleSubmit("ooo")}
+                variant="contained"
+                disabled={!formControl.formState.isValid || postRequest.isPending}
+              >
                 Submit
               </Button>
             </Grid>
