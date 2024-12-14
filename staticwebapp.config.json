@@ -88,7 +88,7 @@
     },
     {
       "route": "/",
-      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader"]
     },
     {
       "route": "/api/Public*",
