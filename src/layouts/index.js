@@ -145,14 +145,11 @@ export const Layout = (props) => {
         });
       }
     }
-
-    //if any of the alerts have the property setupCompleted === false, open a dialog with the SAM wizard in there.
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
       if (alertsAPI.data.length > 0) {
         const setupCompleted = alertsAPI.data.find((alert) => alert.setupCompleted === false);
         if (setupCompleted) {
           setSetupCompleted(false);
-          createDialog.handleOpen();
         }
       }
     }
@@ -195,7 +192,7 @@ export const Layout = (props) => {
                 onClose={createDialog.handleClose}
                 open={createDialog.open}
               >
-                <DialogTitle>Setup</DialogTitle>
+                <DialogTitle>Setup Wizard</DialogTitle>
                 <DialogContent>
                   <Page />
                 </DialogContent>
