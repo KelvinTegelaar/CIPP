@@ -212,7 +212,7 @@ const Page = () => {
     },
     {
       label: "Delete User",
-      type: "POST",
+      type: "GET",
       url: "/api/RemoveUser",
       data: { ID: "id" },
       confirmText: "Are you sure you want to delete this user?",

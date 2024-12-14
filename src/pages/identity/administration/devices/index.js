@@ -7,10 +7,9 @@ const Page = () => {
     // these are currently GET requests that should be converted to POST requests.
     {
       label: "Enable Device",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecDeviceDelete",
       data: {
-        TenantFilter: "TenantFilter",
         ID: "ID",
         Action: "Enable",
       },
@@ -19,10 +18,9 @@ const Page = () => {
     },
     {
       label: "Disable Device",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecDeviceDelete",
       data: {
-        TenantFilter: "TenantFilter",
         ID: "ID",
         Action: "Disable",
       },
@@ -31,10 +29,9 @@ const Page = () => {
     },
     {
       label: "Retrieve Bitlocker Keys",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecGetRecoveryKey",
       data: {
-        TenantFilter: "TenantFilter",
         GUID: "ID",
       },
       confirmText: "Are you sure you want to retrieve the Bitlocker keys?",
@@ -42,10 +39,9 @@ const Page = () => {
     },
     {
       label: "Delete Device",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecDeviceDelete",
       data: {
-        TenantFilter: "TenantFilter",
         ID: "ID",
         Action: "Delete",
       },
