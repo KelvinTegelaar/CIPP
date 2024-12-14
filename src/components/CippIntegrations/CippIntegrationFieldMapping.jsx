@@ -20,11 +20,11 @@ const CippIntegrationFieldMapping = () => {
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: fieldMapping?.data?.Mappings.map((mapping) => {
+    defaultValues: fieldMapping?.data?.Mappings?.map((mapping) => {
       return {
         [mapping.RowKey]: {
-          label: mapping.IntegrationName,
-          value: mapping.IntegrationId,
+          label: mapping?.IntegrationName,
+          value: mapping?.IntegrationId,
         },
       };
     }),
@@ -35,10 +35,10 @@ const CippIntegrationFieldMapping = () => {
   useEffect(() => {
     if (fieldMapping.isSuccess) {
       var newMappings = {};
-      fieldMapping?.data?.Mappings.map((mapping) => {
+      fieldMapping?.data?.Mappings?.map((mapping) => {
         newMappings[mapping.RowKey] = {
-          label: mapping.IntegrationName,
-          value: mapping.IntegrationId,
+          label: mapping?.IntegrationName,
+          value: mapping?.IntegrationId,
         };
       });
 
@@ -88,8 +88,8 @@ const CippIntegrationFieldMapping = () => {
                               integrationField?.FieldType === undefined
                           )?.map((integrationField) => {
                             return {
-                              label: integrationField.name,
-                              value: integrationField.value,
+                              label: integrationField?.name,
+                              value: integrationField?.value,
                             };
                           })}
                           formControl={formControl}
