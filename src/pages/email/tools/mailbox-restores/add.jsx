@@ -6,7 +6,7 @@ import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
-import { Divider, Typography } from "@mui/material";
+import { Alert, Divider, Typography } from "@mui/material";
 
 const wellKnownFolders = [
   "Inbox",
@@ -58,8 +58,10 @@ const MailboxRestoreForm = () => {
         const shippedValues = {
           TenantFilter: tenantDomain,
           RequestName: values.RequestName,
-          SourceMailbox: values.SourceMailbox?.addedFields.ExchangeGuid,
-          TargetMailbox: values.TargetMailbox?.addedFields.ExchangeGuid,
+          SourceMailbox:
+            values.SourceMailbox?.addedFields?.ExchangeGuid ?? values.SourceMailbox?.value,
+          TargetMailbox:
+            values.TargetMailbox?.addedFields?.ExchangeGuid ?? values.TargetMailbox?.value,
           BadItemLimit: values.BadItemLimit,
           LargeItemLimit: values.LargeItemLimit,
           AcceptLargeDataLoss: values.AcceptLargeDataLoss,
@@ -81,7 +83,13 @@ const MailboxRestoreForm = () => {
     >
       <Grid container spacing={2}>
         <Grid size={12}>
-          <Typography variant="h6">Restore Properties</Typography>
+          <Alert severity="info">
+            Use this form to restore a mailbox from a soft-deleted state to the target mailbox. Use
+            the optional settings tailor the restore request for your needs.
+          </Alert>
+        </Grid>
+        <Grid size={12}>
+          <Typography variant="h6">Restore Settings</Typography>
         </Grid>
         <Grid item size={{ xs: 12, md: 6 }}>
           <CippFormComponent
