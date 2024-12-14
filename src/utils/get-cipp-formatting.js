@@ -78,7 +78,7 @@ export const getCippFormatting = (data, cellName, type) => {
     "WhenChanged",
   ];
   if (timeAgoArray.includes(cellName)) {
-    return <CippTimeAgo data={data} type={type} />;
+    return isText ? new Date(data).toLocaleDateString() : <CippTimeAgo data={data} type={type} />;
   }
 
   const passwordItems = ["password", "applicationsecret", "refreshtoken"];

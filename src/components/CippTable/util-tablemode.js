@@ -48,6 +48,7 @@ export const utilTableMode = (
       enableRowActions: actions ? true : false,
       enableSelectAll: true,
       enableFacetedValues: true,
+      enableColumnFilterModes: true,
       enableStickyHeader: true,
       selectAllMode: "all",
       enableColumnPinning: true,
