@@ -14,6 +14,7 @@ import { Box, Container, Grid } from "@mui/system";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboarding";
 import { useDialog } from "../hooks/use-dialog";
+import { nativeMenuItems } from "/src/layouts/config";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -77,7 +78,39 @@ export const Layout = (props) => {
   const mobileNav = useMobileNav();
   const [userSettingsComplete, setUserSettingsComplete] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState([]);
+  const [menuItems, setMenuItems] = useState(nativeMenuItems);
   const currentTenant = settings?.currentTenant;
+  const currentRole = ApiGetCall({
+    url: "/.auth/me",
+    queryKey: "authmecipp",
+  });
+
+  useEffect(() => {
+    if (currentRole.isSuccess && !currentRole.isFetching) {
+      const userRoles = currentRole.data?.clientPrincipal?.userRoles;
+      const filterItemsByRole = (items) => {
+        return items
+          .map((item) => {
+            if (item.roles && item.roles.length > 0) {
+              const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
+              if (!hasRole) {
+                return null;
+              }
+            }
+            if (item.items && item.items.length > 0) {
+              const filteredSubItems = filterItemsByRole(item.items).filter(Boolean);
+              return { ...item, items: filteredSubItems };
+            }
+
+            return item;
+          })
+          .filter(Boolean);
+      };
+
+      const filteredMenu = filterItemsByRole(nativeMenuItems);
+      setMenuItems(filteredMenu);
+    }
+  }, [currentRole.isSuccess]);
 
   const handleNavPin = useCallback(() => {
     settings.handleUpdate({
@@ -158,8 +191,10 @@ export const Layout = (props) => {
   return (
     <>
       <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
-      {mdDown && <MobileNav onClose={mobileNav.handleClose} open={mobileNav.open} />}
-      {!mdDown && <SideNav onPin={handleNavPin} pinned={!!settings.pinNav} />}
+      {mdDown && (
+        <MobileNav items={menuItems} onClose={mobileNav.handleClose} open={mobileNav.open} />
+      )}
+      {!mdDown && <SideNav items={menuItems} onPin={handleNavPin} pinned={!!settings.pinNav} />}
       <LayoutRoot
         sx={{
           pl: {

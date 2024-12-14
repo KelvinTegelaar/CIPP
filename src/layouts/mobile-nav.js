@@ -5,7 +5,6 @@ import { Box, Drawer, Stack } from "@mui/material";
 import { Logo } from "../components/logo";
 import { Scrollbar } from "../components/scrollbar";
 import { paths } from "../paths";
-import { items } from "./config";
 import { MobileNavItem } from "./mobile-nav-item";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
 
@@ -75,7 +74,7 @@ const reduceChildRoutes = ({ acc, depth, item, pathname }) => {
 };
 
 export const MobileNav = (props) => {
-  const { open, onClose } = props;
+  const { open, onClose, items } = props;
   const pathname = usePathname();
 
   return (

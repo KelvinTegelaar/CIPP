@@ -28,7 +28,7 @@ import {
 } from "@mui/icons-material";
 import { SvgIcon } from "@mui/material";
 
-export const items = [
+export const nativeMenuItems = [
   {
     title: "Dashboard",
     path: "/",
@@ -542,27 +542,29 @@ export const items = [
           </SvgIcon>
         ),
         items: [
-          { title: "Application Settings", path: "/cipp/settings" },
-          { title: "Integrations", path: "/cipp/integrations" },
-          { title: "Scheduler", path: "/cipp/scheduler" },
-          { title: "Logbook", path: "/cipp/logs" },
-          { title: "Statistics", path: "/cipp/statistics" },
-          { title: "SAM Setup Wizard", path: "/onboarding" },
+          { title: "Application Settings", path: "/cipp/settings", roles: ["admin", "superadmin"] },
+          { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
+          { title: "Scheduler", path: "/cipp/scheduler", roles: ["editor", "admin", "superadmin"] },
+          { title: "Logbook", path: "/cipp/logs", roles: ["admin", "superadmin"] },
+          { title: "Statistics", path: "/cipp/statistics", roles: ["admin", "superadmin"] },
+          { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
           { title: "Log Out", path: "/logout" },
         ],
       },
       {
         title: "Advanced",
+        roles: ["superadmin"],
         icon: (
           <SvgIcon>
             <WrenchScrewdriverIcon />
           </SvgIcon>
         ),
         items: [
-          { title: "Super Admin", path: "/cipp/super-admin/tenant-mode" },
+          { title: "Super Admin", path: "/cipp/super-admin/tenant-mode", roles: ["superadmin"] },
           {
             title: "Exchange Cmdlets",
             path: "/cipp/advanced/exchange-cmdlets",
+            roles: ["superadmin"],
           },
         ],
       },

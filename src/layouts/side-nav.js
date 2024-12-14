@@ -1,43 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
 import { Box, Divider, Drawer, Stack } from "@mui/material";
 import { Scrollbar } from "../components/scrollbar";
-import { items } from "./config";
 import { SideNavItem } from "./side-nav-item";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_COLLAPSED_WIDTH = 73; // icon size + padding + border right
 const TOP_NAV_HEIGHT = 64;
 
+const markOpenItems = (items, pathname) => {
+  return items.map((item) => {
+    const checkPath = !!(item.path && pathname);
+    const exactMatch = checkPath ? pathname === item.path : false;
+
+    let openImmediately = exactMatch;
+    let newItems = item.items || [];
+
+    // If this item has children, recursively process them
+    if (newItems.length > 0) {
+      newItems = markOpenItems(newItems, pathname);
+      // If any child is openImmediately or the current item's path partially matches the pathname, this should be open
+      const childOpen = newItems.some((child) => child.openImmediately);
+      const partialMatch = checkPath ? pathname.includes(item.path) : false;
+      openImmediately = openImmediately || childOpen || partialMatch;
+    }
+
+    return {
+      ...item,
+      items: newItems,
+      openImmediately,
+    };
+  });
+};
+
 const renderItems = ({ collapse = false, depth = 0, items, pathname }) =>
-  items.reduce(
-    (acc, item) =>
-      reduceChildRoutes({
-        acc,
-        collapse,
-        depth,
-        item,
-        pathname,
-      }),
-    []
-  );
+  items.reduce((acc, item) => reduceChildRoutes({ acc, collapse, depth, item, pathname }), []);
 
 const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
-  const checkPath = !!(item.path && pathname);
-  const partialMatch = checkPath ? pathname.includes(item.path) : false;
-  const exactMatch = checkPath ? pathname === item.path : false;
+  const exactMatch = item.path === pathname;
+  const isActive = exactMatch;
+  const hasChildren = item.items && item.items.length > 0;
 
-  if (item.items) {
+  if (hasChildren) {
+    // Use item.openImmediately which we determined before
     acc.push(
       <SideNavItem
-        active={partialMatch}
+        active={isActive}
         collapse={collapse}
         depth={depth}
         external={item.external}
         icon={item.icon}
         key={item.title}
-        openImmediately={partialMatch}
+        openImmediately={item.openImmediately}
         path={item.path}
         title={item.title}
         type={item.type}
@@ -63,7 +78,7 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
   } else {
     acc.push(
       <SideNavItem
-        active={exactMatch}
+        active={isActive}
         collapse={collapse}
         depth={depth}
         external={item.external}
@@ -79,11 +94,13 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
 };
 
 export const SideNav = (props) => {
-  const { onPin, pinned = false } = props;
+  const { items, onPin, pinned = false } = props;
   const pathname = usePathname();
   const [hovered, setHovered] = useState(false);
-
   const collapse = !(pinned || hovered);
+
+  // Preprocess items to mark which should be open
+  const processedItems = markOpenItems(items, pathname);
 
   return (
     <Drawer
@@ -137,7 +154,7 @@ export const SideNav = (props) => {
             {renderItems({
               collapse,
               depth: 0,
-              items,
+              items: processedItems,
               pathname,
             })}
           </Box>
