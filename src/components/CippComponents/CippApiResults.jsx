@@ -8,19 +8,25 @@ import { Grid } from "@mui/system";
 const extractAllResults = (data) => {
   const results = [];
 
+  const getSeverity = (text) => {
+    if (typeof text !== "string") return "success";
+    return /error|failed|exception|not found/i.test(text) ? "error" : "success";
+  };
+
   const processResultItem = (item) => {
     if (typeof item === "string") {
       return {
         text: item,
         copyField: item,
-        severity: "success",
+        severity: getSeverity(item),
       };
     }
 
     if (item && typeof item === "object") {
       const text = item.resultText || "";
       const copyField = item.copyField || text;
-      const severity = item.state || "success";
+      const severity =
+        typeof item.state === "string" ? item.state : getSeverity(item) ? "error" : "success";
 
       if (text) {
         return {
@@ -42,7 +48,7 @@ const extractAllResults = (data) => {
     }
 
     if (typeof obj === "string") {
-      results.push({ text: obj, copyField: obj, severity: "success" });
+      results.push({ text: obj, copyField: obj, severity: getSeverity(obj) });
       return;
     }
 
@@ -67,7 +73,11 @@ const extractAllResults = (data) => {
               extractFrom(value);
             }
           } else if (typeof value === "string") {
-            results.push({ text: value, copyField: value, severity: "success" });
+            results.push({
+              text: value,
+              copyField: value,
+              severity: getSeverity(value),
+            });
           }
         } else {
           extractFrom(value);

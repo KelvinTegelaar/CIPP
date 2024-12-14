@@ -337,6 +337,7 @@ const CippExchangeSettingsForm = (props) => {
               type="autoComplete"
               label="Select User"
               name="forwarding.ForwardInternal"
+              multiple={false}
               options={
                 usersList?.data?.Results?.map((user) => ({
                   value: user.userPrincipalName,
