@@ -88,6 +88,9 @@ export const Layout = (props) => {
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
+      if (!userRoles) {
+        return;
+      }
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
