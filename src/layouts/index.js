@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useMediaQuery } from "@mui/material";
+import { Alert, Button, Dialog, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useSettings } from "../hooks/use-settings";
 import { Footer } from "./footer";
@@ -12,6 +12,8 @@ import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
 import { Box, Container, Grid } from "@mui/system";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
+import Page from "../pages/onboarding";
+import { useDialog } from "../hooks/use-dialog";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -127,6 +129,7 @@ export const Layout = (props) => {
     }
   }, [alertsAPI.isSuccess, alertsAPI.data, alertsAPI.isFetching]);
   const [setupCompleted, setSetupCompleted] = useState(true);
+  const createDialog = useDialog();
   const dispatch = useDispatch();
   useEffect(() => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
@@ -149,10 +152,12 @@ export const Layout = (props) => {
         const setupCompleted = alertsAPI.data.find((alert) => alert.setupCompleted === false);
         if (setupCompleted) {
           setSetupCompleted(false);
+          createDialog.handleOpen();
         }
       }
     }
   }, [alertsAPI.isSuccess]);
+
   return (
     <>
       <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
@@ -183,7 +188,30 @@ export const Layout = (props) => {
               </Container>
             </Box>
           ) : (
-            children
+            <>
+              <Dialog
+                fullWidth
+                maxWidth="lg"
+                onClose={createDialog.handleClose}
+                open={createDialog.open}
+              >
+                <DialogTitle>Setup</DialogTitle>
+                <DialogContent>
+                  <Page />
+                </DialogContent>
+              </Dialog>
+              {!setupCompleted && (
+                <Box sx={{ flexGrow: 1, py: 4 }}>
+                  <Container maxWidth={false}>
+                    <Alert severity="info">
+                      Setup has not been completed.
+                      <Button onClick={createDialog.handleOpen}>Start Wizard</Button>
+                    </Alert>
+                  </Container>
+                </Box>
+              )}
+              {children}
+            </>
           )}
           <Footer />
         </LayoutContainer>

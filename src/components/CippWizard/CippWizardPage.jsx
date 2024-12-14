@@ -11,6 +11,7 @@ const CippWizardPage = (props) => {
     initialState,
     steps,
     wizardTitle,
+    backButton = true,
     wizardOrientation = "horizontal",
     ...other
   } = props;
@@ -27,17 +28,19 @@ const CippWizardPage = (props) => {
         }}
       >
         <Container maxWidth="xl">
-          <Button
-            color="inherit"
-            onClick={() => router.back()}
-            startIcon={
-              <SvgIcon fontSize="small">
-                <ArrowLeftIcon />
-              </SvgIcon>
-            }
-          >
-            Back
-          </Button>
+          {backButton && (
+            <Button
+              color="inherit"
+              onClick={() => router.back()}
+              startIcon={
+                <SvgIcon fontSize="small">
+                  <ArrowLeftIcon />
+                </SvgIcon>
+              }
+            >
+              Back
+            </Button>
+          )}
           <Stack spacing={6}>
             <Stack spacing={5}>
               <Stack spacing={1}>

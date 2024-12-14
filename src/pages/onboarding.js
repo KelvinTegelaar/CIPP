@@ -54,7 +54,12 @@ const Page = () => {
 
   return (
     <>
-      <CippWizardPage steps={steps} wizardTitle="SAM Setup" postUrl={"/api/ExecSAMSetup"} />
+      <CippWizardPage
+        backButton={false}
+        steps={steps}
+        wizardTitle="SAM Setup"
+        postUrl={"/api/ExecSAMSetup"}
+      />
     </>
   );
 };
