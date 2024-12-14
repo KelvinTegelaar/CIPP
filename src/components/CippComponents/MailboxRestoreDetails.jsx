@@ -16,10 +16,10 @@ const MailboxRestoreDetails = ({ data }) => {
     data: {
       tenantFilter: tenantFilter,
       Statistics: true,
-      Identity: data.RequestGuid,
+      Identity: data.Identity,
       IncludeReport: true,
     },
-    queryKey: `ListMailboxRestores-${data.RequestGuid}`,
+    queryKey: `ListMailboxRestores-${data.Identity}`,
   });
 
   const properties = [

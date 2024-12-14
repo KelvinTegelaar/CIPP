@@ -43,7 +43,7 @@ const CippExchangeSettingsForm = (props) => {
 
   const postRequest = ApiPostCall({
     datafromUrl: true,
-    relatedQueryKeys: [`Mailbox-${userId}`],
+    relatedQueryKeys: [`Mailbox-${userId}`, `CalendarPermissions-${userId}`, `ooo-${userId}`],
   });
 
   const handleSubmit = (type) => {
@@ -84,7 +84,7 @@ const CippExchangeSettingsForm = (props) => {
         <Stack spacing={2}>
           <CippFormComponent
             type="autoComplete"
-            multiple
+            multiple={false}
             label="Remove Full Access"
             name="permissions.RemoveFullAccess"
             options={
@@ -102,7 +102,7 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple
+            multiple={false}
             label="Add Full Access - Automapping Enabled"
             name="permissions.AddFullAccess"
             options={
@@ -115,7 +115,7 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple
+            multiple={false}
             label="Add Full Access - Automapping Disabled"
             name="permissions.AddFullAccessNoAutoMap"
             options={
@@ -128,7 +128,7 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple
+            multiple={false}
             label="Add Send-as Permissions"
             name="permissions.AddSendAs"
             options={
@@ -141,7 +141,7 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple
+            multiple={false}
             label="Remove Send-as Permissions"
             name="permissions.RemoveSendAs"
             options={
@@ -158,7 +158,7 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple
+            multiple={false}
             label="Add Send On Behalf Permissions"
             name="permissions.AddSendOnBehalf"
             options={
@@ -171,7 +171,7 @@ const CippExchangeSettingsForm = (props) => {
           />
           <CippFormComponent
             type="autoComplete"
-            multiple
+            multiple={false}
             label="Remove Send On Behalf Permissions"
             name="permissions.RemoveSendOnBehalf"
             options={
@@ -210,11 +210,14 @@ const CippExchangeSettingsForm = (props) => {
             label="Remove Access"
             name="calendar.RemoveAccess"
             options={
-              usersList?.data?.Results?.map((user) => ({
+              usersList?.data?.Results?.filter((user) =>
+                calPermissions?.some((perm) => perm.User === user.displayName)
+              ).map((user) => ({
                 value: user.userPrincipalName,
                 label: `${user.displayName} (${user.userPrincipalName})`,
               })) || []
             }
+            multiple={false}
             formControl={formControl}
           />
           <CippFormComponent
@@ -227,6 +230,7 @@ const CippExchangeSettingsForm = (props) => {
                 label: `${user.displayName} (${user.userPrincipalName})`,
               })) || []
             }
+            multiple={false}
             formControl={formControl}
           />
           <CippFormComponent
@@ -251,6 +255,7 @@ const CippExchangeSettingsForm = (props) => {
               { value: "LimitedDetails", label: "Limited Details" },
               { value: "AvailabilityOnly", label: "Availability Only" },
             ]}
+            multiple={false}
             formControl={formControl}
           />
           <Grid item size={12}>
