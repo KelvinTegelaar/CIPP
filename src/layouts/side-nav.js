@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
 import { Box, Divider, Drawer, Stack } from "@mui/material";
@@ -13,17 +13,20 @@ const markOpenItems = (items, pathname) => {
   return items.map((item) => {
     const checkPath = !!(item.path && pathname);
     const exactMatch = checkPath ? pathname === item.path : false;
+    // Use startsWith for partial matches so that subpages not in the menu still keep parent open
+    const partialMatch = checkPath ? pathname.startsWith(item.path) : false;
 
     let openImmediately = exactMatch;
     let newItems = item.items || [];
 
-    // If this item has children, recursively process them
     if (newItems.length > 0) {
       newItems = markOpenItems(newItems, pathname);
-      // If any child is openImmediately or the current item's path partially matches the pathname, this should be open
       const childOpen = newItems.some((child) => child.openImmediately);
-      const partialMatch = checkPath ? pathname.includes(item.path) : false;
+      // Parent should open if exactMatch, childOpen, or partialMatch
       openImmediately = openImmediately || childOpen || partialMatch;
+    } else {
+      // For leaf items, consider them open if exact or partial match
+      openImmediately = openImmediately || partialMatch;
     }
 
     return {
@@ -38,12 +41,16 @@ const renderItems = ({ collapse = false, depth = 0, items, pathname }) =>
   items.reduce((acc, item) => reduceChildRoutes({ acc, collapse, depth, item, pathname }), []);
 
 const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
-  const exactMatch = item.path === pathname;
-  const isActive = exactMatch;
+  const checkPath = !!(item.path && pathname);
+  const exactMatch = checkPath && pathname === item.path;
+  const partialMatch = checkPath && pathname.startsWith(item.path);
+
+  // Consider item active if exactMatch or partialMatch for leaf items
+  // For parent items, being active is determined by their children or openImmediately
   const hasChildren = item.items && item.items.length > 0;
+  const isActive = exactMatch || (partialMatch && !hasChildren);
 
   if (hasChildren) {
-    // Use item.openImmediately which we determined before
     acc.push(
       <SideNavItem
         active={isActive}
