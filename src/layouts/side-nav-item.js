@@ -18,13 +18,16 @@ export const SideNavItem = (props) => {
     path,
     title,
   } = props;
+
   const [open, setOpen] = useState(openImmediately);
 
   const handleToggle = useCallback(() => {
     setOpen((prevOpen) => !prevOpen);
   }, []);
 
-  // Branch
+  // Dynamic spacing and font sizing based on depth
+  const indent = depth > 0 ? depth * 1.5 : 1; // adjust multiplication factor as needed
+  const fontSize = depth === 0 ? 14 : 13; // top-level 14, nested 13
 
   if (children) {
     return (
@@ -36,10 +39,10 @@ export const SideNavItem = (props) => {
             borderRadius: 1,
             display: "flex",
             fontFamily: (theme) => theme.typography.fontFamily,
-            fontSize: 14,
+            fontSize: fontSize,
             fontWeight: 500,
             justifyContent: "flex-start",
-            px: "6px",
+            px: `${indent * 6}px`,
             py: "12px",
             textAlign: "left",
             whiteSpace: "nowrap",
@@ -66,7 +69,7 @@ export const SideNavItem = (props) => {
             sx={{
               color: depth === 0 ? "text.primary" : "text.secondary",
               flexGrow: 1,
-              fontSize: 14,
+              fontSize: fontSize,
               mx: "12px",
               transition: "opacity 250ms ease-in-out",
               ...(active && {
@@ -100,7 +103,6 @@ export const SideNavItem = (props) => {
   }
 
   // Leaf
-
   const linkProps = path
     ? external
       ? {
@@ -122,10 +124,10 @@ export const SideNavItem = (props) => {
           borderRadius: 1,
           display: "flex",
           fontFamily: (theme) => theme.typography.fontFamily,
-          fontSize: 14,
+          fontSize: fontSize,
           fontWeight: 500,
           justifyContent: "flex-start",
-          px: "6px",
+          px: `${indent * 6}px`,
           py: "12px",
           textAlign: "left",
           whiteSpace: "nowrap",
