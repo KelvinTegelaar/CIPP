@@ -129,9 +129,10 @@ export const CIPPTableToptoolbar = ({
                     refreshFunction.refetch();
                   } else if (typeof refreshFunction === "function") {
                     refreshFunction();
-                  } else if (data && !getRequestData) {
+                  } else if (data && !getRequestData.isFetched) {
                     //do nothing because data was sent native.
                   } else if (getRequestData) {
+                    console.log(getRequestData);
                     getRequestData.refetch();
                   }
                 }}
