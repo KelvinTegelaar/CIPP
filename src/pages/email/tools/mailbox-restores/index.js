@@ -2,18 +2,12 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import MailboxRestoreDetails from "../../../../components/CippComponents/MailboxRestoreDetails";
 
 const Page = () => {
   const pageTitle = "Mailbox Restores";
 
   const actions = [
-    {
-      label: "Show Report",
-      modal: true,
-      modalType: "codeblock",
-      dataKey: "Report",
-      color: "info",
-    },
     {
       label: "Resume Restore Request",
       type: "POST",
@@ -53,18 +47,9 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: [
-      "Status",
-      "StatusDetail",
-      "SyncStage",
-      "DataConsistencyScore",
-      "EstimatedTransferSize",
-      "BytesTransferred",
-      "PercentComplete",
-      "EstimatedTransferItemCount",
-      "ItemsTransferred",
-    ],
+    customComponent: MailboxRestoreDetails,
     actions: actions,
+    size: "lg",
   };
 
   const simpleColumns = ["Name", "Status", "TargetMailbox", "WhenCreated", "WhenChanged"];
