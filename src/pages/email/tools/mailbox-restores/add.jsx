@@ -1,36 +1,51 @@
-import React from "react";
-import { Grid, Divider } from "@mui/material";
-import { useForm } from "react-hook-form";
+import React, { useEffect } from "react";
+import { Grid } from "@mui/system";
+import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
+import { getCippTranslation } from "../../../../utils/get-cipp-translation";
+import { Divider, Typography } from "@mui/material";
 
-const sourceMailboxesOptions = [
-  { value: "sourceGuid1", label: "MailboxOne <mailboxone@example.com>" },
-  { value: "sourceGuid2", label: "MailboxTwo <mailboxtwo@example.com>" },
-];
-
-const targetMailboxesOptions = [
-  { value: "targetGuid1", label: "TargetMailboxOne <targetone@example.com>" },
-  { value: "targetGuid2", label: "TargetMailboxTwo <targettwo@example.com>" },
-];
+const wellKnownFolders = [
+  "Inbox",
+  "SentItems",
+  "DeletedItems",
+  "Calendar",
+  "Contacts",
+  "Drafts",
+  "Journal",
+  "Tasks",
+  "Notes",
+  "JunkEmail",
+  "CommunicationHistory",
+  "Voicemail",
+  "Fax",
+  "Conflicts",
+  "SyncIssues",
+  "LocalFailures",
+  "ServerFailures",
+].map((folder) => ({ value: `#${folder}#`, label: getCippTranslation(folder) }));
 
 const MailboxRestoreForm = () => {
   const tenantDomain = useSettings().currentTenant;
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: {
-      tenantFilter: tenantDomain,
-      SourceMailbox: null,
-      TargetMailbox: null,
-      RequestName: "",
-      AcceptLargeDataLoss: false,
-      BadItemLimit: "",
-      LargeItemLimit: "",
-    },
   });
+
+  const sourceMailbox = useWatch({ control: formControl.control, name: "SourceMailbox" });
+  const targetMailbox = useWatch({ control: formControl.control, name: "TargetMailbox" });
+
+  useEffect(() => {
+    if (sourceMailbox && targetMailbox) {
+      const sourceUPN = sourceMailbox.value;
+      const targetUPN = targetMailbox.value;
+      const randomGUID = crypto.randomUUID();
+      formControl.setValue("RequestName", `Restore ${sourceUPN} to ${targetUPN} (${randomGUID})`);
+    }
+  }, [sourceMailbox, targetMailbox, formControl]);
 
   return (
     <CippFormPage
@@ -43,77 +58,222 @@ const MailboxRestoreForm = () => {
         const shippedValues = {
           TenantFilter: tenantDomain,
           RequestName: values.RequestName,
-          SourceMailbox: values.SourceMailbox?.value,
-          TargetMailbox: values.TargetMailbox?.value,
+          SourceMailbox: values.SourceMailbox?.addedFields.ExchangeGuid,
+          TargetMailbox: values.TargetMailbox?.addedFields.ExchangeGuid,
           BadItemLimit: values.BadItemLimit,
           LargeItemLimit: values.LargeItemLimit,
           AcceptLargeDataLoss: values.AcceptLargeDataLoss,
+          AssociatedMessagesCopyOption: values.AssociatedMessagesCopyOption,
+          ExcludeFolders: values.ExcludeFolders,
+          IncludeFolders: values.IncludeFolders,
+          BatchName: values.BatchName,
+          CompletedRequestAgeLimit: values.CompletedRequestAgeLimit,
+          ConflictResolutionOption: values.ConflictResolutionOption,
+          SourceRootFolder: values.SourceRootFolder,
+          TargetRootFolder: values.TargetRootFolder,
+          TargetType: values.TargetType,
+          ExcludeDumpster: values.ExcludeDumpster,
+          SourceIsArchive: values.SourceIsArchive,
+          TargetIsArchive: values.TargetIsArchive,
         };
         return shippedValues;
       }}
     >
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid size={12}>
+          <Typography variant="h6">Restore Properties</Typography>
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             name="SourceMailbox"
             label="Source Mailbox"
             type="autoComplete"
             formControl={formControl}
             multiple={false}
+            creatable={true}
+            required={true}
             api={{
               labelField: (option) => `${option.displayName} (${option.UPN})`,
               valueField: "UPN",
+              addedField: { displayName: "displayName", ExchangeGuid: "ExchangeGuid" },
               url: "/api/ListMailboxes?SoftDeletedMailbox=true",
               queryKey: `ListMailboxes-${tenantDomain}-SoftDeleted`,
             }}
+            validators={{ validate: (value) => (value ? true : "Please select a source mailbox.") }}
           />
         </Grid>
         {/* Target Mailbox */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             name="TargetMailbox"
             label="Restore Target"
             type="autoComplete"
             formControl={formControl}
             multiple={false}
+            creatable={true}
+            required={true}
             api={{
               queryKey: `ListMailboxes-${tenantDomain}`,
               labelField: (option) => `${option.displayName} (${option.UPN})`,
               valueField: "UPN",
+              addedField: { displayName: "displayName", ExchangeGuid: "ExchangeGuid" },
               url: "/api/ListMailboxes",
             }}
+            validators={{ validate: (value) => (value ? true : "Please select a target mailbox.") }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item size={12}>
           <CippFormComponent
             type="textField"
             label="Restore Request Name"
             name="RequestName"
+            required={true}
             formControl={formControl}
             validators={{ required: "Please enter a request name." }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <CippFormComponent
-            type="switch"
-            label="Accept Large Data Loss"
-            name="AcceptLargeDataLoss"
-            formControl={formControl}
-          />
+        <Grid size={12}>
+          <Divider />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={12}>
+          <Typography variant="h6">Optional Settings</Typography>
+        </Grid>
+        <Grid item size={{ xs: 6, md: 2 }}>
           <CippFormComponent
-            type="textField"
+            type="number"
             label="Bad Item Limit"
             name="BadItemLimit"
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ xs: 6, md: 2 }}>
           <CippFormComponent
-            type="textField"
+            type="number"
             label="Large Item Limit"
             name="LargeItemLimit"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid item size={{ xs: 6, md: 2 }}>
+          <CippFormComponent
+            type="number"
+            label="Completed Request Age Limit"
+            name="CompletedRequestAgeLimit"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Associated Messages Copy Option"
+            name="AssociatedMessagesCopyOption"
+            formControl={formControl}
+            options={[
+              { value: "DoNotCopy", label: "Do Not Copy" },
+              { value: "MapByMessageClass", label: "Map By Message Class" },
+              { value: "Copy", label: "Copy" },
+            ]}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Exclude Folders"
+            name="ExcludeFolders"
+            formControl={formControl}
+            multiple={true}
+            creatable={true}
+            options={wellKnownFolders}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Include Folders"
+            name="IncludeFolders"
+            formControl={formControl}
+            multiple={true}
+            creatable={true}
+            options={wellKnownFolders}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="textField"
+            label="Batch Name"
+            name="BatchName"
+            formControl={formControl}
+          />
+        </Grid>
+
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Conflict Resolution Option"
+            name="ConflictResolutionOption"
+            formControl={formControl}
+            multiple={false}
+            options={[
+              { value: "ForceCopy", label: "Force Copy" },
+              { value: "KeepAll", label: "Keep All" },
+              { value: "KeepLatestItem", label: "Keep Latest Item" },
+              { value: "KeepSourceItem", label: "Keep Source Item" },
+              { value: "KeepTargetItem", label: "Keep Target Item" },
+              { value: "UpdateFromSource", label: "Update From Source" },
+            ]}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="textField"
+            label="Source Root Folder"
+            name="SourceRootFolder"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="textField"
+            label="Target Root Folder"
+            name="TargetRootFolder"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Target Type"
+            name="TargetType"
+            multiple={false}
+            formControl={formControl}
+            options={[
+              { value: "Archive", label: "Archive" },
+              { value: "MailboxLocation", label: "Mailbox Location" },
+              { value: "Primary", label: "Primary" },
+            ]}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="switch"
+            label="Exclude Dumpster"
+            name="ExcludeDumpster"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="switch"
+            label="Source Is Archive"
+            name="SourceIsArchive"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid item size={{ xs: 12, md: 6 }}>
+          <CippFormComponent
+            type="switch"
+            label="Target Is Archive"
+            name="TargetIsArchive"
             formControl={formControl}
           />
         </Grid>
