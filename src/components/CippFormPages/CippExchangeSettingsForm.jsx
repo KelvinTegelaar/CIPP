@@ -43,7 +43,7 @@ const CippExchangeSettingsForm = (props) => {
 
   const postRequest = ApiPostCall({
     datafromUrl: true,
-    relatedQueryKeys: [`Mailbox-${userId}`],
+    relatedQueryKeys: [`Mailbox-${userId}`, `CalendarPermissions-${userId}`, `ooo-${userId}`],
   });
 
   const handleSubmit = (type) => {
@@ -210,8 +210,10 @@ const CippExchangeSettingsForm = (props) => {
             label="Remove Access"
             name="calendar.RemoveAccess"
             options={
-              usersList?.data?.Results?.map((user) => ({
-                value: user.userPrincipalName,
+              usersList?.data?.Results?.filter((user) =>
+                calPermissions?.some((perm) => perm.User === user.displayName)
+              ).map((user) => ({
+                value: user.displayName,
                 label: `${user.displayName} (${user.userPrincipalName})`,
               })) || []
             }
