@@ -106,7 +106,8 @@ export const CippChartCard = ({
         }))
       );
     }
-  }, [chartType, chartSeries, labels]);
+    console.log("running use");
+  }, [chartType, chartSeries.length, labels]);
   return (
     <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader

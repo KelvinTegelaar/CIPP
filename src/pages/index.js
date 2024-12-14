@@ -25,6 +25,7 @@ const Page = () => {
 
   const dashboard = ApiGetCall({
     url: "/api/ListuserCounts",
+    data: { tenantFilter: currentTenant },
     queryKey: `${currentTenant}-ListuserCounts`,
   });
 
@@ -71,8 +72,7 @@ const Page = () => {
       name: "Tenant ID",
       data: (
         <>
-          {organization.data?.id}
-          <CippCopyToClipBoard text={organization.data?.id} />
+          <CippCopyToClipBoard text={organization.data?.id} type="chip" />
         </>
       ),
     },
@@ -80,8 +80,7 @@ const Page = () => {
       name: "Default Domain",
       data: (
         <>
-          {organization.data?.verifiedDomains?.[0]?.name}
-          <CippCopyToClipBoard text={organization.data?.verifiedDomains?.[0]?.name} />
+          <CippCopyToClipBoard text={organization.data?.verifiedDomains?.[0]?.name} type="chip" />
         </>
       ),
     },
@@ -171,12 +170,15 @@ const Page = () => {
                 isFetching={dashboard.isFetching || GlobalAdminList.isFetching}
                 chartType="pie"
                 chartSeries={[
-                  dashboard.data?.Users,
                   dashboard.data?.LicUsers,
+                  dashboard.data?.Users -
+                    dashboard.data?.LicUsers -
+                    dashboard.data?.Guests -
+                    GlobalAdminList.data?.Results?.length,
                   dashboard.data?.Guests,
                   GlobalAdminList.data?.Results?.length,
                 ]}
-                labels={["Total Users", "Licensed Users", "Guests", "Global Admins"]}
+                labels={["Licensed Users", "Unlicensed Users", "Guests", "Global Admins"]}
               />
             </Grid>
 
