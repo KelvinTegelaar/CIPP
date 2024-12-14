@@ -16,6 +16,7 @@ import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippEx
 import { useEffect, useState } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
+import { CircularProgress } from "@mui/material";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -110,8 +111,13 @@ const Page = () => {
     {
       id: 1,
       cardLabelBox: {
-        cardLabelBoxHeader:
-          userRequest.data?.[0]?.Permissions?.length !== 0 ? <Check /> : <Error />,
+        cardLabelBoxHeader: userRequest.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : userRequest.data?.[0]?.Permissions?.length !== 0 ? (
+          <Check />
+        ) : (
+          <Error />
+        ),
       },
       text: "Current mailbox permissions",
       subtext:
@@ -132,7 +138,13 @@ const Page = () => {
     {
       id: 1,
       cardLabelBox: {
-        cardLabelBoxHeader: calPermissions.data?.length !== 0 ? <Check /> : <Error />,
+        cardLabelBoxHeader: calPermissions.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : calPermissions.data?.length !== 0 ? (
+          <Check />
+        ) : (
+          <Error />
+        ),
       },
       text: "Current Calendar permissions",
       subtext: calPermissions.data?.length
@@ -182,6 +194,7 @@ const Page = () => {
                   userId={userId}
                   calPermissions={calPermissions.data}
                   currentSettings={userRequest.data?.[0]}
+                  isFetching={userRequest.isFetching}
                   formControl={formControl}
                 />
               </Stack>

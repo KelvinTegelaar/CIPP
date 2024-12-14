@@ -84,6 +84,22 @@ export const CippFormCondition = (props) => {
       }
       return null;
 
+    case "arrayLength":
+      if (
+        Array.isArray(watcher) &&
+        typeof compareValue === "number" &&
+        watcher.length >= compareValue
+      ) {
+        return children;
+      }
+      return null;
+
+    case "hasValue":
+      if (watcher !== undefined && watcher !== null && watcher !== "") {
+        return children;
+      }
+      return null;
+
     default:
       return null;
   }
