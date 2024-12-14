@@ -17,8 +17,8 @@ const Page = () => {
     },
     {
       label: "Hide from Global Address List",
-      type: "POST",
-      url: "api/ExecGroupsHideFromGAL",
+      type: "GET",
+      url: "/api/ExecGroupsHideFromGAL",
       data: {
         TenantFilter: "TenantFilter",
         ID: "mail",
@@ -31,8 +31,8 @@ const Page = () => {
     },
     {
       label: "Unhide from Global Address List",
-      type: "POST",
-      url: "api/ExecGroupsHideFromGAL",
+      type: "GET",
+      url: "/api/ExecGroupsHideFromGAL",
       data: {
         TenantFilter: "TenantFilter",
         ID: "mail",
@@ -44,8 +44,8 @@ const Page = () => {
     },
     {
       label: "Only allow messages from people inside the organisation",
-      type: "POST",
-      url: "api/ExecGroupsDeliveryManagement",
+      type: "GET",
+      url: "/api/ExecGroupsDeliveryManagement",
       data: {
         TenantFilter: "TenantFilter",
         ID: "mail",
@@ -58,8 +58,8 @@ const Page = () => {
     },
     {
       label: "Allow messages from people inside and outside the organisation",
-      type: "POST",
-      url: "api/ExecGroupsDeliveryManagement",
+      type: "GET",
+      url: "/api/ExecGroupsDeliveryManagement",
       data: {
         TenantFilter: "TenantFilter",
         ID: "mail",
@@ -71,8 +71,8 @@ const Page = () => {
     },
     {
       label: "Delete Group",
-      type: "POST",
-      url: "api/ExecGroupsDelete",
+      type: "GET",
+      url: "/api/ExecGroupsDelete",
       data: {
         TenantFilter: "TenantFilter",
         ID: "id",

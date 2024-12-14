@@ -505,6 +505,16 @@ const AlertWizard = () => {
                               />
                             </Grid>
                             <Grid item xs={12} md={12}>
+                              {commandValue?.value?.requiresInput && (
+                                <CippFormComponent
+                                  type="textField"
+                                  name={commandValue.value?.inputName}
+                                  formControl={formControl}
+                                  label={commandValue.value?.inputLabel}
+                                />
+                              )}
+                            </Grid>
+                            <Grid item xs={12} md={12}>
                               <CippFormComponent
                                 type="autoComplete"
                                 name="postExecution"

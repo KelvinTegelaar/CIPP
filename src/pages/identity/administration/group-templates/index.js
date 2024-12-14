@@ -2,22 +2,15 @@ import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import Link from "next/link";
+import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 
 const Page = () => {
   const pageTitle = "Group Templates";
 
   const actions = [
     {
-      label: "View Template",
-      type: "OFFCANVAS",
-      offCanvasType: "GroupTemplate",
-      data: {
-        GUID: "GUID",
-      },
-    },
-    {
       label: "Delete Template",
-      type: "POST",
+      type: "GET",
       url: "/api/RemoveGroupTemplate",
       data: {
         ID: "GUID",
@@ -28,8 +21,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["Displayname", "Description", "GUID"],
-    actions: actions,
+    children: (row) => <CippCodeBlock type="editor" code={JSON.stringify(row, null, 2)} />,
   };
 
   return (
