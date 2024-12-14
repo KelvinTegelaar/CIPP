@@ -3,6 +3,8 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { CheckmarkIcon } from "react-hot-toast";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { ApiPostCall } from "../../../../api/ApiCall";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
   const pageTitle = "Queued Applications";
@@ -25,18 +27,27 @@ const Page = () => {
       color: "danger",
     },
   ];
-
+  const handlePostCall = ApiPostCall({
+    urlFromdata: true,
+    relatedQueryKeys: "ListApplicationQueue",
+  });
   const simpleColumns = ["tenantName", "applicationName", "cmdLine", "assignTo"];
+  const handleRunQueue = () => {
+    handlePostCall.mutate({ url: "/api/ExecAppUpload" });
+  };
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListApplicationQueue"
       actions={actions}
+      tableFilter={<CippApiResults apiObject={handlePostCall} />}
       simpleColumns={simpleColumns}
       tenantInTitle={false}
       cardButton={
         <>
+          <Button onClick={() => handleRunQueue()}>Run Queue now</Button>
+
           <Button component={Link} href="/endpoint/applications/list/add">
             Add Application
           </Button>

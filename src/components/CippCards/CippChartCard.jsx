@@ -89,7 +89,7 @@ export const CippChartCard = ({
   isFetching,
   chartSeries = [],
   labels = [],
-  chartType,
+  chartType = "donut",
   title,
   actions,
 }) => {
@@ -106,7 +106,6 @@ export const CippChartCard = ({
         }))
       );
     }
-    console.log("running use");
   }, [chartType, chartSeries.length, labels]);
   return (
     <Card style={{ width: "100%", height: "100%" }}>

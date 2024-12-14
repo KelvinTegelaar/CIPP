@@ -185,7 +185,7 @@ export const CippApiResults = (props) => {
       {!errorsOnly && hasVisibleResults && (
         <Grid container spacing={2}>
           {finalResults.map((resultObj) => (
-            <Grid item xs={12} key={resultObj.id}>
+            <Grid item size={12} key={resultObj.id}>
               <Collapse in={resultObj.visible}>
                 <Alert
                   sx={alertSx}

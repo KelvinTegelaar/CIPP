@@ -170,13 +170,20 @@ const Page = () => {
                 isFetching={dashboard.isFetching || GlobalAdminList.isFetching}
                 chartType="pie"
                 chartSeries={[
-                  dashboard.data?.LicUsers,
-                  dashboard.data?.Users -
-                    dashboard.data?.LicUsers -
-                    dashboard.data?.Guests -
-                    GlobalAdminList.data?.Results?.length,
-                  dashboard.data?.Guests,
-                  GlobalAdminList.data?.Results?.length,
+                  Number(dashboard.data?.LicUsers || 0),
+                  dashboard.data?.Users &&
+                  dashboard.data?.LicUsers &&
+                  GlobalAdminList.data?.Results &&
+                  dashboard.data?.Guests
+                    ? Number(
+                        dashboard.data?.Users -
+                          dashboard.data?.LicUsers -
+                          dashboard.data?.Guests -
+                          GlobalAdminList.data?.Results?.length
+                      )
+                    : 0,
+                  Number(dashboard.data?.Guests || 0),
+                  Number(GlobalAdminList.data?.Results?.length || 0),
                 ]}
                 labels={["Licensed Users", "Unlicensed Users", "Guests", "Global Admins"]}
               />
@@ -187,7 +194,7 @@ const Page = () => {
                 title="Standards Set"
                 isFetching={standards.isFetching}
                 chartType="bar"
-                chartSeries={[remediateCount, alertCount, reportCount]}
+                chartSeries={[remediateCount || 0, alertCount || 0, reportCount || 0]}
                 labels={["Remediation", "Alert", "Report"]}
               />
             </Grid>
@@ -198,8 +205,8 @@ const Page = () => {
                 isFetching={sharepoint.isFetching}
                 chartType="donut"
                 chartSeries={[
-                  Number(sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB),
-                  Number(sharepoint.data?.GeoUsedStorageMB),
+                  Number(sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB) || 0,
+                  Number(sharepoint.data?.GeoUsedStorageMB) || 0,
                 ]}
                 labels={[
                   `Free (${

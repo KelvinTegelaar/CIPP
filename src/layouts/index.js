@@ -126,9 +126,8 @@ export const Layout = (props) => {
       setFetchingVisible(new Array(alertsAPI.data.length).fill(true));
     }
   }, [alertsAPI.isSuccess, alertsAPI.data, alertsAPI.isFetching]);
-
+  const [setupCompleted, setSetupCompleted] = useState(true);
   const dispatch = useDispatch();
-  //if there are alerts, send them to our toast component
   useEffect(() => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
       if (alertsAPI.data.length > 0) {
@@ -143,8 +142,17 @@ export const Layout = (props) => {
         });
       }
     }
-  }, [alertsAPI.isSuccess]);
 
+    //if any of the alerts have the property setupCompleted === false, open a dialog with the SAM wizard in there.
+    if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
+      if (alertsAPI.data.length > 0) {
+        const setupCompleted = alertsAPI.data.find((alert) => alert.setupCompleted === false);
+        if (setupCompleted) {
+          setSetupCompleted(false);
+        }
+      }
+    }
+  }, [alertsAPI.isSuccess]);
   return (
     <>
       <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
