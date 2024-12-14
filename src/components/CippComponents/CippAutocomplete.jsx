@@ -149,7 +149,7 @@ export const CippAutoComplete = (props) => {
         }
       }}
       options={api ? usedOptions : options}
-      getOptionLabel={(option) => option.label || "Label not found - Are you missing a labelField?"}
+      getOptionLabel={(option) => option ? (option.label === null ? "" : option.label || "Label not found - Are you missing a labelField?") : ""}
       sx={sx}
       renderInput={(params) => (
         <TextField
