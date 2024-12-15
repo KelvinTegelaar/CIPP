@@ -13,6 +13,10 @@ export const getCippError = (data) => {
     return data.message;
   }
 
+  if (data.response?.data?.Results) {
+    return data.response.data.Results;
+  }
+  
   if (data.response?.data) {
     return data.response.data;
   }
