@@ -1,30 +1,12 @@
+import { BuildingOfficeIcon, HomeIcon, UsersIcon, WrenchIcon } from "@heroicons/react/24/outline";
 import {
-  BuildingLibraryIcon,
-  EnvelopeOpenIcon,
-  ExclamationTriangleIcon,
-  HomeIcon,
-  LinkIcon,
-  ShieldCheckIcon,
-  UserIcon,
-  WindowIcon,
-  WrenchIcon,
-  WrenchScrewdriverIcon,
-} from "@heroicons/react/24/outline";
-import {
-  AddBox,
-  AddBoxOutlined,
-  BarChart,
-  BarChartOutlined,
-  BarChartRounded,
-  Book,
-  Build,
-  BusAlert,
-  Download,
-  Key,
-  People,
-  Storage,
-  SwapHoriz,
-  Tablet,
+  Cloud,
+  CloudOutlined,
+  DeviceHub,
+  Laptop,
+  MailOutline,
+  Shield,
+  ShieldOutlined,
 } from "@mui/icons-material";
 import { SvgIcon } from "@mui/material";
 
@@ -41,15 +23,15 @@ export const nativeMenuItems = [
   {
     title: "Identity Management",
     type: "header",
+    icon: (
+      <SvgIcon>
+        <UsersIcon />
+      </SvgIcon>
+    ),
     items: [
       {
         title: "Administration",
         path: "/identity/administration",
-        icon: (
-          <SvgIcon>
-            <WrenchIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Users", path: "/identity/administration/users" },
           { title: "Risky Users", path: "/identity/administration/risky-users" },
@@ -71,11 +53,6 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/identity/reports",
-        icon: (
-          <SvgIcon>
-            <BarChart />
-          </SvgIcon>
-        ),
         items: [
           { title: "MFA Report", path: "/identity/reports/mfa-report" },
           { title: "Inactive Users", path: "/identity/reports/inactive-users-report" },
@@ -92,15 +69,15 @@ export const nativeMenuItems = [
   {
     title: "Tenant Administration",
     type: "header",
+    icon: (
+      <SvgIcon>
+        <BuildingOfficeIcon />
+      </SvgIcon>
+    ),
     items: [
       {
         title: "Administration",
         path: "/tenant/administration",
-        icon: (
-          <SvgIcon>
-            <BuildingLibraryIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Tenants", path: "/tenant/administration/tenants" },
           {
@@ -130,30 +107,15 @@ export const nativeMenuItems = [
       {
         title: "GDAP Management",
         path: "/tenant/gdap-management/",
-        icon: (
-          <SvgIcon>
-            <UserIcon />
-          </SvgIcon>
-        ),
       },
       {
         title: "Configuration Backup",
         path: "/tenant/backup",
-        icon: (
-          <SvgIcon>
-            <Download />
-          </SvgIcon>
-        ),
         items: [{ title: "Backups", path: "/tenant/backup/backup-wizard" }],
       },
       {
         title: "Tools",
         path: "/tenant/tools",
-        icon: (
-          <SvgIcon>
-            <AddBoxOutlined />
-          </SvgIcon>
-        ),
         items: [
           {
             title: "Graph Explorer",
@@ -174,11 +136,6 @@ export const nativeMenuItems = [
       {
         title: "Standards",
         path: "/tenant/standards",
-        icon: (
-          <SvgIcon>
-            <Book />
-          </SvgIcon>
-        ),
         items: [
           { title: "Standards", path: "/tenant/standards/list-standards" },
           {
@@ -194,11 +151,6 @@ export const nativeMenuItems = [
       {
         title: "Conditional Access",
         path: "/tenant/conditional",
-        icon: (
-          <SvgIcon>
-            <Key />
-          </SvgIcon>
-        ),
         items: [
           { title: "CA Policies", path: "/tenant/conditional/list-policies" },
           {
@@ -219,11 +171,6 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/tenant/reports",
-        icon: (
-          <SvgIcon>
-            <BarChartOutlined />
-          </SvgIcon>
-        ),
         items: [
           {
             title: "Licence Report",
@@ -240,15 +187,15 @@ export const nativeMenuItems = [
   {
     title: "Security & Compliance",
     type: "header",
+    icon: (
+      <SvgIcon>
+        <ShieldOutlined />
+      </SvgIcon>
+    ),
     items: [
       {
         title: "Incidents & Alerts",
         path: "/security/incidents",
-        icon: (
-          <SvgIcon>
-            <ExclamationTriangleIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Incidents", path: "/security/incidents/list-incidents" },
           { title: "Alerts", path: "/security/incidents/list-alerts" },
@@ -257,11 +204,6 @@ export const nativeMenuItems = [
       {
         title: "Defender",
         path: "/security/defender",
-        icon: (
-          <SvgIcon>
-            <ShieldCheckIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Defender Status", path: "/security/defender/list-defender" },
           {
@@ -277,11 +219,6 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/security/reports",
-        icon: (
-          <SvgIcon>
-            <BarChartOutlined />
-          </SvgIcon>
-        ),
         items: [
           {
             title: "Device Compliance",
@@ -294,15 +231,15 @@ export const nativeMenuItems = [
   {
     title: "Intune",
     type: "header",
+    icon: (
+      <SvgIcon>
+        <Laptop />
+      </SvgIcon>
+    ),
     items: [
       {
         title: "Applications",
         path: "/endpoint/applications",
-        icon: (
-          <SvgIcon>
-            <WindowIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Applications", path: "/endpoint/applications/list" },
           { title: "Application Queue", path: "/endpoint/applications/queue" },
@@ -311,11 +248,6 @@ export const nativeMenuItems = [
       {
         title: "Autopilot",
         path: "/endpoint/autopilot",
-        icon: (
-          <SvgIcon>
-            <Tablet />
-          </SvgIcon>
-        ),
         items: [
           { title: "Autopilot Devices", path: "/endpoint/autopilot/list-devices" },
           { title: "Add Autopilot Device", path: "/endpoint/autopilot/add-device" },
@@ -328,11 +260,6 @@ export const nativeMenuItems = [
       {
         title: "Device Management",
         path: "/endpoint/MEM",
-        icon: (
-          <SvgIcon>
-            <SwapHoriz />
-          </SvgIcon>
-        ),
         items: [
           { title: "Devices", path: "/endpoint/reports/devices" },
           { title: "Configuration Policies", path: "/endpoint/MEM/list-policies" },
@@ -345,11 +272,6 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/endpoint/reports",
-        icon: (
-          <SvgIcon>
-            <BarChartRounded />
-          </SvgIcon>
-        ),
         items: [
           { title: "Analytics Device Score", path: "/endpoint/reports/analyticsdevicescore" },
         ],
@@ -359,35 +281,25 @@ export const nativeMenuItems = [
   {
     title: "Teams & Sharepoint",
     type: "header",
+    icon: (
+      <SvgIcon>
+        <CloudOutlined />
+      </SvgIcon>
+    ),
     items: [
       {
         title: "OneDrive",
         path: "/teams-share/onedrive",
-        icon: (
-          <SvgIcon>
-            <Storage />
-          </SvgIcon>
-        ),
         items: [{ title: "OneDrive", path: "/teams-share/onedrive/list" }],
       },
       {
         title: "SharePoint",
         path: "/teams-share/sharepoint",
-        icon: (
-          <SvgIcon>
-            <LinkIcon />
-          </SvgIcon>
-        ),
         items: [{ title: "SharePoint", path: "/teams-share/sharepoint/list-sharepoint" }],
       },
       {
         title: "Teams",
         path: "/teams-share/teams",
-        icon: (
-          <SvgIcon>
-            <People />
-          </SvgIcon>
-        ),
         items: [
           { title: "Teams", path: "/teams-share/teams/list-team" },
           { title: "Add Team", path: "/teams-share/teams/add-team" },
@@ -400,15 +312,15 @@ export const nativeMenuItems = [
   {
     title: "Email & Exchange",
     type: "header",
+    icon: (
+      <SvgIcon>
+        <MailOutline />
+      </SvgIcon>
+    ),
     items: [
       {
         title: "Administration",
         path: "/email/Administration",
-        icon: (
-          <SvgIcon>
-            <Build />
-          </SvgIcon>
-        ),
         items: [
           { title: "Mailboxes", path: "/email/administration/mailboxes" },
           { title: "Deleted Mailboxes", path: "/email/administration/deleted-mailboxes" },
@@ -424,11 +336,6 @@ export const nativeMenuItems = [
       {
         title: "Tools",
         path: "/email/tools",
-        icon: (
-          <SvgIcon>
-            <AddBox />
-          </SvgIcon>
-        ),
         items: [
           {
             title: "Mailbox Restore Wizard",
@@ -442,11 +349,6 @@ export const nativeMenuItems = [
       {
         title: "Transport",
         path: "/email/Transport",
-        icon: (
-          <SvgIcon>
-            <BusAlert />
-          </SvgIcon>
-        ),
         items: [
           { title: "Transport rules", path: "/email/transport/list-rules" },
           {
@@ -471,11 +373,6 @@ export const nativeMenuItems = [
       {
         title: "Spamfilter",
         path: "/email/spamfilter",
-        icon: (
-          <SvgIcon>
-            <EnvelopeOpenIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Spamfilter", path: "/email/spamfilter/list-spamfilter" },
           {
@@ -488,11 +385,6 @@ export const nativeMenuItems = [
       {
         title: "Resource Management",
         path: "/email/resources/management",
-        icon: (
-          <SvgIcon>
-            <BusAlert />
-          </SvgIcon>
-        ),
         items: [
           { title: "Rooms", path: "/email/resources/management/list-rooms" },
           { title: "Room Lists", path: "/email/resources/management/room-lists" },
@@ -501,11 +393,6 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/email/reports",
-        icon: (
-          <SvgIcon>
-            <BarChartRounded />
-          </SvgIcon>
-        ),
         items: [
           {
             title: "Mailbox Statistics",
@@ -540,14 +427,14 @@ export const nativeMenuItems = [
   {
     title: "CIPP",
     type: "header",
+    icon: (
+      <SvgIcon>
+        <WrenchIcon />
+      </SvgIcon>
+    ),
     items: [
       {
         title: "Settings",
-        icon: (
-          <SvgIcon>
-            <WrenchIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Application Settings", path: "/cipp/settings", roles: ["admin", "superadmin"] },
           { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
@@ -560,11 +447,6 @@ export const nativeMenuItems = [
       {
         title: "Advanced",
         roles: ["superadmin"],
-        icon: (
-          <SvgIcon>
-            <WrenchScrewdriverIcon />
-          </SvgIcon>
-        ),
         items: [
           { title: "Super Admin", path: "/cipp/super-admin/tenant-mode", roles: ["superadmin"] },
           {
