@@ -8,6 +8,7 @@ import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyList
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import dynamic from "next/dynamic";
+import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 
 const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), { ssr: false });
 
@@ -54,6 +55,18 @@ const Page = () => {
       }
     }
   }, [logRequest.isSuccess]);
+
+  function parseAuditLogs(logs) {
+    return logs.map((log) => ({
+      id: log.LogId,
+      timestamp: log.Timestamp,
+      tenant: log.Tenant,
+      title: log.Title,
+      status: log.Data.RawData.ResultStatus,
+      user: log.Data.RawData.UserId,
+      operation: log.Data.RawData.Operation,
+    }));
+  }
 
   const generatePropertyItems = (data) => {
     if (!data) return [];
@@ -112,28 +125,11 @@ const Page = () => {
                 layout="multiple"
               />
             </Grid>
-            {locationInfoItems.length > 0 && (
-              <Grid item xs={12}>
-                <CippPropertyListCard
-                  title="Location Information"
-                  propertyItems={locationInfoItems}
-                  isFetching={logRequest.isLoading}
-                  layout="multiple"
-                />
-              </Grid>
-            )}
+
             {logData?.Data?.PotentialLocationInfo?.lat &&
               logData?.Data?.PotentialLocationInfo?.lon && (
                 <Grid item xs={12}>
-                  <CippMap
-                    position={[
-                      logData.Data.PotentialLocationInfo.lat,
-                      logData.Data.PotentialLocationInfo.lon,
-                    ]}
-                    zoom={10}
-                    markerPopupContents={`${logData.Data.PotentialLocationInfo.city}, ${logData.Data.PotentialLocationInfo.region} ${logData.Data.PotentialLocationInfo.country}`}
-                    mapSx={{ height: "400px", width: "100%" }}
-                  />
+                  <CippGeoLocation ipAddress={lookupIp} />
                 </Grid>
               )}
             <Grid item xs={12}>
