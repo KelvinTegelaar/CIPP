@@ -358,7 +358,7 @@ export const nativeMenuItems = [
         items: [
           { title: "Analytics Device Score", path: "/endpoint/reports/analyticsdevicescore" },
         ],
-      }
+      },
     ],
   },
   {
@@ -558,7 +558,6 @@ export const nativeMenuItems = [
           { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
           { title: "Scheduler", path: "/cipp/scheduler", roles: ["editor", "admin", "superadmin"] },
           { title: "Logbook", path: "/cipp/logs", roles: ["admin", "superadmin"] },
-          { title: "Statistics", path: "/cipp/statistics", roles: ["admin", "superadmin"] },
           { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
           { title: "Log Out", path: "/logout" },
         ],
