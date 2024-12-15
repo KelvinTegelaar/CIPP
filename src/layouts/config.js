@@ -347,6 +347,18 @@ export const nativeMenuItems = [
           { title: "Add Policy Template", path: "/endpoint/MEM/add-policy-template" },
         ],
       },
+      {
+        title: "Reports",
+        path: "/endpoint/reports",
+        icon: (
+          <SvgIcon>
+            <BarChartRounded />
+          </SvgIcon>
+        ),
+        items: [
+          { title: "Analytics Device Score", path: "/endpoint/reports/analyticsdevicescore" },
+        ],
+      }
     ],
   },
   {
