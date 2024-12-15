@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
 import { CircularProgress } from "@mui/material";
+import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -40,6 +41,7 @@ const Page = () => {
   const oooRequest = ApiGetCall({
     url: `/api/ListOoO?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `ooo-${userId}`,
+    waiting: waiting,
   });
 
   const calPermissions = ApiGetCall({
@@ -166,6 +168,7 @@ const Page = () => {
       subtitle={subtitle}
       isFetching={userRequest.isLoading}
     >
+      <CippApiResults apiObject={userRequest} errorsOnly={true} />
       {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
       {userRequest.isSuccess && (
         <Box
