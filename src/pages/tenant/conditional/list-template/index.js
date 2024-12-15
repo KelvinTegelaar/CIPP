@@ -1,17 +1,12 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 
 const Page = () => {
   const pageTitle = "Available Conditional Access Templates";
 
   const actions = [
-    {
-      label: "View Template",
-      link: "/tenant/conditional/template-details/[id]",
-      multiPost: false,
-      color: "success",
-    },
     {
       label: "Delete Template",
       type: "GET",
@@ -23,10 +18,9 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["displayName", "GUID"],
-    actions: actions,
+    children: (row) => <CippJsonView object={row} />,
+    size: "xl",
   };
-
   return (
     <CippTablePage
       title={pageTitle}
