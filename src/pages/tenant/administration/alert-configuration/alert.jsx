@@ -78,20 +78,20 @@ const AlertWizard = () => {
 
   useEffect(() => {
     if (existingAlert.isSuccess) {
-      const alert = existingAlert.data.find((alert) => alert.RowKey === router.query.id);
+      const alert = existingAlert?.data?.find((alert) => alert.RowKey === router.query.id);
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
         formControl.setValue("tenantFilter", {
           value: alert.RawAlert.Tenant,
           label: alert.RawAlert.Tenant,
         });
-        const usedCommand = alertList.find(
+        const usedCommand = alertList?.find(
           (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
         );
         formControl.setValue("command", { value: usedCommand, label: usedCommand.label });
         formControl.setValue(
           "recurrence",
-          recurrenceOptions.find((opt) => opt.value === alert.RawAlert.Recurrence)
+          recurrenceOptions?.find((opt) => opt.value === alert.RawAlert.Recurrence)
         );
         const postExecutionValue = postExecutionOptions.filter((opt) =>
           alert.RawAlert.PostExecution.split(",").includes(opt.value)
@@ -100,7 +100,7 @@ const AlertWizard = () => {
       }
       if (alert?.PartitionKey === "Webhookv2") {
         setAlertType("audit");
-        const foundLogbook = logbookOptions.find(
+        const foundLogbook = logbookOptions?.find(
           (logbook) => logbook.value === alert.RawAlert.type
         );
         //make sure that for every condition, we spawn the field using setAddedEvent
@@ -141,7 +141,7 @@ const AlertWizard = () => {
         label: opt.label.replace(" (Recommended)", ""), // Clear any previous "Recommended" text
       }));
 
-      const recommendedOption = updatedRecurrenceOptions.find(
+      const recommendedOption = updatedRecurrenceOptions?.find(
         (opt) => opt.value === commandValue.value.recommendedRunInterval
       );
 
@@ -156,7 +156,7 @@ const AlertWizard = () => {
   useEffect(() => {
     // Logic to handle template-based form updates when a preset is selected
     if (selectedPreset) {
-      const selectedTemplate = auditLogTemplates.find(
+      const selectedTemplate = auditLogTemplates?.find(
         (template) => template.value === selectedPreset.value
       );
 
