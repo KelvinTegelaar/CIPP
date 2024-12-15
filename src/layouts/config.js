@@ -306,10 +306,6 @@ export const nativeMenuItems = [
         items: [
           { title: "Applications", path: "/endpoint/applications/list" },
           { title: "Application Queue", path: "/endpoint/applications/queue" },
-          { title: "Add Choco App", path: "/endpoint/applications/add-choco-app" },
-          { title: "Add Store App", path: "/endpoint/applications/add-winget-app" },
-          { title: "Add Office App", path: "/endpoint/applications/add-office-app" },
-          { title: "Add MSP App", path: "/endpoint/applications/add-rmm-app" },
         ],
       },
       {
@@ -344,7 +340,6 @@ export const nativeMenuItems = [
           { title: "Protection Policies", path: "/endpoint/MEM/list-appprotection-policies" },
           { title: "Apply Policy", path: "/endpoint/MEM/add-policy" },
           { title: "Policy Templates", path: "/endpoint/MEM/list-templates" },
-          { title: "Add Policy Template", path: "/endpoint/MEM/add-policy-template" },
         ],
       },
       {
