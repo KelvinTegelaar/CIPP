@@ -1,31 +1,34 @@
 import { useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import {
-  Grid,
-  Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-} from "@mui/material";
+import { Button, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import { EyeIcon } from "@heroicons/react/24/outline";
+import { Grid } from "@mui/system";
 
 const simpleColumns = ["Timestamp", "Tenant", "Title", "Actions"];
 
 const apiUrl = "/api/ListAuditLogs";
 const pageTitle = "Audit Logs";
 
+const actions = [
+  {
+    label: "View Log",
+    link: "/tenant/administration/audit-logs/log?id=[LogId]",
+    color: "primary",
+    icon: <EyeIcon />,
+  },
+];
+
 const Page = () => {
   const formControl = useForm({
+    mode: "onChange",
     defaultValues: {
       dateFilter: "relative",
       Time: 1,
-      Interval: "d",
-      startDate: null,
-      endDate: null,
+      Interval: { label: "Days", value: "d" },
     },
   });
 
@@ -37,7 +40,7 @@ const Page = () => {
   const onSubmit = (data) => {
     // Handle filter application logic
     if (data.dateFilter === "relative") {
-      setRelativeTime(`${data.Time}${data.Interval}`);
+      setRelativeTime(`${data.Time}${data.Interval.value}`);
       setStartDate(null);
       setEndDate(null);
     } else if (data.dateFilter === "startEnd") {
@@ -58,7 +61,7 @@ const Page = () => {
             <form onSubmit={formControl.handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 {/* Date Filter Type */}
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <CippFormComponent
                     type="radio"
                     row
@@ -75,26 +78,30 @@ const Page = () => {
                 {/* Relative Time Filter */}
                 {formControl.watch("dateFilter") === "relative" && (
                   <>
-                    <Grid item xs={6}>
-                      <CippFormComponent
-                        type="number"
-                        name="Time"
-                        label="Last"
-                        formControl={formControl}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <CippFormComponent
-                        type="select"
-                        name="Interval"
-                        label="Interval"
-                        options={[
-                          { label: "Minutes", value: "m" },
-                          { label: "Hours", value: "h" },
-                          { label: "Days", value: "d" },
-                        ]}
-                        formControl={formControl}
-                      />
+                    <Grid item size={{ xs: 12, md: 8 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <CippFormComponent
+                            type="number"
+                            name="Time"
+                            label="Last"
+                            formControl={formControl}
+                          />
+                        </Grid>
+                        <Grid item size={2}>
+                          <CippFormComponent
+                            type="autoComplete"
+                            name="Interval"
+                            label="Interval"
+                            multiple={false}
+                            options={[
+                              { label: "Hours", value: "h" },
+                              { label: "Days", value: "d" },
+                            ]}
+                            formControl={formControl}
+                          />
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </>
                 )}
@@ -102,7 +109,7 @@ const Page = () => {
                 {/* Start and End Date Filters */}
                 {formControl.watch("dateFilter") === "startEnd" && (
                   <>
-                    <Grid item xs={6}>
+                    <Grid item size={{ xs: 6, md: 3 }}>
                       <CippFormComponent
                         type="datePicker"
                         name="startDate"
@@ -111,7 +118,7 @@ const Page = () => {
                         formControl={formControl}
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item size={{ xs: 6, md: 3 }}>
                       <CippFormComponent
                         type="datePicker"
                         name="endDate"
@@ -124,7 +131,7 @@ const Page = () => {
                 )}
 
                 {/* Submit Button */}
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <Button type="submit" variant="contained" color="primary">
                     Apply Filters
                   </Button>
@@ -144,6 +151,7 @@ const Page = () => {
         StartDate: startDate,
         EndDate: endDate,
       }}
+      actions={actions}
     />
   );
 };

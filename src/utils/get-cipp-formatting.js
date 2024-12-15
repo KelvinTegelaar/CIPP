@@ -255,6 +255,29 @@ export const getCippFormatting = (data, cellName, type) => {
     return getCippRoleTranslation(data);
   }
 
+  // Handle CIPPAction property
+  if (cellName === "CippAction") {
+    var actions = JSON.parse(data);
+    if (!Array.isArray(actions)) {
+      actions = [actions];
+    }
+    return isText
+      ? actions.map((action) => action.label).join(", ")
+      : actions.map((action) => (
+          <CippCopyToClipBoard key={action.label} text={action.label} type="chip" />
+        ));
+  }
+
+  // Handle CIPPExtendedProperties, parse JSON and display table of Name, Value
+  if (cellName === "CIPPExtendedProperties") {
+    const properties = JSON.parse(data);
+    return isText ? (
+      JSON.stringify(properties)
+    ) : (
+      <CippDataTableButton data={properties} tableTitle={getCippTranslation(cellName)} />
+    );
+  }
+
   // Handle boolean data
   if (typeof data === "boolean" || cellNameLower === "bool") {
     return isText ? (
