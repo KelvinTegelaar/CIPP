@@ -1,14 +1,15 @@
 export const getCippError = (data) => {
-  if (data.response?.data.result) {
+  if (data.response?.data?.result) {
     return data.response.data.result;
   }
-  if (data.response?.data.error) {
+  if (data.response?.data?.error) {
     return data.response.data.error;
   }
-  if (data.response?.data.message) {
+  if (data.response?.data?.message) {
     return data.response.data.message;
   }
-  if (data.response?.data.includes("<!DOCTYPE html>")) {
+
+  if (typeof data.response?.data === "string" && data.response.data.includes("<!DOCTYPE html>")) {
     return data.message;
   }
 
