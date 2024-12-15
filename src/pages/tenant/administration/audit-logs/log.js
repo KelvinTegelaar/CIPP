@@ -2,13 +2,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import { Box, Typography, Paper, Grid } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import dynamic from "next/dynamic";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
+import { Grid } from "@mui/system";
 
 const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), { ssr: false });
 
@@ -117,7 +118,7 @@ const Page = () => {
             Audit Log Details
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12, sm: 6 }}>
               <CippPropertyListCard
                 title="Log Information"
                 propertyItems={propertyItems}
@@ -128,7 +129,7 @@ const Page = () => {
 
             {logData?.Data?.PotentialLocationInfo?.lat &&
               logData?.Data?.PotentialLocationInfo?.lon && (
-                <Grid item xs={12}>
+                <Grid item size={{ xs: 12, sm: 6 }}>
                   <CippGeoLocation ipAddress={lookupIp} />
                 </Grid>
               )}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Grid } from "@mui/material";
+import { Card, CardContent, CardHeader } from "@mui/material";
+import { Grid } from "@mui/system";
 import dynamic from "next/dynamic";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { CippPropertyList } from "./CippPropertyList";
@@ -11,8 +12,8 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
   const [locationInfo, setLocationInfo] = useState(null);
   const [properties, setProperties] = useState([]);
 
-  const includeProperties = ["timezone", "as", "proxy", "hosting", "mobile"];
-  const markerProperties = ["org", "city", "region", "country", "zip"];
+  const markerProperties = ["timezone", "as", "proxy", "hosting", "mobile"];
+  const includeProperties = ["org", "city", "region", "country", "zip"];
 
   const [markerPopupContents, setMarkerPopupContents] = useState(null);
 
@@ -59,18 +60,18 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
       <CardHeader title={`Location Info for ${ipAddress}`} />
       <CardContent>
         <Grid container spacing={2}>
-          <Grid item xs={10}>
+          <Grid item size={{ xs: 12, sm: 8 }}>
             {locationInfo && locationInfo.lat && locationInfo.lon && (
               <CippMap
                 position={[locationInfo.lat, locationInfo.lon]}
-                zoom={13}
+                zoom={11}
                 markerPopupContents={markerPopupContents}
                 mapSx={{ height: "400px", width: "100%" }}
               />
             )}
           </Grid>
-          <Grid item xs={2}>
-            <CippPropertyList propertyItems={properties} />
+          <Grid item size={{ xs: 12, sm: 4 }}>
+            <CippPropertyList propertyItems={properties} showDivider={false} />
           </Grid>
         </Grid>
       </CardContent>

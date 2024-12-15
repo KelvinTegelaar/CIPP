@@ -5,14 +5,30 @@ const CippDataTableButton = ({ data, title, tableTitle = "Data" }) => {
   const [openDialogs, setOpenDialogs] = useState([]);
 
   const handleOpenDialog = () => {
-    const dataArray = Array.isArray(data) ? data : [data];
+    let dataArray;
+
+    if (Array.isArray(data)) {
+      dataArray = data;
+    } else if (typeof data === "object" && data !== null) {
+      dataArray = Object.keys(data).map((key) => ({ key, value: data[key] }));
+    } else {
+      dataArray = [data];
+    }
     setOpenDialogs([...openDialogs, dataArray]);
   };
 
   const handleCloseDialog = (index) => {
     setOpenDialogs(openDialogs.filter((_, i) => i !== index));
   };
-  const dataIsNotANullArray = !Array.isArray(data) || data.length === 0;
+  const dataIsNotANullArray =
+    !Array.isArray(data) &&
+    (typeof data !== "object" || data === null || Object.keys(data).length === 0);
+  const dataLength = Array.isArray(data)
+    ? data.length
+    : typeof data === "object" && data !== null
+    ? Object.keys(data).length
+    : 0;
+
   return (
     <>
       <Button
@@ -21,8 +37,7 @@ const CippDataTableButton = ({ data, title, tableTitle = "Data" }) => {
         onClick={handleOpenDialog}
         size="small"
       >
-        {title ? title + " " : ""}
-        {dataIsNotANullArray ? "No items" : `${data.length} items`}
+        {dataIsNotANullArray ? "No items" : `${dataLength} items`}
       </Button>
 
       {openDialogs.map((dialogData, index) => (

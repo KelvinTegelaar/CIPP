@@ -256,7 +256,7 @@ export const getCippFormatting = (data, cellName, type) => {
   }
 
   // Handle CIPPAction property
-  if (cellName === "CippAction") {
+  if (cellName === "CIPPAction") {
     var actions = JSON.parse(data);
     if (!Array.isArray(actions)) {
       actions = [actions];
@@ -266,6 +266,19 @@ export const getCippFormatting = (data, cellName, type) => {
       : actions.map((action) => (
           <CippCopyToClipBoard key={action.label} text={action.label} type="chip" />
         ));
+  }
+
+  // Handle AuditRecord property
+  if (cellName === "AuditRecord") {
+    return isText ? (
+      data
+    ) : (
+      <CippDataTableButton data={JSON.parse(data)} tableTitle={getCippTranslation(cellName)} />
+    );
+  }
+
+  if (cellName === "key") {
+    return isText ? data : getCippTranslation(data);
   }
 
   // Handle CIPPExtendedProperties, parse JSON and display table of Name, Value
