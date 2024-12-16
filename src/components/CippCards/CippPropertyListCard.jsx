@@ -122,25 +122,26 @@ export const CippPropertyListCard = (props) => {
           )}
         </CardContent>
         <ActionList>
-          {actionItems.map((item, index) => (
-            <ActionListItem
-              key={`${item.label}-index-ActionList-OffCanvas`}
-              icon={<SvgIcon fontSize="small">{item.icon}</SvgIcon>}
-              label={item.label}
-              onClick={
-                item.link
-                  ? () => window.open(item.link, "_blank")
-                  : () => {
-                      setActionData({
-                        data: data,
-                        action: item,
-                        ready: true,
-                      });
-                      createDialog.handleOpen();
-                    }
-              }
-            />
-          ))}
+          {actionItems?.length > 0 &&
+            actionItems.map((item, index) => (
+              <ActionListItem
+                key={`${item.label}-index-ActionList-OffCanvas`}
+                icon={<SvgIcon fontSize="small">{item.icon}</SvgIcon>}
+                label={item.label}
+                onClick={
+                  item.link
+                    ? () => window.open(item.link, "_blank")
+                    : () => {
+                        setActionData({
+                          data: data,
+                          action: item,
+                          ready: true,
+                        });
+                        createDialog.handleOpen();
+                      }
+                }
+              />
+            ))}
         </ActionList>
 
         {actionData.ready && (

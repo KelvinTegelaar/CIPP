@@ -35,8 +35,7 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
         <div>
           {markerProperties.map((key) => (
             <div key={key}>
-              <strong>{getCippTranslation(key)}:</strong>{" "}
-              {getCippFormatting(result[key], key)}
+              <strong>{getCippTranslation(key)}:</strong> {getCippFormatting(result[key], key)}
             </div>
           ))}
         </div>
@@ -56,26 +55,21 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
   }, [ipAddress]);
 
   return (
-    <Card {...cardProps}>
-      <CardHeader title={`Location Info for ${ipAddress}`} />
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid item size={{ xs: 12, sm: 8 }}>
-            {locationInfo && locationInfo.lat && locationInfo.lon && (
-              <CippMap
-                markers={[
-                  { position: [locationInfo.lat, locationInfo.lon], popup: markerPopupContents },
-                ]}
-                zoom={11}
-                mapSx={{ height: "400px", width: "100%" }}
-              />
-            )}
-          </Grid>
-          <Grid item size={{ xs: 12, sm: 4 }}>
-            <CippPropertyList propertyItems={properties} showDivider={false} />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+    <Grid container spacing={2}>
+      <Grid item size={{ xs: 12, sm: 8 }}>
+        {locationInfo && locationInfo.lat && locationInfo.lon && (
+          <CippMap
+            markers={[
+              { position: [locationInfo.lat, locationInfo.lon], popup: markerPopupContents },
+            ]}
+            zoom={11}
+            mapSx={{ height: "400px", width: "100%" }}
+          />
+        )}
+      </Grid>
+      <Grid item size={{ xs: 12, sm: 4 }}>
+        <CippPropertyList propertyItems={properties} showDivider={false} />
+      </Grid>
+    </Grid>
   );
 }

@@ -2,14 +2,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, CardHeader, Card, CardContent, Button } from "@mui/material";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
-import dynamic from "next/dynamic";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { Grid } from "@mui/system";
+import { OpenInNew } from "@mui/icons-material";
 
 const Page = () => {
   const router = useRouter();
@@ -25,47 +25,26 @@ const Page = () => {
     queryKey: `GetAuditLog-${id}`,
   });
 
-  const geoLookup = ApiPostCall({
-    urlFromData: true,
-    queryKey: "GeoIPLookup-" + lookupIp,
-    onResult: (result) => {
-      setLogData((prevData) => ({
-        ...prevData,
-        Data: {
-          ...prevData.Data,
-          PotentialLocationInfo: result,
-        },
-      }));
-    },
-  });
-
   useEffect(() => {
     if (logRequest.isSuccess) {
-      setLogData(logRequest?.data?.Results?.[0]);
-      var potentialLocation = logRequest?.data?.Results?.[0]?.Data?.PotentialLocationInfo;
-      if (potentialLocation && (!potentialLocation.lat || !potentialLocation.lon)) {
-        setLookupIp(potentialLocation.RowKey);
-        geoLookup.mutate({
-          url: "/api/ExecGeoIPLookup",
-          data: {
-            IP: potentialLocation.RowKey,
-          },
-        });
+      var data = logRequest?.data?.Results?.[0];
+
+      if (data && data?.Data.ActionUrl.includes("identity/administration/ViewBec")) {
+        data.Data.ActionUrl = data.Data.ActionUrl.replace(
+          "identity/administration/ViewBec",
+          "identity/administration/users/user/bec"
+        );
+        data.Data.ActionUrl = data.Data.ActionUrl.replace("tenantDomain", "tenantFilter");
       }
+      setLogData(data);
+      setLookupIp(
+        data?.Data?.IP ??
+          data?.Data?.PotentialLocationInfo?.RowKey ??
+          data?.Data?.RawData?.ClientIP ??
+          null
+      );
     }
   }, [logRequest.isSuccess]);
-
-  function parseAuditLogs(logs) {
-    return logs.map((log) => ({
-      id: log.LogId,
-      timestamp: log.Timestamp,
-      tenant: log.Tenant,
-      title: log.Title,
-      status: log.Data.RawData.ResultStatus,
-      user: log.Data.RawData.UserId,
-      operation: log.Data.RawData.Operation,
-    }));
-  }
 
   const generatePropertyItems = (data) => {
     if (!data) return [];
@@ -82,16 +61,6 @@ const Page = () => {
       value: prop.value ?? "N/A",
     }));
   };
-
-  const excludeLocationProperties = ["ETag", "PartitionKey", "RowKey", "Timestamp", "Tenant"];
-  const locationInfoItems = logData?.Data?.PotentialLocationInfo
-    ? Object.entries(logData.Data.PotentialLocationInfo)
-        .filter(([key]) => !excludeLocationProperties.includes(key))
-        .map(([key, value]) => ({
-          label: getCippTranslation(key),
-          value: getCippFormatting(value, key) ?? "N/A",
-        }))
-    : [];
 
   const excludeProperties = ["CIPPLocationInfo", "CIPPParameters", "CIPPModifiedProperties"];
   const generateRawDataPropertyItems = (rawData) => {
@@ -113,7 +82,7 @@ const Page = () => {
       {logRequest.isSuccess && logData && (
         <Paper elevation={3} sx={{ p: 3 }}>
           <Typography variant="h4" gutterBottom>
-            Audit Log Details
+            {logData.Title}
           </Typography>
           <Grid container spacing={2}>
             <Grid item size={{ xs: 12, sm: 6 }}>
@@ -122,21 +91,41 @@ const Page = () => {
                 propertyItems={propertyItems}
                 isFetching={logRequest.isLoading}
                 layout="multiple"
+                showDivider={false}
+                variant="outlined"
+                actionButton={
+                  logData?.Data?.ActionUrl && logData?.Data?.ActionText ? (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<OpenInNew />}
+                      onClick={() => window.open(logData.Data.ActionUrl, "_blank")}
+                    >
+                      {logData.Data.ActionText}
+                    </Button>
+                  ) : null
+                }
               />
             </Grid>
 
-            {logData?.Data?.PotentialLocationInfo?.lat &&
-              logData?.Data?.PotentialLocationInfo?.lon && (
-                <Grid item size={{ xs: 12, sm: 6 }}>
-                  <CippGeoLocation ipAddress={lookupIp} />
-                </Grid>
-              )}
+            {lookupIp && (
+              <Grid item size={{ xs: 12, sm: 6 }}>
+                <Card variant="outlined">
+                  <CardHeader title={`Location Information for ${lookupIp}`} />
+                  <CardContent>
+                    <CippGeoLocation ipAddress={lookupIp} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <CippPropertyListCard
                 title="Audit Data"
                 propertyItems={rawDataItems}
                 isFetching={logRequest.isLoading}
                 layout="multiple"
+                showDivider={false}
+                variant="outlined"
               />
             </Grid>
           </Grid>
