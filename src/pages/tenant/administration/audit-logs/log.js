@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import { Box, Typography, Paper, CardHeader, Card, CardContent, Button } from "@mui/material";
+import { Box, Typography, Paper, CardHeader, Card, CardContent, Button, Divider } from "@mui/material";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
@@ -112,6 +112,7 @@ const Page = () => {
               <Grid item size={{ xs: 12, sm: 6 }}>
                 <Card variant="outlined">
                   <CardHeader title={`Location Information for ${lookupIp}`} />
+                  <Divider />
                   <CardContent>
                     <CippGeoLocation ipAddress={lookupIp} />
                   </CardContent>
