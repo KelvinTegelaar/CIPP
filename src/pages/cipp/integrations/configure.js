@@ -1,4 +1,4 @@
-import { Box, Button, CardContent, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Alert, Box, Button, CardContent, Stack, Tab, Tabs, Typography } from "@mui/material";
 import CippIntegrationSettings from "/src/components/CippIntegrations/CippIntegrationSettings";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
@@ -112,7 +112,11 @@ const Page = () => {
             <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
               {extension.helpText}
             </Typography>
-
+            {extension?.alertText && (
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                {extension.alertText}
+              </Alert>
+            )}
             <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
               {extension?.hideTestButton !== true && (
                 <Button
