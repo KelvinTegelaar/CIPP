@@ -81,7 +81,7 @@ const EditGroup = () => {
         });
       }
     }
-  }, [groupInfo.isSuccess]);
+  }, [groupInfo.isSuccess, router.query]);
 
   return (
     <Grid container spacing={1}>

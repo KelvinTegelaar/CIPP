@@ -74,7 +74,6 @@ const Page = () => {
       type: "GET",
       url: "/api/ExecGroupsDelete",
       data: {
-        TenantFilter: "TenantFilter",
         ID: "id",
         GroupType: "calculatedGroupType",
         DisplayName: "displayName",
@@ -106,15 +105,7 @@ const Page = () => {
           </Button>
         </>
       }
-      apiUrl="/api/ListGraphRequest"
-      apiData={{
-        Endpoint: "groups",
-        $select:
-          "id,createdDateTime,displayName,description,mail,mailEnabled,mailNickname,resourceProvisioningOptions,securityEnabled,visibility,organizationId,onPremisesSamAccountName,membershipRule,grouptypes,onPremisesSyncEnabled,resourceProvisioningOptions,userPrincipalName",
-        $expand: "members($select=userPrincipalName)",
-        $count: true,
-      }}
-      apiDataKey="Results"
+      apiUrl="/api/ListGroups"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
@@ -123,15 +114,11 @@ const Page = () => {
         "mail",
         "mailEnabled",
         "mailNickname",
-        "resourceProvisioningOptions",
-        "securityEnabled",
+        "calculatedGroupType",
         "visibility",
-        "organizationId",
         "onPremisesSamAccountName",
         "membershipRule",
-        "grouptypes",
         "onPremisesSyncEnabled",
-        "resourceProvisioningOptions",
         "userPrincipalName",
       ]}
     />
