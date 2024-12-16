@@ -3,6 +3,7 @@ import axios, { isAxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
 import { getCippError } from "../utils/get-cipp-error";
+import { useRouter } from "next/router";
 
 export function ApiGetCall(props) {
   const {
@@ -19,13 +20,20 @@ export function ApiGetCall(props) {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const MAX_RETRIES = retry;
-  const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404, 500];
+  const HTTP_STATUS_TO_NOT_RETRY = [302, 401, 403, 404, 500];
   const retryFn = (failureCount, error) => {
     let returnRetry = true;
     if (failureCount >= MAX_RETRIES) {
       returnRetry = false;
     }
+    const router = useRouter();
     if (isAxiosError(error) && HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)) {
+      if (error.response?.status === 302 && error.response?.data?.message === "Network Error") {
+        const currentUrl = router.asPath;
+        const redirectUrl = `/auth/login/aad?post_login_redirect_uri=${currentUrl}`;
+        router.push(redirectUrl);
+      }
+
       returnRetry = false;
     }
     if (returnRetry === false && toast) {
