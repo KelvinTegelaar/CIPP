@@ -11,8 +11,6 @@ import dynamic from "next/dynamic";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { Grid } from "@mui/system";
 
-const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), { ssr: false });
-
 const Page = () => {
   const router = useRouter();
   const { id } = router.query;

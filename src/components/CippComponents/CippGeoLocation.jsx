@@ -36,7 +36,7 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
           {markerProperties.map((key) => (
             <div key={key}>
               <strong>{getCippTranslation(key)}:</strong>{" "}
-              {getCippFormatting(locationInfo[key], key)}
+              {getCippFormatting(result[key], key)}
             </div>
           ))}
         </div>
@@ -63,9 +63,10 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
           <Grid item size={{ xs: 12, sm: 8 }}>
             {locationInfo && locationInfo.lat && locationInfo.lon && (
               <CippMap
-                position={[locationInfo.lat, locationInfo.lon]}
+                markers={[
+                  { position: [locationInfo.lat, locationInfo.lon], popup: markerPopupContents },
+                ]}
                 zoom={11}
-                markerPopupContents={markerPopupContents}
                 mapSx={{ height: "400px", width: "100%" }}
               />
             )}
