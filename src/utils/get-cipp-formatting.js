@@ -18,7 +18,7 @@ import { getCippRoleTranslation } from "./get-cipp-role-translation";
 import { CogIcon, ServerIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { getCippTranslation } from "./get-cipp-translation";
 
-export const getCippFormatting = (data, cellName, type) => {
+export const getCippFormatting = (data, cellName, type, canReceive) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
   // if data is a data object, return a formatted date
@@ -78,7 +78,11 @@ export const getCippFormatting = (data, cellName, type) => {
     "WhenChanged",
   ];
   if (timeAgoArray.includes(cellName)) {
-    return isText ? new Date(data).toLocaleDateString() : <CippTimeAgo data={data} type={type} />;
+    return isText && canReceive !== "both" ? (
+      new Date(data)
+    ) : (
+      <CippTimeAgo data={data} type={type} />
+    );
   }
 
   const passwordItems = ["password", "applicationsecret", "refreshtoken"];
