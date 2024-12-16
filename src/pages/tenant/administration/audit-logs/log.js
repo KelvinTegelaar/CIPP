@@ -2,7 +2,16 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import { Box, Typography, Paper, CardHeader, Card, CardContent, Button, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  CardHeader,
+  Card,
+  CardContent,
+  Button,
+  Divider,
+} from "@mui/material";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
@@ -10,6 +19,7 @@ import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { Grid } from "@mui/system";
 import { OpenInNew } from "@mui/icons-material";
+import auditLogTranslation from "/src/data/audit-log-translations.json";
 
 const Page = () => {
   const router = useRouter();
@@ -24,6 +34,14 @@ const Page = () => {
     },
     queryKey: `GetAuditLog-${id}`,
   });
+
+  const translateAuditLogValue = (key, value) => {
+    const stringValue = String(value);
+    if (auditLogTranslation[key]) {
+      return auditLogTranslation[key][stringValue] ?? stringValue;
+    }
+    return stringValue;
+  };
 
   useEffect(() => {
     if (logRequest.isSuccess) {
@@ -49,12 +67,21 @@ const Page = () => {
   const generatePropertyItems = (data) => {
     if (!data) return [];
     const properties = [
-      { label: "Timestamp", value: data.Timestamp },
+      {
+        label: "Timestamp",
+        value: getCippFormatting(data?.Data?.RawData?.CreationTime, "CreationTime"),
+      },
       { label: "Tenant", value: data.Tenant },
-      { label: "Title", value: data.Title },
-      { label: "Actions Taken", value: data.ActionsTaken },
       { label: "User", value: data.User },
-      { label: "IP Address", value: data.IPAddress },
+      { label: "IP Address", value: data?.Data?.IP },
+      {
+        label: "Actions Taken",
+        value: getCippFormatting(data?.Data?.RawData?.CIPPAction, "CIPPAction"),
+      },
+      {
+        label: "Webhook Rule",
+        value: getCippFormatting(data?.Data?.RawData?.CIPPClause, "CIPPClause"),
+      },
     ];
     return properties.map((prop) => ({
       label: prop.label,
@@ -62,14 +89,26 @@ const Page = () => {
     }));
   };
 
-  const excludeProperties = ["CIPPLocationInfo", "CIPPParameters", "CIPPModifiedProperties"];
+  const excludeProperties = [
+    "CreationTime",
+    "CIPPLocationInfo",
+    "CIPPParameters",
+    "CIPPModifiedProperties",
+    "CIPPAction",
+    "CIPPCondition",
+    "CIPPIPDetected",
+    "CIPPExtendedProperties",
+    "CIPPDeviceProperties",
+    "CIPPGeoLocation",
+    "CIPPClause",
+  ];
   const generateRawDataPropertyItems = (rawData) => {
     if (!rawData) return [];
     return Object.entries(rawData)
       .filter(([key]) => !excludeProperties.includes(key))
       .map(([key, value]) => ({
         label: getCippTranslation(key),
-        value: getCippFormatting(value, key) ?? "N/A",
+        value: getCippFormatting(translateAuditLogValue(key, value), key) ?? "N/A",
       }));
   };
 
