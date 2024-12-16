@@ -28,7 +28,7 @@ export function ApiGetCall(props) {
     }
     const router = useRouter();
     if (isAxiosError(error) && HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)) {
-      if (error.response?.status === 302 && error.response?.data?.message === "Network Error") {
+      if (error.response?.status === 302) {
         const currentUrl = router.asPath;
         const redirectUrl = `/auth/login/aad?post_login_redirect_uri=${currentUrl}`;
         router.push(redirectUrl);
