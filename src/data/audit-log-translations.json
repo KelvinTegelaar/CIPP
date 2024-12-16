@@ -8,7 +8,9 @@
     "5": "Application",
     "6": "ServicePrincipal",
     "7": "CustomPolicy",
-    "8": "SystemPolicy"
+    "8": "SystemPolicy",
+    "9": "PartnerTechnician",
+    "10": "Guest"
   },
   "AuditLogRecordType": {
     "1": "ExchangeAdmin",
