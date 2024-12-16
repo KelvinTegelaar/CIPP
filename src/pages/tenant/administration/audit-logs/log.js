@@ -11,6 +11,7 @@ import {
   CardContent,
   Button,
   Divider,
+  SvgIcon,
 } from "@mui/material";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
@@ -20,6 +21,7 @@ import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocati
 import { Grid } from "@mui/system";
 import { OpenInNew } from "@mui/icons-material";
 import auditLogTranslation from "/src/data/audit-log-translations.json";
+import { ArrowLeftIcon } from "@mui/x-date-pickers";
 
 const Page = () => {
   const router = useRouter();
@@ -36,6 +38,14 @@ const Page = () => {
   });
 
   const translateAuditLogValue = (key, value) => {
+    try {
+      value = JSON.parse(value);
+    } catch (e) {
+      // not a JSON string, continue
+    }
+    if (typeof value === "object" || Array.isArray(value)) {
+      return value;
+    }
     const stringValue = String(value);
     if (auditLogTranslation[key]) {
       return auditLogTranslation[key][stringValue] ?? stringValue;
@@ -72,7 +82,10 @@ const Page = () => {
         value: getCippFormatting(data?.Data?.RawData?.CreationTime, "CreationTime"),
       },
       { label: "Tenant", value: data.Tenant },
-      { label: "User", value: data.User },
+      {
+        label: "User",
+        value: data?.Data?.RawData?.UserKey ?? data?.Data?.RawData?.AuditRecord?.userId ?? "N/A",
+      },
       { label: "IP Address", value: data?.Data?.IP },
       {
         label: "Actions Taken",
@@ -108,7 +121,7 @@ const Page = () => {
       .filter(([key]) => !excludeProperties.includes(key))
       .map(([key, value]) => ({
         label: getCippTranslation(key),
-        value: getCippFormatting(translateAuditLogValue(key, value), key) ?? "N/A",
+        value: translateAuditLogValue(key, getCippFormatting(value, key)) ?? "N/A",
       }));
   };
 
@@ -117,9 +130,20 @@ const Page = () => {
 
   return (
     <Box sx={{ p: 3 }}>
+      <Button
+        color="inherit"
+        onClick={() => router.back()}
+        startIcon={
+          <SvgIcon fontSize="small">
+            <ArrowLeftIcon />
+          </SvgIcon>
+        }
+      >
+        Back
+      </Button>
       {logRequest.isLoading && <CippFormSkeleton layout={[1, 1, 1]} />}
       {logRequest.isSuccess && logData && (
-        <Paper elevation={3} sx={{ p: 3 }}>
+        <Paper elevation={3} sx={{ mt: 2, p: 3 }}>
           <Typography variant="h4" gutterBottom>
             {logData.Title}
           </Typography>
