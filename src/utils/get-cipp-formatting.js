@@ -267,7 +267,11 @@ export const getCippFormatting = (data, cellName, type) => {
 
   // Handle CIPPAction property
   if (cellName === "CIPPAction") {
-    var actions = JSON.parse(data);
+    try {
+      var actions = JSON.parse(data);
+    } catch (e) {
+      actions = data;
+    }
     if (!Array.isArray(actions)) {
       actions = [actions];
     }
@@ -278,13 +282,15 @@ export const getCippFormatting = (data, cellName, type) => {
         ));
   }
 
-  // Handle AuditRecord property
-  if (cellName === "AuditRecord") {
-    return isText ? (
-      data
-    ) : (
-      <CippDataTableButton data={JSON.parse(data)} tableTitle={getCippTranslation(cellName)} />
-    );
+  // if data is a json string, parse it and return a table
+  if (typeof data === "string" && (data.startsWith("{") || data.startsWith("["))) {
+    try {
+      return isText ? (
+        JSON.stringify(JSON.parse(data))
+      ) : (
+        <CippDataTableButton data={JSON.parse(data)} tableTitle={getCippTranslation(cellName)} />
+      );
+    } catch (e) {}
   }
 
   if (cellName === "key") {

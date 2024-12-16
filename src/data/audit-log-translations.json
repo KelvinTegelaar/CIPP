@@ -551,5 +551,9 @@
     "337": "CloudUpdateProfileConfig",
     "338": "CloudUpdateTenantConfig",
     "339": "CloudUpdateDeviceConfig"
+  },
+  "AzureActiveDirectoryEventType": {
+    "0": "AccountLogon",
+    "1": "AzureApplicationAuditEvent"
   }
 }
