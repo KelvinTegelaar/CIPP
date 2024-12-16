@@ -38,14 +38,10 @@ const Page = () => {
   });
 
   const translateAuditLogValue = (key, value) => {
-    try {
-      value = JSON.parse(value);
-    } catch (e) {
-      // not a JSON string, continue
-    }
     if (typeof value === "object" || Array.isArray(value)) {
       return value;
     }
+
     const stringValue = String(value);
     if (auditLogTranslation[key]) {
       return auditLogTranslation[key][stringValue] ?? stringValue;
@@ -121,7 +117,7 @@ const Page = () => {
       .filter(([key]) => !excludeProperties.includes(key))
       .map(([key, value]) => ({
         label: getCippTranslation(key),
-        value: translateAuditLogValue(key, getCippFormatting(value, key)) ?? "N/A",
+        value: getCippFormatting(translateAuditLogValue(key, value), key) ?? "N/A",
       }));
   };
 
