@@ -52,8 +52,14 @@
         "placeholder": "Enter your Sherweb Client ID"
       },
       {
+        "type": "textField",
+        "name": "Sherweb.SubscriptionKey",
+        "label": "Subscription Key",
+        "placeholder": "Enter your Sherweb Subscription Key"
+      },
+      {
         "type": "password",
-        "name": "Sherweb.clientSecret",
+        "name": "Sherweb.APIKey",
         "label": "Client Secret",
         "placeholder": "Enter your Sherweb Client Secret"
       },
