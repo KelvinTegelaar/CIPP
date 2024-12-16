@@ -155,8 +155,7 @@ const Page = () => {
       data: {
         username: "userPrincipalName",
         userid: "userPrincipalName",
-
-        DisableForwarding: true,
+        ForwardOption: "!disabled",
       },
       confirmText: "Are you sure you want to disable forwarding of this user's emails?",
       multiPost: false,
