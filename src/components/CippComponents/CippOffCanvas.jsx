@@ -22,7 +22,7 @@ export const CippOffCanvas = (props) => {
       if (extendedData?.[field] !== undefined && extendedData?.[field] !== null) {
         return {
           label: getCippTranslation(field),
-          value: getCippFormatting(extendedData[field], field, "text"),
+          value: getCippFormatting(extendedData[field], field, "text", "both"),
         };
       } else {
         return {
@@ -33,12 +33,12 @@ export const CippOffCanvas = (props) => {
     } else if (Array.isArray(value)) {
       return {
         label: getCippTranslation(field),
-        value: getCippFormatting(value, field, "array"),
+        value: getCippFormatting(value, field, "array", "both"),
       };
     } else {
       return {
         label: getCippTranslation(field),
-        value: getCippFormatting(value, field, "text"),
+        value: getCippFormatting(value, field, "text", "both"),
       };
     }
   });
