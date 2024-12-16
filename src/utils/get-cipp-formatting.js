@@ -76,6 +76,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     "Date",
     "WhenCreated",
     "WhenChanged",
+    "CreationTime",
   ];
   if (timeAgoArray.includes(cellName)) {
     return isText && canReceive !== "both" ? (
@@ -239,6 +240,15 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
     );
+  }
+
+  // Handle From address
+  if (cellName === "From") {
+    // split on ; , and create chips per email
+    const emails = data.split(/;|,/);
+    return isText
+      ? emails.join(", ")
+      : emails.map((email) => <CippCopyToClipBoard key={email} text={email} type="chip" />);
   }
 
   // Handle proxyAddresses
