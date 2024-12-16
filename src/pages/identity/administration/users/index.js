@@ -150,7 +150,7 @@ const Page = () => {
     },
     {
       label: "Disable Email Forwarding",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecEmailForward",
       data: {
         username: "userPrincipalName",
@@ -182,7 +182,7 @@ const Page = () => {
       url: "/api/ExecResetPass",
       data: {
         MustChange: true,
-        ID: "id",
+        ID: "userPrincipalName",
         displayName: "displayName",
       },
       confirmText:
@@ -195,7 +195,7 @@ const Page = () => {
       url: "/api/ExecResetPass",
       data: {
         MustChange: false,
-        ID: "id",
+        ID: "userPrincipalName",
         displayName: "displayName",
       },
       confirmText: "Are you sure you want to reset the password for this user?",
@@ -203,7 +203,7 @@ const Page = () => {
     },
     {
       label: "Revoke all user sessions",
-      type: "POST",
+      type: "GET",
       url: "/api/ExecRevokeSessions",
       data: { ID: "id", Username: "userPrincipalName" },
       confirmText: "Are you sure you want to revoke all sessions for this user?",

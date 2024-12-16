@@ -23,7 +23,7 @@ export const CippFormDomainSelector = ({
       api={{
         autoSelectFirstItem: true,
         tenantFilter: currentTenant ? currentTenant.value : selectedTenant,
-        queryKey: `ListUsers-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
+        queryKey: `listDomains-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
         url: "/api/ListGraphRequest",
         dataKey: "Results",
         labelField: (option) => `${option.id}`,
