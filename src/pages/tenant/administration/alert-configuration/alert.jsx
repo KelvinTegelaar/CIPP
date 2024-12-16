@@ -44,7 +44,6 @@ const AlertWizard = () => {
   const existingAlert = ApiGetCall({
     url: "/api/ListAlertsQueue",
     relatedQueryKeys: "ListAlertsQueue",
-    waiting: !editAlert,
   });
   const [recurrenceOptions, setRecurrenceOptions] = useState([
     { value: "30m", label: "Every 30 minutes" },
@@ -77,7 +76,7 @@ const AlertWizard = () => {
   ];
 
   useEffect(() => {
-    if (existingAlert.isSuccess) {
+    if (existingAlert.isSuccess && editAlert) {
       const alert = existingAlert?.data?.find((alert) => alert.RowKey === router.query.id);
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
@@ -119,7 +118,7 @@ const AlertWizard = () => {
         });
       }
     }
-  }, [existingAlert.isSuccess, router]);
+  }, [existingAlert.isSuccess, router, editAlert]);
 
   const [alertType, setAlertType] = useState("none");
   const [addedEvent, setAddedEvent] = useState([{ id: 1 }]); // Track added inputs
@@ -165,12 +164,15 @@ const AlertWizard = () => {
         const conditions = selectedTemplate.template.conditions || [];
 
         conditions.forEach((condition, index) => {
+          console.log(condition.Input.value);
           // Ensure form structure is in place for 0th condition
           formControl.setValue(`conditions.${index}.Property`, condition.Property || "");
           formControl.setValue(`conditions.${index}.Operator`, condition.Operator || "");
           //if Condition.Property.value is "String" then set the input value, otherwise
           formControl.setValue(
-            `conditions.${index}.Input`,
+            condition.Property.value === "String"
+              ? `conditions.${index}.Input.value`
+              : `conditions.${index}.Input`,
             condition.Property.value === "String" ? condition.Input.value : condition.Input
           );
         });
@@ -384,7 +386,7 @@ const AlertWizard = () => {
                                 >
                                   <CippFormComponent
                                     type="textField"
-                                    name={`conditions.${event.id}.Input`}
+                                    name={`conditions.${event.id}.Input.value`}
                                     formControl={formControl}
                                     label="Input"
                                   />
