@@ -60,15 +60,16 @@ const EditGroup = () => {
           groupName: group.displayName,
           groupId: group.id,
           groupType: (() => {
-            if (group.mailEnabled && group.securityEnabled) {
-              return "Mail-Enabled Security";
+            if (group.groupTypes?.includes("Unified")) {
+              return "Microsoft 365";
             }
             if (!group.mailEnabled && group.securityEnabled) {
               return "Security";
             }
-            if (group.groupTypes?.includes("Unified")) {
-              return "Microsoft 365";
+            if (group.mailEnabled && group.securityEnabled) {
+              return "Mail-Enabled Security";
             }
+
             if (
               (!group.groupTypes || group.groupTypes.length === 0) &&
               group.mailEnabled &&

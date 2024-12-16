@@ -31,7 +31,7 @@ const Page = () => {
     <>
       <CippWizardPage
         steps={steps}
-        postUrl="/api/AddGroupTemplate"
+        postUrl="/api/AddGroup"
         wizardTitle="Group Template Deployment"
       />
     </>
