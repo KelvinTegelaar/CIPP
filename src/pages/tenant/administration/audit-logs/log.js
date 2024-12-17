@@ -41,7 +41,15 @@ const Page = () => {
     if (typeof value === "object" || Array.isArray(value)) {
       return value;
     }
-
+    if (typeof value === "boolean") {
+      return value;
+    }
+    if (
+      typeof value === "string" &&
+      (value.toLowerCase() === "true" || value.toLowerCase() === "false")
+    ) {
+      return value.toLowerCase() === "true";
+    }
     const stringValue = String(value);
     if (auditLogTranslation[key]) {
       return auditLogTranslation[key][stringValue] ?? stringValue;

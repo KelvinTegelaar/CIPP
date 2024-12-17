@@ -291,7 +291,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
   if (typeof data === "string" && (data.startsWith("{") || data.startsWith("["))) {
     try {
       return isText ? (
-        JSON.stringify(JSON.parse(data))
+        data
       ) : (
         <CippDataTableButton data={JSON.parse(data)} tableTitle={getCippTranslation(cellName)} />
       );
