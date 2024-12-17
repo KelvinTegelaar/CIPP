@@ -128,7 +128,7 @@ const CippPermissionCheck = (props) => {
         }}
         CardButton={<CheckButton />}
       >
-        {executeCheck.isSuccess && (
+        {(executeCheck.isSuccess || executeCheck.isLoading) && (
           <>
             {type === "Permissions" && (
               <CippPermissionResults

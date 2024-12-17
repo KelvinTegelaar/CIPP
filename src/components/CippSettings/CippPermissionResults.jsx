@@ -16,7 +16,6 @@ export const CippPermissionResults = (props) => {
     offcanvasVisible,
     setOffcanvasVisible,
     importReport,
-    cardIcon,
     setCardIcon,
   } = props;
   const [results, setResults] = useState({});
@@ -31,8 +30,8 @@ export const CippPermissionResults = (props) => {
 
   useEffect(() => {
     if (
-      results?.Results?.MissingPermissions.length > 0 ||
-      results?.Results?.ErrorMessages.length > 0
+      results?.Results?.MissingPermissions?.length > 0 ||
+      results?.Results?.ErrorMessages?.length > 0
     ) {
       setCardIcon(<Cancel />);
     } else {
@@ -98,9 +97,8 @@ export const CippPermissionResults = (props) => {
           showDivider={false}
         />
       )}
-
       {executeCheck.isFetching ? (
-        <Skeleton variant="rectangular" height={50} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
+        <Skeleton variant="rectangular" height={100} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
       ) : (
         <>
           <List>

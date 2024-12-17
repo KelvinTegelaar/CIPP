@@ -111,7 +111,7 @@ export const CippGDAPResults = (props) => {
       )}
 
       {executeCheck.isFetching ? (
-        <Skeleton variant="rectangular" height={50} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
+        <Skeleton variant="rectangular" height={100} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
       ) : (
         <>
           <List>
