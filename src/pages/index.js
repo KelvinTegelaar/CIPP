@@ -119,11 +119,11 @@ const Page = () => {
     for (const [, standard] of Object.entries(combinedStandards)) {
       const actions = standard.action || [];
       actions?.forEach((actionObj) => {
-        if (actionObj.value === "Remediate") {
+        if (actionObj?.value === "Remediate") {
           remediateCount++;
-        } else if (actionObj.value === "Alert") {
+        } else if (actionObj?.value === "Alert") {
           alertCount++;
-        } else if (actionObj.value === "Report") {
+        } else if (actionObj?.value === "Report") {
           reportCount++;
         }
       });
