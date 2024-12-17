@@ -66,10 +66,10 @@ export const CippDataTable = (props) => {
   });
 
   useEffect(() => {
-    if (data?.length) {
+    if (Array.isArray(data) && !api?.url) {
       setUsedData(data);
     }
-  }, [data]);
+  }, [data, api?.url]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
