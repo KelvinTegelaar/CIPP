@@ -34,6 +34,13 @@
       "request": "launch",
       "cwd": "${cwd}",
       "script": ". '${cwd}\\Tools\\Start-CIPPDevEmulators.ps1'"
+    },
+    {
+      "type": "PowerShell",
+      "name": "Launch in Kitty Terminal",
+      "request": "launch",
+      "cwd": "${cwd}",
+      "script": ". '${cwd}${pathSeparator}Tools${pathSeparator}Start-CippDevEmulatorsWithKitty.ps1'"
     }
   ],
   "compounds": [
