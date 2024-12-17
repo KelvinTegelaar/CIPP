@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { PlusSmallIcon, SparklesIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
-import { SyncAlt } from "@mui/icons-material";
+import { Sync, SyncAlt } from "@mui/icons-material";
 import { CippFormComponent } from "../CippComponents/CippFormComponent";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 
@@ -191,6 +191,7 @@ const CippIntegrationSettings = ({ children }) => {
                   })}
                   creatable={false}
                   multiple={false}
+                  isFetching={mappings.isFetching}
                 />
               </Grid>
               <Grid item>
@@ -206,6 +207,19 @@ const CippIntegrationSettings = ({ children }) => {
                     <Button size="small" onClick={() => handleAutoMap()} variant="contained">
                       <SvgIcon>
                         <SparklesIcon />
+                      </SvgIcon>
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Refresh Integration Mapping">
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        mappings.refetch();
+                      }}
+                      variant="contained"
+                    >
+                      <SvgIcon>
+                        <Sync />
                       </SvgIcon>
                     </Button>
                   </Tooltip>
