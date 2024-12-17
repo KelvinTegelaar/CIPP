@@ -79,13 +79,14 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     "CreationTime",
   ];
   if (timeAgoArray.includes(cellName)) {
-    return isText && canReceive !== "both" ? (
-      new Date(data)
+    return isText && canReceive === false ? (
+      new Date(data).toLocaleString() // This runs if canReceive is false and isText is true
+    ) : isText && canReceive !== "both" ? (
+      new Date(data) // This runs if isText is true and canReceive is not "both" or false
     ) : (
       <CippTimeAgo data={data} type={type} />
     );
   }
-
   const passwordItems = ["password", "applicationsecret", "refreshtoken"];
 
   if (passwordItems.includes(cellNameLower)) {

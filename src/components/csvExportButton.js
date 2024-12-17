@@ -26,11 +26,10 @@ export const CSVExportButton = (props) => {
     const formattedData = rowData.map((row) => {
       const formattedRow = {};
       Object.keys(row).forEach((key) => {
-        formattedRow[key] = getCippFormatting(row[key], key, "text");
+        formattedRow[key] = getCippFormatting(row[key], key, "text", false);
       });
       return formattedRow;
     });
-
     const csv = generateCsv(csvConfig)(formattedData);
     csvConfig["filename"] = `${reportName}`;
     download(csvConfig)(csv);
