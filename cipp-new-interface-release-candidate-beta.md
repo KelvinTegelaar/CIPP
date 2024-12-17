@@ -62,6 +62,36 @@ By enabling the beta, your **live environment** has been switched to the new int
 3. **Monitor Known Issues**:
    * Stay updated on common quirks and fixes reported in the beta channel.
 
+
+
+***
+
+### **Known Issues and Workarounds**
+
+Below is a list of identified issues and their current status as reported in Discord. Follow up there with any questions or for further discussion on any issues.
+
+***
+
+1. **Error:** `"(intermediate value).some is not a function"`
+   * **Scenario 1: Standards Migration Dropdown Error**
+     * **Cause**: During migration, if only one **Action** was selected, it was saved as an object instead of an array.
+     * **Status**: A fix has been applied to enforce the correct format during migration. This issue should no longer occur. If you still encounter this, report it in Discord.
+   * **Scenario 2: Offboarding Wizard Dropdown Error**
+     * **Cause**: Old user defaults (e.g., saved users) conflict with the new version.
+     * **Workaround**:
+       1. Go to **Profile → Settings**.
+       2. Refresh the page, toggle any checkbox, and save.
+       3. Refresh the entire page again.
+       4. If the issue persists, **clear cookies and local storage** to reset settings.
+2. **Dashboard Error:** Partner Tenant Issues
+   * **Issue**: Selecting the **partner tenant** or viewing dashboards with all tenants causes 500 errors.
+   * **Status**: Being investigated. If you encounter this, report it in Discord.
+
+#### **General Advice**
+
+* Clear cookies and local storage to resolve lingering UI conflicts.
+* Report unresolved issues with detailed steps, screenshots, and error messages in the [**#new-ui-beta**](https://discord.com/channels/905453405936447518/1318251404846043176) Discord channel.
+
 ***
 
 ### **Thank You for Being Part of the Beta!**
