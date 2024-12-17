@@ -99,7 +99,11 @@ const CippIntegrationSettings = ({ children }) => {
       const matchingCompany = mappings.data.Companies.find(
         (company) => company.name === tenant.displayName
       );
-      if (tableData.find((item) => item.TenantId === tenant.customerId)) return;
+      if (
+        Array.isArray(tableData) &&
+        tableData?.find((item) => item.TenantId === tenant.customerId)
+      )
+        return;
       if (matchingCompany) {
         newTableData.push({
           TenantId: tenant.customerId,
@@ -109,7 +113,11 @@ const CippIntegrationSettings = ({ children }) => {
         });
       }
     });
-    setTableData([...tableData, ...newTableData]);
+    if (Array.isArray(tableData)) {
+      setTableData([...tableData, ...newTableData]);
+    } else {
+      setTableData(newTableData);
+    }
     if (extension.autoMapSyncApi) {
       automapPostCall.mutate({
         url: `/api/ExecExtensionMapping?AutoMapping=${router.query.id}`,
@@ -181,6 +189,7 @@ const CippIntegrationSettings = ({ children }) => {
                       value: company.value,
                     };
                   })}
+                  creatable={false}
                   multiple={false}
                 />
               </Grid>
