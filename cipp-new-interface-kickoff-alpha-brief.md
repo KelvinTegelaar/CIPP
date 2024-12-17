@@ -46,15 +46,6 @@ The new front-end rewrite, built with [Material UI](https://mui.com/material-ui/
 
 ***
 
-## Known Issues&#x20;
-
-1. **Tooltips and Sorting:** UI quirks like misplaced tooltips or inconsistent sorting behavior.&#x20;
-2. **Customizable Filters:** Planned for future iterations.&#x20;
-3. **AAD Login Redirect:** Temporarily disabled for easier debugging during development.&#x20;
-4. **Navigation Highlighting**: On some pages (e.g., License Report), the menu may highlight the wrong section. This is due to an ongoing update in the navigation paths.
-
-***
-
 ## **Next Steps**
 
 1. **Set Up Your Environment**:
@@ -146,15 +137,58 @@ Install the following tools:
 
 ## **Tips for Development**
 
-*   **Timeouts**: Material UI dependencies can cause timeouts. Use:
-
-    ```bash
-    yarn install --network-timeout 500000
-    ```
 * **GitHub Fork Issues**:
   * If you don’t see the `interface-rewrite` branch, ensure your fork includes it.
   * Use **`git fetch --all`** or ensure your fork is updated with Kelvin’s repo.
-* **Linux users:** Use your terminal to launch if “_Launch in Windows Terminal_” isn’t an option.
 * If you prefer GUI tools, you can use **GitHub Desktop** to manage branches and fetch remotes. Ensure you fetch all remotes to see the latest branches.
 
-We appreciate your collaboration and look forward to your feedback. Happy testing! 😊&#x20;
+## **Known Issues**
+
+* **Tooltips and Sorting**: Misplaced tooltips and inconsistent sorting behavior.
+* **Customizable Filters**: Planned for future updates.
+* **AAD Login Redirect**: Disabled for debugging.
+* **Navigation Highlighting**: Incorrect menu highlighting on some pages.
+* **"Launch in Windows Terminal" Compatibility**:
+  * **Issue**: Not compatible with **Linux** or **macOS** as it relies on Windows Terminal.
+  *   **Workaround**: Use a terminal or VSCode's integrated terminal:
+
+      ```bash
+      yarn start
+      ```
+  * **Linux**: **Kitty** terminal may work but lacks split window/tab features.
+* **Prettier Formatting Errors**:
+  * **Issue**: Conflicts with `.editorconfig`, causing formatting errors.
+  * **Solution**:
+    1. Ensure `.editorconfig` enforces:
+       * **LF** for frontend files.
+       * **CRLF** for backend scripts.
+    2.  Set Prettier as default in VSCode:
+
+        ```json
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        ```
+    3. Add `.prettierrc.json` file if missing.
+* **Dependency Install Times**:
+  *   To avoid timeouts, use:
+
+      ```bash
+      yarn install --network-timeout 500000
+      ```
+
+***
+
+#### **Tips for Linux and MacOS Users**
+
+* **Launching the Environment**:
+  *   Start frontend and API manually if unavailable:
+
+      ```bash
+      yarn start
+      ```
+  * Run API in another terminal instance.
+* **Linux-Specific Tools**:
+  * **Kitty Terminal** can assist but has limitations.
+
+***
+
+We appreciate your collaboration and look forward to your feedback. Happy testing! 😊
