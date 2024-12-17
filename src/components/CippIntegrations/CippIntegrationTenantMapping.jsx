@@ -153,7 +153,12 @@ const CippIntegrationSettings = ({ children }) => {
             >
               <Grid item xs={12} md={4}>
                 <Box sx={{ my: "auto" }}>
-                  <CippFormTenantSelector formControl={formControl} multiple={false} />
+                  <CippFormTenantSelector
+                    formControl={formControl}
+                    multiple={false}
+                    required={false}
+                    disableClearable={false}
+                  />
                 </Box>
               </Grid>
               <Grid item>

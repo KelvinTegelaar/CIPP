@@ -6,8 +6,19 @@ export const CippFormTenantSelector = ({
   allTenants = false,
   type = "multiple",
   name = "tenantFilter",
+  required = true,
+  disableClearable = true,
   ...other
 }) => {
+  const validators = () => {
+    if (required) {
+      return {
+        required: { value: true, message: "This field is required" },
+      };
+    }
+    return {};
+  };
+
   return (
     <CippFormComponent
       type="autoComplete"
@@ -22,10 +33,9 @@ export const CippFormTenantSelector = ({
         valueField: "defaultDomainName",
       }}
       multiple={type === "single" ? false : true}
-      disableClearable={true}
-      validators={{
-        required: { value: true, message: "This field is required" },
-      }}
+      disableClearable={disableClearable}
+      required={required}
+      validators={validators}
       {...other}
     />
   );
