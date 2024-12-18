@@ -216,7 +216,6 @@ const Page = () => {
         <CippStandardDialog
           dialogOpen={dialogOpen}
           handleCloseDialog={handleCloseDialog}
-          searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           categories={categories}
           filterStandards={filterStandards}
