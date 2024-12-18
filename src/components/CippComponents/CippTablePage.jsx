@@ -37,18 +37,18 @@ export const CippTablePage = (props) => {
         <Container maxWidth={false} sx={{ height: "100%" }}>
           <Stack spacing={2} sx={{ height: "100%" }}>
             {tableFilter}
-
+            {tenantInTitle && (!tenant || tenant === null) && (
+              <Alert severity="warning">
+                No tenant selected. Please select a tenant from the dropdown above.
+              </Alert>
+            )}
             <Card
               sx={{
                 display: "flex",
               }}
             >
               <Divider />
-              {tenantInTitle && (!tenant || tenant === null) && (
-                <Alert severity="warning">
-                  No tenant selected. Please select a tenant from the dropdown above.
-                </Alert>
-              )}
+
               <CippDataTable
                 queryKey={queryKey}
                 cardButton={cardButton}
