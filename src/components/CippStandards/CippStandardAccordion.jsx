@@ -10,6 +10,7 @@ import {
   Divider,
   Grid,
   Tooltip,
+  Chip,
 } from "@mui/material";
 import { ExpandMore as ExpandMoreIcon, Delete, Add, Public, TableChart } from "@mui/icons-material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -72,9 +73,9 @@ const CippStandardAccordion = ({
     const isExpanded = expanded === standardName;
     const hasAddedComponents = standard.addedComponent && standard.addedComponent.length > 0;
     const isConfigured = configuredState[standardName];
-
     const disabledFeatures = standard.disabledFeatures || {};
 
+    const selectedActions = _.get(watchedValues, `${standardName}.action`);
     const selectedTemplateName = standard.multiple
       ? _.get(watchedValues, `${standardName}.${standard.addedComponent?.[0]?.name}`)
       : "";
@@ -101,12 +102,25 @@ const CippStandardAccordion = ({
                 <Microsoft />
               )}
             </Avatar>
-            <Box>
+            <Stack>
               <Typography variant="h6">{accordionTitle}</Typography> {/* Dynamic title */}
+              {selectedActions.length > 0 && (
+                <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
+                  {selectedActions.map((action) => (
+                    <Chip
+                      label={action.label}
+                      color="info"
+                      variant="outlined"
+                      size="small"
+                      sx={{ mr: 1 }}
+                    />
+                  ))}
+                </Stack>
+              )}
               <Typography variant="body2" color="textSecondary">
                 {standard.helpText}
               </Typography>
-            </Box>
+            </Stack>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
             {standard.multiple && (
