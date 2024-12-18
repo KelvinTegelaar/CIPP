@@ -73,7 +73,7 @@ export const CippPermissionReport = (props) => {
     ];
 
     if (formData.redactCustomerData) {
-      report.Tenants.Results = report?.Tenants?.Results?.map((tenant) => {
+      report?.Tenants?.Results = report?.Tenants?.Results?.map((tenant) => {
         customerProps.forEach((prop) => {
           if (tenant[prop]) {
             if (prop === "GDAPRoles") {
@@ -93,7 +93,7 @@ export const CippPermissionReport = (props) => {
         return tenant;
       });
 
-      report.GDAP.Results?.GDAPIssues?.map((issue) => {
+      report?.GDAP?.Results?.GDAPIssues?.map((issue) => {
         customerProps.forEach((prop) => {
           if (issue[prop]) {
             issue[prop] = redactString(issue[prop]);
@@ -102,7 +102,7 @@ export const CippPermissionReport = (props) => {
         return issue;
       });
 
-      report.Permissions.Results.CPVRefreshList.map((cpv) => {
+      report?.Permissions?.Results?.CPVRefreshList?.map((cpv) => {
         customerProps.forEach((prop) => {
           if (cpv[prop]) {
             cpv[prop] = redactString(cpv[prop]);
@@ -112,7 +112,7 @@ export const CippPermissionReport = (props) => {
       });
 
       customerProps.forEach((prop) => {
-        if (report.Permissions.Results.AccessTokenDetails[prop]) {
+        if (report?.Permissions?.Results?.AccessTokenDetails?.[prop]) {
           report.Permissions.Results.AccessTokenDetails[prop] = redactString(
             report.Permissions.Results.AccessTokenDetails[prop]
           );
