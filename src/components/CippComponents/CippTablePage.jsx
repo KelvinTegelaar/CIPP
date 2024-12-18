@@ -1,4 +1,4 @@
-import { Card, Divider } from "@mui/material";
+import { Alert, Card, Divider } from "@mui/material";
 import { Box, Container, Stack } from "@mui/system";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Head from "next/head";
@@ -44,10 +44,15 @@ export const CippTablePage = (props) => {
               }}
             >
               <Divider />
+              {tenantInTitle && (!tenant || tenant === null) && (
+                <Alert severity="warning">
+                  No tenant selected. Please select a tenant from the dropdown above.
+                </Alert>
+              )}
               <CippDataTable
                 queryKey={queryKey}
                 cardButton={cardButton}
-                title={tenantInTitle ? `${title} - ${tenant}` : title}
+                title={tenantInTitle && tenant !== null ? `${title} - ${tenant}` : title}
                 noDataButton={noDataButton}
                 actions={actions}
                 simple={false}
