@@ -30,7 +30,7 @@ Performance issues in CIPP are not expected. If your performance appears impacte
 
 For more information, refer to the [maintenance instructions](https://docs.cipp.app/user-documentation/cipp/settings/maintenance).
 
-If you are self-hosted, you will also want to ensure you have configured [Run From Package](../setup/self-hosting-setup/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
+If you are self-hosted, you will also want to ensure you have configured [Run From Package](../setup/self-hosting-guide/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
 
 </details>
 
