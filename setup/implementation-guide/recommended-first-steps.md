@@ -4,7 +4,7 @@ description: First things to check out after setting up CIPP.
 
 # Recommended First Steps
 
-Welcome to the post-setup implementation guide for SIP! In this guide, you will learn how to navigate and configure various settings within the SIP application. Let's discover some of the key features of SIP and see how to use them.
+Welcome to the post-setup implementation guide for CIPP! In this guide, you will learn how to navigate and configure various settings within the CIPP application. Let's discover some of the key features of CIPP and see how to use them.
 
 {% embed url="https://app.guidde.com/share/playbooks/sYvkWBL8sy6KKrrv6AmNrC?origin=IEPB08VSavefFaCa9OSp3Y87aGu1" %}
 
@@ -16,7 +16,7 @@ Using the Tenant Selector at the top you can switch tenants at any time. This al
 
 ## Personalization
 
-Let's setup some personal things first. The user settings section has your personal preferences and profile information. Let's start by setting up SIP the way you like it.
+Let's setup some personal things first. The user settings section has your personal preferences and profile information. Let's start by setting up CIPP the way you like it.
 
 ![Click 'User Settings'](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FsYvkWBL8sy6KKrrv6AmNrC%2FrCnjEe6XLK5JA4R5C8fpEB_doc.png?alt=media\&token=bf698214-ddbd-4358-9331-88bac31e189f)
 
@@ -122,7 +122,7 @@ Let's look at some more of the options we have. Most tables in CIPP have a three
 
 ![Click here](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FsYvkWBL8sy6KKrrv6AmNrC%2Fff1TeQR2KybA3868dLgmeA_doc.png?alt=media\&token=99da833b-2699-4cc8-98dd-166538c0e05a)
 
-For users, we have a lot of actions we can take. We could reset passwords or even add them to groups. Let's not bother our users and check out some other parts of SIP for now.
+For users, we have a lot of actions we can take. We could reset passwords or even add them to groups. Let's not bother our users and check out some other parts of CIPP for now.
 
 ![Check out the actions](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FsYvkWBL8sy6KKrrv6AmNrC%2F3nJgtXWeq6PQnNnvv5mUSj_doc.png?alt=media\&token=f7528712-6f8f-4255-86ae-d0a48b89c695)
 
