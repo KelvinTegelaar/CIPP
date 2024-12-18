@@ -150,7 +150,3 @@ Ready to simplify your CIPP setup and take full advantage of its features?
 👉 [**Sign Up for CIPP Onboarding**](https://go.cyberdrain.com/onboarding)
 
 If you have questions or need additional assistance before your session, reach out to our team—we’re here to help!
-
-***
-
-This version enhances clarity, ensures actionable preparation, and adds a professional flow that emphasizes **expectations** and **next steps**. Let me know if any additional refinements are needed! 🚀
