@@ -65,7 +65,7 @@ const ListClassicAlerts = () => {
                 allTenants: true,
                 helpContext: 'https://google.com',
               }}
-              title="Alerts List"
+              title="Alert Configuration"
               titleButton={
                 <TitleButton
                   key="add-user"

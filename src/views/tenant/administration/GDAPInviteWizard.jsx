@@ -28,7 +28,7 @@ const Error = ({ name }) => (
     render={({ meta: { touched, error } }) =>
       touched && error ? (
         <CCallout color="danger">
-          <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
+          <FontAwesomeIcon icon={faExclamationTriangle} color="danger" className="me-2" />
           {error}
         </CCallout>
       ) : null
@@ -40,7 +40,33 @@ Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
 
-const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
+const requiredArray = (value) => {
+  if (value && value.length !== 0) {
+    /// group each item in value by roleDefinitionId and select Role name where count is greater than 1
+    const duplicateRoles = value
+      .map((item) => item.roleDefinitionId)
+      .filter((item, index, self) => index !== self.indexOf(item))
+
+    if (duplicateRoles.length > 0) {
+      var duplicates = value.filter((item) => duplicateRoles.includes(item.roleDefinitionId))
+      /// get unique list of duplicate roles
+
+      duplicates = duplicates
+        .filter(
+          (role, index, self) =>
+            index === self.findIndex((t) => t.roleDefinitionId === role.roleDefinitionId),
+        )
+        .map((role) => role.RoleName)
+      return `Duplicate GDAP Roles selected, ensure there is only one group mapping for the listed roles to continue: ${duplicates.join(
+        ', ',
+      )}`
+    } else {
+      return undefined
+    }
+  } else {
+    return 'You must select at least one GDAP Role'
+  }
+}
 
 const GDAPInviteWizard = () => {
   const defaultRolesArray = [

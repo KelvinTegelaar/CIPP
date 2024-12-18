@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPage } from 'src/components/layout'
 import { ModalService, CippCodeOffCanvas } from 'src/components/utilities'
+import { TitleButton } from 'src/components/buttons'
 
 //todo: expandable with RAWJson property.
 
@@ -87,6 +88,11 @@ const AutopilotListTemplates = () => {
       <CCard className="content-card">
         <CCardHeader className="d-flex justify-content-between align-items-center">
           <CCardTitle>Results</CCardTitle>
+          <TitleButton
+            key="template-lib"
+            href="/cipp/template-library"
+            title="Add Template Library"
+          />
         </CCardHeader>
         <CCardBody>
           {getResults.isFetching && (

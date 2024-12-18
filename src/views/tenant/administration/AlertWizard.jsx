@@ -21,6 +21,7 @@ import auditLogSchema from 'src/data/AuditLogSchema.json'
 import auditLogTemplates from 'src/data/AuditLogTemplates.json'
 import Skeleton from 'react-loading-skeleton'
 import { required } from 'src/validators'
+import HtmlParser from 'react-html-parser'
 
 const AlertWizard = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -109,6 +110,18 @@ const AlertWizard = () => {
         }
       }
       return updatedRecurrenceOptions
+    }
+  }
+
+  const getScriptDescription = () => {
+    const values = currentFormState?.values
+    if (values) {
+      const command = values.command?.value
+      if (command?.description) {
+        return HtmlParser(command.description)
+      } else {
+        return null
+      }
     }
   }
 
@@ -368,6 +381,16 @@ const AlertWizard = () => {
                       render={({ handleSubmit, submitting, values }) => {
                         return (
                           <CForm id="alertForm" onSubmit={handleSubmit}>
+                            {getScriptDescription() && (
+                              <CRow className="mb-3">
+                                <CCol>
+                                  <CCallout color="info">
+                                    <FontAwesomeIcon icon="info-circle" className="me-2" />
+                                    {getScriptDescription()}
+                                  </CCallout>
+                                </CCol>
+                              </CRow>
+                            )}
                             <CRow className="mb-3">
                               <CCol>
                                 <RFFSelectSearch
@@ -382,6 +405,7 @@ const AlertWizard = () => {
                                 />
                               </CCol>
                             </CRow>
+
                             <Condition when="command.value.requiresInput" is={true}>
                               <CRow className="mb-3">
                                 <CCol>

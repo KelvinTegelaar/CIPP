@@ -286,7 +286,7 @@ const Setup = () => {
                 type="text"
                 name="TenantID"
                 label="Tenant ID"
-                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com. Leave blank to retain a previous key if this exists."
+                placeholder="Enter the Tenant ID. e.g. 1111-1111-1111-1111-11111. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>

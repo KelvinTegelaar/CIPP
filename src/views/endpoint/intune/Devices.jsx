@@ -283,6 +283,44 @@ const DevicesList = () => {
         path: '/api/ListDevices',
         reportName: `${tenant?.defaultDomainName}-Device-List`,
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          keyField: 'id',
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Sync Device',
+              modal: true,
+              modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=!id&Action=syncDevice`,
+              modalMessage: 'Are you sure you want to Sync these device(s)?',
+            },
+            {
+              label: 'Reboot Device(s)',
+              modal: true,
+              modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=!id&Action=rebootNow`,
+              modalMessage: 'Are you sure you want to reboot these device(s)?',
+            },
+            {
+              label: 'Update Windows Defender',
+              modal: true,
+              modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=!id&Action=windowsDefenderUpdateSignatures`,
+              modalMessage:
+                'Are you sure you want to update the Windows Defender signatures for these device(s)?',
+            },
+            {
+              label: 'Rotate Local Admin Password',
+              modal: true,
+              modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=!id&Action=RotateLocalAdminPassword`,
+              modalMessage: 'Are you sure you want to rotate the password for these devices(s)?',
+            },
+            {
+              label: 'Rotate Bitlocker Keys',
+              modal: true,
+              modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=!id&Action=rotateBitLockerKeys`,
+              modalMessage:
+                'Are you sure you want to rotate the Bitlocker Keys for these device(s)?',
+            },
+          ],
+        },
       }}
     />
   )
