@@ -40,7 +40,7 @@ If you are self-hosted, you will also want to ensure you have configured [Run Fr
 
 To add Conditional Access to CIPP, follow the below steps:
 
-1. Go to your [Conditional Access Policies](https://portal.azure.com/#blade/Microsoft\_AAD\_IAM/ConditionalAccessBlade/Policies)
+1. Go to your [Conditional Access Policies](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ConditionalAccessBlade/Policies)
 2. Select which users to apply the policy to, default suggestion is _"All Users"_
 3. Select **Azure Static Web Apps** as the included app under "Cloud Apps or actions"
 4. Configure any condition you want. For example Trusted Locations, specific IPs, specific platforms.
@@ -93,7 +93,7 @@ To ensure full functionality of CIPP, follow these steps to add the necessary AP
 
 1. **Review the** [**required permissions**](../setup/installation/permissions.md) **for the Secure Application Model registration:**
    * Pay attention to the hint boxes on the page, which explain how to find APIs not listed under Graph.
-2. **Add any missing permissions in the** [**App Registrations**](https://portal.azure.com/#blade/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/RegisteredApps) **section of your Azure Portal.**
+2. **Add any missing permissions in the** [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) **section of your Azure Portal.**
    * Some permissions may appear duplicated in both Delegated and Application permissions tables. This is intentional; add both sets of permissions.
    * Some permissions come from other APIs besides Microsoft Graph. These are indicated by names in brackets (e.g., (WindowsDefenderATP)).
    * To add these permissions, go to "APIs my organization uses" instead of "Microsoft Graph." Look for the exact name in brackets to find and add the correct resource.
@@ -205,7 +205,7 @@ If you're experiencing issues with installation please report these in `#cipp-co
 
 If your Azure Tenant requires admin approval for user apps, add consent by following the below steps:
 
-1. Go to [Azure Enterprise Applications](https://portal.azure.com/#blade/Microsoft\_AAD\_IAM/StartboardApplicationsMenuBlade/AllApps)
+1. Go to [Azure Enterprise Applications](https://portal.azure.com/#blade/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/AllApps)
 2. Find _Azure Static Websites_
 3. Grant Admin Consent for all
 
@@ -310,5 +310,21 @@ For more details, refer to the [Lighthouse sign-up guide](https://learn.microsof
 **Q: Can I apply standards immediately instead of waiting for the cron job?**
 
 **A:** Yes, you can apply standards immediately by clicking the "Run Now" buttons located in the top right corner of the interface. This action bypasses the scheduled cron job and applies the standards right away.
+
+</details>
+
+<details>
+
+<summary><strong>Does editing the tenant display name in CIPP only affect what is shown in CIPP?</strong></summary>
+
+No, CIPP reflects the tenant name set in the Microsoft Partner Center. When a tenant is added to CIPP, its name is pulled from the Partner Center once. If the name changes in the Partner Center, CIPP does not automatically update it.
+
+To refresh the tenant name in CIPP:
+
+1. Go to **Application Settings > Tenant**.
+2. Select the tenant and delete it.
+3. Clear the tenant cache and wait for the system to refresh the data from the Partner Center.
+
+This ensures the display name in CIPP matches the current name in the Partner Center.
 
 </details>
