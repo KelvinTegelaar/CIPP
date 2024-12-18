@@ -16,7 +16,8 @@ import {
   IconButton,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { debounce } from "lodash";
 
 const CippStandardDialog = ({
   dialogOpen,
@@ -40,6 +41,13 @@ const CippStandardDialog = ({
     }, 100);
   };
 
+  const handleSearchQueryChange = useCallback(
+    debounce((query) => {
+      setSearchQuery(query);
+    }, 50),
+    []
+  );
+
   return (
     <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl">
       <DialogTitle>Select a Standard to Add</DialogTitle>
@@ -49,8 +57,7 @@ const CippStandardDialog = ({
           variant="outlined"
           fullWidth
           sx={{ mb: 3, mt: 3 }}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+          onChange={(e) => handleSearchQueryChange(e.target.value.toLowerCase())}
         />
         <Grid container spacing={3}>
           {Object.keys(categories).map((category) =>

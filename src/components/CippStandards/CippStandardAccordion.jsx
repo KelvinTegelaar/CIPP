@@ -104,7 +104,7 @@ const CippStandardAccordion = ({
             </Avatar>
             <Stack>
               <Typography variant="h6">{accordionTitle}</Typography> {/* Dynamic title */}
-              {selectedActions.length > 0 && (
+              {selectedActions && selectedActions?.length > 0 && (
                 <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
                   {selectedActions.map((action) => (
                     <Chip
