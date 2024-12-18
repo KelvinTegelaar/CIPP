@@ -9,14 +9,10 @@
 {% hint style="danger" %}
 ## When setting up your Service Account, remember:
 
-
-
 ## Administration Requirements
 
 1. **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
 2. **Must be added to the AdminAgents group.** This group is required for connection to the Microsoft Partner API.
-
-
 
 ## GDAP Group Requirements
 
@@ -24,8 +20,6 @@
    1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](../../setup/gdap/recommended-roles.md "mention")
 2. **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality.
    1. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
-
-
 
 ## Multi-factor Authentication
 
