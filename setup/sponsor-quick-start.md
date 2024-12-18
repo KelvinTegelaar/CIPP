@@ -12,7 +12,7 @@ If you've started the sponsorship process and are ready to enhance your manageme
 
 ## **Initial Sponsorship Actions**
 
-1. **Subscription Activation**: Start by signing up for the $99 subscription using your GitHub account on the  [GitHub Sponsorship](https://github.com/sponsors/KelvinTegelaar/sponsorships?tier\_id=101398) page.
+1. **Subscription Activation**: Start by signing up for the $99 subscription using your GitHub account on the [GitHub Sponsorship](https://github.com/sponsors/KelvinTegelaar/sponsorships?tier_id=101398) page.
 2. **Welcome Email**: Upon subscription, you will receive an email with detailed instructions to kickstart your deployment. This email will guide you to the [CIPP management portal ](https://management.cipp.app)for deployment steps.
 
 ## Deployment & Service Account Creation
@@ -31,5 +31,5 @@ If you've started the sponsorship process and are ready to enhance your manageme
 8. **Establish New Relationships:** If you need to establish new GDAP relationships for new clients, use the [GDAP Invite Wizard](gdap/gdap-invite-wizard.md) to generate invites. Once you have completed the invite process, continue the onboarding process and follow up by [consenting within the CIPP app.](installation/adding-tenants-and-consenting-the-cipp-sam-application.md#manual-steps)
 
 {% hint style="info" %}
-If you are unsure about whether your clients environments are GDAP ready, or need more information about the process, continue to the [Creating GDAP relationships](installation/creating-the-cipp-service-account-gdap-migration-required.md) page for more granular details & next steps.
+If you are unsure about whether your clients environments are GDAP ready, or need more information about the process, continue to the [Creating GDAP relationships](gdap/creating-the-cipp-service-account-gdap-migration-required.md) page for more granular details & next steps.
 {% endhint %}

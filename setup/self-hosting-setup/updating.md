@@ -1,9 +1,8 @@
 ---
 description: How to update CIPP when new versions are released.
-hidden: true
 ---
 
-# Updating
+# Updating Versions
 
 {% hint style="warning" %}
 If you choose to sponsor and use the CyberDrain hosted version, updates are performed automatically within 48 hours of release.

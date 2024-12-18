@@ -5,7 +5,7 @@ description: How to install CIPP
 # Installation
 
 {% hint style="info" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to our [Sponsor Quick Start](broken-reference) guide for further direction.
+If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to our [Sponsor Quick Start](../installation/broken-reference/) guide for further direction.
 {% endhint %}
 
 After you have completed the prerequisites in the [Prerequisites](https://docs.cipp.app/setup/installation/index) section, select the button below to run the automated setup.
@@ -30,8 +30,4 @@ Azure Static Web Apps (SWA) is global by default (it picks the data center close
 
 To work around this use the alternative installation button below. This deploys the Static Web App in the _Central US_ region however the SWA gets served from your nearest data center anyway. The other parts of CIPP get installed in the region you choose so you shouldn't experience any latency.
 
-[![](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate\_regionoptions.json)
-
-{% hint style="warning" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
-{% endhint %}
+[![](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate_regionoptions.json)

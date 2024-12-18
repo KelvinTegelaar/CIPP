@@ -30,7 +30,7 @@ Performance issues in CIPP are not expected. If your performance appears impacte
 
 For more information, refer to the [maintenance instructions](https://docs.cipp.app/user-documentation/cipp/settings/maintenance).
 
-If you are self-hosted, you will also want to ensure you have configured [Run From Package](../setup/installation/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
+If you are self-hosted, you will also want to ensure you have configured [Run From Package](../setup/self-hosting-setup/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
 
 </details>
 
@@ -326,5 +326,26 @@ To refresh the tenant name in CIPP:
 3. Clear the tenant cache and wait for the system to refresh the data from the Partner Center.
 
 This ensures the display name in CIPP matches the current name in the Partner Center.
+
+</details>
+
+<details>
+
+<summary>When trying to onboarding a GDAP relationship, I received an error that only x amount of groups were found, or that the group is not assigned to a user. What does this mean?</summary>
+
+This error can mean two things;
+
+* You migrated using different tools, such as Microsoft Lighthouse.
+* You didn't assign the groups to the user after migrating.
+
+Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](../setup/installation/samwizard.md#authorization-best-practices-for-cipp).
+
+</details>
+
+<details>
+
+<summary>I've already setup my GDAP relationships, and given them access to a Global Administrator role. Can I still auto-extend these after their expiration?</summary>
+
+Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years.
 
 </details>

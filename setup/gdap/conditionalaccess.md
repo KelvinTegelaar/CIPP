@@ -1,6 +1,5 @@
 ---
 description: Setup your Conditional Access policies for CIPP.
-hidden: true
 ---
 
 # Conditional Access best practices

@@ -1,7 +1,3 @@
----
-hidden: true
----
-
 # Creating the CIPP Service Account
 
 ## Setup Video for the CIPP Service Account
@@ -15,10 +11,10 @@ hidden: true
 
 * **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
 * **Must be added to the AdminAgents group.** This group is required for connection to the Microsoft Partner API.
-* Must have **Microsoft** multi-factor authentication setup prior to being ready for [executing the SAM Wizard](executing-the-sam-setup-wizard.md) either via [Conditional Access](conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
+* Must have **Microsoft** multi-factor authentication setup prior to being ready for [executing the SAM Wizard](../installation/executing-the-sam-setup-wizard.md) either via [Conditional Access](../installation/conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
 * **You may not use any other authentication provider other than Microsoft for this account.** Duo or other providers will not work. See the [Supported MFA section](https://learn.microsoft.com/en-us/partner-center/partner-security-requirements-mandating-mfa#supported-mfa-options) of Microsoft's partner tenant security guidelines for further details.
 * **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
-* **Must be added to your GDAP Groups.** If you're going through the invite process in CIPP, these will be created for you. If you did the migration previously through CIPP, these would start with `M365 GDAP`.  These groups are **not roles in your own tenant.** These must be the **GDAP assigned** **groups.** For the latest, check the [recommended-roles.md](../gdap/recommended-roles.md "mention")
+* **Must be added to your GDAP Groups.** If you're going through the invite process in CIPP, these will be created for you. If you did the migration previously through CIPP, these would start with `M365 GDAP`.  These groups are **not roles in your own tenant.** These must be the **GDAP assigned** **groups.** For the latest, check the [recommended-roles.md](recommended-roles.md "mention")
 {% endhint %}
 
 ## Setup Walkthrough for the CIPP Service Account
@@ -63,7 +59,7 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 
 9. Select your GDAP groups
 
-If you have already migrated to GDAP  you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`, For the latest required GDAP roles check our [recommended-roles.md](../gdap/recommended-roles.md "mention") page.
+If you have already migrated to GDAP  you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`, For the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FohuBSMhxAWuhe35TnuLP9o_doc.png?alt=media\&token=fcdc99db-ea70-46bb-8276-1a21d659948e\&time=Fri%20Jul%2026%202024%2021:58:00%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 

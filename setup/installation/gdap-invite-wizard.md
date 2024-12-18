@@ -1,8 +1,4 @@
----
-hidden: true
----
-
-# GDAP Invite Wizard
+# Invite Wizard
 
 ## Overview
 
@@ -23,7 +19,7 @@ The GDAP Invite Wizard simplifies setting up GDAP relationships with your client
 Select which roles you want to add to the GDAP relationship from the mapped GDAP Roles.
 
 {% hint style="info" %}
-**CIPP Recommended Roles**: Click on `Use CIPP Recommended Roles and Settings` to automatically configure roles. **This option will create 12 new groups in your Azure AD if they do not exist and add the CIPP user to them.** For more information on which roles will have groups created for them, you can check out the [Recommended Roles](recommended-roles.md) page.
+**CIPP Recommended Roles**: Click on `Use CIPP Recommended Roles and Settings` to automatically configure roles. **This option will create 12 new groups in your Azure AD if they do not exist and add the CIPP user to them.** For more information on which roles will have groups created for them, you can check out the [Recommended Roles](../gdap/recommended-roles.md) page.
 {% endhint %}
 
 ### **Step 2: Invite Options**
