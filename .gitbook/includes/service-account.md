@@ -3,7 +3,7 @@ title: Service Account
 ---
 
 {% hint style="danger" %}
-## When setting up your Service Account, it's important to remember:
+## When setting up your Service Account, remember:
 
 
 
