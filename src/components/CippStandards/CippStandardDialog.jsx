@@ -22,7 +22,6 @@ import { debounce } from "lodash";
 const CippStandardDialog = ({
   dialogOpen,
   handleCloseDialog,
-  searchQuery,
   setSearchQuery,
   categories,
   filterStandards,
@@ -54,7 +53,6 @@ const CippStandardDialog = ({
       <DialogContent sx={{ backgroundColor: "background.default" }}>
         <TextField
           label="Filter Standards"
-          variant="outlined"
           fullWidth
           sx={{ mb: 3, mt: 3 }}
           onChange={(e) => handleSearchQueryChange(e.target.value.toLowerCase())}
