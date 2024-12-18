@@ -54,7 +54,7 @@ export const CIPPTableToptoolbar = ({
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
 
-  const pageName = router.asPath.split("/").slice(1).join("/");
+  const pageName = router.pathname.split("/").slice(1).join("/");
 
   //useEffect to set the column visibility to the preferred columns if they exist
   useEffect(() => {
@@ -75,8 +75,8 @@ export const CIPPTableToptoolbar = ({
   };
 
   const resetToPreferedVisibility = () => {
-    if (settings?.columnDefaults[pageName]) {
-      setColumnVisibility(settings?.columnDefaults[pageName]);
+    if (settings?.columnDefaults?.[pageName]) {
+      setColumnVisibility(settings?.columnDefaults?.[pageName]);
     }
   };
 

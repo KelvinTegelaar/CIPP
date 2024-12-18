@@ -41,7 +41,14 @@ const Page = () => {
     "portal_security",
     "portal_compliance",
   ];
-  return <CippTablePage title={pageTitle} simpleColumns={simpleColumns} data={tenantData.data} />;
+  return (
+    <CippTablePage
+      title={pageTitle}
+      tenantInTitle={false}
+      simpleColumns={simpleColumns}
+      data={tenantData.data}
+    />
+  );
 };
 
 // Adding the layout for Dashboard

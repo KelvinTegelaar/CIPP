@@ -5,6 +5,7 @@ import {
   LaptopWindows,
   MailOutline,
   Shield,
+  Description,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
 import { Box } from "@mui/system";
@@ -41,6 +42,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     portal_intune: LaptopWindows,
     portal_security: Shield,
     portal_compliance: CompassCalibration,
+    portal_sharepoint: Description,
   };
 
   //if the cellName starts with portal_, return text, or a link with an icon

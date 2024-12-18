@@ -103,6 +103,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/listStandardTemplates"
+      tenantInTitle={false}
       cardButton={
         <Button component={Link} href="template">
           Add Template
