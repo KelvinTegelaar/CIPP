@@ -62,7 +62,6 @@
     * [Sign-in Report](user-documentation/identity/reports/signin-report.md)
     * [AAD Connect Report](user-documentation/identity/reports/azure-ad-connect-report.md)
     * [Risk Detections](user-documentation/identity/reports/risk-detections.md)
-  * [Contributing to the Documentation](user-documentation/identity/contributing-to-the-documentation.md)
 * [Tenant Administration](user-documentation/tenant/README.md)
   * [Administration](user-documentation/tenant/administration/README.md)
     * [Tenants](user-documentation/tenant/administration/tenants.md)
@@ -241,6 +240,7 @@
   * [Project Structure](dev-documentation/cipp-dev-guide/project-structure.md)
   * [Development Tips](dev-documentation/cipp-dev-guide/development-tips.md)
 * [Contributing to the Code](dev-documentation/contributing-to-the-code.md)
+* [Contributing to the Documentation](dev-documentation/contributing-to-the-documentation.md)
 
 ## ⚙️ API Documentation
 
