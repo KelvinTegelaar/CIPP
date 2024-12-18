@@ -114,7 +114,7 @@ The Add User has the ability to be form filled via URL query strings. This table
 
 #### AutoTask LiveLink
 
-The LiveLink for Autotask can be found in the AXN store. If you want to create your own LiveLink you can use the QueryString below.
+If you want to create your own LiveLink you can use the QueryString below.
 
 ```
 ?city=<CITY>&country=<COUNTRY>&customerId=<UDF-TenantId(tblCustomers)>&primDomain=<ACCOUNTWEBSITEADDRESS>&usageLocation=NL&streetAddress=<ACCOUNTADDRESS1>&companyName=<ACCOUNTNAME>&businessPhones=<ACCOUNTPHONE>&postalCode=<ACCOUNTPOSTALCODE>&givenName=<CONTACTFIRSTNAME>&surname=<CONTACTLASTNAME>
