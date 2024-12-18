@@ -18,7 +18,7 @@ If your installation fails, you must delete the resource group and try again.
 
 [![](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate.json)
 
-### Deploy to an another region
+### Deploy to another region
 
 Azure Static Web Apps (SWA) is global by default (it picks the data center closest to you) however some regions don't support deployment. Regions that support SWA deployment at the moment are:
 
