@@ -11,6 +11,3 @@ The List Teams page lists all the teams along with name, description and an over
 | Visibility    | Whether the team is public or private. |
 | Mail Nickname | The mail nickname for the team.        |
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

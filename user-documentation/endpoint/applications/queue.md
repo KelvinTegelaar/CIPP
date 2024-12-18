@@ -15,6 +15,3 @@ You can view a list of all applications queued for deployment to your tenants, a
 | Install Command    | The command to install the application.    |
 | Assigned to Groups | List the groups assignments for the app.   |
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

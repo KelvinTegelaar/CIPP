@@ -14,6 +14,3 @@ The following actions will terminate all delegated access to the customer tenant
 * Terminate all active GDAP relationships (will send email to tenant admins and contacts).
 * Terminate contract relationship (reseller, etc).
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

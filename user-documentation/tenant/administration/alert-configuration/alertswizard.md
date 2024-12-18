@@ -91,6 +91,3 @@ You might want to be alerted when a particular account logs into one of your ten
 * Enter the username to test for across all tenants i.e. mylovelybreakglassaccount@\* (Note the \* after the @ to match all domains)
 * Choose the action(s) you want and save the alert.
 
-
-
-{% include "../../../../.gitbook/includes/feature-request.md" %}

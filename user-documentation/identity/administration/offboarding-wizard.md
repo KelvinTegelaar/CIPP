@@ -40,6 +40,3 @@ The Offboarding Wizard offers a range of tasks that can be performed during the 
 | Keep a copy of the forwarded mail in the source mailbox        | Keeps a copy of the forwarded mail in the offboarded user's mailbox                  |
 | Delete User                                                    | Deletes the user from the tenant                                                     |
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

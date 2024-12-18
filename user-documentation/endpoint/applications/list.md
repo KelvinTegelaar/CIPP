@@ -34,6 +34,3 @@ You can assign the application to All Users / All Devices from the more button.
 * Assign Globally (All Users / All Devices)
 * Delete Application
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

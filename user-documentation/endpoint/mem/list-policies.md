@@ -21,6 +21,3 @@ This page lists all the configuration policies on the selected account and provi
 * Assign Globally (All Users / All Devices)
 * Delete Policy
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

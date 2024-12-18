@@ -39,6 +39,3 @@ For the latest version of this documentation you can check out Gradient's docume
 3. Review and Press Finish
 4. Navigate back to CIPP and click Force Sync to import usage
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

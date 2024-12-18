@@ -8,6 +8,3 @@ The Graph Explorer allows you to generate reports using the Graph API easily; in
 
 You can run any of the 10 default reports, or enter your own URLs to generate a report. This allows you to customize the data to your liking
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

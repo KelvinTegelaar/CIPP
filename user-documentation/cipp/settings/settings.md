@@ -39,6 +39,3 @@ You can switch providers to either Google, Cloudflare or Quad9 for your domain a
 
 You can get the URLs to access backend features directly in the Azure AD portal from the Security tab.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

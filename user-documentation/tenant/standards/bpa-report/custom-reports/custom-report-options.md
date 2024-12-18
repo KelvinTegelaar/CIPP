@@ -176,5 +176,3 @@ Here’s a complete example combining all components:
 ```
 
 This structure ensures clear, actionable insights while offering flexibility for customization. Let me know if you'd like further explanation or a specific example tailored to your needs!
-
-{% include "../../../../../.gitbook/includes/feature-request.md" %}

@@ -18,6 +18,3 @@ This page lists all the profiles that exist on the selected tenant, with a brief
 
 * View JSON - _Show all the options and their selected settings, in JSON format._
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

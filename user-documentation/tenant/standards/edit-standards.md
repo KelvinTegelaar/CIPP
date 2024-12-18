@@ -41,5 +41,3 @@ Standards aren’t applied by default after initial setup. Admins must configure
 
 
     ***
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

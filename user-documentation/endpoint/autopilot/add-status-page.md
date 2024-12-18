@@ -16,6 +16,3 @@ This page provides the ability for you to edit/override the default Enrollment S
 * Reset
 * Let users use Device if Setup Fails
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -14,6 +14,3 @@ This page lists all the rooms that are available in the tenant.
 
 * Edit room
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

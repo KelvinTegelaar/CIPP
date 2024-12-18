@@ -18,6 +18,3 @@ To work around this you can apply the policy to "AllTenants" and have it reappli
 
 You can then decide whether to assign the policy to all users, all devices or both. You can also just create the policy without applying it.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

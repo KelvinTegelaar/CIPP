@@ -36,6 +36,3 @@ If an expected action is not logged, it might indicate a failure that occurred b
    * **Severity:** Indicates the severity level of the log entry. Options include: `debug`, `info`, `warn`, `error`, and `critical`.
    * **Data:** Provides a link to any associated data, if available.
 
-
-
-{% include "../../.gitbook/includes/feature-request.md" %}

@@ -10,5 +10,3 @@ Each invite has a direct link to start the [CIPP tenant onboarding](../administr
 
 
 
-{% include "../../../.gitbook/includes/feature-request.md" %}
-

@@ -85,6 +85,3 @@ The Tenants page also provides export and filter functionalities:
 * **Export:** Download a CSV file of the tenant table for offline use or analysis.
 * **Filter:** Use the 'Filter' dropdown to display tenants based on whether they are excluded or included.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

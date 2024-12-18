@@ -8,5 +8,3 @@ To create new mappings, click the `Map GDAP Roles` button.
 
 * Map GDAP Roles
 * Delete Mapping
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

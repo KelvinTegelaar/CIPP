@@ -35,6 +35,3 @@ To get the Ticket Type ID, follow these steps:
 
 Example: https://{halo instance url}/config/tickets/tickettype?id=**1**
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

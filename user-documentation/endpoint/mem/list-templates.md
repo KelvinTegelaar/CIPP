@@ -19,6 +19,3 @@ This page gives you the ability to view all configured templates, in addition to
 * View Template
 * Delete Template
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

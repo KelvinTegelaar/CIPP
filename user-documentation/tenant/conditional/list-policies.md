@@ -41,6 +41,3 @@ Under the three dots for Conditional Access policies you'll find these actions:
 
 Creating a template includes all properties of the conditional policy templated; Inclusions and exclusions are translated and stored in CIPP for redeployment. When redeploying the template on any tenant every setting is included, such as Conditional Access Named locations, Authentication strengths, and any other setting.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

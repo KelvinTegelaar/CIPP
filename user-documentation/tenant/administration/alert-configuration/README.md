@@ -7,6 +7,3 @@ This page displays all current configured Audit Log and Scripted Alerts for CIPP
 1. Check the box next to the rule(s) you would like to delete.
 2. Click Actions > Delete Alert
 
-
-
-{% include "../../../../.gitbook/includes/feature-request.md" %}

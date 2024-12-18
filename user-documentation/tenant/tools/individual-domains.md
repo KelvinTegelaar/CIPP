@@ -34,6 +34,3 @@ Use this to run the following tests on your domain and an optional list of subdo
 * DNS name mismatch
 * Certificate chain validation
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

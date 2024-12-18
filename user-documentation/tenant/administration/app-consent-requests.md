@@ -7,6 +7,3 @@ This page shows all the app consent requests that have been made in the tenant.
 To not miss any requests, it is recommended to set up the Scripted CIPP Alert `Alert on new apps in the application approval list`.
 {% endhint %}
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -30,6 +30,3 @@ While navigating the Roles page, please consider the following:
 2. **Scope of Roles**: This page displays Microsoft 365 admin roles only. Exchange, Azure IAM, and Pervue rights are outside the scope of this area.
 3. **Role Members**: Only roles with assigned members are displayed.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -10,6 +10,3 @@ The Mailbox Restore Wizard is a tool that allows you to restore a soft-deleted m
 
 Please note that the Mailbox Restore Wizard is a powerful tool and should be used with caution. Make sure to double-check the selected options before initiating the restore process.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

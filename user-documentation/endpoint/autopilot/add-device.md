@@ -26,6 +26,3 @@ A Reseller Relationship with the customer tenant may be required in addition to 
 
 This API does not directly return data to CIPP, and thus can incorrectly report the upload has failed.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

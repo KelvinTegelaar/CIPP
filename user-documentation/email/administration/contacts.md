@@ -19,6 +19,3 @@ This page provides information on Exchange contacts.
 
 * Edit Contact
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

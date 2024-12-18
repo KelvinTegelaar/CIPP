@@ -29,6 +29,3 @@ Scheduled tasks run every 15 minutes on their planned time. A recurring task wil
 6. **Saving the Task**:
    * After filling in all the necessary details, click on the "Save" or "Submit" button to schedule the task.
 
-
-
-{% include "../../.gitbook/includes/feature-request.md" %}

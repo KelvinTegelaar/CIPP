@@ -108,6 +108,3 @@ In some cases the information provided in the M365 Rich Text Field is cut off or
 
 Special thanks to Luke Whitelock and his [HuduM365Automation](https://github.com/lwhitelock/HuduM365Automation) function app code.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

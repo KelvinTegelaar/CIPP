@@ -8,6 +8,3 @@ The Add Team page gives you the ability to create a brand new team and set a Dis
 
 Attributes like the mail nickname will be automatically generated based on the display name.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

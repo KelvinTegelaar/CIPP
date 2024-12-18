@@ -39,5 +39,3 @@ Standards are grouped into pages within the following categories:
 * [**Teams Standards:**](teams-standards.md) Collaboration-related settings, i.e.: meeting policies and external file sharing.
 
 ***
-
-{% include "../../../../.gitbook/includes/feature-request.md" %}

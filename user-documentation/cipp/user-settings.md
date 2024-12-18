@@ -26,6 +26,3 @@ This section provides you the ability to set offboarding defaults, this allows y
 * **Save Settings**: Save the modified settings for the individual user.
 * **Save for All Users**: If the user has admin privileges, they have the option to save the modified settings for all users within the tenant, this will overwrite all personal settings and be force on each full refresh of a page.
 
-
-
-{% include "../../.gitbook/includes/feature-request.md" %}

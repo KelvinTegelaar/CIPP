@@ -13,6 +13,3 @@ The Mail Testing Tool is a powerful utility that allows you to read messages in 
 2. Wait until the email arrives in the inbox.
 3. Click on the details in the table to see email authentication information.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

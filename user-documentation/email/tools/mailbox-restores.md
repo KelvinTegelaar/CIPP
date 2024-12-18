@@ -21,6 +21,3 @@ On the Mailbox Restores page, you will find a list of ongoing mailbox restores a
    * Suspend the Restore Request
    * Remove the Restore Request
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

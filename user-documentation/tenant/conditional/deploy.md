@@ -6,6 +6,3 @@ Deploying Conditional Access is possible in two ways; using the deploy condition
 
 Using the Deploy Conditional access Wizard you can change several settings in the policy such as the way usernames are replaced, the method used to deploy the state, and which exclusions are in place.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

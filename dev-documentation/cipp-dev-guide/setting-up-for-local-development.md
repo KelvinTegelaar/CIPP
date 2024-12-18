@@ -12,7 +12,7 @@ It's recommended that you have the following installed on the computer you're us
   * [npm Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.npm-intellisense)
   * [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
   * [Stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
-* [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4) `winget install --exact` Microsoft.PowerShell
+* [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4) `winget install --exact Microsoft.PowerShell`
 * [git](https://git-scm.com/download/win) `winget install --exact Git.Git`
 * [node.js V18.X LTS](https://nodejs.org/en/download/releases) `winget install --exact OpenJS.NodeJS.LTS --version 18.20.4;winget pin add OpenJS.NodeJS.LTS --version 18.20.*`&#x20;
 * [.NET Core 3.1](https://dotnet.microsoft.com/en-us/download/dotnet/3.1)

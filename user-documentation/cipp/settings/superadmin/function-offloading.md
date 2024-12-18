@@ -224,6 +224,3 @@ After successful deployment of the offloading function apps, follow these steps 
 1. Navigate to CIPP > Application Settings > SuperAdmin
 2. Under Function Offloading, toggle the Offload Functions button and hit Save.
 
-
-
-{% include "../../../../.gitbook/includes/feature-request.md" %}

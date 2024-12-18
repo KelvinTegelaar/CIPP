@@ -25,6 +25,3 @@ On the Group Templates page, the following actions can be performed:
 * **View**: Click the "View" button next to a group template to display its details in JSON format.
 * **Delete**: Click the "Trash" icon next to a group template to delete it. This action triggers a modal that asks for confirmation before deleting the template. Once confirmed, this action calls the `RemoveGroupTemplate` API endpoint.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

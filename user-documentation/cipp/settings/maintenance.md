@@ -15,6 +15,3 @@ This section allows for clearing the Durable Queues or purging all Orchestrator 
 * Purge Orchestrators
   * This action will drop both the Instances and History tables as well as the largemessages blob container from Azure storage.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

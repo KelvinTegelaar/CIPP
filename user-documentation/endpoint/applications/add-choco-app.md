@@ -18,6 +18,3 @@ If you are unsure or don't trust the `IntuneWin` file, you have the option to re
 
 It's strongly recommended that you download, test, and view the contents of the intunewin file.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

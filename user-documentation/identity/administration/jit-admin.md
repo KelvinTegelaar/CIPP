@@ -11,6 +11,3 @@ To use Temporary Access Passes (TAP), you must enable the authentication method 
 This can be done easily via the CIPP Entra Standard: ["Enable Temporary Access Passwords"](../../tenant/standards/list-standards/entra-aad-standards.md)
 {% endhint %}
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

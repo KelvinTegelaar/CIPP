@@ -15,6 +15,3 @@ The Business Voice page gives an overview of all the numbers on the selected ten
 | Operator Connect | Whether the phone number is an operator connect number.       |
 | Purchased On     | The purchased date and time of the number.                    |
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

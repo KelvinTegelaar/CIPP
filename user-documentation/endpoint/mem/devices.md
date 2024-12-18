@@ -49,6 +49,3 @@ This page lists all devices registered in Intune.
 * Autopilot reset
 * Retire device
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

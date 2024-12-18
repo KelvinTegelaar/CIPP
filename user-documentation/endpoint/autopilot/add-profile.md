@@ -25,6 +25,3 @@ This page provides the ability for you to add Autopilot profiles, Autopilot depl
 * White Glove OOBE
 * Automatically Configure Keyboard
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

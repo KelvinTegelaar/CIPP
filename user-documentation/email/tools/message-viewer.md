@@ -13,6 +13,3 @@ The Message Viewer is a tool that allows users to view and analyze EML (Electron
 2. The email will be parsed and displayed.
 3. Click on the View Headers or View Source to see the raw message data.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -26,5 +26,3 @@ This page lists the defender status for all enrolled devices in a tenant. This i
 ### Known Issues / Limitations
 
 * You must be a current Microsoft Lighthouse partner, and your tenants must be on-boarded to Lighthouse to use this functionality
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

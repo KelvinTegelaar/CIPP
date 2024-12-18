@@ -19,6 +19,3 @@ This page lists all devices registered for Autopilot.
 
 * Delete Device - _This deletes the autopilot enrollment for the device._
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

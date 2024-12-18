@@ -19,6 +19,3 @@ The summary provides a count of the active alerts broken down into the following
 
 Below the summary is a list of the alerts found for all your tenants with more detailed information.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

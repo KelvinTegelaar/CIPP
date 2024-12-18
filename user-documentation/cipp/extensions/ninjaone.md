@@ -104,6 +104,3 @@ After the API settings are set you can now map NinjaOne items to Microsoft 365 /
 3. If the field is not displayed, make sure you have configured the correct API Permissions, Definition Scope and Type in NinjaOne.
 4. Click Save Mappings
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

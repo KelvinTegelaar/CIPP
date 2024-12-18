@@ -20,6 +20,3 @@ Fields are as follows:
 
 Click `Set Vacation Mode` to finalize the schedule.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

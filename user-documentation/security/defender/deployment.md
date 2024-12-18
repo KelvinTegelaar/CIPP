@@ -9,6 +9,3 @@
 
 
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

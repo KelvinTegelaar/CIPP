@@ -43,6 +43,3 @@ For more details on these settings, please refer to the [Group Templates page](g
 
 In this step, you review your input and confirm to apply. The application sends a POST request to the `AddGroup` endpoint listed below with your input as values.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

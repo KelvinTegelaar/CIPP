@@ -17,5 +17,3 @@ It shows the status of the relationship, the tenant name, when it was created, w
 * Remove Global Administrator from Relationship
 * Terminate Relationship
 * Auto Extend Relationship
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -49,5 +49,3 @@ Each standard is labeled based on the level of change it introduces and its impa
 {% hint style="info" %}
 Plans exist to implement more standardized options and settings, along with an alerting system supporting RMM systems, webhooks or, e-mail.
 {% endhint %}
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

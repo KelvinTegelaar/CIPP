@@ -80,6 +80,3 @@ The following APIs are called on this page:
 [openapicipp.json](../../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-
-
-{% include "../../../../.gitbook/includes/feature-request.md" %}

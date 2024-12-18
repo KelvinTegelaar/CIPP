@@ -86,6 +86,3 @@ Get-CIPPLogs
 
 Further documentation for the module and each of its available functions can be found [here](https://github.com/BNWEIN/CIPPAPIModule/)
 
-
-
-{% include "../.gitbook/includes/feature-request.md" %}

@@ -6,8 +6,6 @@
 
 {% embed url="https://app.guidde.com/share/playbooks/i9fztXsCUWjY3cr8mySvCX" fullWidth="false" %}
 
-{% include "../../.gitbook/includes/service-account.md" %}
-
 ## Setup Walkthrough for the CIPP Service Account
 
 ***

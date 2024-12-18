@@ -30,6 +30,3 @@ The overview page is where you can stop the API, or restart it. The configuratio
 
 Custom domains brings you to the location where you can change the custom domain. Role management is where you can invite users, and set the roles for users.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

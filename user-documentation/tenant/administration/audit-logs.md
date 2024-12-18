@@ -8,6 +8,3 @@ CIPP saves Audit Logs when an alert matches the rules defined in your Alert Conf
 
 Select a time range in the Search Options to find Audit Log entries. Use the table filter to narrow down the results to what you are looking for.
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

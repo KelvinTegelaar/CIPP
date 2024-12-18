@@ -6,6 +6,3 @@ Message Trace provides the ability for you to trace an e-mail instantly from to 
 Wildcard(\*) search is supported. Ex. "\*@contoso.com"
 {% endhint %}
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

@@ -51,5 +51,3 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 
 ## Reminder:
 
-{% include "../../.gitbook/includes/service-account.md" %}
-

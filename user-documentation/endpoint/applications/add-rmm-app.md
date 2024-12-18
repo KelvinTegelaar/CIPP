@@ -70,6 +70,3 @@ ImmyBot recommends having all newly installed agents land into their holding are
 | Assign to all users and devices | Targets all users and devices for app deployment   |
 | Assign to Custom Group          | Enter comma separated row of group display name(s) |
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}

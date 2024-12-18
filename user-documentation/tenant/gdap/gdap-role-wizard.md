@@ -21,6 +21,3 @@ As CIPP is an application that touches many parts of M365, selecting the roles m
 Selecting the Company Administrator (Global Admin) role is not advised. Relationships will have to be manually added every two years if you do.
 {% endhint %}
 
-
-
-{% include "../../../.gitbook/includes/feature-request.md" %}
