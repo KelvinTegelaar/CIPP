@@ -7,7 +7,7 @@ const Page = () => {
   // Define actions for mailboxes
   const actions = [
     {
-      label: "Edit Calendar permissions",
+      label: "Edit permissions",
       link: "/identity/administration/users/user/exchange?userId=[UPN]",
       color: "info",
     },
