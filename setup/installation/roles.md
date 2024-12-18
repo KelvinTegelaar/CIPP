@@ -20,7 +20,7 @@ CIPP features a role management system which utilises the [Roles feature of Azur
 You can assign these roles to users using the [Role Management system of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#role-management)
 
 {% hint style="info" %}
-After the invite link is sent to the user, they must click on it to accept the invite and gain access to the app. The invites expire after a specific amount of time.. Note this link must be sent manually to them, it is not e-mailed.
+After the invite link is sent to the user, they must click on it to accept the invite and gain access to the app. The invites expire after a specific amount of time. Note this link must be sent manually to them, it is not e-mailed.
 {% endhint %}
 
 To assign a role to a user you would follow these steps:
