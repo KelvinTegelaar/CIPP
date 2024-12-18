@@ -120,7 +120,7 @@
     "vite-plugin-eslint": "^1.8.1"
   },
   "engines": {
-    "node": "18",
+    "node": "20.17.0",
     "npm": ">=8.3.0"
   },
   "overrides": {
