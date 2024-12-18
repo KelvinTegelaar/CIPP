@@ -533,7 +533,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           </CippFormCondition>
 
           {/* No Pagination Switch */}
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={2}>
             <CippFormComponent
               type="switch"
               name="NoPagination"
@@ -543,7 +543,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           </Grid>
 
           {/* $count Switch */}
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={2}>
             <CippFormComponent
               type="switch"
               name="$count"
@@ -551,7 +551,16 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          {/* AsApp switch */}
+          <Grid item xs={12} sm={2}>
+            <CippFormComponent
+              name="AsApp"
+              type="switch"
+              formControl={formControl}
+              label="As App"
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
             <CippFormComponent
               name="IsShared"
               type="switch"

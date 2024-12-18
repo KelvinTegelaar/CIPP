@@ -58,10 +58,14 @@ export const CippDataTable = (props) => {
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const waitingBool = api?.url ? true : false;
+  const [initialApi, setInitialApi] = useState(api);
+  const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
+  const [configuredQueryKey, setConfiguredQueryKey] = useState(queryKey ?? title);
+
   const getRequestData = ApiGetCallWithPagination({
-    url: api.url,
-    data: { ...api.data },
-    queryKey: queryKey ? queryKey : title,
+    url: initialApi.url,
+    data: { ...initialApi.data },
+    queryKey: configuredQueryKey,
     waiting: waitingBool,
   });
 
@@ -122,14 +126,14 @@ export const CippDataTable = (props) => {
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
-    if (columns.length === 0 && simpleColumns.length === 0) {
+    if (columns.length === 0 && configuredSimpleColumns.length === 0) {
       finalColumns = apiColumns;
       apiColumns.forEach((col) => {
         newVisibility[col.id] = true;
       });
-    } else if (simpleColumns.length > 0) {
+    } else if (configuredSimpleColumns.length > 0) {
       finalColumns = apiColumns.map((col) => {
-        newVisibility[col.id] = simpleColumns.includes(col.id);
+        newVisibility[col.id] = configuredSimpleColumns.includes(col.id);
         return col;
       });
     } else {
@@ -141,13 +145,13 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData.length, queryKey]);
+  }, [columns.length, usedData, queryKey]);
 
   const createDialog = useDialog();
 
   // Apply the modeInfo directly
   const [modeInfo] = useState(
-    utilTableMode(columnVisibility, simple, actions, simpleColumns, offCanvas, onChange)
+    utilTableMode(columnVisibility, simple, actions, configuredSimpleColumns, offCanvas, onChange)
   );
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
@@ -234,6 +238,12 @@ export const CippDataTable = (props) => {
         <>
           {!simple && (
             <CIPPTableToptoolbar
+              api={api}
+              setApi={setInitialApi}
+              simpleColumns={simpleColumns}
+              setSimpleColumns={setConfiguredSimpleColumns}
+              queryKey={queryKey}
+              setQueryKey={setConfiguredQueryKey}
               table={table}
               data={data}
               columnVisibility={columnVisibility}

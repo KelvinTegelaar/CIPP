@@ -28,8 +28,16 @@ import { useSettings } from "../../hooks/use-settings";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
+import { ApiGetCall } from "../../api/ApiCall";
+import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
 
 export const CIPPTableToptoolbar = ({
+  api,
+  setApi,
+  simpleColumns,
+  setSimpleColumns,
+  queryKey,
+  setQueryKey,
   table,
   getRequestData,
   usedColumns,
@@ -53,6 +61,10 @@ export const CIPPTableToptoolbar = ({
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+  const [filterList, setFilterList] = useState(filters);
+  const [originalApiData, setOriginalApiData] = useState(api.data);
+  const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
+  const [originalQueryKey, setOriginalQueryKey] = useState(queryKey);
 
   const pageName = router.pathname.split("/").slice(1).join("/");
 
@@ -62,6 +74,11 @@ export const CIPPTableToptoolbar = ({
       setColumnVisibility(settings?.columnDefaults?.[pageName]);
     }
   }, [settings?.columnDefaults?.[pageName], router, usedColumns]);
+
+  const presetList = ApiGetCall({
+    url: "/api/ListGraphExplorerPresets",
+    queryKey: "ListGraphExplorerPresets",
+  });
 
   const resetToDefaultVisibility = () => {
     settings.handleUpdate({
@@ -89,7 +106,21 @@ export const CIPPTableToptoolbar = ({
     });
   };
 
-  const setTableFilter = (filter, filterType) => {
+  const mergeCaseInsensitive = (obj1, obj2) => {
+    const merged = { ...obj1 };
+    for (const key in obj2) {
+      const lowerCaseKey = key.toLowerCase();
+      const existingKey = Object.keys(merged).find((k) => k.toLowerCase() === lowerCaseKey);
+      if (existingKey) {
+        merged[existingKey] = obj2[key];
+      } else {
+        merged[key] = obj2[key];
+      }
+    }
+    return merged;
+  };
+
+  const setTableFilter = (filter, filterType, filterName) => {
     if (filterType === "global" || filterType === undefined) {
       table.setGlobalFilter(filter);
     }
@@ -100,8 +131,62 @@ export const CIPPTableToptoolbar = ({
     if (filterType === "reset") {
       table.resetGlobalFilter();
       table.resetColumnFilters();
+      if (api?.data) {
+        setApi({ ...api, data: originalApiData });
+        setQueryKey(originalQueryKey);
+        setSimpleColumns(originalSimpleColumns);
+      }
+    }
+    if (filterType === "graph") {
+      const filterProps = ["$filter", "$select", "$expand", "$orderby", "$count", "$search", "ReverseTenantLookup", "ReverseTenantLookupProperty", "AsApp"];
+      const graphFilter = filterProps.reduce((acc, prop) => {
+        if (filter[prop]) {
+          acc[prop] = filter[prop];
+        }
+        return acc;
+      }, {});
+      table.resetGlobalFilter();
+      table.resetColumnFilters();
+      setApi({ ...api, data: mergeCaseInsensitive(api.data, graphFilter) });
+
+      if (filter?.$select) {
+        setSimpleColumns(filter.$select.split(","));
+      }
+      setQueryKey(originalQueryKey + "-" + filterName);
     }
   };
+
+  useEffect(() => {
+    if (api?.url === "/api/ListGraphRequest" && presetList.isSuccess) {
+      var endpoint = api?.data?.Endpoint?.replace(/^\//, "");
+      var graphPresetList = [];
+      GraphExplorerPresets.map((preset) => {
+        var presetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
+        if (presetEndpoint === endpoint) {
+          graphPresetList.push({
+            filterName: preset?.name,
+            value: preset?.params,
+            type: "graph",
+          });
+        }
+      });
+
+      presetList?.data?.Results?.map((preset) => {
+        var customPresetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
+        if (customPresetEndpoint === endpoint) {
+          graphPresetList.push({
+            filterName: preset?.name,
+            value: preset?.params,
+            type: "graph",
+          });
+        }
+      });
+
+      // update filters to include graph explorer presets
+      setFilterList([...filters, ...graphPresetList]);
+    }
+  }, [presetList?.isSuccess]);
+
   return (
     <>
       <Box
@@ -182,11 +267,14 @@ export const CIPPTableToptoolbar = ({
               onClose={filterPopover.handleClose}
               MenuListProps={{ dense: true }}
             >
-              <MenuItem onClick={() => setTableFilter("", "reset")}>
+              <MenuItem onClick={() => setTableFilter("", "reset", "")}>
                 <ListItemText primary="Reset all filters" />
               </MenuItem>
-              {filters?.map((filter) => (
-                <MenuItem key={filter.id} onClick={() => setTableFilter(filter.value, filter.type)}>
+              {filterList?.map((filter) => (
+                <MenuItem
+                  key={filter.id}
+                  onClick={() => setTableFilter(filter.value, filter.type, filter.filterName)}
+                >
                   <ListItemText primary={filter.filterName} />
                 </MenuItem>
               ))}
