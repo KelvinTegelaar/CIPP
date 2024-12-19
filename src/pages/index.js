@@ -96,9 +96,9 @@ const Page = () => {
 
     // Identify which templates apply:
     const applicableTemplates = standardsData.filter((template) => {
-      const tenantInFilter = template.tenantFilter.some((tf) => tf.value === currentTenant);
+      const tenantInFilter = template?.tenantFilter?.some((tf) => tf.value === currentTenant);
       const allTenantsTemplate =
-        template.tenantFilter.some((tf) => tf.value === "AllTenants") &&
+        template.tenantFilter?.some((tf) => tf.value === "AllTenants") &&
         !template.excludedTenants?.some((et) => et.value === currentTenant);
       return tenantInFilter || allTenantsTemplate;
     });
