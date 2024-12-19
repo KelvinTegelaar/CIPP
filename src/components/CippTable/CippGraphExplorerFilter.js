@@ -419,10 +419,13 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <CippButtonCard
-        title="Graph Explorer Filter"
+        title="Graph Filter"
         component={component}
         accordionExpanded={cardExpanded}
-        cardSx={{ width: "100%", height: "100%" }}
+        cardSx={{
+          width: "100%",
+          height: "100%",
+        }}
       >
         <Grid container spacing={2}>
           <Grid container item size={{ xs: 12, sm: gridContainerSize }} spacing={2}>
