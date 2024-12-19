@@ -52,7 +52,7 @@ const actions = [
   },
   {
     label: "Terminate Relationship",
-    type: "get",
+    type: "GET",
     url: "/api/ExecDeleteGDAPRelationship",
     data: { GDAPID: "id" },
     confirmText: "Are you sure you want to terminate this relationship?",
