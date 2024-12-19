@@ -87,13 +87,19 @@ export const CIPPTableToptoolbar = ({
         [pageName]: false,
       },
     });
-    //reload the page to reset the columns, use next shallow routing to prevent full page reload
-    router.replace(router.asPath, undefined, { shallow: true });
   };
 
   const resetToPreferedVisibility = () => {
     if (settings?.columnDefaults?.[pageName]) {
       setColumnVisibility(settings?.columnDefaults?.[pageName]);
+    } else {
+      setColumnVisibility((prevVisibility) => {
+        const updatedVisibility = {};
+        for (const col in prevVisibility) {
+          updatedVisibility[col] = originalSimpleColumns.includes(col);
+        }
+        return updatedVisibility;
+      });
     }
   };
 
