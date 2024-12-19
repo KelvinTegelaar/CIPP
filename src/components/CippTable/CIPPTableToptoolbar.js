@@ -174,7 +174,7 @@ export const CIPPTableToptoolbar = ({
         const selectedColumns = filter.$select.split(",");
         setSimpleColumns(selectedColumns);
         const setNestedVisibility = (col) => {
-          if (typeof col === 'object' && col !== null) {
+          if (typeof col === "object" && col !== null) {
             Object.keys(col).forEach((key) => {
               if (usedColumns.includes(key.trim())) {
                 setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
@@ -310,6 +310,17 @@ export const CIPPTableToptoolbar = ({
               <MenuItem onClick={() => setTableFilter("", "reset", "")}>
                 <ListItemText primary="Reset all filters" />
               </MenuItem>
+              {api?.url === "/api/ListGraphRequest" && (
+                <MenuItem
+                  onClick={() => {
+                    setFilterCanvasVisible(true);
+                    filterPopover.handleClose();
+                  }}
+                >
+                  <ListItemText primary="Edit filters" />
+                </MenuItem>
+              )}
+              <Divider />
               {filterList?.map((filter) => (
                 <MenuItem
                   key={filter.id}
@@ -318,19 +329,6 @@ export const CIPPTableToptoolbar = ({
                   <ListItemText primary={filter.filterName} />
                 </MenuItem>
               ))}
-              {api?.url === "/api/ListGraphRequest" && (
-                <>
-                  <Divider />
-                  <MenuItem
-                    onClick={() => {
-                      setFilterCanvasVisible(true);
-                      filterPopover.handleClose();
-                    }}
-                  >
-                    <ListItemText primary="Edit filters" />
-                  </MenuItem>
-                </>
-              )}
             </Menu>
             <MRT_ToggleFiltersButton table={table} />
             <Tooltip title="Toggle Column Visibility">

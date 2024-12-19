@@ -76,6 +76,13 @@ export const CippDataTable = (props) => {
   }, [data, api?.url]);
 
   useEffect(() => {
+    if (api?.url) {
+      setInitialApi(api);
+      getRequestData.refetch();
+    }
+  }, [api?.url, api?.data]);
+
+  useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
       const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
       const nextLinkExists = lastPage?.Metadata?.nextLink;
