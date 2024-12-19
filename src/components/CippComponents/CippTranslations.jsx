@@ -40,4 +40,5 @@ export const CippTranslations = {
   roleDefinitionId: "GDAP Role",
   FromIP: "From IP",
   ToIP: "To IP",
+  "info.logoUrl": "Logo",
 };

@@ -8,13 +8,19 @@ const Page = () => {
   const actions = [];
 
   const offCanvas = {
-    extendedInfoFields: ["displayName", "publisherName"],
+    extendedInfoFields: [
+      "displayName",
+      "createdDateTime",
+      "publisherName",
+      "replyUrls",
+      "appOwnerOrganizationId",
+      "tags",
+    ],
     actions: actions,
   };
 
   const simpleColumns = [
-    "Tenant",
-    "CippStatus",
+    "info.logoUrl",
     "displayName",
     "appId",
     "createdDateTime",
@@ -24,11 +30,10 @@ const Page = () => {
 
   const apiParams = {
     Endpoint: "servicePrincipals",
-    Parameters: {
-      $filter: "tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')",
-      $select: "appId,displayName,createdDateTime,homepage,publisherName,tags",
-      $count: true,
-    },
+    $select:
+      "appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags",
+    $count: true,
+    $top: 999,
   };
 
   return (

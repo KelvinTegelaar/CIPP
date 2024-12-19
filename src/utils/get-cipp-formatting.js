@@ -59,6 +59,16 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
+  if (cellName === "info.logoUrl") {
+    return isText ? (
+      data
+    ) : data ? (
+      <img src={data} alt="logo" style={{ width: "16px", height: "16px" }} />
+    ) : (
+      ""
+    );
+  }
+
   const timeAgoArray = [
     "ExecutedTime",
     "ScheduledTime",
