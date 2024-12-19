@@ -1,11 +1,17 @@
 {
-  "name": "@devias/carpatin",
-  "version": "3.0.0",
-  "author": "Devias",
-  "homepage": "https://devias.io",
-  "private": true,
+  "name": "cipp",
+  "version": "7.0.0",
+  "author": "CIPP Contributors",
+  "homepage": "https://cipp.app/",
+  "bugs": {
+    "url": "https://github.com/KelvinTegelaar/CIPP/issues"
+  },
   "engines": {
     "node": "^18.17.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:KelvinTegelaar/CIPP.git"
   },
   "scripts": {
     "dev": "next -H 127.0.0.1",
