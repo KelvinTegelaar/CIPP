@@ -73,7 +73,7 @@ export const CippPermissionReport = (props) => {
     ];
 
     if (formData.redactCustomerData) {
-      report?.Tenants?.Results = report?.Tenants?.Results?.map((tenant) => {
+      report.Tenants.Results = report?.Tenants?.Results?.map((tenant) => {
         customerProps.forEach((prop) => {
           if (tenant[prop]) {
             if (prop === "GDAPRoles") {
