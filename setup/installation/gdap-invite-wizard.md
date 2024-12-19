@@ -4,12 +4,6 @@
 
 The GDAP Invite Wizard simplifies setting up GDAP relationships with your clients by assigning the correct roles and ensuring the CIPP-SAM application is correctly configured for each tenant. To get started with generating GDAP invites inside CIPP, navigate to `Tenant Administration` -> `GDAP Management` -> `Invite Wizard` and follow the instructions.
 
-## Key Points
-
-* **Creation:** The Invite Wizard allows you to create a single-use invite with defined roles. The relationship created will last for a maximum duration of 730 days, using a GUID as the random name.
-* **Validity**: Invites are valid for 90 days and **must be accepted by a Global Administrator** in the customer tenant.
-* **Usability**: If invites are not used, they can be found on the **GDAP Invite List** page to restart the onboarding process if necessary.
-
 ***
 
 ## **Wizard Steps**
