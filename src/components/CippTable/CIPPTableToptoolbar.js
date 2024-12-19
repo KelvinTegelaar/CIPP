@@ -138,7 +138,17 @@ export const CIPPTableToptoolbar = ({
       }
     }
     if (filterType === "graph") {
-      const filterProps = ["$filter", "$select", "$expand", "$orderby", "$count", "$search", "ReverseTenantLookup", "ReverseTenantLookupProperty", "AsApp"];
+      const filterProps = [
+        "$filter",
+        "$select",
+        "$expand",
+        "$orderby",
+        "$count",
+        "$search",
+        "ReverseTenantLookup",
+        "ReverseTenantLookupProperty",
+        "AsApp",
+      ];
       const graphFilter = filterProps.reduce((acc, prop) => {
         if (filter[prop]) {
           acc[prop] = filter[prop];
