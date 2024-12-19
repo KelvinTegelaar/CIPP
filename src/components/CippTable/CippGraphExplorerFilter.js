@@ -103,7 +103,6 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
   useEffect(() => {
     var presetOptionList = [];
     const normalizeEndpoint = (endpoint) => endpoint.replace(/^\//, "");
-    console.log("defaultPresets", defaultPresets);
     defaultPresets
       .filter(
         (item) =>
