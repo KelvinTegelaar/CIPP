@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Grid, Button, IconButton, Tooltip, Collapse, Typography, Divider } from "@mui/material";
+import { Button, Typography, Divider } from "@mui/material";
 import {
   Save as SaveIcon,
-  ExpandMore as ExpandMoreIcon,
-  ExpandLess as ExpandLessIcon,
   Delete,
   CalendarMonthTwoTone,
   CopyAll,
   ImportExport,
+  PlayCircle,
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce } from "lodash";
@@ -21,7 +20,7 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import CippSchedulerForm from "../CippFormPages/CippSchedulerForm";
 import defaultPresets from "../../data/GraphExplorerPresets";
-import { lighten, darken, styled } from "@mui/system";
+import { lighten, darken, styled, Grid, Stack } from "@mui/system";
 
 const GroupHeader = styled("div")(({ theme }) => ({
   position: "sticky",
@@ -38,7 +37,7 @@ const GroupItems = styled("ul")({
   padding: 0,
 });
 
-const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
+const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "accordion" }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
   const [cardExpanded, setCardExpanded] = useState(true);
   const [offCanvasContent, setOffCanvasContent] = useState(null);
@@ -59,6 +58,16 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     },
   });
 
+  var gridContainerSize = 6;
+  if (component !== "accordion") {
+    gridContainerSize = 12;
+  }
+
+  var gridSwitchSize = 3;
+  if (component !== "accordion") {
+    gridSwitchSize = 12;
+  }
+
   const { control, handleSubmit, watch } = formControl;
   const tenant = useSettings().currentTenant;
   const endPoint = useWatch({ control, name: "endpoint" });
@@ -76,22 +85,39 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     waiting: false,
   });
 
+  var presetFilter = {};
+  if (endpointFilter) {
+    if (formControl.getValues("endpoint") !== endpointFilter) {
+      formControl.setValue("endpoint", endpointFilter);
+    }
+    presetFilter = { Endpoint: endpointFilter };
+  }
+
   // API call for available presets
   const presetList = ApiGetCall({
     url: "/api/ListGraphExplorerPresets",
     queryKey: "ListGraphExplorerPresets",
+    data: presetFilter,
   });
 
   useEffect(() => {
     var presetOptionList = [];
-    defaultPresets.forEach((item) => {
-      presetOptionList.push({
-        label: item.name,
-        value: item.id,
-        addedFields: item,
-        type: "Built-In",
+    const normalizeEndpoint = (endpoint) => endpoint.replace(/^\//, "");
+    console.log("defaultPresets", defaultPresets);
+    defaultPresets
+      .filter(
+        (item) =>
+          !endpointFilter ||
+          normalizeEndpoint(item.params.endpoint) === normalizeEndpoint(endpointFilter)
+      )
+      .forEach((item) => {
+        presetOptionList.push({
+          label: item.name,
+          value: item.id,
+          addedFields: item,
+          type: "Built-In",
+        });
       });
-    });
     if (presetList.isSuccess && presetList.data?.Results.length > 0) {
       presetList.data.Results.forEach((item) => {
         presetOptionList.push({
@@ -395,13 +421,13 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <CippButtonCard
         title="Graph Explorer Filter"
-        component="accordion"
+        component={component}
         accordionExpanded={cardExpanded}
         cardSx={{ width: "100%", height: "100%" }}
       >
         <Grid container spacing={2}>
-          <Grid container item xs={12} sm={6} spacing={2}>
-            <Grid item xs={12}>
+          <Grid container item size={{ xs: 12, sm: gridContainerSize }} spacing={2}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="autoComplete"
                 name="reportTemplate"
@@ -419,17 +445,18 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
                 placeholder="Select a preset"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="textField"
                 name="endpoint"
                 label="Endpoint"
                 formControl={formControl}
+                disabled={endpointFilter ? true : false}
                 placeholder="Enter Graph API endpoint"
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="autoComplete"
                 name="$select"
@@ -447,7 +474,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* Expand Field */}
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="textField"
                 name="$expand"
@@ -459,9 +486,9 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           </Grid>
 
           {/* Right Column */}
-          <Grid container item xs={12} sm={6} spacing={2}>
+          <Grid container item size={{ xs: 12, sm: gridContainerSize }} spacing={2}>
             {/* Preset Name Field */}
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="textField"
                 name="name"
@@ -472,7 +499,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* Filter Field */}
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="textField"
                 name="$filter"
@@ -483,7 +510,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* Top Field */}
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="number"
                 fullWidth
@@ -495,7 +522,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             </Grid>
 
             {/* Search Field */}
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="textField"
                 name="$search"
@@ -507,7 +534,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           </Grid>
 
           {/* Reverse Tenant Lookup Switch */}
-          <Grid item xs={12} sm={3}>
+          <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
               type="switch"
               name="ReverseTenantLookup"
@@ -521,7 +548,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             compareValue={true}
           >
             {/* Reverse Tenant Lookup Property Field */}
-            <Grid item xs={12} sm={12}>
+            <Grid item size={12}>
               <CippFormComponent
                 type="textField"
                 name="ReverseTenantLookupProperty"
@@ -533,7 +560,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           </CippFormCondition>
 
           {/* No Pagination Switch */}
-          <Grid item xs={12} sm={2}>
+          <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
               type="switch"
               name="NoPagination"
@@ -543,7 +570,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           </Grid>
 
           {/* $count Switch */}
-          <Grid item xs={12} sm={2}>
+          <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
               type="switch"
               name="$count"
@@ -552,7 +579,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
             />
           </Grid>
           {/* AsApp switch */}
-          <Grid item xs={12} sm={2}>
+          <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
               name="AsApp"
               type="switch"
@@ -560,7 +587,7 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
               label="As App"
             />
           </Grid>
-          <Grid item xs={12} sm={2}>
+          <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
               name="IsShared"
               type="switch"
@@ -570,68 +597,56 @@ const CippGraphExplorerFilter = ({ onSubmitFilter }) => {
           </Grid>
         </Grid>
         <Divider sx={{ mt: 2, mb: 2 }} />
-        <Grid container>
-          <Grid item xs={12} style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>
-              <Grid item xs={12}>
-                <Button variant="contained" color="primary" type="submit">
-                  Apply Filter
-                </Button>
-              </Grid>
-            </div>
+        <Stack spacing={1} direction={component === "accordion" ? "row" : "column"}>
+          <Button variant="contained" color="primary" type="submit" startIcon={<PlayCircle />}>
+            Apply Filter
+          </Button>
 
-            <div>
-              {/* Save Preset Button */}
-              <Button
-                variant="contained"
-                onClick={handleSavePreset}
-                startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
-                style={{ marginRight: "8px" }}
-              >
-                {presetOwner ? "Save" : "Copy"} Preset
-              </Button>
-              {/* Delete Preset Button */}
-              {selectedPresetState && (
-                <Button
-                  startIcon={<Delete />}
-                  variant="contained"
-                  onClick={() => deletePreset(selectedPresetState)}
-                  style={{ marginRight: "8px" }}
-                  disabled={!presetOwner}
-                >
-                  Delete Preset
-                </Button>
-              )}
-              {/* Schedule Report Button */}
-              <Button
-                startIcon={<CalendarMonthTwoTone />}
-                style={{ marginRight: "8px" }}
-                variant="contained"
-                onClick={handleScheduleReport}
-              >
-                Schedule Report
-              </Button>
+          <Button
+            variant="outlined"
+            onClick={handleSavePreset}
+            startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
+          >
+            {presetOwner ? "Save" : "Copy"} Preset
+          </Button>
 
-              {/* Import/Export Button */}
-              <Button
-                onClick={handleImport}
-                variant="outlined"
-                color="primary"
-                startIcon={<ImportExport />}
-              >
-                Import/Export
-              </Button>
-            </div>
-          </Grid>
-          <Grid item xs={12}>
-            <CippApiResults apiObject={savePresetApi} />
-            <CippOffCanvas
-              visible={offCanvasOpen}
-              size="md"
-              onClose={() => setOffCanvasOpen(false)}
-              children={offCanvasContent}
-            />
-          </Grid>
+          {selectedPresetState && (
+            <Button
+              startIcon={<Delete />}
+              variant="outlined"
+              onClick={() => deletePreset(selectedPresetState)}
+              disabled={!presetOwner}
+            >
+              Delete Preset
+            </Button>
+          )}
+
+          <Button
+            startIcon={<CalendarMonthTwoTone />}
+            variant="outlined"
+            onClick={handleScheduleReport}
+          >
+            Schedule Report
+          </Button>
+
+          <Button
+            onClick={handleImport}
+            variant="outlined"
+            color="primary"
+            startIcon={<ImportExport />}
+          >
+            Import/Export
+          </Button>
+        </Stack>
+
+        <Grid item size={12}>
+          <CippApiResults apiObject={savePresetApi} />
+          <CippOffCanvas
+            visible={offCanvasOpen}
+            size="md"
+            onClose={() => setOffCanvasOpen(false)}
+            children={offCanvasContent}
+          />
         </Grid>
       </CippButtonCard>
     </form>

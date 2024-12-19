@@ -1,7 +1,8 @@
-import { DeveloperMode, Sync, ViewColumn } from "@mui/icons-material";
+import { DeveloperMode, Sync, Tune, ViewColumn } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
+  Divider,
   IconButton,
   ListItemText,
   Menu,
@@ -13,11 +14,7 @@ import {
 import { Box, Stack } from "@mui/system";
 import { MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from "material-react-table";
 import { PDFExportButton } from "../pdfExportButton";
-import {
-  ChevronDownIcon,
-  ExclamationCircleIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { usePopover } from "../../hooks/use-popover";
 import { CSVExportButton } from "../csvExportButton";
 import { useDialog } from "../../hooks/use-dialog";
@@ -30,6 +27,7 @@ import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
 import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
+import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
 
 export const CIPPTableToptoolbar = ({
   api,
@@ -65,6 +63,7 @@ export const CIPPTableToptoolbar = ({
   const [originalApiData, setOriginalApiData] = useState(api.data);
   const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
   const [originalQueryKey, setOriginalQueryKey] = useState(queryKey);
+  const [filterCanvasVisible, setFilterCanvasVisible] = useState(false);
 
   const pageName = router.pathname.split("/").slice(1).join("/");
 
@@ -77,14 +76,19 @@ export const CIPPTableToptoolbar = ({
 
   const presetList = ApiGetCall({
     url: "/api/ListGraphExplorerPresets",
-    queryKey: "ListGraphExplorerPresets",
+    queryKey: `ListGraphExplorerPresets${api?.data?.Endpoint ?? ""}`,
+    data: {
+      Endpoint: api?.data?.Endpoint ?? "",
+    },
+    waiting: api?.data?.Endpoint ? true : false,
   });
 
   const resetToDefaultVisibility = () => {
+    setColumnVisibility({});
     settings.handleUpdate({
       columnDefaults: {
         ...settings?.columnDefaults,
-        [pageName]: false,
+        [pageName]: {},
       },
     });
     //reload the page to reset the columns, use next shallow routing to prevent full page reload
@@ -135,10 +139,21 @@ export const CIPPTableToptoolbar = ({
         setApi({ ...api, data: originalApiData });
         setQueryKey(originalQueryKey);
         setSimpleColumns(originalSimpleColumns);
+        resetToDefaultVisibility();
       }
     }
     if (filterType === "graph") {
-      const filterProps = ["$filter", "$select", "$expand", "$orderby", "$count", "$search", "ReverseTenantLookup", "ReverseTenantLookupProperty", "AsApp"];
+      const filterProps = [
+        "$filter",
+        "$select",
+        "$expand",
+        "$orderby",
+        "$count",
+        "$search",
+        "ReverseTenantLookup",
+        "ReverseTenantLookupProperty",
+        "AsApp",
+      ];
       const graphFilter = filterProps.reduce((acc, prop) => {
         if (filter[prop]) {
           acc[prop] = filter[prop];
@@ -150,7 +165,26 @@ export const CIPPTableToptoolbar = ({
       setApi({ ...api, data: mergeCaseInsensitive(api.data, graphFilter) });
 
       if (filter?.$select) {
-        setSimpleColumns(filter.$select.split(","));
+        const selectedColumns = filter.$select.split(",");
+        setSimpleColumns(selectedColumns);
+        const setNestedVisibility = (col) => {
+          if (typeof col === 'object' && col !== null) {
+            Object.keys(col).forEach((key) => {
+              if (usedColumns.includes(key.trim())) {
+                setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
+                setNestedVisibility(col[key]);
+              }
+            });
+          } else {
+            if (usedColumns.includes(col.trim())) {
+              setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
+            }
+          }
+        };
+
+        selectedColumns.forEach((col) => {
+          setNestedVisibility(col);
+        });
       }
       setQueryKey(originalQueryKey + "-" + filterName);
     }
@@ -257,7 +291,7 @@ export const CIPPTableToptoolbar = ({
             <Tooltip title="Preset Filters">
               <IconButton onClick={filterPopover.handleOpen} ref={filterPopover.anchorRef}>
                 <SvgIcon>
-                  <MagnifyingGlassIcon />
+                  <Tune />
                 </SvgIcon>
               </IconButton>
             </Tooltip>
@@ -278,6 +312,19 @@ export const CIPPTableToptoolbar = ({
                   <ListItemText primary={filter.filterName} />
                 </MenuItem>
               ))}
+              {api?.url === "/api/ListGraphRequest" && (
+                <>
+                  <Divider />
+                  <MenuItem
+                    onClick={() => {
+                      setFilterCanvasVisible(true);
+                      filterPopover.handleClose();
+                    }}
+                  >
+                    <ListItemText primary="Edit filters" />
+                  </MenuItem>
+                </>
+              )}
             </Menu>
             <MRT_ToggleFiltersButton table={table} />
             <Tooltip title="Toggle Column Visibility">
@@ -443,6 +490,21 @@ export const CIPPTableToptoolbar = ({
           />
         )}
       </Box>
+      <CippOffCanvas
+        size="md"
+        title="Edit Filters"
+        visible={filterCanvasVisible}
+        onClose={() => setFilterCanvasVisible(false)}
+      >
+        <CippGraphExplorerFilter
+          endpointFilter={api?.data?.Endpoint}
+          onSubmitFilter={(filter) => {
+            setTableFilter(filter, "graph", "Custom Filter");
+            setFilterCanvasVisible(false);
+          }}
+          component="card"
+        />
+      </CippOffCanvas>
     </>
   );
 };
