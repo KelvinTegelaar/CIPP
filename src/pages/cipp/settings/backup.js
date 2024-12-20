@@ -40,6 +40,10 @@ const Page = () => {
     urlFromData: true,
   });
 
+  const downloadAction = ApiPostCall({
+    urlFromData: true,
+  });
+
   const runBackup = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: ["BackupList", "ScheduledBackup"],
@@ -96,7 +100,7 @@ const Page = () => {
   };
 
   const handleDownloadBackupAction = (row) => {
-    backupAction.mutate(
+    downloadAction.mutate(
       {
         url: `/api/ExecListBackup?BackupName=${row.BackupName}`,
         data: {},
@@ -136,7 +140,6 @@ const Page = () => {
       label: "Download Backup",
       icon: <CloudDownload />,
       noConfirm: true,
-      confirmText: "Do you want to download this backup?",
       customFunction: handleDownloadBackupAction,
     },
   ];
