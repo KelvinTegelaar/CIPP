@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Card,
   Stack,
@@ -15,7 +16,6 @@ import {
 import { ExpandMore as ExpandMoreIcon, Delete, Add, Public, TableChart } from "@mui/icons-material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useWatch } from "react-hook-form";
-import { useEffect, useState } from "react";
 import _ from "lodash";
 import Microsoft from "../../icons/iconly/bulk/microsoft";
 import Azure from "../../icons/iconly/bulk/azure";
@@ -24,6 +24,48 @@ import Defender from "../../icons/iconly/bulk/defender";
 import Intune from "../../icons/iconly/bulk/intune";
 import GDAPRoles from "/src/data/GDAPRoles";
 import timezoneList from "/src/data/timezoneList";
+
+const getAvailableActions = (disabledFeatures) => {
+  const allActions = [
+    { label: "Report", value: "Report" },
+    { label: "Alert", value: "warn" },
+    { label: "Remediate", value: "Remediate" },
+  ];
+  return allActions.filter((action) => !disabledFeatures?.[action.value.toLowerCase()]);
+};
+
+const CippAddedComponent = React.memo(({ standardName, component, formControl }) => {
+  const updatedComponent = { ...component };
+
+  if (component.type === "AdminRolesMultiSelect") {
+    updatedComponent.type = "autoComplete";
+    updatedComponent.options = GDAPRoles.map((role) => ({
+      label: role.Name,
+      value: role.ObjectId,
+    }));
+  } else if (component.type === "TimezoneSelect") {
+    updatedComponent.type = "autoComplete";
+    updatedComponent.options = timezoneList.map((tz) => ({
+      label: tz.timezone,
+      value: tz.timezone,
+    }));
+  } else {
+    updatedComponent.type = component.type;
+  }
+
+  return (
+    <Grid item xs={12}>
+      <CippFormComponent
+        type={updatedComponent.type}
+        label={updatedComponent.label}
+        formControl={formControl}
+        {...updatedComponent}
+        name={`${standardName}.${updatedComponent.name}`}
+      />
+    </Grid>
+  );
+});
+CippAddedComponent.displayName = "CippAddedComponent";
 
 const CippStandardAccordion = ({
   standards,
@@ -41,68 +83,37 @@ const CippStandardAccordion = ({
   });
 
   useEffect(() => {
+    const newConfiguredState = { ...configuredState };
+
     Object.keys(selectedStandards).forEach((standardName) => {
       const standard = standards.find((s) => s.name === standardName.split("[")[0]);
       if (standard) {
-        const actionFilled = !!_.get(watchedValues, `${standardName}.action`);
+        const actionFilled = !!_.get(watchedValues, `${standardName}.action`, false);
+
         const addedComponentsFilled =
-          standard.addedComponent?.every(
-            (component) => !!_.get(watchedValues, `${standardName}.${component.name}`)
-          ) ?? true;
+          standard.addedComponent?.every((component) => {
+            const isRequired = component.required !== false;
+            if (!isRequired) return true;
+            return !!_.get(watchedValues, `${standardName}.${component.name}`);
+          }) ?? true;
 
         const isConfigured = actionFilled && addedComponentsFilled;
-        setConfiguredState((prevState) => ({
-          ...prevState,
-          [standardName]: isConfigured,
-        }));
+
+        // Only update state if there's a change to reduce unnecessary re-renders.
+        if (newConfiguredState[standardName] !== isConfigured) {
+          newConfiguredState[standardName] = isConfigured;
+        }
       }
     });
-  }, [watchedValues, standards, selectedStandards]);
 
-  const getAvailableActions = (disabledFeatures) => {
-    const allActions = [
-      { label: "Report", value: "Report" },
-      { label: "Alert", value: "warn" },
-      { label: "Remediate", value: "Remediate" },
-    ];
-    return allActions.filter((action) => !disabledFeatures?.[action.value.toLowerCase()]);
-  };
-
-  const CippAddedComponent = ({ standardName, component }) => {
-    var updatedComponent = { ...component };
-
-    if (component.type === "AdminRolesMultiSelect") {
-      updatedComponent.type = "autoComplete";
-      updatedComponent.options = GDAPRoles.map((role) => ({
-        label: role.Name,
-        value: role.ObjectId,
-      }));
-    } else if (component.type === "TimezoneSelect") {
-      updatedComponent.type = "autoComplete";
-      updatedComponent.options = timezoneList.map((tz) => ({
-        label: tz.timezone,
-        value: tz.timezone,
-      }));
-    } else {
-      updatedComponent.type = component.type;
+    if (!_.isEqual(newConfiguredState, configuredState)) {
+      setConfiguredState(newConfiguredState);
     }
-
-    return (
-      <Grid item xs={12}>
-        <CippFormComponent
-          type={updatedComponent.type}
-          label={updatedComponent.label}
-          formControl={formControl}
-          {...updatedComponent}
-          name={`${standardName}.${updatedComponent.name}`}
-        />
-      </Grid>
-    );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedValues, standards, selectedStandards]);
 
   return Object.keys(selectedStandards).map((standardName) => {
     const standard = standards.find((s) => s.name === standardName.split("[")[0]);
-
     if (!standard) return null;
 
     const isExpanded = expanded === standardName;
@@ -138,11 +149,12 @@ const CippStandardAccordion = ({
               )}
             </Avatar>
             <Stack>
-              <Typography variant="h6">{accordionTitle}</Typography> {/* Dynamic title */}
+              <Typography variant="h6">{accordionTitle}</Typography>
               {selectedActions && selectedActions?.length > 0 && (
                 <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
-                  {selectedActions.map((action) => (
+                  {selectedActions.map((action, index) => (
                     <Chip
+                      key={index}
                       label={action.label}
                       color="info"
                       variant="outlined"
@@ -191,7 +203,6 @@ const CippStandardAccordion = ({
           <Divider />
           <Box sx={{ p: 3 }}>
             <Grid container spacing={2}>
-              {/* First Row - Dynamic Action Autocomplete with disabled features logic */}
               <Grid item xs={4}>
                 <CippFormComponent
                   type="autoComplete"
@@ -203,7 +214,6 @@ const CippStandardAccordion = ({
                 />
               </Grid>
 
-              {/* Second Row - Added Components (null-safe) */}
               {hasAddedComponents && (
                 <Grid item xs={8}>
                   <Grid container spacing={2}>
@@ -212,6 +222,7 @@ const CippStandardAccordion = ({
                         key={idx}
                         standardName={standardName}
                         component={component}
+                        formControl={formControl}
                       />
                     ))}
                   </Grid>

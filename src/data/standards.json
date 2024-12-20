@@ -2911,6 +2911,7 @@
       },
       {
         "type": "textField",
+        "required": false,
         "name": "customGroup",
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
       }
