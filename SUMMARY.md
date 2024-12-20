@@ -269,4 +269,4 @@
 ***
 
 * [CIPP New Interface Kickoff: Alpha Brief](cipp-new-interface-kickoff-alpha-brief.md)
-* [CIPP New Interface Release Candidate Beta](cipp-new-interface-release-candidate-beta.md)
+* [CIPP New Interface Release Candidate 2 (rc2)](cipp-new-interface-release-candidate-beta.md)
