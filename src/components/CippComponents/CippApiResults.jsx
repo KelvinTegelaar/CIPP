@@ -209,7 +209,7 @@ export const CippApiResults = (props) => {
       </Collapse>
 
       {/* Individual result alerts */}
-      {!errorsOnly && hasVisibleResults && (
+      {apiObject.isSuccess && !errorsOnly && hasVisibleResults && (
         <Grid container spacing={2}>
           {finalResults.map((resultObj) => (
             <Grid item size={12} key={resultObj.id}>
