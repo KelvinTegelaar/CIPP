@@ -20,7 +20,7 @@ We’re excited to have you on board for the **CIPP New Interface Prerelease**! 
 ### **Documentation**
 
 * Full documentation for the new interface is still under development.
-* Leverage Discord for support during this phase.
+* Leverage Discord for guidance during this phase.
 
 ### **Exclusively for Hosted Users**
 
