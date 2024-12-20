@@ -425,9 +425,77 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
         cardSx={{
           width: "100%",
           height: "100%",
+          mb: 2,
         }}
+        CardButton={
+          <>
+            <Stack spacing={2} width={"100%"}>
+              <Stack
+                spacing={1.5}
+                direction={component === "accordion" ? "row" : "column"}
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  startIcon={<PlayCircle />}
+                  fullWidth
+                >
+                  Apply Filter
+                </Button>
+
+                <Button
+                  startIcon={<CalendarMonthTwoTone />}
+                  variant="outlined"
+                  onClick={handleScheduleReport}
+                  fullWidth
+                >
+                  Schedule Report
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  onClick={handleSavePreset}
+                  startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
+                  fullWidth
+                >
+                  {presetOwner ? "Save" : "Copy"} Preset
+                </Button>
+
+                {selectedPresetState && (
+                  <Button
+                    startIcon={<Delete />}
+                    variant="outlined"
+                    onClick={() => deletePreset(selectedPresetState)}
+                    disabled={!presetOwner}
+                    fullWidth
+                  >
+                    Delete Preset
+                  </Button>
+                )}
+
+                <Button
+                  onClick={handleImport}
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<ImportExport />}
+                  fullWidth
+                >
+                  Import/Export
+                </Button>
+                <CippFormComponent
+                  name="IsShared"
+                  type="switch"
+                  formControl={formControl}
+                  label="Share Preset"
+                />
+              </Stack>
+            </Stack>
+          </>
+        }
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           <Grid container item size={{ xs: 12, sm: gridContainerSize }} spacing={2}>
             <Grid item size={12}>
               <CippFormComponent
@@ -486,7 +554,6 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               />
             </Grid>
           </Grid>
-
           {/* Right Column */}
           <Grid container item size={{ xs: 12, sm: gridContainerSize }} spacing={2}>
             {/* Preset Name Field */}
@@ -534,7 +601,6 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               />
             </Grid>
           </Grid>
-
           {/* Reverse Tenant Lookup Switch */}
           <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
@@ -560,7 +626,6 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               />
             </Grid>
           </CippFormCondition>
-
           {/* No Pagination Switch */}
           <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
@@ -570,7 +635,6 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               formControl={formControl}
             />
           </Grid>
-
           {/* $count Switch */}
           <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
             <CippFormComponent
@@ -589,68 +653,15 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               label="As App"
             />
           </Grid>
-          <Grid item size={{ xs: 12, sm: gridSwitchSize }}>
-            <CippFormComponent
-              name="IsShared"
-              type="switch"
-              formControl={formControl}
-              label="Share Preset"
-            />
-          </Grid>
-        </Grid>
-        <Divider sx={{ mt: 2, mb: 2 }} />
-        <Stack spacing={1} direction={component === "accordion" ? "row" : "column"}>
-          <Button variant="contained" color="primary" type="submit" startIcon={<PlayCircle />}>
-            Apply Filter
-          </Button>
-
-          <Button
-            variant="outlined"
-            onClick={handleSavePreset}
-            startIcon={<>{presetOwner ? <SaveIcon /> : <CopyAll />}</>}
-          >
-            {presetOwner ? "Save" : "Copy"} Preset
-          </Button>
-
-          {selectedPresetState && (
-            <Button
-              startIcon={<Delete />}
-              variant="outlined"
-              onClick={() => deletePreset(selectedPresetState)}
-              disabled={!presetOwner}
-            >
-              Delete Preset
-            </Button>
-          )}
-
-          <Button
-            startIcon={<CalendarMonthTwoTone />}
-            variant="outlined"
-            onClick={handleScheduleReport}
-          >
-            Schedule Report
-          </Button>
-
-          <Button
-            onClick={handleImport}
-            variant="outlined"
-            color="primary"
-            startIcon={<ImportExport />}
-          >
-            Import/Export
-          </Button>
-        </Stack>
-
-        <Grid item size={12}>
-          <CippApiResults apiObject={savePresetApi} />
-          <CippOffCanvas
-            visible={offCanvasOpen}
-            size="md"
-            onClose={() => setOffCanvasOpen(false)}
-            children={offCanvasContent}
-          />
         </Grid>
       </CippButtonCard>
+      <CippApiResults apiObject={savePresetApi} />
+      <CippOffCanvas
+        visible={offCanvasOpen}
+        size="md"
+        onClose={() => setOffCanvasOpen(false)}
+        children={offCanvasContent}
+      />
     </form>
   );
 };

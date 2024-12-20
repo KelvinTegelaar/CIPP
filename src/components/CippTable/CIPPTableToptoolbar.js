@@ -313,8 +313,8 @@ export const CIPPTableToptoolbar = ({
               {api?.url === "/api/ListGraphRequest" && (
                 <MenuItem
                   onClick={() => {
-                    setFilterCanvasVisible(true);
                     filterPopover.handleClose();
+                    setFilterCanvasVisible(true);
                   }}
                 >
                   <ListItemText primary="Edit filters" />
@@ -324,7 +324,10 @@ export const CIPPTableToptoolbar = ({
               {filterList?.map((filter) => (
                 <MenuItem
                   key={filter.id}
-                  onClick={() => setTableFilter(filter.value, filter.type, filter.filterName)}
+                  onClick={() => {
+                    filterPopover.handleClose();
+                    setTableFilter(filter.value, filter.type, filter.filterName);
+                  }}
                 >
                   <ListItemText primary={filter.filterName} />
                 </MenuItem>
