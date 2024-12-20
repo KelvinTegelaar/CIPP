@@ -1740,6 +1740,7 @@
       {
         "type": "switch",
         "label": "Enable Internal Sender Admin Notifications",
+        "required": false,
         "name": "standards.MalwareFilterPolicy.EnableInternalSenderAdminNotifications"
       },
       {
@@ -1751,6 +1752,7 @@
       {
         "type": "switch",
         "label": "Enable External Sender Admin Notifications",
+        "required": false,
         "name": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications"
       },
       {
