@@ -52,9 +52,12 @@ const extractAllResults = (data) => {
       return;
     }
 
+    const ignoreKeys = ["metadata", "Metadata"];
+
     if (typeof obj === "object") {
       Object.keys(obj).forEach((key) => {
         const value = obj[key];
+        if (ignoreKeys.includes(key)) return;
         if (["Results", "Result", "results", "result"].includes(key)) {
           if (Array.isArray(value)) {
             value.forEach((valItem) => {

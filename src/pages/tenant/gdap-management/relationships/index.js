@@ -2,7 +2,7 @@ import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "../tabOptions";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
-import { EyeIcon, ShieldExclamationIcon } from "@heroicons/react/24/outline";
+import { EyeIcon } from "@heroicons/react/24/outline";
 import {
   AdminPanelSettings,
   GppBad,
