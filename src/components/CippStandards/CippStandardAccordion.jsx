@@ -152,7 +152,7 @@ const CippStandardAccordion = ({
               <Typography variant="h6">{accordionTitle}</Typography>
               {selectedActions && selectedActions?.length > 0 && (
                 <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
-                  {selectedActions.map((action, index) => (
+                  {selectedActions?.map((action, index) => (
                     <Chip
                       key={index}
                       label={action.label}
@@ -217,7 +217,7 @@ const CippStandardAccordion = ({
               {hasAddedComponents && (
                 <Grid item xs={8}>
                   <Grid container spacing={2}>
-                    {standard.addedComponent.map((component, idx) => (
+                    {standard.addedComponent?.map((component, idx) => (
                       <CippAddedComponent
                         key={idx}
                         standardName={standardName}
