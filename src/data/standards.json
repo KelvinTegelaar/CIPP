@@ -1308,6 +1308,7 @@
       {
         "type": "textField",
         "name": "standards.UserSubmissions.email",
+        "required": false,
         "label": "Destination email address"
       }
     ],
@@ -1678,7 +1679,8 @@
         "type": "switch",
         "label": "Allow people to click through Protected View even if Safe Documents identified the file as malicious",
         "name": "standards.AtpPolicyForO365.AllowSafeDocsOpen",
-        "default": false
+        "default": false,
+        "required": false
       }
     ],
     "label": "Default Atp Policy For O365",
@@ -1712,6 +1714,7 @@
       {
         "type": "textField",
         "name": "standards.MalwareFilterPolicy.OptionalFileTypes",
+        "required": false,
         "label": "Optional File Types, Comma separated"
       },
       {
@@ -1742,6 +1745,7 @@
       {
         "type": "textField",
         "name": "standards.MalwareFilterPolicy.InternalSenderAdminAddress",
+        "required": false,
         "label": "Internal Sender Admin Address"
       },
       {
@@ -1752,6 +1756,7 @@
       {
         "type": "textField",
         "name": "standards.MalwareFilterPolicy.ExternalSenderAdminAddress",
+        "required": false,
         "label": "External Sender Admin Address"
       }
     ],
