@@ -464,7 +464,11 @@ const AlertWizard = () => {
                           <Typography>
                             Select the tenants you want to include in this Alert.
                           </Typography>
-                          <CippFormTenantSelector multiple={false} formControl={formControl} />
+                          <CippFormTenantSelector
+                            allTenants={true}
+                            multiple={false}
+                            formControl={formControl}
+                          />
                         </CippButtonCard>
                       </Grid>
 
