@@ -112,7 +112,7 @@ const CippStandardAccordion = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchedValues, standards, selectedStandards]);
 
-  return Object.keys(selectedStandards).map((standardName) => {
+  return Object.keys(selectedStandards)?.map((standardName) => {
     const standard = standards.find((s) => s.name === standardName.split("[")[0]);
     if (!standard) return null;
 
@@ -121,7 +121,12 @@ const CippStandardAccordion = ({
     const isConfigured = configuredState[standardName];
     const disabledFeatures = standard.disabledFeatures || {};
 
-    const selectedActions = _.get(watchedValues, `${standardName}.action`);
+    let selectedActions = _.get(watchedValues, `${standardName}.action`);
+    //if selectedActions is not an array, convert it to an array
+    if (selectedActions && !Array.isArray(selectedActions)) {
+      selectedActions = [selectedActions];
+    }
+
     const selectedTemplateName = standard.multiple
       ? _.get(watchedValues, `${standardName}.${standard.addedComponent?.[0]?.name}`)
       : "";
