@@ -138,9 +138,9 @@ const Page = () => {
 
   const steps = [
     "Set a name for the Template",
+    "Assigned Template to Tenants",
     "Added Standards to Template",
     "Configured all Standards",
-    "Assigned Template to Tenants",
   ];
 
   return (

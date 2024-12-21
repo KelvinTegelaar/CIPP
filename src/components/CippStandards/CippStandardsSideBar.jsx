@@ -72,15 +72,15 @@ const CippStandardsSideBar = ({
   useEffect(() => {
     const stepsStatus = {
       step1: !!watchForm.templateName,
-      step2: Object.keys(selectedStandards).length > 0,
-      step3:
+      step2: watchForm.tenantFilter && watchForm.tenantFilter.length > 0,
+      step3: Object.keys(selectedStandards).length > 0,
+      step4:
         watchForm.standards &&
         Object.keys(selectedStandards).length > 0 &&
         Object.keys(selectedStandards).every((standardName) => {
           const standardValues = _.get(watchForm, `${standardName}`, {});
           return standardValues.action;
         }),
-      step4: watchForm.tenantFilter && watchForm.tenantFilter.length > 0,
     };
 
     const completedSteps = Object.values(stepsStatus).filter(Boolean).length;
@@ -89,15 +89,15 @@ const CippStandardsSideBar = ({
 
   const stepsStatus = {
     step1: !!watchForm.templateName,
-    step2: Object.keys(selectedStandards).length > 0,
-    step3:
+    step2: watchForm.tenantFilter && watchForm.tenantFilter.length > 0,
+    step3: Object.keys(selectedStandards).length > 0,
+    step4:
       watchForm.standards &&
       Object.keys(selectedStandards).length > 0 &&
       Object.keys(selectedStandards).every((standardName) => {
         const standardValues = _.get(watchForm, `${standardName}`, {});
         return standardValues.action;
       }),
-    step4: watchForm.tenantFilter && watchForm.tenantFilter.length > 0,
   };
   return (
     <Card>
