@@ -3030,7 +3030,7 @@
         "label": "Select Group Template",
         "api": {
           "url": "/api/ListGroupTemplates",
-          "labelField": "displayName",
+          "labelField": "Displayname",
           "valueField": "GUID",
           "queryKey": "ListGroupTemplates"
         }
