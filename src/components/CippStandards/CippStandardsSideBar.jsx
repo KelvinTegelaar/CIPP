@@ -1,5 +1,14 @@
 import PropTypes from "prop-types";
-import { Card, CardContent, CardHeader, Divider, Stack, SvgIcon, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  formControlLabelClasses,
+  Stack,
+  SvgIcon,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   Timeline,
@@ -191,7 +200,8 @@ const CippStandardsSideBar = ({
             label={action.label}
             onClick={action.handler}
             disabled={
-              !stepsStatus[`step${index + 1}`] || currentStep < 3 || action.disabled || false
+              formControl.formState.isValid &&
+              (!stepsStatus[`step${index + 1}`] || currentStep < 3 || action.disabled || false)
             }
           />
         ))}
