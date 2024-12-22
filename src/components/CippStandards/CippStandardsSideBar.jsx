@@ -127,6 +127,7 @@ const CippStandardsSideBar = ({
             allTenants={true}
             label="Included Tenants"
             formControl={formControl}
+            required={true}
           />
           {watchForm.tenantFilter?.some((tenant) => tenant.value === "AllTenants") && (
             <>
@@ -193,6 +194,7 @@ const CippStandardsSideBar = ({
       </CardContent>
       <Divider />
       <ActionList>
+        {console.log(formControl.formState.isValid, currentStep)}
         {actions.map((action, index) => (
           <ActionListItem
             key={index}
@@ -200,8 +202,7 @@ const CippStandardsSideBar = ({
             label={action.label}
             onClick={action.handler}
             disabled={
-              formControl.formState.isValid &&
-              (!stepsStatus[`step${index + 1}`] || currentStep < 3 || action.disabled || false)
+              !(watchForm.tenantFilter && watchForm.tenantFilter.length > 0) || currentStep < 3
             }
           />
         ))}
