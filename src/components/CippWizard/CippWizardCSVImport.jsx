@@ -22,7 +22,7 @@ export const CippWizardCSVImport = (props) => {
   const [newTableData, setTableData] = useState([]);
   const handleRemoveItem = (row) => {
     if (row === undefined) return false;
-    const index = tableData.findIndex((item) => item === row);
+    const index = tableData?.findIndex((item) => item === row);
     const newTableData = [...tableData];
     newTableData.splice(index, 1);
     setTableData(newTableData);
