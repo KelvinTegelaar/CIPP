@@ -41,4 +41,5 @@ export const CippTranslations = {
   FromIP: "From IP",
   ToIP: "To IP",
   "info.logoUrl": "Logo",
+  "commitmentTerm.renewalConfiguration.renewalDate": "Renewal Date",
 };

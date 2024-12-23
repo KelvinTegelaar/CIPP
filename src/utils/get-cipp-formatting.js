@@ -89,6 +89,9 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     "WhenCreated",
     "WhenChanged",
     "CreationTime",
+    "renewalDate",
+    "commitmentTerm.renewalConfiguration.renewalDate",
+    "purchaseDate",
   ];
   if (timeAgoArray.includes(cellName)) {
     return isText && canReceive === false ? (

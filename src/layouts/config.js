@@ -177,6 +177,10 @@ export const nativeMenuItems = [
             path: "/tenant/administration/list-licenses",
           },
           {
+            title: "Sherweb Licence Report",
+            path: "/tenant/administration/list-csp-licenses",
+          },
+          {
             title: "Consented Applications",
             path: "/tenant/administration/application-consent",
           },
