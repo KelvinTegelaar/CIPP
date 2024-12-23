@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { DeleteForever } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "CSP Licenses Report";
@@ -57,6 +58,15 @@ const Page = () => {
       ],
       data: { Action: "!Remove", sku: "sku" },
       confirmText: "Enter the number of licenses to remove. This must be a number greater than 0.",
+      multiPost: false,
+    },
+    {
+      label: "Cancel Subscription",
+      type: "POST",
+      icon: <DeleteForever />,
+      url: "/api/ExecCSPLicense",
+      data: { Action: "!Cancel", SubscriptionIds: "id" },
+      confirmText: "Are you sure you want to cancel this entire subscription?",
       multiPost: false,
     },
   ]; // No actions specified, setting to empty array
