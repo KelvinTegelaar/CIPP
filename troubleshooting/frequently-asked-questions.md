@@ -352,8 +352,10 @@ Auto Extend is only available for relationships without the Global Administrator
 
 <details>
 
-<summary>My CIPP-API Repository is missing its action workflow</summary>
+<summary>Troubleshooting CIPP-API Updating and Action Workflow Issues</summary>
 
-Follow the instructions [here](https://docs.cipp.app/setup/self-hosting-guide/runfrompackage).
+If your CIPP-API isn't updating, start by checking the Actions tab in your repository for a workflow named `_master*.yml`.
+- **If the workflow is missing:**  
+   Your repository may not be fully configured. Follow the instructions provided [here](https://docs.cipp.app/setup/self-hosting-guide/runfrompackage) to restore the action workflow.  
 
-</details>
+</details>  
