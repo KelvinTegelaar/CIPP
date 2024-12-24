@@ -349,3 +349,11 @@ Make sure you assign the correct groups to the CIPP service account. For more in
 Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years.
 
 </details>
+
+<details>
+
+<summary>My CIPP-API Repository is missing its action workflow</summary>
+
+Follow the instructions [here](https://docs.cipp.app/setup/self-hosting-guide/runfrompackage).
+
+</details>
