@@ -188,11 +188,8 @@ export const CippFormComponent = (props) => {
       return (
         <>
           <div>
-            <Checkbox
-              {...other}
-              {...formControl.register(convertedName, { ...validators })}
-              label={label}
-            />
+            <Checkbox {...other} {...formControl.register(convertedName, { ...validators })} />
+            <label>{label}</label>
           </div>
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}

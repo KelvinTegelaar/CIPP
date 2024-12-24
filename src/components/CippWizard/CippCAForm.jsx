@@ -17,7 +17,7 @@ export const CippCAForm = (props) => {
       const template = CATemplates.data.find((template) => template.GUID === watcher.value);
       if (template) {
         setJSONData(template);
-        formControl.setValue("rawjson", template);
+        formControl.setValue("rawjson", JSON.stringify(template, null));
       }
     }
   }, [CATemplates, watcher]);

@@ -100,20 +100,30 @@ export const CippApiResults = (props) => {
   const [fetchingVisible, setFetchingVisible] = useState(false);
   const [finalResults, setFinalResults] = useState([]);
   const correctResultObj = useMemo(() => {
+    if (!apiObject.isSuccess) return;
+
     const data = apiObject?.data;
     const dataData = data?.data;
-
-    if (dataData?.Results) {
-      return dataData.Results;
-    } else if (data?.Results) {
-      return data.Results;
-    } else if (dataData && !("metadata" in dataData)) {
-      return dataData;
-    } else if (data && !("metadata" in data)) {
-      return data;
-    } else {
-      return "This API has not sent the correct output format.";
+    if (dataData !== undefined && dataData !== null) {
+      if (dataData?.Results) {
+        return dataData.Results;
+      } else if (typeof dataData === "object" && dataData !== null && !("metadata" in dataData)) {
+        return dataData;
+      } else if (typeof dataData === "string") {
+        return dataData;
+      } else {
+        return "This API has not sent the correct output format.";
+      }
     }
+    if (data?.Results) {
+      return data.Results;
+    } else if (typeof data === "object" && data !== null && !("metadata" in data)) {
+      return data;
+    } else if (typeof data === "string") {
+      return data;
+    }
+
+    return "This API has not sent the correct output format.";
   }, [apiObject]);
 
   const allResults = useMemo(() => {

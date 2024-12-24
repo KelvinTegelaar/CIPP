@@ -293,11 +293,6 @@ const Page = () => {
           value: [{ id: "userType", value: "Guest" }],
           type: "column",
         },
-        {
-          //no type means its a text filter.
-          filterName: "User Account",
-          value: "Complex: isResourceAccount eq false",
-        },
       ]}
     />
   );
