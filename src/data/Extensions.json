@@ -217,11 +217,13 @@
         "label": "Monitor domains in Hudu"
       },
       {
+        "_comment": "I have added this checkbox as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance",
         "type": "checkbox",
         "name": "Hudu.CFEnabled",
         "label": "CloudFlare Tunnel Credentials"
       },
       {
+        "_comment": "Store the CloudFlare Client ID in the Azure Key Vault for use later",
         "type": "input",
         "fieldtype": "password",
         "name": "CloudFlareClientID.APIKey",
@@ -229,6 +231,7 @@
         "placeholder": "Client ID"
       },
       {
+        "_comment": "Store the CloudFlare API Key in the Azure Key Vault for use later",
         "type": "input",
         "fieldtype": "password",
         "name": "CloudFlareAPIKey.APIKey",
