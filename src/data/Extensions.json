@@ -215,6 +215,25 @@
         "type": "checkbox",
         "name": "Hudu.MonitorDomains",
         "label": "Monitor domains in Hudu"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.CFEnabled",
+        "label": "CloudFlare Tunnel Credentials"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "CloudFlareClientID.APIKey",
+        "label": "CloudFlare Tunnel Service Account Client ID (for Hudu Integration)",
+        "placeholder": "Client ID"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "CloudFlareAPIKey.APIKey",
+        "label": "CloudFlare Tunnel Service Account Client Secret (for Hudu Integration)",
+        "placeholder": "Client Secret"
       }
     ],
     "mappingRequired": true,
