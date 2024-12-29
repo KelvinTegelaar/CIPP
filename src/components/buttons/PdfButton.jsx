@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 
 function ExportPDFButton(props) {
   const base64 = useSelector((state) => state.app.reportImage)
-  const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName = 'report') => {
+  const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A3', reportName = 'report') => {
     const unit = 'pt'
     const size = pdfSize // Use A1, A2, A3 or A4
     const orientation = 'landscape' // portrait or landscape

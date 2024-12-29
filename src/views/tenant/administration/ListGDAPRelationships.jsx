@@ -112,6 +112,14 @@ const Actions = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to enable auto-extend for this relationship',
           },
           {
+            label: 'Remove Global Administrator from Relationship',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/ExecGDAPRemoveGArole?&GDAPID=${row.id}`,
+            modalMessage:
+              'Are you sure you want to remove Global Administrator from this relationship?',
+          },
+          {
             label: 'Terminate Relationship',
             color: 'danger',
             modal: true,
@@ -128,7 +136,6 @@ const Actions = (row, rowIndex, formatExtraData) => {
     </>
   )
 }
-
 const GDAPRelationships = () => {
   const columns = [
     {
@@ -220,6 +227,13 @@ const GDAPRelationships = () => {
             selectableRows: true,
             actionsList: [
               {
+                label: 'Remove Global Administrator from Relationship',
+                modal: true,
+                modalUrl: `/api/ExecGDAPRemoveGArole?&GDAPID=!id`,
+                modalMessage:
+                  'Are you sure you want to remove Global Administrator from these relationship(s)?',
+              },
+              {
                 label: 'Terminate Relationship',
                 modal: true,
                 modalUrl: `/api/ExecDeleteGDAPRelationship?&GDAPID=!id`,
@@ -237,7 +251,7 @@ const GDAPRelationships = () => {
           columns,
           reportName: `GDAP-Relationships`,
           path: '/api/ListGraphRequest',
-          params: { Endpoint: 'tenantRelationships/delegatedAdminRelationships' },
+          params: { Endpoint: 'tenantRelationships/delegatedAdminRelationships', $top: 300 },
         }}
       />
     </div>

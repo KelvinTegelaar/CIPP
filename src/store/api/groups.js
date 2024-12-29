@@ -59,6 +59,16 @@ export const groupsApi = baseApi.injectEndpoints({
         params: { tenantFilter: tenantDomain, userId },
       }),
     }),
+    listGroupSenderAuth: builder.query({
+      query: ({ tenantDomain, groupId, type }) => ({
+        path: '/api/ListGroupSenderAuthentication',
+        params: {
+          TenantFilter: tenantDomain,
+          GroupId: groupId,
+          Type: type,
+        },
+      }),
+    }),
   }),
 })
 export const {
@@ -69,4 +79,5 @@ export const {
   useListGroupMembersQuery,
   useListGroupOwnersQuery,
   useListUserGroupsQuery,
+  useListGroupSenderAuthQuery,
 } = groupsApi

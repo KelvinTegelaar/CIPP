@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { CBadge } from '@coreui/react'
+import { CBadge, CCol, CRow } from '@coreui/react'
 
 export const CellBadge = ({ label = '', color = '', children, ...rest }) => {
   //Create a case select, and return the color based on the label
@@ -19,14 +19,28 @@ export const CellBadge = ({ label = '', color = '', children, ...rest }) => {
       break
     case 'running':
       color = 'primary'
+      break
   }
+  //if a label contains a comma, split it, and return multiple badges, if not, return one badge. force the badges to be on their own line
 
-  return (
-    <CBadge color={color} {...rest}>
-      {label}
-      {children}
-    </CBadge>
-  )
+  if (label.includes(',')) {
+    const labels = label.split(',')
+    return labels.map((label, idx) => (
+      <>
+        <CBadge key={idx} className="me-2" color={color} {...rest}>
+          {label}
+          {children}
+        </CBadge>
+      </>
+    ))
+  } else {
+    return (
+      <CBadge className="me-2" color={color} {...rest}>
+        {label}
+        {children}
+      </CBadge>
+    )
+  }
 }
 
 CellBadge.propTypes = {

@@ -58,8 +58,10 @@ const MEMAddPolicyTemplate = () => {
                       label="Select Policy Type"
                       placeholder="Select a template type"
                       values={[
+                        { label: 'App Protection Policy', value: 'AppProtection' },
                         { label: 'Administrative Template', value: 'Admin' },
                         { label: 'Settings Catalog', value: 'Catalog' },
+                        { label: 'Device Compliance Policy', value: 'deviceCompliancePolicies' },
                         { label: 'Custom Configuration', value: 'Device' },
                       ]}
                       validate={required}

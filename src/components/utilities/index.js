@@ -18,6 +18,7 @@ import PageSizeSwitcher from 'src/components/utilities/PageSizeSwitcher'
 import Toasts from 'src/components/utilities/Toasts'
 import UsageLocation from 'src/components/utilities/UsageLocation'
 import CippTableOffcanvas from './CippTableOffcanvas'
+import validateAlphabeticalSort from './validateAlphabeticalSort'
 
 export {
   CippActionsOffcanvas,
@@ -43,4 +44,5 @@ export {
   PageSizeSwitcher,
   Toasts,
   UsageLocation,
+  validateAlphabeticalSort,
 }

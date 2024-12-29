@@ -6,7 +6,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
+import { RFFCFormSelect, RFFCFormTextarea, RFFCFormInput } from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 
@@ -54,7 +54,6 @@ const SpamFilterAdd = () => {
                 let template = intuneTemplates.data.filter(function (obj) {
                   return obj.GUID === value
                 })
-                // console.log(template[0][set])
                 onChange(JSON.stringify(template[0]))
               }}
             </OnChange>
@@ -152,6 +151,11 @@ const SpamFilterAdd = () => {
             />
           </CCol>
         </CRow>
+        <CRow>
+          <CCol>
+            <RFFCFormInput name="Priority" label="SpamFilter priority" placeholder={'0'} />
+          </CCol>
+        </CRow>
         <hr className="my-4" />
         <WhenFieldChanges field="TemplateList" set="PowerShellCommand" />
       </CippWizard.Page>
@@ -180,6 +184,8 @@ const SpamFilterAdd = () => {
                       </CCallout>
                       <h5 className="mb-0">Rule Settings</h5>
                       <CCallout color="info">{props.values.PowerShellCommand}</CCallout>
+                      <h5 className="mb-0">Priority</h5>
+                      <CCallout color="info">{props.values.Priority}</CCallout>
                     </CCol>
                   </CRow>
                 </>

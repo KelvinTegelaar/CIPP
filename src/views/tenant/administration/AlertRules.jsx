@@ -114,14 +114,14 @@ const AlertRules = () => {
       name: 'If',
       selector: (row) => row['if'],
       sortable: true,
-      cell: cellBadgeFormatter(),
+      cell: cellGenericFormatter(),
       exportSelector: 'if',
     },
     {
       name: 'Execute',
       selector: (row) => row['execution'],
       sortable: true,
-      cell: (row) => CellTip(row['execution']),
+      cell: cellGenericFormatter(),
       exportSelector: 'execution',
     },
     {

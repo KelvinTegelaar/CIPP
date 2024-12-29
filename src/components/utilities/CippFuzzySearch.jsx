@@ -4,7 +4,7 @@ import Fuse from 'fuse.js'
 function CippfuzzySearch(options) {
   const fuse = new Fuse(options, {
     keys: ['name', 'groupName', 'items.name'],
-    threshold: 0.5,
+    threshold: 0.3,
     location: 0,
     ignoreLocation: true,
     useExtendedSearch: true,
@@ -15,8 +15,8 @@ function CippfuzzySearch(options) {
     if (!value.length) {
       return options
     }
-
-    return fuse.search(value).map((_ref) => {
+    const search = fuse.search(value)
+    return search.map((_ref) => {
       let { item } = _ref
       return item
     })

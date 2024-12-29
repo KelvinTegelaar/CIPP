@@ -138,7 +138,14 @@ const AddGroup = () => {
                   <CRow>
                     <RFFCFormRadio name="groupType" label="Azure Role Group" value="azurerole" />
                     <RFFCFormRadio name="groupType" label="Security Group" value="generic" />
+                    <RFFCFormRadio name="groupType" label="Microsoft 365 Group" value="m365" />
                     <RFFCFormRadio name="groupType" label="Dynamic Group" value="dynamic" />
+                    <RFFCFormRadio
+                      name="groupType"
+                      label="Dynamic Distribution Group "
+                      value="dynamicdistribution"
+                    />
+
                     <RFFCFormRadio
                       name="groupType"
                       label="Distribution List"
@@ -156,6 +163,15 @@ const AddGroup = () => {
                       />
                     </Condition>
                     <Condition when="groupType" is="dynamic">
+                      <RFFCFormTextarea
+                        name="membershipRules"
+                        label="Dynamic Group Parameters"
+                        placeholder={
+                          'Enter the dynamic group parameters syntax. e.g: (user.userPrincipalName -notContains `"#EXT#@`") -and (user.userType -ne `"Guest`")'
+                        }
+                      />
+                    </Condition>
+                    <Condition when="groupType" is="dynamicdistribution">
                       <RFFCFormTextarea
                         name="membershipRules"
                         label="Dynamic Group Parameters"

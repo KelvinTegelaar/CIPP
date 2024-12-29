@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
+import {
+  CellBytes,
+  CellBytesToPercentage,
+  cellBytesFormatter,
+} from 'src/components/tables/CellBytes'
 
 const MailboxStatsList = () => {
   const [tenantColumnSet, setTenantColumn] = useState(true)
@@ -64,23 +69,32 @@ const MailboxStatsList = () => {
       exportSelector: 'lastActivityDate',
     },
     {
-      selector: (row) => (row['storageUsedInBytes'] / 1024 ** 3).toFixed(2),
+      selector: (row) => row['storageUsedInBytes'],
+      cell: cellBytesFormatter(),
       name: 'Used Space (GB)',
       sortable: true,
       exportSelector: 'storageUsedInBytes',
+      exportFormatter: CellBytes,
     },
     {
-      selector: (row) => (row['prohibitSendReceiveQuotaInBytes'] / 1024 ** 3).toFixed(2),
+      selector: (row) => row['prohibitSendReceiveQuotaInBytes'],
+      cell: cellBytesFormatter(),
       name: 'Quota (GB)',
       sortable: true,
-      exportSelector: 'QuotaGB',
+      exportSelector: 'prohibitSendReceiveQuotaInBytes',
+      exportFormatter: CellBytes,
     },
     {
       selector: (row) =>
         Math.round((row.storageUsedInBytes / row.prohibitSendReceiveQuotaInBytes) * 100 * 10) / 10,
       name: 'Quota Used(%)',
       sortable: true,
-      exportSelector: 'QuotaUsed',
+      exportSelector: 'CippStatus',
+      exportFormatter: CellBytesToPercentage,
+      exportFormatterArgs: {
+        value: 'storageUsedInBytes',
+        dividedBy: 'prohibitSendReceiveQuotaInBytes',
+      },
     },
     {
       selector: (row) => row['itemCount'],

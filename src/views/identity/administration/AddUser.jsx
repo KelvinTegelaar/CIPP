@@ -37,8 +37,12 @@ import useQuery from 'src/hooks/useQuery'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom'
 import { OnChange } from 'react-final-form-listeners'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const AddUser = () => {
+  const currentDate = new Date()
+  const [startDate, setStartDate] = useState(currentDate)
   let navigate = useNavigate()
   const [addedAttributes, setAddedAttribute] = React.useState(0)
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -81,6 +85,8 @@ const AddUser = () => {
         values.addedAttributes.push({ Key: key, Value: values.defaultAttributes[key].Value })
       })
     }
+    const unixTime = Math.floor(startDate.getTime() / 1000)
+
     const shippedValues = {
       AddedAliases: values.addedAliases ? values.addedAliases : '',
       BusinessPhone: values.businessPhones,
@@ -106,6 +112,10 @@ const AddUser = () => {
       tenantID: tenantDomain,
       addedAttributes: values.addedAttributes,
       setManager: values.setManager,
+      Scheduled: values.Scheduled?.enabled ? { enabled: true, date: unixTime } : { enabled: false },
+      PostExecution: values.Scheduled?.enabled
+        ? { webhook: values.webhook, psa: values.psa, email: values.email }
+        : '',
       ...values.license,
     }
     //window.alert(JSON.stringify(shippedValues))
@@ -330,7 +340,7 @@ const AddUser = () => {
                         </CCol>
                       </CRow>
                       <>
-                        {currentSettings?.userSettingsDefaults?.defaultAttributes.map(
+                        {currentSettings?.userSettingsDefaults?.defaultAttributes?.map(
                           (attribute, idx) => (
                             <CRow key={idx}>
                               <CCol>
@@ -408,6 +418,33 @@ const AddUser = () => {
                           />
                           {usersError && <span>Failed to load list of users</span>}
                         </CCol>
+                        <CCol className="m-3">
+                          <RFFCFormSwitch name="Scheduled.enabled" label="Schedule user creation" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <Condition when="Scheduled.enabled" is={true}>
+                          <CCol>
+                            <label>Scheduled creation Date</label>
+                            <DatePicker
+                              className="form-control mb-3"
+                              selected={startDate}
+                              showTimeSelect
+                              timeFormat="HH:mm"
+                              timeIntervals={15}
+                              dateFormat="Pp"
+                              onChange={(date) => setStartDate(date)}
+                            />
+                          </CCol>
+                          <CRow>
+                            <CCol>
+                              <label>Send results to</label>
+                              <RFFCFormSwitch name="webhook" label="Webhook" />
+                              <RFFCFormSwitch name="email" label="E-mail" />
+                              <RFFCFormSwitch name="psa" label="PSA" />
+                            </CCol>
+                          </CRow>
+                        </Condition>
                       </CRow>
                       <CRow className="mb-3">
                         <CCol md={6}>

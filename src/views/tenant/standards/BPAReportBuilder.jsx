@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { CippPage, CippContentCard } from 'src/components/layout'
+import { CippPage, CippContentCard, CippCallout } from 'src/components/layout'
 import BPAReportSchema from 'src/data/BPAReport.schema.v1'
 import BPAReportUISchema from 'src/data/BPAReport.uischema.v1'
 import validator from '@rjsf/validator-ajv8'
@@ -24,7 +24,7 @@ import {
   CFormLabel,
   CTooltip,
 } from '@coreui/react'
-import { useGenericGetRequestQuery } from 'src/store/api/app'
+import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import PropTypes from 'prop-types'
@@ -109,6 +109,8 @@ const BPAReportBuilder = () => {
   let query = useQuery()
   const [refreshValue, setRefreshValue] = useState('')
   const Report = query.get('Report')
+  const [newBPATemplate, newTemplateResult] = useLazyGenericPostRequestQuery()
+
   const [filename, setFilename] = useState()
   const [visibleA, setVisibleA] = useState(true)
   const { data: templates = [], isLoading: templatesfetch } = useGenericGetRequestQuery({
@@ -151,13 +153,14 @@ const BPAReportBuilder = () => {
 
   const handlePublish = async (event) => {
     event.preventDefault()
-    const data = new FormData(event.target)
-    const ghuser = data.get('GitHubUser')
-    const reportfilename = data.get('ReportFilename')
-    const report = JSON.stringify(formData, null, 2)
-    const url =
-      'https://github.com/' + ghuser + '/CIPP-API/new/master/Config?filename=' + reportfilename
-    window.open(url, '_blank')
+    const data = formData
+    newBPATemplate({ path: '/api/AddBPATemplate', values: data })
+  }
+
+  const handleDelete = async (event) => {
+    event.preventDefault()
+    const data = formData.name
+    newBPATemplate({ path: `/api/RemoveBPATemplate?TemplateName=${data}` })
   }
 
   const options = {
@@ -224,30 +227,38 @@ const BPAReportBuilder = () => {
                     </CForm>
                   </CCol>
                   <CCol>
-                    <CForm onSubmit={handlePublish}>
+                    <CForm id="publishForm" onSubmit={handlePublish}>
                       <CRow>
                         <CCol>
-                          <CFormLabel>GitHub Username/Org Name</CFormLabel>
-                          <CFormInput name="GitHubUser" required />
-                          <CFormLabel>Report Filename</CFormLabel>
-                          <CFormInput name="ReportFilename" value={filename} />
+                          <CFormLabel>Store and Publish Report in CIPP</CFormLabel>
                         </CCol>
                       </CRow>
-                      <CRow className="my-3">
-                        <CTooltip
-                          placement="left"
-                          content="Click here to create a new BPA template in GitHub, the report will be copied to the clipboard"
-                        >
-                          <CCol>
-                            <CopyToClipboard text={JSON.stringify(formData, null, 2)}>
-                              <CButton type="submit">
-                                <FontAwesomeIcon className="me-2" icon="upload" />
-                                Publish
-                              </CButton>
-                            </CopyToClipboard>
-                          </CCol>
-                        </CTooltip>
+                      <CRow className="mb-1">
+                        <CCol>
+                          <CTooltip
+                            placement="left"
+                            content="Click here to create a new BPA template. To overwrite an existing template, enter the name of the existing template."
+                          >
+                            <CButton className="me-2" form="publishForm" type="submit">
+                              <FontAwesomeIcon className="me-2" icon="upload" />
+                              Publish
+                            </CButton>
+                          </CTooltip>
+                          <CButton className="me-2" color="danger" onClick={(e) => handleDelete(e)}>
+                            <FontAwesomeIcon className="me-2" icon="remove" />
+                            Delete
+                          </CButton>
+                        </CCol>
                       </CRow>
+                      {newTemplateResult.isFetching && <CSpinner />}
+                      {newTemplateResult.isSuccess && (
+                        <CippCallout
+                          color={newTemplateResult.isSuccess ? 'success' : 'danger'}
+                          dismissible
+                        >
+                          {newTemplateResult?.data?.Results}
+                        </CippCallout>
+                      )}
                     </CForm>
                   </CCol>
                 </CRow>

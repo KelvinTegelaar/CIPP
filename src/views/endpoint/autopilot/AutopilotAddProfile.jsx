@@ -6,8 +6,9 @@ import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
+import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import langaugeList from 'src/data/languageList'
 
 const Error = ({ name }) => (
   <Field
@@ -112,7 +113,20 @@ const ApplyStandard = () => {
             </CCol>
           </CRow>
           <CRow>
-            <CCol md={12}>
+            <CCol md={12} className="mb-2">
+              <RFFSelectSearch
+                values={langaugeList.map(({ language, tag }) => ({
+                  value: tag,
+                  name: language,
+                }))}
+                name="languages"
+                multi={false}
+                label="Languages"
+              />
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol md={12} className="mb-2">
               <RFFCFormInput
                 type="text"
                 name="Description"
@@ -122,41 +136,44 @@ const ApplyStandard = () => {
             </CCol>
           </CRow>
           <CRow>
-            <CCol md={12}>
+            <CCol md={12} className="mb-2">
               <RFFCFormInput
                 type="text"
                 name="DeviceNameTemplate"
                 label="Unique name template"
                 placeholder="leave blank for none"
               />
-              <br></br>
             </CCol>
           </CRow>
-          <RFFCFormSwitch
-            value={true}
-            name="CollectHash"
-            label="Convert all targeted devices to Autopilot"
-          />
-          <RFFCFormSwitch value={true} name="Assignto" label="Assign to all devices" />
-          <RFFCFormSwitch value={true} name="DeploymentMode" label="Self-deploying mode" />
-          <RFFCFormSwitch value={true} name="HideTerms" label="Hide Terms and conditions" />
-          <RFFCFormSwitch value={true} name="HidePrivacy" label="Hide Privacy Settings" />
-          <RFFCFormSwitch
-            value={true}
-            name="HideChangeAccount"
-            label="Hide Change Account Options"
-          />
-          <RFFCFormSwitch
-            value={true}
-            name="NotLocalAdmin"
-            label="Setup user as standard user (Leave unchecked to setup user as local admin)"
-          />
-          <RFFCFormSwitch value={true} name="allowWhiteglove" label="Allow White Glove OOBE" />
-          <RFFCFormSwitch
-            value={true}
-            name="Autokeyboard"
-            label="Automatically configure keyboard"
-          />
+          <CRow>
+            <CCol md={12} className="mb-2">
+              <RFFCFormSwitch
+                value={true}
+                name="CollectHash"
+                label="Convert all targeted devices to Autopilot"
+              />
+              <RFFCFormSwitch value={true} name="Assignto" label="Assign to all devices" />
+              <RFFCFormSwitch value={true} name="DeploymentMode" label="Self-deploying mode" />
+              <RFFCFormSwitch value={true} name="HideTerms" label="Hide Terms and conditions" />
+              <RFFCFormSwitch value={true} name="HidePrivacy" label="Hide Privacy Settings" />
+              <RFFCFormSwitch
+                value={true}
+                name="HideChangeAccount"
+                label="Hide Change Account Options"
+              />
+              <RFFCFormSwitch
+                value={true}
+                name="NotLocalAdmin"
+                label="Setup user as standard user (Leave unchecked to setup user as local admin)"
+              />
+              <RFFCFormSwitch value={true} name="allowWhiteglove" label="Allow White Glove OOBE" />
+              <RFFCFormSwitch
+                value={true}
+                name="Autokeyboard"
+                label="Automatically configure keyboard"
+              />
+            </CCol>
+          </CRow>
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>

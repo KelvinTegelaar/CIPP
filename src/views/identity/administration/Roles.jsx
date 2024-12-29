@@ -23,7 +23,12 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       >
         <h5>Role Group Name:</h5> {row.DisplayName}
         <br></br> <br></br>
-        <h5>Member Names:</h5> {row.Members ? <p>{row.Members}</p> : <p>Role has no members.</p>}
+        <h5>Member Names:</h5>{' '}
+        {row.Members ? (
+          row.Members.split(',').map((member, index) => <p key={index}>{member}</p>)
+        ) : (
+          <p>Role has no members.</p>
+        )}
       </CippOffcanvas>
     </>
   )
@@ -52,6 +57,26 @@ const columns = [
     cell: Offcanvas,
     exportSelector: 'Members',
     omit: true,
+  },
+  {
+    selector: (row) => row['Members'],
+    name: 'Assignments',
+    sortable: false,
+    cell: (row) => {
+      if (row.Members === 'none') {
+        return null
+      }
+      const memberCount = row.Members ? row.Members.split(',').length : 0
+      const memberText =
+        row.Members && row.Members !== 'none' ? `Member${memberCount === 1 ? '' : 's'}` : null
+      return (
+        <>
+          {memberCount} {memberText}
+        </>
+      )
+    },
+    exportSelector: 'Members',
+    maxWidth: '150px',
   },
   {
     selector: (row) => 'View Members',

@@ -24,7 +24,6 @@ export default class WizardTableField extends React.Component {
   }
 
   handleSelect = ({ selectedRows = [] }) => {
-    // console.log(selectedRows)
     const { fieldProps, keyField } = this.props
     if (selectedRows.length > 0) {
       fieldProps.input.onChange(selectedRows)
@@ -73,6 +72,7 @@ export default class WizardTableField extends React.Component {
           selectableRows: true,
           onSelectedRowsChange: this.handleSelect,
         }}
+        dynamicColumns={false}
         {...props}
       />
     )
