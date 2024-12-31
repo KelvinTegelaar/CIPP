@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Typography, Divider } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import {
   Save as SaveIcon,
   Delete,
@@ -37,18 +37,28 @@ const GroupItems = styled("ul")({
   padding: 0,
 });
 
-const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "accordion" }) => {
+const CippGraphExplorerFilter = ({
+  endpointFilter,
+  onSubmitFilter,
+  onPresetChange,
+  component = "accordion",
+}) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
   const [cardExpanded, setCardExpanded] = useState(true);
   const [offCanvasContent, setOffCanvasContent] = useState(null);
   const [selectedPresetState, setSelectedPreset] = useState(null);
   const [presetOwner, setPresetOwner] = useState(false);
+  const [lastPresetTitle, setLastPresetTitle] = useState(null);
   const [presetOptions, setPresetOptions] = useState([]);
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
       endpoint: "",
       $select: [],
+      $filter: "",
+      $expand: "",
+      $top: "",
+      $search: "",
       NoPagination: false,
       ReverseTenantLookup: false,
       ReverseTenantLookupProperty: "tenantId",
@@ -57,6 +67,8 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
       IsShared: false,
     },
   });
+
+  const defaultGraphExplorerTitle = "Graph Explorer";
 
   var gridItemSize = 6;
   if (component !== "accordion") {
@@ -68,16 +80,16 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
     gridSwitchSize = 12;
   }
 
-  const { control, handleSubmit, watch } = formControl;
+  const { control, handleSubmit } = formControl;
   const tenant = useSettings().currentTenant;
-  const endPoint = useWatch({ control, name: "endpoint" });
+  const endpoint = useWatch({ control, name: "endpoint" });
 
   // API call for available properties
   const propertyList = ApiGetCall({
     url: "/api/ListGraphRequest",
-    queryKey: `graph-properties-${endPoint}`,
+    queryKey: `graph-properties-${endpoint}`,
     data: {
-      Endpoint: endPoint,
+      Endpoint: endpoint,
       ListProperties: true,
       TenantFilter: tenant,
       IgnoreErrors: true,
@@ -133,11 +145,11 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
   // Debounced refetch when endpoint, put in in a useEffect dependand on endpoint
   const debouncedRefetch = useCallback(
     debounce(() => {
-      if (endPoint) {
+      if (endpoint) {
         propertyList.refetch();
       }
     }, 1000),
-    [endPoint] // Dependencies that the debounce function depends on
+    [endpoint] // Dependencies that the debounce function depends on
   );
 
   useEffect(() => {
@@ -146,7 +158,7 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
     return () => {
       debouncedRefetch.cancel();
     };
-  }, [endPoint, debouncedRefetch]);
+  }, [endpoint, debouncedRefetch]);
 
   const savePresetApi = ApiPostCall({
     relatedQueryKeys: "ListGraphExplorerPresets",
@@ -199,6 +211,8 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
       setSelectedPreset(selectedPresets.value);
       selectedPresets.addedFields.params.name = selectedPresets.label;
 
+      // save last preset title
+      setLastPresetTitle(selectedPresets.label);
       formControl.reset(selectedPresets?.addedFields?.params, { keepDefaultValues: true });
     }
   }, [selectedPresets]);
@@ -404,6 +418,18 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
     }
     if (values.$count === false) {
       delete values.$count;
+    }
+
+    Object.keys(values).forEach((key) => {
+      if (values[key] === null) {
+        delete values[key];
+      }
+    });
+
+    if (onPresetChange) {
+      console.log(lastPresetTitle);
+      const presetName = lastPresetTitle ? `Graph Explorer - ${lastPresetTitle}` : null;
+      if (presetName) onPresetChange(presetName);
     }
     onSubmitFilter(values);
     setCardExpanded(false);

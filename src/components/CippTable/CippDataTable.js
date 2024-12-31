@@ -50,6 +50,7 @@ export const CippDataTable = (props) => {
     incorrectDataMessage = "Data not in correct format",
     onChange,
     filters = [],
+    clearOnError = false,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
@@ -68,6 +69,13 @@ export const CippDataTable = (props) => {
     queryKey: configuredQueryKey,
     waiting: waitingBool,
   });
+
+  useEffect(() => {
+    if (queryKey && api?.url) {
+      setConfiguredQueryKey(queryKey);
+      getRequestData.refetch();
+    }
+  }, [queryKey]);
 
   useEffect(() => {
     if (Array.isArray(data) && !api?.url) {
@@ -153,6 +161,12 @@ export const CippDataTable = (props) => {
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
   }, [columns.length, usedData, queryKey]);
+
+  useEffect(() => {
+    if (clearOnError && getRequestData.isError) {
+      setUsedData([]);
+    }
+  }, [getRequestData.isError, getRequestData.isFetchNextPageError, clearOnError]);
 
   const createDialog = useDialog();
 

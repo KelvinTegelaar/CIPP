@@ -14,7 +14,8 @@
     "id": "6aa4445d-1202-41bb-9d24-431869420d13",
     "params": {
       "endpoint": "/users",
-      "$filter": "assignedLicenses/$count ne 0"
+      "$filter": "assignedLicenses/$count ne 0",
+      "$count": true
     },
     "isBuiltin": true
   },
@@ -23,7 +24,8 @@
     "id": "277f07f1-17d5-4339-bc3f-c95c904ae794",
     "params": {
       "endpoint": "/users",
-      "$filter": "assignedLicenses/$count ne 0 and accountEnabled eq true"
+      "$filter": "assignedLicenses/$count ne 0 and accountEnabled eq true",
+      "$count": true
     },
     "isBuiltin": true
   },

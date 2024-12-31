@@ -3,17 +3,20 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import CippGraphExplorerFilter from "../../../../components/CippTable/CippGraphExplorerFilter";
 import { useState } from "react";
 import Grid from "@mui/material/Grid2";
+import { useSettings } from "/src/hooks/use-settings";
 
 const Page = () => {
-  const pageTitle = "Graph Explorer";
   const [apiFilter, setApiFilter] = useState([]);
-  const queryKey = JSON.stringify(apiFilter);
+  const [pageTitle, setPageTitle] = useState("Graph Explorer");
+  const tenantFilter = useSettings().currentTenant;
+  const queryKey = JSON.stringify({ apiFilter, tenantFilter });
+
   return (
     <CippTablePage
       tableFilter={
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <CippGraphExplorerFilter onSubmitFilter={setApiFilter} />
+            <CippGraphExplorerFilter onSubmitFilter={setApiFilter} onPresetChange={setPageTitle} />
           </Grid>
         </Grid>
       }
@@ -22,8 +25,9 @@ const Page = () => {
       apiUrl={apiFilter.endpoint ? "/api/ListGraphRequest" : null}
       apiData={apiFilter}
       queryKey={queryKey}
-      Key={`${apiFilter.endpoint}-${apiFilter.$select}`}
+      /*Key={`${apiFilter.endpoint}-${apiFilter.$select}`}*/
       simpleColumns={apiFilter?.$select != "" ? apiFilter?.$select?.split(",") : []}
+      clearOnError={true}
     />
   );
 };
