@@ -93,7 +93,9 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     "commitmentTerm.renewalConfiguration.renewalDate",
     "purchaseDate",
   ];
-  if (timeAgoArray.includes(cellName)) {
+
+  const matchDateTime = /[dD]ate[tT]ime/;
+  if (timeAgoArray.includes(cellName) || matchDateTime.test(cellName)) {
     return isText && canReceive === false ? (
       new Date(data).toLocaleString() // This runs if canReceive is false and isText is true
     ) : isText && canReceive !== "both" ? (
@@ -240,13 +242,6 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
   }
 
-  if (cellName === "@odata.type") {
-    if (data.startsWith("#microsoft.graph")) {
-      data = data.replace("#microsoft.graph.", "");
-    }
-    return getCippTranslation(data, "odataType");
-  }
-
   // Handle null or undefined data
   if (data === null || data === undefined) {
     return isText ? (
@@ -256,6 +251,13 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
     );
+  }
+
+  if (cellName === "@odata.type") {
+    if (data.startsWith("#microsoft.graph")) {
+      data = data.replace("#microsoft.graph.", "");
+    }
+    return getCippTranslation(data, "@odata.type");
   }
 
   // Handle From address
