@@ -48,7 +48,7 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
     mode: "onChange",
     defaultValues: {
       endpoint: "",
-      $select: "",
+      $select: [],
       NoPagination: false,
       ReverseTenantLookup: false,
       ReverseTenantLookupProperty: "tenantId",
@@ -515,6 +515,18 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               placeholder="Select a preset"
             />
           </Grid>
+
+          {/* Preset Name Field */}
+          <Grid item size={gridItemSize}>
+            <CippFormComponent
+              type="textField"
+              name="name"
+              label="Preset Name"
+              formControl={formControl}
+              placeholder="Name for this filter preset"
+            />
+          </Grid>
+
           <Grid item size={gridItemSize}>
             <CippFormComponent
               type="textField"
@@ -535,33 +547,16 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               isFetching={propertyList.isLoading}
               options={
                 (propertyList.isSuccess &&
-                  propertyList?.data?.Results?.map((item) => ({ label: item, value: item }))) ||
-                []
+                  propertyList?.data?.Results?.length > 0 &&
+                  propertyList?.data?.Results?.map((item) => ({ label: item, value: item }))) || [
+                  {
+                    label: "No properties found, check your endpoint",
+                    value: "",
+                  },
+                ]
               }
               placeholder="Columns to select"
               helperText="Comma-separated list of columns to include in the response"
-            />
-          </Grid>
-
-          {/* Expand Field */}
-          <Grid item size={gridItemSize}>
-            <CippFormComponent
-              type="textField"
-              name="$expand"
-              label="Expand"
-              formControl={formControl}
-              placeholder="Expand related entities"
-            />
-          </Grid>
-
-          {/* Preset Name Field */}
-          <Grid item size={gridItemSize}>
-            <CippFormComponent
-              type="textField"
-              name="name"
-              label="Preset Name"
-              formControl={formControl}
-              placeholder="Name for this filter preset"
             />
           </Grid>
 
@@ -573,6 +568,17 @@ const CippGraphExplorerFilter = ({ endpointFilter, onSubmitFilter, component = "
               label="Filter"
               formControl={formControl}
               placeholder="OData filter"
+            />
+          </Grid>
+
+          {/* Expand Field */}
+          <Grid item size={gridItemSize}>
+            <CippFormComponent
+              type="textField"
+              name="$expand"
+              label="Expand"
+              formControl={formControl}
+              placeholder="Expand related entities"
             />
           </Grid>
 

@@ -99,9 +99,13 @@ export const CippAutoComplete = (props) => {
       fullWidth
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
-        const isExisting = options.length > 0 && options.some(
-          (option) => params.inputValue === option.value || params.inputValue === option.label
-        );
+        const isExisting =
+          options !== undefined &&
+          options !== null &&
+          options?.length > 0 &&
+          options?.some(
+            (option) => params.inputValue === option.value || params.inputValue === option.label
+          );
         if (params.inputValue !== "" && creatable && !isExisting) {
           filtered.push({
             label: `Add option: "${params.inputValue}"`,
@@ -149,7 +153,13 @@ export const CippAutoComplete = (props) => {
         }
       }}
       options={api ? usedOptions : options}
-      getOptionLabel={(option) => option ? (option.label === null ? "" : option.label || "Label not found - Are you missing a labelField?") : ""}
+      getOptionLabel={(option) =>
+        option
+          ? option.label === null
+            ? ""
+            : option.label || "Label not found - Are you missing a labelField?"
+          : ""
+      }
       sx={sx}
       renderInput={(params) => (
         <TextField
