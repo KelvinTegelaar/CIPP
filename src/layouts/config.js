@@ -378,10 +378,6 @@ export const nativeMenuItems = [
         path: "/email/spamfilter",
         items: [
           { title: "Spamfilter", path: "/email/spamfilter/list-spamfilter" },
-          {
-            title: "Apply Spamfilter Template",
-            path: "/email/spamfilter/deploy",
-          },
           { title: "Templates", path: "/email/spamfilter/list-templates" },
         ],
       },

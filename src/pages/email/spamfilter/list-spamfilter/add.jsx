@@ -28,8 +28,8 @@ const AddPolicy = () => {
     <CippFormPage
       formControl={formControl}
       queryKey="AddTransportRule"
-      title="Add Transport Rule"
-      backButtonTitle="Transport Rules Overview"
+      title="Add Spamfilter Rule"
+      backButtonTitle="Spamfilter Overview"
       postUrl="/api/AddSpamFilter"
     >
       <Grid container spacing={2}>

@@ -11,7 +11,9 @@ const Page = () => {
       label: "Create template based on rule",
       type: "POST",
       url: "/api/AddSpamfilterTemplate",
-      data: {},
+      dataFunction: (data) => {
+        return { ...data };
+      },
       confirmText: "Are you sure you want to create a template based on this rule?",
     },
     {
