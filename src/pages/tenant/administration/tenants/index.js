@@ -21,9 +21,9 @@ const Page = () => {
           portal_teams: `https://admin.teams.microsoft.com/?delegatedOrg=${tenant.defaultDomainName}`,
           portal_azure: `https://portal.azure.com/${tenant.defaultDomainName}`,
           portal_intune: `https://intune.microsoft.com/${tenant.defaultDomainName}`,
-          portal_security: `https://security.microsoft.com/?tid=${tenant.tenantId}`,
-          portal_compliance: `https://compliance.microsoft.com/?tid=${tenant.tenantId}`,
-          portal_sharepoint: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${tenant.tenantId}&CSDEST=SharePoint`,
+          portal_security: `https://security.microsoft.com/?tid=${tenant.customerId}`,
+          portal_compliance: `https://compliance.microsoft.com/?tid=${tenant.customerId}`,
+          portal_sharepoint: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${tenant.customerId}&CSDEST=SharePoint`,
         });
       });
     }
