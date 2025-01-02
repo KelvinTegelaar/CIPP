@@ -161,6 +161,38 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: "Pre-provision OneDrive",
+      type: "POST",
+      url: "/api/ExecOneDriveProvision",
+      data: { UserPrincipalName: "userPrincipalName" },
+      confirmText: "Are you sure you want to pre-provision OneDrive for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Add OneDrive Shortcut",
+      type: "POST",
+      url: "/api/ExecOneDriveShortCut",
+      data: {
+        username: "userPrincipalName",
+        userid: "id",
+      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "siteUrl",
+          label: "Select a Site",
+          multiple: false,
+          api: {
+            url: "/api/ListSites",
+            data: { type: "SharePointSiteUsage", URLOnly: true },
+            labelField: "URL",
+            valueField: "URL",
+          },
+        },
+      ],
+      confirmText: "Select a SharePoint site to create a shortcut for:",
+    },
+    {
       label: "Block Sign In",
       type: "GET",
       url: "/api/ExecDisableUser",
