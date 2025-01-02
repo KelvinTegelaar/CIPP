@@ -3,6 +3,7 @@ import isEqual from "lodash/isEqual"; // lodash for deep comparison
 
 export const CippFormCondition = (props) => {
   let { field, compareType = "is", compareValue, children, formControl } = props;
+
   if (
     field === undefined ||
     compareValue === undefined ||
@@ -11,6 +12,7 @@ export const CippFormCondition = (props) => {
   ) {
     return null;
   }
+
   let watcher = useWatch({ control: formControl.control, name: field });
   if (watcher?.value !== undefined) {
     watcher = watcher.value;
@@ -19,6 +21,7 @@ export const CippFormCondition = (props) => {
   if (compareValue?.value !== undefined) {
     compareValue = compareValue.value;
   }
+
   switch (compareType) {
     case "is":
       // Deep comparison for objects and arrays
@@ -96,6 +99,43 @@ export const CippFormCondition = (props) => {
 
     case "hasValue":
       if (watcher !== undefined && watcher !== null && watcher !== "") {
+        return children;
+      }
+      return null;
+
+    /*
+     * NEW CASES
+     */
+    case "labelEq":
+      // Checks if any object in array has .label exactly equal to compareValue
+      if (Array.isArray(watcher) && watcher.some((item) => item?.label === compareValue)) {
+        return children;
+      }
+      return null;
+
+    case "labelContains":
+      // Checks if any object in array has a .label that contains compareValue
+      if (
+        Array.isArray(watcher) &&
+        watcher.some((item) => typeof item?.label === "string" && item.label.includes(compareValue))
+      ) {
+        return children;
+      }
+      return null;
+
+    case "valueEq":
+      // Checks if any object in array has .value exactly equal to compareValue
+      if (Array.isArray(watcher) && watcher.some((item) => item?.value === compareValue)) {
+        return children;
+      }
+      return null;
+
+    case "valueContains":
+      // Checks if any object in array has a .value that contains compareValue
+      if (
+        Array.isArray(watcher) &&
+        watcher.some((item) => typeof item?.value === "string" && item.value.includes(compareValue))
+      ) {
         return children;
       }
       return null;

@@ -1,4 +1,4 @@
-import { InputAdornment, Typography } from "@mui/material";
+import { Alert, InputAdornment, Typography } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
@@ -6,10 +6,16 @@ import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUse
 import countryList from "/src/data/countryList.json";
 import { CippFormLicenseSelector } from "/src/components/CippComponents/CippFormLicenseSelector";
 import Grid from "@mui/material/Grid";
+import { ApiGetCall } from "../../api/ApiCall";
+import { useSettings } from "../../hooks/use-settings";
 
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = "add" } = props;
-
+  const tenantDomain = useSettings().currentTenant;
+  const integrationSettings = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "ListExtensionsConfig",
+  });
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={6}>
@@ -123,7 +129,56 @@ const CippAddEditUser = (props) => {
       <Grid item xs={12}>
         <CippFormLicenseSelector label="Licenses" name="licenses" formControl={formControl} />
       </Grid>
-      <Grid item xs={12}>
+      {integrationSettings?.data?.Sherweb.Enabled === true && (
+        <>
+          <CippFormCondition
+            formControl={formControl}
+            field="licenses"
+            compareType="labelContains"
+            compareValue="(0 available)"
+            labelCompare={true}
+          >
+            <Grid item xs={6}>
+              <CippFormComponent
+                type="switch"
+                label="0 Licences available. Purchase new licence?"
+                name="sherweb"
+                formControl={formControl}
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="sherweb"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid item xs={12}>
+                <Alert severity="info">
+                  This will Purchase a new Sherweb License for the user, according to the terms and
+                  conditions with Sherweb. When the license becomes available, CIPP will assign the
+                  license to this user.
+                </Alert>
+              </Grid>
+              <Grid item xs={12}>
+                <CippFormComponent
+                  type="autoComplete"
+                  api={{
+                    queryKey: `SKU-${tenantDomain}`,
+                    url: "/api/ListCSPsku",
+                    data: { currentSkuOnly: true },
+                    labelField: (option) => `${option?.productName} (${option?.sku})`,
+                    valueField: "sku",
+                  }}
+                  label="Sherweb License"
+                  name="sherwebLicense"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+          </CippFormCondition>
+        </>
+      )}
+      <Grid item xs={6}>
         <CippFormComponent
           type="switch"
           label="Remove all licenses"
