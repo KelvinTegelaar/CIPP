@@ -194,7 +194,6 @@ const CippStandardsSideBar = ({
       </CardContent>
       <Divider />
       <ActionList>
-        {console.log(formControl.formState.isValid, currentStep)}
         {actions.map((action, index) => (
           <ActionListItem
             key={index}

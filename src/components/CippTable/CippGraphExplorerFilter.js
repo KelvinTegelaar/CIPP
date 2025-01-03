@@ -427,7 +427,6 @@ const CippGraphExplorerFilter = ({
     });
 
     if (onPresetChange) {
-      console.log(lastPresetTitle);
       const presetName = lastPresetTitle ? `Graph Explorer - ${lastPresetTitle}` : null;
       if (presetName) onPresetChange(presetName);
     }

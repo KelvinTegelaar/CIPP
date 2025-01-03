@@ -164,7 +164,6 @@ const AlertWizard = () => {
         const conditions = selectedTemplate.template.conditions || [];
 
         conditions.forEach((condition, index) => {
-          console.log(condition.Input.value);
           // Ensure form structure is in place for 0th condition
           formControl.setValue(`conditions.${index}.Property`, condition.Property || "");
           formControl.setValue(`conditions.${index}.Operator`, condition.Operator || "");
