@@ -52,13 +52,13 @@ const CippIntegrationSettings = ({ children }) => {
 
   const postCall = ApiPostCall({
     datafromUrl: true,
+    relatedQueryKeys: [`IntegrationTenantMapping-${router.query.id}`],
   });
 
   const handleSubmit = () => {
     postCall.mutate({
       url: `/api/ExecExtensionMapping?AddMapping=${router.query.id}`,
       data: tableData,
-      queryKey: `IntegrationTenantMapping-${router.query.id}`,
     });
   };
 
@@ -235,6 +235,8 @@ const CippIntegrationSettings = ({ children }) => {
                 data={tableData}
                 simple={false}
                 simpleColumns={["Tenant", "IntegrationName"]}
+                isFetching={mappings.isFetching}
+                refreshFunction={() => mappings.refetch()}
               />
             </Box>
             <CippApiResults apiObject={postCall} />
