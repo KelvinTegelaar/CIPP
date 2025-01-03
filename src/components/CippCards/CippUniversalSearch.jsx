@@ -79,8 +79,8 @@ const Results = ({ items = [], searchValue }) => (
 
 const ResultsRow = ({ match, searchValue }) => {
   const highlightMatch = (text) => {
-    const parts = text.split(new RegExp(`(${searchValue})`, "gi"));
-    return parts.map((part, index) =>
+    const parts = text?.split(new RegExp(`(${searchValue})`, "gi"));
+    return parts?.map((part, index) =>
       part.toLowerCase() === searchValue.toLowerCase() ? (
         <Typography component="span" fontWeight="bold" key={index}>
           {part}
