@@ -8,13 +8,14 @@ import {
   Tooltip,
   IconButton,
   Button,
+  Alert,
 } from "@mui/material";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import { useForm } from "react-hook-form";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "/src/data/Extensions.json";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { Sync } from "@mui/icons-material";
 import { Stack } from "@mui/system";
@@ -32,34 +33,42 @@ const CippIntegrationFieldMapping = () => {
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: fieldMapping?.data?.Mappings?.map((mapping) => {
-      return {
-        [mapping.RowKey]: {
-          label: mapping?.IntegrationName,
-          value: mapping?.IntegrationId,
-        },
-      };
-    }),
   });
 
   const extension = extensions.find((extension) => extension.id === router.query.id);
+  const [missingMappings, setMissingMappings] = useState([]);
 
   useEffect(() => {
     if (fieldMapping.isSuccess) {
       var newMappings = {};
-      fieldMapping?.data?.Mappings?.map((mapping) => {
-        newMappings[mapping.RowKey] = {
-          label: mapping?.IntegrationName,
-          value: mapping?.IntegrationId,
-        };
+      var missingMappings = [];
+      fieldMapping?.data?.Mappings?.forEach((mapping) => {
+        const exists = fieldMapping?.data?.IntegrationFields?.some(
+          (integrationField) => integrationField.value === mapping.IntegrationId
+        );
+        if (exists) {
+          newMappings[mapping.RowKey] = {
+            label: mapping?.IntegrationName,
+            value: mapping?.IntegrationId,
+          };
+        } else {
+          const missingField = fieldMapping?.data?.CIPPFields?.find(
+            (field) => field.FieldName === mapping.RowKey
+          );
+          if (missingField) {
+            missingMappings.push(missingField.FieldLabel);
+          }
+        }
       });
+
+      setMissingMappings(missingMappings);
 
       formControl.reset({
         ...newMappings,
       });
       formControl.trigger();
     }
-  }, [fieldMapping.isSuccess]);
+  }, [fieldMapping.isSuccess, fieldMapping?.data]);
 
   return (
     <>
@@ -74,18 +83,18 @@ const CippIntegrationFieldMapping = () => {
           resetForm={false}
         >
           <>
-            {fieldMapping?.data?.CIPPFieldHeaders?.map((header, index) => (
-              <>
+            {fieldMapping?.data?.CIPPFieldHeaders?.map((header, headerIndex) => (
+              <React.Fragment key={`header-${headerIndex}`}>
                 <Stack direction="row" justifyContent="space-between">
                   <Box>
-                    <Typography key={index} variant="h4">
+                    <Typography variant="h4">
                       {header.Title}
                     </Typography>
-                    <Typography key={index} variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
                       {header.Description}
                     </Typography>
                   </Box>
-                  {index === 0 && (
+                  {headerIndex === 0 && (
                     <Box>
                       <Tooltip title="Refresh Mappings">
                         <Button
@@ -104,8 +113,8 @@ const CippIntegrationFieldMapping = () => {
                 <Grid container spacing={3} sx={{ mt: 1, mb: 3 }}>
                   {fieldMapping?.data?.CIPPFields?.filter(
                     (field) => field.FieldType === header.FieldType
-                  ).map((field, index) => (
-                    <Grid item xs={12} md={6} key={index}>
+                  ).map((field, fieldIndex) => (
+                    <Grid item xs={12} md={6} key={`field-${headerIndex}-${fieldIndex}`}>
                       <Box sx={{ p: 1 }}>
                         <CippFormComponent
                           name={field.FieldName}
@@ -125,15 +134,27 @@ const CippIntegrationFieldMapping = () => {
                           })}
                           formControl={formControl}
                           multiple={false}
+                          creatable={false}
                           fullWidth
                           isFetching={fieldMapping.isFetching}
+                          required={true}
+                          validators={{
+                            validate: (value) => {
+                              return value ? true : "Please select a value";
+                            },
+                          }}
                         />
                       </Box>
                     </Grid>
                   ))}
                 </Grid>
-              </>
+              </React.Fragment>
             ))}
+            {missingMappings.length > 0 && (
+              <Alert severity="warning">
+                The following mappings are missing: {missingMappings.join(", ")}
+              </Alert>
+            )}
           </>
         </CippFormSection>
       ) : (
