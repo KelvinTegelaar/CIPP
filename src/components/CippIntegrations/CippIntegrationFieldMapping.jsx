@@ -51,6 +51,11 @@ const CippIntegrationFieldMapping = () => {
             label: mapping?.IntegrationName,
             value: mapping?.IntegrationId,
           };
+        } else if (mapping.IntegrationId === "") {
+          newMappings[mapping.RowKey] = {
+            label: "--- Do not synchronize ---",
+            value: null,
+          };
         } else {
           const missingField = fieldMapping?.data?.CIPPFields?.find(
             (field) => field.FieldName === mapping.RowKey
@@ -87,9 +92,7 @@ const CippIntegrationFieldMapping = () => {
               <React.Fragment key={`header-${headerIndex}`}>
                 <Stack direction="row" justifyContent="space-between">
                   <Box>
-                    <Typography variant="h4">
-                      {header.Title}
-                    </Typography>
+                    <Typography variant="h4">{header.Title}</Typography>
                     <Typography variant="body2" sx={{ mb: 2 }}>
                       {header.Description}
                     </Typography>
@@ -124,8 +127,7 @@ const CippIntegrationFieldMapping = () => {
                             (integrationField) =>
                               (integrationField?.type === field.Type &&
                                 integrationField?.FieldType === field.FieldType) ||
-                              integrationField?.type === undefined ||
-                              integrationField?.FieldType === undefined
+                              integrationField?.type === "unset"
                           )?.map((integrationField) => {
                             return {
                               label: integrationField?.name,
@@ -137,6 +139,7 @@ const CippIntegrationFieldMapping = () => {
                           creatable={false}
                           fullWidth
                           isFetching={fieldMapping.isFetching}
+                          disableClearable={true}
                           required={true}
                           validators={{
                             validate: (value) => {
