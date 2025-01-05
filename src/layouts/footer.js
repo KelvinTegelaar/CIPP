@@ -1,43 +1,64 @@
-import { Box, Container, Link, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
+import { useSettings } from "../hooks/use-settings";
 
-const items = [
-  {
-    label: "About Us",
-    href: "https://devias.io/about-us",
-  },
-  {
-    label: "Terms",
-    href: "https://devias.io/legal/tos",
-  },
-];
+export const Footer = () => {
+  const currentSettings = useSettings();
+  const theme = currentSettings.currentTheme.value;
+  const sponsorimages = [
+    {
+      link: "https://rewst.com",
+      imagesrc: theme === "light" ? "/sponsors/rewst.png" : "/sponsors/rewst_dark.png",
+    },
+    {
+      link: "https://rightofboom.com",
+      imagesrc: theme === "light" ? "/sponsors/RoB-light.svg" : "/sponsors/RoB.png",
+    },
+    {
+      link: "https://ninjaone.com",
+      imagesrc: theme === "light" ? "/sponsors/ninjaone.png" : "/sponsors/ninjaone_white.png",
+    },
+    {
+      link: "https://augmentt.com",
+      imagesrc: theme === "light" ? "/sponsors/augmentt-light.png" : "/sponsors/augmentt-dark.png",
+    },
+    {
+      link: "https://huntress.com",
+      imagesrc: "/sponsors/huntress_teal.png",
+    },
+  ];
+  //randomize the order of the sponsor images
 
-export const Footer = () => (
-  <div>
-    <Container
-      maxWidth="xl"
-      sx={{
-        display: "flex",
-        flexDirection: {
-          xs: "column",
-          sm: "row",
-        },
-        py: 3,
-        "& a": {
-          mt: {
-            xs: 1,
-            sm: 0,
+  return (
+    <div>
+      <Container
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: {
+            xs: "column",
+            sm: "row",
           },
-          "&:not(:last-child)": {
-            mr: {
-              xs: 0,
-              sm: 5,
+          py: 1,
+          "& a": {
+            mt: {
+              xs: 1,
+              sm: 0,
+            },
+            "&:not(:last-child)": {
+              mr: {
+                xs: 0,
+                sm: 5,
+              },
             },
           },
-        },
-      }}
-    >
-      <Typography color="text.secondary" variant="caption"></Typography>
-      <Box sx={{ flexGrow: 1 }} />
-    </Container>
-  </div>
-);
+        }}
+      >
+        {sponsorimages.map((sponsor) => (
+          <a href={sponsor.link} target="_blank" rel="noopener noreferrer">
+            <img src={sponsor.imagesrc} alt="sponsor" style={{ width: "100px" }} />
+          </a>
+        ))}
+      </Container>
+    </div>
+  );
+};
