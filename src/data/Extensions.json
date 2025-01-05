@@ -55,19 +55,22 @@
         "type": "textField",
         "name": "Sherweb.clientId",
         "label": "Client ID",
-        "placeholder": "Enter your Sherweb Client ID"
+        "placeholder": "Enter your Sherweb Client ID",
+        "required": true
       },
       {
         "type": "textField",
         "name": "Sherweb.SubscriptionKey",
         "label": "Subscription Key",
-        "placeholder": "Enter your Sherweb Subscription Key"
+        "placeholder": "Enter your Sherweb Subscription Key",
+        "required": true
       },
       {
         "type": "password",
         "name": "Sherweb.APIKey",
         "label": "Client Secret",
-        "placeholder": "Enter your Sherweb Client Secret"
+        "placeholder": "Enter your Sherweb Client Secret",
+        "required": true
       },
       {
         "type": "autoComplete",
@@ -104,13 +107,15 @@
         "type": "textField",
         "name": "Gradient.VendorKey",
         "label": "Gradient Vendor API Key",
-        "placeholder": "Enter your Gradient Vendor Key."
+        "placeholder": "Enter your Gradient Vendor Key.",
+        "required": true
       },
       {
         "type": "password",
         "name": "Gradient.APIKey",
         "label": "Gradient Partner API Key",
-        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key."
+        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key.",
+        "required": true
       },
       {
         "type": "switch",
@@ -145,37 +150,43 @@
         "type": "textField",
         "name": "HaloPSA.ResourceURL",
         "label": "HaloPSA Resource Server URL",
-        "placeholder": "Enter your HaloPSA Resource Server URL."
+        "placeholder": "Enter your HaloPSA Resource Server URL.",
+        "required": true
       },
       {
         "type": "textField",
         "name": "HaloPSA.AuthURL",
         "label": "HaloPSA Authorisation Endpoint URL",
-        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL."
+        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL.",
+        "required": true
       },
       {
         "type": "textField",
         "name": "HaloPSA.Tenant",
         "label": "HaloPSA Tenant",
-        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted"
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted",
+        "required": true
       },
       {
         "type": "textField",
         "name": "HaloPSA.TicketType",
         "label": "HaloPSA Ticket Type ID",
-        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default."
+        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default.",
+        "required": true
       },
       {
         "type": "textField",
         "name": "HaloPSA.ClientID",
         "label": "HaloPSA Client ID",
-        "placeholder": "Enter your HaloPSA Client ID"
+        "placeholder": "Enter your HaloPSA Client ID",
+        "required": true
       },
       {
         "type": "password",
         "name": "HaloPSA.APIKey",
         "label": "HaloPSA Client Secret",
-        "placeholder": "Enter your client Secret. Leave blank to keep your current key."
+        "placeholder": "Enter your client Secret. Leave blank to keep your current key.",
+        "required": true
       },
       {
         "type": "switch",
@@ -206,19 +217,22 @@
         "type": "textField",
         "name": "NinjaOne.Instance",
         "label": "Please enter your NinjaOne Instance hostname",
-        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
+        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com",
+        "required": true
       },
       {
         "type": "textField",
         "name": "NinjaOne.ClientID",
         "label": "NinjaOne API Client ID",
-        "placeholder": "Enter your NinjaOne API Client ID"
+        "placeholder": "Enter your NinjaOne API Client ID",
+        "required": true
       },
       {
         "type": "password",
         "name": "NinjaOne.APIKey",
         "label": "NinjaOne API Client Secret",
-        "placeholder": "Enter your NinjaOne API Client Secret"
+        "placeholder": "Enter your NinjaOne API Client Secret",
+        "required": true
       },
       {
         "type": "switch",
@@ -267,13 +281,15 @@
         "type": "textField",
         "name": "Hudu.BaseUrl",
         "label": "Please enter your Hudu URL",
-        "placeholder": "https://yourcompany.huducloud.com"
+        "placeholder": "https://yourcompany.huducloud.com",
+        "required": true
       },
       {
         "type": "password",
         "name": "Hudu.APIKey",
         "label": "Hudu API Key",
-        "placeholder": "Enter your Hudu API Key"
+        "placeholder": "Enter your Hudu API Key",
+        "required": true
       },
       {
         "type": "switch",

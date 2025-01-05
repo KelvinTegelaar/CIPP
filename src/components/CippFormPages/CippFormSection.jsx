@@ -2,6 +2,7 @@ import { Button, CardContent, CardActions } from "@mui/material";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect } from "react";
+import { useFormState } from "react-hook-form";
 
 const CippFormSection = (props) => {
   const {
@@ -19,6 +20,8 @@ const CippFormSection = (props) => {
     relatedQueryKeys: relatedQueryKeys,
   });
 
+  const { isValid } = useFormState({ control: formControl.control });
+
   useEffect(() => {
     if (postCall.isSuccess) {
       if (resetForm) {
@@ -28,6 +31,9 @@ const CippFormSection = (props) => {
   }, [postCall.isSuccess]);
 
   const handleSubmit = () => {
+    if (!isValid) {
+      return;
+    }
     const values = formControl.getValues();
     if (customDataformatter) {
       customDataformatter(values);
@@ -47,7 +53,7 @@ const CippFormSection = (props) => {
 
       <CardActions sx={{ justifyContent: "flex-end" }}>
         <Button
-          disabled={postCall.isPending || !formControl.formState.isValid}
+          disabled={postCall.isPending || !isValid}
           onClick={formControl.handleSubmit(handleSubmit)}
           type="submit"
           variant="contained"
