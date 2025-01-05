@@ -341,10 +341,6 @@ export const nativeMenuItems = [
         title: "Tools",
         path: "/email/tools",
         items: [
-          {
-            title: "Mailbox Restore Wizard",
-            path: "/email/tools/mailbox-restore-wizard",
-          },
           { title: "Mailbox Restores", path: "/email/tools/mailbox-restores" },
           { title: "Message Viewer", path: "/email/tools/message-viewer" },
         ],
