@@ -94,7 +94,7 @@ export const CippChartCard = ({
   actions,
 }) => {
   const [range, setRange] = useState("Last 7 days");
-  const [barSeries, setBarSeries] = useState(false);
+  const [barSeries, setBarSeries] = useState([]);
   const chartOptions = useChartOptions(labels, chartType);
   chartSeries = chartSeries.filter((item) => item !== null);
   const total = chartSeries.reduce((acc, value) => acc + value, 0);
@@ -107,6 +107,7 @@ export const CippChartCard = ({
       );
     }
   }, [chartType, chartSeries.length, labels]);
+
   return (
     <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader
@@ -125,16 +126,19 @@ export const CippChartCard = ({
       />
       <Divider />
       <CardContent>
-        {isFetching ? (
-          <Skeleton variant="rounded" sx={{ height: 280 }} />
-        ) : (
-          <Chart
-            height={280}
-            options={chartOptions}
-            series={barSeries ? barSeries : chartSeries}
-            type={chartType}
-          />
-        )}
+        {
+          //if the chartType is not defined, or if the data is fetching, or if the data is empty, show a skeleton
+          chartType === undefined || isFetching || chartSeries.length === 0 ? (
+            <Skeleton variant="rounded" sx={{ height: 280 }} />
+          ) : (
+            <Chart
+              height={280}
+              options={chartOptions}
+              series={barSeries && chartType === "bar" ? barSeries : chartSeries}
+              type={chartType}
+            />
+          )
+        }
         <Stack
           alignItems="center"
           direction="row"

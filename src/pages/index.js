@@ -194,7 +194,7 @@ const Page = () => {
                 title="Standards Set"
                 isFetching={standards.isFetching}
                 chartType="bar"
-                chartSeries={[remediateCount || 0, alertCount || 0, reportCount || 0]}
+                chartSeries={[remediateCount, alertCount, reportCount]}
                 labels={["Remediation", "Alert", "Report"]}
               />
             </Grid>
