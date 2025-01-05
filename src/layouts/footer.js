@@ -1,9 +1,9 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Divider, Typography } from "@mui/material";
 import { useSettings } from "../hooks/use-settings";
 
 export const Footer = () => {
   const currentSettings = useSettings();
-  const theme = currentSettings.currentTheme.value;
+  const theme = currentSettings?.currentTheme?.value;
   const sponsorimages = [
     {
       link: "https://rewst.com",
@@ -47,12 +47,15 @@ export const Footer = () => {
             "&:not(:last-child)": {
               mr: {
                 xs: 0,
-                sm: 5,
+                sm: 2,
               },
             },
           },
         }}
       >
+        <Typography color="text.secondary" variant="caption" sx={{ lineHeight: 4 }}>
+          This application is sponsored by
+        </Typography>
         {sponsorimages.map((sponsor) => (
           <a href={sponsor.link} target="_blank" rel="noopener noreferrer">
             <img src={sponsor.imagesrc} alt="sponsor" style={{ width: "100px" }} />

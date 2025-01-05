@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
 import SunIcon from "@heroicons/react/24/outline/SunIcon";
-import { Avatar, Box, Divider, IconButton, Stack, SvgIcon, useMediaQuery } from "@mui/material";
+import { Box, Divider, IconButton, Stack, SvgIcon, useMediaQuery } from "@mui/material";
 import { Logo } from "../components/logo";
 import { useSettings } from "../hooks/use-settings";
 import { paths } from "../paths";
