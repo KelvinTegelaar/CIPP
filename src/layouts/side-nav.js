@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import { Box, Divider, Drawer, Stack } from "@mui/material";
+import { Box, Divider, Drawer, Stack, Typography } from "@mui/material";
 import { Scrollbar } from "../components/scrollbar";
 import { SideNavItem } from "./side-nav-item";
 import { useSettings } from "../hooks/use-settings";
@@ -213,11 +213,17 @@ export const SideNav = (props) => {
             })}
           </Box>
           <Divider />
+          <Typography
+            color="text.secondary"
+            variant="caption"
+            sx={{ lineHeight: 4, textAlign: "center" }}
+          >
+            This application is sponsored by
+          </Typography>
           <Box
             sx={{
               display: "flex",
               justifyContent: "center",
-              mt: 2,
             }}
           >
             <img
@@ -225,7 +231,7 @@ export const SideNav = (props) => {
               alt="sponsor"
               style={{ cursor: "pointer" }}
               onClick={() => window.open(randomimg.link)}
-              width={"80px"}
+              width={"100px"}
             />
           </Box>
         </Box>

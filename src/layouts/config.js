@@ -355,18 +355,10 @@ export const nativeMenuItems = [
         items: [
           { title: "Transport rules", path: "/email/transport/list-rules" },
           {
-            title: "Deploy Transport rule",
-            path: "/email/transport/deploy-rules",
-          },
-          {
             title: "Transport Templates",
             path: "/email/transport/list-templates",
           },
           { title: "Connectors", path: "/email/connectors/list-connectors" },
-          {
-            title: "Deploy Connector Templates",
-            path: "/email/connectors/deploy-connector",
-          },
           {
             title: "Connector Templates",
             path: "/email/connectors/list-connector-templates",
@@ -442,7 +434,6 @@ export const nativeMenuItems = [
           { title: "Scheduler", path: "/cipp/scheduler", roles: ["editor", "admin", "superadmin"] },
           { title: "Logbook", path: "/cipp/logs", roles: ["admin", "superadmin"] },
           { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
-          { title: "Log Out", path: "/logout" },
         ],
       },
       {
