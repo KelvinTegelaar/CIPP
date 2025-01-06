@@ -3,6 +3,7 @@ import {
   Cloud,
   CloudOutlined,
   DeviceHub,
+  HomeRepairService,
   Laptop,
   MailOutline,
   Shield,
@@ -114,26 +115,6 @@ export const nativeMenuItems = [
         items: [{ title: "Backups", path: "/tenant/backup/backup-wizard" }],
       },
       {
-        title: "Tools",
-        path: "/tenant/tools",
-        items: [
-          {
-            title: "Graph Explorer",
-            path: "/tenant/administration/graph-explorer",
-          },
-          {
-            title: "Application Approval",
-            path: "/tenant/administration/appapproval",
-          },
-          { title: "IP Database", path: "/tenant/tools/geoiplookup" },
-          { title: "Tenant Lookup", path: "/tenant/tools/tenantlookup" },
-          {
-            title: "Individual Domain Check",
-            path: "/tenant/standards/individual-domains",
-          },
-        ],
-      },
-      {
         title: "Standards",
         path: "/tenant/standards",
         items: [
@@ -167,7 +148,6 @@ export const nativeMenuItems = [
           },
         ],
       },
-
       {
         title: "Reports",
         path: "/tenant/reports",
@@ -338,14 +318,6 @@ export const nativeMenuItems = [
         ],
       },
       {
-        title: "Tools",
-        path: "/email/tools",
-        items: [
-          { title: "Mailbox Restores", path: "/email/tools/mailbox-restores" },
-          { title: "Message Viewer", path: "/email/tools/message-viewer" },
-        ],
-      },
-      {
         title: "Transport",
         path: "/email/Transport",
         items: [
@@ -414,6 +386,51 @@ export const nativeMenuItems = [
     ],
   },
   {
+    title: "Tools",
+    type: "header",
+    icon: (
+      <SvgIcon>
+        <HomeRepairService />
+      </SvgIcon>
+    ),
+    items: [
+      {
+        title: "Tenant Tools",
+        path: "/tenant/tools",
+        items: [
+          {
+            title: "Graph Explorer",
+            path: "/tenant/administration/graph-explorer",
+          },
+          {
+            title: "Application Approval",
+            path: "/tenant/administration/appapproval",
+          },
+          { title: "Tenant Lookup", path: "/tenant/tools/tenantlookup" },
+          { title: "IP Database", path: "/tenant/tools/geoiplookup" },
+
+          {
+            title: "Individual Domain Check",
+            path: "/tenant/standards/individual-domains",
+          },
+        ],
+      },
+      {
+        title: "Email Tools",
+        path: "/email/tools",
+        items: [
+          { title: "Mailbox Restores", path: "/email/tools/mailbox-restores" },
+          { title: "Message Viewer", path: "/email/tools/message-viewer" },
+        ],
+      },
+      {
+        title: "Scheduler",
+        path: "/cipp/scheduler",
+        roles: ["editor", "admin", "superadmin"],
+      },
+    ],
+  },
+  {
     title: "CIPP",
     type: "header",
     icon: (
@@ -422,16 +439,10 @@ export const nativeMenuItems = [
       </SvgIcon>
     ),
     items: [
-      {
-        title: "Settings",
-        items: [
-          { title: "Application Settings", path: "/cipp/settings", roles: ["admin", "superadmin"] },
-          { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
-          { title: "Scheduler", path: "/cipp/scheduler", roles: ["editor", "admin", "superadmin"] },
-          { title: "Logbook", path: "/cipp/logs", roles: ["admin", "superadmin"] },
-          { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
-        ],
-      },
+      { title: "Application Settings", path: "/cipp/settings", roles: ["admin", "superadmin"] },
+      { title: "Logbook", path: "/cipp/logs", roles: ["admin", "superadmin"] },
+      { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
+      { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
       {
         title: "Advanced",
         roles: ["superadmin"],
