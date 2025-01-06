@@ -10,6 +10,7 @@ import {
   AccordionDetails,
   Stack,
   SvgIcon,
+  Skeleton,
 } from "@mui/material";
 
 import Grid from "@mui/material/Grid2";
@@ -23,6 +24,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { useDialog } from "../../hooks/use-dialog";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 
 export const CippCustomRoles = () => {
   const updatePermissions = ApiPostCall({
@@ -46,7 +48,11 @@ export const CippCustomRoles = () => {
   const setDefaults = useWatch({ control: formControl.control, name: "Defaults" });
   const selectedPermissions = useWatch({ control: formControl.control, name: "Permissions" });
 
-  const { data: apiPermissions = [] } = ApiGetCall({
+  const {
+    data: apiPermissions = [],
+    isFetching: apiPermissionFetching,
+    isSuccess: apiPermissionSuccess,
+  } = ApiGetCall({
     url: "/api/ExecAPIPermissionList",
     queryKey: "apiPermissions",
   });
@@ -259,8 +265,8 @@ export const CippCustomRoles = () => {
 
   return (
     <>
-      <Stack spacing={3} xl={8} md={12} direction="row">
-        <Box>
+      <Stack spacing={3} direction="row">
+        <Box width={"80%"}>
           <Stack spacing={1} sx={{ mb: 3 }}>
             <CippFormComponent
               type="autoComplete"
@@ -310,62 +316,77 @@ export const CippCustomRoles = () => {
             />
           </Box>
 
-          <Typography variant="h5">API Permissions</Typography>
-          <Stack
-            direction="row"
-            display="flex"
-            alignItems="center"
-            justifyContent={"space-between"}
-            width={"100%"}
-            sx={{ my: 2 }}
-          >
-            <Typography variant="body2">Set All Permissions</Typography>
-
-            <Box sx={{ pr: 5 }}>
-              <CippFormComponent
-                type="radio"
-                name="Defaults"
-                options={[
-                  {
-                    label: "None",
-                    value: "None",
-                  },
-                  { label: "Read", value: "Read" },
-                  {
-                    label: "Read / Write",
-                    value: "ReadWrite",
-                  },
-                ]}
-                formControl={formControl}
-                row={true}
-              />
-            </Box>
-          </Stack>
-          <Box>
+          {currentRole && (
             <>
-              {Object.keys(apiPermissions)
-                .sort()
-                .map((cat, catIndex) => (
-                  <Accordion variant="outlined" key={`accordion-item-${catIndex}`}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>{cat}</AccordionSummary>
-                    <AccordionDetails>
-                      {Object.keys(apiPermissions[cat])
+              {apiPermissionFetching && <Skeleton height={500} />}
+              {apiPermissionSuccess && (
+                <>
+                  <Typography variant="h5">API Permissions</Typography>
+                  <Stack
+                    direction="row"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent={"space-between"}
+                    width={"100%"}
+                    sx={{ my: 2 }}
+                  >
+                    <Typography variant="body2">Set All Permissions</Typography>
+
+                    <Box sx={{ pr: 5 }}>
+                      <CippFormComponent
+                        type="radio"
+                        name="Defaults"
+                        options={[
+                          {
+                            label: "None",
+                            value: "None",
+                          },
+                          { label: "Read", value: "Read" },
+                          {
+                            label: "Read / Write",
+                            value: "ReadWrite",
+                          },
+                        ]}
+                        formControl={formControl}
+                        row={true}
+                      />
+                    </Box>
+                  </Stack>
+                  <Box>
+                    <>
+                      {Object.keys(apiPermissions)
                         .sort()
-                        .map((obj, index) => {
-                          return (
-                            <Grid container key={`row-${catIndex}-${index}`} className="mb-3">
-                              <ApiPermissionRow obj={obj} cat={cat} />
-                            </Grid>
-                          );
-                        })}
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
+                        .map((cat, catIndex) => (
+                          <Accordion variant="outlined" key={`accordion-item-${catIndex}`}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                              {cat}
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              {Object.keys(apiPermissions[cat])
+                                .sort()
+                                .map((obj, index) => {
+                                  return (
+                                    <Grid
+                                      container
+                                      key={`row-${catIndex}-${index}`}
+                                      className="mb-3"
+                                    >
+                                      <ApiPermissionRow obj={obj} cat={cat} />
+                                    </Grid>
+                                  );
+                                })}
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                    </>
+                  </Box>
+                </>
+              )}
             </>
-          </Box>
+          )}
         </Box>
 
-        <Box xl={4} md={12}>
+        <Box xl={3} md={12} width="30%">
           {selectedRole && selectedTenant?.length > 0 && (
             <>
               <h5>Allowed Tenants</h5>
@@ -424,6 +445,7 @@ export const CippCustomRoles = () => {
         formControl={formControl}
         relatedQueryKeys={"customRoleList"}
       />
+      <CippApiResults apiObject={updatePermissions} />
       <Stack direction="row" spacing={2} justifyContent="flex-end">
         {currentRole && (
           <Button
