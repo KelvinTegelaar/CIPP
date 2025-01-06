@@ -301,20 +301,23 @@ export const CippCustomRoles = () => {
             />
             {allTenantSelected && (
               <Alert color="warning">
-                All tenants selected, no tenant restrictions will be applied.
+                All tenants selected, no tenant restrictions will be applied unless blocked tenants
+                are specified.
               </Alert>
             )}
           </Stack>
-          <Box sx={{ mb: 3 }}>
-            <CippFormTenantSelector
-              label="Blocked Tenants"
-              formControl={formControl}
-              type="multiple"
-              allTenants={false}
-              name="blockedTenants"
-              fullWidth={true}
-            />
-          </Box>
+          {allTenantSelected && (
+            <Box sx={{ mb: 3 }}>
+              <CippFormTenantSelector
+                label="Blocked Tenants"
+                formControl={formControl}
+                type="multiple"
+                allTenants={false}
+                name="blockedTenants"
+                fullWidth={true}
+              />
+            </Box>
+          )}
 
           {currentRole && (
             <>
