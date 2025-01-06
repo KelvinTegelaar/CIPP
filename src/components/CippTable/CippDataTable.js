@@ -190,7 +190,7 @@ export const CippDataTable = (props) => {
       showSkeletons: getRequestData.isFetching ? getRequestData.isFetching : isFetching,
     },
     renderEmptyRowsFallback: ({ table }) =>
-      getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
+      getRequestData.data?.pages?.[0]?.Metadata?.QueueMessage ? (
         <center>{getRequestData.data?.pages?.[0].Metadata?.QueueMessage}</center>
       ) : undefined,
     onColumnVisibilityChange: setColumnVisibility,
