@@ -253,20 +253,26 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
-  if (cellName === "@odata.type") {
+  if (cellName.includes("@odata.type")) {
     if (data.startsWith("#microsoft.graph")) {
       data = data.replace("#microsoft.graph.", "");
+      return getCippTranslation(data, "@odata.type");
     }
-    return getCippTranslation(data, "@odata.type");
+    return data
   }
 
   // Handle From address
   if (cellName === "From") {
-    // split on ; , and create chips per email
-    const emails = data.split(/;|,/);
-    return isText
-      ? emails.join(", ")
-      : emails.map((email) => <CippCopyToClipBoard key={email} text={email} type="chip" />);
+    // if data is array
+    if (Array.isArray(data)) {
+      return isText ? data.join(", ") : data.join(", ");
+    } else {
+      // split on ; , and create chips per email
+      const emails = data.split(/;|,/);
+      return isText
+        ? emails.join(", ")
+        : emails.map((email) => <CippCopyToClipBoard key={email} text={email} type="chip" />);
+    }
   }
 
   // Handle proxyAddresses
