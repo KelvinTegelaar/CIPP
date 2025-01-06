@@ -39,8 +39,6 @@ export const getCippFilterVariant = (providedColumnKeys) => {
       };
     case "primDomain":
       return "select";
-    case "DateTime":
-
     case "number":
       return "range";
     case "id":
