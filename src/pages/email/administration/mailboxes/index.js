@@ -1,5 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import Link from "next/link";
+import { Button } from "@mui/material";
 
 const Page = () => {
   const pageTitle = "Mailboxes";
@@ -98,6 +100,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <>
+          <Button component={Link} href="/email/administration/mailboxes/addshared">
+            Add Shared Mailbox
+          </Button>
+        </>
+      }
     />
   );
 };

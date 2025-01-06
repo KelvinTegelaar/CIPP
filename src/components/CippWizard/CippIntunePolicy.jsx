@@ -101,14 +101,13 @@ export const CippIntunePolicy = (props) => {
             if (uniquePlaceholders.length === 0 || selectedTenants.length === 0) {
               return null;
             }
-            console.log(selectedTenants);
             return uniquePlaceholders.map((placeholder) => (
               <Grid key={placeholder} item xs={6}>
                 {selectedTenants.map((tenant, idx) => (
                   <CippFormComponent
                     key={`${tenant.value}-${placeholder}-${idx}`}
                     type="textField"
-                    name={`replacemap.${tenant.value}.${placeholder}`}
+                    name={`replacemap.${tenant.value}.%${placeholder}%`}
                     label={`Value for '${placeholder}' in Tenant '${tenant.addedFields.defaultDomainName}'`}
                     formControl={formControl}
                     validators={{ required: `Please provide a value for ${placeholder}` }}
