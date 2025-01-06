@@ -234,6 +234,16 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: "Clear Immutable ID",
+      type: "GET",
+      url: "/api/ExecClrImmId",
+      data: {
+        ID: "id",
+      },
+      confirmText: "Are you sure you want to clear the Immutable ID for this user?",
+      multiPost: false,
+    },
+    {
       label: "Revoke all user sessions",
       type: "GET",
       url: "/api/ExecRevokeSessions",
