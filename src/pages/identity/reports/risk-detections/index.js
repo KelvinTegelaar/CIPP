@@ -66,9 +66,9 @@ const Page = () => {
         Endpoint: "identityProtection/riskDetections",
         manualPagination: true,
         $count: true,
-        NoPagination: true,
-        $top: 999,
+        $top: 500,
       }}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
