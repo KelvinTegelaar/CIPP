@@ -43,7 +43,7 @@ export const utilColumnsFromAPI = (dataArray) => {
           id: accessorKey,
           accessorFn: (row) => {
             let value;
-            if (accessorKey.startsWith("@odata")) {
+            if (accessorKey.includes("@odata")) {
               value = row[accessorKey];
             } else {
               value = accessorKey.split(".").reduce((acc, part) => acc && acc[part], row);
@@ -53,7 +53,7 @@ export const utilColumnsFromAPI = (dataArray) => {
           ...getCippFilterVariant(key),
           Cell: ({ row }) => {
             let value;
-            if (accessorKey.startsWith("@odata")) {
+            if (accessorKey.includes("@odata")) {
               value = row.original[accessorKey];
             } else {
               value = accessorKey.split(".").reduce((acc, part) => acc && acc[part], row.original);
