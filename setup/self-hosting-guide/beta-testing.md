@@ -111,6 +111,6 @@ jobs:
 
 ## Additional Resources
 
-- **Community Support**: For further assistance, join the [Discord Server](https://discord.gg/cyberdrain) and check out #cipp-community-help or the #new-ui-beta channels.
+- **Community Support**: For further assistance, join the [Discord Server](https://discord.gg/cyberdrain) and check out #cipp-community-help or the #cipp-beta-temp channels.
 
 By following these steps, users can effectively set up their environments to beta test the new version of CIPP with the updated interface.
