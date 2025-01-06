@@ -12,6 +12,7 @@
   * [Configuring Automatic Updates](setup/self-hosting-guide/configuring-automatic-updates.md)
   * [Updating Versions](setup/self-hosting-guide/updating.md)
   * [Migrating to Hosted CIPP](setup/self-hosting-guide/migrating-to-hosted-cipp.md)
+  * [Beta Testing](setup/self-hosting-guide/beta-testing.md)
 * [Service Account Setup](setup/gdap/README.md)
   * [GDAP's Importance in CIPP](setup/gdap/creating-the-cipp-service-account-gdap-migration-required.md)
   * [Creating the CIPP Service Account](setup/gdap/creating-the-cipp-service-account-gdap-ready.md)
