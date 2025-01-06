@@ -50,7 +50,7 @@ jobs:
           action: "upload"
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
-          output_location: "out" # Built app content directory
+          output_location: "/out" # Built app content directory
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
