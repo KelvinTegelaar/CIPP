@@ -114,7 +114,7 @@ export const SideNav = (props) => {
   const theme = currentSettings?.currentTheme?.value;
   const sponsorimages = [
     {
-      link: "https://rewst.com",
+      link: "https://rewst.io",
       imagesrc: theme === "light" ? "/sponsors/rewst.png" : "/sponsors/rewst_dark.png",
       priority: 1,
     },
