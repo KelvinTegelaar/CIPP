@@ -6,6 +6,7 @@ export const CippTenantStep = (props) => {
   const {
     allTenants,
     type = "single",
+    valueField = "defaultDomainName",
     onNextStep,
     formControl,
     currentStep,
@@ -17,7 +18,12 @@ export const CippTenantStep = (props) => {
     <Stack spacing={3}>
       {preText}
       <label>Select a tenant</label>
-      <CippFormTenantSelector formControl={formControl} allTenants={allTenants} type={type} />
+      <CippFormTenantSelector
+        valueField={valueField}
+        formControl={formControl}
+        allTenants={allTenants}
+        type={type}
+      />
       <CippWizardStepButtons
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}

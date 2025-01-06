@@ -23,6 +23,11 @@ export const CippFormCondition = (props) => {
   }
 
   switch (compareType) {
+    case "regex":
+      if (watcher?.match(new RegExp(compareValue))) {
+        return children;
+      }
+      return null;
     case "is":
       // Deep comparison for objects and arrays
       if (isEqual(watcher, compareValue)) {

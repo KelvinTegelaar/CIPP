@@ -3,7 +3,7 @@ import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import CippJsonView from "../CippFormPages/CippJSONView";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../api/ApiCall";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useWatch } from "react-hook-form";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
@@ -13,6 +13,8 @@ export const CippIntunePolicy = (props) => {
   const CATemplates = ApiGetCall({ url: "/api/ListIntuneTemplates", queryKey: "IntuneTemplates" });
   const [JSONData, setJSONData] = useState();
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
+  const jsonWatch = useWatch({ control: formControl.control, name: "RAWJson" });
+  const selectedTenants = useWatch({ control: formControl.control, name: "tenantFilter" });
   useEffect(() => {
     if (CATemplates.isSuccess && watcher?.value) {
       const template = CATemplates.data.find((template) => template.GUID === watcher.value);
@@ -85,6 +87,36 @@ export const CippIntunePolicy = (props) => {
               validators={{ required: "Please specify custom group names" }}
             />
           </Grid>
+        </CippFormCondition>
+        <CippFormCondition
+          formControl={formControl}
+          field="RAWJson"
+          compareType="regex"
+          compareValue={/%(\w+)%/}
+        >
+          {(() => {
+            const rawJson = jsonWatch ? jsonWatch : "";
+            const placeholderMatches = [...rawJson.matchAll(/%(\w+)%/g)].map((m) => m[1]);
+            const uniquePlaceholders = Array.from(new Set(placeholderMatches));
+            if (uniquePlaceholders.length === 0 || selectedTenants.length === 0) {
+              return null;
+            }
+            console.log(selectedTenants);
+            return uniquePlaceholders.map((placeholder) => (
+              <Grid key={placeholder} item xs={6}>
+                {selectedTenants.map((tenant, idx) => (
+                  <CippFormComponent
+                    key={`${tenant.value}-${placeholder}-${idx}`}
+                    type="textField"
+                    name={`replacemap.${tenant.value}.${placeholder}`}
+                    label={`Value for '${placeholder}' in Tenant '${tenant.addedFields.defaultDomainName}'`}
+                    formControl={formControl}
+                    validators={{ required: `Please provide a value for ${placeholder}` }}
+                  />
+                ))}
+              </Grid>
+            ));
+          })()}
         </CippFormCondition>
       </Stack>
       <CippWizardStepButtons

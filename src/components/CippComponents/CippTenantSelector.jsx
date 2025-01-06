@@ -133,6 +133,11 @@ export const CippTenantSelector = (props) => {
               ? tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
                   value: defaultDomainName,
                   label: `${displayName} (${defaultDomainName})`,
+                  addedField: {
+                    defaultDomainName: "defaultDomainName",
+                    displayName: "displayName",
+                    customerId: "customerId",
+                  },
                 }))
               : []
           }
