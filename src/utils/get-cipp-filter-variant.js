@@ -19,8 +19,8 @@ export const getCippFilterVariant = (providedColumnKeys) => {
     "WhenCreated",
     "WhenChanged",
   ];
-
-  if (timeAgoArray.includes(providedColumnKeys)) {
+  const matchDateTime = /[dD]ate[tT]ime/;
+  if (timeAgoArray.includes(providedColumnKeys) || matchDateTime.test(providedColumnKeys)) {
     return {
       filterVariant: "datetime-range",
       sortingFn: "datetime",
