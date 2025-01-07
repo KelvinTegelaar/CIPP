@@ -1,17 +1,12 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+import ConnectorTemplateDetails from "../../../../components/CippComponents/ConnectorTemplateDetails";
 
 const Page = () => {
   const pageTitle = "Exchange Connector Templates";
 
   const actions = [
-    {
-      label: "View Template",
-      icon: <EyeIcon />, // Placeholder for view icon
-      color: "success",
-      offCanvas: true,
-    },
     {
       label: "Delete Template",
       type: "POST",
@@ -26,8 +21,9 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["name", "cippconnectortype", "GUID"],
+    children: (data) => <ConnectorTemplateDetails data={data} />,
     actions: actions,
+    size: "lg",
   };
 
   const simpleColumns = ["name", "cippconnectortype", "GUID"];

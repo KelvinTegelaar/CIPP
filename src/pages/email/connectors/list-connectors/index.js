@@ -11,7 +11,7 @@ const Page = () => {
       label: "Create template based on connector",
       type: "POST",
       url: "/api/AddExConnectorTemplate",
-      data: {},
+      postEntireRow: true,
       confirmText: "Are you sure you want to create a template based on this connector?",
       color: "info",
     },
@@ -21,7 +21,6 @@ const Page = () => {
       url: "/api/EditExConnector",
       data: {
         State: "Enable",
-        TenantFilter: "Tenant",
         GUID: "Guid",
         Type: "cippconnectortype",
       },
@@ -34,7 +33,6 @@ const Page = () => {
       url: "/api/EditExConnector",
       data: {
         State: "Disable",
-        TenantFilter: "Tenant",
         GUID: "Guid",
         Type: "cippconnectortype",
       },
@@ -46,7 +44,6 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveExConnector",
       data: {
-        TenantFilter: "Tenant",
         GUID: "Guid",
         Type: "cippconnectortype",
       },
@@ -54,11 +51,6 @@ const Page = () => {
       color: "danger",
     },
   ];
-
-  const offCanvas = {
-    extendedInfoFields: ["Name", "Comment", "Enabled", "cippconnectortype", "ConnectorType"],
-    actions: actions,
-  };
 
   const simpleColumns = [
     "Name",
@@ -72,6 +64,11 @@ const Page = () => {
     "TlsSettings",
     "TlsDomain",
   ];
+
+  const offCanvas = {
+    extendedInfoFields: simpleColumns,
+    actions: actions,
+  };
 
   return (
     <CippTablePage

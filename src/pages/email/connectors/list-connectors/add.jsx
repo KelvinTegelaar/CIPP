@@ -32,7 +32,7 @@ const AddPolicy = () => {
       backButtonTitle="Transport Rules Overview"
       postUrl="/api/AddExConnector"
     >
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ mb: 2 }}>
         <Grid item xs={12}>
           <CippFormTenantSelector
             label="Select Tenants"
@@ -58,7 +58,7 @@ const AddPolicy = () => {
               queryKey: `TemplateListTransport`,
               labelField: "name",
               valueField: (option) => option,
-              url: "/api/ListExchangeConnectors",
+              url: "/api/ListExconnectorTemplates",
             }}
             placeholder="Select a template or enter PowerShell JSON manually"
           />
