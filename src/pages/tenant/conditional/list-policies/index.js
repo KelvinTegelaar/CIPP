@@ -19,57 +19,57 @@ const Page = () => {
   // Actions configuration
   const actions = [
     {
-      label: "Create template based on rule",
+      label: "Create template based on policy",
       type: "POST",
       url: "/api/AddCATemplate",
       dataFunction: (data) => {
         return JSON.parse(data.rawjson);
       },
-      confirmText: "Are you sure you want to create a template based on this rule?",
+      confirmText: "Are you sure you want to create a template based on this policy?",
       icon: <MenuBookIcon />,
       color: "info",
     },
     {
-      label: "Enable Rule",
+      label: "Enable policy",
       type: "GET",
       url: "/api/EditCAPolicy?State=Enabled",
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to enable this rule?",
+      confirmText: "Are you sure you want to enable this policy?",
       icon: <CheckIcon />,
       color: "info",
     },
     {
-      label: "Disable Rule",
+      label: "Disable policy",
       type: "GET",
       url: "/api/EditCAPolicy?State=Disabled",
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to disable this rule?",
+      confirmText: "Are you sure you want to disable this policy?",
       icon: <BlockIcon />,
       color: "info",
     },
     {
-      label: "Set rule to report only",
+      label: "Set policy to report only",
       type: "GET",
       url: "/api/EditCAPolicy?State=enabledForReportingButNotEnforced",
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to set this rule to report only?",
+      confirmText: "Are you sure you want to set this policy to report only?",
       icon: <VisibilityIcon />,
       color: "info",
     },
     {
-      label: "Delete Rule",
+      label: "Delete policy",
       type: "GET",
       url: "/api/RemoveCAPolicy",
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to delete this rule?",
+      confirmText: "Are you sure you want to delete this policy?",
       icon: <DeleteIcon />,
       color: "danger",
     },
