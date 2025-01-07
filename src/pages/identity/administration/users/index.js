@@ -222,8 +222,8 @@ const Page = () => {
           api: {
             url: "/api/ListSites",
             data: { type: "SharePointSiteUsage", URLOnly: true },
-            labelField: "URL",
-            valueField: "URL",
+            labelField: "webUrl",
+            valueField: "webUrl",
             queryKey: `sharepointSites-${tenant}`,
           },
         },
