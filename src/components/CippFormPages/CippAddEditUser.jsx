@@ -129,7 +129,7 @@ const CippAddEditUser = (props) => {
       <Grid item xs={12}>
         <CippFormLicenseSelector label="Licenses" name="licenses" formControl={formControl} />
       </Grid>
-      {integrationSettings?.data?.Sherweb.Enabled === true && (
+      {integrationSettings?.data?.Sherweb?.Enabled === true && (
         <>
           <CippFormCondition
             formControl={formControl}
