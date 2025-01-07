@@ -23,9 +23,11 @@ import {
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { useSettings } from "/src/hooks/use-settings.js";
 
 const Page = () => {
   const pageTitle = "Users";
+  const tenant = useSettings().currentTenant;
 
   const actions = [
     {
@@ -157,13 +159,14 @@ const Page = () => {
       type: "POST",
       icon: <GroupAdd />,
       url: "/api/EditGroup",
-      data: { addMember: { value: "userPrincipalName" }, TenantId: "Tenant" },
+      data: { addMember: "userPrincipalName" },
       fields: [
         {
           type: "autoComplete",
           name: "groupId",
           label: "Select a group to add the user to",
           multiple: false,
+          creatable: false,
           api: {
             url: "/api/ListGroups",
             labelField: "displayName",
@@ -172,11 +175,11 @@ const Page = () => {
               groupType: "calculatedGroupType",
               groupName: "displayName",
             },
+            queryKey: `groups-${tenant}`,
           },
         },
       ],
       confirmText: "Are you sure you want to add the user to this group?",
-      multiPost: false,
     },
     {
       label: "Disable Email Forwarding",
@@ -215,15 +218,18 @@ const Page = () => {
           name: "siteUrl",
           label: "Select a Site",
           multiple: false,
+          creatable: false,
           api: {
             url: "/api/ListSites",
             data: { type: "SharePointSiteUsage", URLOnly: true },
             labelField: "URL",
             valueField: "URL",
+            queryKey: `sharepointSites-${tenant}`,
           },
         },
       ],
       confirmText: "Select a SharePoint site to create a shortcut for:",
+      multiPost: false,
     },
     {
       label: "Block Sign In",
