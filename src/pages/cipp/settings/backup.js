@@ -198,6 +198,8 @@ const Page = () => {
                 title="Backup List"
                 data={backupList.data}
                 simpleColumns={["BackupName", "Timestamp"]}
+                refreshFunction={() => backupList.refetch()}
+                isFetching={backupList.isFetching}
                 actions={actions}
                 cardButton={
                   <>
