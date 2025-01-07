@@ -286,7 +286,6 @@ export const nativeMenuItems = [
         path: "/teams-share/teams",
         items: [
           { title: "Teams", path: "/teams-share/teams/list-team" },
-          { title: "Add Team", path: "/teams-share/teams/add-team" },
           { title: "Teams Activity", path: "/teams-share/teams/teams-activity" },
           { title: "Business Voice", path: "/teams-share/teams/business-voice" },
         ],
@@ -407,6 +406,7 @@ export const nativeMenuItems = [
             path: "/tenant/administration/appapproval",
           },
           { title: "Tenant Lookup", path: "/tenant/tools/tenantlookup" },
+
           { title: "IP Database", path: "/tenant/tools/geoiplookup" },
 
           {
@@ -421,6 +421,15 @@ export const nativeMenuItems = [
         items: [
           { title: "Mailbox Restores", path: "/email/tools/mailbox-restores" },
           { title: "Message Viewer", path: "/email/tools/message-viewer" },
+        ],
+      },
+      {
+        title: "Dark Web Tools",
+        path: "/tools/darkweb",
+        items: [
+          { title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" },
+          { title: "Individual Breach Lookup", path: "/tools/breachlookup" },
+          { title: "Password Checker", path: "/tools/passwordchecker" },
         ],
       },
       {

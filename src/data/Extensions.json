@@ -394,5 +394,35 @@
       }
     ],
     "mappingRequired": false
+  },
+  {
+    "name": "Have I been Pwned",
+    "id": "hibp",
+    "type": "darkweb",
+    "cat": "Darkweb Scanning",
+    "logo": "/assets/integrations/hibp.png",
+    "logoDark": "/assets/integrations/hibp.png",
+    "forceSyncButton": false,
+    "description": "Enable the HIBP integration to scan your tenant for compromised credentials.",
+    "helpText": "This integration allows you to scan your tenant for compromised credentials, breaches, and darkweb scanning.",
+    "links": [
+      {
+        "name": "Have I Been Pwned",
+        "url": "https://haveibeenpwned.com/"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "password",
+        "name": "HIBP.APIKey",
+        "label": "Enter your own HIBP API Key. When you are a CyberDrain hosted partner, leave this key blank."
+      },
+      {
+        "type": "switch",
+        "name": "HIBP.Enabled",
+        "label": "Enable Integration - Allow darkweb scanning through tools and alerts"
+      }
+    ],
+    "mappingRequired": false
   }
 ]
