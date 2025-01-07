@@ -187,7 +187,11 @@ export const CippDataTable = (props) => {
     data: memoizedData,
     state: {
       columnVisibility,
-      showSkeletons: getRequestData.isFetching ? getRequestData.isFetching : isFetching,
+      showSkeletons: getRequestData.isFetching
+        ? getRequestData.isFetchingNextPage
+          ? isFetching
+          : getRequestData.isFetching
+        : isFetching,
     },
     renderEmptyRowsFallback: ({ table }) =>
       getRequestData.data?.pages?.[0]?.Metadata?.QueueMessage ? (

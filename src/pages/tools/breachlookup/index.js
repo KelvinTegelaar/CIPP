@@ -87,82 +87,97 @@ const Page = () => {
               </CippButtonCard>
             </Grid>
           ) : getGeoIP.data ? (
-            getGeoIP.data?.map((breach) => (
-              <Grid spacing={2} item xs={3}>
-                <CippButtonCard
-                  cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
-                  title={<>{breach.Title}</>}
-                  cardActions={
-                    <Avatar
-                      sx={{ width: 20, height: 20, ml: 1 }}
-                      variant="square"
-                      src={breach.LogoPath}
-                    />
-                  }
-                >
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
-                        Description
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textPrimary"
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(breach.Description),
-                        }}
+            <>
+              {getGeoIP.data.length === 0 && (
+                <Grid item xs={8}>
+                  <CippButtonCard title="No breaches detected">
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="body1" color="textPrimary">
+                          No breaches have been detected for this account
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </CippButtonCard>
+                </Grid>
+              )}
+              {getGeoIP.data?.map((breach) => (
+                <Grid spacing={2} item xs={3}>
+                  <CippButtonCard
+                    cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
+                    title={<>{breach.Title}</>}
+                    cardActions={
+                      <Avatar
+                        sx={{ width: 20, height: 20, ml: 1 }}
+                        variant="square"
+                        src={breach.LogoPath}
                       />
+                    }
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
+                          Description
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="textPrimary"
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(breach.Description),
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="body1" gutterBottom>
+                          <Link href={breach.Domain} target="_blank">
+                            {breach.Domain}
+                          </Link>
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
+                          Leaked Data classes
+                        </Typography>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", mt: 1 }}>
+                          {breach.DataClasses?.map((threat, idx) => (
+                            <Chip
+                              key={idx}
+                              label={threat}
+                              size="small"
+                              color="info"
+                              sx={{ mr: 1, mt: 1 }}
+                            />
+                          ))}
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
+                          Breach Information
+                        </Typography>
+                        <Typography variant="body1" color="textPrimary">
+                          {
+                            //make a chip for each item that is boolean and true in the breach object
+                            Object.keys(breach).map((key) => {
+                              if (typeof breach[key] === "boolean" && breach[key]) {
+                                return (
+                                  <Chip
+                                    key={key}
+                                    label={getCippTranslation(key)}
+                                    size="small"
+                                    color="info"
+                                    sx={{ mr: 1, mt: 1 }}
+                                  />
+                                );
+                              }
+                            })
+                          }
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="body1" gutterBottom>
-                        <Link href={breach.Domain} target="_blank">
-                          {breach.Domain}
-                        </Link>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
-                        Leaked Data classes
-                      </Typography>
-                      <Box sx={{ display: "flex", flexWrap: "wrap", mt: 1 }}>
-                        {breach.DataClasses?.map((threat, idx) => (
-                          <Chip
-                            key={idx}
-                            label={threat}
-                            size="small"
-                            color="info"
-                            sx={{ mr: 1, mt: 1 }}
-                          />
-                        ))}
-                      </Box>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
-                        Breach Information
-                      </Typography>
-                      <Typography variant="body1" color="textPrimary">
-                        {
-                          //make a chip for each item that is boolean and true in the breach object
-                          Object.keys(breach).map((key) => {
-                            if (typeof breach[key] === "boolean" && breach[key]) {
-                              return (
-                                <Chip
-                                  key={key}
-                                  label={getCippTranslation(key)}
-                                  size="small"
-                                  color="info"
-                                  sx={{ mr: 1, mt: 1 }}
-                                />
-                              );
-                            }
-                          })
-                        }
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </CippButtonCard>
-              </Grid>
-            ))
+                  </CippButtonCard>
+                </Grid>
+              ))}
+            </>
           ) : (
             <>
               {getGeoIP.isSuccess && (
