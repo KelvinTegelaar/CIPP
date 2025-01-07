@@ -66,8 +66,12 @@ export const CippApiDialog = (props) => {
         const value = dataObject[key];
         if (typeof value === "string" && value.startsWith("!")) {
           newData[key] = value.slice(1); // Remove "!" and pass the key as-is
-        } else if (typeof value === "string" && row[value] !== undefined) {
-          newData[key] = row[value];
+        } else if (typeof value === "string") {
+          if (Array.isArray(row)) {
+            newData[key] = row.map((singleRow) => singleRow[value] !== undefined ? singleRow[value] : value);
+          } else if (row[value] !== undefined) {
+            newData[key] = row[value];
+          }
         } else if (typeof value === "object" && value !== null) {
           const processedValue = processActionData(value, row, replacementBehaviour);
           if (replacementBehaviour !== "removeNulls" || Object.keys(processedValue).length > 0) {
@@ -75,6 +79,8 @@ export const CippApiDialog = (props) => {
           }
         } else if (replacementBehaviour !== "removeNulls") {
           newData[key] = value;
+        } else if (Array.isArray(row)) {
+          newData[key] = row.map((singleRow) => singleRow[value] !== undefined ? singleRow[value] : value);
         } else if (row[value] !== undefined) {
           newData[key] = row[value];
         }
