@@ -59,6 +59,7 @@ const CippGraphExplorerFilter = ({
       $expand: "",
       $top: "",
       $search: "",
+      $format: "",
       NoPagination: false,
       ReverseTenantLookup: false,
       ReverseTenantLookupProperty: "tenantId",
@@ -304,6 +305,30 @@ const CippGraphExplorerFilter = ({
         Key: "$count",
         Value: formParameters.$count,
       },
+      {
+        Key: "$expand",
+        Value: formParameters.$expand,
+      },
+      {
+        Key: "ReverseTenantLookup",
+        Value: formParameters.ReverseTenantLookup,
+      },
+      {
+        Key: "ReverseTenantLookupProperty",
+        Value: formParameters.ReverseTenantLookupProperty,
+      },
+      {
+        Key: "NoPagination",
+        Value: formParameters.NoPagination,
+      },
+      {
+        Key: "AsApp",
+        Value: formParameters.AsApp,
+      },
+      {
+        Key: "$format",
+        Value: formParameters.$format,
+      },
     ];
     Parameters.forEach((param) => {
       if (param.Value == null || param.Value === "") {
@@ -521,7 +546,7 @@ const CippGraphExplorerFilter = ({
           </>
         }
       >
-        <Grid container size={12} spacing={2}>
+        <Grid container size={12} spacing={2} sx={{ mb: 2 }}>
           <Grid item size={gridItemSize}>
             <CippFormComponent
               type="autoComplete"
@@ -630,6 +655,18 @@ const CippGraphExplorerFilter = ({
             />
           </Grid>
 
+          {/* Format Field */}
+          <Grid item size={gridItemSize}>
+            <CippFormComponent
+              type="textField"
+              name="$format"
+              label="Format"
+              formControl={formControl}
+              placeholder="Format parameter for report data (e.g. application/json)"
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
           {/* Reverse Tenant Lookup Switch */}
           <Grid item size={{ xs: 6, sm: gridSwitchSize }}>
             <CippFormComponent
