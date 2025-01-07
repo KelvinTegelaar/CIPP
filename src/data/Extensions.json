@@ -397,7 +397,7 @@
   },
   {
     "name": "Have I been Pwned",
-    "id": "hibp",
+    "id": "HIBP",
     "type": "darkweb",
     "cat": "Darkweb Scanning",
     "logo": "/assets/integrations/hibp.png",
