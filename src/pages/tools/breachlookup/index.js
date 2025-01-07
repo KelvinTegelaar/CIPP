@@ -19,6 +19,7 @@ import DOMPurify from "dompurify";
 import { getCippTranslation } from "/src/utils/get-cipp-translation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { CippCsvExportButton } from "/src/components/CippComponents/CippCsvExportButton";
 
 const Page = () => {
   const formControl = useForm({ mode: "onBlur" });
@@ -76,6 +77,15 @@ const Page = () => {
               </CippButtonCard>
             </Grid>
           </Grid>
+          {/* Export Button */}
+                    {getGeoIP.data && getGeoIP.data.length > 0 && (
+            <Grid item xs={12}>
+              <CippCsvExportButton
+                rawData={getGeoIP.data} // Pass raw breaches data
+                reportName="User_Breaches"
+              />
+            </Grid>
+          )}
           {getGeoIP.isFetching ? (
             <Grid item xs={8}>
               <CippButtonCard title="Fetching Results">
