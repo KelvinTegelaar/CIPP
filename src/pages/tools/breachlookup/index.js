@@ -19,7 +19,7 @@ import DOMPurify from "dompurify";
 import { getCippTranslation } from "/src/utils/get-cipp-translation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { CippCsvExportButton } from "/src/components/CippComponents/CippCsvExportButton";
+import CippCsvExportButton from "/src/components/CippComponents/CippCsvExportButton";
 
 const Page = () => {
   const formControl = useForm({ mode: "onBlur" });
@@ -78,7 +78,7 @@ const Page = () => {
             </Grid>
           </Grid>
           {/* Export Button */}
-                    {getGeoIP.data && getGeoIP.data.length > 0 && (
+          {getGeoIP.data && getGeoIP.data.length > 0 && (
             <Grid item xs={12}>
               <CippCsvExportButton
                 rawData={getGeoIP.data} // Pass raw breaches data
@@ -199,6 +199,25 @@ const Page = () => {
                           No breaches have been detected for this account
                         </Typography>
                       </Grid>
+                    </Grid>
+                  </CippButtonCard>
+                </Grid>
+              )}
+              {getGeoIP.isError && (
+                <Grid item xs={8}>
+                  <CippButtonCard title="Error">
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="body1" color="textPrimary">
+                          An error occurred while connecting to the HIBP API.
+                        </Typography>
+                        {getGeoIP.error?.response?.data && (
+                          <Typography variant="body2" color="textSecondary">
+                            {getGeoIP.error.response.data}
+                          </Typography>
+                        )}
+                      </Grid>
+                      {console.log(getGeoIP.error)}
                     </Grid>
                   </CippButtonCard>
                 </Grid>
