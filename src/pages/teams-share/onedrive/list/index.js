@@ -10,13 +10,12 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSharePointPerms",
       data: {
-        UPN: "UPN",
-        TenantFilter: "TenantFilter",
+        UPN: "ownerPrincipalName",
         RemovePermission: false,
       },
       confirmText: "Select the User to add to this user's OneDrive permissions",
       dropdown: {
-        url: "/api/listUsers?TenantFilter=TenantFilter",
+        url: "/api/listUsers",
         labelField: "displayName",
         valueField: "userPrincipalName",
       },
@@ -26,7 +25,7 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSharePointPerms",
       data: {
-        UPN: "UPN",
+        UPN: "ownerPrincipalName",
         TenantFilter: "TenantFilter",
         RemovePermission: true,
       },
@@ -52,13 +51,14 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={[
         "displayName",
-        "UPN",
-        "LastActive",
-        "FileCount",
-        "UsedGB",
-        "Allocated",
-        "QuotaUsed",
-        "URL",
+        "createdDateTime",
+        "ownerPrincipalName",
+        "lastActivityDate",
+        "fileCount",
+        "storageUsedInGigabytes",
+        "storageAllocatedInGigabytes",
+        "reportRefreshDate",
+        "webUrl",
       ]}
     />
   );

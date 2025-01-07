@@ -12,75 +12,123 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSetSharePointMember",
       data: {
-        groupId: "UPN",
-        TenantFilter: "TenantFilter",
+        groupId: "ownerPrincipalName",
         add: true,
-        URL: "URL",
-        SharePointType: "Template",
+        URL: "webUrl",
+        SharePointType: "rootWebTemplate",
       },
       confirmText: "Select the User to add as a member.",
-      dropdown: {
-        url: "/api/listUsers?TenantFilter=TenantFilter",
-        labelField: "displayName",
-        valueField: "userPrincipalName",
-      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "user",
+          label: "Select User",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/listUsers",
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+            valueField: "userPrincipalName",
+            addedField: {
+              id: "id",
+            },
+          },
+        },
+      ],
+      multiPost: false,
     },
     {
       label: "Remove Member",
       type: "POST",
       url: "/api/ExecSetSharePointMember",
       data: {
-        groupId: "UPN",
-        TenantFilter: "TenantFilter",
+        groupId: "ownerPrincipalName",
         add: false,
         URL: "URL",
-        SharePointType: "Template",
+        SharePointType: "rootWebTemplate",
       },
       confirmText: "Select the User to remove as a member.",
-      dropdown: {
-        url: "/api/listUsers?TenantFilter=TenantFilter",
-        labelField: "displayName",
-        valueField: "userPrincipalName",
-      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "user",
+          label: "Select User",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/listUsers",
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+            valueField: "userPrincipalName",
+            addedField: {
+              id: "id",
+            },
+          },
+        },
+      ],
+      multiPost: false,
     },
     {
       label: "Add Site Admin",
       type: "POST",
       url: "/api/ExecSharePointPerms",
       data: {
-        UPN: "UPN",
-        TenantFilter: "TenantFilter",
+        UPN: "ownerPrincipalName",
         RemovePermission: false,
-        URL: "URL",
+        URL: "webUrl",
       },
       confirmText: "Select the User to add to the Site Admins permissions",
-      dropdown: {
-        url: "/api/listUsers?TenantFilter=TenantFilter",
-        labelField: "displayName",
-        valueField: "userPrincipalName",
-      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "user",
+          label: "Select User",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/listUsers",
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+            valueField: "userPrincipalName",
+            addedField: {
+              id: "id",
+            },
+          },
+        },
+      ],
+      multiPost: false,
     },
     {
       label: "Remove Site Admin",
       type: "POST",
       url: "/api/ExecSharePointPerms",
       data: {
-        UPN: "UPN",
-        TenantFilter: "TenantFilter",
+        UPN: "ownerPrincipalName",
         RemovePermission: true,
-        URL: "URL",
+        URL: "webUrl",
       },
       confirmText: "Select the User to remove from the Site Admins permissions",
-      dropdown: {
-        url: "/api/listUsers?TenantFilter=TenantFilter",
-        labelField: "displayName",
-        valueField: "userPrincipalName",
-      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "user",
+          label: "Select User",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/listUsers",
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+            valueField: "userPrincipalName",
+            addedFields: {
+              id: "id",
+            },
+          },
+        },
+      ],
+      multiPost: false,
     },
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["URL"],
+    extendedInfoFields: ["displayName", "webUrl"],
     actions: actions,
   };
 
@@ -91,14 +139,15 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
-        "URL",
         "displayName",
-        "LastActive",
-        "FileCount",
-        "UsedGB",
-        "Allocated",
-        "Template",
-        "AutoMapUrl",
+        "createdDateTime",
+        "ownerPrincipalName",
+        "lastActivityDate",
+        "fileCount",
+        "storageUsedInGigabytes",
+        "storageAllocatedInGigabytes",
+        "reportRefreshDate",
+        "webUrl",
       ]}
       cardButton={
         <>
