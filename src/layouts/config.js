@@ -429,7 +429,7 @@ export const nativeMenuItems = [
         items: [
           { title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" },
           { title: "Individual Breach Lookup", path: "/tools/breachlookup" },
-          { title: "Password Checker", path: "/tools/passwordchecker" },
+          //{ title: "Password Checker", path: "/tools/passwordchecker" }, to add later, find a nice way so people dont just fill in passwords online...
         ],
       },
       {
