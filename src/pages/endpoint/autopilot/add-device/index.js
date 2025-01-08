@@ -24,6 +24,7 @@ const Page = () => {
       component: CippWizardCSVImport,
       componentProps: {
         name: "autopilotData",
+        manualFields: true,
         fields: ["SerialNumber", "oemManufacturerName", "modelName", "productKey", "hardwareHash"],
         nameToCSVMapping: {
           SerialNumber: "Device serial number",
