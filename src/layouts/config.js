@@ -274,12 +274,10 @@ export const nativeMenuItems = [
       {
         title: "OneDrive",
         path: "/teams-share/onedrive",
-        items: [{ title: "OneDrive", path: "/teams-share/onedrive/list" }],
       },
       {
         title: "SharePoint",
         path: "/teams-share/sharepoint",
-        items: [{ title: "SharePoint", path: "/teams-share/sharepoint/list-sharepoint" }],
       },
       {
         title: "Teams",

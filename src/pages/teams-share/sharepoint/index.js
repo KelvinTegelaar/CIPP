@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 
 const Page = () => {
-  const pageTitle = "SharePoint List";
+  const pageTitle = "SharePoint Sites";
 
   const actions = [
     {
@@ -128,7 +128,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["displayName", "webUrl"],
+    extendedInfoFields: ["displayName", "description", "webUrl"],
     actions: actions,
   };
 
@@ -151,10 +151,10 @@ const Page = () => {
       ]}
       cardButton={
         <>
-          <Button component={Link} href="/teams-share/sharepoint/addsite">
+          <Button component={Link} href="/teams-share/sharepoint/add-site">
             Add Site
           </Button>
-          <Button component={Link} href="/teams-share/sharepoint/addsitebulk">
+          <Button component={Link} href="/teams-share/sharepoint/bulk-add-site">
             Bulk Add Sites
           </Button>
         </>

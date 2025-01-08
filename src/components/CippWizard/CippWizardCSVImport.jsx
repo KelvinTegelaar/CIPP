@@ -1,4 +1,13 @@
-import { Button, Grid, Link, Stack } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Link,
+  Stack,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippDataTable } from "../CippTable/CippDataTable";
@@ -17,9 +26,12 @@ export const CippWizardCSVImport = (props) => {
     name,
     manualFields = true,
     nameToCSVMapping,
+    fileName = "BulkUser",
   } = props;
   const tableData = useWatch({ control: formControl.control, name: name });
   const [newTableData, setTableData] = useState([]);
+  const [open, setOpen] = useState(false);
+
   const handleRemoveItem = (row) => {
     if (row === undefined) return false;
     const index = tableData?.findIndex((item) => item === row);
@@ -27,12 +39,14 @@ export const CippWizardCSVImport = (props) => {
     newTableData.splice(index, 1);
     setTableData(newTableData);
   };
+
   const handleAddItem = () => {
     const newRowData = formControl.getValues("addrow");
     if (newRowData === undefined) return false;
 
     const newTableData = [...tableData, newRowData];
     setTableData(newTableData);
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -48,11 +62,12 @@ export const CippWizardCSVImport = (props) => {
       noConfirm: true,
     },
   ];
+
   return (
     <Stack spacing={3}>
       <Link
         href={`data:text/csv;charset=utf-8,%EF%BB%BF${encodeURIComponent(fields.join(",") + "\n")}`}
-        download="BulkUser.csv"
+        download={`${fileName}.csv`}
       >
         Download Example CSV
       </Link>
@@ -63,23 +78,33 @@ export const CippWizardCSVImport = (props) => {
         formControl={formControl}
       />
       <Grid container spacing={2}>
-        {manualFields &&
-          fields.map((field) => (
-            <Grid item xs={12} sm={6} md={4} key={field}>
-              <CippFormComponent
-                name={`addrow.${field}`}
-                label={getCippTranslation(field)}
-                type="textField"
-                formControl={formControl}
-              />
-            </Grid>
-          ))}
-        <Grid item xs={12} sm={6} md={4}>
-          <Button size="small" onClick={() => handleAddItem()}>
+        <Grid item xs={12}>
+          <Button size="small" onClick={() => setOpen(true)}>
             Add Item
           </Button>
         </Grid>
       </Grid>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Add a new row</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {fields.map((field) => (
+              <Grid item xs={12} key={field}>
+                <CippFormComponent
+                  name={`addrow.${field}`}
+                  label={getCippTranslation(field)}
+                  type="textField"
+                  formControl={formControl}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={handleAddItem}>Add</Button>
+        </DialogActions>
+      </Dialog>
       <CippDataTable
         actions={actions}
         title={`CSV Preview`}
