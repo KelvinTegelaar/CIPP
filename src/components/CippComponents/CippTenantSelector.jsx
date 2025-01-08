@@ -104,6 +104,7 @@ export const CippTenantSelector = (props) => {
             onClick={() => {
               setOffcanvasVisible(true);
             }}
+            disabled={!currentTenant || currentTenant.value === "AllTenants"}
           >
             <Tooltip title="Show Tenant Information">
               <SvgIcon>

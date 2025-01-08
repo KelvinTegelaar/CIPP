@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Container, Grid, Button } from "@mui/material";
 import { CippInfoBar } from "../components/CippCards/CippInfoBar";
 import { CippChartCard } from "../components/CippCards/CippChartCard";
@@ -138,14 +138,21 @@ const Page = () => {
     currentTenant
   );
 
-  const tenantLookup = currentTenantInfo.data?.find(
-    (tenant) => tenant.defaultDomainName === currentTenant
-  );
-  const PortalMenuItems = Portals.map((portal) => ({
-    label: portal.label,
-    target: "_blank",
-    link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
-  }));
+  const [PortalMenuItems, setPortalMenuItems] = useState([]);
+
+  useEffect(() => {
+    if (currentTenantInfo.isSuccess) {
+      const tenantLookup = currentTenantInfo.data?.find(
+        (tenant) => tenant.defaultDomainName === currentTenant
+      );
+      const menuItems = Portals.map((portal) => ({
+        label: portal.label,
+        target: "_blank",
+        link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+      }));
+      setPortalMenuItems(menuItems);
+    }
+  }, [currentTenantInfo.isSuccess, currentTenant]);
 
   return (
     <>
@@ -159,7 +166,11 @@ const Page = () => {
               <CippUniversalSearch />
             </Grid>
             <Grid item xs={12} md={12}>
-              <BulkActionsMenu buttonName="Portals" actions={PortalMenuItems} />
+              <BulkActionsMenu
+                buttonName="Portals"
+                actions={PortalMenuItems}
+                disabled={!currentTenantInfo.isSuccess}
+              />
             </Grid>
             <Grid item xs={12} md={12}>
               <CippInfoBar data={tenantInfo} isFetching={organization.isFetching} />
