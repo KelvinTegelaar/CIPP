@@ -22,7 +22,7 @@ import { getCippTranslation } from "./get-cipp-translation";
 export const getCippFormatting = (data, cellName, type, canReceive) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
-  // if data is a data object, return a formatted date
+  // if data is a data object, return a fFormatted date
   if (cellName === "addrow") {
     return isText ? (
       "No data"
@@ -104,7 +104,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
       <CippTimeAgo data={data} type={type} />
     );
   }
-  const passwordItems = ["password", "applicationsecret", "refreshtoken"];
+  const passwordItems = ["applicationsecret", "refreshtoken"];
 
   if (passwordItems.includes(cellNameLower)) {
     //return a button that shows/hides the password if it has a password. In text mode, return "Password hidden"
@@ -258,7 +258,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
       data = data.replace("#microsoft.graph.", "");
       return getCippTranslation(data, "@odata.type");
     }
-    return data
+    return data;
   }
 
   // Handle From address

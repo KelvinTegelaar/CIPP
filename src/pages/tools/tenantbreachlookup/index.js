@@ -8,13 +8,20 @@ const Page = () => {
   const actions = [
     {
       label: "View User",
-      link: "/tools/breachlookup?account=[user]",
+      link: "/tools/breachlookup?account=[email]",
       multiPost: false,
       icon: <EyeIcon />,
       color: "success",
     },
   ];
-  return <CippTablePage actions={actions} title={pageTitle} apiUrl={apiUrl} />;
+  return (
+    <CippTablePage
+      actions={actions}
+      title={pageTitle}
+      apiUrl={apiUrl}
+      simpleColumns={["email", "password", "sources"]}
+    />
+  );
 };
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;

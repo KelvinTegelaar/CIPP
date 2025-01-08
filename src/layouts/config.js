@@ -425,7 +425,7 @@ export const nativeMenuItems = [
         title: "Dark Web Tools",
         path: "/tools/darkweb",
         items: [
-          //{ title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" }, also temp remove
+          { title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" },
           { title: "Individual Breach Lookup", path: "/tools/breachlookup" },
           //{ title: "Password Checker", path: "/tools/passwordchecker" }, to add later, find a nice way so people dont just fill in passwords online...
         ],
