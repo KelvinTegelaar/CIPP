@@ -421,15 +421,14 @@ export const nativeMenuItems = [
           { title: "Message Viewer", path: "/email/tools/message-viewer" },
         ],
       },
-      {
-        title: "Dark Web Tools",
-        path: "/tools/darkweb",
-        items: [
-          { title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" },
-          { title: "Individual Breach Lookup", path: "/tools/breachlookup" },
-          //{ title: "Password Checker", path: "/tools/passwordchecker" }, to add later, find a nice way so people dont just fill in passwords online...
-        ],
-      },
+      // {
+      //   title: "Dark Web Tools",
+      //   path: "/tools/darkweb",
+      //   items: [
+      //     { title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" },
+      //     { title: "Breach Lookup", path: "/tools/breachlookup" },
+      //   ],
+      // },
       {
         title: "Scheduler",
         path: "/cipp/scheduler",
