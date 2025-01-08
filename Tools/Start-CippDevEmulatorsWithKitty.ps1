@@ -3,7 +3,9 @@ Write-Host 'Starting CIPP Dev Emulators'
 Get-Process node -ErrorAction SilentlyContinue | Stop-Process -ErrorAction SilentlyContinue
 $Path = (Get-Item $PSScriptRoot).Parent.Parent.FullName
 
-$Process = Read-Host -Prompt 'Start Process Function (y/N)?'
+if (Test-Path (Join-Path $Path 'CIPP-API-Processor')) {
+  $Process = Read-Host -Prompt 'Start Process Function (y/N)?'
+}
 
 if ($Process -eq 'y') {
   kitty --detach --title 'CIPP' -o allow_remote_control=yes -- pwsh -c "
