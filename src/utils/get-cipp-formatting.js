@@ -104,7 +104,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
       <CippTimeAgo data={data} type={type} />
     );
   }
-  const passwordItems = ["applicationsecret", "refreshtoken"];
+  const passwordItems = ["breachPass", "applicationsecret", "refreshtoken"];
 
   if (passwordItems.includes(cellNameLower)) {
     //return a button that shows/hides the password if it has a password. In text mode, return "Password hidden"

@@ -20,6 +20,8 @@ import { getCippTranslation } from "/src/utils/get-cipp-translation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import CippCsvExportButton from "/src/components/CippComponents/CippCsvExportButton";
+import { getCippFormatting } from "../../../utils/get-cipp-formatting";
+import { CippCopyToClipBoard } from "../../../components/CippComponents/CippCopyToClipboard";
 
 const Page = () => {
   const formControl = useForm({ mode: "onBlur" });
@@ -52,14 +54,14 @@ const Page = () => {
         <Grid container spacing={3}>
           <Grid container item spacing={4}>
             <Grid item spacing={4} xs={4}>
-              <CippButtonCard title="User Breach lookup">
+              <CippButtonCard title="Breach lookup">
                 <Grid container spacing={2}>
                   <Grid item xs={8}>
                     <CippFormComponent
                       formControl={formControl}
                       name="account"
                       type="textField"
-                      placeholder="Email address"
+                      label="Email address or domain name"
                       required
                     />
                   </Grid>
@@ -125,6 +127,21 @@ const Page = () => {
                     }
                   >
                     <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
+                          Partial Password Available
+                        </Typography>
+                        <Typography variant="body2" color="textPrimary">
+                          {breach.password ? (
+                            <>
+                              Yes
+                              <CippCopyToClipBoard text={breach.password} type="password" />
+                            </>
+                          ) : (
+                            "No"
+                          )}
+                        </Typography>
+                      </Grid>
                       <Grid item xs={12}>
                         <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                           Description
