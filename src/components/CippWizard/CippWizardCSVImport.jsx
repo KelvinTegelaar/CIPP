@@ -24,7 +24,7 @@ export const CippWizardCSVImport = (props) => {
     onPreviousStep,
     fields,
     name,
-    manualFields = true,
+    manualFields = false,
     nameToCSVMapping,
     fileName = "BulkUser",
   } = props;
@@ -77,19 +77,11 @@ export const CippWizardCSVImport = (props) => {
         name={name}
         formControl={formControl}
       />
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Button size="small" onClick={() => setOpen(true)}>
-            Add Item
-          </Button>
-        </Grid>
-      </Grid>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Add a new row</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-            {fields.map((field) => (
-              <Grid item xs={12} key={field}>
+      {manualFields && (
+        <Grid container spacing={2}>
+          {fields.map((field) => (
+            <>
+              <Grid item xs={12} sm={6} md={4} key={field}>
                 <CippFormComponent
                   name={`addrow.${field}`}
                   label={getCippTranslation(field)}
@@ -97,14 +89,52 @@ export const CippWizardCSVImport = (props) => {
                   formControl={formControl}
                 />
               </Grid>
-            ))}
+            </>
+          ))}
+          <Grid item xs={12} sm={6} md={4}>
+            <Button size="small" onClick={() => handleAddItem()}>
+              Add Item
+            </Button>
           </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleAddItem}>Add</Button>
-        </DialogActions>
-      </Dialog>
+        </Grid>
+      )}
+      {!manualFields && (
+        <>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Button size="small" onClick={() => setOpen(true)}>
+                Add Item
+              </Button>
+            </Grid>
+          </Grid>
+          <Dialog open={open} onClose={() => setOpen(false)}>
+            <DialogTitle>Add a new row</DialogTitle>
+            <DialogContent>
+              <Grid container spacing={2} sx={{ py: 1 }}>
+                {fields.map((field) => (
+                  <Grid item xs={12} key={field}>
+                    <CippFormComponent
+                      name={`addrow.${field}`}
+                      label={getCippTranslation(field)}
+                      type="textField"
+                      formControl={formControl}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="outlined" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="contained" onClick={handleAddItem}>
+                Add
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      )}
+
       <CippDataTable
         actions={actions}
         title={`CSV Preview`}

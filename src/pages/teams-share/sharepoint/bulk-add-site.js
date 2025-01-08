@@ -30,9 +30,10 @@ const BulkAddSiteForm = () => {
     {
       title: "Step 2",
       description: "Upload CSV",
-      component: (props) => <CippWizardCSVImport fileName="BulkSites" {...props} />,
+      component: CippWizardCSVImport,
       componentProps: {
         name: "bulkSites",
+        fileName: "BulkSites",
         fields: fields,
         manualFields: false,
       },
