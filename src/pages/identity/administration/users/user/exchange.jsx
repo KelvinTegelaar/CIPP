@@ -95,12 +95,7 @@ const Page = () => {
           icon: <CalendarIcon />,
           text: (
             <>
-              Created:{" "}
-              {userRequest.data?.[0]?.Mailbox?.[0]?.WhenCreated ? (
-                <ReactTimeAgo date={new Date(userRequest.data?.[0]?.Mailbox?.[0]?.WhenCreated)} />
-              ) : (
-                "Unknown"
-              )}
+              Created: <ReactTimeAgo date={userRequest.data?.[0]?.Mailbox?.[0]?.WhenCreated} />
             </>
           ),
         },

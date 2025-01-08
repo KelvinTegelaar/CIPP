@@ -14,15 +14,23 @@ import Grid from "@mui/material/Grid2";
 import { CippUserInfoCard } from "../../../../../components/CippCards/CippUserInfoCard";
 import { Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
+import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
+import { useEffect, useState } from "react";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { userId } = router.query;
-
+  const [waiting, setWaiting] = useState(false);
+  useEffect(() => {
+    if (userId) {
+      setWaiting(true);
+    }
+  }, [userId]);
   const userRequest = ApiGetCall({
     url: `/api/ListUsers?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `ListUsers-${userId}`,
+    waiting: waiting,
   });
 
   const MFARequest = ApiGetCall({
@@ -34,11 +42,13 @@ const Page = () => {
       $top: 99,
     },
     queryKey: `MFA-${userId}`,
+    waiting: waiting,
   });
 
   const signInLogs = ApiGetCall({
     url: `/api/ListUserSigninLogs?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}&top=1`,
     queryKey: `ListSignIns-${userId}`,
+    waiting: waiting,
   });
 
   // Set the title and subtitle for the layout
@@ -54,7 +64,7 @@ const Page = () => {
           icon: <CalendarIcon />,
           text: (
             <>
-              Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />{" "}
+              Created <CippTimeAgo data={userRequest.data?.[0]?.createdDateTime} />
             </>
           ),
         },

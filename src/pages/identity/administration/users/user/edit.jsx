@@ -13,8 +13,7 @@ import { Mail } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import ReactTimeAgo from "react-time-ago";
-
+import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
@@ -60,10 +59,7 @@ const Page = () => {
           icon: <CalendarIcon />,
           text: (
             <>
-              Created:{" "}
-              <ReactTimeAgo
-                date={new Date(userRequest.data?.[0]?.createdDateTime).toLocaleDateString()}
-              />{" "}
+              Created <CippTimeAgo data={userRequest.data?.[0]?.createdDateTime} />
             </>
           ),
         },
