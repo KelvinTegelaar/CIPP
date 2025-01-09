@@ -430,6 +430,11 @@ export const nativeMenuItems = [
       //   ],
       // },
       {
+        title: "Template Library",
+        path: "/tools/templatelib",
+        roles: ["editor", "admin", "superadmin"],
+      },
+      {
         title: "Scheduler",
         path: "/cipp/scheduler",
         roles: ["editor", "admin", "superadmin"],
