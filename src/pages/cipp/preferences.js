@@ -87,28 +87,6 @@ const Page = () => {
                             />
                           ),
                         },
-
-                        {
-                          label: "Default Theme",
-                          value: (
-                            <CippFormComponent
-                              type="autoComplete"
-                              sx={{ width: "250px" }}
-                              disableClearable={true}
-                              name="currentTheme"
-                              formControl={formcontrol}
-                              multiple={false}
-                              validators={{
-                                required: { value: true, message: "This field is required" },
-                              }}
-                              options={[
-                                { value: "light", label: "Light" },
-                                { value: "dark", label: "Dark" },
-                                { value: "browser", label: "Let the browser choose" },
-                              ]}
-                            />
-                          ),
-                        },
                         {
                           label: "Added Attributes when creating a new user",
                           value: (
