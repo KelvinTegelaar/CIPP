@@ -335,18 +335,15 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
-  // Handle riskLevel
-  if (cellName === "riskLevel") {
-    return getCippTranslation(data);
-  }
+  const translateProps = [
+    "riskLevel",
+    "riskState",
+    "riskDetail",
+    "enrollmentType",
+    "profileType",
+  ];
 
-  // Handle riskState
-  if (cellName === "riskState") {
-    return getCippTranslation(data);
-  }
-
-  // Handle riskDetail
-  if (cellName === "riskDetail") {
+  if (translateProps.includes(cellName)) {
     return getCippTranslation(data);
   }
 

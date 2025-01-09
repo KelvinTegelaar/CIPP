@@ -49,7 +49,6 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
-        "id",
         "userDisplayName",
         "userPrincipalName",
         "riskLevel",
