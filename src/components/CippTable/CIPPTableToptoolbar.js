@@ -176,7 +176,12 @@ export const CIPPTableToptoolbar = ({
         queryKey: `${queryKey ? queryKey : title}-${filterName}`,
       });
       if (filter?.$select) {
-        const selectedColumns = filter.$select.split(",");
+        let selectedColumns = [];
+        if (Array.isArray(filter?.$select)) {
+          selectedColumns = filter?.$select;
+        } else {
+          selectedColumns = filter?.$select.split(",");
+        }
         const setNestedVisibility = (col) => {
           if (typeof col === "object" && col !== null) {
             Object.keys(col).forEach((key) => {
@@ -191,10 +196,12 @@ export const CIPPTableToptoolbar = ({
             }
           }
         };
-        setConfiguredSimpleColumns(selectedColumns);
-        selectedColumns.forEach((col) => {
-          setNestedVisibility(col);
-        });
+        if (selectedColumns.length > 0) {
+          setConfiguredSimpleColumns(selectedColumns);
+          selectedColumns.forEach((col) => {
+            setNestedVisibility(col);
+          });
+        }
       }
     }
   };
