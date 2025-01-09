@@ -31,6 +31,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       simpleColumns={["email", "password", "sources"]}
+      tenantInTitle={false}
       cardButton={
         <>
           <Button onClick={ApiCall.refetch}>

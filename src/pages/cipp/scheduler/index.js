@@ -56,6 +56,7 @@ const Page = () => {
           </Button>
         </>
       }
+      tenantInTitle={false}
       title="Scheduled Tasks"
       apiUrl={
         showHiddenJobs ? "/api/ListScheduledItems?ListHidden=True" : "/api/ListScheduledItems"
