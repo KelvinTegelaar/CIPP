@@ -30,3 +30,8 @@ The overview page is where you can stop the API, or restart it. The configuratio
 
 Custom domains brings you to the location where you can change the custom domain. Role management is where you can invite users, and set the roles for users.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

@@ -26,3 +26,8 @@ This section provides you the ability to set offboarding defaults, this allows y
 * **Save Settings**: Save the modified settings for the individual user.
 * **Save for All Users**: If the user has admin privileges, they have the option to save the modified settings for all users within the tenant, this will overwrite all personal settings and be force on each full refresh of a page.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

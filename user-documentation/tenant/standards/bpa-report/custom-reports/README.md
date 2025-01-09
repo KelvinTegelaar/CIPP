@@ -122,3 +122,7 @@ This configuration retrieves mailbox details, including size and last login date
 By following the steps above, you've crafted a detailed JSON structure for the "Company IT Overview" report. This report fetches data from SharePoint, Exchange, and presents insights in a tabular format. You can modify this structure to fetch different data or adjust the presentation as needed.
 
 ***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

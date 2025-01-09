@@ -29,3 +29,8 @@ Scheduled tasks run every 15 minutes on their planned time. A recurring task wil
 6. **Saving the Task**:
    * After filling in all the necessary details, click on the "Save" or "Submit" button to schedule the task.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

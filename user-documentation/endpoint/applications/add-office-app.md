@@ -18,3 +18,8 @@ You can add Office applications to deploy through Microsoft Endpoint Manager.
 | Remove other versions          | Whether the install removes other versions of Office.    |
 | Accept License                 | Whether the install accepts the Office EULA license.     |
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

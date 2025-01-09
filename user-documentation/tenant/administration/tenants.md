@@ -33,3 +33,11 @@ This _only_ affects what's shown in the Partner Center (and tenant list in CIPP)
 By default Microsoft only picks up this information when you create a new relationship, and never updates this after.
 {% endhint %}
 
+
+
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+

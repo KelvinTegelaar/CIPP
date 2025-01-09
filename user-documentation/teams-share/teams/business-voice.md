@@ -15,3 +15,8 @@ The Business Voice page gives an overview of all the numbers on the selected ten
 | Operator Connect | Whether the phone number is an operator connect number.       |
 | Purchased On     | The purchased date and time of the number.                    |
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

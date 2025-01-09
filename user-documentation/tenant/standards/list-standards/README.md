@@ -39,3 +39,7 @@ Standards are grouped into pages within the following categories:
 * [**Teams Standards:**](teams-standards.md) Collaboration-related settings, i.e.: meeting policies and external file sharing.
 
 ***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

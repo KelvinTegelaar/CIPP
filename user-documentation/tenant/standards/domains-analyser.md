@@ -100,3 +100,8 @@ Check that your permissions are correct by navigating to **CIPP Settings > Confi
 
 Make sure both CIPP-API and CIPP are fully up-to-date. There is extensive logging in the log files in the CIPP-API Function App.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

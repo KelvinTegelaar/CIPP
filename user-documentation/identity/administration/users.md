@@ -116,10 +116,10 @@ The Add User has the ability to be form filled via URL query strings. This table
 
 If you want to create your own LiveLink you can use the QueryString below.
 
+{% code overflow="wrap" %}
 ```
 ?city=<CITY>&country=<COUNTRY>&customerId=<UDF-TenantId(tblCustomers)>&primDomain=<ACCOUNTWEBSITEADDRESS>&usageLocation=NL&streetAddress=<ACCOUNTADDRESS1>&companyName=<ACCOUNTNAME>&businessPhones=<ACCOUNTPHONE>&postalCode=<ACCOUNTPOSTALCODE>&givenName=<CONTACTFIRSTNAME>&surname=<CONTACTLASTNAME>
 ```
-
-
+{% endcode %}
 
 {% include "../../../.gitbook/includes/feature-request.md" %}

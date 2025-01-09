@@ -17,3 +17,9 @@ It shows the status of the relationship, the tenant name, when it was created, w
 * Remove Global Administrator from Relationship
 * Terminate Relationship
 * Auto Extend Relationship
+
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

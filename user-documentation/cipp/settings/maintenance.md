@@ -15,3 +15,8 @@ This section allows for clearing the Durable Queues or purging all Orchestrator 
 * Purge Orchestrators
   * This action will drop both the Instances and History tables as well as the largemessages blob container from Azure storage.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

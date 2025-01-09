@@ -18,3 +18,8 @@ This page lists all the profiles that exist on the selected tenant, with a brief
 
 * View JSON - _Show all the options and their selected settings, in JSON format._
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

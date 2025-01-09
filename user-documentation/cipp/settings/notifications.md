@@ -48,3 +48,8 @@ Enter a webhook URL. Data is formatted based on the receiving server:
 Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler_CIPPNotifications).
 {% endhint %}
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

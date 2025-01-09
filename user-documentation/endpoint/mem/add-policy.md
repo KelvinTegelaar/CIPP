@@ -18,3 +18,10 @@ To work around this you can apply the policy to "AllTenants" and have it reappli
 
 You can then decide whether to assign the policy to all users, all devices or both. You can also just create the policy without applying it.
 
+
+
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

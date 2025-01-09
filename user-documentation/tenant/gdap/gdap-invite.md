@@ -20,3 +20,8 @@ If multiple invites are generated, but not used, the unused ones can either be f
 
 All mapped [GDAP roles](gdap-roles.md) can be selected from the list, or you can the "Use CIPP recommended roles and settings" option to go with the recommended roles.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

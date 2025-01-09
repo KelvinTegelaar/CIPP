@@ -6,3 +6,8 @@ Shows an overview of your users and their activity in Teams, allowing you to gai
 
 <table><thead><tr><th width="556">Field</th><th>Description</th></tr></thead><tbody><tr><td>User Principal Name</td><td>The users principal name.</td></tr><tr><td>Last Active</td><td>The date and time of the users' last activity in Teams.</td></tr><tr><td>Meeting Count</td><td>The number of meetings the user has attended.</td></tr><tr><td>Call Count</td><td>The number of calls the user has made.</td></tr><tr><td>Chat Count</td><td>The number of chats the user has made.</td></tr></tbody></table>
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

@@ -18,3 +18,8 @@ If you are unsure or don't trust the `IntuneWin` file, you have the option to re
 
 It's strongly recommended that you download, test, and view the contents of the intunewin file.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

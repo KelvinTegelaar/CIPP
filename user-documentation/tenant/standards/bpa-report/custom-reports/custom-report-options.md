@@ -176,3 +176,9 @@ Here’s a complete example combining all components:
 ```
 
 This structure ensures clear, actionable insights while offering flexibility for customization. Let me know if you'd like further explanation or a specific example tailored to your needs!
+
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

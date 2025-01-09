@@ -25,3 +25,8 @@ On the Group Templates page, the following actions can be performed:
 * **View**: Click the "View" button next to a group template to display its details in JSON format.
 * **Delete**: Click the "Trash" icon next to a group template to delete it. This action triggers a modal that asks for confirmation before deleting the template. Once confirmed, this action calls the `RemoveGroupTemplate` API endpoint.
 
+
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

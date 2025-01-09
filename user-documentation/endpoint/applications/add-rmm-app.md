@@ -70,3 +70,8 @@ ImmyBot recommends having all newly installed agents land into their holding are
 | Assign to all users and devices | Targets all users and devices for app deployment   |
 | Assign to Custom Group          | Enter comma separated row of group display name(s) |
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

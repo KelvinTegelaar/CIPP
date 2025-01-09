@@ -38,3 +38,8 @@ This page provides information on Exchange mailboxes, with the ability to view d
 On the mailbox edit page, and within the mailbox overview we currently cannot show if a mailbox is enabled for receiving external email. this is due to the Microsoft Graph API not returning the correct properties for this.
 {% endhint %}
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

@@ -85,3 +85,8 @@ The Tenants page also provides export and filter functionalities:
 * **Export:** Download a CSV file of the tenant table for offline use or analysis.
 * **Filter:** Use the 'Filter' dropdown to display tenants based on whether they are excluded or included.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

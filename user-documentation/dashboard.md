@@ -1,5 +1,6 @@
 ---
 description: About the Dashboard which includes versions and quick links
+icon: chart-line
 ---
 
 # CIPP Dashboard

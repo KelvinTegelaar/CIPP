@@ -1,2 +1,6 @@
-# Settings
+---
+icon: gear
+---
+
+# Application Settings
 

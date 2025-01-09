@@ -7,27 +7,26 @@
 {% embed url="https://app.guidde.com/share/playbooks/i9fztXsCUWjY3cr8mySvCX" fullWidth="false" %}
 
 {% hint style="danger" %}
-## When setting up your Service Account, remember:
+### When setting up your Service Account, remember:
 
-## Administration Requirements
+### Administration Requirements
 
 1. **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
 2. **Must be added to the AdminAgents group.** This group is required for connection to the Microsoft Partner API.
 
-## GDAP Group Requirements
+### GDAP Group Requirements
 
-1. **Recommended Roles:** When going through the invite process in CIPP, these groups will be automatically created. If you performed the migration with CIPP, these groups will start with `M365 GDAP`.&#x20;
-   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](../../setup/gdap/recommended-roles.md "mention")
+1. **Recommended Roles:** When going through the invite process in CIPP, these groups will be automatically created. If you performed the migration with CIPP, these groups will start with `M365 GDAP`.
+   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](recommended-roles.md "mention")
 2. **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality.
    1. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
 
-## Multi-factor Authentication
+### Multi-factor Authentication
 
 1. **MFA Setup:** This account must have **Microsoft** MFA enforced for each logon.
-   1. Use  [Conditional Access](../../setup/installation/conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when not available.
-2. **Microsoft MFA is mandatory.** Do not use alternative providers like Duo, and ensure it's setup **before any login attempts.**&#x20;
-   1. Reference  [this article on Supported MFA options](https://learn.microsoft.com/en-us/partner-center/security/partner-security-requirements-mandating-mfa#supported-mfa-options) from Microsoft for more details.
-
+   1. Use [Conditional Access](../installation/conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when not available.
+2. **Microsoft MFA is mandatory.** Do not use alternative providers like Duo, and ensure it's setup **before any login attempts.**
+   1. Reference [this article on Supported MFA options](https://learn.microsoft.com/en-us/partner-center/security/partner-security-requirements-mandating-mfa#supported-mfa-options) from Microsoft for more details.
 {% endhint %}
 
 ## Setup Walkthrough for the CIPP Service Account
@@ -54,7 +53,7 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FhLEJyFsy7Dxs69tcJkYt4p_doc.png?alt=media\&token=216ec97e-b904-4dcb-8a4c-1f359ae5fc91\&time=Fri%20Jul%2026%202024%2021:57:47%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
-5. &#x20;Click on "Next: Properties".
+5. Click on "Next: Properties".
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FreEjqnr9Xp15EZ3UPq6ZVJ_doc.png?alt=media\&token=acee15fa-1072-459a-ac97-77c4fb8e30bd\&time=Fri%20Jul%2026%202024%2021:57:49%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
@@ -72,7 +71,7 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 
 9. Select your GDAP groups
 
-If you have already migrated to GDAP  you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`, For the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
+If you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`, For the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FohuBSMhxAWuhe35TnuLP9o_doc.png?alt=media\&token=fcdc99db-ea70-46bb-8276-1a21d659948e\&time=Fri%20Jul%2026%202024%2021:58:00%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 

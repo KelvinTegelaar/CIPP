@@ -43,3 +43,8 @@ For more details on these settings, please refer to the [Group Templates page](g
 
 In this step, you review your input and confirm to apply. The application sends a POST request to the `AddGroup` endpoint listed below with your input as values.
 
+
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

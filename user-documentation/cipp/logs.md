@@ -36,3 +36,8 @@ If an expected action is not logged, it might indicate a failure that occurred b
    * **Severity:** Indicates the severity level of the log entry. Options include: `debug`, `info`, `warn`, `error`, and `critical`.
    * **Data:** Provides a link to any associated data, if available.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

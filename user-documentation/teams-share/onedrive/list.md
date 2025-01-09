@@ -19,3 +19,8 @@ This page lists OneDrive and SharePoint usage from the Microsoft usage API. The 
 | Used (GB)                 | The total size in GB in the users' OneDrive.            |
 | Allocated (GB)            | The total space in GB available in the users' OneDrive. |
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

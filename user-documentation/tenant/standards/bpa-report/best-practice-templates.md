@@ -142,3 +142,9 @@ _Unused licenses trigger an orange warning status. You can click the badge in th
 * **Custom CIPP Functions:**
   * **Purpose:** Extracts metrics like license usage and Secure Scores using tailored commands (e.g., `Get-CIPPLicenseOverview`).
   * **Benefit:** Provides actionable insights for tenant optimization.
+
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

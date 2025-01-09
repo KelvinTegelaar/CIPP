@@ -7,3 +7,8 @@
 
 ~~If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.~~
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

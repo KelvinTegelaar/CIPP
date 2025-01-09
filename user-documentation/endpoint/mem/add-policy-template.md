@@ -14,3 +14,8 @@ When listing policies within CIPP you can create a template by clicking on the t
 
 you can also grab the template information by using exernal sources, such as a blog or repository. Another method is by using "Graph X-ray" - A tool made by Merrill Fernando to ease the use of getting this information.
 
+***
+
+### Feature Requests / Ideas
+
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
