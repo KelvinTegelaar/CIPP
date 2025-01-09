@@ -16,7 +16,6 @@ import CSVReader from "../CSVReader";
 import get from "lodash/get";
 import {
   MenuButtonBold,
-  MenuButtonCode,
   MenuButtonItalic,
   MenuControlsContainer,
   MenuDivider,

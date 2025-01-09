@@ -18,7 +18,7 @@ import {
 import { ActionsMenu } from "/src/components/actions-menu";
 
 export const HeaderedTabbedLayout = (props) => {
-  const { children, tabOptions, title, subtitle, actions, isFetching = false } = props;
+  const { children, tabOptions, title, subtitle, actions, actionsData, isFetching = false } = props;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -70,7 +70,14 @@ export const HeaderedTabbedLayout = (props) => {
               spacing={1}
             >
               <Stack spacing={1}>
-                <Typography variant="h4">{title}</Typography>
+                <Stack
+                  alignItems="center"
+                  direction="row"
+                  spacing={1}
+                  justifyContent="space-between"
+                >
+                  <Typography variant="h4">{title}</Typography>
+                </Stack>
                 {isFetching ? (
                   <Skeleton variant="text" width={200} />
                 ) : (
@@ -89,7 +96,7 @@ export const HeaderedTabbedLayout = (props) => {
                 )}
               </Stack>
               {actions && actions.length > 0 && (
-                <ActionsMenu actions={actions} disabled={isFetching} />
+                <ActionsMenu actions={actions} data={actionsData} disabled={isFetching} />
               )}
             </Stack>
             <div>
