@@ -211,8 +211,9 @@ const CippStandardsSideBar = ({
         createDialog={createDialog}
         title="Add Standard"
         api={{
-          confirmText:
-            "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
+          confirmText: watchForm.runManually
+            ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
+            : "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
           url: "/api/AddStandardsTemplate",
           type: "POST",
           replacementBehaviour: "removeNulls",
