@@ -68,26 +68,6 @@ const Page = () => {
                       title="General Settings"
                       propertyItems={[
                         {
-                          label: "Tenant Overview Page",
-                          value: (
-                            <CippFormComponent
-                              type="autoComplete"
-                              sx={{ width: "250px" }}
-                              disableClearable={true}
-                              name="TenantListSelector"
-                              formControl={formcontrol}
-                              multiple={false}
-                              validators={{
-                                required: { value: true, message: "This field is required" },
-                              }}
-                              options={[
-                                { value: "full", label: "Show the full page" },
-                                { value: "compressed", label: "Show the compressed page" },
-                              ]}
-                            />
-                          ),
-                        },
-                        {
                           label: "Added Attributes when creating a new user",
                           value: (
                             <CippFormComponent
