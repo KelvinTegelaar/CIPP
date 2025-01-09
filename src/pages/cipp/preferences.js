@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import countryList from "../../data/countryList.json";
 import { CippSettingsSideBar } from "../../components/CippComponents/CippSettingsSideBar";
+import CippDevOptions from "/src/components/CippComponents/CippDevOptions";
 
 const Page = () => {
   const settings = useSettings();
@@ -259,7 +260,10 @@ const Page = () => {
                   </Stack>
                 </Grid>
                 <Grid size={{ xs: 12, lg: 4 }}>
-                  <CippSettingsSideBar formcontrol={formcontrol} />
+                  <Stack spacing={3}>
+                    <CippSettingsSideBar formcontrol={formcontrol} />
+                    <CippDevOptions />
+                  </Stack>
                 </Grid>
               </Grid>
             </div>

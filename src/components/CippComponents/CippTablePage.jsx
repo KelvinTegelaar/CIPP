@@ -1,6 +1,5 @@
 import { Alert, Card, Divider } from "@mui/material";
 import { Box, Container, Stack } from "@mui/system";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Head from "next/head";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useSettings } from "../../hooks/use-settings";
@@ -33,7 +32,6 @@ export const CippTablePage = (props) => {
         <title>{title}</title>
       </Head>
       <Box sx={sx}>
-        <ReactQueryDevtools />
         <Container maxWidth={false} sx={{ height: "100%" }}>
           <Stack spacing={2} sx={{ height: "100%" }}>
             {tableFilter}

@@ -12,6 +12,7 @@ import { createEmotionCache } from "../utils/create-emotion-cache";
 import "../libs/nprogress";
 import { PrivateRoute } from "../components/PrivateRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useMediaPredicate } from "react-media-hook";
 import Error500 from "./500";
 import { ErrorBoundary } from "react-error-boundary";
@@ -19,7 +20,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+import React from "react";
 TimeAgo.addDefaultLocale(en);
+
+const ReactQueryDevtoolsProduction = React.lazy(() =>
+  import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
+    default: d.ReactQueryDevtools,
+  }))
+);
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -53,15 +61,22 @@ const App = (props) => {
                   });
 
                   return (
-                    <ThemeProvider theme={theme}>
-                      <RTL direction={settings.direction}>
-                        <CssBaseline />
-                        <ErrorBoundary FallbackComponent={Error500}>
-                          <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
-                        </ErrorBoundary>
-                        <Toaster position="top-center" />
-                      </RTL>
-                    </ThemeProvider>
+                    <>
+                      <ThemeProvider theme={theme}>
+                        <RTL direction={settings.direction}>
+                          <CssBaseline />
+                          <ErrorBoundary FallbackComponent={Error500}>
+                            <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
+                          </ErrorBoundary>
+                          <Toaster position="top-center" />
+                        </RTL>
+                      </ThemeProvider>
+                      {settings?.showDevtools && (
+                        <React.Suspense fallback={null}>
+                          <ReactQueryDevtoolsProduction />
+                        </React.Suspense>
+                      )}
+                    </>
                   );
                 }}
               </SettingsConsumer>
