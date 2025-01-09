@@ -134,6 +134,9 @@ export const Layout = (props) => {
       if (userSettingsAPI.data.offboardingDefaults?.user) {
         delete userSettingsAPI.data.offboardingDefaults.user;
       }
+      if (userSettingsAPI?.data?.currentTheme) {
+        delete userSettingsAPI.data.currentTheme;
+      }
       settings.handleUpdate(userSettingsAPI.data);
       setUserSettingsComplete(true);
     }

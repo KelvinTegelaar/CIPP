@@ -68,8 +68,6 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
-        "Tenant",
-        "CippStatus",
         "displayName",
         "accountEnabled",
         "recipientType",
