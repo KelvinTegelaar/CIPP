@@ -43,11 +43,11 @@ const Page = () => {
       }
       //set the updated at date and user
       setUpdatedAt({
-        date: apiData.updatedAt,
-        user: apiData.updatedBy,
+        date: apiData?.updatedAt,
+        user: apiData?.updatedBy,
       });
       // Transform standards from the API to match the format for selectedStandards
-      const standardsFromApi = apiData.standards;
+      const standardsFromApi = apiData?.standards;
       const transformedStandards = {};
 
       Object.keys(standardsFromApi).forEach((key) => {
