@@ -10,6 +10,7 @@ const CippPageCard = (props) => {
     cardSize = "xl",
     hideTitleText = false,
     hideBackButton = false,
+    infoBar,
   } = props;
   const router = useRouter();
 
@@ -29,7 +30,7 @@ const CippPageCard = (props) => {
         }}
       >
         <Container maxWidth={cardSize}>
-          <Stack spacing={4}>
+          <Stack spacing={2}>
             <Stack spacing={2}>
               <div>
                 {!hideBackButton && (
@@ -52,6 +53,7 @@ const CippPageCard = (props) => {
                 </div>
               )}
             </Stack>
+            {infoBar}
             <Card>{children}</Card>
           </Stack>
         </Container>
