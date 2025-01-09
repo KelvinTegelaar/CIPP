@@ -92,7 +92,7 @@ export const CippTenantSelector = (props) => {
           display: "flex",
           alignItems: "center",
           "& > *": {
-            mx: "1px", // 1px margin between the elements
+            mx: "2px", // 1px margin between the elements
           },
         }}
       >

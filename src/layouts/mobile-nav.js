@@ -8,7 +8,7 @@ import { paths } from "../paths";
 import { MobileNavItem } from "./mobile-nav-item";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
 
-const MOBILE_NAV_WIDTH = 280;
+const MOBILE_NAV_WIDTH = "80%";
 
 const renderItems = ({ depth = 0, items, pathname }) =>
   items.reduce(
@@ -115,8 +115,9 @@ export const MobileNav = (props) => {
             <Logo />
           </Box>
         </Box>
-        <CippTenantSelector refreshButton={true} tenantButton={false} />
-
+        <Box sx={{ ml: 2, mt: 2 }}>
+          <CippTenantSelector refreshButton={true} tenantButton={false} />
+        </Box>
         <Box
           component="nav"
           sx={{

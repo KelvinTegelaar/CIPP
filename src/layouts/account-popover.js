@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ArrowRightOnRectangleIcon from "@heroicons/react/24/outline/ArrowRightOnRectangleIcon";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
+import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
+import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import {
   Avatar,
   Box,
@@ -19,6 +21,7 @@ import {
   Switch,
   Typography,
   useMediaQuery,
+  IconButton,
 } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
 import { paths } from "../paths";
@@ -116,25 +119,23 @@ export const AccountPopover = (props) => {
         >
           <List>
             {mdDown && (
-              <ListItem divider>
-                <ListItemText
-                  primary={orgData.data?.clientPrincipal?.userDetails}
-                  secondary={orgData?.data?.Org?.Domain}
-                />
-              </ListItem>
+              <>
+                <ListItem divider>
+                  <ListItemText
+                    primary={orgData.data?.clientPrincipal?.userDetails}
+                    secondary={orgData?.data?.Org?.Domain}
+                  />
+                </ListItem>
+                <ListItemButton onClick={onThemeSwitch}>
+                  <ListItemIcon>
+                    <SvgIcon fontSize="small">
+                      {paletteMode === "dark" ? <SunIcon /> : <MoonIcon />}
+                    </SvgIcon>
+                  </ListItemIcon>
+                  <ListItemText primary={paletteMode === "dark" ? "Light Mode" : "Dark Mode"} />
+                </ListItemButton>
+              </>
             )}
-            <li>
-              <List disablePadding>
-                {mdDown && (
-                  <ListItem sx={{ py: 0 }}>
-                    <FormControlLabel
-                      control={<Switch checked={paletteMode === "dark"} onChange={onThemeSwitch} />}
-                      label="Dark Mode"
-                    />
-                  </ListItem>
-                )}
-              </List>
-            </li>
             <ListItemButton onClick={() => router.push("/cipp/preferences")}>
               <ListItemIcon>
                 <SvgIcon fontSize="small">

@@ -86,7 +86,10 @@ export const TopNav = (props) => {
             </IconButton>
           )}
           <NotificationsPopover />
-          <AccountPopover />
+          <AccountPopover
+            onThemeSwitch={handleThemeSwitch}
+            paletteMode={settings.currentTheme?.value === "light" ? "dark" : "light"}
+          />
         </Stack>
       </Stack>
     </Box>

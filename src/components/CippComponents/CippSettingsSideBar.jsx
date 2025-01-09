@@ -2,6 +2,7 @@ import {
   Alert,
   Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   CircularProgress,
@@ -38,7 +39,7 @@ export const CippSettingsSideBar = (props) => {
       <Card>
         <CardHeader title="Actions" />
         <Divider />
-        <CardContent>
+        <CardContent sx={{ mb: 0, pb: 0 }}>
           <Stack spacing={2}>
             <Typography variant="body2">
               Settings on this page can be saved for the current user, or all users. Select the
@@ -59,13 +60,7 @@ export const CippSettingsSideBar = (props) => {
                 { label: "All Users", value: "allUsers" },
               ]}
             />
-            <div>
-              <Button variant="contained" disabled={!isValid} onClick={() => handleSaveChanges()}>
-                Save Changes
-                {saveSettingsPost.isPending && <CircularProgress color="info" size={20} />}
-              </Button>
-            </div>
-            <Divider />
+
             {saveSettingsPost.isError && (
               <Alert severity="error">{getCippError(saveSettingsPost.error)}</Alert>
             )}
@@ -74,6 +69,12 @@ export const CippSettingsSideBar = (props) => {
             )}
           </Stack>
         </CardContent>
+        <CardActions>
+          <Button variant="contained" disabled={!isValid} onClick={() => handleSaveChanges()}>
+            Save Changes
+            {saveSettingsPost.isPending && <CircularProgress color="info" size={20} />}
+          </Button>
+        </CardActions>
         <Divider />
       </Card>
     </>

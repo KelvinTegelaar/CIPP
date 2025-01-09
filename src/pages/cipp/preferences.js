@@ -50,17 +50,9 @@ const Page = () => {
       >
         <Container maxWidth="xl" sx={{ height: "100%" }}>
           <Stack spacing={4}>
-            <Stack spacing={2}>
-              <Stack
-                alignItems="flex-start"
-                direction="row"
-                justifyContent="space-between"
-                spacing={1}
-              ></Stack>
-            </Stack>
             <div>
               <Grid container spacing={3}>
-                <Grid xs={12} lg={8}>
+                <Grid size={{ xs: 12, lg: 8 }}>
                   <Stack spacing={3}>
                     <CippPropertyListCard
                       layout="two"
@@ -266,7 +258,7 @@ const Page = () => {
                     />
                   </Stack>
                 </Grid>
-                <Grid xs={12} lg={4}>
+                <Grid size={{ xs: 12, lg: 4 }}>
                   <CippSettingsSideBar formcontrol={formcontrol} />
                 </Grid>
               </Grid>
