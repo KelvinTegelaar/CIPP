@@ -56,7 +56,7 @@ const Page = () => {
       $filter:
         "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
     },
-    queryKey: "GDAPRelationships",
+    queryKey: "GDAPRelationshipOnboarding",
   });
 
   const onboardingList = ApiGetCallWithPagination({
