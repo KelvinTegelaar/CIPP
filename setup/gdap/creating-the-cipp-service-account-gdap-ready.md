@@ -14,13 +14,6 @@
 1. **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
 2. **Must be added to the AdminAgents group.** This group is required for connection to the Microsoft Partner API.
 
-### GDAP Group Requirements
-
-1. **Recommended Roles:** When going through the invite process in CIPP, these groups will be automatically created. If you performed the migration with CIPP, these groups will start with `M365 GDAP`.
-   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](recommended-roles.md "mention")
-2. **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality.
-   1. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
-
 ### Multi-factor Authentication
 
 1. **MFA Setup:** This account must have **Microsoft** MFA enforced for each logon.
@@ -34,6 +27,8 @@
 ***
 
 This guide walks you through the process from the video of setting up the CIPP Service Account. Follow the instructions on this page to the letter to ensure a seamless setup process down the line.
+
+The CIPP service account will be the account used to execute any actions on your tenants via CIPP.&#x20;
 
 To get started, head to the Microsoft Entra Portal's user overview at [entra.microsoft.com](https://entra.microsoft.com/)
 

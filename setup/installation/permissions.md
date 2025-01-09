@@ -1,15 +1,16 @@
 ---
 description: How to ensure your SAM app for CIPP has the correct permissions.
+hidden: true
 ---
 
-# Permissions
+# CIPP-SAM Permissions
 
 ### Manual Permissions
 
 At times you will need to change permissions for the CIPP-SAM application that is used by CIPP to access your tenants. Use the following instructions to update these permissions.
 
 * Go to the [Azure Portal](https://portal.azure.com).
-* Select [**Microsoft Entra ID**](https://portal.azure.com/#blade/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/Overview), now select [**App Registrations**](https://portal.azure.com/#blade/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
+* Select [**Microsoft Entra ID**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview), now select [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
 * Find your Secure App Model application. You can search based on the Application ID.
 * Go to **API Permissions** and select **Add a permission**.
 * Choose "Microsoft Graph" and "Delegated permission" or "Application Permissions"
