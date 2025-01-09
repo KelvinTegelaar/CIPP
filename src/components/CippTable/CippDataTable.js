@@ -49,46 +49,30 @@ export const CippDataTable = (props) => {
     refreshFunction,
     incorrectDataMessage = "Data not in correct format",
     onChange,
-    filters = [],
-    clearOnError = false,
+    filters,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
+  const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
   const [usedData, setUsedData] = useState(data);
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  const [graphFilterData, setGraphFilterData] = useState({});
   const waitingBool = api?.url ? true : false;
-  const [initialApi, setInitialApi] = useState(api);
-  const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
-  const [configuredQueryKey, setConfiguredQueryKey] = useState(queryKey ?? title);
-
   const getRequestData = ApiGetCallWithPagination({
-    url: initialApi.url,
-    data: { ...initialApi.data },
-    queryKey: configuredQueryKey,
+    url: api.url,
+    data: { ...api.data },
+    queryKey: queryKey ? queryKey : title,
     waiting: waitingBool,
+    ...graphFilterData,
   });
-
-  useEffect(() => {
-    if (queryKey && api?.url) {
-      setConfiguredQueryKey(queryKey);
-      getRequestData.refetch();
-    }
-  }, [queryKey]);
 
   useEffect(() => {
     if (Array.isArray(data) && !api?.url) {
       setUsedData(data);
     }
   }, [data, api?.url]);
-
-  useEffect(() => {
-    if (api?.url) {
-      setInitialApi(api);
-      getRequestData.refetch();
-    }
-  }, [api?.url, api?.data]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
@@ -160,13 +144,7 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData, queryKey]);
-
-  useEffect(() => {
-    if (clearOnError && getRequestData.isError) {
-      setUsedData([]);
-    }
-  }, [getRequestData.isError, getRequestData.isFetchNextPageError, clearOnError]);
+  }, [columns.length, usedData.length, queryKey]);
 
   const createDialog = useDialog();
 
@@ -187,14 +165,10 @@ export const CippDataTable = (props) => {
     data: memoizedData,
     state: {
       columnVisibility,
-      showSkeletons: getRequestData.isFetching
-        ? getRequestData.isFetchingNextPage
-          ? isFetching
-          : getRequestData.isFetching
-        : isFetching,
+      showSkeletons: getRequestData.isFetching ? getRequestData.isFetching : isFetching,
     },
     renderEmptyRowsFallback: ({ table }) =>
-      getRequestData.data?.pages?.[0]?.Metadata?.QueueMessage ? (
+      getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
         <center>{getRequestData.data?.pages?.[0].Metadata?.QueueMessage}</center>
       ) : undefined,
     onColumnVisibilityChange: setColumnVisibility,
@@ -263,13 +237,9 @@ export const CippDataTable = (props) => {
         <>
           {!simple && (
             <CIPPTableToptoolbar
-              api={api}
-              setApi={setInitialApi}
-              simpleColumns={simpleColumns}
-              setSimpleColumns={setConfiguredSimpleColumns}
-              queryKey={queryKey}
-              setQueryKey={setConfiguredQueryKey}
               table={table}
+              api={api}
+              queryKey={queryKey}
               data={data}
               columnVisibility={columnVisibility}
               getRequestData={getRequestData}
@@ -282,6 +252,9 @@ export const CippDataTable = (props) => {
               setColumnVisibility={setColumnVisibility}
               filters={filters}
               queryKeys={queryKey}
+              graphFilterData={graphFilterData}
+              setGraphFilterData={setGraphFilterData}
+              setConfiguredSimpleColumns={setConfiguredSimpleColumns}
             />
           )}
         </>

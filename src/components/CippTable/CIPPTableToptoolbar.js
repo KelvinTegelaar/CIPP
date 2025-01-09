@@ -31,11 +31,8 @@ import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
 
 export const CIPPTableToptoolbar = ({
   api,
-  setApi,
   simpleColumns,
-  setSimpleColumns,
   queryKey,
-  setQueryKey,
   table,
   getRequestData,
   usedColumns,
@@ -49,6 +46,8 @@ export const CIPPTableToptoolbar = ({
   refreshFunction,
   queryKeys,
   data,
+  setGraphFilterData,
+  setConfiguredSimpleColumns,
 }) => {
   const popover = usePopover();
   const columnPopover = usePopover();
@@ -60,12 +59,17 @@ export const CIPPTableToptoolbar = ({
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [filterList, setFilterList] = useState(filters);
-  const [originalApiData, setOriginalApiData] = useState(api.data);
   const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
-  const [originalQueryKey, setOriginalQueryKey] = useState(queryKey);
   const [filterCanvasVisible, setFilterCanvasVisible] = useState(false);
-
   const pageName = router.pathname.split("/").slice(1).join("/");
+  const currentTenant = useSettings()?.currentTenant;
+
+  //if the currentTenant Switches, remove Graph filters
+  useEffect(() => {
+    if (currentTenant) {
+      setGraphFilterData({});
+    }
+  }, [currentTenant]);
 
   //useEffect to set the column visibility to the preferred columns if they exist
   useEffect(() => {
@@ -142,9 +146,7 @@ export const CIPPTableToptoolbar = ({
       table.resetGlobalFilter();
       table.resetColumnFilters();
       if (api?.data) {
-        setApi({ ...api, data: originalApiData });
-        setQueryKey(originalQueryKey);
-        setSimpleColumns(originalSimpleColumns);
+        setGraphFilterData({});
         resetToDefaultVisibility();
       }
     }
@@ -168,11 +170,13 @@ export const CIPPTableToptoolbar = ({
       }, {});
       table.resetGlobalFilter();
       table.resetColumnFilters();
-      setApi({ ...api, data: mergeCaseInsensitive(api.data, graphFilter) });
-
+      //get api.data, merge with graphFilter, set api.data
+      setGraphFilterData({
+        data: { ...mergeCaseInsensitive(api.data, graphFilter) },
+        queryKey: `${queryKey ? queryKey : title}-${filterName}`,
+      });
       if (filter?.$select) {
         const selectedColumns = filter.$select.split(",");
-        setSimpleColumns(selectedColumns);
         const setNestedVisibility = (col) => {
           if (typeof col === "object" && col !== null) {
             Object.keys(col).forEach((key) => {
@@ -187,12 +191,11 @@ export const CIPPTableToptoolbar = ({
             }
           }
         };
-
+        setConfiguredSimpleColumns(selectedColumns);
         selectedColumns.forEach((col) => {
           setNestedVisibility(col);
         });
       }
-      setQueryKey(originalQueryKey + "-" + filterName);
     }
   };
 
@@ -257,6 +260,7 @@ export const CIPPTableToptoolbar = ({
                   } else if (data && !getRequestData.isFetched) {
                     //do nothing because data was sent native.
                   } else if (getRequestData) {
+                    console.log(getRequestData);
                     getRequestData.refetch();
                   }
                 }}
