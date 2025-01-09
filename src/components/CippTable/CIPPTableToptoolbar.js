@@ -41,7 +41,7 @@ export const CIPPTableToptoolbar = ({
   setColumnVisibility,
   title,
   actions,
-  filters,
+  filters = [],
   exportEnabled,
   refreshFunction,
   queryKeys,

@@ -55,6 +55,7 @@ const EditGroup = () => {
 
         formControl.reset({
           tenantId: tenantFilter,
+          mail: group.mail,
           allowExternal: group.allowExternal,
           sendCopies: group.sendCopies,
           groupName: group.displayName,

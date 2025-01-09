@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Clear } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Risky Users";
@@ -8,9 +9,12 @@ const Page = () => {
   const actions = [
     {
       label: "Dismiss Risk",
-      color: "info",
-      modal: true,
-      modalUrl: `/api/ExecDismissRiskyUser?TenantFilter=Tenant&userid=!id&userDisplayName=!userDisplayName`,
+      type: "POST",
+      icon: <Clear />,
+      url: "/api/ExecDismissRiskyUser",
+      data: { userId: "id", userDisplayName: "userDisplayName" },
+      confirmText: "Are you sure you want to dismiss the risk for this user?",
+      multiPost: false,
     },
   ];
 

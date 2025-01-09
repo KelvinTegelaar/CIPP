@@ -335,6 +335,21 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
+  // Handle riskLevel
+  if (cellName === "riskLevel") {
+    return getCippTranslation(data);
+  }
+
+  // Handle riskState
+  if (cellName === "riskState") {
+    return getCippTranslation(data);
+  }
+
+  // Handle riskDetail
+  if (cellName === "riskDetail") {
+    return getCippTranslation(data);
+  }
+
   // Handle boolean data
   if (typeof data === "boolean" || cellNameLower === "bool") {
     return isText ? (
