@@ -175,22 +175,30 @@ const Page = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <CippDataTable
-            noCard={true}
-            title="Message Trace Details"
-            simpleColumns={detailColumns}
-            data={traceDetails ?? []}
-            refreshFunction={() =>
-              getMessageTraceDetails.mutate({
-                url: "/api/ListMessageTrace",
-                data: {
-                  tenantFilter: tenantFilter,
-                  messageId: traceMessageId,
-                },
-              })
-            }
-            isFetching={getMessageTraceDetails.isPending}
-          />
+          {getMessageTraceDetails.isPending && (
+            <Typography variant="body1" sx={{ py: 4 }}>
+              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} /> Loading message trace
+              details...
+            </Typography>
+          )}
+          {getMessageTraceDetails.isSuccess && (
+            <CippDataTable
+              noCard={true}
+              title="Message Trace Details"
+              simpleColumns={detailColumns}
+              data={traceDetails ?? []}
+              refreshFunction={() =>
+                getMessageTraceDetails.mutate({
+                  url: "/api/ListMessageTrace",
+                  data: {
+                    tenantFilter: tenantFilter,
+                    messageId: traceMessageId,
+                  },
+                })
+              }
+              isFetching={getMessageTraceDetails.isPending}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

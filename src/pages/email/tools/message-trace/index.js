@@ -7,6 +7,8 @@ import {
   IconButton,
   Container,
   Stack,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -313,19 +315,27 @@ const Page = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <CippDataTable
-            noCard={true}
-            title="Message Trace Details"
-            simpleColumns={detailColumns}
-            data={traceDetails ?? []}
-            refreshFunction={() =>
-              startMessageTraceDetail({
-                MessageTraceId: messageTraceId,
-                RecipientAddress: messageTraceRecipient,
-              })
-            }
-            isFetching={messageTraceDetail.isPending}
-          />
+          {messageTraceDetail.isPending && (
+            <Typography variant="body1" sx={{ py: 4 }}>
+              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} /> Loading message trace
+              details...
+            </Typography>
+          )}
+          {messageTraceDetail.isSuccess && (
+            <CippDataTable
+              noCard={true}
+              title="Message Trace Details"
+              simpleColumns={detailColumns}
+              data={traceDetails ?? []}
+              refreshFunction={() =>
+                startMessageTraceDetail({
+                  MessageTraceId: messageTraceId,
+                  RecipientAddress: messageTraceRecipient,
+                })
+              }
+              isFetching={messageTraceDetail.isPending}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

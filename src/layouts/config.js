@@ -360,7 +360,6 @@ export const nativeMenuItems = [
             title: "Mailbox Client Access Settings",
             path: "/email/reports/mailbox-cas-settings",
           },
-          { title: "Message Trace", path: "/email/reports/message-trace" },
           {
             title: "Anti-Phishing Filters",
             path: "/email/reports/antiphishing-filters",
@@ -417,6 +416,7 @@ export const nativeMenuItems = [
         title: "Email Tools",
         path: "/email/tools",
         items: [
+          { title: "Message Trace", path: "/email/tools/message-trace" },
           { title: "Mailbox Restores", path: "/email/tools/mailbox-restores" },
           { title: "Message Viewer", path: "/email/tools/message-viewer" },
         ],
