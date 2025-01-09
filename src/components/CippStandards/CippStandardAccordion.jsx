@@ -92,7 +92,7 @@ const CippStandardAccordion = ({
 
         const addedComponentsFilled =
           standard.addedComponent?.every((component) => {
-            const isRequired = component.required !== false;
+            const isRequired = component.required !== false && component.type !== "switch";
             if (!isRequired) return true;
             return !!_.get(watchedValues, `${standardName}.${component.name}`);
           }) ?? true;
