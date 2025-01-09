@@ -73,7 +73,7 @@ export const createComponents = ({ palette }) => {
           borderColor: palette.neutral[300],
           boxShadow: `0px 1px 2px 0px ${alpha(palette.neutral[800], 0.08)}`,
           "&:hover": {
-            backgroundColor: palette.action.hover,
+            backgroundColor: palette.background.paper,
           },
           [`&.${filledInputClasses.disabled}`]: {
             backgroundColor: palette.action.disabledBackground,
@@ -81,7 +81,7 @@ export const createComponents = ({ palette }) => {
             boxShadow: "none",
           },
           [`&.${filledInputClasses.focused}`]: {
-            backgroundColor: "transparent",
+            backgroundColor: palette.background.paper,
             borderColor: palette.primary.main,
             boxShadow: `${alpha(palette.primary.main, 0.25)} 0 0 0 0.2rem`,
           },
