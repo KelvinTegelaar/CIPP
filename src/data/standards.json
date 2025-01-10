@@ -9,22 +9,26 @@
       {
         "type": "textField",
         "name": "standards.MailContacts.GeneralContact",
-        "label": "General Contact"
+        "label": "General Contact",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.MailContacts.SecurityContact",
-        "label": "Security Contact"
+        "label": "Security Contact",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.MailContacts.MarketingContact",
-        "label": "Marketing Contact"
+        "label": "Marketing Contact",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.MailContacts.TechContact",
-        "label": "Technical Contact"
+        "label": "Technical Contact",
+        "required": false
       }
     ],
     "label": "Set contact e-mails",
@@ -71,12 +75,14 @@
       {
         "type": "textField",
         "name": "standards.Branding.signInPageText",
-        "label": "Sign-in page text"
+        "label": "Sign-in page text",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.Branding.usernameHintText",
-        "label": "Username hint Text"
+        "label": "Username hint Text",
+        "required": false
       },
       {
         "type": "switch",
@@ -547,7 +553,8 @@
       {
         "type": "textField",
         "name": "standards.DisableSelfServiceLicenses.Exclusions",
-        "label": "License Ids to exclude from this standard"
+        "label": "License Ids to exclude from this standard",
+        "required": false
       }
     ],
     "label": "Disable Self Service Licensing",
@@ -578,7 +585,8 @@
       {
         "type": "textField",
         "name": "standards.OauthConsent.AllowedApps",
-        "label": "Allowed application IDs, comma separated"
+        "label": "Allowed application IDs, comma separated",
+        "required": false
       }
     ],
     "label": "Require admin consent for applications (Prevent OAuth phishing)",
@@ -1660,7 +1668,8 @@
       {
         "type": "textField",
         "name": "standards.SafeAttachmentPolicy.RedirectAddress",
-        "label": "Redirect Address"
+        "label": "Redirect Address",
+        "required": false
       }
     ],
     "label": "Default Safe Attachment Policy",
@@ -1977,7 +1986,8 @@
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.displayName",
-        "label": "Organization name"
+        "label": "Organization name",
+        "required": false
       },
       {
         "type": "switch",
@@ -1987,42 +1997,50 @@
       {
         "type": "switch",
         "name": "standards.intuneBrandingProfile.showDisplayNameNextToLogo",
-        "label": "Show organization name next to logo"
+        "label": "Show organization name next to logo",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITName",
-        "label": "Contact IT name"
+        "label": "Contact IT name",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITPhoneNumber",
-        "label": "Contact IT phone number"
+        "label": "Contact IT phone number",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITEmailAddress",
-        "label": "Contact IT email address"
+        "label": "Contact IT email address",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITNotes",
-        "label": "Contact IT notes"
+        "label": "Contact IT notes",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.onlineSupportSiteName",
-        "label": "Online support site name"
+        "label": "Online support site name",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.onlineSupportSiteUrl",
-        "label": "Online support site URL"
+        "label": "Online support site URL",
+        "required": false
       },
       {
         "type": "textField",
         "name": "standards.intuneBrandingProfile.privacyUrl",
-        "label": "Privacy statement URL"
+        "label": "Privacy statement URL",
+        "required": false
       }
     ],
     "label": "Set Intune Company Portal branding profile",
@@ -2471,7 +2489,8 @@
       {
         "type": "textField",
         "name": "standards.sharingDomainRestriction.Domains",
-        "label": "Domains to allow/block, comma separated"
+        "label": "Domains to allow/block, comma separated",
+        "required": false
       }
     ],
     "label": "Restrict sharing to a specific domain",
@@ -2701,7 +2720,8 @@
       {
         "type": "textField",
         "name": "standards.TeamsFederationConfiguration.DomainList",
-        "label": "Domains, Comma separated"
+        "label": "Domains, Comma separated",
+        "required": false
       }
     ],
     "label": "Federation Configuration for Microsoft Teams",
@@ -2721,29 +2741,25 @@
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowOwnerDeleteMessage",
         "label": "Allow Owner to Delete Messages",
-        "default": false,
-        "required": false
+        "default": false
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowUserDeleteMessage",
         "label": "Allow User to Delete Messages",
-        "default": true,
-        "required": false
+        "default": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowUserEditMessage",
         "label": "Allow User to Edit Messages",
-        "default": true,
-        "required": false
+        "default": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowUserDeleteChat",
         "label": "Allow User to Delete Chats",
-        "default": true,
-        "required": false
+        "default": true
       },
       {
         "type": "autoComplete",
@@ -2769,29 +2785,25 @@
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.CreateCustomEmojis",
         "label": "Allow Creating Custom Emojis",
-        "default": true,
-        "required": false
+        "default": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.DeleteCustomEmojis",
         "label": "Allow Deleting Custom Emojis",
-        "default": false,
-        "required": false
+        "default": false
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowSecurityEndUserReporting",
         "label": "Allow reporting message as security concern",
-        "default": true,
-        "required": false
+        "default": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowCommunicationComplianceEndUserReporting",
         "label": "Allow reporting message as inappropriate content",
-        "default": true,
-        "required": false
+        "default": true
       }
     ],
     "label": "Global Messaging Policy for Microsoft Teams",
