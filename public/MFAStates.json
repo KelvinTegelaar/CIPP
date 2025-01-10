@@ -1,0 +1,14 @@
+[
+  {
+    "value": "disabled",
+    "label": "Disabled"
+  },
+  {
+    "value": "enabled",
+    "label": "Enabled"
+  },
+  {
+    "value": "enforced",
+    "label": "Enforced"
+  }
+]
