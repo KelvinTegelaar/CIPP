@@ -1,0 +1,30 @@
+[
+  {
+    "label": "General",
+    "path": "/cipp/settings"
+  },
+  {
+    "label": "Permissions",
+    "path": "/cipp/settings/permissions"
+  },
+  {
+    "label": "Tenants",
+    "path": "/cipp/settings/tenants"
+  },
+  {
+    "label": "Backend",
+    "path": "/cipp/settings/backend"
+  },
+  {
+    "label": "Notifications",
+    "path": "/cipp/settings/notifications"
+  },
+  {
+    "label": "Partner Webhooks",
+    "path": "/cipp/settings/partner-webhooks"
+  },
+  {
+    "label": "Licenses",
+    "path": "/cipp/settings/licenses"
+  }
+]
