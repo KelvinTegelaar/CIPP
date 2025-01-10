@@ -1,19 +1,23 @@
 [
   {
     "name": "CIPP-API",
+    "id": "cippapi",
     "type": "CIPP-API",
     "cat": "API",
+    "logo": "/assets/integrations/cipp-api.png",
     "forceSyncButton": false,
+    "hideTestButton": true,
     "disableWhenhosted": true,
+    "description": "Enable the CIPP API to access CIPP data outside of CIPP using a RESTful API.",
     "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
     "SettingOptions": [
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "cippapi.ResetPassword",
         "label": "Reset application secret - this will invalidate all existing API tokens"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "cippapi.Enabled",
         "label": "Enable Integration"
       }
@@ -21,33 +25,105 @@
     "mappingRequired": false
   },
   {
-    "name": "Gradient",
-    "type": "Gradient",
-    "cat": "Billing & Invoicing",
-    "forceSyncButton": true,
-    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
+    "name": "Sherweb",
+    "id": "Sherweb",
+    "type": "Sherweb",
+    "cat": "CSP",
+    "logo": "/assets/integrations/sherweb.png",
+    "logoDark": "/assets/integrations/sherweb_dark.png",
+    "description": "Enable the Sherweb integration to manage your CSP licensing from CIPP.",
+    "helpText": "This integration allows you to manage your CSP licensing from CIPP. Purchase new licenses while adding or editing users in CIPP. Not a Sherweb partner? Sign up for the Sherweb Cloud Services for MSPs program.",
+    "alertText": "This integration is in a closed beta. To register for interest please visit the registration page. Filling in information while not in the beta is possible, but will not enable the functionality.",
+    "mappingRequired": true,
+    "links": [
+      {
+        "name": "Register for beta",
+        "url": "https://go.cyberdrain.com/sherweb"
+      },
+      {
+        "name": "Sherweb Cloud Services for MSPs",
+        "url": "https://info.sherweb.com/sherweb-cloud-services-for-msps"
+      }
+    ],
     "SettingOptions": [
       {
-        "type": "input",
-        "fieldtype": "password",
+        "type": "switch",
+        "name": "Sherweb.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "Sherweb.clientId",
+        "label": "Client ID",
+        "placeholder": "Enter your Sherweb Client ID",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "Sherweb.SubscriptionKey",
+        "label": "Subscription Key",
+        "placeholder": "Enter your Sherweb Subscription Key",
+        "required": true
+      },
+      {
+        "type": "password",
+        "name": "Sherweb.APIKey",
+        "label": "Client Secret",
+        "placeholder": "Enter your Sherweb Client Secret",
+        "required": true
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.AllowedCustomRoles",
+        "label": "Select custom roles that are allowed to purchase licenses",
+        "api": {
+          "url": "/api/ExecCustomRole",
+          "queryKey": "CustomRoles",
+          "labelField": "RowKey",
+          "valueField": "RowKey"
+        },
+        "multiple": true
+      }
+    ]
+  },
+  {
+    "name": "Gradient",
+    "id": "Gradient",
+    "type": "Gradient",
+    "cat": "Billing & Invoicing",
+    "logo": "/assets/integrations/gradient.png",
+    "logoDark": "/assets/integrations/gradient_dark.png",
+    "forceSyncButton": true,
+    "description": "Enable the Gradient integration to send license counts and create tickets.",
+    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
+    "links": [
+      {
+        "name": "Gradient Documentation",
+        "url": "https://support.meetgradient.com/cipp"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "textField",
         "name": "Gradient.VendorKey",
         "label": "Gradient Vendor API Key",
-        "placeholder": "Enter your Gradient Vendor Key."
+        "placeholder": "Enter your Gradient Vendor Key.",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "password",
+        "type": "password",
         "name": "Gradient.APIKey",
         "label": "Gradient Partner API Key",
-        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key."
+        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key.",
+        "required": true
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "Gradient.BillingEnabled",
         "label": "Enable sending all license information to Gradient"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "Gradient.Enabled",
         "label": "Enable Integration"
       }
@@ -56,55 +132,64 @@
   },
   {
     "name": "Halo PSA Ticketing",
+    "id": "HaloPSA",
     "type": "HaloPSA",
     "cat": "Ticketing",
+    "logo": "/assets/integrations/halo.png",
     "forceSyncButton": false,
+    "description": "Enable the HaloPSA integration to send alerts to your ticketing system.",
     "helpText": "This integration allows you to send alerts to your ticketing system.",
+    "links": [
+      {
+        "name": "HaloPSA Documentation",
+        "url": "https://halopsa.com/guides/"
+      }
+    ],
     "SettingOptions": [
       {
-        "type": "input",
-        "fieldtype": "input",
+        "type": "textField",
         "name": "HaloPSA.ResourceURL",
         "label": "HaloPSA Resource Server URL",
-        "placeholder": "Enter your HaloPSA Resource Server URL."
+        "placeholder": "Enter your HaloPSA Resource Server URL.",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "input",
+        "type": "textField",
         "name": "HaloPSA.AuthURL",
         "label": "HaloPSA Authorisation Endpoint URL",
-        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL."
+        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL.",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "input",
+        "type": "textField",
         "name": "HaloPSA.Tenant",
         "label": "HaloPSA Tenant",
-        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted"
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "input",
+        "type": "textField",
         "name": "HaloPSA.TicketType",
         "label": "HaloPSA Ticket Type ID",
-        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default."
+        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default.",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "input",
+        "type": "textField",
         "name": "HaloPSA.ClientID",
         "label": "HaloPSA Client ID",
-        "placeholder": "Enter your HaloPSA Client ID"
+        "placeholder": "Enter your HaloPSA Client ID",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "password",
+        "type": "password",
         "name": "HaloPSA.APIKey",
         "label": "HaloPSA Client Secret",
-        "placeholder": "Enter your client Secret. Leave blank to keep your current key."
+        "placeholder": "Enter your client Secret. Leave blank to keep your current key.",
+        "required": true
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "HaloPSA.Enabled",
         "label": "Enable Integration"
       }
@@ -113,49 +198,59 @@
   },
   {
     "name": "NinjaOne",
+    "id": "NinjaOne",
     "type": "NinjaOne",
     "cat": "Documentation & Monitoring",
+    "logo": "/assets/integrations/ninjaone.png",
+    "logoDark": "/assets/integrations/ninjaone_dark.png",
     "forceSyncButton": true,
+    "description": "Enable the NinjaOne integration to sync documentation and monitor device compliance.",
     "helpText": "This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+    "links": [
+      {
+        "name": "NinjaOne Documentation",
+        "url": "https://www.ninjaone.com/integrations/cyberdrain/"
+      }
+    ],
     "SettingOptions": [
       {
-        "type": "input",
-        "fieldtype": "input",
+        "type": "textField",
         "name": "NinjaOne.Instance",
         "label": "Please enter your NinjaOne Instance hostname",
-        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
+        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "password",
+        "type": "textField",
         "name": "NinjaOne.ClientID",
         "label": "NinjaOne API Client ID",
-        "placeholder": "Enter your NinjaOne API Client ID"
+        "placeholder": "Enter your NinjaOne API Client ID",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "password",
+        "type": "password",
         "name": "NinjaOne.APIKey",
         "label": "NinjaOne API Client Secret",
-        "placeholder": "Enter your NinjaOne API Client Secret"
+        "placeholder": "Enter your NinjaOne API Client Secret",
+        "required": true
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "NinjaOne.LicenseDocumentsEnabled",
         "label": "Sync Licenses (Requires NinjaOne Documentation)"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "NinjaOne.UserDocumentsEnabled",
         "label": "Sync Users (Requires NinjaOne Documentation)"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "NinjaOne.LicensedOnly",
         "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "NinjaOne.Enabled",
         "label": "Enable Integration"
       }
@@ -167,52 +262,62 @@
   },
   {
     "name": "Hudu",
+    "id": "Hudu",
     "type": "Hudu",
     "cat": "Documentation",
+    "logo": "/assets/integrations/hudu.png",
+    "logoDark": "/assets/integrations/hudu_dark.png",
     "forceSyncButton": true,
+    "description": "Enable the Hudu integration to sync documentation",
     "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu.",
+    "links": [
+      {
+        "name": "Hudu Documentation",
+        "url": "https://support.hudu.com/hc/en-us/articles/24970807130391-CIPP#h_01J3NTF188BX3P64RKX3H52P3W"
+      }
+    ],
     "SettingOptions": [
       {
-        "type": "input",
-        "fieldtype": "input",
+        "type": "textField",
         "name": "Hudu.BaseUrl",
         "label": "Please enter your Hudu URL",
-        "placeholder": "https://yourcompany.huducloud.com"
+        "placeholder": "https://yourcompany.huducloud.com",
+        "required": true
       },
       {
-        "type": "input",
-        "fieldtype": "password",
+        "type": "password",
         "name": "Hudu.APIKey",
         "label": "Hudu API Key",
-        "placeholder": "Enter your Hudu API Key"
+        "placeholder": "Enter your Hudu API Key",
+        "required": true
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "Hudu.Enabled",
         "label": "Enable Integration"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "Hudu.CreateMissingUsers",
         "label": "Create missing users in Hudu"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "Hudu.CreateMissingDevices",
         "label": "Create missing devices in Hudu"
       },
       {
-        "type": "text",
+        "type": "textField",
         "name": "Hudu.ExcludeSerials",
         "label": "Exclude device serials (comma separated)"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "Hudu.ImportDomains",
         "label": "Import domains from M365"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "Hudu.MonitorDomains",
         "label": "Monitor domains in Hudu"
       }
@@ -223,60 +328,99 @@
   },
   {
     "name": "PasswordPusher",
+    "id": "PWPush",
     "type": "PWPush",
     "cat": "Passwords",
+    "logo": "/assets/integrations/pwpush_light.png",
+    "logoDark": "/assets/integrations/pwpush_dark.png",
     "forceSyncButton": false,
-    "helpText": "This integration allows you to generate password links instead of plain text passwords. Visit https://pwpush.com/ or https://github.com/pglombardo/PasswordPusher for more information.",
-    "SettingOptions": [
+    "description": "Enable the PasswordPusher integration to generate password links instead of plain text passwords.",
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords.",
+    "links": [
       {
-        "type": "checkbox",
-        "name": "PWPush.Enabled",
-        "label": "Replace generated passwords with PWPush links"
+        "name": "PWPush Documentation",
+        "url": "https://docs.pwpush.com"
       },
       {
-        "type": "input",
-        "fieldtype": "text",
+        "name": "GitHub Project",
+        "url": "https://github.com/pglombardo/PasswordPusher"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "PWPush.Enabled",
+        "label": "Enable Integration - Replace passwords with PWPush links"
+      },
+      {
+        "type": "textField",
         "name": "PWPush.BaseUrl",
         "label": "PWPush URL",
         "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)"
       },
       {
-        "type": "input",
-        "fieldtype": "text",
+        "type": "textField",
         "name": "PWPush.EmailAddress",
         "label": "PWPush email address",
         "placeholder": "Enter your email address for PWPush. (optional)"
       },
       {
-        "type": "input",
-        "fieldtype": "password",
+        "type": "password",
         "name": "PWPush.APIKey",
         "label": "PWPush API Key",
         "placeholder": "Enter your PWPush API Key. (optional)"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "PWPush.RetrievalStep",
         "label": "Click to retrieve password (recommended)"
       },
       {
-        "type": "input",
-        "fieldtype": "number",
+        "type": "number",
         "name": "PWPush.ExpireAfterDays",
         "label": "Expiration in Days",
         "placeholder": "Expiration time in days. (optional)"
       },
       {
-        "type": "input",
-        "fieldtype": "number",
+        "type": "number",
         "name": "PWPush.ExpireAfterViews",
         "label": "Expiration after views",
         "placeholder": "Expiration after views. (optional)"
       },
       {
-        "type": "checkbox",
+        "type": "switch",
         "name": "PWPush.DeletableByViewer",
         "label": "Allow deletion of passwords"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "Have I been Pwned",
+    "id": "HIBP",
+    "type": "darkweb",
+    "cat": "Darkweb Scanning",
+    "logo": "/assets/integrations/hibp.png",
+    "logoDark": "/assets/integrations/hibp.png",
+    "forceSyncButton": false,
+    "description": "Enable the HIBP integration to scan your tenant for compromised credentials.",
+    "helpText": "This integration allows you to scan your tenant for compromised credentials, breaches, and darkweb scanning.",
+    "links": [
+      {
+        "name": "Have I Been Pwned",
+        "url": "https://haveibeenpwned.com/"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "password",
+        "name": "HIBP.APIKey",
+        "label": "Enter your own HIBP API Key. When you are a CyberDrain hosted partner, leave this key blank."
+      },
+      {
+        "type": "switch",
+        "name": "HIBP.Enabled",
+        "label": "Enable Integration - Allow darkweb scanning through tools and alerts"
       }
     ],
     "mappingRequired": false
