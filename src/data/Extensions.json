@@ -320,6 +320,12 @@
         "type": "switch",
         "name": "Hudu.MonitorDomains",
         "label": "Monitor domains in Hudu"
+      },
+	  {
+        "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance",
+        "type": "switch",
+        "name": "Hudu.CFEnabled",
+        "label": "Hudu is behind a CloudFlare ZTNA Tunnel. Ensure that Service Account are entered under the CloudFlare Integration."
       }
     ],
     "mappingRequired": true,
@@ -421,6 +427,35 @@
         "type": "switch",
         "name": "HIBP.Enabled",
         "label": "Enable Integration - Allow darkweb scanning through tools and alerts"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "CloudFlare ZTNA Tunnel",
+    "id": "CTZTNA",
+    "type": "ztna",
+    "cat": "Zero Trust Network Tunnel",
+    "logo": "/assets/integrations/cloudflare.png",
+    "forceSyncButton": false,
+    "description": "Enter your CloudFlare ZTNA Tunnel API Credentials to use in other Integrations",
+    "helpText": "These credentials can be used to allow traffic through a CloudFlare ZTNA Tunnel if your other Integrations are protected behind one. You need to select 'Behind a CF-ZTNA Tunnel' within the other Integration's settings to enable.",
+    "links": [
+      {
+        "name": "CloudFlare ZTNA Tunnel Information",
+        "url": "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "password",
+        "name": "CloudFlareClientID.APIKey",
+        "label": "CloudFlare Tunnel Service Account Client ID"
+      },
+      {
+        "type": "password",
+        "name": "CloudFlareAPIKey.APIKey",
+        "label": "CloudFlare Tunnel Service Account Client Secret"
       }
     ],
     "mappingRequired": false
