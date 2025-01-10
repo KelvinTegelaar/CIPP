@@ -464,6 +464,11 @@ export const nativeMenuItems = [
             path: "/cipp/advanced/exchange-cmdlets",
             roles: ["superadmin"],
           },
+          {
+            title: "Timers",
+            path: "/cipp/advanced/timers",
+            roles: ["superadmin"],
+          }
         ],
       },
     ],

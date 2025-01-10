@@ -9,7 +9,7 @@ import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
 
 export const CippApiDialog = (props) => {
-  const { createDialog, title, fields, api, row, relatedQueryKeys, ...other } = props;
+  const { createDialog, title, fields, api, row = {}, relatedQueryKeys, ...other } = props;
   const router = useRouter();
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);

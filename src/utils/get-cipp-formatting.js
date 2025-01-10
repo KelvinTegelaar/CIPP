@@ -92,6 +92,8 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     "renewalDate",
     "commitmentTerm.renewalConfiguration.renewalDate",
     "purchaseDate",
+    "NextOccurrence",
+    "LastOccurrence",
   ];
 
   const matchDateTime = /[dD]ate[tT]ime/;
