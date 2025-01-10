@@ -1,0 +1,33 @@
+name: Update workflows for CIPPv7.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Find and replace line in files
+        # Using POSIX `sed` syntax. For macOS or different shells, you may need slight variations.
+        run: |
+          for file in $(find .github/workflows -type f -name "azure-static-web-apps*"); do
+            sed -i 's|output_location: "" # Built app content directory - optional|output_location: "/out" # Built app content directory - optional|g' "$file"
+          done
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          
+          # Stage changes
+          git add .github/workflows/azure-static-web-apps*
+          
+          # Commit only if there is something to commit
+          git diff --cached --quiet || git commit -m "Update output_location to /out"
+
+      - name: Push changes
+        run: |
+          git push
