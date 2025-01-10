@@ -40,7 +40,6 @@ export const CippFormTenantSelector = ({
       }}
       multiple={type === "single" ? false : true}
       disableClearable={disableClearable}
-      required={required}
       validators={validators}
       {...other}
     />
