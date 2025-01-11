@@ -22,6 +22,7 @@ const Page = () => {
     "LastOccurrence",
     "Status",
     "PreferredProcessor",
+    "ErrorMsg",
   ];
 
   const offCanvas = {
@@ -72,7 +73,15 @@ const Page = () => {
         isFetching={fetchData.isPending}
         cardButton={<ResetToDefaultButton />}
         offCanvas={offCanvas}
-        actions={[]}
+        actions={[
+          {
+            label: "Run Now",
+            type: "POST",
+            url: apiUrl,
+            data: { FunctionName: "Command", Parameters: "Parameters" },
+            confirmText: "Do you want to run this task now?",
+          },
+        ]}
       />
       <CippApiDialog
         title="Reset to Default"
