@@ -118,6 +118,10 @@ const Page = () => {
 
     for (const [, standard] of Object.entries(combinedStandards)) {
       const actions = standard.action || [];
+      if (!Array.isArray(actions)) {
+        actions = [actions];
+      }
+
       actions?.forEach((actionObj) => {
         if (actionObj?.value === "Remediate") {
           remediateCount++;
