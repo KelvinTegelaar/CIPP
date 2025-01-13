@@ -6,7 +6,7 @@ export const CippFormTenantSelector = ({
   allTenants = false,
   type = "multiple",
   name = "tenantFilter",
-  valueField = "defaultDomainName",
+  valueField = "customerId",
   required = true,
   disableClearable = true,
   ...other
