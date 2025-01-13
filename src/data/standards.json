@@ -7,24 +7,28 @@
     "docsDescription": "",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.MailContacts.GeneralContact",
-        "label": "General Contact"
+        "label": "General Contact",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.MailContacts.SecurityContact",
-        "label": "Security Contact"
+        "label": "Security Contact",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.MailContacts.MarketingContact",
-        "label": "Marketing Contact"
+        "label": "Marketing Contact",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.MailContacts.TechContact",
-        "label": "Technical Contact"
+        "label": "Technical Contact",
+        "required": false
       }
     ],
     "label": "Set contact e-mails",
@@ -69,25 +73,28 @@
     "helpText": "Sets the branding for the tenant. This includes the login page, and the Office 365 portal.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.Branding.signInPageText",
-        "label": "Sign-in page text"
+        "label": "Sign-in page text",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.Branding.usernameHintText",
-        "label": "Username hint Text"
+        "label": "Username hint Text",
+        "required": false
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.Branding.hideAccountResetCredentials",
         "label": "Hide self-service password reset"
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Visual Template",
         "name": "standards.Branding.layoutTemplateType",
-        "values": [
+        "options": [
           {
             "label": "Full-screen background",
             "value": "default"
@@ -99,12 +106,12 @@
         ]
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.Branding.isHeaderShown",
         "label": "Show header"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.Branding.isFooterShown",
         "label": "Show footer"
       }
@@ -186,10 +193,11 @@
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.ActivityBasedTimeout.timeout",
-        "values": [
+        "options": [
           {
             "label": "1 Hour",
             "value": "01:00:00"
@@ -227,7 +235,7 @@
     "docsDescription": "Uses the CIPP functionality that deploys applications across an entire tenant base as a standard.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.AppDeploy.appids",
         "label": "Application IDs, comma separated"
       }
@@ -285,10 +293,11 @@
     "docsDescription": "Sets the Authenticator Lite state to enabled. This allows users to use the Authenticator Lite built into the Outlook app instead of the full Authenticator app.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.PWcompanionAppAllowedState.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "enabled"
@@ -353,10 +362,11 @@
     "docsDescription": "Enables Temporary Password generation for the tenant.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select TAP Lifetime",
         "name": "standards.TAP.config",
-        "values": [
+        "options": [
           {
             "label": "Only Once",
             "value": "true"
@@ -394,10 +404,11 @@
     "helpText": "Sets the state of the Cross-tenant access setting to trust external MFA. This allows guest users to use their home tenant MFA to access your tenant.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.ExternalMFATrusted.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "true"
@@ -455,10 +466,11 @@
     "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the Microsoft Authenticator during sign-in.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.NudgeMFA.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "enabled"
@@ -539,9 +551,10 @@
     "helpText": "This standard disables all self service licenses and enables all exclusions",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.DisableSelfServiceLicenses.Exclusions",
-        "label": "License Ids to exclude from this standard"
+        "label": "License Ids to exclude from this standard",
+        "required": false
       }
     ],
     "label": "Disable Self Service Licensing",
@@ -570,9 +583,10 @@
     "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.OauthConsent.AllowedApps",
-        "label": "Allowed application IDs, comma separated"
+        "label": "Allowed application IDs, comma separated",
+        "required": false
       }
     ],
     "label": "Require admin consent for applications (Prevent OAuth phishing)",
@@ -591,6 +605,43 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.GuestInvite",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "This setting controls who can invite guests to your directory to collaborate on resources secured by your company, such as SharePoint sites or Azure resources.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "label": "Who can send invites?",
+        "name": "standards.GuestInvite.allowInvitesFrom",
+        "options": [
+          {
+            "label": "Everyone",
+            "value": "everyone"
+          },
+          {
+            "label": "Admins, Guest inviters and All Members",
+            "value": "adminsGuestInvitersAndAllMembers"
+          },
+          {
+            "label": "Admins and Guest inviters",
+            "value": "adminsAndGuestInviters"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          }
+        ]
+      }
+    ],
+    "label": "Guest Invite setting",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "",
     "recommendedBy": []
   },
   {
@@ -689,7 +740,7 @@
     "docsDescription": "Sets the e-mail address to which outbound spam alerts are sent.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
         "label": "Outbound spam contact"
       }
@@ -721,10 +772,11 @@
     "docsDescription": "Sets the global quarantine notification interval for the tenant. This is the time between the quarantine notification emails are sent out to users. Default is 24 hours.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.GlobalQuarantineNotifications.NotificationInterval",
-        "values": [
+        "options": [
           {
             "label": "4 hours",
             "value": "04:00:00"
@@ -767,10 +819,11 @@
     "docsDescription": "Sets the default Focused Inbox state for the tenant. This can be overridden by the user in their Outlook settings. For more information, see [Microsoft's documentation.](https://support.microsoft.com/en-us/office/focused-inbox-for-outlook-f445ad7f-02f4-4294-a82e-71d8964e3978)",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.FocusedInbox.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "enabled"
@@ -796,10 +849,11 @@
     "docsDescription": "Sets the default state for Cloud Message Recall for the tenant. By default this is enabled. You can read more about the feature [here.](https://techcommunity.microsoft.com/t5/exchange-team-blog/cloud-based-message-recall-in-exchange-online/ba-p/3744714)",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.CloudMessageRecall.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "true"
@@ -862,10 +916,11 @@
     "docsDescription": "Adds or removes indicators to e-mail messages received from external senders in Outlook. You can read more about this feature on [Microsoft's Exchange Team Blog.](https://techcommunity.microsoft.com/t5/exchange-team-blog/native-external-sender-callouts-on-email-in-outlook/ba-p/2250098)",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.SpoofWarn.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "enabled"
@@ -880,7 +935,7 @@
     "label": "Enable or disable 'external' warning in Outlook",
     "impact": "Low Impact",
     "impactColour": "info",
-    "powershellEquivalent": "et-ExternalInOutlook –Enabled $true or $false",
+    "powershellEquivalent": "et-ExternalInOutlook \u2013Enabled $true or $false",
     "recommendedBy": ["CIS"]
   },
   {
@@ -910,10 +965,11 @@
     "helpText": "Sets the default state for automatically turning meetings into Teams meetings for the tenant. This can be overridden by the user in Outlook.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.TeamsMeetingsByDefault.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "true"
@@ -1019,10 +1075,11 @@
     },
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select Sharing Level",
         "name": "standards.calDefault.permissionlevel",
-        "values": [
+        "options": [
           {
             "label": "Owner - The user can create, read, edit, and delete all items in the folder, and create subfolders. The user is both folder owner and folder contact.",
             "value": "Owner"
@@ -1109,10 +1166,11 @@
     "helpText": "Sets the shorten meetings settings on a tenant level. This will shorten meetings by the selected amount of minutes. Valid values are 0 to 29. Short meetings are under 60 minutes, long meetings are over 60 minutes.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.ShortenMeetings.ShortenEventScopeDefault",
-        "values": [
+        "options": [
           {
             "label": "Disabled/None",
             "value": "None"
@@ -1154,10 +1212,11 @@
     "docsDescription": "",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.Bookings.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "true"
@@ -1239,10 +1298,11 @@
     "docsDescription": "Set the state of the built-in Report button in Outlook. This gives the users the ability to report emails as spam or phish.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select value",
         "name": "standards.UserSubmissions.state",
-        "values": [
+        "options": [
           {
             "label": "Enabled",
             "value": "enable"
@@ -1254,8 +1314,9 @@
         ]
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.UserSubmissions.email",
+        "required": false,
         "label": "Destination email address"
       }
     ],
@@ -1299,7 +1360,7 @@
     "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.QuarantineRequestAlert.NotifyUser",
         "label": "E-mail to receive the alert"
       }
@@ -1317,17 +1378,17 @@
     "helpText": "This creates a safelink policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "AllowClickThrough",
         "name": "standards.SafeLinksPolicy.AllowClickThrough"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "DisableUrlRewrite",
         "name": "standards.SafeLinksPolicy.DisableUrlRewrite"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "EnableOrganizationBranding",
         "name": "standards.SafeLinksPolicy.EnableOrganizationBranding"
       }
@@ -1361,34 +1422,35 @@
         "default": 1
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Show first contact safety tip",
         "name": "standards.AntiPhishPolicy.EnableFirstContactSafetyTips",
         "default": true
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Show user impersonation safety tip",
         "name": "standards.AntiPhishPolicy.EnableSimilarUsersSafetyTips",
         "default": true
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Show domain impersonation safety tip",
         "name": "standards.AntiPhishPolicy.EnableSimilarDomainsSafetyTips",
         "default": true
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Show user impersonation unusual characters safety tip",
         "name": "standards.AntiPhishPolicy.EnableUnusualCharactersSafetyTips",
         "default": true
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "If the message is detected as spoof by spoof intelligence",
         "name": "standards.AntiPhishPolicy.AuthenticationFailAction",
-        "values": [
+        "options": [
           {
             "label": "Quarantine the message",
             "value": "Quarantine"
@@ -1400,10 +1462,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Quarantine policy for Spoof",
         "name": "standards.AntiPhishPolicy.SpoofQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1419,10 +1482,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "If a message is detected as user impersonation",
         "name": "standards.AntiPhishPolicy.TargetedUserProtectionAction",
-        "values": [
+        "options": [
           {
             "label": "Move to Junk Folder",
             "value": "MoveToJmf"
@@ -1438,10 +1502,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Quarantine policy for user impersonation",
         "name": "standards.AntiPhishPolicy.TargetedUserQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1457,10 +1522,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "If a message is detected as domain impersonation",
         "name": "standards.AntiPhishPolicy.TargetedDomainProtectionAction",
-        "values": [
+        "options": [
           {
             "label": "Move to Junk Folder",
             "value": "MoveToJmf"
@@ -1476,10 +1542,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Quarantine policy for domain impersonation",
         "name": "standards.AntiPhishPolicy.TargetedDomainQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "DefaultFullAccessWithNotificationPolicy",
             "value": "DefaultFullAccessWithNotificationPolicy"
@@ -1495,10 +1562,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "If Mailbox Intelligence detects an impersonated user",
         "name": "standards.AntiPhishPolicy.MailboxIntelligenceProtectionAction",
-        "values": [
+        "options": [
           {
             "label": "Move to Junk Folder",
             "value": "MoveToJmf"
@@ -1514,10 +1582,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Apply quarantine policy",
         "name": "standards.AntiPhishPolicy.MailboxIntelligenceQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1552,10 +1621,11 @@
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Action",
         "name": "standards.SafeAttachmentPolicy.Action",
-        "values": [
+        "options": [
           {
             "label": "Allow",
             "value": "Allow"
@@ -1571,10 +1641,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "QuarantineTag",
         "name": "standards.SafeAttachmentPolicy.QuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1590,14 +1661,15 @@
         ]
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Redirect",
         "name": "standards.SafeAttachmentPolicy.Redirect"
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.SafeAttachmentPolicy.RedirectAddress",
-        "label": "Redirect Address"
+        "label": "Redirect Address",
+        "required": false
       }
     ],
     "label": "Default Safe Attachment Policy",
@@ -1613,10 +1685,11 @@
     "helpText": "This creates a Atp policy that enables Defender for Office 365 for Sharepoint, OneDrive and Microsoft Teams.",
     "addedComponent": [
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Allow people to click through Protected View even if Safe Documents identified the file as malicious",
         "name": "standards.AtpPolicyForO365.AllowSafeDocsOpen",
-        "default": false
+        "default": false,
+        "required": false
       }
     ],
     "label": "Default Atp Policy For O365",
@@ -1632,10 +1705,11 @@
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "FileTypeAction",
         "name": "standards.MalwareFilterPolicy.FileTypeAction",
-        "values": [
+        "options": [
           {
             "label": "Reject",
             "value": "Reject"
@@ -1647,15 +1721,17 @@
         ]
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.MalwareFilterPolicy.OptionalFileTypes",
+        "required": false,
         "label": "Optional File Types, Comma separated"
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "QuarantineTag",
         "name": "standards.MalwareFilterPolicy.QuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1671,23 +1747,27 @@
         ]
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Enable Internal Sender Admin Notifications",
+        "required": false,
         "name": "standards.MalwareFilterPolicy.EnableInternalSenderAdminNotifications"
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.MalwareFilterPolicy.InternalSenderAdminAddress",
+        "required": false,
         "label": "Internal Sender Admin Address"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "label": "Enable External Sender Admin Notifications",
+        "required": false,
         "name": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications"
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.MalwareFilterPolicy.ExternalSenderAdminAddress",
+        "required": false,
         "label": "External Sender Admin Address"
       }
     ],
@@ -1710,10 +1790,11 @@
         "default": 7
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Spam Action",
         "name": "standards.SpamFilterPolicy.SpamAction",
-        "values": [
+        "options": [
           {
             "label": "Quarantine the message",
             "value": "Quarantine"
@@ -1725,10 +1806,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.SpamQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1744,10 +1826,10 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
         "label": "High Confidence Spam Action",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamAction",
-        "values": [
+        "options": [
           {
             "label": "Quarantine the message",
             "value": "Quarantine"
@@ -1759,10 +1841,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "High Confidence Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1778,10 +1861,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Bulk Spam Action",
         "name": "standards.SpamFilterPolicy.BulkSpamAction",
-        "values": [
+        "options": [
           {
             "label": "Quarantine the message",
             "value": "Quarantine"
@@ -1793,10 +1877,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Bulk Quarantine Tag",
         "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1812,10 +1897,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Phish Spam Action",
         "name": "standards.SpamFilterPolicy.PhishSpamAction",
-        "values": [
+        "options": [
           {
             "label": "Quarantine the message",
             "value": "Quarantine"
@@ -1827,10 +1913,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.PhishQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1846,10 +1933,11 @@
         ]
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "High Confidence Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidencePhishQuarantineTag",
-        "values": [
+        "options": [
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
@@ -1896,60 +1984,103 @@
     "helpText": "Sets the branding profile for the Intune Company Portal app. This is a tenant wide setting and overrules any settings set on the app level.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.displayName",
-        "label": "Organization name"
+        "label": "Organization name",
+        "required": false
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.intuneBrandingProfile.showLogo",
         "label": "Show logo"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.intuneBrandingProfile.showDisplayNameNextToLogo",
-        "label": "Show organization name next to logo"
+        "label": "Show organization name next to logo",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITName",
-        "label": "Contact IT name"
+        "label": "Contact IT name",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITPhoneNumber",
-        "label": "Contact IT phone number"
+        "label": "Contact IT phone number",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITEmailAddress",
-        "label": "Contact IT email address"
+        "label": "Contact IT email address",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.contactITNotes",
-        "label": "Contact IT notes"
+        "label": "Contact IT notes",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.onlineSupportSiteName",
-        "label": "Online support site name"
+        "label": "Online support site name",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.onlineSupportSiteUrl",
-        "label": "Online support site URL"
+        "label": "Online support site URL",
+        "required": false
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.intuneBrandingProfile.privacyUrl",
-        "label": "Privacy statement URL"
+        "label": "Privacy statement URL",
+        "required": false
       }
     ],
     "label": "Set Intune Company Portal branding profile",
     "impact": "Low Impact",
     "impactColour": "info",
     "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.IntuneComplianceSettings",
+    "cat": "Intune Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the mark devices with no compliance policy assigned as compliance/non compliant and Compliance status validity period.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.IntuneComplianceSettings.secureByDefault",
+        "label": "Mark devices with no compliance policy as",
+        "options": [
+          {
+            "label": "Compliant",
+            "value": "false"
+          },
+          {
+            "label": "Non-Compliant",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.IntuneComplianceSettings.deviceComplianceCheckinThresholdDays",
+        "label": "Compliance status validity period (days)"
+      }
+    ],
+    "label": "Set Intune Compliance Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "",
     "recommendedBy": []
   },
   {
@@ -1989,10 +2120,11 @@
     "docsDescription": "When a OneDrive user gets deleted, the personal SharePoint site is saved for selected amount of time that data can be retrieved from it.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "name": "standards.DeletedUserRentention.Days",
         "label": "Retention time (Default 30 days)",
-        "values": [
+        "options": [
           {
             "label": "30 days",
             "value": "30"
@@ -2159,10 +2291,11 @@
     "helpText": "If disabled, the button Add shortcut to OneDrive will be removed and users in the tenant will no longer be able to add new shortcuts to their OneDrive. Existing shortcuts will remain functional",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Add Shortcuts To OneDrive button state",
         "name": "standards.DisableAddShortcutsToOneDrive.state",
-        "values": [
+        "options": [
           {
             "label": "Disabled",
             "value": "true"
@@ -2187,10 +2320,11 @@
     "helpText": "If disabled, users in the tenant will no longer be able to use the Sync button to sync SharePoint content on all sites. However, existing synced content will remain functional on the user's computer.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "SharePoint Sync Button state",
         "name": "standards.SPSyncButtonState.state",
-        "values": [
+        "options": [
           {
             "label": "Disabled",
             "value": "true"
@@ -2228,10 +2362,11 @@
     "helpText": "Sets the default sharing level for OneDrive and Sharepoint. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "label": "Select Sharing Level",
         "name": "standards.sharingCapability.Level",
-        "values": [
+        "options": [
           {
             "label": "Users can share only with people in the organization. No external sharing is allowed.",
             "value": "disabled"
@@ -2290,7 +2425,7 @@
     "helpText": "Sets the file extensions that are excluded from syncing with OneDrive. These files will be blocked from upload. '*.' is automatically added to the extension and can be omitted.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.ExcludedfileExt.ext",
         "label": "Extensions, Comma separated"
       }
@@ -2332,10 +2467,11 @@
     "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "name": "standards.sharingDomainRestriction.Mode",
         "label": "Limit external sharing by domains",
-        "values": [
+        "options": [
           {
             "label": "Off",
             "value": "none"
@@ -2351,9 +2487,10 @@
         ]
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.sharingDomainRestriction.Domains",
-        "label": "Domains to allow/block, comma separated"
+        "label": "Domains to allow/block, comma separated",
+        "required": false
       }
     ],
     "label": "Restrict sharing to a specific domain",
@@ -2369,10 +2506,11 @@
     "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl",
     "addedComponent": [
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "name": "standards.TeamsGlobalMeetingPolicy.DesignatedPresenterRoleMode",
         "label": "Default value of the `Who can present?`",
-        "values": [
+        "options": [
           {
             "label": "EveryoneUserOverride",
             "value": "EveryoneUserOverride"
@@ -2388,6 +2526,31 @@
           {
             "label": "OrganizerOnlyUserOverride",
             "value": "OrganizerOnlyUserOverride"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToJoinMeeting",
+        "label": "Allow anonymous users to join meeting"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.MeetingChatEnabledType",
+        "label": "Meeting chat policy",
+        "options": [
+          {
+            "label": "On for everyone",
+            "value": "Enabled"
+          },
+          {
+            "label": "On for everyone but anonymous users",
+            "value": "EnabledExceptAnonymous"
+          },
+          {
+            "label": "Off for everyone",
+            "value": "Disabled"
           }
         ]
       }
@@ -2406,7 +2569,7 @@
     "docsDescription": "Teams channel email addresses are an optional feature that allows users to email the Teams channel directly.",
     "addedComponent": [
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsEmailIntegration.AllowEmailIntoChannel",
         "label": "Allow channel emails"
       }
@@ -2424,27 +2587,27 @@
     "helpText": "Ensure external file sharing in Teams is enabled for only approved cloud storage services.",
     "addedComponent": [
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalFileSharing.AllowGoogleDrive",
         "label": "Allow Google Drive"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalFileSharing.AllowShareFile",
         "label": "Allow ShareFile"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalFileSharing.AllowBox",
         "label": "Allow Box"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalFileSharing.AllowDropBox",
         "label": "Allow Dropbox"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalFileSharing.AllowEgnyte",
         "label": "Allow Egnyte"
       }
@@ -2456,6 +2619,35 @@
     "recommendedBy": ["CIS 3.0"]
   },
   {
+    "name": "standards.TeamsEnrollUser",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
+    "docsDescription": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "standards.TeamsEnrollUser.EnrollUserOverride",
+        "label": "Voice and Face Enrollment",
+        "options": [
+          {
+            "label": "Disabled",
+            "value": "Disabled"
+          },
+          {
+            "label": "Enabled",
+            "value": "Enabled"
+          }
+        ]
+      }
+    ],
+    "label": "Default voice and face enrollment",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -Identity Global -EnrollUserOverride $false",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.TeamsExternalAccessPolicy",
     "cat": "Teams Standards",
     "tag": ["mediumimpact"],
@@ -2463,17 +2655,17 @@
     "docsDescription": "Sets the properties of the Global external access policy. External access policies determine whether or not your users can: 1) communicate with users who have Session Initiation Protocol (SIP) accounts with a federated organization; 2) communicate with users who are using custom applications built with Azure Communication Services; 3) access Skype for Business Server over the Internet, without having to log on to your internal network; 4) communicate with users who have SIP accounts with a public instant messaging (IM) provider such as Skype; and, 5) communicate with people who are using Teams with an account that's not managed by an organization.",
     "addedComponent": [
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableFederationAccess",
         "label": "Allow communication from trusted organizations"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnablePublicCloudAccess",
         "label": "Allow user to communicate with Skype users"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
         "label": "Allow communication with unmanaged Teams accounts"
       }
@@ -2492,20 +2684,21 @@
     "docsDescription": "Sets the properties of the Global federation configuration. Federation configuration settings determine whether or not your users can communicate with users who have SIP accounts with a federated organization.",
     "addedComponent": [
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
         "label": "Allow users to communicate with other organizations"
       },
       {
-        "type": "boolean",
+        "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowPublicUsers",
         "label": "Allow users to communicate with Skype Users"
       },
       {
-        "type": "Select",
+        "type": "autoComplete",
+        "multiple": false,
         "name": "standards.TeamsFederationConfiguration.DomainControl",
         "label": "Communication Mode",
-        "values": [
+        "options": [
           {
             "label": "Allow all external domains",
             "value": "AllowAllExternal"
@@ -2525,9 +2718,10 @@
         ]
       },
       {
-        "type": "input",
+        "type": "textField",
         "name": "standards.TeamsFederationConfiguration.DomainList",
-        "label": "Domains, Comma separated"
+        "label": "Domains, Comma separated",
+        "required": false
       }
     ],
     "label": "Federation Configuration for Microsoft Teams",
@@ -2535,5 +2729,414 @@
     "impactColour": "warning",
     "powershellEquivalent": "Set-CsTenantFederationConfiguration",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsMessagingPolicy",
+    "cat": "Teams Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the properties of the Global messaging policy.",
+    "docsDescription": "Sets the properties of the Global messaging policy. Messaging policies control which chat and channel messaging features are available to users in Teams.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.AllowOwnerDeleteMessage",
+        "label": "Allow Owner to Delete Messages",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.AllowUserDeleteMessage",
+        "label": "Allow User to Delete Messages",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.AllowUserEditMessage",
+        "label": "Allow User to Edit Messages",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.AllowUserDeleteChat",
+        "label": "Allow User to Delete Chats",
+        "default": true
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.TeamsMessagingPolicy.ReadReceiptsEnabledType",
+        "label": "Read Receipts Enabled Type",
+        "options": [
+          {
+        "label": "User controlled",
+        "value": "UserPreference"
+          },
+          {
+        "label": "Turned on for everyone",
+        "value": "Everyone"
+          },
+          {
+        "label": "Turned off for everyone",
+        "value": "None"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.CreateCustomEmojis",
+        "label": "Allow Creating Custom Emojis",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.DeleteCustomEmojis",
+        "label": "Allow Deleting Custom Emojis",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.AllowSecurityEndUserReporting",
+        "label": "Allow reporting message as security concern",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsMessagingPolicy.AllowCommunicationComplianceEndUserReporting",
+        "label": "Allow reporting message as inappropriate content",
+        "default": true
+      }
+    ],
+    "label": "Global Messaging Policy for Microsoft Teams",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-CsTeamsMessagingPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.AutopilotStatusPage",
+    "cat": "Device Management Standards",
+    "tag": ["lowimpact"],
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "helpText": "Deploy the Autopilot Status Page, which shows progress during device setup through Autopilot.",
+    "docsDescription": "This standard allows configuration of the Autopilot Status Page, providing users with a visual representation of the progress during device setup. It includes options like timeout, logging, and retry settings.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.AutopilotStatusPage.TimeOutInMinutes",
+        "label": "Timeout in minutes",
+        "default": 60
+      },
+      {
+        "type": "textField",
+        "name": "standards.AutopilotStatusPage.ErrorMessage",
+        "label": "Custom Error Message"
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotStatusPage.ShowProgress",
+        "label": "Show progress to users",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotStatusPage.EnableLog",
+        "label": "Turn on log collection",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotStatusPage.OBEEOnly",
+        "label": "Show status page only with OOBE setup",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotStatusPage.BlockDevice",
+        "label": "Block device usage during setup",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotStatusPage.AllowRetry",
+        "label": "Allow retry",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotStatusPage.AllowReset",
+        "label": "Allow reset",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotStatusPage.AllowFail",
+        "label": "Allow users to use device if setup fails",
+        "default": true
+      }
+    ],
+    "label": "Enable Autopilot Status Page",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.AutopilotProfile",
+    "cat": "Device Management Standards",
+    "tag": ["lowimpact"],
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "helpText": "Assign the appropriate Autopilot profile to streamline device deployment.",
+    "docsDescription": "This standard allows the deployment of Autopilot profiles to devices, including settings such as unique name templates, language options, and local admin privileges.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.AutopilotProfile.DisplayName",
+        "label": "Profile Display Name"
+      },
+      {
+        "type": "textField",
+        "name": "standards.AutopilotProfile.Description",
+        "label": "Profile Description"
+      },
+      {
+        "type": "textField",
+        "name": "standards.AutopilotProfile.DeviceNameTemplate",
+        "label": "Unique Device Name Template"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.AutopilotProfile.Languages",
+        "label": "Languages",
+        "api": {
+          "url": "/languageList.json",
+          "labelField": "language",
+          "valueField": "tag"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.CollectHash",
+        "label": "Convert all targeted devices to Autopilot",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.AssignToAllDevices",
+        "label": "Assign to all devices",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.SelfDeployingMode",
+        "label": "Enable Self-deploying Mode",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.HideTerms",
+        "label": "Hide Terms and Conditions",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.HidePrivacy",
+        "label": "Hide Privacy Settings",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.HideChangeAccount",
+        "label": "Hide Change Account Options",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.NotLocalAdmin",
+        "label": "Setup user as a standard user (not local admin)",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.AllowWhiteGlove",
+        "label": "Allow White Glove OOBE",
+        "default": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.AutopilotProfile.AutoKeyboard",
+        "label": "Automatically configure keyboard",
+        "default": true
+      }
+    ],
+    "label": "Enable Autopilot Profile",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.IntuneTemplate",
+    "cat": "Templates",
+    "label": "Intune Template",
+    "multiple": true,
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "High",
+    "helpText": "Deploy and manage Intune templates across devices.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "TemplateList",
+        "label": "Select Intune Template",
+        "api": {
+          "url": "/api/ListIntuneTemplates",
+          "labelField": "Displayname",
+          "valueField": "GUID",
+          "queryKey": "languages"
+        }
+      },
+      {
+        "name": "AssignTo",
+        "label": "Who should this template be assigned to?",
+        "type": "radio",
+        "options": [
+          { "label": "Do not assign", "value": "On" },
+          { "label": "Assign to all users", "value": "allLicensedUsers" },
+          { "label": "Assign to all devices", "value": "AllDevices" },
+          { "label": "Assign to all users and devices", "value": "AllDevicesAndUsers" },
+          { "label": "Assign to Custom Group", "value": "customGroup" }
+        ]
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "customGroup",
+        "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
+      }
+    ]
+  },
+  {
+    "name": "standards.TransportRuleTemplate",
+    "label": "Transport Rule Template",
+    "cat": "Templates",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "Medium",
+    "helpText": "Deploy transport rules to manage email flow.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "transportRuleTemplate",
+        "label": "Select Transport Rule Template",
+        "api": {
+          "url": "/api/ListTransportRulesTemplates",
+          "labelField": "name",
+          "valueField": "GUID",
+          "queryKey": "ListTransportRulesTemplates"
+        }
+      }
+    ]
+  },
+  {
+    "name": "standards.ConditionalAccessTemplate",
+    "label": "Conditional Access Template",
+    "cat": "Templates",
+    "multiple": true,
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "High",
+    "helpText": "Manage conditional access policies for better security.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "TemplateList",
+        "multiple": false,
+        "label": "Select Conditional Access Template",
+        "api": {
+          "url": "/api/ListCATemplates",
+          "labelField": "displayName",
+          "valueField": "GUID",
+          "queryKey": "ListCATemplates"
+        }
+      },
+      {
+        "name": "state",
+        "label": "What state should we deploy this template in?",
+        "type": "radio",
+        "options": [
+          { "value": "donotchange", "label": "Do not change state" },
+          { "value": "Enabled", "label": "Set to enabled" },
+          { "value": "Disabled", "label": "Set to disabled" },
+          { "value": "enabledForReportingButNotEnforced", "label": "Set to report only" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "standards.ExchangeConnectorTemplate",
+    "label": "Exchange Connector Template",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "Medium",
+    "helpText": "Deploy and manage Exchange connectors.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "exConnectorTemplate",
+        "label": "Select Exchange Connector Template",
+        "api": {
+          "url": "/api/ListExConnectorTemplates",
+          "labelField": "name",
+          "valueField": "GUID",
+          "queryKey": "ListExConnectorTemplates"
+        }
+      }
+    ]
+  },
+  {
+    "name": "standards.GroupTemplate",
+    "label": "Group Template",
+    "multi": true,
+    "cat": "Templates",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "Medium",
+    "helpText": "Deploy and manage group templates.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "groupTemplate",
+        "label": "Select Group Template",
+        "api": {
+          "url": "/api/ListGroupTemplates",
+          "labelField": "Displayname",
+          "valueField": "GUID",
+          "queryKey": "ListGroupTemplates"
+        }
+      }
+    ]
   }
 ]
