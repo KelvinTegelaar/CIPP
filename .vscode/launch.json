@@ -15,7 +15,7 @@
       "type": "node-terminal"
     },
     {
-      "command": "npm start",
+      "command": "yarn run dev",
       "name": "Run Frontend",
       "request": "launch",
       "type": "node-terminal",
@@ -33,7 +33,14 @@
       "name": "Launch in Windows Terminal",
       "request": "launch",
       "cwd": "${cwd}",
-      "script": ". '${cwd}\\Tools\\Start-CippDevEmulators.ps1'"
+      "script": ". '${cwd}\\Tools\\Start-CIPPDevEmulators.ps1'"
+    },
+    {
+      "type": "PowerShell",
+      "name": "Launch in Kitty Terminal",
+      "request": "launch",
+      "cwd": "${cwd}",
+      "script": ". '${cwd}${pathSeparator}Tools${pathSeparator}Start-CippDevEmulatorsWithKitty.ps1'"
     }
   ],
   "compounds": [
