@@ -97,7 +97,7 @@ const CippIntegrationSettings = ({ children }) => {
     const newTableData = [];
     tenantList.data.forEach((tenant) => {
       const matchingCompany = mappings.data.Companies.find(
-        (company) => company.name === tenant.displayName
+        (company) => tenant.displayName.includes(company.name)
       );
       if (
         Array.isArray(tableData) &&
