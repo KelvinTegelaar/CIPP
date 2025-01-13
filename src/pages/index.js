@@ -96,10 +96,15 @@ const Page = () => {
 
     // Identify which templates apply:
     const applicableTemplates = standardsData.filter((template) => {
-      const tenantInFilter = template?.tenantFilter?.some((tf) => tf.value === currentTenant);
+      const tenantInFilter =
+        template?.tenantFilter?.length > 0 &&
+        template.tenantFilter.some((tf) => tf.value === currentTenant);
       const allTenantsTemplate =
-        template.tenantFilter?.some((tf) => tf.value === "AllTenants") &&
-        !template.excludedTenants?.some((et) => et.value === currentTenant);
+        template?.tenantFilter?.length > 0 &&
+        template.tenantFilter.some((tf) => tf.value === "AllTenants") &&
+        (!template?.excludedTenants ||
+          (Array.isArray(template?.excludedTenants) && template?.excludedTenants?.length === 0) ||
+          !template?.excludedTenants?.some((et) => et.value === currentTenant));
       return tenantInFilter || allTenantsTemplate;
     });
 
@@ -117,7 +122,11 @@ const Page = () => {
     let reportCount = 0;
 
     for (const [, standard] of Object.entries(combinedStandards)) {
-      const actions = standard.action || [];
+      let actions = standard.action || [];
+      if (!Array.isArray(actions)) {
+        actions = [actions];
+      }
+
       actions?.forEach((actionObj) => {
         if (actionObj?.value === "Remediate") {
           remediateCount++;
@@ -238,10 +247,10 @@ const Page = () => {
                 propertyItems={organization.data?.verifiedDomains
                   ?.slice(0, domainVisible ? undefined : 3)
                   .map((domain, idx) => ({
-                    label: `Domain`,
+                    label: "",
                     value: domain.name,
                   }))}
-                actions={
+                actionItems={
                   organization.data?.verifiedDomains?.length > 3 && (
                     <Button onClick={() => setDomainVisible(!domainVisible)}>
                       {domainVisible ? "See less" : "See more..."}
