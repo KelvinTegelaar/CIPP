@@ -294,7 +294,7 @@
         "buildProperties": {
           "appLocation": "/",
           "apiLocation": "",
-          "appArtifactLocation": ""
+          "outputLocation": "/out"
         }
       },
       "sku": {
