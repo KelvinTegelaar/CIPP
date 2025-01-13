@@ -122,7 +122,7 @@ const Page = () => {
     let reportCount = 0;
 
     for (const [, standard] of Object.entries(combinedStandards)) {
-      const actions = standard.action || [];
+      let actions = standard.action || [];
       if (!Array.isArray(actions)) {
         actions = [actions];
       }
