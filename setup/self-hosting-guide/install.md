@@ -5,7 +5,7 @@ description: How to install CIPP
 # Installation
 
 {% hint style="info" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to our [Sponsor Quick Start](../installation/broken-reference/) guide for further direction.
+If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to our [Sponsor Quick Start](https://docs.cipp.app/setup/resources/sponsor-quick-start) guide for further direction.
 {% endhint %}
 
 After you have completed the prerequisites in the [Prerequisites](https://docs.cipp.app/setup/installation/index) section, select the button below to run the automated setup.
