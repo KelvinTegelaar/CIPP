@@ -21,19 +21,15 @@ export const PropertyListItem = (props) => {
     value = "",
     type,
     copyItems,
+    sx = {
+      px: 3,
+      py: 1.5,
+    },
     ...other
   } = props;
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <ListItem
-      component={component}
-      disableGutters
-      sx={{
-        px: 3,
-        py: 1.5,
-      }}
-      {...other}
-    >
+    <ListItem component={component} disableGutters sx={sx} {...other}>
       <ListItemText
         disableTypography
         primary={
