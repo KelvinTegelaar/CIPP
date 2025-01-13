@@ -142,7 +142,7 @@ export const CippCustomRoles = () => {
         alltenant = true;
       }
     });
-    if (alltenant && (blockedTenants?.length === 0 || !blockedTenants)) {
+    if (alltenant) {
       setAllTenantSelected(true);
     } else {
       setAllTenantSelected(false);
@@ -299,7 +299,7 @@ export const CippCustomRoles = () => {
               name="allowedTenants"
               fullWidth={true}
             />
-            {allTenantSelected && (
+            {allTenantSelected && blockedTenants?.length == 0 && (
               <Alert color="warning">
                 All tenants selected, no tenant restrictions will be applied unless blocked tenants
                 are specified.
