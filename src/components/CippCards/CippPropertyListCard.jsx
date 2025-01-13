@@ -39,6 +39,12 @@ export const CippPropertyListCard = (props) => {
   const firstHalf = propertyItems.slice(0, half);
   const secondHalf = propertyItems.slice(half, propertyItems.length);
 
+  const isLabelPresent = (item) => {
+    return item?.label === "" || item?.label === undefined || item?.label === null;
+  };
+
+  const setPadding = isLabelPresent ? { py: 0.5, px: 3 } : { py: 1.5, px: 3 };
+
   return (
     <>
       <Card sx={cardSx} {...other}>
@@ -56,6 +62,7 @@ export const CippPropertyListCard = (props) => {
                       align={align}
                       label={item.label}
                       value={<Skeleton width={280} />}
+                      sx={setPadding}
                     />
                   ))}
                 </>
@@ -66,6 +73,7 @@ export const CippPropertyListCard = (props) => {
                     divider={showDivider}
                     copyItems={copyItems}
                     key={`${index}-index-PropertyListOffCanvas`}
+                    sx={setPadding}
                     {...item}
                   />
                 ))
