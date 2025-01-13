@@ -94,7 +94,7 @@
       "route": "/api/ExecSendPush",
       "allowedRoles": [
         "admin",
-        "dd",
+        "editor",
         "readonly"
       ]
     },
