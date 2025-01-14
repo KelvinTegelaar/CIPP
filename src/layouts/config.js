@@ -263,7 +263,7 @@ export const nativeMenuItems = [
     ],
   },
   {
-    title: "Teams & Sharepoint",
+    title: "Teams & SharePoint",
     type: "header",
     icon: (
       <SvgIcon>
