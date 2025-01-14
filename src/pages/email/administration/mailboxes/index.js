@@ -10,7 +10,7 @@ const Page = () => {
   const actions = [
     {
       label: "Edit permissions",
-      link: "/identity/administration/users/user/exchange?userId=[Id]",
+      link: "/identity/administration/users/user/exchange?userId=[UPN]",
       color: "info",
     },
     {
