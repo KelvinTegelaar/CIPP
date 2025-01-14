@@ -1827,6 +1827,7 @@
       },
       {
         "type": "autoComplete",
+        "multiple": false,
         "label": "High Confidence Spam Action",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamAction",
         "options": [
