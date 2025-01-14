@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, IconButton, Skeleton } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, IconButton, Skeleton, Typography, CircularProgress } from "@mui/material";
 import { Block, Close, Done, DoneAll, Subject } from "@mui/icons-material";
 import { CippMessageViewer } from "/src/components/CippComponents/CippMessageViewer.jsx";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
