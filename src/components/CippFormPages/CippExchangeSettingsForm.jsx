@@ -244,12 +244,13 @@ const CippExchangeSettingsForm = (props) => {
             label="Add Access"
             name="calendar.UserToGetPermissions"
             isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.map((user) => ({
+            options={[
+              { value: "Default", label: "Default (Default)" },
+              ...(usersList?.data?.Results?.map((user) => ({
                 value: user.userPrincipalName,
                 label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
+              })) || []),
+            ]}
             multiple={false}
             formControl={formControl}
           />
