@@ -115,7 +115,7 @@ const Page = () => {
           confirmText:
             "This will refresh the tenant and update the tenant details. This can be used to force a tenant to reappear in the list. Run this with no Tenant Filter to refresh all tenants.",
           type: "GET",
-          data: { TriggerRefresh: "!true", TenantFilter: "tenantFilter" },
+          data: { TriggerRefresh: "!true" },
           replacementBehaviour: "removeNulls",
         }}
       />
