@@ -65,7 +65,7 @@
   {
     "label": "Compliance Portal",
     "name": "Compliance_Portal",
-    "url": "https://compliance.microsoft.com/?tid=customerId",
+    "url": "https://purview.microsoft.com/?tid=customerId",
     "variable": "customerId",
     "target": "_blank",
     "external": true,
