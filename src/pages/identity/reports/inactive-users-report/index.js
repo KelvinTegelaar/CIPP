@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Edit } from "@mui/icons-material";
+import { Edit, Block } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Inactive users (6 months)";
@@ -20,6 +20,15 @@ const Page = () => {
       icon: <Edit />,
       color: "success",
       target: "_self",
+    },
+    {
+      label: "Block Sign In",
+      type: "GET",
+      icon: <Block />,
+      url: "/api/ExecDisableUser",
+      data: { ID: "azureAdUserId" },
+      confirmText: "Are you sure you want to block the sign-in for this user?",
+      multiPost: false,
     },
     {
       label: "Delete User",
