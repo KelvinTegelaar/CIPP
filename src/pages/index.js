@@ -90,21 +90,30 @@ const Page = () => {
     },
   ];
 
-  // Helper to get action counts for the current tenant
   function getActionCountsForTenant(standardsData, currentTenant) {
-    if (!standardsData) return { remediateCount: 0, alertCount: 0, reportCount: 0, total: 0 };
+    if (!standardsData) {
+      return {
+        remediateCount: 0,
+        alertCount: 0,
+        reportCount: 0,
+        total: 0,
+      };
+    }
 
-    // Identify which templates apply:
     const applicableTemplates = standardsData.filter((template) => {
+      const tenantFilterArr = Array.isArray(template?.tenantFilter) ? template.tenantFilter : [];
+      const excludedTenantsArr = Array.isArray(template?.excludedTenants)
+        ? template.excludedTenants
+        : [];
+
       const tenantInFilter =
-        template?.tenantFilter?.length > 0 &&
-        template.tenantFilter.some((tf) => tf.value === currentTenant);
+        tenantFilterArr.length > 0 && tenantFilterArr.some((tf) => tf.value === currentTenant);
+
       const allTenantsTemplate =
-        template?.tenantFilter?.length > 0 &&
-        template.tenantFilter.some((tf) => tf.value === "AllTenants") &&
-        (!template?.excludedTenants ||
-          (Array.isArray(template?.excludedTenants) && template?.excludedTenants?.length === 0) ||
-          !template?.excludedTenants?.some((et) => et.value === currentTenant));
+        tenantFilterArr.some((tf) => tf.value === "AllTenants") &&
+        (excludedTenantsArr.length === 0 ||
+          !excludedTenantsArr.some((et) => et.value === currentTenant));
+
       return tenantInFilter || allTenantsTemplate;
     });
 
@@ -122,12 +131,12 @@ const Page = () => {
     let reportCount = 0;
 
     for (const [, standard] of Object.entries(combinedStandards)) {
-      const actions = standard.action || [];
+      let actions = standard.action || [];
       if (!Array.isArray(actions)) {
         actions = [actions];
       }
-
-      actions?.forEach((actionObj) => {
+      console.log("actions is", actions);
+      actions.forEach((actionObj) => {
         if (actionObj?.value === "Remediate") {
           remediateCount++;
         } else if (actionObj?.value === "Alert") {
@@ -139,6 +148,7 @@ const Page = () => {
     }
 
     const total = Object.keys(combinedStandards).length;
+
     return { remediateCount, alertCount, reportCount, total };
   }
 
