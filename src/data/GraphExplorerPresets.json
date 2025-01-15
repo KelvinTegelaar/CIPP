@@ -1,0 +1,153 @@
+[
+  {
+    "name": "All users with email addresses",
+    "id": "6164e239-0c9a-4a27-9049-6250bf65a3e3",
+    "params": {
+      "endpoint": "/users",
+      "$select": "userPrincipalName,mail,proxyAddresses",
+      "$filter": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "Licensed Users",
+    "id": "6aa4445d-1202-41bb-9d24-431869420d13",
+    "params": {
+      "endpoint": "/users",
+      "$filter": "assignedLicenses/$count ne 0",
+      "$count": true
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "Licensed and Enabled Users",
+    "id": "277f07f1-17d5-4339-bc3f-c95c904ae794",
+    "params": {
+      "endpoint": "/users",
+      "$filter": "assignedLicenses/$count ne 0 and accountEnabled eq true",
+      "$count": true
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "All Devices listing ID, Displayname, and registration status",
+    "id": "e7fdc49a-72a9-4a70-9dbf-a74152495d80",
+    "params": {
+      "endpoint": "/devices",
+      "$select": "deviceId,DisplayName,profileType,registrationDateTime,trustType",
+      "$filter": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "All contacts and their mail addresses",
+    "id": "f1844e3d-cb3e-4611-9bab-f5f42169bcd0",
+    "params": {
+      "endpoint": "/contacts",
+      "$select": "CompanyName,DisplayName,Mail,ProxyAddresses",
+      "$filter": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "Outlook Agents used in last 90 days",
+    "id": "eea3cacb-ca95-4998-bcd9-ff1815a7a493",
+    "params": {
+      "endpoint": "reports/getEmailAppUsageUserDetail(period='D90')",
+      "$format": "application/json",
+      "$filter": "",
+      "$select": "",
+      "isBuiltin": true
+    }
+  },
+  {
+    "name": "Activated M365 Subscription installations",
+    "id": "ccbe5b0d-ff0d-4262-a789-ccbd8f8d52e1",
+    "params": {
+      "endpoint": "/reports/getOffice365ActivationsUserDetail",
+      "$format": "application/json",
+      "$filter": null,
+      "$select": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "All Enterprise Applications",
+    "id": "f037014a-df35-4abe-937d-2e4106561da9",
+    "params": {
+      "endpoint": "servicePrincipals",
+      "$filter": "tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')"
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "SAML Applications",
+    "id": "6aaaf5b9-dc8d-4203-a493-7b4297d0dc5a",
+    "params": {
+      "endpoint": "servicePrincipals",
+      "$filter": "tags/any(t:t eq 'WindowsAzureActiveDirectoryGalleryApplicationPrimaryV1')"
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "Applications signed in in last 30 days",
+    "id": "a9ec9f2d-c102-4b4f-9b9d-c2bc57155990",
+    "params": {
+      "endpoint": "reports/getAzureADApplicationSignInSummary(period='D30')",
+      "$filter": "",
+      "$select": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "User Registration Report",
+    "id": "a00d251d-2743-484a-b8bb-8601199ceb68",
+    "params": {
+      "endpoint": "/reports/authenticationMethods/userRegistrationDetails",
+      "$filter": "",
+      "$select": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "All Global Admins",
+    "id": "c73df2bb-08fe-4fb2-b112-97006bdcf0a8",
+    "params": {
+      "endpoint": "directoryRoles/roleTemplateId=62e90394-69f5-4237-9190-012177145e10/members",
+      "$filter": "",
+      "$select": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "Multifactor Authentication Report for Admins",
+    "id": "ae7b3dc4-822b-46b9-aa0a-0305b4c33632",
+    "params": {
+      "endpoint": "/reports/authenticationMethods/userRegistrationDetails",
+      "$filter": "IsAdmin eq true",
+      "$select": ""
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "Secure Score with Current Score and Max Score",
+    "id": "bd6665e8-02c1-4cbf-bd3c-d2a52f17c2cf",
+    "params": {
+      "endpoint": "security/secureScores",
+      "$top": 90,
+      "$select": "currentscore,maxscore,activeusercount,enabledservices",
+      "$filter": "",
+      "NoPagination": true
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "Organization Branding",
+    "id": "2ed236e2-268e-461b-9d37-98b123010667",
+    "params": {
+      "endpoint": "organization/%tenantid%/branding",
+      "NoPagination": true
+    },
+    "isBuiltin": true
+  }
+]
