@@ -228,7 +228,7 @@ export const CippTenantSelector = (props) => {
           },
           {
             label: "Compliance Portal",
-            link: `https://compliance.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
+            link: `https://purview.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
             icon: <ShieldMoon />,
           },
         ]}
