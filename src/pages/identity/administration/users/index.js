@@ -322,6 +322,7 @@ const Page = () => {
       "department", // Department
       "onPremisesLastSyncDateTime", // OnPrem Last Sync
       "id", // Unique ID
+      "otherMails", // Alternate Email Addresses
     ],
     actions: actions,
   };
