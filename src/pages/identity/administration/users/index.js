@@ -68,7 +68,7 @@ const Page = () => {
     },
     {
       //tested
-      label: "Rerequire MFA registration",
+      label: "Re-require MFA registration",
       type: "GET",
       icon: <PhonelinkSetup />,
       url: "/api/ExecResetMFA",
