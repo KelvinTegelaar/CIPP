@@ -90,16 +90,30 @@ const Page = () => {
     },
   ];
 
-  // Helper to get action counts for the current tenant
   function getActionCountsForTenant(standardsData, currentTenant) {
-    if (!standardsData) return { remediateCount: 0, alertCount: 0, reportCount: 0, total: 0 };
+    if (!standardsData) {
+      return {
+        remediateCount: 0,
+        alertCount: 0,
+        reportCount: 0,
+        total: 0,
+      };
+    }
 
-    // Identify which templates apply:
     const applicableTemplates = standardsData.filter((template) => {
-      const tenantInFilter = template?.tenantFilter?.some((tf) => tf.value === currentTenant);
+      const tenantFilterArr = Array.isArray(template?.tenantFilter) ? template.tenantFilter : [];
+      const excludedTenantsArr = Array.isArray(template?.excludedTenants)
+        ? template.excludedTenants
+        : [];
+
+      const tenantInFilter =
+        tenantFilterArr.length > 0 && tenantFilterArr.some((tf) => tf.value === currentTenant);
+
       const allTenantsTemplate =
-        template.tenantFilter?.some((tf) => tf.value === "AllTenants") &&
-        !template.excludedTenants?.some((et) => et.value === currentTenant);
+        tenantFilterArr.some((tf) => tf.value === "AllTenants") &&
+        (excludedTenantsArr.length === 0 ||
+          !excludedTenantsArr.some((et) => et.value === currentTenant));
+
       return tenantInFilter || allTenantsTemplate;
     });
 
@@ -117,8 +131,12 @@ const Page = () => {
     let reportCount = 0;
 
     for (const [, standard] of Object.entries(combinedStandards)) {
-      const actions = standard.action || [];
-      actions?.forEach((actionObj) => {
+      let actions = standard.action || [];
+      if (!Array.isArray(actions)) {
+        actions = [actions];
+      }
+      console.log("actions is", actions);
+      actions.forEach((actionObj) => {
         if (actionObj?.value === "Remediate") {
           remediateCount++;
         } else if (actionObj?.value === "Alert") {
@@ -130,6 +148,7 @@ const Page = () => {
     }
 
     const total = Object.keys(combinedStandards).length;
+
     return { remediateCount, alertCount, reportCount, total };
   }
 
@@ -238,10 +257,10 @@ const Page = () => {
                 propertyItems={organization.data?.verifiedDomains
                   ?.slice(0, domainVisible ? undefined : 3)
                   .map((domain, idx) => ({
-                    label: `Domain`,
+                    label: "",
                     value: domain.name,
                   }))}
-                actions={
+                actionItems={
                   organization.data?.verifiedDomains?.length > 3 && (
                     <Button onClick={() => setDomainVisible(!domainVisible)}>
                       {domainVisible ? "See less" : "See more..."}
