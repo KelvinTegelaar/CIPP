@@ -72,8 +72,8 @@
     "icon": "shield-alt"
   },
   {
-    "label": "Sharepoint Admin",
-    "name": "Sharepoint_Admin",
+    "label": "SharePoint Admin",
+    "name": "SharePoint_Admin",
     "url": "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=customerId&CSDEST=SharePoint",
     "variable": "customerId",
     "target": "_blank",
