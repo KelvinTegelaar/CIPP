@@ -43,7 +43,7 @@ const actions = [
     icon: <TrashIcon />,
     type: "POST",
     url: "/api/ExecDeleteGDAPRoleMapping",
-    body: {
+    data: {
       GroupId: "GroupId",
     },
     confirmText:
