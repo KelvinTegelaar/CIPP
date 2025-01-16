@@ -149,9 +149,9 @@ const Page = () => {
                 name="expireAction"
                 multiple={false}
                 options={[
-                  { label: "Delete User", value: "delete" },
-                  { label: "Disable User", value: "disable" },
-                  { label: "Remove Roles", value: "removeRoles" },
+                  { label: "Delete User", value: "DeleteUser" },
+                  { label: "Disable User", value: "DisableUser" },
+                  { label: "Remove Roles", value: "RemoveRoles" },
                 ]}
                 formControl={formControl}
               />

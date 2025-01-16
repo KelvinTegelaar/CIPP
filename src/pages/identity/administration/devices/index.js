@@ -10,8 +10,8 @@ const Page = () => {
       type: "GET",
       url: "/api/ExecDeviceDelete",
       data: {
-        ID: "ID",
-        Action: "Enable",
+        ID: "id",
+        Action: "!Enable",
       },
       confirmText: "Are you sure you want to enable this device?",
       multiPost: false,
@@ -21,8 +21,8 @@ const Page = () => {
       type: "GET",
       url: "/api/ExecDeviceDelete",
       data: {
-        ID: "ID",
-        Action: "Disable",
+        ID: "id",
+        Action: "!Disable",
       },
       confirmText: "Are you sure you want to disable this device?",
       multiPost: false,
@@ -32,7 +32,7 @@ const Page = () => {
       type: "GET",
       url: "/api/ExecGetRecoveryKey",
       data: {
-        GUID: "ID",
+        GUID: "id",
       },
       confirmText: "Are you sure you want to retrieve the Bitlocker keys?",
       multiPost: false,
@@ -42,8 +42,8 @@ const Page = () => {
       type: "GET",
       url: "/api/ExecDeviceDelete",
       data: {
-        ID: "ID",
-        Action: "Delete",
+        ID: "id",
+        Action: "!Delete",
       },
       confirmText: "Are you sure you want to delete this device?",
       multiPost: false,

@@ -249,6 +249,15 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
+      <Grid item xs={12} md={6}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
+          label="Alternate Email Address"
+          name="otherMails"
+          formControl={formControl}
+        />
+      </Grid>
       {userSettingsDefaults?.userAttributes?.map((attribute, idx) => (
         <Grid item xs={6} key={idx}>
           <CippFormComponent
