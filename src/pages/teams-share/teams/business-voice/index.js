@@ -15,7 +15,6 @@ const Page = () => {
         PhoneNumberType: "NumberType",
         locationOnly: false,
       },
-      // FIXME
       fields: [
         {
           type: "autoComplete",
