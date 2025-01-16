@@ -94,6 +94,7 @@ const Page = () => {
         $orderby: "displayName",
         $count: true,
         $expand: "assignments",
+        manualPagination: true,
       }}
       actions={actions}
       offCanvas={offCanvas}
