@@ -68,7 +68,7 @@ const Page = () => {
     },
     {
       //tested
-      label: "Rerequire MFA registration",
+      label: "Re-require MFA registration",
       type: "GET",
       icon: <PhonelinkSetup />,
       url: "/api/ExecResetMFA",
@@ -322,6 +322,7 @@ const Page = () => {
       "department", // Department
       "onPremisesLastSyncDateTime", // OnPrem Last Sync
       "id", // Unique ID
+      "otherMails", // Alternate Email Addresses
     ],
     actions: actions,
   };
