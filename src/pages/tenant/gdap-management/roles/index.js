@@ -41,9 +41,12 @@ const actions = [
   {
     label: "Delete Mapping",
     icon: <TrashIcon />,
-    modal: true,
-    modalUrl: "/api/ExecDeleteGDAPRoleMapping?&GroupId=[GroupId]",
-    modalMessage:
+    type: "POST",
+    url: "/api/ExecDeleteGDAPRoleMapping",
+    data: {
+      GroupId: "GroupId",
+    },
+    confirmText:
       "Are you sure you want to delete this role mapping? (Note: This does not delete the associated security groups or modify any GDAP relationships.)",
   },
 ];
