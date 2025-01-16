@@ -1,0 +1,22 @@
+[
+  {
+    "label": "View User",
+    "path": "/identity/administration/users/user"
+  },
+  {
+    "label": "Edit User",
+    "path": "/identity/administration/users/user/edit"
+  },
+  {
+    "label": "Exchange Settings",
+    "path": "/identity/administration/users/user/exchange"
+  },
+  {
+    "label": "Compromise Remediation",
+    "path": "/identity/administration/users/user/bec"
+  },
+  {
+    "label": "Conditional Access",
+    "path": "/identity/administration/users/user/conditional-access"
+  }
+]
