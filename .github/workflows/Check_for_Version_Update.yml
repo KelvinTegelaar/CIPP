@@ -1,8 +1,10 @@
 ---
 name: Check for Version Update
 on:
-  pull_request:
-    branches: [master, main]
+    pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
   workflow_dispatch:
 jobs:
   build:
