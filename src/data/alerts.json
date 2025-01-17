@@ -81,6 +81,11 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "AppleTerms",
+    "label": "Alert on new Apple Business Manager terms",
+    "recommendedRunInterval": "30d"
+  },
+  {
     "name": "ApnCertExpiry",
     "label": "Alert on expiring APN certificates",
     "recommendedRunInterval": "1d"
