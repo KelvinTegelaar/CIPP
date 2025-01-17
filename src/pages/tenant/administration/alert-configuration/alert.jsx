@@ -225,8 +225,7 @@ const AlertWizard = () => {
       Recurrence: values.recurrence,
       PostExecution: values.postExecution,
     };
-    console.log(postObject);
-    //apiRequest.mutate({ url: "/api/AddScheduledItem?hidden=true", data: postObject });
+    apiRequest.mutate({ url: "/api/AddScheduledItem?hidden=true", data: postObject });
   };
 
   const handleAddCondition = () => {
