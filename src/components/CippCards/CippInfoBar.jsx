@@ -1,4 +1,4 @@
-import { Card, Stack, SvgIcon, Typography, Skeleton } from "@mui/material";
+import { Box, Card, Stack, SvgIcon, Typography, Skeleton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
 export const CippInfoBar = ({ data, isFetching }) => (
@@ -31,17 +31,25 @@ export const CippInfoBar = ({ data, isFetching }) => (
           }}
         >
           <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
-            <SvgIcon color={item.color ? item.color : "primary"} fontSize="small">
-              {item.icon}
-            </SvgIcon>
-            <div>
+            {item?.icon && (
+              <SvgIcon color={item.color ? item.color : "primary"} fontSize="small">
+                {item.icon}
+              </SvgIcon>
+            )}
+            <Box
+              sx={() => {
+                if (!item?.icon) {
+                  return { pl: 2 };
+                }
+              }}
+            >
               <Typography color="text.secondary" variant="overline">
                 {item.name}
               </Typography>
               <Typography variant="h6">
                 {isFetching ? <Skeleton width={"100%"} /> : item.data}
               </Typography>
-            </div>
+            </Box>
           </Stack>
         </Grid>
       ))}

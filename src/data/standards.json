@@ -498,7 +498,7 @@
     "name": "standards.DisableM365GroupUsers",
     "cat": "Entra (AAD) Standards",
     "tag": ["lowimpact"],
-    "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, Sharepoint sites, Planner, etc",
+    "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "addedComponent": [],
     "label": "Disable M365 Group creation by users",
@@ -1682,7 +1682,7 @@
     "name": "standards.AtpPolicyForO365",
     "cat": "Defender Standards",
     "tag": ["lowimpact", "CIS"],
-    "helpText": "This creates a Atp policy that enables Defender for Office 365 for Sharepoint, OneDrive and Microsoft Teams.",
+    "helpText": "This creates a Atp policy that enables Defender for Office 365 for SharePoint, OneDrive and Microsoft Teams.",
     "addedComponent": [
       {
         "type": "switch",
@@ -1827,6 +1827,7 @@
       },
       {
         "type": "autoComplete",
+        "multiple": false,
         "label": "High Confidence Spam Action",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamAction",
         "options": [
@@ -2359,7 +2360,7 @@
     "name": "standards.sharingCapability",
     "cat": "SharePoint Standards",
     "tag": ["highimpact", "CIS"],
-    "helpText": "Sets the default sharing level for OneDrive and Sharepoint. This is a tenant wide setting and overrules any settings set on the site level",
+    "helpText": "Sets the default sharing level for OneDrive and SharePoint. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [
       {
         "type": "autoComplete",
@@ -2386,7 +2387,7 @@
         ]
       }
     ],
-    "label": "Set Sharing Level for OneDrive and Sharepoint",
+    "label": "Set Sharing Level for OneDrive and SharePoint",
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgBetaAdminSharepointSetting",
