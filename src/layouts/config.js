@@ -37,11 +37,11 @@ export const nativeMenuItems = [
           { title: "Users", path: "/identity/administration/users" },
           { title: "Risky Users", path: "/identity/administration/risky-users" },
           { title: "Groups", path: "/identity/administration/groups" },
-          { title: "Devices", path: "/identity/administration/devices" },
           {
             title: "Group Templates",
             path: "/identity/administration/group-templates",
           },
+          { title: "Devices", path: "/identity/administration/devices" },
           { title: "Deleted Items", path: "/identity/administration/deleted-items" },
           { title: "Roles", path: "/identity/administration/roles" },
           { title: "JIT Admin", path: "/identity/administration/jit-admin" },
@@ -468,7 +468,7 @@ export const nativeMenuItems = [
             title: "Timers",
             path: "/cipp/advanced/timers",
             roles: ["superadmin"],
-          }
+          },
         ],
       },
     ],

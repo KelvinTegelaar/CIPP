@@ -7,7 +7,7 @@
       }
     },
     {
-      "route": "*.{png,jpg,gif,json,xml,ico,css,js}",
+      "route": "*.{png,jpg,gif,xml,ico,css,js}",
       "headers": {
         "cache-control": "must-revalidate, max-age=15770000"
       }
@@ -39,7 +39,11 @@
       "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
-      "route": "/api/AddStandardsDeploy",
+      "route": "/api/AddStandardTemplate",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/RemoveStandardTemplate",
       "allowedRoles": ["admin"]
     },
     {
