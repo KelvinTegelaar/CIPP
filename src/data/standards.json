@@ -50,6 +50,36 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.ProfilePhotos",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Controls whether users can set their own profile photos in Microsoft 365.",
+    "docsDescription": "Controls whether users can set their own profile photos in Microsoft 365. When disabled, only User and Global administrators can update profile photos for users.",
+    "addedComponent": [
+      {
+        "type": "select",
+        "multiple": false,
+        "label": "Select value",
+        "name": "standards.ProfilePhotos.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Allow users to set profile photos",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-OrganizationConfig -ProfilePhotoOptions EnablePhotos and Update-MgBetaAdminPeople",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.PhishProtection",
     "cat": "Global Standards",
     "tag": ["lowimpact"],
