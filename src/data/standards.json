@@ -1270,7 +1270,13 @@
     "tag": ["mediumimpact"],
     "helpText": "Sets emails sent as and on behalf of shared mailboxes to also be stored in the shared mailbox sent items folder",
     "docsDescription": "This makes sure that e-mails sent from shared mailboxes or delegate mailboxes, end up in the mailbox of the shared/delegate mailbox instead of the sender, allowing you to keep replies in the same mailbox as the original e-mail.",
-    "addedComponent": [],
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Include user mailboxes",
+        "name": "standards.DelegateSentItems.IncludeUserMailboxes"
+      }
+    ],
     "label": "Set mailbox Sent Items delegation (Sent items for shared mailboxes)",
     "impact": "Medium Impact",
     "impactColour": "warning",
