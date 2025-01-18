@@ -13,6 +13,7 @@ export const CippWizardStepButtons = (props) => {
     formControl,
     noNextButton = false,
     noSubmitButton = false,
+    replacementBehaviour,
     queryKeys,
     ...other
   } = props;
@@ -20,7 +21,16 @@ export const CippWizardStepButtons = (props) => {
   const sendForm = ApiPostCall({ relatedQueryKeys: queryKeys });
   const handleSubmit = () => {
     const values = formControl.getValues();
-    sendForm.mutate({ url: postUrl, data: values });
+    const newData = {};
+    Object.keys(values).forEach((key) => {
+      const value = values[key];
+      if (replacementBehaviour !== "removeNulls") {
+        newData[key] = value;
+      } else if (row[value] !== undefined) {
+        newData[key] = row[value];
+      }
+    });
+    sendForm.mutate({ url: postUrl, data: newData });
   };
 
   return (
