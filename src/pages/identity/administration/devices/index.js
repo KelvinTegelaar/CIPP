@@ -4,56 +4,50 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add
 const Page = () => {
   const pageTitle = "Devices";
   const actions = [
-    // these are currently GET requests that should be converted to POST requests.
     {
       label: "Enable Device",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecDeviceDelete",
       data: {
         ID: "id",
-        Action: "!Enable",
+        action: "!Enable",
       },
       confirmText: "Are you sure you want to enable this device?",
       multiPost: false,
     },
     {
       label: "Disable Device",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecDeviceDelete",
       data: {
         ID: "id",
-        Action: "!Disable",
+        action: "!Disable",
       },
       confirmText: "Are you sure you want to disable this device?",
       multiPost: false,
     },
     {
-      label: "Retrieve Bitlocker Keys",
+      label: "Retrieve BitLocker Keys",
       type: "GET",
       url: "/api/ExecGetRecoveryKey",
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to retrieve the Bitlocker keys?",
+      confirmText: "Are you sure you want to retrieve the BitLocker keys?",
       multiPost: false,
     },
     {
       label: "Delete Device",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecDeviceDelete",
       data: {
         ID: "id",
-        Action: "!Delete",
+        action: "!Delete",
       },
       confirmText: "Are you sure you want to delete this device?",
       multiPost: false,
     },
   ];
-
-  const offCanvas = {
-    extendedInfoFields: ["createdDateTime", "displayName", "id"],
-    actions: actions,
-  };
 
   return (
     <CippTablePage
@@ -66,7 +60,6 @@ const Page = () => {
       }}
       apiDataKey="Results"
       actions={actions}
-      offCanvas={offCanvas}
       simpleColumns={[
         "displayName",
         "accountEnabled",
@@ -77,6 +70,7 @@ const Page = () => {
         "operatingSystem",
         "operatingSystemVersion",
         "profileType",
+        "approximateLastSignInDateTime",
       ]}
     />
   );
