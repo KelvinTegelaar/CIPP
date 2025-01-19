@@ -59,6 +59,20 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
+  if (cellName === "prohibitSendReceiveQuotaInBytes" || cellName === "storageUsedInBytes") {
+    //convert bytes to GB
+    const bytes = data;
+    if (bytes === null || bytes === undefined) {
+      return isText ? (
+        "No data"
+      ) : (
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      );
+    }
+    const gb = bytes / 1024 / 1024 / 1024;
+    return isText ? `${gb.toFixed(2)} GB` : `${gb.toFixed(2)} GB`;
+  }
+
   if (cellName === "info.logoUrl") {
     return isText ? (
       data
@@ -337,13 +351,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
-  const translateProps = [
-    "riskLevel",
-    "riskState",
-    "riskDetail",
-    "enrollmentType",
-    "profileType",
-  ];
+  const translateProps = ["riskLevel", "riskState", "riskDetail", "enrollmentType", "profileType"];
 
   if (translateProps.includes(cellName)) {
     return getCippTranslation(data);
