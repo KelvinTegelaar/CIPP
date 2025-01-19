@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Risk Detection Report";
@@ -8,8 +9,11 @@ const Page = () => {
   const actions = [
     {
       label: "Research Compromised Account",
-      link: "/identity/administration/users/user/bec?userId=[userId]&tenantFilter=[Tenant]",
-      color: "info",
+      type: "GET",
+      icon: <MagnifyingGlassIcon />,
+      link: "/identity/administration/users/user/bec?userId=[userId]",
+      confirmText: "Are you sure you want to research this compromised account?",
+      multiPost: false,
     },
   ];
 
