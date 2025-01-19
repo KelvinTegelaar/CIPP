@@ -10,7 +10,7 @@ const Page = () => {
       url: "/api/ExecDeviceDelete",
       data: {
         ID: "id",
-        action: "Enable",
+        action: "!Enable",
       },
       confirmText: "Are you sure you want to enable this device?",
       multiPost: false,
@@ -21,7 +21,7 @@ const Page = () => {
       url: "/api/ExecDeviceDelete",
       data: {
         ID: "id",
-        action: "Disable",
+        action: "!Disable",
       },
       confirmText: "Are you sure you want to disable this device?",
       multiPost: false,
@@ -42,30 +42,12 @@ const Page = () => {
       url: "/api/ExecDeviceDelete",
       data: {
         ID: "id",
-        action: "Delete",
+        action: "!Delete",
       },
       confirmText: "Are you sure you want to delete this device?",
       multiPost: false,
     },
   ];
-
-  const offCanvas = {
-    extendedInfoFields: [
-      "accountEnabled",
-      "displayName",
-      "id",
-      "recipientType",
-      "enrollmentType",
-      "manufacturer",
-      "model",
-      "operatingSystem",
-      "operatingSystemVersion",
-      "profileType",
-      "createdDateTime",
-      "approximateLastSignInDateTime",
-    ],
-    actions: actions,
-  };
 
   return (
     <CippTablePage
@@ -78,7 +60,6 @@ const Page = () => {
       }}
       apiDataKey="Results"
       actions={actions}
-      offCanvas={offCanvas}
       simpleColumns={[
         "displayName",
         "accountEnabled",
