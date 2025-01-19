@@ -25,7 +25,7 @@ export const CippAutoComplete = (props) => {
     sx,
     ...other
   } = props;
-  const filter = createFilterOptions();
+  const filter = createFilterOptions({ stringify: (option) => JSON.stringify(option) });
   const [usedOptions, setUsedOptions] = useState(options);
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
 
