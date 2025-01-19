@@ -52,7 +52,7 @@ const Page = () => {
       type: "column",
     },
     {
-      filterName: "Able to be hidden from GAL via CIPP",
+      filterName: "Cloud only mailboxes",
       value: [{ id: "IsDirSynced", value: "No" }],
       type: "column",
     },
