@@ -47,7 +47,7 @@ const Page = () => {
     },
     {
       label: "Hide from Global Address List",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecHideFromGAL",
       data: {
         ID: "UPN",
@@ -58,7 +58,7 @@ const Page = () => {
     },
     {
       label: "Unhide from Global Address List",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecHideFromGAL",
       data: {
         ID: "UPN",
