@@ -52,6 +52,7 @@ const Page = () => {
 
   return (
     <CippTablePage
+      // FIXME: This tableFilter does nothing. It does not change the table data at all, like the code makes it seem like it should. -Bobby
       tableFilter={
         <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -95,7 +96,7 @@ const Page = () => {
         // Filter for showing only pending requests
         {
           filterName: "Pending requests",
-          value: [{ id: "requestStatus", value: "Pending" }],
+          value: [{ id: "requestStatus", value: "InProgress" }],
           type: "column",
         },
       ]}
