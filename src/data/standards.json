@@ -645,6 +645,30 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.StaleEntraDevices",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["highimpact", "CIS"],
+    "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days.",
+    "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.StaleEntraDevices.deviceAgeThreshold",
+        "label": "Days before stale(Dont set below 30)"
+      }
+    ],
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": true
+    },
+    "label": "Cleanup stale Entra devices",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Remove-MgDevice, Update-MgDevice or Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.UndoOauth",
     "cat": "Entra (AAD) Standards",
     "tag": ["highimpact"],
