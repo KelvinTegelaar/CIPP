@@ -521,7 +521,7 @@ const AlertWizard = () => {
                             <Grid item xs={12} md={12}>
                               {commandValue?.value?.requiresInput && (
                                 <CippFormComponent
-                                  type="textField"
+                                  type={commandValue.value?.inputType}
                                   name={commandValue.value?.inputName}
                                   formControl={formControl}
                                   label={commandValue.value?.inputLabel}
