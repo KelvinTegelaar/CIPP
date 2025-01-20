@@ -19,8 +19,7 @@ const Page = () => {
       type: "POST",
       url: "/api/EditTransportRule",
       data: {
-        State: "Enable",
-        TenantFilter: "Tenant",
+        State: "!Enable",
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to enable this rule?",
@@ -30,8 +29,7 @@ const Page = () => {
       type: "POST",
       url: "/api/EditTransportRule",
       data: {
-        State: "Disable",
-        TenantFilter: "Tenant",
+        State: "!Disable",
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to disable this rule?",
@@ -41,7 +39,6 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveTransportRule",
       data: {
-        TenantFilter: "Tenant",
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to delete this rule?",
@@ -50,11 +47,11 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["CreatedBy", "LastModifiedBy", "Description"],
+    extendedInfoFields: ["CreatedBy", "LastModifiedBy", "WhenChanged", "Description", "Guid"],
     actions: actions,
   };
 
-  const simpleColumns = ["Name", "State", "Mode", "RuleErrorAction"];
+  const simpleColumns = ["Name", "State", "Mode", "RuleErrorAction", "WhenChanged"];
 
   return (
     <CippTablePage
@@ -63,6 +60,18 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      filters={[
+        {
+          filterName: "Enabled Rules",
+          value: [{ id: "State", value: "Enabled" }],
+          type: "column",
+        },
+        {
+          filterName: "Disabled Rules",
+          value: [{ id: "State", value: "Disabled" }],
+          type: "column",
+        },
+      ]}
       cardButton={
         <>
           <Button component={Link} href="/email/transport/list-rules/add">

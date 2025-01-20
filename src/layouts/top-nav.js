@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
@@ -11,9 +11,13 @@ import { paths } from "../paths";
 import { AccountPopover } from "./account-popover";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
 import { NotificationsPopover } from "./notifications-popover";
+import { useDialog } from "../hooks/use-dialog";
+import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { CippCentralSearch } from "../components/CippComponents/CippCentralSearch";
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
+  const searchDialog = useDialog();
   const { onNavOpen } = props;
   const settings = useSettings();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -23,6 +27,23 @@ export const TopNav = (props) => {
       currentTheme: { value: themeName, label: themeName },
     });
   }, [settings]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        openSearch();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const openSearch = () => {
+    searchDialog.handleOpen();
+  };
 
   return (
     <Box
@@ -85,6 +106,12 @@ export const TopNav = (props) => {
               </SvgIcon>
             </IconButton>
           )}
+          <IconButton color="inherit" onClick={() => openSearch()}>
+            <SvgIcon color="action" fontSize="small">
+              <MagnifyingGlassIcon />
+            </SvgIcon>
+          </IconButton>
+          <CippCentralSearch open={searchDialog.open} handleClose={searchDialog.handleClose} />
           <NotificationsPopover />
           <AccountPopover
             onThemeSwitch={handleThemeSwitch}
