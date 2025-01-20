@@ -409,7 +409,9 @@ const Page = () => {
                     {(currentInvite || selectedRole) && rolesMissingFromRelationship.length > 0 && (
                       <Alert severity="warning">
                         The following roles are not mapped with the current template:{" "}
-                        {rolesMissingFromRelationship.map((role) => role?.Name).join(", ")}
+                        {rolesMissingFromRelationship
+                          .map((role) => role?.Name ?? "Unknown Role")
+                          .join(", ")}
                       </Alert>
                     )}
                     {(currentInvite || selectedRole) &&
