@@ -234,7 +234,6 @@ const Page = () => {
                           </Typography>
                         )}
                       </Grid>
-                      {console.log(getGeoIP.error)}
                     </Grid>
                   </CippButtonCard>
                 </Grid>

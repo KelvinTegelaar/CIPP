@@ -251,7 +251,6 @@ export const CippApiDialog = (props) => {
             Close
           </Button>
           <Button variant="contained" type="submit">
-            {console.log(actionPostRequest, actionGetRequest)}
             {actionGetRequest.isSuccess || actionPostRequest.isSuccess ? "Resubmit" : "Submit"}
           </Button>
         </DialogActions>
