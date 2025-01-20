@@ -1,6 +1,8 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { Book, DoDisturb, Done } from "@mui/icons-material";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 const Page = () => {
@@ -11,8 +13,9 @@ const Page = () => {
       label: "Create template based on rule",
       type: "POST",
       url: "/api/AddTransportTemplate",
-      data: {}, // No extra data was specified for this action in the original file
+      postEntireRow: true,
       confirmText: "Are you sure you want to create a template based on this rule?",
+      icon: <Book />,
     },
     {
       label: "Enable Rule",
@@ -23,6 +26,7 @@ const Page = () => {
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to enable this rule?",
+      icon: <Done />,
     },
     {
       label: "Disable Rule",
@@ -33,6 +37,7 @@ const Page = () => {
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to disable this rule?",
+      icon: <DoDisturb />,
     },
     {
       label: "Delete Rule",
@@ -43,15 +48,24 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to delete this rule?",
       color: "danger",
+      icon: <TrashIcon />,
     },
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["CreatedBy", "LastModifiedBy", "WhenChanged", "Description", "Guid"],
+    extendedInfoFields: [
+      "Guid",
+      "CreatedBy",
+      "LastModifiedBy",
+      "WhenChanged",
+      "Name",
+      "Comments",
+      "Description",
+    ],
     actions: actions,
   };
 
-  const simpleColumns = ["Name", "State", "Mode", "RuleErrorAction", "WhenChanged"];
+  const simpleColumns = ["Name", "State", "Mode", "RuleErrorAction", "WhenChanged", "Comments"];
 
   return (
     <CippTablePage
