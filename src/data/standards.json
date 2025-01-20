@@ -90,7 +90,7 @@
         "label": "Hide self-service password reset"
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Visual Template",
         "name": "standards.Branding.layoutTemplateType",
@@ -193,7 +193,7 @@
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.ActivityBasedTimeout.timeout",
@@ -293,7 +293,7 @@
     "docsDescription": "Sets the Authenticator Lite state to enabled. This allows users to use the Authenticator Lite built into the Outlook app instead of the full Authenticator app.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.PWcompanionAppAllowedState.state",
@@ -362,7 +362,7 @@
     "docsDescription": "Enables Temporary Password generation for the tenant.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select TAP Lifetime",
         "name": "standards.TAP.config",
@@ -404,7 +404,7 @@
     "helpText": "Sets the state of the Cross-tenant access setting to trust external MFA. This allows guest users to use their home tenant MFA to access your tenant.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.ExternalMFATrusted.state",
@@ -466,7 +466,7 @@
     "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the Microsoft Authenticator during sign-in.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.NudgeMFA.state",
@@ -772,7 +772,7 @@
     "docsDescription": "Sets the global quarantine notification interval for the tenant. This is the time between the quarantine notification emails are sent out to users. Default is 24 hours.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.GlobalQuarantineNotifications.NotificationInterval",
@@ -819,7 +819,7 @@
     "docsDescription": "Sets the default Focused Inbox state for the tenant. This can be overridden by the user in their Outlook settings. For more information, see [Microsoft's documentation.](https://support.microsoft.com/en-us/office/focused-inbox-for-outlook-f445ad7f-02f4-4294-a82e-71d8964e3978)",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.FocusedInbox.state",
@@ -849,7 +849,7 @@
     "docsDescription": "Sets the default state for Cloud Message Recall for the tenant. By default this is enabled. You can read more about the feature [here.](https://techcommunity.microsoft.com/t5/exchange-team-blog/cloud-based-message-recall-in-exchange-online/ba-p/3744714)",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.CloudMessageRecall.state",
@@ -916,7 +916,7 @@
     "docsDescription": "Adds or removes indicators to e-mail messages received from external senders in Outlook. You can read more about this feature on [Microsoft's Exchange Team Blog.](https://techcommunity.microsoft.com/t5/exchange-team-blog/native-external-sender-callouts-on-email-in-outlook/ba-p/2250098)",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.SpoofWarn.state",
@@ -965,7 +965,7 @@
     "helpText": "Sets the default state for automatically turning meetings into Teams meetings for the tenant. This can be overridden by the user in Outlook.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.TeamsMeetingsByDefault.state",
@@ -1075,7 +1075,7 @@
     },
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select Sharing Level",
         "name": "standards.calDefault.permissionlevel",
@@ -1166,7 +1166,7 @@
     "helpText": "Sets the shorten meetings settings on a tenant level. This will shorten meetings by the selected amount of minutes. Valid values are 0 to 29. Short meetings are under 60 minutes, long meetings are over 60 minutes.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.ShortenMeetings.ShortenEventScopeDefault",
@@ -1212,7 +1212,7 @@
     "docsDescription": "",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.Bookings.state",
@@ -1298,7 +1298,7 @@
     "docsDescription": "Set the state of the built-in Report button in Outlook. This gives the users the ability to report emails as spam or phish.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select value",
         "name": "standards.UserSubmissions.state",
@@ -1446,7 +1446,7 @@
         "default": true
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "If the message is detected as spoof by spoof intelligence",
         "name": "standards.AntiPhishPolicy.AuthenticationFailAction",
@@ -1462,7 +1462,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Quarantine policy for Spoof",
         "name": "standards.AntiPhishPolicy.SpoofQuarantineTag",
@@ -1482,7 +1482,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "If a message is detected as user impersonation",
         "name": "standards.AntiPhishPolicy.TargetedUserProtectionAction",
@@ -1502,7 +1502,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Quarantine policy for user impersonation",
         "name": "standards.AntiPhishPolicy.TargetedUserQuarantineTag",
@@ -1522,7 +1522,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "If a message is detected as domain impersonation",
         "name": "standards.AntiPhishPolicy.TargetedDomainProtectionAction",
@@ -1542,7 +1542,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Quarantine policy for domain impersonation",
         "name": "standards.AntiPhishPolicy.TargetedDomainQuarantineTag",
@@ -1562,7 +1562,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "If Mailbox Intelligence detects an impersonated user",
         "name": "standards.AntiPhishPolicy.MailboxIntelligenceProtectionAction",
@@ -1582,7 +1582,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Apply quarantine policy",
         "name": "standards.AntiPhishPolicy.MailboxIntelligenceQuarantineTag",
@@ -1621,7 +1621,7 @@
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Action",
         "name": "standards.SafeAttachmentPolicy.Action",
@@ -1641,7 +1641,7 @@
         ]
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "QuarantineTag",
         "name": "standards.SafeAttachmentPolicy.QuarantineTag",
@@ -1705,7 +1705,7 @@
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "FileTypeAction",
         "name": "standards.MalwareFilterPolicy.FileTypeAction",
@@ -1727,7 +1727,7 @@
         "label": "Optional File Types, Comma separated"
       },
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "QuarantineTag",
         "name": "standards.MalwareFilterPolicy.QuarantineTag",
@@ -2121,7 +2121,7 @@
     "docsDescription": "When a OneDrive user gets deleted, the personal SharePoint site is saved for selected amount of time that data can be retrieved from it.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "name": "standards.DeletedUserRentention.Days",
         "label": "Retention time (Default 30 days)",
@@ -2363,7 +2363,7 @@
     "helpText": "Sets the default sharing level for OneDrive and SharePoint. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "label": "Select Sharing Level",
         "name": "standards.sharingCapability.Level",
@@ -2468,7 +2468,7 @@
     "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
     "addedComponent": [
       {
-        "type": "autoComplete",
+        "type": "select",
         "multiple": false,
         "name": "standards.sharingDomainRestriction.Mode",
         "label": "Limit external sharing by domains",
@@ -2769,16 +2769,16 @@
         "label": "Read Receipts Enabled Type",
         "options": [
           {
-        "label": "User controlled",
-        "value": "UserPreference"
+            "label": "User controlled",
+            "value": "UserPreference"
           },
           {
-        "label": "Turned on for everyone",
-        "value": "Everyone"
+            "label": "Turned on for everyone",
+            "value": "Everyone"
           },
           {
-        "label": "Turned off for everyone",
-        "value": "None"
+            "label": "Turned off for everyone",
+            "value": "None"
           }
         ]
       },
