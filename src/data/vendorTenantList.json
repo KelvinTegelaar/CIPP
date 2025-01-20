@@ -12,10 +12,6 @@
         "vendorTenantId": "8ebde5a4-a587-497c-9881-8a5c272dd1c4"
     },
     {
-        "vendorName": "Eshgro Smarter365",
-        "vendorTenantId": "0a3132f8-cbcd-430f-a554-b0490bea8018"
-    },
-    {
         "vendorName": "BitTitan",
         "vendorTenantId": "6690473e-14f0-4f77-bf88-2ae5ade8746c"
     },
@@ -46,14 +42,6 @@
     {
         "vendorName": "CloudMore AB",
         "vendorTenantId": "0cc4f6a9-d96a-4508-b938-32386e1c44cf"
-    },
-    {
-        "vendorName": "Google Workspace",
-        "vendorTenantId": "0f8cb250-b44f-4acd-b24e-2524ef9f85ac"
-    },
-    {
-        "vendorName": "Merill",
-        "vendorTenantId": "10407d69-1ba5-4bec-8ebe-9af2f0b9e06a"
     },
     {
         "vendorName": "Citrix Cloud",
@@ -190,10 +178,6 @@
     {
         "vendorName": "SuperVision (KPN)",
         "vendorTenantId": "8edc1ef5-a81d-4229-badb-e2634a284461"
-    },
-    {
-        "vendorName": "MSPMagic",
-        "vendorTenantId": "74d3d0de-bbd7-433f-95c2-40cc5d185968"
     },
     {
         "vendorName": "SimeonCloud",
