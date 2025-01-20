@@ -377,6 +377,10 @@ export const nativeMenuItems = [
             title: "Shared Mailbox with Enabled Account",
             path: "/email/reports/SharedMailboxEnabledAccount",
           },
+          {
+            title: "Global Address List",
+            path: "/email/reports/global-address-list",
+          },
         ],
       },
     ],

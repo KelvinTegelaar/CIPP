@@ -267,7 +267,6 @@ export const CIPPTableToptoolbar = ({
                   } else if (data && !getRequestData.isFetched) {
                     //do nothing because data was sent native.
                   } else if (getRequestData) {
-                    console.log(getRequestData);
                     getRequestData.refetch();
                   }
                 }}

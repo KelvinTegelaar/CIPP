@@ -58,8 +58,6 @@ export const CippApiDialog = (props) => {
       return api.dataFunction(row);
     }
     var newData = {};
-    console.log("the received row", row);
-    console.log("the received dataObject", dataObject);
 
     if (api?.postEntireRow) {
       newData = row;
@@ -87,7 +85,6 @@ export const CippApiDialog = (props) => {
         }
       });
     }
-    console.log("output", newData);
     return newData;
   };
   const tenantFilter = useSettings().currentTenant;
@@ -254,7 +251,7 @@ export const CippApiDialog = (props) => {
             Close
           </Button>
           <Button variant="contained" type="submit">
-            Confirm
+            {actionGetRequest.isSuccess || actionPostRequest.isSuccess ? "Resubmit" : "Submit"}
           </Button>
         </DialogActions>
       </form>

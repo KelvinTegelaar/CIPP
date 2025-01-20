@@ -135,7 +135,6 @@ const Page = () => {
       if (!Array.isArray(actions)) {
         actions = [actions];
       }
-      console.log("actions is", actions);
       actions.forEach((actionObj) => {
         if (actionObj?.value === "Remediate") {
           remediateCount++;
