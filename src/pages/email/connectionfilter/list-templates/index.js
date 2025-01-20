@@ -7,18 +7,12 @@ const Page = () => {
 
   const actions = [
     {
-      label: "View Template",
-      icon: <EyeIcon />, // Placeholder for the view icon
-      color: "success",
-      offCanvas: true,
-    },
-    {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveConnectionfilterTemplate",
       data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
-      icon: <TrashIcon />, // Placeholder for the delete icon
+      icon: <TrashIcon />,
       color: "danger",
     },
   ];

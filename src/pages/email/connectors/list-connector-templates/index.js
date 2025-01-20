@@ -15,7 +15,7 @@ const Page = () => {
         ID: "GUID",
       },
       confirmText: "Do you want to delete the template?",
-      icon: <TrashIcon />, // Placeholder for delete icon
+      icon: <TrashIcon />,
       color: "danger",
     },
   ];

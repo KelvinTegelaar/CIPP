@@ -7,12 +7,6 @@ const Page = () => {
 
   const actions = [
     {
-      label: "View Template",
-      icon: <EyeIcon />, // Placeholder for the view icon
-      color: "success",
-      offCanvas: true,
-    },
-    {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveSpamfilterTemplate",
