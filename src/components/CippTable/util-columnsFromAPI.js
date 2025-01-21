@@ -6,14 +6,16 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 const mergeKeys = (dataArray) => {
   return dataArray.reduce((acc, item) => {
     const mergeRecursive = (obj, base = {}) => {
-      Object?.keys(obj)?.forEach((key) => {
-        // If base[key] is a string, it should not be merged as an object
-        if (typeof base[key] === "string") {
-          return; // Skip further merging for this key
-        }
-
+      Object.keys(obj).forEach((key) => {
         if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+          if (typeof base[key] === "boolean") {
+            // Skip merging if base[key] is a boolean
+            return;
+          }
           base[key] = mergeRecursive(obj[key], base[key] || {});
+        } else if (typeof obj[key] === "boolean") {
+          // If obj[key] is a boolean, overwrite the base[key]
+          base[key] = obj[key];
         } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
           base[key] = base[key]; // Keep existing value if it's 'FAILED'
         } else if (obj[key] !== undefined && obj[key] !== null) {
