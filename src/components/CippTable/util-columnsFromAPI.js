@@ -14,7 +14,6 @@ const mergeKeys = (dataArray) => {
           }
           base[key] = mergeRecursive(obj[key], base[key] || {});
         } else if (typeof obj[key] === "boolean") {
-          // If obj[key] is a boolean, overwrite the base[key]
           base[key] = obj[key];
         } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
           base[key] = base[key]; // Keep existing value if it's 'FAILED'
