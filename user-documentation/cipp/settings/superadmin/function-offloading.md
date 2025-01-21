@@ -221,7 +221,7 @@ New-AzResourceGroupDeployment `
 
 After successful deployment of the offloading function apps, follow these steps to enable Function Offloading in CIPP.
 
-1. Navigate to CIPP > Application Settings > SuperAdmin
+1. Navigate to CIPP > Advanced > SuperAdmin
 2. Under Function Offloading, toggle the Offload Functions button and hit Save.
 
 ***
