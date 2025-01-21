@@ -251,6 +251,7 @@ export const nativeMenuItems = [
           { title: "Protection Policies", path: "/endpoint/MEM/list-appprotection-policies" },
           { title: "Apply Policy", path: "/endpoint/MEM/add-policy" },
           { title: "Policy Templates", path: "/endpoint/MEM/list-templates" },
+          { title: "Scripts", path: "/endpoint/MEM/list-scripts" },
         ],
       },
       {
