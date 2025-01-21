@@ -236,7 +236,6 @@ export const nativeMenuItems = [
           { title: "Autopilot Devices", path: "/endpoint/autopilot/list-devices" },
           { title: "Add Autopilot Device", path: "/endpoint/autopilot/add-device" },
           { title: "Profiles", path: "/endpoint/autopilot/list-profiles" },
-          { title: "Add Profile", path: "/endpoint/autopilot/add-profile" },
           { title: "Status Pages", path: "/endpoint/autopilot/list-status-pages" },
           { title: "Add Status Page", path: "/endpoint/autopilot/add-status-page" },
         ],
