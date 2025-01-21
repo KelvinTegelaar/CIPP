@@ -209,10 +209,10 @@ export const CippApiDialog = (props) => {
   }
   useEffect(() => {
     if (api.noConfirm) {
-      formHook.handleSubmit(onSubmit)(); // Submits the form on mount
-      createDialog.handleClose(); // Closes the dialog after submitting
+      formHook.handleSubmit(onSubmit)();
+      createDialog.handleClose();
     }
-  }, [api.noConfirm]); // Run effect only when api.noConfirm changes
+  }, [api.noConfirm]);
 
   const handleClose = () => {
     createDialog.handleClose();
