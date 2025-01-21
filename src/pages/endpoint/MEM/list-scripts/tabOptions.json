@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Windows Scripts",
+    "path": "/endpoint/MEM/list-scripts"
+  },
+  {
+    "label": "MacOS Scripts",
+    "path": "/endpoint/MEM/list-scripts/macOS"
+  },
+  {
+    "label": "Linux Scripts",
+    "path": "/endpoint/MEM/list-scripts/linux"
+  },
+  {
+    "label": "Remediation Scripts",
+    "path": "/endpoint/MEM/list-scripts/remediation"
+  }
+]
