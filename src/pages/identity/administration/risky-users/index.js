@@ -6,7 +6,6 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 const Page = () => {
   const pageTitle = "Risky Users";
 
-  // Actions from the source file
   const actions = [
     {
       label: "Dismiss Risk",
@@ -27,19 +26,45 @@ const Page = () => {
     },
   ];
 
-  // OffCanvas details based on the source file
   const offCanvas = {
     extendedInfoFields: [
-      "id", // User ID
-      "userDisplayName", // Display Name
-      "userPrincipalName", // User Principal
-      "riskLastUpdatedDateTime", // Risk Last Updated
-      "riskLevel", // Risk Level
-      "riskState", // Risk State
-      "riskDetail", // Risk Detail
+      "id",
+      "userDisplayName",
+      "userPrincipalName",
+      "riskLastUpdatedDateTime",
+      "riskLevel",
+      "riskState",
+      "riskDetail",
     ],
     actions: actions,
   };
+
+  const simpleColumns = [
+    "userDisplayName",
+    "userPrincipalName",
+    "riskLevel",
+    "riskState",
+    "riskDetail",
+    "riskLastUpdatedDateTime",
+  ];
+
+  const filterList = [
+    {
+      filterName: "Users at Risk",
+      value: [{ id: "riskState", value: "atRisk" }],
+      type: "column",
+    },
+    {
+      filterName: "Dismissed Users",
+      value: [{ id: "riskState", value: "dismissed" }],
+      type: "column",
+    },
+    {
+      filterName: "Remediated Users",
+      value: [{ id: "riskState", value: "remediated" }],
+      type: "column",
+    },
+  ];
 
   return (
     <CippTablePage
@@ -48,8 +73,6 @@ const Page = () => {
       apiData={{
         Endpoint: "identityProtection/riskyUsers",
         manualPagination: true,
-        $select:
-          "id,userDisplayName,userPrincipalName,riskLevel,riskState,riskDetail,riskLastUpdatedDateTime",
         $count: true,
         $orderby: "riskLastUpdatedDateTime desc",
         $top: 500,
@@ -57,14 +80,8 @@ const Page = () => {
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
-      simpleColumns={[
-        "userDisplayName",
-        "userPrincipalName",
-        "riskLevel",
-        "riskState",
-        "riskDetail",
-        "riskLastUpdatedDateTime",
-      ]}
+      simpleColumns={simpleColumns}
+      filters={filterList}
     />
   );
 };
