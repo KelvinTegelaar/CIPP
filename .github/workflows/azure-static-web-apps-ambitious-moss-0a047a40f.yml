@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '18.17.0'
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
       - name: Get Id Token
