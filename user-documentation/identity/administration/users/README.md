@@ -26,26 +26,33 @@ The main table provides an overview of information including display name, email
 
 
 
-### Per-User actions:
+### Per-User Actions:
 
-| Field                            | Description                                                                                                                                                            |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 👁 View user details             | Display advanced user account details. \[[More information](./#view-user-details)]                                                                                     |
-| ✍️ Edit user                     | Allows editing user details, same as user edit view from Microsoft 365 admin. Additionally, you can copy group membership to the target user from another active user. |
-| Research Compromised Account     | Single pane of glass review of common indicators of compromise (IoC) \[[More information](./#research-compromised-account)]                                            |
-| Create Temporary Access Password | Create a temporary password to allow full passwordless enrollment. \[[More information](./#create-temporary-access-password)]                                          |
-| Rerequire MFA registration       | Sets user legacy MFA status to **Enabled**                                                                                                                             |
-| Create OneDrive ShortCut         | Creates a OneDrive shortcut in the root of the users OneDrive to a SharePoint site.                                                                                    |
-| Send MFA push                    | Sends an MFA approval prompt to a users registered devices. A simple way to verify functionality.                                                                      |
-| Convert to Shared Mailbox        | Convert a mailbox to shared.                                                                                                                                           |
-| Set Out of Office                | Set an out of office message for the user or shared mailbox. **Note:** _Setting a different internal and external autoreply is currently not supported_                |
-| Disable Out of Office            | Disables out of office message for the user or shared mailbox.                                                                                                         |
-| Disable Email Forwarding         | Disables all email forwaeding set both ForwardingAddress and ForwardingSMTPAddress to $null                                                                            |
-| Block Sign In                    | Disable account sign in.                                                                                                                                               |
-| Reset Password (Must Change)     | Reset account password to a random value (Example: `2WcAu%VMy89P`) and require user to set a new password on login.                                                    |
-| Reset Password                   | Reset account password to a random value (Example: `2WcAu%VMy89P`).                                                                                                    |
-| Revoke all user sessions         | Revoke all sessions, requiring user to sign in again.                                                                                                                  |
-| Delete User                      | Delete user account.                                                                                                                                                   |
+| Field                            | Description                                                                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 👁 View User                     | Display advanced user account details. \[[More information](./#view-user-details)]                                                                                                          |
+| ✏️Edit User                      | Allows editing user details, same as user edit view from Microsoft 365 admin. Additionally, you can copy group membership to the target user from another active user.                      |
+| Research Compromised Account     | Single pane of glass review of common indicators of compromise (IoC) \[[More information](./#research-compromised-account)]                                                                 |
+| Create Temporary Access Password | Create a temporary password to allow full passwordless enrollment. \[[More information](./#create-temporary-access-password)]                                                               |
+| Re-require MFA registration      | Sets user legacy MFA status to **Enabled**                                                                                                                                                  |
+| Send MFA Push                    | Sends an MFA approval prompt to a user's registered devices. A simple way to verify functionality.                                                                                          |
+| Set Per-User MFA                 | Sets the per-user MFA state for the selected user(s). Available options are "Enforced", "Enabled", or "Disabled".                                                                           |
+| Convert to Shared Mailbox        | Convert a mailbox to shared.                                                                                                                                                                |
+| Enable Online Archive            | Enables the online archive for this user's mailbox.                                                                                                                                         |
+| Set Out of Office                | Set an out of office message for the user or shared mailbox. **Note:** _Setting a different internal and external autoreply is currently not supported_                                     |
+| Disable Out of Office            | Disables out of office message for the user or shared mailbox.                                                                                                                              |
+| Add to Group                     | Add user to a group.                                                                                                                                                                        |
+| Disable Email Forwarding         | Disables all email forwarding set both ForwardingAddress and ForwardingSMTPAddress to $null                                                                                                 |
+| Pre-provision OneDrive           | This will start the provisioning of the user's OneDrive without a need for the user's first login.                                                                                          |
+| Add OneDrive Shortcut            | Adds a OneDrive shortcut in the root of the users OneDrive to a SharePoint site.                                                                                                            |
+| Block Sign In                    | Disable account sign in.                                                                                                                                                                    |
+| Unblock Sign In                  | Enable account sign in.                                                                                                                                                                     |
+| Reset Password (Must Change)     | Reset account password to a random value (Example: `2WcAu%VMy89P`) and require user to set a new password on login.                                                                         |
+| Reset Password                   | Reset account password to a random value (Example: `2WcAu%VMy89P`).                                                                                                                         |
+| Clear Immutable ID               | Sets the user's onPremisesImmutableId to $null to break the sync of the object from on-premises Active Directory.                                                                           |
+| Revoke all user sessions         | Revoke all sessions, requiring user to sign in again.                                                                                                                                       |
+| Delete User                      | Delete user account.                                                                                                                                                                        |
+| More info                        | Opens the Extended Info flyout panel for the user which shows some of the more common profile fields for the user. The other per-user actions are also listed at the bottom of this window. |
 
 {% hint style="info" %}
 Note that clicking one of these actions will present a confirmation modal dialog.

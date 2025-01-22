@@ -8,9 +8,12 @@ Shows all deleted items in the tenant. What else did you expect? Monkeys? 🐒
 
 ### Actions
 
-The deleted objects can be restored via the actions button.
+| Action         | Description                       |
+| -------------- | --------------------------------- |
+| Restore Object | Restores the deleted item         |
+| More Info      | Displays the Extended Info flyout |
 
-
+***
 
 ### Feature Requests / Ideas
 

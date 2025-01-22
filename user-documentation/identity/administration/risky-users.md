@@ -1,16 +1,13 @@
 # Risky Users
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page lists the tenant's risky users. Here, you can review the information associated with the risk detection.
 
-### **Looking for documentation contributors**
+### Actions
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+* Dismiss Risk - This action will mark the risk as dismissed.&#x20;
+* More Info - Displays the Extended Info flyout.
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
-
-
+***
 
 ### Feature Requests / Ideas
 

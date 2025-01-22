@@ -32,7 +32,11 @@ The report lists every user in the tenant and provides detailed information abou
 For tenants with over 250 user accounts, the Per User MFA status might appear as blank or null due to API throttling. In such cases, it could indicate any of the following states: disabled, enabled, or enforced.
 {% endhint %}
 
+{% hint style="warning" %}
+This table doesn't utilize a per-row Actions column like many of the other tables introduced with CIPP v7.
+{% endhint %}
 
+***
 
 ### Feature Requests / Ideas
 

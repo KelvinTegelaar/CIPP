@@ -1,14 +1,17 @@
 # Risk Detections
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page will display the risk detections for the selected tenant or AllTenants
 
-### **Looking for documentation contributors**
+### Available Columns
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+This table utilizes the column headings returned from Graph API. For reference on this, please see the Graph [documentation for riskDetection](https://learn.microsoft.com/en-us/graph/api/resources/riskdetection?view=graph-rest-beta).
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+### Per-Detection Actions
+
+| Action                       | Description                                            |
+| ---------------------------- | ------------------------------------------------------ |
+| Research Compromised Account | Launches the CIPP user page to research the compromise |
+| More Info                    | Opens the Extended Info flyout                         |
 
 ***
 

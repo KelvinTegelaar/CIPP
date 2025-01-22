@@ -19,13 +19,15 @@ For some types of groups, additional fields become available when that type is s
 
 ### Actions
 
-On the Group Templates page, the following actions can be performed:
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
 
-* **Add New Group Template**: Click the "Add New Group Template" button to open a form where you can fill in the details for a new group template. After you've filled in the details, click "Save" to create the new template. This action calls the `AddGroupTemplate` API endpoint.
-* **View**: Click the "View" button next to a group template to display its details in JSON format.
-* **Delete**: Click the "Trash" icon next to a group template to delete it. This action triggers a modal that asks for confirmation before deleting the template. Once confirmed, this action calls the `RemoveGroupTemplate` API endpoint.
+{% content-ref url="deploy.md" %}
+[deploy.md](deploy.md)
+{% endcontent-ref %}
 
-
+***
 
 ### Feature Requests / Ideas
 

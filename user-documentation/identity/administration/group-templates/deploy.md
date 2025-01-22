@@ -10,19 +10,15 @@ The Deploy Group Templates page provides an interface for creating and deploying
 
 This document provides a step-by-step guide on how to navigate and utilize the Deploy Group Templates page.
 
-### Components
-
-The Deploy Group Templates page comprises three main steps:
-
-1. **Tenant Choice**
-2. **Select Options**
-3. **Review and Confirm**
-
-#### Step 1: Tenant Choice
+{% stepper %}
+{% step %}
+### Tenant Choice
 
 In this step, you choose the tenants for which you want to create the group. Each tenant has a `displayName` and `defaultDomainName`.
+{% endstep %}
 
-#### Step 2: Select Options
+{% step %}
+### Choose Template
 
 In this step, you can choose to apply one of the previously created templates or manually enter the group information. If you opt for a template, select it from the dropdown menu. The page will automatically populate the rest of the fields based on the chosen template.
 
@@ -38,12 +34,16 @@ However, you have the flexibility to adjust the options as needed:
 Remember, the options presented depend on the Group Type selected. For instance, the "Membership Rule" field only appears if you select "Dynamic Group" as the Group Type.
 
 For more details on these settings, please refer to the [Group Templates page](./).
+{% endstep %}
 
-#### Step 3: Review and Confirm
+{% step %}
+### Review and Confirm
 
 In this step, you review your input and confirm to apply. The application sends a POST request to the `AddGroup` endpoint listed below with your input as values.
+{% endstep %}
+{% endstepper %}
 
-
+***
 
 ### Feature Requests / Ideas
 
