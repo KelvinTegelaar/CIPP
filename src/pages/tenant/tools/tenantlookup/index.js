@@ -18,7 +18,7 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 const Page = () => {
   const formControl = useForm({ mode: "onBlur" });
   const domain = useWatch({ control: formControl.control, name: "domain" });
-  const getGeoIP = ApiGetCall({
+  const getTenant = ApiGetCall({
     url: "/api/ListExternalTenantInfo",
     data: { tenant: domain },
     queryKey: `tenant-${domain}`,
@@ -52,7 +52,7 @@ const Page = () => {
                 <Grid item xs={4}>
                   <Button
                     type="submit"
-                    onClick={() => getGeoIP.refetch()}
+                    onClick={() => getTenant.refetch()}
                     variant="contained"
                     startIcon={<Search />}
                   >
@@ -64,7 +64,7 @@ const Page = () => {
           </Grid>
 
           {/* Results Card */}
-          {getGeoIP.isFetching ? (
+          {getTenant.isFetching ? (
             <Grid item xs={8}>
               <CippButtonCard title="Fetching Results">
                 <Grid container spacing={2}>
@@ -74,25 +74,25 @@ const Page = () => {
                 </Grid>
               </CippButtonCard>
             </Grid>
-          ) : getGeoIP.data ? (
+          ) : getTenant.data ? (
             <Grid item xs={8}>
-              <CippButtonCard title="Geo IP Results">
+              <CippButtonCard title="Tenant Lookup Results">
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography variant="body1">
                       <strong>Tenant Name:</strong> {domain}
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Tenant Id:</strong> {getGeoIP.data?.GraphRequest?.tenantId}
+                      <strong>Tenant Id:</strong> {getTenant.data?.GraphRequest?.tenantId}
                     </Typography>
                     <Typography variant="body1">
                       <strong>Default Domain Name:</strong>{" "}
-                      {getGeoIP.data?.GraphRequest?.defaultDomainName}
+                      {getTenant.data?.GraphRequest?.defaultDomainName}
                     </Typography>
                     <Typography variant="body1">
                       <strong>Tenant Brand Name :</strong>{" "}
-                      {getGeoIP.data?.GraphRequest?.federationBrandName
-                        ? getGeoIP.data?.GraphRequest?.federationBrandName
+                      {getTenant.data?.GraphRequest?.federationBrandName
+                        ? getTenant.data?.GraphRequest?.federationBrandName
                         : "N/A"}
                     </Typography>
                   </Grid>
@@ -101,7 +101,7 @@ const Page = () => {
                       <strong>domains:</strong>
                     </Typography>
                     <Typography variant="body1">
-                      {getGeoIP.data?.Domains?.map((domain) => (
+                      {getTenant.data?.Domains?.map((domain) => (
                         <li>
                           <Link href={`https://${domain}`} target="_blank">
                             {domain}
