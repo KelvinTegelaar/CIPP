@@ -108,6 +108,8 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     "purchaseDate",
     "NextOccurrence",
     "LastOccurrence",
+    "NotBefore",
+    "NotAfter",
   ];
 
   const matchDateTime = /[dD]ate[tT]ime/;

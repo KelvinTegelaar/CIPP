@@ -156,6 +156,13 @@ export const CippDataTable = (props) => {
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
   const memoizedData = useMemo(() => usedData, [usedData]);
 
+  const handleActionDisabled = (row, action) => {
+    if (action?.condition) {
+      return !action.condition(row);
+    }
+    return false;
+  };
+
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,
@@ -173,7 +180,6 @@ export const CippDataTable = (props) => {
       ) : undefined,
     onColumnVisibilityChange: setColumnVisibility,
     ...modeInfo,
-
     renderRowActionMenuItems: actions
       ? ({ closeMenu, row }) => [
           actions.map((action, index) => (
@@ -195,6 +201,7 @@ export const CippDataTable = (props) => {
                   closeMenu();
                 }
               }}
+              disabled={handleActionDisabled(row.original, action)}
             >
               <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
                 {action.icon}
