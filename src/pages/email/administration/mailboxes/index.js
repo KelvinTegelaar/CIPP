@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import Link from "next/link";
 import { Button } from "@mui/material";
+import { Row } from "jspdf-autotable";
 
 const Page = () => {
   const pageTitle = "Mailboxes";
@@ -35,6 +36,18 @@ const Page = () => {
         ID: "UPN",
       },
       confirmText: "Are you sure you want to convert this mailbox to a shared mailbox?",
+      condition: (row) => row.recipientTypeDetails !== "SharedMailbox",
+    },
+    {
+      label: "Convert to User Mailbox",
+      type: "GET",
+      url: "/api/ExecConvertToSharedMailbox",
+      data: {
+        ID: "UPN",
+        ConvertToUser: true,
+      },
+      confirmText: "Are you sure you want to convert this mailbox to a user mailbox?",
+      condition: (row) => row.recipientTypeDetails !== "UserMailbox",
     },
     {
       label: "Convert to Room Mailbox",
@@ -44,6 +57,7 @@ const Page = () => {
         ID: "UPN",
       },
       confirmText: "Are you sure you want to convert this mailbox to a room mailbox?",
+      condition: (row) => row.recipientTypeDetails !== "RoomMailbox",
     },
     {
       label: "Hide from Global Address List",
