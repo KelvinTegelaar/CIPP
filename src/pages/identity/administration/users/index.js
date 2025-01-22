@@ -120,6 +120,15 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: "Convert to User Mailbox",
+      type: "GET",
+      icon: <Email />,
+      url: "/api/ExecConvertToSharedMailbox",
+      data: { ID: "userPrincipalName", ConvertToUser: true },
+      confirmText: "Are you sure you want to convert this user to a user mailbox?",
+      multiPost: false,
+    },
+    {
       //tested
       label: "Enable Online Archive",
       type: "GET",
@@ -239,6 +248,7 @@ const Page = () => {
       data: { ID: "id" },
       confirmText: "Are you sure you want to block the sign-in for this user?",
       multiPost: false,
+      condition: (row) => row.accountEnabled,
     },
     {
       label: "Unblock Sign In",
@@ -248,6 +258,7 @@ const Page = () => {
       data: { ID: "id", Enable: true },
       confirmText: "Are you sure you want to unblock sign-in for this user?",
       multiPost: false,
+      condition: (row) => !row.accountEnabled,
     },
     {
       label: "Reset Password (Must Change)",
@@ -286,6 +297,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to clear the Immutable ID for this user?",
       multiPost: false,
+      condition: (row) => row.onPremisesSyncEnabled,
     },
     {
       label: "Revoke all user sessions",
