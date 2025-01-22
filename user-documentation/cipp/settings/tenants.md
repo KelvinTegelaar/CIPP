@@ -14,7 +14,7 @@ This page also shows tenants that have been excluded, or removed due to the amou
 
 The main table on this page displays the following columns:
 
-<table><thead><tr><th width="203">Field Name</th><th>Description</th></tr></thead><tbody><tr><td>Name</td><td>The display name of the tenant.</td></tr><tr><td>Default Domain</td><td>The default domain name for the tenant.</td></tr><tr><td>Relationship Type</td><td>The status of delegated privileges for the tenant. Possible values include "DAP Only", "GDAP &#x26; DAP", "GDAP", "No Access", and "Unknown".</td></tr><tr><td>Excluded</td><td>A boolean field indicating whether the tenant is excluded.</td></tr><tr><td>Exclude Date</td><td>The date when the tenant was excluded, if applicable.</td></tr><tr><td>Exclude User</td><td>The user who excluded the tenant, if applicable.</td></tr></tbody></table>
+<table><thead><tr><th width="203">Field Name</th><th>Description</th></tr></thead><tbody><tr><td>E Tag</td><td></td></tr><tr><td>Partition Key</td><td></td></tr><tr><td>Row Key</td><td></td></tr><tr><td>Exclude Date</td><td>The date when the tenant was excluded, if applicable.</td></tr><tr><td>Exclude User</td><td>The user who excluded the tenant, if applicable.</td></tr><tr><td>Excluded</td><td>A Boolean field indicating whether the tenant is excluded.</td></tr><tr><td>Graph Error Count</td><td></td></tr><tr><td>Last Graph Error</td><td></td></tr><tr><td>Last Refresh</td><td></td></tr><tr><td>Requires Refresh</td><td></td></tr><tr><td>Customer ID</td><td></td></tr><tr><td>Default Domain Name</td><td>The default domain name for the tenant.</td></tr><tr><td>Delegated Privilege Status</td><td></td></tr><tr><td>Display Name</td><td>The display name of the tenant.</td></tr><tr><td>Domains</td><td></td></tr><tr><td>Has Auto Extend</td><td>A Boolean field indicating whether the tenant has auto extend on the GDAP relationship enabled.</td></tr><tr><td>Initial Domain Name</td><td></td></tr><tr><td>Relationship Count</td><td></td></tr><tr><td>Relationship End</td><td></td></tr></tbody></table>
 
 ## Features and Actions
 
@@ -26,6 +26,7 @@ The actions available in the "Actions" column for each tenant include:
 * **Include Tenants:** Includes selected tenants back into the management list.
 * **Refresh CPV Permissions:** Refreshes the CPV permissions for the selected tenants.
 * **Reset CPV Permissions:** Resets the CPV permissions for the selected tenants by deleting the Service Principal and re-adding it.
+* **Remove Tenant:**&#x20;
 
 ### Tenant Exclusion Control
 
@@ -82,7 +83,7 @@ You can filter tenants based on their exclusion status:
 
 The Tenants page also provides export and filter functionalities:
 
-* **Export:** Download a CSV file of the tenant table for offline use or analysis.
+* **Export:** Download a CSV or PDF file of the tenant table for offline use or analysis.
 * **Filter:** Use the 'Filter' dropdown to display tenants based on whether they are excluded or included.
 
 ***

@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Service Health
 
 {% hint style="info" %}

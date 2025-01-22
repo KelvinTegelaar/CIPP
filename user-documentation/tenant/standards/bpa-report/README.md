@@ -37,7 +37,7 @@ At its core, the BPA is built to:
    * Use templates like **CIPP Best Practices Table View** for baseline compliance checks.
 2. **Custom Reports (Advanced)**
    * Define custom reports using JSON to specify data sources, fields and display formats.&#x20;
-   * For further details, check out the community guidance added to the [custom-reports](custom-reports/ "mention") page
+   * For further details, check out the community guidance added to the [builder](builder/ "mention") page
 
 ### **Interpreting BPA Results**
 

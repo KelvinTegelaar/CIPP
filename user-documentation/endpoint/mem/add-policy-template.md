@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Add Policy Template
 
 This page provides the ability for you to create a template policy you can deploy to many tenants at the same time, if so required.

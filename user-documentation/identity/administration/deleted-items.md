@@ -1,3 +1,7 @@
+---
+description: Lists all deleted users, groups and applications in the tenant
+---
+
 # Deleted items
 
 Shows all deleted items in the tenant. What else did you expect? Monkeys? 🐒

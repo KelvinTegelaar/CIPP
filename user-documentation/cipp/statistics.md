@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Statistics
 
 {% hint style="info" %}
