@@ -1,9 +1,22 @@
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
+import { useSettings } from "/src/hooks/use-settings";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Devices";
+  const tenantFilter = useSettings().currentTenant;
+
   const actions = [
+    {
+      label: "View in Entra",
+      link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/[id]/deviceId/`,
+      color: "info",
+      icon: <EyeIcon />,
+      target: "_blank",
+      multiPost: false,
+      external: true,
+    },
     {
       label: "Enable Device",
       type: "POST",
