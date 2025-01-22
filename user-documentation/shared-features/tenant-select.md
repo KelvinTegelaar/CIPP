@@ -1,3 +1,7 @@
+---
+icon: building
+---
+
 # Tenant Select
 
 The tenant selector at the top of CIPP allows you to control the currently managed tenant. Any changes to the tenant selector will reload the currently shown data to the one of the selected tenant.

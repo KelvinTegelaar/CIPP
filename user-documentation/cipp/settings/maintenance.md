@@ -1,5 +1,6 @@
 ---
 description: Performs administrative tasks to maintain the CIPP function app.
+hidden: true
 ---
 
 # Maintenance

@@ -218,7 +218,7 @@ This permits users the ability to grant consent when access CIPP now.
 <summary>Can I replace the default branding with my own in CIPP?</summary>
 
 No, CIPP's branding is compiled into the code. Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.\
-However, a custom logo can be added to reports. This can be done in the [User Settings page](../user-documentation/cipp/user-settings.md#user-settings).
+However, a custom logo can be added to reports. This can be done in the [User Settings page](../user-documentation/shared-features/user-settings.md#user-settings).
 
 </details>
 
@@ -355,7 +355,8 @@ Auto Extend is only available for relationships without the Global Administrator
 <summary>Troubleshooting CIPP-API Updating and Action Workflow Issues</summary>
 
 If your CIPP-API isn't updating, start by checking the Actions tab in your repository for a workflow named `_master*.yml`.
-- **If the workflow is missing:**  
-   Your repository may not be fully configured. Follow the instructions provided [here](https://docs.cipp.app/setup/self-hosting-guide/runfrompackage) to restore the action workflow.  
 
-</details>  
+* **If the workflow is missing:**\
+  Your repository may not be fully configured. Follow the instructions provided [here](https://docs.cipp.app/setup/self-hosting-guide/runfrompackage) to restore the action workflow.
+
+</details>

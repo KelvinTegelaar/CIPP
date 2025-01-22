@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # CA Policy Tester
 
 {% hint style="info" %}
