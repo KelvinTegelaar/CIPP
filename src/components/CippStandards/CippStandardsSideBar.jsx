@@ -228,7 +228,11 @@ const CippStandardsSideBar = ({
         }}
         row={formControl.getValues()}
         formControl={formControl}
-        relatedQueryKeys={"listStandardTemplates"}
+        relatedQueryKeys={[
+          "listStandardTemplates",
+          "listStandards",
+          `listStandardTemplates-${watchForm.GUID}`,
+        ]}
       />
     </Card>
   );
