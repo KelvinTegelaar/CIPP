@@ -99,6 +99,19 @@ const Page = () => {
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={columns}
+        filters={[
+          {
+            filterName: "Included tenants",
+            //true or false filters by yes/no
+            value: [{ id: "Excluded", value: "No" }],
+            type: "column",
+          },
+          {
+            filterName: "Excluded tenants",
+            value: [{ id: "Excluded", value: "Yes" }],
+            type: "column",
+          },
+        ]}
       />
       <CippApiDialog
         title="Force Refresh Tenant"
@@ -115,7 +128,7 @@ const Page = () => {
           confirmText:
             "This will refresh the tenant and update the tenant details. This can be used to force a tenant to reappear in the list. Run this with no Tenant Filter to refresh all tenants.",
           type: "GET",
-          data: { TriggerRefresh: "!true", TenantFilter: "tenantFilter" },
+          data: { TriggerRefresh: "!true" },
           replacementBehaviour: "removeNulls",
         }}
       />

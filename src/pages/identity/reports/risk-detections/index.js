@@ -68,6 +68,7 @@ const Page = () => {
         Endpoint: "identityProtection/riskDetections",
         manualPagination: true,
         $count: true,
+        $orderby: "detectedDateTime desc",
         $top: 500,
       }}
       apiDataKey="Results"
