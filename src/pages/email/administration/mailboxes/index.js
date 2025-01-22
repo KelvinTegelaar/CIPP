@@ -83,6 +83,29 @@ const Page = () => {
     actions: actions,
   };
 
+  const filterList = [
+    {
+      filterName: "View User Mailboxes",
+      value: [{ id: "recipientTypeDetails", value: "UserMailbox" }],
+      type: "column",
+    },
+    {
+      filterName: "View Shared Mailboxes",
+      value: [{ id: "recipientTypeDetails", value: "SharedMailbox" }],
+      type: "column",
+    },
+    {
+      filterName: "View Room Mailboxes",
+      value: [{ id: "recipientTypeDetails", value: "RoomMailbox" }],
+      type: "column",
+    },
+    {
+      filterName: "View Equipment Mailboxes",
+      value: [{ id: "recipientTypeDetails", value: "EquipmentMailbox" }],
+      type: "column",
+    },
+  ];
+
   // Simplified columns for the table
   const simpleColumns = [
     "UPN", // User Principal Name
@@ -100,6 +123,7 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      filters={filterList}
       cardButton={
         <>
           <Button component={Link} href="/email/administration/mailboxes/addshared">
