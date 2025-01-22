@@ -1,0 +1,46 @@
+name: Auto Update with Pullbot
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  auto-update:
+    runs-on: ubuntu-latest
+    name: Auto Update from Upstream
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: interface-rewrite
+      
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+      - name: Add Upstream Remote
+        run: |
+          git remote add upstream https://github.com/KelvinTegelaar/CIPP.git || git remote set-url upstream https://github.com/KelvinTegelaar/CIPP.git
+          
+      - name: Fetch Upstream
+        run: |
+          git fetch upstream
+          
+      - name: Check and Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: "upstream/main"
+          destination_branch: "interface-rewrite"
+          pr_title: "chore: sync with upstream"
+          pr_body: |
+            🤖 Auto-update from upstream repository
+            
+            This is an automated PR to keep your repository in sync with the upstream.
+            
+            Current version differences:
+            - Frontend: v7.0.1
+            - Available: v7.0.5
+          pr_label: "auto-update"
+          github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,65 @@
+name: Check Version Updates
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Run every 4 hours
+  workflow_dispatch:
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.17.0'
+          
+      - name: Get Current Version
+        id: current
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Check Upstream Version
+        id: upstream
+        run: |
+          UPSTREAM_VERSION=$(curl -s https://api.github.com/repos/KelvinTegelaar/CIPP/releases/latest | jq -r .tag_name | sed 's/^v//')
+          echo "upstream_version=$UPSTREAM_VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Create Issue if Update Available
+        if: steps.upstream.outputs.upstream_version != steps.current.outputs.current_version
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { repo, owner } = context.repo;
+            const currentVersion = '${{ steps.current.outputs.current_version }}';
+            const upstreamVersion = '${{ steps.upstream.outputs.upstream_version }}';
+            
+            const issueBody = `
+            # New Version Available
+            
+            Current version: ${currentVersion}
+            Available version: ${upstreamVersion}
+            
+            An auto-update PR will be created shortly by the Pullbot workflow.
+            `;
+            
+            const issues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: ['version-update']
+            });
+            
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title: `New Version Available: ${upstreamVersion}`,
+                body: issueBody,
+                labels: ['version-update']
+              });
+            }
