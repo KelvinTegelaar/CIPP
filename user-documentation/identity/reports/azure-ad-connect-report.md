@@ -1,14 +1,22 @@
 # AAD Connect Report
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page will output a table showing the status of Entra ID Connect syncing.
 
-### **Looking for documentation contributors**
+### Table Columns
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+| Column                          | Description                                |
+| ------------------------------- | ------------------------------------------ |
+| ID                              | GUID of object                             |
+| Display Name                    | Display name of object                     |
+| Created Date Time               | Relative time since the object was created |
+| On Premises Provisioning Errors | Any errors with syncing the object         |
+| Object Type                     | Type of the object                         |
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+### Per-Object Actions
+
+| Action | Descrption |
+| ------ | ---------- |
+|        |            |
 
 ***
 

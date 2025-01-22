@@ -1,14 +1,20 @@
 # Devices
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page will present a tenant's Entra devices in a table.
 
-### **Looking for documentation contributors**
+### Available Columns
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+The columns for this table are laregely created from the Graph API response received from the device object. For reference, please review the [Graph API documentation](https://learn.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0#properties) on field descriptions.
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+### Per-Device Actions
+
+| Action                  | Description                                                      |
+| ----------------------- | ---------------------------------------------------------------- |
+| Enable Device           | Enables the device to be logged in with tenant credentials       |
+| Disable Device          | Disables the device from being logged in with tenant credentials |
+| Retrieve BitLocker Keys | Pulls BitLocker keys stored in Entra ID                          |
+| Delete Device           | Deletes the device from Entra ID                                 |
+| More Info               | Opens the "Extended Info" flyout                                 |
 
 ***
 
