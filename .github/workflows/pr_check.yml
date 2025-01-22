@@ -31,7 +31,7 @@ jobs:
           script: |
             let message = '';
 
-            message += '🔄 If you are attempting to update your CIPP repo please follow the instructions at: https://docs.cipp.app/setup/self-hosting-guide/updating ';
+            message += '🔄 If you are attempting to update your CIPP repo please follow the instructions at: https://docs.cipp.app/setup/self-hosting-guide/updating. Are you a sponsor? Contact the helpdesk for direct assistance with updating to the latest version.';
             message += '\n\n';
 
             // Check if PR is targeting main/master
@@ -45,7 +45,7 @@ jobs:
               message += '⚠️ This PR cannot be merged because it originates from your fork\'s main/master branch. If you are attempting to contribute code please PR from your dev branch or another non-main/master branch.\n\n';
             }
 
-            message += '🔒 This PR will now be automatically closed due to the above violation(s).';
+            message += '🔒 This PR will now be automatically closed due to the above rules.';
             
             // Post the comment
             await github.rest.issues.createComment({
