@@ -4,16 +4,15 @@ import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { Group, Mail } from "@mui/icons-material";
-import PhoneIcon from '@mui/icons-material/Phone';
-import LocationCityIcon from '@mui/icons-material/LocationCity';
 import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "/src/components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
 import Grid from "@mui/material/Grid2";
 import { CippBannerListCard } from "/src/components/CippCards/CippBannerListCard";
-import { CippInfoCard } from "/src/components/CippCards/CippInfoCard";
+import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { useEffect, useState } from "react";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -71,12 +70,14 @@ const Page = () => {
           table: {
             title: "Roomlist Members",
             hideTitle: true,
-            /*actions: [
+            actions: [
               {
-                label: "Edit Room",
-                link: "/email/resources/management/list-rooms/edit?PlaceID=[id]",
+                label: "View Room",
+                link: `/email/resources/management/list-rooms/place/view?PlaceAddress=[emailAddress]`,
+                color: "info",
+                icon: <EyeIcon />,
               },
-            ],*/
+            ],
             data: listRequest?.data?.Results,
           },
         },
@@ -99,36 +100,16 @@ const Page = () => {
           }}
         >
           <Grid container spacing={2}>
-          <Grid item size={4}>
-              <CippInfoCard
-                isFetching={roomRequest.isLoading}
-                label="Phone"
-                value={data?.phone}
-                icon={<PhoneIcon />}
-              />
-              <CippInfoCard
-                isFetching={roomRequest.isLoading}
-                label="Country"
-                value={data?.address.countryOrRegion}
-                icon={<LocationCityIcon />}
-              />
-              <CippInfoCard
-                isFetching={roomRequest.isLoading}
-                label="State"
-                value={data?.address.state}
-                icon={<LocationCityIcon />}
-              />
-              <CippInfoCard
-                isFetching={roomRequest.isLoading}
-                label="City"
-                value={data?.address.city}
-                icon={<LocationCityIcon />}
-              />
-              <CippInfoCard
-                isFetching={roomRequest.isLoading}
-                label="Street"
-                value={data?.address.street}
-                icon={<LocationCityIcon />}
+            <Grid item size={4}>
+              <CippPropertyListCard
+                title="Location"
+                propertyItems={[
+                  { label: "Phone", value: data?.address?.countryOrRegion ?? "N/A" },
+                  { label: "Country", value: data?.address?.state ?? "N/A" },
+                  { label: "State", value: data?.address?.postalCode ?? "N/A" },
+                  { label: "City", value: data?.address?.city ?? "N/A" },
+                  { label: "Street", value: data?.address?.street ?? "N/A" },
+                ]}
               />
             </Grid>
             <Grid item size={8}>
