@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { usePopover } from "../../../../../hooks/use-popover";
 import { useDialog } from "../../../../../hooks/use-dialog";
 import CippUserActions from "/src/components/CippComponents/CippUserActions";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const popover = usePopover();
@@ -362,6 +363,7 @@ const Page = () => {
             hideTitle: true,
             actions: [
               {
+                icon: <PencilIcon />,
                 label: "Edit Group",
                 link: "/identity/administration/groups/edit?groupId=[id]",
               },
