@@ -4,22 +4,36 @@ description: Review Sharepoint sites and usage
 
 # SharePoint
 
-This page lists SharePoint site usage. You can also see file count, activity and general usage, in addition to the resource allocations for the site.
+This page lists SharePoint site usage. You can also see file count, activity, and general usage in addition to the resource allocations for the site.
 
 ### Details
 
-| Fields                    | Description                                                   |
-| ------------------------- | ------------------------------------------------------------- |
-| Name                      | The name of the site.                                         |
-| User Principal Name (UPN) | The UserPrincipalName of the site if it has a group linked.   |
-| Last Active               | The date the site was last active.                            |
-| File Count (Total)        | The total number of files in the site document library.       |
-| Used (GB)                 | The total size in GB in the site document library.            |
-| Allocated (GB)            | The total space in GB available in the site document library. |
-| Root Template             | The root template used for the creation of the site.          |
-| Automapping URL           | The URL needed for various InTune configuration policies.     |
+| Fields                     | Description                                                         |
+| -------------------------- | ------------------------------------------------------------------- |
+| Site Id                    | The GUID of the site                                                |
+| Web Id                     |                                                                     |
+| Created Date Time          | The relative time since the site was created.                       |
+| Display Name               | The name of the site.                                               |
+| Web Url                    | The URL that displays in the browser.                               |
+| Owner Display Name         | The display name of the user that own's the SharePoint site.        |
+| Owner Principal Name       | The User Principal Name of the user that own's the SharePoint site. |
+| Last Activity Date         | The date the site was last active.                                  |
+| File Count                 | The total number of files in the site document library.             |
+| Storage Used in Gigabytes  | The total size in GB in the site document library.                  |
+| Storage Used in Bytes      | The total size in B in the site document library.                   |
+| Storage Allocated in Bytes | The total space in B available in the site document library.        |
+| Root Web Template          | The root template used for the creation of the site.                |
+| Auto Map Url               | The URL needed for various Intune configuration policies.           |
 
+### Actions
 
+| Action            | Description                                  |
+| ----------------- | -------------------------------------------- |
+| Add Member        | Opens a modal to add a user to the site      |
+| Remove Member     | Opens a modal to remove a user from the site |
+| Add Site Admin    | Opens a modal to add a site admin            |
+| Remove Site Admin | Opens a modal to remove a site admin         |
+| More Info         | Opens Extended Info flyout                   |
 
 ***
 
