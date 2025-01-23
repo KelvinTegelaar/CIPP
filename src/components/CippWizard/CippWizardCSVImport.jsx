@@ -88,6 +88,7 @@ export const CippWizardCSVImport = (props) => {
                   formControl={formControl}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
+                      if (e.target.value === "") return false;
                       handleAddItem();
                       setTimeout(() => {
                         formControl.setValue(`addrow.${field}`, "");
