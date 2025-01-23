@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Room Lists";
@@ -7,9 +8,10 @@ const Page = () => {
 
   const actions = [
     {
-      label: "View included Rooms",
+      label: "View Room List",
       link: `/email/resources/management/room-lists/list/view?RoomListAddress=[emailAddress]`,
       color: "info",
+      icon: <EyeIcon />,
     },
   ];
 
