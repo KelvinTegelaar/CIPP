@@ -1,11 +1,9 @@
 ﻿import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Code, TrashIcon } from "@heroicons/react/24/outline";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import tabOptions from "./tabOptions";
 
 const Page = () => {
-  const pageTitle = "Windows Scripts";
+  const pageTitle = "Scripts";
 
   const actions = [
     {
@@ -15,7 +13,7 @@ const Page = () => {
       data: {
         ID: "id",
         displayName: "displayName",
-        ScriptType: "!windows",
+        ScriptType: "scriptType",
       },
       confirmText: "Are you sure you want to delete this script?",
       icon: <TrashIcon />,
@@ -25,35 +23,33 @@ const Page = () => {
 
   const offCanvas = {
     extendedInfoFields: [
+      "scriptType",
       "id",
       "fileName",
       "displayName",
       "description",
       "lastModifiedDateTime",
+      "runAsAccount",
       "createdDateTime",
+      "runAs32Bit",
+      "executionFrequency",
+      "enforceSignatureCheck",
     ],
     actions: actions,
   };
 
   const simpleColumns = [
+    "scriptType",
     "displayName",
     "description",
     "runAsAccount",
-    "runAs32Bit",
-    "enforceSignatureCheck",
     "lastModifiedDateTime",
   ];
 
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListGraphRequest"
-      apiData={{
-        Endpoint: "deviceManagement/deviceManagementScripts",
-        $orderby: "displayName",
-        manualPagination: true,
-      }}
-      apiDataKey="Results"
+      apiUrl="/api/ListIntuneScript"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
@@ -61,9 +57,5 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 export default Page;

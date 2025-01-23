@@ -15,7 +15,7 @@ const Page = () => {
       data: {
         TenantFilter: "Tenant",
         Identity: "Identity",
-        Action: "Resume",
+        Action: "!Resume",
       },
       confirmText: "Are you sure you want to resume this restore request?",
       color: "info",
@@ -27,7 +27,7 @@ const Page = () => {
       data: {
         TenantFilter: "Tenant",
         Identity: "Identity",
-        Action: "Suspend",
+        Action: "!Suspend",
       },
       confirmText: "Are you sure you want to suspend this restore request?",
       color: "warning",
@@ -39,7 +39,7 @@ const Page = () => {
       data: {
         TenantFilter: "Tenant",
         Identity: "Identity",
-        Action: "Remove",
+        Action: "!Remove",
       },
       confirmText: "Are you sure you want to remove this restore request?",
       color: "danger",
