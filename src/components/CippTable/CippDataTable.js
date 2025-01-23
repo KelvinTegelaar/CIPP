@@ -46,6 +46,7 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
     noCard = false,
+    hideTitle = false,
     refreshFunction,
     incorrectDataMessage = "Data not in correct format",
     onChange,
@@ -298,8 +299,12 @@ export const CippDataTable = (props) => {
       ) : (
         // Render the table inside a Card
         <Card style={{ width: "100%" }}>
-          <CardHeader action={cardButton} title={title} />
-          <Divider />
+          {cardButton || !hideTitle ? (
+            <>
+              <CardHeader action={cardButton} title={hideTitle ? "" : title} />
+              <Divider />
+            </>
+          ) : null}
           <CardContent sx={{ padding: "1rem" }}>
             <Scrollbar>
               {!Array.isArray(usedData) && usedData ? (
