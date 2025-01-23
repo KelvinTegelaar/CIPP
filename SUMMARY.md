@@ -106,7 +106,7 @@
       * [Restore Configuration Backup](user-documentation/tenant/backup/backup-wizard/restore.md)
       * [Add Configuration Backup](user-documentation/tenant/backup/backup-wizard/add.md)
   * [Standards](user-documentation/tenant/standards/README.md)
-    * [Standards](user-documentation/tenant/standards/list-standards/README.md)
+    * [List Standards Templates](user-documentation/tenant/standards/list-standards/README.md)
       * [Global Standards](user-documentation/tenant/standards/list-standards/global-standards.md)
       * [Entra (AAD) Standards](user-documentation/tenant/standards/list-standards/entra-aad-standards.md)
       * [Exchange Standards](user-documentation/tenant/standards/list-standards/exchange-standards.md)

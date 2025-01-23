@@ -1,5 +1,6 @@
 ---
 description: Apply pre-defined standards to your Microsoft 365 CSP tenants.
+hidden: true
 ---
 
 # Edit Standards

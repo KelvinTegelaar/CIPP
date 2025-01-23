@@ -1,42 +1,38 @@
----
-description: List applied standards to your Microsoft 365 CSP tenants.
----
-
-# List Standards
-
-## **Page Functionality**
-
-This page displays all applied standards in a table format for each tenant. The output is available as a JSON object for each tenant.
+# List Standards Templates
 
 {% hint style="warning" %}
 **Understanding Standards**
 
-* Standards are listed by their **API Names**. For example:
-  * Display Name: "Set Sharing Level for Default Calendar"
-  * API Name: `calDefault`
-* **Developer Note:** For a full list of current and future standards in JSON format, reference the [standards.json](https://github.com/KelvinTegelaar/CIPP/blob/main/src/data/standards.json) file or review the category-specific subpages below.
+This page is a reference to the features of the Standards Templates page in CIPP. To better understand standards, please see the main page for [Standards](../).
 {% endhint %}
+
+## **Actions**
+
+{% content-ref url="../template.md" %}
+[template.md](../template.md)
+{% endcontent-ref %}
 
 ## **Table Columns**
 
-Each of the separate standards pages have a table listing of their respective standards that includes the following columns:
+| Column           | Description                                                                                                                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Template Name    | The name you set when creating the template                                                                                                                                                                   |
+| Tenant           | The tenant or tenants the standard is created for                                                                                                                                                             |
+| Excluded Tenants | The tenant or tenants excluded from AllTenants standards                                                                                                                                                      |
+| Run Manually     | A Boolean field indicating if the template is set to only be run manually. This displays as false (X in circle) if the template runs on the schedule and a true (✔️) if this template will only run manually. |
+| Created At       | Relative time since the template was created                                                                                                                                                                  |
+| Updated At       | Relative time since the template was updated                                                                                                                                                                  |
+| GUID             | The GUID for the template                                                                                                                                                                                     |
 
-* **Standard Name**: The name of the standard.
-* **Description**: A brief explanation of what the standard does.
-* **Recommended By**: The organization recommending the standard (e.g., CIS, CIPP).
-* **API Name**: Useful for logs and automation.
-* **PowerShell Equivalent**: The PowerShell command used to apply the standard manually.
+## **Per-Row Actions**
 
-## **Standard Categories**
-
-Standards are grouped into pages within the following categories:
-
-* [**Global Standards:**](global-standards.md) Applied across all tenants to manage organization-wide configurations.
-* [**Exchange Standards**](exchange-standards.md)**:** Email-related settings such as spam protection and message handling.
-* [**Defender Standards:**](defender-standards.md) Security measures to protect against phishing, malware, and other threats.
-* [**Intune Standards:**](intune-standards.md) Device and application management policies for a secure Intune environment.
-* [**SharePoint Standards:**](sharepoint-standards.md) SharePoint and OneDrive configuration incl. sharing and retention policies.
-* [**Teams Standards:**](teams-standards.md) Collaboration-related settings, i.e.: meeting policies and external file sharing.
+| Action                                            | Description                                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Edit Template                                     | Opens the template configuration page                                                  |
+| Clone & Edit Template                             | Copies the existing template and lets you make changes before saving as a new template |
+| Run Template Now (Currently Selected Tenant only) | Runs the template on the tenant selected in the top menu bar                           |
+| Run Template Now (All Tenants in Template)        | Runs the template for all configured tenants                                           |
+| Delete Template                                   | Deletes the template                                                                   |
 
 ***
 

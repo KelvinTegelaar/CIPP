@@ -141,4 +141,6 @@ If you want to create your own LiveLink you can use the QueryString below.
 ```
 {% endcode %}
 
+***
+
 {% include "../../../../.gitbook/includes/feature-request.md" %}
