@@ -17,6 +17,8 @@ import {
   SvgIcon,
   Tooltip,
   Typography,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Add, AddCircle, RemoveCircle, Sync, WarningAmber } from "@mui/icons-material";
@@ -30,21 +32,25 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
 
   useEffect(() => {
     if (open) {
-      console.log(defaultValues);
       formControl.reset({
         fields: defaultValues.fields || [],
       });
     }
-  }, [open, defaultValues]);
+  }, [open, defaultValues, formControl]);
 
   const addField = () => {
     formControl.reset({
-      fields: [...fields, { name: "", value: "" }],
+      fields: [...fields, { name: "", value: "", type: "textField" }],
     });
   };
 
   const removeField = (index) => {
     const newFields = fields.filter((_, i) => i !== index);
+    formControl.reset({ fields: newFields });
+  };
+
+  const handleTypeChange = (index, newType) => {
+    const newFields = fields.map((field, i) => (i === index ? { ...field, type: newType } : field));
     formControl.reset({ fields: newFields });
   };
 
@@ -65,14 +71,36 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       label="Name"
                     />
                   </Box>
-                  <Box width="80%">
+                  <Box width="10%">
+                    <Select
+                      value={field.type}
+                      onChange={(e) => handleTypeChange(index, e.target.value)}
+                      fullWidth
+                      sx={{ py: 1 }}
+                    >
+                      <MenuItem value="textField">Text</MenuItem>
+                      <MenuItem value="number">Number</MenuItem>
+                      <MenuItem value="switch">Boolean</MenuItem>
+                    </Select>
+                  </Box>
+                  <Box width="50%">
                     <CippFormComponent
-                      type="textField"
+                      type={field.type}
                       name={`fields[${index}].value`}
                       formControl={formControl}
                       label="Value"
+                      sx={() => {
+                        if (field.type === "switch") {
+                          return { ml: 2 };
+                        } else if (field.type === "number") {
+                          return { width: "100%" };
+                        } else {
+                          return {};
+                        }
+                      }}
                     />
                   </Box>
+
                   <IconButton onClick={() => removeField(index)}>
                     <RemoveCircle />
                   </IconButton>
@@ -203,12 +231,21 @@ const Page = () => {
     const sampleRow = tableData[0];
     return Object.keys(sampleRow)
       .filter((key) => key !== "ETag" && key !== "Timestamp")
-      .map((key) => ({
-        name: key,
-        label: key,
-        type: "textField",
-        required: false,
-      }));
+      .map((key) => {
+        const value = sampleRow[key];
+        let type = "textField";
+        if (typeof value === "number") {
+          type = "number";
+        } else if (typeof value === "boolean") {
+          type = "switch";
+        }
+        return {
+          name: key,
+          label: key,
+          type: type,
+          required: false,
+        };
+      });
   };
 
   return (
@@ -273,6 +310,7 @@ const Page = () => {
                           fields: getTableFields().map((field) => ({
                             name: field?.name,
                             value: "",
+                            type: field?.type,
                           })),
                         });
                         addEditRowDialog.handleOpen();
@@ -313,7 +351,16 @@ const Page = () => {
                       setDefaultAddEditValues({
                         fields: Object.keys(row)
                           .filter((key) => key !== "ETag" && key !== "Timestamp")
-                          .map((key) => ({ name: key, value: row[key] })),
+                          .map((key) => {
+                            const value = row[key];
+                            let type = "textField";
+                            if (typeof value === "number") {
+                              type = "number";
+                            } else if (typeof value === "boolean") {
+                              type = "switch";
+                            }
+                            return { name: key, value: value, type: type };
+                          }),
                       });
                       addEditRowDialog.handleOpen();
                     },
