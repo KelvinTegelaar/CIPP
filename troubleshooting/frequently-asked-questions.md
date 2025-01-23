@@ -4,6 +4,21 @@ On this page you can find a list of frequently asked questions about the CyberDr
 
 <details>
 
+<summary>I updated , but CIPP still says my frontend is out of date. How do I fix this?</summary>
+
+SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](../setup/installation/updating.md).
+
+CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well Github and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
+
+CIPP v7 heavily relies on caching. Because of this it is necessary to clear your browser's cookies and cache to pull in the most up to date version of CIPP's frontend.
+
+* Chrome/Edge - Open Devtools (F12), right click on the refresh button, select "Empty cache and hard reset"
+* Firefox - Click the padlock in the URL bar and select "Clear cookies and site data..."
+
+</details>
+
+<details>
+
 <summary>How much does CIPP cost to run?</summary>
 
 Assuming you're running on the click-to-deploy configuration and average usage patterns it should cost $15 - $20 or £17 - £22 per month. You can check the costs, and estimated costs, for the resource group on the Azure Portal.
