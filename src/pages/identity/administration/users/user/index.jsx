@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Mail } from "@mui/icons-material";
+import { AdminPanelSettings, Check, Group, Mail } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
@@ -17,27 +17,8 @@ import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAg
 import { useEffect, useState } from "react";
 import { usePopover } from "../../../../../hooks/use-popover";
 import { useDialog } from "../../../../../hooks/use-dialog";
-import { EyeIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import {
-  Archive,
-  Block,
-  Clear,
-  CloudDone,
-  Edit,
-  Email,
-  ForwardToInbox,
-  GroupAdd,
-  LockOpen,
-  LockPerson,
-  LockReset,
-  MeetingRoom,
-  NoMeetingRoom,
-  Password,
-  PersonOff,
-  PhonelinkLock,
-  PhonelinkSetup,
-  Shortcut,
-} from "@mui/icons-material";
+import CippUserActions from "/src/components/CippComponents/CippUserActions";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const popover = usePopover();
@@ -51,10 +32,21 @@ const Page = () => {
       setWaiting(true);
     }
   }, [userId]);
+
   const userRequest = ApiGetCall({
     url: `/api/ListUsers?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `ListUsers-${userId}`,
     waiting: waiting,
+  });
+
+  const userMemberOf = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: `/users/${userId}/memberOf`,
+      tenantFilter: userSettingsDefaults.currentTenant,
+      $top: 99,
+    },
+    queryKey: `UserMemberOf-${userId}`,
   });
 
   const MFARequest = ApiGetCall({
@@ -356,288 +348,61 @@ const Page = () => {
       },
     ];
   }
-  const actions = [
-    {
-      //tested
-      label: "View User",
-      link: "/identity/administration/users/user?userId=[id]",
-      multiPost: false,
-      icon: <EyeIcon />,
-      color: "success",
-    },
-    {
-      //tested
-      label: "Edit User",
-      link: "/identity/administration/users/user/edit?userId=[id]",
-      icon: <Edit />,
-      color: "success",
-      target: "_self",
-    },
-    {
-      //tested
-      label: "Research Compromised Account",
-      type: "GET",
-      icon: <MagnifyingGlassIcon />,
-      link: "/identity/administration/users/user/bec?userId=[id]",
-      confirmText: "Are you sure you want to research this compromised account?",
-      multiPost: false,
-    },
-    {
-      //tested
 
-      label: "Create Temporary Access Password",
-      type: "GET",
-      icon: <Password />,
-      url: "/api/ExecCreateTAP",
-      data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to create a Temporary Access Password?",
-      multiPost: false,
-    },
-    {
-      //tested
-      label: "Rerequire MFA registration",
-      type: "GET",
-      icon: <PhonelinkSetup />,
-      url: "/api/ExecResetMFA",
-      data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to reset MFA for this user?",
-      multiPost: false,
-    },
-    {
-      //tested
-      label: "Send MFA Push",
-      type: "POST",
-      icon: <PhonelinkLock />,
-      url: "/api/ExecSendPush",
-      data: { UserEmail: "userPrincipalName" },
-      confirmText: "Are you sure you want to send an MFA request?",
-      multiPost: false,
-    },
-    {
-      //tested
-      label: "Set Per-User MFA",
-      type: "POST",
-      icon: <LockPerson />,
-      url: "/api/ExecPerUserMFA",
-      data: { userId: "userPrincipalName" },
-      fields: [
+  const groupMembershipItems = userMemberOf.isSuccess
+    ? [
         {
-          type: "autoComplete",
-          name: "State",
-          label: "State",
-          options: [
-            { label: "Enforced", value: "Enforced" },
-            { label: "Enabled", value: "Enabled" },
-            { label: "Disabled", value: "Disabled" },
-          ],
-          multiple: false,
-        },
-      ],
-      confirmText: "Are you sure you want to set per-user MFA for these users?",
-      multiPost: false,
-    },
-    {
-      //tested
-      label: "Convert to Shared Mailbox",
-      type: "GET",
-      icon: <Email />,
-      url: "/api/ExecConvertToSharedMailbox",
-      data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to convert this user to a shared mailbox?",
-      multiPost: false,
-    },
-    {
-      //tested
-      label: "Enable Online Archive",
-      type: "GET",
-      icon: <Archive />,
-      url: "/api/ExecEnableArchive",
-      data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to enable the online archive for this user?",
-      multiPost: false,
-    },
-    {
-      //tested
-      label: "Set Out of Office",
-      type: "POST",
-      icon: <MeetingRoom />,
-      url: "/api/ExecSetOoO",
-      data: {
-        userId: "userPrincipalName",
-        AutoReplyState: { value: "Enabled" },
-      },
-      fields: [{ type: "richText", name: "input", label: "Out of Office Message" }],
-      confirmText: "Are you sure you want to set the out of office?",
-      multiPost: false,
-    },
-
-    {
-      label: "Disable Out of Office",
-      type: "POST",
-      icon: <NoMeetingRoom />,
-      url: "/api/ExecSetOoO",
-      data: { user: "userPrincipalName", AutoReplyState: "Disabled" },
-      confirmText: "Are you sure you want to disable the out of office?",
-      multiPost: false,
-    },
-    {
-      label: "Add to Group",
-      type: "POST",
-      icon: <GroupAdd />,
-      url: "/api/EditGroup",
-      data: { addMember: "userPrincipalName" },
-      fields: [
-        {
-          type: "autoComplete",
-          name: "groupId",
-          label: "Select a group to add the user to",
-          multiple: false,
-          creatable: false,
-          api: {
-            url: "/api/ListGroups",
-            labelField: "displayName",
-            valueField: "id",
-            addedField: {
-              groupType: "calculatedGroupType",
-              groupName: "displayName",
-            },
-            queryKey: `groups-${userSettingsDefaults.currentTenant}}`,
+          id: 1,
+          cardLabelBox: {
+            cardLabelBoxHeader: <Group />,
+          },
+          text: "Groups",
+          subtext: "List of groups the user is a member of",
+          table: {
+            title: "Group Memberships",
+            hideTitle: true,
+            actions: [
+              {
+                icon: <PencilIcon />,
+                label: "Edit Group",
+                link: "/identity/administration/groups/edit?groupId=[id]",
+              },
+            ],
+            data: userMemberOf?.data?.Results.filter(
+              (item) => item?.["@odata.type"] === "#microsoft.graph.group"
+            ),
+            simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
           },
         },
-      ],
-      confirmText: "Are you sure you want to add the user to this group?",
-    },
-    {
-      label: "Disable Email Forwarding",
-      type: "POST",
-      url: "/api/ExecEmailForward",
-      icon: <ForwardToInbox />,
-      data: {
-        username: "userPrincipalName",
-        userid: "userPrincipalName",
-        ForwardOption: "!disabled",
-      },
-      confirmText: "Are you sure you want to disable forwarding of this user's emails?",
-      multiPost: false,
-    },
-    {
-      label: "Pre-provision OneDrive",
-      type: "POST",
-      icon: <CloudDone />,
-      url: "/api/ExecOneDriveProvision",
-      data: { UserPrincipalName: "userPrincipalName" },
-      confirmText: "Are you sure you want to pre-provision OneDrive for this user?",
-      multiPost: false,
-    },
-    {
-      label: "Add OneDrive Shortcut",
-      type: "POST",
-      icon: <Shortcut />,
-      url: "/api/ExecOneDriveShortCut",
-      data: {
-        username: "userPrincipalName",
-        userid: "id",
-      },
-      fields: [
+      ]
+    : [];
+
+  const roleMembershipItems = userMemberOf.isSuccess
+    ? [
         {
-          type: "autoComplete",
-          name: "siteUrl",
-          label: "Select a Site",
-          multiple: false,
-          creatable: false,
-          api: {
-            url: "/api/ListSites",
-            data: { type: "SharePointSiteUsage", URLOnly: true },
-            labelField: "webUrl",
-            valueField: "webUrl",
-            queryKey: `sharepointSites-${userSettingsDefaults.currentTenant}}`,
+          id: 1,
+          cardLabelBox: {
+            cardLabelBoxHeader: <AdminPanelSettings />,
+          },
+          text: "Admin Roles",
+          subtext: "List of roles the user is a member of",
+          table: {
+            title: "Admin Roles",
+            hideTitle: true,
+            data: userMemberOf?.data?.Results.filter(
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+            ),
+            simpleColumns: ["displayName", "description"],
           },
         },
-      ],
-      confirmText: "Select a SharePoint site to create a shortcut for:",
-      multiPost: false,
-    },
-    {
-      label: "Block Sign In",
-      type: "GET",
-      icon: <Block />,
-      url: "/api/ExecDisableUser",
-      data: { ID: "id" },
-      confirmText: "Are you sure you want to block the sign-in for this user?",
-      multiPost: false,
-    },
-    {
-      label: "Unblock Sign In",
-      type: "GET",
-      icon: <LockOpen />,
-      url: "/api/ExecDisableUser",
-      data: { ID: "id", Enable: true },
-      confirmText: "Are you sure you want to unblock sign-in for this user?",
-      multiPost: false,
-    },
-    {
-      label: "Reset Password (Must Change)",
-      type: "GET",
-      icon: <LockReset />,
-      url: "/api/ExecResetPass",
-      data: {
-        MustChange: true,
-        ID: "userPrincipalName",
-        displayName: "displayName",
-      },
-      confirmText:
-        "Are you sure you want to reset the password for this user? The user must change their password at next logon.",
-      multiPost: false,
-    },
-    {
-      label: "Reset Password",
-      type: "GET",
-      icon: <LockReset />,
-      url: "/api/ExecResetPass",
-      data: {
-        MustChange: false,
-        ID: "userPrincipalName",
-        displayName: "displayName",
-      },
-      confirmText: "Are you sure you want to reset the password for this user?",
-      multiPost: false,
-    },
-    {
-      label: "Clear Immutable ID",
-      type: "GET",
-      icon: <Clear />,
-      url: "/api/ExecClrImmId",
-      data: {
-        ID: "id",
-      },
-      confirmText: "Are you sure you want to clear the Immutable ID for this user?",
-      multiPost: false,
-    },
-    {
-      label: "Revoke all user sessions",
-      type: "GET",
-      icon: <PersonOff />,
-      url: "/api/ExecRevokeSessions",
-      data: { ID: "id", Username: "userPrincipalName" },
-      confirmText: "Are you sure you want to revoke all sessions for this user?",
-      multiPost: false,
-    },
-    {
-      label: "Delete User",
-      type: "GET",
-      icon: <TrashIcon />,
-      url: "/api/RemoveUser",
-      data: { ID: "id" },
-      confirmText: "Are you sure you want to delete this user?",
-      multiPost: false,
-    },
-  ];
+      ]
+    : [];
 
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
-      actions={actions}
+      actions={CippUserActions()}
       actionsData={data}
       subtitle={subtitle}
       isFetching={userRequest.isLoading}
@@ -677,6 +442,17 @@ const Page = () => {
                   isFetching={MFARequest.isLoading}
                   items={mfaDevicesItems}
                   isCollapsible={mfaDevicesItems.length > 0 ? true : false}
+                />
+                <Typography variant="h6">Memberships</Typography>
+                <CippBannerListCard
+                  isFetching={userMemberOf.isLoading}
+                  items={groupMembershipItems}
+                  isCollapsible={groupMembershipItems.length > 0 ? true : false}
+                />
+                <CippBannerListCard
+                  isFetching={userMemberOf.isLoading}
+                  items={roleMembershipItems}
+                  isCollapsible={roleMembershipItems.length > 0 ? true : false}
                 />
               </Stack>
             </Grid>
