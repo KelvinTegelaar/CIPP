@@ -151,7 +151,11 @@ export const CippPropertyListCard = (props) => {
                           action: item,
                           ready: true,
                         });
-                        createDialog.handleOpen();
+                        if (item?.noConfirm) {
+                          item.customFunction(item, data, {});
+                        } else {
+                          createDialog.handleOpen();
+                        }
                       }
                 }
                 disabled={handleActionDisabled(data, item)}
