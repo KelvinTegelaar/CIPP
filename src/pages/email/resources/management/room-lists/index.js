@@ -8,7 +8,7 @@ const Page = () => {
   const actions = [
     {
       label: "View included Rooms",
-      link: `/email/resources/management/room-lists/list/view?roomAddress=[emailAddress]`,
+      link: `/email/resources/management/room-lists/list/view?RoomListAddress=[emailAddress]`,
       color: "info",
     },
   ];
