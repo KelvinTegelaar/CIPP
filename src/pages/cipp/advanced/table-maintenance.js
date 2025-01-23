@@ -17,6 +17,9 @@ import {
   SvgIcon,
   Tooltip,
   Typography,
+  MenuItem,
+  Select,
+  Alert,
 } from "@mui/material";
 import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Add, AddCircle, RemoveCircle, Sync, WarningAmber } from "@mui/icons-material";
@@ -24,27 +27,32 @@ import CippFormComponent from "../../../components/CippComponents/CippFormCompon
 import { useForm, useWatch } from "react-hook-form";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { Grid } from "@mui/system";
+import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 
 const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultValues }) => {
   const fields = useWatch({ control: formControl.control, name: "fields" });
 
   useEffect(() => {
     if (open) {
-      console.log(defaultValues);
       formControl.reset({
         fields: defaultValues.fields || [],
       });
     }
-  }, [open, defaultValues]);
+  }, [open, defaultValues, formControl]);
 
   const addField = () => {
     formControl.reset({
-      fields: [...fields, { name: "", value: "" }],
+      fields: [...fields, { name: "", value: "", type: "textField" }],
     });
   };
 
   const removeField = (index) => {
     const newFields = fields.filter((_, i) => i !== index);
+    formControl.reset({ fields: newFields });
+  };
+
+  const handleTypeChange = (index, newType) => {
+    const newFields = fields.map((field, i) => (i === index ? { ...field, type: newType } : field));
     formControl.reset({ fields: newFields });
   };
 
@@ -65,14 +73,36 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       label="Name"
                     />
                   </Box>
-                  <Box width="80%">
+                  <Box width="10%">
+                    <Select
+                      value={field.type}
+                      onChange={(e) => handleTypeChange(index, e.target.value)}
+                      fullWidth
+                      sx={{ py: 1 }}
+                    >
+                      <MenuItem value="textField">Text</MenuItem>
+                      <MenuItem value="number">Number</MenuItem>
+                      <MenuItem value="switch">Boolean</MenuItem>
+                    </Select>
+                  </Box>
+                  <Box width="50%">
                     <CippFormComponent
-                      type="textField"
+                      type={field.type}
                       name={`fields[${index}].value`}
                       formControl={formControl}
                       label="Value"
+                      sx={() => {
+                        if (field.type === "switch") {
+                          return { ml: 2 };
+                        } else if (field.type === "number") {
+                          return { width: "100%" };
+                        } else {
+                          return {};
+                        }
+                      }}
                     />
                   </Box>
+
                   <IconButton onClick={() => removeField(index)}>
                     <RemoveCircle />
                   </IconButton>
@@ -86,8 +116,12 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={formControl.handleSubmit(onSubmit)}>Save</Button>
+        <Button variant="outlined" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button variant="contained" onClick={formControl.handleSubmit(onSubmit)}>
+          Save
+        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -103,12 +137,21 @@ const Page = () => {
   const deleteTableDialog = useDialog(); // Add dialog for deleting table
   const addEditRowDialog = useDialog(); // Add dialog for adding/editing row
   const [defaultAddEditValues, setDefaultAddEditValues] = useState({});
+  const [tableFilterParams, setTableFilterParams] = useState({ First: 1000 });
   const formControl = useForm({
     mode: "onChange",
   });
+  const [accordionExpanded, setAccordionExpanded] = useState(false);
 
   const addEditFormControl = useForm({
     mode: "onChange",
+  });
+
+  const filterFormControl = useForm({
+    mode: "onChange",
+    defaultValues: {
+      First: 1000,
+    },
   });
 
   const tableFilter = useWatch({ control: formControl.control, name: "tableFilter" });
@@ -132,7 +175,7 @@ const Page = () => {
       data: {
         FunctionName: "Get-AzDataTableEntity",
         TableName: tableName,
-        Parameters: { First: 1000 },
+        Parameters: filterFormControl.getValues(),
       },
     });
   };
@@ -144,7 +187,7 @@ const Page = () => {
         data: {
           FunctionName: "Get-AzDataTableEntity",
           TableName: selectedTable,
-          Parameters: { First: 1000 },
+          Parameters: tableFilterParams,
         },
       });
     }
@@ -157,6 +200,20 @@ const Page = () => {
 
   const handleTableRefresh = () => {
     fetchTables.mutate({ url: apiUrl, data: { FunctionName: "Get-AzDataTable", Parameters: {} } });
+  };
+
+  const getSelectedProps = (data) => {
+    if (data?.Property && data?.Property.length > 0) {
+      var selectedProps = ["ETag", "PartitionKey", "RowKey"];
+      data?.Property.map((prop) => {
+        if (selectedProps.indexOf(prop.value) === -1) {
+          selectedProps.push(prop.value);
+        }
+      });
+      return selectedProps;
+    } else {
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -183,16 +240,11 @@ const Page = () => {
     {
       label: "",
       value: (
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ my: 1 }}>
           <SvgIcon fontSize="small">
             <MagnifyingGlassIcon />
           </SvgIcon>
-          <CippFormComponent
-            type="textField"
-            name="tableFilter"
-            formControl={formControl}
-            label="Filter"
-          />
+          <CippFormComponent type="textField" name="tableFilter" formControl={formControl} />
         </Stack>
       ),
     },
@@ -203,12 +255,21 @@ const Page = () => {
     const sampleRow = tableData[0];
     return Object.keys(sampleRow)
       .filter((key) => key !== "ETag" && key !== "Timestamp")
-      .map((key) => ({
-        name: key,
-        label: key,
-        type: "textField",
-        required: false,
-      }));
+      .map((key) => {
+        const value = sampleRow[key];
+        let type = "textField";
+        if (typeof value === "number") {
+          type = "number";
+        } else if (typeof value === "boolean") {
+          type = "switch";
+        }
+        return {
+          name: key,
+          label: key,
+          type: type,
+          required: false,
+        };
+      });
   };
 
   return (
@@ -216,6 +277,10 @@ const Page = () => {
       <Typography variant="h4" gutterBottom>
         {pageTitle}
       </Typography>
+      <Alert severity="warning" sx={{ mb: 2 }}>
+        This page allows you to view and manage data in Azure Tables. This is advanced functionality
+        that should only be used when directed by CyberDrain support.
+      </Alert>
       <Grid container spacing={2}>
         <Grid item size={3}>
           <CippPropertyListCard
@@ -257,6 +322,60 @@ const Page = () => {
         <Grid item size={9}>
           {selectedTable && (
             <Box sx={{ width: "100%" }}>
+              <CippButtonCard
+                title="Table Filters"
+                cardSx={{ mb: 2 }}
+                accordionExpanded={accordionExpanded}
+                component="accordion"
+                CardButton={
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={filterFormControl.handleSubmit((data) => {
+                      var properties = getSelectedProps(data);
+                      setTableFilterParams({ ...data, Property: properties });
+                      handleRefresh();
+                      setAccordionExpanded(false);
+                    })}
+                  >
+                    Apply Filters
+                  </Button>
+                }
+              >
+                <Stack spacing={1}>
+                  <CippFormComponent
+                    type="textField"
+                    name="Filter"
+                    formControl={filterFormControl}
+                    label="OData Filter"
+                  />
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="Property"
+                    formControl={filterFormControl}
+                    label="Property"
+                    options={getTableFields().map((field) => ({
+                      label: field?.label,
+                      value: field?.name,
+                    }))}
+                  />
+                  <Stack direction="row" spacing={1}>
+                    <CippFormComponent
+                      type="number"
+                      name="First"
+                      formControl={filterFormControl}
+                      label="First"
+                    />
+                    <CippFormComponent
+                      type="number"
+                      name="Skip"
+                      formControl={filterFormControl}
+                      label="Skip"
+                    />
+                  </Stack>
+                </Stack>
+              </CippButtonCard>
               <CippDataTable
                 title={`${selectedTable}`}
                 data={tableData}
@@ -273,6 +392,7 @@ const Page = () => {
                           fields: getTableFields().map((field) => ({
                             name: field?.name,
                             value: "",
+                            type: field?.type,
                           })),
                         });
                         addEditRowDialog.handleOpen();
@@ -313,7 +433,16 @@ const Page = () => {
                       setDefaultAddEditValues({
                         fields: Object.keys(row)
                           .filter((key) => key !== "ETag" && key !== "Timestamp")
-                          .map((key) => ({ name: key, value: row[key] })),
+                          .map((key) => {
+                            const value = row[key];
+                            let type = "textField";
+                            if (typeof value === "number") {
+                              type = "number";
+                            } else if (typeof value === "boolean") {
+                              type = "switch";
+                            }
+                            return { name: key, value: value, type: type };
+                          }),
                       });
                       addEditRowDialog.handleOpen();
                     },
