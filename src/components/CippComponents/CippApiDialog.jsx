@@ -38,6 +38,9 @@ export const CippApiDialog = (props) => {
     bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
+      if (api?.onSuccess) {
+        api.onSuccess(result);
+      }
     },
   });
   const actionGetRequest = ApiGetCall({
@@ -50,6 +53,9 @@ export const CippApiDialog = (props) => {
     bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
+      if (api?.onSuccess) {
+        api.onSuccess(result);
+      }
     },
   });
 
@@ -58,6 +64,8 @@ export const CippApiDialog = (props) => {
       return api.dataFunction(row);
     }
     var newData = {};
+    console.log("the received row", row);
+    console.log("the received dataObject", dataObject);
 
     if (api?.postEntireRow) {
       newData = row;
@@ -85,6 +93,7 @@ export const CippApiDialog = (props) => {
         }
       });
     }
+    console.log("output", newData);
     return newData;
   };
   const tenantFilter = useSettings().currentTenant;
@@ -209,10 +218,10 @@ export const CippApiDialog = (props) => {
   }
   useEffect(() => {
     if (api.noConfirm) {
-      formHook.handleSubmit(onSubmit)();
-      createDialog.handleClose();
+      formHook.handleSubmit(onSubmit)(); // Submits the form on mount
+      createDialog.handleClose(); // Closes the dialog after submitting
     }
-  }, [api.noConfirm]);
+  }, [api.noConfirm]); // Run effect only when api.noConfirm changes
 
   const handleClose = () => {
     createDialog.handleClose();
@@ -251,7 +260,7 @@ export const CippApiDialog = (props) => {
             Close
           </Button>
           <Button variant="contained" type="submit">
-            {actionGetRequest.isSuccess || actionPostRequest.isSuccess ? "Resubmit" : "Submit"}
+            Confirm
           </Button>
         </DialogActions>
       </form>

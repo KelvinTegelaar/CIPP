@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { usePopover } from "../../../../../hooks/use-popover";
 import { useDialog } from "../../../../../hooks/use-dialog";
 import CippUserActions from "/src/components/CippComponents/CippUserActions";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const popover = usePopover();
@@ -355,13 +356,14 @@ const Page = () => {
           cardLabelBox: {
             cardLabelBoxHeader: <Group />,
           },
-          text: "Group Memberships",
+          text: "Groups",
           subtext: "List of groups the user is a member of",
           table: {
             title: "Group Memberships",
             hideTitle: true,
             actions: [
               {
+                icon: <PencilIcon />,
                 label: "Edit Group",
                 link: "/identity/administration/groups/edit?groupId=[id]",
               },
@@ -382,10 +384,10 @@ const Page = () => {
           cardLabelBox: {
             cardLabelBoxHeader: <AdminPanelSettings />,
           },
-          text: "Roles",
+          text: "Admin Roles",
           subtext: "List of roles the user is a member of",
           table: {
-            title: "Role Memberships",
+            title: "Admin Roles",
             hideTitle: true,
             data: userMemberOf?.data?.Results.filter(
               (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"

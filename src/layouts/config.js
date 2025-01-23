@@ -472,6 +472,11 @@ export const nativeMenuItems = [
             path: "/cipp/advanced/timers",
             roles: ["superadmin"],
           },
+          {
+            title: "Table Maintenance",
+            path: "/cipp/advanced/table-maintenance",
+            roles: ["superadmin"],
+          }
         ],
       },
     ],
