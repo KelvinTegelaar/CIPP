@@ -356,7 +356,7 @@ const Page = () => {
           cardLabelBox: {
             cardLabelBoxHeader: <Group />,
           },
-          text: "Group Memberships",
+          text: "Groups",
           subtext: "List of groups the user is a member of",
           table: {
             title: "Group Memberships",
@@ -384,10 +384,10 @@ const Page = () => {
           cardLabelBox: {
             cardLabelBoxHeader: <AdminPanelSettings />,
           },
-          text: "Roles",
+          text: "Admin Roles",
           subtext: "List of roles the user is a member of",
           table: {
-            title: "Role Memberships",
+            title: "Admin Roles",
             hideTitle: true,
             data: userMemberOf?.data?.Results.filter(
               (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
