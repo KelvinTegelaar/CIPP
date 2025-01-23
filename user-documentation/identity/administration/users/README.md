@@ -30,9 +30,9 @@ The main table provides an overview of information including display name, email
 
 | Field                            | Description                                                                                                                                                                                 |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 👁 View User                     | Display advanced user account details. \[[More information](./#view-user-details)]                                                                                                          |
+| 👁 View User                     | Display advanced user account details. \[[More information](user/)]                                                                                                                         |
 | ✏️Edit User                      | Allows editing user details, same as user edit view from Microsoft 365 admin. Additionally, you can copy group membership to the target user from another active user.                      |
-| Research Compromised Account     | Single pane of glass review of common indicators of compromise (IoC) \[[More information](./#research-compromised-account)]                                                                 |
+| Research Compromised Account     | Single pane of glass review of common indicators of compromise (IoC) \[[More information](user/bec.md)]                                                                                     |
 | Create Temporary Access Password | Create a temporary password to allow full passwordless enrollment. \[[More information](./#create-temporary-access-password)]                                                               |
 | Re-require MFA registration      | Sets user legacy MFA status to **Enabled**                                                                                                                                                  |
 | Send MFA Push                    | Sends an MFA approval prompt to a user's registered devices. A simple way to verify functionality.                                                                                          |
@@ -57,46 +57,6 @@ The main table provides an overview of information including display name, email
 {% hint style="info" %}
 Note that clicking one of these actions will present a confirmation modal dialog.
 {% endhint %}
-
-#### View user details
-
-Displays details about the user account.
-
-* Azure AD user attributes (Names, Job Title, Address, Phone)
-* Last sign in details
-* Sign in logs
-* Conditional access details
-* Email usage
-* OneDrive usage
-* Email settings
-* Devices
-* Groups
-
-#### Research Compromised Account
-
-The _Business Email Compromise Overview_ retrieves common data used when reviewing a possibly-compromised account.
-
-{% hint style="info" %}
-For more in-depth analysis, [Hawk](https://cloudforensicator.com/) is well-regarded.
-{% endhint %}
-
-Data Retrieved
-
-* User devices (including first sync time)
-* Recently added email forwarding rules
-* Recently added users
-* User last logon details
-* Recent password changes
-* Mailbox permission changes
-* Application changes
-* Mailbox logons
-
-If an account appears compromised, **Remediate User** performs the following actions:
-
-* Block user signin
-* Reset user password
-* Disconnect all current sessions
-* Disable all inbox rules for the user
 
 #### Create Temporary Access Password
 
@@ -140,6 +100,8 @@ If you want to create your own LiveLink you can use the QueryString below.
 ?city=<CITY>&country=<COUNTRY>&customerId=<UDF-TenantId(tblCustomers)>&primDomain=<ACCOUNTWEBSITEADDRESS>&usageLocation=NL&streetAddress=<ACCOUNTADDRESS1>&companyName=<ACCOUNTNAME>&businessPhones=<ACCOUNTPHONE>&postalCode=<ACCOUNTPOSTALCODE>&givenName=<CONTACTFIRSTNAME>&surname=<CONTACTLASTNAME>
 ```
 {% endcode %}
+
+***
 
 ***
 
