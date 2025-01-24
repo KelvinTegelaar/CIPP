@@ -6,7 +6,7 @@ On this page you can find a list of frequently asked questions about the CyberDr
 
 <summary>I updated , but CIPP still says my frontend is out of date. How do I fix this?</summary>
 
-SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](../setup/installation/updating.md).
+SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](../../setup/installation/updating.md).
 
 CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well Github and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
 
@@ -45,7 +45,7 @@ Performance issues in CIPP are not expected. If your performance appears impacte
 
 For more information, refer to the [maintenance instructions](https://docs.cipp.app/user-documentation/cipp/settings/maintenance).
 
-If you are self-hosted, you will also want to ensure you have configured [Run From Package](../setup/self-hosting-guide/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
+If you are self-hosted, you will also want to ensure you have configured [Run From Package](../../setup/self-hosting-guide/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
 
 </details>
 
@@ -72,7 +72,7 @@ Your app is now protected with Conditional Access.
 
 Typically this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
 
-Check the [MFA Troubleshooting](troubleshooting.md#multi-factor-authentication-troubleshooting) details in the Troubleshooting section for more information.
+Check the [MFA Troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting) details in the Troubleshooting section for more information.
 
 </details>
 
@@ -94,7 +94,7 @@ Check the [MFA Troubleshooting](troubleshooting.md#multi-factor-authentication-t
    1. Navigate to CIPP -> Application Settings -> Access Check.
    2. Select the relevant tenant and click "Run access check".
 
-Complete all checks for effective troubleshooting. If you still have issues or for detailed instructions, refer to the[refreshing-a-specific-tenants-permissions-via-cpv-api.md](troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md "mention") page, the [troubleshooting instructions](https://docs.cipp.app/troubleshooting/troubleshooting-instructions) page, and the relevant sections on our [**Error Codes**](https://docs.cipp.app/troubleshooting/troubleshooting) page.
+Complete all checks for effective troubleshooting. If you still have issues or for detailed instructions, refer to the[refreshing-a-specific-tenants-permissions-via-cpv-api.md](../troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md "mention") page, the [troubleshooting instructions](https://docs.cipp.app/troubleshooting/troubleshooting-instructions) page, and the relevant sections on our [**Error Codes**](https://docs.cipp.app/troubleshooting/troubleshooting) page.
 
 </details>
 
@@ -106,7 +106,7 @@ Sometimes when you are running a permissions check, you may encounter specific e
 
 To ensure full functionality of CIPP, follow these steps to add the necessary API permissions:
 
-1. **Review the** [**required permissions**](../setup/installation/permissions.md) **for the Secure Application Model registration:**
+1. **Review the** [**required permissions**](../../setup/installation/permissions.md) **for the Secure Application Model registration:**
    * Pay attention to the hint boxes on the page, which explain how to find APIs not listed under Graph.
 2. **Add any missing permissions in the** [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) **section of your Azure Portal.**
    * Some permissions may appear duplicated in both Delegated and Application permissions tables. This is intentional; add both sets of permissions.
@@ -233,7 +233,7 @@ This permits users the ability to grant consent when access CIPP now.
 <summary>Can I replace the default branding with my own in CIPP?</summary>
 
 No, CIPP's branding is compiled into the code. Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.\
-However, a custom logo can be added to reports. This can be done in the [User Settings page](../user-documentation/shared-features/user-settings.md#user-settings).
+However, a custom logo can be added to reports. This can be done in the [User Settings page](../../user-documentation/shared-features/user-settings.md#user-settings).
 
 </details>
 
@@ -353,7 +353,7 @@ This error can mean two things;
 * You migrated using different tools, such as Microsoft Lighthouse.
 * You didn't assign the groups to the user after migrating.
 
-Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](../setup/installation/samwizard.md#authorization-best-practices-for-cipp).
+Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](../../setup/installation/samwizard.md#authorization-best-practices-for-cipp).
 
 </details>
 

@@ -278,7 +278,8 @@
 * [Error codes](troubleshooting/troubleshooting.md)
 * [Troubleshooting instructions](troubleshooting/troubleshooting-instructions/README.md)
   * [Refreshing a Specific Tenant's Permissions via CPV API](troubleshooting/troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md)
-* [Frequently Asked Questions](troubleshooting/frequently-asked-questions.md)
+* [Frequently Asked Questions](troubleshooting/frequently-asked-questions/README.md)
+  * [I got a "Potential Phishing page detected" alert. What do I do with that?](troubleshooting/frequently-asked-questions/i-got-a-potential-phishing-page-detected-alert.-what-do-i-do-with-that.md)
 
 ## 🔐 Security
 
