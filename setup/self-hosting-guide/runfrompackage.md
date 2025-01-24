@@ -41,13 +41,12 @@ If you want your Function App to auto-update whenever you commit to your **CIPP-
 5. Leave **“Workflow Option”** set to **“Add a workflow”** (the default).
 6. For **Authentication Type**, pick **“Basic Authentication.”** (Azure portal doesn’t support Identity-based auth yet.)
 7. Click **Add a workflow**, then **Save**.
-8. Finally, **Restart** your Function App to ensure changes take effect.
 
 ***
 
 ### 3. Done!
 
-Your Function App will now pull updates directly from your GitHub fork whenever you push commits to the selected branch. For day-to-day development, this means less manual deployment and faster iteration on your CIPP-API codebase.
+Your Function App will now be automatically updated pull directly from your GitHub fork whenever you push commits to the selected branch. For day-to-day development, this means less manual deployment and faster iteration on your CIPP-API codebase.
 
 If you run into any snags:
 
