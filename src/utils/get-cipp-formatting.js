@@ -203,8 +203,8 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
         ? data.join(", ")
         : data.map((item) => (
             <CippCopyToClipBoard
-              key={`${item.label}`}
-              text={item.label ? item.label : item}
+              key={`${item?.label}`}
+              text={item?.label ? item?.label : item}
               type="chip"
             />
           ));
@@ -212,7 +212,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
       return isText ? (
         data
       ) : (
-        <CippCopyToClipBoard text={data.label ? data.label : data} type="chip" />
+        <CippCopyToClipBoard text={data?.label ? data?.label : data} type="chip" />
       );
     }
   }
