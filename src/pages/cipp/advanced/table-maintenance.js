@@ -447,6 +447,7 @@ const Page = () => {
                       addEditRowDialog.handleOpen();
                     },
                     noConfirm: true,
+                    hideBulk: true,
                   },
                   {
                     label: "Delete",
@@ -466,6 +467,7 @@ const Page = () => {
                     },
                     onSuccess: handleRefresh,
                     confirmText: "Do you want to delete this row?",
+                    multiPost: false,
                   },
                 ]}
               />

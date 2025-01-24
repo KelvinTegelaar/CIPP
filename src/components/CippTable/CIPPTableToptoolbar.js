@@ -459,7 +459,7 @@ export const CIPPTableToptoolbar = ({
                   }}
                 >
                   {actions
-                    ?.filter((action) => !action.link)
+                    ?.filter((action) => !action.link && !action?.hideBulk)
                     .map((action, index) => (
                       <MenuItem
                         key={index}
