@@ -9,6 +9,7 @@ import {
   SvgIcon,
   Skeleton,
   Chip,
+  Alert,
 } from "@mui/material";
 import Head from "next/head";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
@@ -182,9 +183,11 @@ const Page = () => {
                       }
                     >
                       {block.data === undefined ? (
-                        <Typography variant="h6" color="textPrimary">
-                          No data has been found for this report.
-                        </Typography>
+                        <Alert severity="info">
+                          No data has been found for this item. This tenant might not be licensed
+                          for this feature, or data collection failed. Please check the logs for
+                          more information.
+                        </Alert>
                       ) : block.formatter === "String" ? (
                         <Typography variant="h6" color="textPrimary">
                           {block.data}
