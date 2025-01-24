@@ -1,26 +1,14 @@
----
-hidden: true
----
+# CIPP v7 Developer Brief
 
-# CIPP New Interface Kickoff: Alpha Brief
-
-Thank you for testing our new front end! Since most of you already have a working development environment for the current setup, transitioning to the new interface should be relatively seamless with some adjustments. Let’s dive into what you need to know.&#x20;
+If you already have a working development environment for the previous v6 setup, transitioning to the new interface should be relatively seamless with some adjustments. Let’s dive into what you need to know.&#x20;
 
 ***
 
 ## Overview&#x20;
 
-The new front-end rewrite, built with [Material UI](https://mui.com/material-ui/getting-started/) and React, introduces significant enhancements in design, performance, and usability. This alpha testing phase focuses on:
+CIPPs new v7 front-end introduces significant enhancements in design, performance, and usability.
 
-* Familiarizing yourself with the new UI navigation.
-* Exploring changes and identifying standout issues or features.
-* Deferring detailed bug reporting to later phases.
-
-***
-
-## What’s New?&#x20;
-
-1. **Modernized Framework:** Uses Material UI for a cleaner, more consistent design.&#x20;
+1. **Modernized Framework: B**uilt with [Material UI](https://mui.com/material-ui/getting-started/) and React for a cleaner, more consistent design.&#x20;
 2. **Performance Improvements:** Faster load times locally and online.&#x20;
 3. **Updated Development Workflow:** Minor changes to setup and dependencies.&#x20;
 
@@ -30,8 +18,8 @@ The new front-end rewrite, built with [Material UI](https://mui.com/material-ui/
 
 #### 1. Framework and Tooling&#x20;
 
-* **Old Frontend:** Built with Vite and CoreUI.&#x20;
-* **New Frontend**: Migrates to Next.js and Material-UI.&#x20;
+* **Old pre-v7 Frontend:** Built with Vite and CoreUI.&#x20;
+* **New v7 Frontend**: Migrates to Next.js and Material-UI.&#x20;
 * **State Management**: Introduces React Query for server-side state.&#x20;
 
 #### 2. Package Manager&#x20;
@@ -51,24 +39,17 @@ The new front-end rewrite, built with [Material UI](https://mui.com/material-ui/
 1. **Set Up Your Environment**:
    * Follow the instructions in the section below.
 2. **Explore the Interface**:
-   * Note differences from the current setup.
-   * Focus on navigation, new features, and overall usability.
+   * Note differences from the previous setup.
 3. **Engage in Discussions**:
-   * Use the **New Interface Alpha Testers Unite!!** thread in the `#cipp-dev` channel to share observations or ask questions.
-   * Avoid focusing on detailed bug fixes for now.
+   * Join us in the `#cipp-dev` channel to share observations or ask questions.
 
 ***
 
 ## **Transition from Current Development Environment**
 
-### **Step 1: Switch Branches**
+### **Step 1: Check for Merge Conflicts**
 
-Change both your frontend and backend repositories to the `interface-rewrite` branch:
-
-```bash
-git checkout interface-rewrite
-git pull
-```
+Before proceeding with the installation of dependencies, ensure there are no merge conflicts if you are upgrading from an older version of CIPP on your development fork. For more information on this step, refer to the official GitHub documentation on [resolving merge conflicts](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-on-github). Once everything’s merged cleanly, you’re ready for the rest of the setup.
 
 ### **Step 2: Reinstall Dependencies**
 
@@ -76,12 +57,6 @@ For the new interface:
 
 ```bash
 yarn install --network-timeout 500000
-```
-
-If switching back to the old frontend:
-
-```bash
-npm install
 ```
 
 ### **Step 3: Launch the Environment**
@@ -138,16 +113,12 @@ Install the following tools:
 ## **Tips for Development**
 
 * **GitHub Fork Issues**:
-  * If you don’t see the `interface-rewrite` branch, ensure your fork includes it.
   * Use **`git fetch --all`** or ensure your fork is updated with Kelvin’s repo.
 * If you prefer GUI tools, you can use **GitHub Desktop** to manage branches and fetch remotes. Ensure you fetch all remotes to see the latest branches.
 
 ## **Known Issues**
 
-* **Tooltips and Sorting**: Misplaced tooltips and inconsistent sorting behavior.
-* **Customizable Filters**: Planned for future updates.
 * **AAD Login Redirect**: Disabled for debugging.
-* **Navigation Highlighting**: Incorrect menu highlighting on some pages.
 * **"Launch in Windows Terminal" Compatibility**:
   * **Issue**: Not compatible with **Linux** or **macOS** as it relies on Windows Terminal.
   *   **Workaround**: Use a terminal or VSCode's integrated terminal:

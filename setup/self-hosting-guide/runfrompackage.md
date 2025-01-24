@@ -1,22 +1,57 @@
+---
+description: >-
+  Whenever you push changes to the chosen branch, the Function App updates
+  itself automatically using Run From Package.
+---
+
 # Run From Package Mode
 
-{% hint style="info" %}
-**Hosted clients get set to Run From Package mode automatically.**
-
-If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.&#x20;
+{% hint style="warning" %}
+**Note:** If you’re a sponsor using a hosted CIPP instance, you can skip this page—**Run From Package** is already set for you.
 {% endhint %}
 
-1. Go to the Azure portal and find your resource group. Click on the Function App
-2. Click on **Function app Configuration** or `Settings` **-> Environment Variables** depending on your version of the Azure Portal.
-3. Click on "New Application Setting" or `Add`
-4. Add an application setting with the name `WEBSITE_RUN_FROM_PACKAGE` and the value `1`
-5. Click Save or `Apply`
-6. Click on Deployment Center (or Deployment -> Deployment Center)
-7. Click on "Disconnect" and then click OK to confirm the disconnection.
-8. Select the source "Github"
-9. Login if required
-10. Select the Organisation, Repository, and Branch you want for your CIPP-API. Leave the "WorkFlow Option" at the default radio button of "Add a workflow".
-11. Select "Basic Authentication" under authentication type. Microsoft currently cannot use Identity based authentication.
-12. Click on "Add a worklow". Do not change any other settings.
-13. Click save at the top.
-14. Restart the Function App
+Most Azure Function Apps can be deployed using various methods, but **Run From Package** is a streamlined, read-only approach that pins your Function App’s code to a zip file. This method:
+
+* Ensures consistent deployment (updates happen atomically when the package is replaced).
+* Makes rollback and troubleshooting simpler.
+* Often leads to faster cold starts since your code is pre-packaged and ready to go.
+
+***
+
+### 1. Verify “Run From Package” in Your Existing Deployment
+
+If you used our **ARM template** from the [Installation](install.md) page, your Function App should already be in **Run From Package** mode, deploying from the `latest.zip` file. To confirm:
+
+1. **Open Azure Portal** → Locate the **Function App** in your resource group.
+2. Go to **Configuration** (or **Settings → Application Settings**, depending on portal version).
+3. Look for an **Application Setting** named `WEBSITE_RUN_FROM_PACKAGE`.
+   * It should be set to `1`.
+   * If it is, great—your Function App is already running from a package zip.
+
+***
+
+### 2. (Optional) Connect to GitHub for Continuous Deployment
+
+If you want your Function App to auto-update whenever you commit to your **CIPP-API** fork, follow these steps:
+
+1. Still in the **Function App** settings, go to **Deployment Center**  (sometimes under **Deployment → Deployment Center**).
+2. If an existing CI/CD connection is configured, **Disconnect** it to avoid conflicts.
+3. Under **Source**, select **GitHub**, then log in if prompted.
+4. **Choose** your Organization, Repository, and Branch (where your CIPP-API code lives).
+5. Leave **“Workflow Option”** set to **“Add a workflow”** (the default).
+6. For **Authentication Type**, pick **“Basic Authentication.”** (Azure portal doesn’t support Identity-based auth yet.)
+7. Click **Add a workflow**, then **Save**.
+8. Finally, **Restart** your Function App to ensure changes take effect.
+
+***
+
+### 3. Done!
+
+Your Function App will now pull updates directly from your GitHub fork whenever you push commits to the selected branch. For day-to-day development, this means less manual deployment and faster iteration on your CIPP-API codebase.
+
+If you run into any snags:
+
+* **Check** the Azure Portal’s **Logs** under your Function App.
+* **Review** your GitHub Actions logs for build/deployment errors.
+
+That’s it! You’re now set up for streamlined, package-based deployments with automatic updates.

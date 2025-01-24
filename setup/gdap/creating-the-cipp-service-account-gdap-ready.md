@@ -32,6 +32,8 @@ The CIPP service account will be the account used to execute any actions on your
 
 To get started, head to the Microsoft Entra Portal's user overview at [entra.microsoft.com](https://entra.microsoft.com/)
 
+**If you would like to use notifications, webhook triggers, or exporting to other system the account you use must have a mailbox available. This mailbox will be used for outgoing reports, exports, and notifications.**&#x20;
+
 1. Click on the "New user" button.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2Fv5BfyGiEY4FqmbqxRCymsD_doc.png?alt=media\&token=ad9a3831-cec6-4244-b5f4-f90d08ae87ea\&time=Fri%20Jul%2026%202024%2021:57:39%20GMT-0400%20\(Eastern%20Daylight%20Time\))

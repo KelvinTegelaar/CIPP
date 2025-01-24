@@ -48,7 +48,7 @@ Navigate to `Tenant Administration` -> `Administration` -> `Tenant Onboarding` a
 * Click **Next** and wait for the wizard to complete the onboarding steps.
 * Review the onboarding status and logs to ensure successful completion of each step.
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 To automate this process even further, enable Partner Webhooks in Application Settings and newly invited tenants will automatically onboard once accepted.

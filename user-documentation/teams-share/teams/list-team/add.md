@@ -2,7 +2,7 @@
 
 ### Add Team
 
-The Add Team page gives you the ability to create a brand new team and set a Display Name, Description and, Owner.
+The Add Team page gives you the ability to create a brand-new team and set a Display Name, Description, Owner, and Team Visibility.
 
 #### Details <a href="#addteam-details" id="addteam-details"></a>
 

@@ -2,6 +2,7 @@
 description: >-
   Technicalities of CIPP: highlighting it's capabilities in user management,
   templating, scheduling tasks, and handling compromised accounts.
+hidden: true
 ---
 
 # Rise of the CIPPs
