@@ -1,12 +1,109 @@
 # Migrating to Hosted CIPP
 
-When starting a CIPP sponsorship you have the option to self-host and receive support for this self-hosted instance, or use the version of CIPP hosted by CyberDrain. To migrate from self-hosted CIPP to hosted CIPP you can follow these instructions.
+When you start a **CIPP sponsorship**, you can either:
 
-* Log into your **self-hosted** instance and go to Application Settings. Click the button Run Backup, download this backup and store this securely.
-* Go to our [Management Portal](https://management.cipp.app) and login.&#x20;
-* Deploy your hosted instance by filling in all information, and accept the initial invite to log into your hosted instance.
-* Go to your **self-hosted** instance, and go to Application Settings -> Backend. Click on "Go to Keyvault". Keep this screen open.
-* On **your hosted instance** go to SAM Setup Wizard. Click on "I have an existing application and would like to manually enter my tokens"
-* Copy all the information from the Keyvault, into the now available fields. Finally click next and finish the setup.
-* Restore your backup in your **hosted** instance by clicking on Application Settings -> Restore Backup.
-* If you used a custom domain in the self-hosted instance, remove this custom domain and add it via the management portal.
+* Continue self-hosting and receive support for that setup, **or**
+* Use the **version hosted by CyberDrain** (fully managed).
+
+If you decide to **migrate** from a self-hosted instance to our **hosted** environment, follow these steps:
+
+***
+
+### 1. Back Up Your Self-Hosted Instance
+
+{% stepper %}
+{% step %}
+**Log In** to your **self-hosted** CIPP instance.
+{% endstep %}
+
+{% step %}
+Go to **Application Settings** → click **Run Backup**.
+{% endstep %}
+
+{% step %}
+**Download** the generated backup file.
+
+* Store this file in a safe location (it contains all your CIPP config).
+{% endstep %}
+{% endstepper %}
+
+***
+
+### 2. Deploy Your Hosted Instance
+
+{% stepper %}
+{% step %}
+**Go to** CIPP's [Management Portal](https://chatgpt.com/c/6792ed35-a9b4-8009-a8af-7f23f4ebc621) and log in with the GitHub account you used to sponsor.
+{% endstep %}
+
+{% step %}
+**Deploy** your hosted CIPP instance by filling out the required information.
+{% endstep %}
+
+{% step %}
+**Accept** the initial invite and log into the newly created hosted environment.
+{% endstep %}
+{% endstepper %}
+
+***
+
+### 3. Transfer Your Key Vault Secrets
+
+{% stepper %}
+{% step %}
+Return to your **self-hosted** instance → **Application Settings** → **Backend**.
+{% endstep %}
+
+{% step %}
+Click **Go to Keyvault**. Keep this tab open.
+{% endstep %}
+
+{% step %}
+In your **hosted** instance, open the **SAM Setup Wizard**.
+{% endstep %}
+
+{% step %}
+Select **“I have an existing application and would like to manually enter my tokens.”**
+{% endstep %}
+
+{% step %}
+**Copy** each value from your self-hosted Key Vault (step 2) into the corresponding fields in your hosted environment.
+{% endstep %}
+
+{% step %}
+Click **Next** to finish the wizard.
+{% endstep %}
+{% endstepper %}
+
+***
+
+### 4. Restore Your Backup
+
+{% stepper %}
+{% step %}
+In your **hosted** CIPP instance, navigate to **Application Settings** → **Restore Backup**.
+{% endstep %}
+
+{% step %}
+**Upload** the backup file you downloaded in Step 1.
+{% endstep %}
+
+{% step %}
+Wait for the restore to complete—CIPP will import your original configuration and data.
+{% endstep %}
+{% endstepper %}
+
+***
+
+### 5. (Optional) Custom Domain Cleanup
+
+* If you used a **custom domain** on your self-hosted instance, remove it there first so you can reuse it in the hosted environment.
+* In the **Management Portal**, add your custom domain to the hosted CIPP instance following the on-screen instructions.
+
+***
+
+### That’s It!
+
+Your instance and settings now live in the fully managed, **CyberDrain-hosted** version of CIPP.&#x20;
+
+Congratulations on a smooth migration! Enjoy your new, hosted CIPP with automatic updates and support.

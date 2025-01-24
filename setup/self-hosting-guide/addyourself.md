@@ -5,25 +5,77 @@ description: How to configure CIPP after you've completed installation.
 # Post-Install Configuration
 
 {% hint style="warning" %}
-Hosted clients
+**For Hosted Clients**
 
-If you choose to sponsor and use the CyberDrain hosted version, you can login to the backend management system at [**management.cipp.app**](https://management.cipp.app) to add and remove users.
+If you’re using a CyberDrain hosted instance of CIPP:
 
-Using the Management Portal you can click on 'Invite User' which will return the invite link to your directly. You must share this link with the user. This link is not e-mailed or sent to the user in any way.
+1. **Log in** at [management.cipp.app](https://management.cipp.app/) to manage users.
+2. From the **Management Portal**, click **Invite User**, which generates a shareable invite link.
+
+**NOTE:** Clicking on Invite User will return the invite link to you directly. You must share this link with the user. **It is not e-mailed or sent to the user in any way.**
 {% endhint %}
 
-At this point you should have completed all the steps in the installation guide and your deployment has succeeded. Any Red cross means your deployment has failed and you will need to delete the resource group and try deployment again.
+Once your **CIPP** installation completes successfully, follow the steps below to finalize access and roles.
 
-you must now follow the rest of these steps to allow yourself to access CIPP, and finish setup.
+> **Tip:** If you see a red “X” in your deployment status, the install failed. **Delete the resource group** in the Azure Portal and redeploy.
 
-### Add yourself as a user
+### For Self-Hosted Deployments
 
-* Go to the Azure Portal.
-* Go to your CIPP Resource Group.
-* Select your CIPP Static Web App `CIPP-SWA-XXXX`.
-* Select **Role Management** (Not IAM Role Management).
-* Select **invite user**.
-* Enter the UPN for your user. This must match your M365 UPN.
-* Add the `admin` role for your user.
+### Add Yourself as an Admin
 
-After logging in successfully, you may move on to the next part of setup by clicking the button below.
+{% stepper %}
+{% step %}
+**Open the Azure Portal** and locate your **CIPP Resource Group**.
+{% endstep %}
+
+{% step %}
+Find the **CIPP Static Web App** (e.g., **CIPP-SWA-XXXX**).
+{% endstep %}
+
+{% step %}
+Click **Role Management** (not IAM Role Management).
+{% endstep %}
+
+{% step %}
+Select **Invite User**.
+{% endstep %}
+
+{% step %}
+In the “UPN” field, enter the **Microsoft 365 UPN** (user principal name) of the person you want to add (likely yourself upfront).
+{% endstep %}
+
+{% step %}
+Assign the **Admin** role.
+{% endstep %}
+
+{% step %}
+Save your changes.
+{% endstep %}
+{% endstepper %}
+
+### Test Your Access
+
+{% stepper %}
+{% step %}
+**Go to** the URL for your Static Web App (SWA).
+{% endstep %}
+
+{% step %}
+Log in with the **same UPN** you just added.
+{% endstep %}
+
+{% step %}
+If successful, you’ll have admin privileges within CIPP.
+{% endstep %}
+{% endstepper %}
+
+***
+
+### Next Steps
+
+With user access established, you can:
+
+* **Invite other team members** or clients (using the same Role Management process or the [management portal](https://management.cipp.app) for hosted users.).
+* **Configure** advanced settings (e.g., custom domains, environment variables, or additional roles).
+
+Congratulations! You’re now ready to use CIPP for tenant management in your Azure environment.
