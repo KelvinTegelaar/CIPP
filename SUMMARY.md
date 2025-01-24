@@ -294,7 +294,7 @@
   * [Executing Local Development](dev-documentation/cipp-dev-guide/executing-local-development.md)
   * [Project Structure](dev-documentation/cipp-dev-guide/project-structure.md)
   * [Development Tips](dev-documentation/cipp-dev-guide/development-tips.md)
-  * [CIPP v7 Developer Brief](dev-documentation/cipp-dev-guide/cipp-new-interface-kickoff-alpha-brief.md)
+  * [CIPP v7 Developer Brief](cipp-new-interface-kickoff-alpha-brief.md)
 * [Contributing to the Code](dev-documentation/contributing-to-the-code.md)
 * [Contributing to the Documentation](dev-documentation/contributing-to-the-documentation.md)
 

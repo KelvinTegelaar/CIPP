@@ -1,26 +1,29 @@
+---
+hidden: true
+---
 
-# Beta Testing the New CIPP Interface
+# Beta Testing
 
 To assist users in beta testing the new version of CIPP by tracking the `interface-rewrite` branch for both the `CIPP` and `CIPP-API` repositories, please follow these steps:
 
 ## 1. Fork the Repositories (if you don't have one already)
 
-- Navigate to the [CIPP repository](https://github.com/KelvinTegelaar/CIPP) and click the "Fork" button to create your own copy.
-- Repeat this process for the [CIPP-API repository](https://github.com/KelvinTegelaar/CIPP-API).
+* Navigate to the [CIPP repository](https://github.com/KelvinTegelaar/CIPP) and click the "Fork" button to create your own copy.
+* Repeat this process for the [CIPP-API repository](https://github.com/KelvinTegelaar/CIPP-API).
 
 ## 2. Add the `interface-rewrite` Branch
 
-- In your forked `CIPP` repository, go to the branches section and create a new branch named `interface-rewrite`.
-- Set this branch to track the upstream `interface-rewrite` branch from KelvinTegelaar.
-- Repeat these steps for your forked `CIPP-API` repository.
+* In your forked `CIPP` repository, go to the branches section and create a new branch named `interface-rewrite`.
+* Set this branch to track the upstream `interface-rewrite` branch from KelvinTegelaar.
+* Repeat these steps for your forked `CIPP-API` repository.
 
 ## 3. Update Deployment Workflows
 
 ### For the Frontend (`CIPP` Repository)
 
-- In your forked `CIPP` repository, navigate to the `.github/workflows` directory.
-- Locate the deployment workflow file (e.g., `deploy.yml`) and edit it to update the push action to target the `interface-rewrite` branch.
-- Ensure that the Azure Static Web Apps action is configured to deploy the `out` directory instead of the root.
+* In your forked `CIPP` repository, navigate to the `.github/workflows` directory.
+* Locate the deployment workflow file (e.g., `deploy.yml`) and edit it to update the push action to target the `interface-rewrite` branch.
+* Ensure that the Azure Static Web Apps action is configured to deploy the `out` directory instead of the root.
 
 **Example Workflow Configuration**:
 
@@ -67,9 +70,9 @@ jobs:
 
 ### For the Backend (`CIPP-API` Repository)
 
-- In your forked `CIPP-API` repository, navigate to the `.github/workflows` directory.
-- Locate the deployment workflow file (e.g., `deploy.yml`) and edit it to update the push action to target the `interface-rewrite` branch.
-- Ensure that the Azure Functions action is configured correctly for deployment.
+* In your forked `CIPP-API` repository, navigate to the `.github/workflows` directory.
+* Locate the deployment workflow file (e.g., `deploy.yml`) and edit it to update the push action to target the `interface-rewrite` branch.
+* Ensure that the Azure Functions action is configured correctly for deployment.
 
 **Example Workflow Configuration**:
 
@@ -105,12 +108,12 @@ jobs:
 
 ## 4. Deploy and Test
 
-- After updating the workflows, push the changes to your forked repositories.
-- Monitor the deployment process to ensure that the applications are deployed correctly from the `interface-rewrite` branch.
-- Begin testing the new interface and functionality as per the beta testing guidelines.
+* After updating the workflows, push the changes to your forked repositories.
+* Monitor the deployment process to ensure that the applications are deployed correctly from the `interface-rewrite` branch.
+* Begin testing the new interface and functionality as per the beta testing guidelines.
 
 ## Additional Resources
 
-- **Community Support**: For further assistance, join the [Discord Server](https://discord.gg/cyberdrain) and check out #cipp-community-help or the #cipp-beta-temp channels.
+* **Community Support**: For further assistance, join the [Discord Server](https://discord.gg/cyberdrain) and check out #cipp-community-help or the #cipp-beta-temp channels.
 
 By following these steps, users can effectively set up their environments to beta test the new version of CIPP with the updated interface.
