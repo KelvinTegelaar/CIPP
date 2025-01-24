@@ -5,11 +5,17 @@ on:
     - cron: '0 */4 * * *'  # Run every 4 hours
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   check-version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
         
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -32,7 +38,7 @@ jobs:
         if: steps.upstream.outputs.upstream_version != steps.current.outputs.current_version
         uses: actions/github-script@v6
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.PAT_TOKEN }}
           script: |
             const { repo, owner } = context.repo;
             const currentVersion = '${{ steps.current.outputs.current_version }}';

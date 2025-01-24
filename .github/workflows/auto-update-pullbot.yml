@@ -5,6 +5,11 @@ on:
     - cron: '0 */6 * * *'  # Run every 6 hours
   workflow_dispatch:  # Allow manual trigger
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 jobs:
   auto-update:
     runs-on: ubuntu-latest
@@ -14,11 +19,12 @@ jobs:
         with:
           fetch-depth: 0
           ref: interface-rewrite
+          token: ${{ secrets.PAT_TOKEN }}  # Use PAT token for checkout
       
       - name: Configure Git
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
       - name: Add Upstream Remote
         run: |
@@ -43,4 +49,4 @@ jobs:
             - Frontend: v7.0.1
             - Available: v7.0.5
           pr_label: "auto-update"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT_TOKEN }}
