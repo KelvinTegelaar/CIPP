@@ -59,7 +59,7 @@ For the new interface:
 yarn install --network-timeout 500000
 ```
 
-### **Step 2: Launch the Environment**
+### **Step 3: Launch the Environment**
 
 To start the new CIPP frontend and API, use the **Launch in Windows Terminal** shortcut from the VSCode debug menu. This task runs both the frontend and API in a separate Windows Terminal instance, avoiding the potential performance issues caused by running both within VSCode itself.
 
