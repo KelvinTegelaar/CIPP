@@ -40,25 +40,14 @@ CIPPs new v7 front-end introduces significant enhancements in design, performanc
    * Follow the instructions in the section below.
 2. **Explore the Interface**:
    * Note differences from the current setup.
-   * Focus on navigation, new features, and overall usability.
 3. **Engage in Discussions**:
-   * Use the **New Interface Alpha Testers Unite!!** thread in the `#cipp-dev` channel to share observations or ask questions.
-   * Avoid focusing on detailed bug fixes for now.
+   * Join us in the `#cipp-dev` channel to share observations or ask questions.
 
 ***
 
 ## **Transition from Current Development Environment**
 
-### **Step 1: Switch Branches**
-
-Change both your frontend and backend repositories to the `interface-rewrite` branch:
-
-```bash
-git checkout interface-rewrite
-git pull
-```
-
-### **Step 2: Reinstall Dependencies**
+### **Step 1: Reinstall Dependencies**
 
 For the new interface:
 
@@ -72,7 +61,7 @@ If switching back to the old frontend:
 npm install
 ```
 
-### **Step 3: Launch the Environment**
+### **Step 2: Launch the Environment**
 
 To start the new CIPP frontend and API, use the **Launch in Windows Terminal** shortcut from the VSCode debug menu. This task runs both the frontend and API in a separate Windows Terminal instance, avoiding the potential performance issues caused by running both within VSCode itself.
 
