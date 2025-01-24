@@ -118,10 +118,7 @@ Install the following tools:
 
 ## **Known Issues**
 
-* **Tooltips and Sorting**: Misplaced tooltips and inconsistent sorting behavior.
-* **Customizable Filters**: Planned for future updates.
 * **AAD Login Redirect**: Disabled for debugging.
-* **Navigation Highlighting**: Incorrect menu highlighting on some pages.
 * **"Launch in Windows Terminal" Compatibility**:
   * **Issue**: Not compatible with **Linux** or **macOS** as it relies on Windows Terminal.
   *   **Workaround**: Use a terminal or VSCode's integrated terminal:
