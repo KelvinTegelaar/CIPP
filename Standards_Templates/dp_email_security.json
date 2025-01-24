@@ -1,0 +1,48 @@
+{
+  "name": "standards.dp.EmailSecurity",
+  "cat": "Email Security Standards",
+  "tag": ["highimpact", "security", "email"],
+  "helpText": "Comprehensive email security controls including anti-spoofing, malware, and phishing protection",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Enable Anti-Domain Spoofing",
+      "name": "standards.dp.EmailSecurity.AntiSpoofing",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable Custom Anti-Malware Policy",
+      "name": "standards.dp.EmailSecurity.CustomAntiMalware",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable Custom Anti-Phishing Policy",
+      "name": "standards.dp.EmailSecurity.CustomAntiPhishing",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Block Iframe Content",
+      "name": "standards.dp.EmailSecurity.BlockIframes",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable IP Address Spam Filtering",
+      "name": "standards.dp.EmailSecurity.IPSpamFiltering",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP Email Security Suite",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-HostedContentFilterPolicy, Set-AntiPhishPolicy, Set-MalwareFilterPolicy",
+  "recommendedBy": ["CIS", "NIST", "M365 BP"]
+}

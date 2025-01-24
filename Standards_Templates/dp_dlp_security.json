@@ -1,0 +1,34 @@
+{
+  "name": "standards.dp.DLPSecurity",
+  "cat": "Data Loss Prevention Standards",
+  "tag": ["highimpact", "security", "dlp"],
+  "helpText": "Data Loss Prevention security controls and policies",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Enable DLP Policies",
+      "name": "standards.dp.DLPSecurity.EnableDLP",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable Office Message Encryption",
+      "name": "standards.dp.DLPSecurity.EnableOME",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Monitor Outgoing Sharing",
+      "name": "standards.dp.DLPSecurity.MonitorOutgoingSharing",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP DLP Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "New-DlpPolicy, Set-IRMConfiguration",
+  "recommendedBy": ["CIS", "NIST"]
+}

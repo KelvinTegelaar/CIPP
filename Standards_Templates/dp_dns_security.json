@@ -1,0 +1,34 @@
+{
+  "name": "standards.dp.DNSSecurityControls",
+  "cat": "DNS Security Standards",
+  "tag": ["highimpact", "security", "dns"],
+  "helpText": "DNS security controls including DMARC, SPF, and domain registration monitoring",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Enforce DMARC Records",
+      "name": "standards.dp.DNSSecurityControls.EnforceDMARC",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enforce SPF Hard Fail",
+      "name": "standards.dp.DNSSecurityControls.EnforceSPFHardFail",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "number",
+      "label": "Domain Registration Warning Days",
+      "name": "standards.dp.DNSSecurityControls.DomainExpiryWarning",
+      "required": true,
+      "defaultValue": 30
+    }
+  ],
+  "label": "DP DNS Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Get-DkimSigningConfig, Set-DomainAuthentication",
+  "recommendedBy": ["CIS", "NIST"]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "standards.dp.DeviceSecurity",
+  "cat": "Device Security Standards",
+  "tag": ["highimpact", "security", "devices"],
+  "helpText": "Device security controls including registration and mobile device policies",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Require MFA for Device Registration",
+      "name": "standards.dp.DeviceSecurity.RequireMFADeviceReg",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable Mobile Device Mailbox Policies",
+      "name": "standards.dp.DeviceSecurity.EnableMobileDevicePolicies",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Require Device Compliance",
+      "name": "standards.dp.DeviceSecurity.RequireDeviceCompliance",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP Device Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-MobileDeviceMailboxPolicy, Set-AzureADPolicy",
+  "recommendedBy": ["CIS", "NIST"]
+}

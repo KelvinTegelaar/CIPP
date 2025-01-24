@@ -1,0 +1,34 @@
+{
+  "name": "standards.dp.SharePointSecurity",
+  "cat": "SharePoint Security Standards",
+  "tag": ["highimpact", "security", "sharepoint"],
+  "helpText": "SharePoint security controls including external sharing and monitoring",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Disable External Sharing",
+      "name": "standards.dp.SharePointSecurity.DisableExternalSharing",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Monitor Outgoing Sharing",
+      "name": "standards.dp.SharePointSecurity.MonitorSharing",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable Sharing Monitoring",
+      "name": "standards.dp.SharePointSecurity.EnableSharingMonitoring",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP SharePoint Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-SPOTenant, Set-SPOSite",
+  "recommendedBy": ["CIS", "NIST"]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "standards.dp.LinkedInSecurity",
+  "cat": "LinkedIn Integration Security Standards",
+  "tag": ["lowimpact", "security", "integration"],
+  "helpText": "LinkedIn integration security controls",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Disable LinkedIn Account Connection",
+      "name": "standards.dp.LinkedInSecurity.DisableConnection",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Monitor LinkedIn Integration",
+      "name": "standards.dp.LinkedInSecurity.MonitorIntegration",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP LinkedIn Security Controls",
+  "impact": "Low Impact",
+  "impactColour": "info",
+  "powershellEquivalent": "Set-LinkedInConfiguration",
+  "recommendedBy": ["CIS"]
+}

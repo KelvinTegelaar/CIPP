@@ -1,0 +1,41 @@
+{
+  "name": "standards.dp.TeamsSecurityControls",
+  "cat": "Teams Security Standards",
+  "tag": ["mediumimpact", "security", "teams"],
+  "helpText": "Microsoft Teams security controls for external access and file sharing",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Disable Anonymous Access",
+      "name": "standards.dp.TeamsSecurityControls.DisableAnonymous",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Disable External File Sharing",
+      "name": "standards.dp.TeamsSecurityControls.DisableExternalSharing",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Disable Link Preview",
+      "name": "standards.dp.TeamsSecurityControls.DisableLinkPreview",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Disable Consumer Communication",
+      "name": "standards.dp.TeamsSecurityControls.DisableConsumerComm",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP Teams Security Suite",
+  "impact": "Medium Impact",
+  "impactColour": "warning",
+  "powershellEquivalent": "Set-CsTeamsClientConfiguration, Set-CsExternalAccessPolicy",
+  "recommendedBy": ["CIS", "NIST"]
+}

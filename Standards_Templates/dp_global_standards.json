@@ -1,0 +1,75 @@
+{
+  "name": "standards.dp.GlobalStandards",
+  "cat": "Global Standards",
+  "tag": ["lowimpact", "CIS"],
+  "helpText": "Global standards for tenant configuration including contact emails, audit log, and security settings",
+  "addedComponent": [
+    {
+      "type": "textField",
+      "name": "standards.dp.GlobalStandards.ContactEmail",
+      "label": "Contact Email Address",
+      "required": false
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.GlobalStandards.UnifiedAuditLog",
+      "label": "Enable Unified Audit Log",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.GlobalStandards.PhishingProtection",
+      "label": "Enable Phishing Protection via Branding CSS",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.GlobalStandards.CustomerLockbox",
+      "label": "Enable Customer Lockbox",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.GlobalStandards.Pronouns",
+      "label": "Enable Pronouns",
+      "required": false,
+      "defaultValue": false
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.GlobalStandards.ShowUsernames",
+      "label": "Show Usernames in Reports",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.GlobalStandards.RestrictGuestAccess",
+      "label": "Restrict Guest Directory Access",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.GlobalStandards.DisableSMTPAuth",
+      "label": "Disable SMTP Basic Authentication",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "number",
+      "name": "standards.dp.GlobalStandards.IdleTimeout",
+      "label": "Activity Timeout (minutes)",
+      "required": true,
+      "defaultValue": 60
+    }
+  ],
+  "label": "DP Global Security Standards",
+  "impact": "Medium Impact",
+  "impactColour": "warning",
+  "powershellEquivalent": "Set-OrganizationConfig, Enable-OrganizationCustomization",
+  "recommendedBy": ["CIS", "NIST"]
+}

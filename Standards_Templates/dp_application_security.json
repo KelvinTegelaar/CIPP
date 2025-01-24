@@ -1,0 +1,34 @@
+{
+  "name": "standards.dp.ApplicationSecurity",
+  "cat": "Application Security Standards",
+  "tag": ["highimpact", "security", "applications"],
+  "helpText": "Controls for application security including credential management and registration",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Block Certificate Credentials for Applications",
+      "name": "standards.dp.ApplicationSecurity.BlockCertCredentials",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Block Client Secret Credentials",
+      "name": "standards.dp.ApplicationSecurity.BlockClientSecrets",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Block Service Principal Certificate Credentials",
+      "name": "standards.dp.ApplicationSecurity.BlockSPNCertCredentials",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP Application Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-AzureADApplication, Set-AzureADServicePrincipal",
+  "recommendedBy": ["CIS", "NIST"]
+}
