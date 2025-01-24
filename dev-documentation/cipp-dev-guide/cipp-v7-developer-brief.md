@@ -39,7 +39,7 @@ CIPPs new v7 front-end introduces significant enhancements in design, performanc
 1. **Set Up Your Environment**:
    * Follow the instructions in the section below.
 2. **Explore the Interface**:
-   * Note differences from the current setup.
+   * Note differences from the previous setup.
 3. **Engage in Discussions**:
    * Join us in the `#cipp-dev` channel to share observations or ask questions.
 
