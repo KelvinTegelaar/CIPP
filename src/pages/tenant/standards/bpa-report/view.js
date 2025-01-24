@@ -22,6 +22,7 @@ import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
 import _ from "lodash";
 const Page = () => {
   const router = useRouter();
+  const { id } = router.query;
   const [blockCards, setBlockCards] = useState([]);
   const [layoutMode, setLayoutMode] = useState("Table");
   const bpaTemplateList = ApiGetCall({
@@ -33,8 +34,9 @@ const Page = () => {
     url: "/api/listBPA",
     data: {
       tenantFilter: tenantFilter,
+      report: id,
     },
-    queryKey: "ListBPA",
+    queryKey: `ListBPA-${id}-${tenantFilter}`,
   });
   const tenantInfo = ApiGetCall({
     url: "/api/ListTenants",
@@ -51,7 +53,6 @@ const Page = () => {
         setLayoutMode(bpaTemplate.Style);
         if (bpaTemplate.Style === "Tenant") {
           const frontendFields = bpaTemplate.Data.map((block) => block.FrontendFields[0]);
-
           if (bpaData.isSuccess) {
             const tenantId = tenantInfo?.data.find(
               (tenant) => tenant?.defaultDomainName === tenantFilter
@@ -62,7 +63,7 @@ const Page = () => {
               //instead of this, use lodash to get the data for blockData
               const blockData = _.get(tenantData, field.value)
                 ? _.get(tenantData, field.value)
-                : ["No Data"];
+                : undefined;
               return {
                 name: field.name,
                 value: field.value,
@@ -92,21 +93,12 @@ const Page = () => {
                 //sometimes the subField contains a space. Only take the first part of the subField if it does.
                 subField?.value?.includes(" ") ? subField.value.split(" ")[0] : subField.value
               );
+
               tenantData = Array.isArray(tenantData) ? tenantData : [tenantData];
               //filter down tenantData to only the fields listOfFrontEndFields
               tenantData = tenantData.map((data) => {
-                const filteredData = {};
                 listOfFrontEndFields.unshift("Tenant");
-                listOfFrontEndFields.forEach((field) => {
-                  //we need to get the correct key, but the key is nested and can contain dots, or []. So we use lodash get to get the correct key.
-                  const dataField = _.get(data, field) ? _.get(data, field) : "No Data";
-                  if (dataField === "FAILED") {
-                    filteredData[field] = "Failed";
-                  } else {
-                    filteredData[field] = dataField;
-                  }
-                });
-                return filteredData;
+                return data;
               });
               const cards = {
                 simpleColumns: listOfFrontEndFields,
@@ -189,7 +181,11 @@ const Page = () => {
                         </Typography>
                       }
                     >
-                      {block.formatter === "String" ? (
+                      {block.data === undefined ? (
+                        <Typography variant="h6" color="textPrimary">
+                          No data has been found for this report.
+                        </Typography>
+                      ) : block.formatter === "String" ? (
                         <Typography variant="h6" color="textPrimary">
                           {block.data}
                         </Typography>
