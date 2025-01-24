@@ -1,6 +1,5 @@
 ---
 description: Welcome to the CIPP New Interface Beta Program! 🚀
-hidden: true
 ---
 
 # CIPP New Interface Release Candidate 2 (rc2)

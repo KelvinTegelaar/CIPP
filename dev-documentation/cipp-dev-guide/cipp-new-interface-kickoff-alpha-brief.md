@@ -1,26 +1,14 @@
----
-hidden: true
----
+# CIPP v7 Developer Brief
 
-# CIPP New Interface Kickoff: Alpha Brief
-
-Thank you for testing our new front end! Since most of you already have a working development environment for the current setup, transitioning to the new interface should be relatively seamless with some adjustments. Let’s dive into what you need to know.&#x20;
+If you already have a working development environment for the previous v6 setup, transitioning to the new interface should be relatively seamless with some adjustments. Let’s dive into what you need to know.&#x20;
 
 ***
 
 ## Overview&#x20;
 
-The new front-end rewrite, built with [Material UI](https://mui.com/material-ui/getting-started/) and React, introduces significant enhancements in design, performance, and usability. This alpha testing phase focuses on:
+CIPPs new v7 front-end introduces significant enhancements in design, performance, and usability.
 
-* Familiarizing yourself with the new UI navigation.
-* Exploring changes and identifying standout issues or features.
-* Deferring detailed bug reporting to later phases.
-
-***
-
-## What’s New?&#x20;
-
-1. **Modernized Framework:** Uses Material UI for a cleaner, more consistent design.&#x20;
+1. **Modernized Framework: B**uilt with [Material UI](https://mui.com/material-ui/getting-started/) and React for a cleaner, more consistent design.&#x20;
 2. **Performance Improvements:** Faster load times locally and online.&#x20;
 3. **Updated Development Workflow:** Minor changes to setup and dependencies.&#x20;
 
@@ -30,8 +18,8 @@ The new front-end rewrite, built with [Material UI](https://mui.com/material-ui/
 
 #### 1. Framework and Tooling&#x20;
 
-* **Old Frontend:** Built with Vite and CoreUI.&#x20;
-* **New Frontend**: Migrates to Next.js and Material-UI.&#x20;
+* **Old pre-v7 Frontend:** Built with Vite and CoreUI.&#x20;
+* **New v7 Frontend**: Migrates to Next.js and Material-UI.&#x20;
 * **State Management**: Introduces React Query for server-side state.&#x20;
 
 #### 2. Package Manager&#x20;

@@ -2,6 +2,7 @@
 description: >-
   Contributing to CIPP : A deep dive into development, forking, API creation,
   and tips for project contributions
+hidden: true
 ---
 
 # From Fork to Feature
