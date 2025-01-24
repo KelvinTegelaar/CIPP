@@ -47,18 +47,16 @@ CIPPs new v7 front-end introduces significant enhancements in design, performanc
 
 ## **Transition from Current Development Environment**
 
-### **Step 1: Reinstall Dependencies**
+### **Step 1: Check for Merge Conflicts**
+
+Before proceeding with the installation of dependencies, ensure there are no merge conflicts if you are upgrading from an older version of CIPP on your development fork. For more information on this step, refer to the official GitHub documentation on [resolving merge conflicts](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-on-github). Once everything’s merged cleanly, you’re ready for the rest of the setup.
+
+### **Step 2: Reinstall Dependencies**
 
 For the new interface:
 
 ```bash
 yarn install --network-timeout 500000
-```
-
-If switching back to the old frontend:
-
-```bash
-npm install
 ```
 
 ### **Step 2: Launch the Environment**
@@ -115,7 +113,6 @@ Install the following tools:
 ## **Tips for Development**
 
 * **GitHub Fork Issues**:
-  * If you don’t see the `interface-rewrite` branch, ensure your fork includes it.
   * Use **`git fetch --all`** or ensure your fork is updated with Kelvin’s repo.
 * If you prefer GUI tools, you can use **GitHub Desktop** to manage branches and fetch remotes. Ensure you fetch all remotes to see the latest branches.
 
