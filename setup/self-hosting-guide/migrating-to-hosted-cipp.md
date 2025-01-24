@@ -11,37 +11,87 @@ If you decide to **migrate** from a self-hosted instance to our **hosted** envir
 
 ### 1. Back Up Your Self-Hosted Instance
 
-1. **Log In** to your **self-hosted** CIPP instance.
-2. Go to **Application Settings** → click **Run Backup**.
-3. **Download** the generated backup file.
-   * Store this file in a safe location (it contains all your CIPP config).
+{% stepper %}
+{% step %}
+**Log In** to your **self-hosted** CIPP instance.
+{% endstep %}
+
+{% step %}
+Go to **Application Settings** → click **Run Backup**.
+{% endstep %}
+
+{% step %}
+**Download** the generated backup file.
+
+* Store this file in a safe location (it contains all your CIPP config).
+{% endstep %}
+{% endstepper %}
 
 ***
 
 ### 2. Deploy Your Hosted Instance
 
-1. **Go to** CIPP's [Management Portal](https://chatgpt.com/c/6792ed35-a9b4-8009-a8af-7f23f4ebc621) and log in with the GitHub account you used to sponsor.
-2. **Deploy** your hosted CIPP instance by filling out the required information.
-3. **Accept** the initial invite and log into the newly created hosted environment.
+{% stepper %}
+{% step %}
+**Go to** CIPP's [Management Portal](https://chatgpt.com/c/6792ed35-a9b4-8009-a8af-7f23f4ebc621) and log in with the GitHub account you used to sponsor.
+{% endstep %}
+
+{% step %}
+**Deploy** your hosted CIPP instance by filling out the required information.
+{% endstep %}
+
+{% step %}
+**Accept** the initial invite and log into the newly created hosted environment.
+{% endstep %}
+{% endstepper %}
 
 ***
 
 ### 3. Transfer Your Key Vault Secrets
 
-1. Return to your **self-hosted** instance → **Application Settings** → **Backend**.
-2. Click **Go to Keyvault**. Keep this tab open.
-3. In your **hosted** instance, open the **SAM Setup Wizard**.
-4. Select **“I have an existing application and would like to manually enter my tokens.”**
-5. **Copy** each value from your self-hosted Key Vault (step 2) into the corresponding fields in your hosted environment.
-6. Click **Next** to finish the wizard.
+{% stepper %}
+{% step %}
+Return to your **self-hosted** instance → **Application Settings** → **Backend**.
+{% endstep %}
+
+{% step %}
+Click **Go to Keyvault**. Keep this tab open.
+{% endstep %}
+
+{% step %}
+In your **hosted** instance, open the **SAM Setup Wizard**.
+{% endstep %}
+
+{% step %}
+Select **“I have an existing application and would like to manually enter my tokens.”**
+{% endstep %}
+
+{% step %}
+**Copy** each value from your self-hosted Key Vault (step 2) into the corresponding fields in your hosted environment.
+{% endstep %}
+
+{% step %}
+Click **Next** to finish the wizard.
+{% endstep %}
+{% endstepper %}
 
 ***
 
 ### 4. Restore Your Backup
 
-1. In your **hosted** CIPP instance, navigate to **Application Settings** → **Restore Backup**.
-2. **Upload** the backup file you downloaded in Step 1.
-3. Wait for the restore to complete—CIPP will import your original configuration and data.
+{% stepper %}
+{% step %}
+In your **hosted** CIPP instance, navigate to **Application Settings** → **Restore Backup**.
+{% endstep %}
+
+{% step %}
+**Upload** the backup file you downloaded in Step 1.
+{% endstep %}
+
+{% step %}
+Wait for the restore to complete—CIPP will import your original configuration and data.
+{% endstep %}
+{% endstepper %}
 
 ***
 
