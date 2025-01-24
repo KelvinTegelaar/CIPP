@@ -30,7 +30,7 @@ If you used our **ARM template** from the [Installation](install.md) page, your 
 
 ***
 
-### 2. (Optional) Connect to GitHub for Continuous Deployment
+### 2. Connect to GitHub for Continuous Deployment
 
 If you want your Function App to auto-update whenever you commit to your **CIPP-API** fork, follow these steps:
 
