@@ -2,7 +2,7 @@ name: Auto Update with Pullbot
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Run every 6 hours
+    - cron: '0 0 * * *'  # Run once daily at midnight UTC
   workflow_dispatch:  # Allow manual trigger
 
 permissions:
