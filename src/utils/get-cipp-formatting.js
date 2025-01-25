@@ -359,7 +359,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     return getSignInErrorCodeTranslation(data);
   }
 
-  if (cellName === "location") {
+  if (cellName === "location" && data?.geoCoordinates) {
     return isText ? JSON.stringify(data) : <CippLocationDialog location={data} />;
   }
 

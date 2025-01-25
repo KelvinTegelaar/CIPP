@@ -173,9 +173,14 @@ const Page = () => {
       type: "GET",
       icon: <TrashIcon />,
       url: "/api/ExecRemoveMailboxRule",
-      data: { ruleId: "Identity", userPrincipalName: "UserPrincipalName" },
+      data: {
+        ruleId: "Identity",
+        ruleName: "Name",
+        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+      },
       confirmText: "Are you sure you want to remove this mailbox rule?",
       multiPost: false,
+      relatedQueryKeys: `MailboxRules-${userId}`,
     },
   ];
 
@@ -200,16 +205,9 @@ const Page = () => {
         title: "Mailbox Rules",
         hideTitle: true,
         data: mailboxRulesRequest.data || [],
-        simpleColumns: [
-          "Enabled",
-          "Name",
-          "Description",
-          "Redirect To",
-          "Copy To Folder",
-          "Move To Folder",
-          "Soft Delete Message",
-          "Delete Message",
-        ],
+        refreshFunction: () => mailboxRulesRequest.refetch(),
+        isFetching: mailboxRulesRequest.isFetching,
+        simpleColumns: ["Enabled", "Name", "Description", "Priority"],
         actions: mailboxRuleActions,
         offCanvas: {
           children: (data) => {
@@ -244,11 +242,11 @@ const Page = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
-      isFetching={userRequest.isLoading}
+      isFetching={graphUserRequest.isLoading}
     >
       <CippApiResults apiObject={userRequest} errorsOnly={true} />
-      {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
-      {userRequest.isSuccess && (
+      {graphUserRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
+      {graphUserRequest.isSuccess && (
         <Box
           sx={{
             flexGrow: 1,
@@ -281,7 +279,9 @@ const Page = () => {
                 </Alert>
               </Grid>
             )}
-            {!userRequest?.data?.[0]?.Mailbox?.[0]?.error && (
+            {!userRequest?.data?.[0]?.Mailbox?.[0]?.error?.includes(
+              "Microsoft.Exchange.Configuration.Tasks.ManagementObjectNotFoundException"
+            ) && (
               <>
                 <Grid item size={4}>
                   <CippExchangeInfoCard exchangeData={data} isFetching={userRequest.isLoading} />

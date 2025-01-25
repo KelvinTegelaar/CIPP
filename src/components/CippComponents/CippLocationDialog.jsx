@@ -33,7 +33,7 @@ export const CippLocationDialog = ({ location }) => {
   return (
     <>
       <Button size="small" variant="outlined" onClick={handleOpen} startIcon={<LocationOn />}>
-        Show Map
+        {location.city}, {location.state}, {location.countryOrRegion}
       </Button>
       <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={open}>
         <DialogTitle>Location Details</DialogTitle>
