@@ -37,7 +37,7 @@ const Page = () => {
       type: "GET",
       url: "/api/ExecSendPush",
       data: {
-        UserEmail: "mail",
+        UserEmail: "UPN",
       },
       confirmText: "Are you sure you want to send an MFA request?",
       icon: <PhonelinkLock />,
