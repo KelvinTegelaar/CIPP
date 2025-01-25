@@ -232,9 +232,13 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
   }
 
   if (data?.enabled === true && data?.date) {
-    return isText
-      ? `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`
-      : `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`;
+    return isText ? (
+      `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`
+    ) : (
+      <>
+        Yes, Scheduled for <CippTimeAgo data={data.date} />
+      </>
+    );
   }
   if (data?.enabled === true || data?.enabled === false) {
     return isText ? (
