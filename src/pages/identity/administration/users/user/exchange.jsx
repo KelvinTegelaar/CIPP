@@ -18,6 +18,10 @@ import CippExchangeSettingsForm from "../../../../../components/CippFormPages/Ci
 import { useForm } from "react-hook-form";
 import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
+import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
+import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -52,6 +56,12 @@ const Page = () => {
   const calPermissions = ApiGetCall({
     url: `/api/ListCalendarPermissions?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `CalendarPermissions-${userId}`,
+    waiting: waiting,
+  });
+
+  const mailboxRulesRequest = ApiGetCall({
+    url: `/api/ListUserMailboxRules?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
+    queryKey: `MailboxRules-${userId}`,
     waiting: waiting,
   });
 
@@ -156,6 +166,79 @@ const Page = () => {
         })) || [],
     },
   ];
+
+  const mailboxRuleActions = [
+    {
+      label: "Remove Mailbox Rule",
+      type: "GET",
+      icon: <TrashIcon />,
+      url: "/api/ExecRemoveMailboxRule",
+      data: { ruleId: "Identity", userPrincipalName: "UserPrincipalName" },
+      confirmText: "Are you sure you want to remove this mailbox rule?",
+      multiPost: false,
+    },
+  ];
+
+  const mailboxRulesCard = [
+    {
+      id: 1,
+      cardLabelBox: {
+        cardLabelBoxHeader: mailboxRulesRequest.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : mailboxRulesRequest.data?.length !== 0 ? (
+          <Check />
+        ) : (
+          <Error />
+        ),
+      },
+      text: "Current Mailbox Rules",
+      subtext: mailboxRulesRequest.data?.length
+        ? "Mailbox rules are configured for this user"
+        : "No mailbox rules configured for this user",
+      statusColor: "green.main",
+      table: {
+        title: "Mailbox Rules",
+        hideTitle: true,
+        data: mailboxRulesRequest.data || [],
+        simpleColumns: [
+          "Enabled",
+          "Name",
+          "Description",
+          "Redirect To",
+          "Copy To Folder",
+          "Move To Folder",
+          "Soft Delete Message",
+          "Delete Message",
+        ],
+        actions: mailboxRuleActions,
+        offCanvas: {
+          children: (data) => {
+            const keys = Object.keys(data).filter(
+              (key) => !key.includes("@odata") && !key.includes("@data")
+            );
+            const properties = [];
+            keys.forEach((key) => {
+              if (data[key] && data[key].length > 0) {
+                properties.push({
+                  label: getCippTranslation(key),
+                  value: getCippFormatting(data[key], key),
+                });
+              }
+            });
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Rule Details"
+                propertyItems={properties}
+                actionItems={mailboxRuleActions}
+              />
+            );
+          },
+        },
+      },
+    },
+  ];
+
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
@@ -214,6 +297,11 @@ const Page = () => {
                       isFetching={calPermissions.isLoading}
                       items={calCard}
                       isCollapsible={calPermissions.data?.length !== 0}
+                    />
+                    <CippBannerListCard
+                      isFetching={mailboxRulesRequest.isLoading}
+                      items={mailboxRulesCard}
+                      isCollapsible={mailboxRulesRequest.data?.length !== 0}
                     />
                     <CippExchangeSettingsForm
                       userId={userId}
