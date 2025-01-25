@@ -1,4 +1,4 @@
-import SignInErrorCodes from "/src/data/SignInErrorCodes";
+import SignInErrorCodes from "/src/data/signInErrorCodes";
 
 export const getSignInErrorCodeTranslation = (errorCode) => {
   if (SignInErrorCodes.hasOwnProperty(String(errorCode))) {
