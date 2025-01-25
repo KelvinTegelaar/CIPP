@@ -42,6 +42,7 @@
     "cat": "Global Standards",
     "tag": ["lowimpact", "CIS", "mip_search_auditlog"],
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
+    "docsDescription": "",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
     "impact": "Low Impact",
@@ -54,6 +55,7 @@
     "cat": "Global Standards",
     "tag": ["lowimpact"],
     "helpText": "Adds branding to the logon page that only appears if the url is not login.microsoftonline.com. This potentially prevents AITM attacks via EvilNginx. This will also automatically generate alerts if a clone of your login page has been found when set to Remediate.",
+    "docsDescription": "",
     "addedComponent": [],
     "label": "Enable Phishing Protection system via branding CSS",
     "impact": "Low Impact",
@@ -71,6 +73,7 @@
     "cat": "Global Standards",
     "tag": ["lowimpact"],
     "helpText": "Sets the branding for the tenant. This includes the login page, and the Office 365 portal.",
+    "docsDescription": "",
     "addedComponent": [
       {
         "type": "textField",
@@ -2497,7 +2500,7 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
-    "recommendedBy": []
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.TeamsGlobalMeetingPolicy",
@@ -2768,16 +2771,16 @@
         "label": "Read Receipts Enabled Type",
         "options": [
           {
-        "label": "User controlled",
-        "value": "UserPreference"
+            "label": "User controlled",
+            "value": "UserPreference"
           },
           {
-        "label": "Turned on for everyone",
-        "value": "Everyone"
+            "label": "Turned on for everyone",
+            "value": "Everyone"
           },
           {
-        "label": "Turned off for everyone",
-        "value": "None"
+            "label": "Turned off for everyone",
+            "value": "None"
           }
         ]
       },
@@ -3066,8 +3069,8 @@
     "addedComponent": [
       {
         "type": "autoComplete",
-        "name": "TemplateList",
         "multiple": false,
+        "name": "TemplateList",
         "label": "Select Conditional Access Template",
         "api": {
           "url": "/api/ListCATemplates",
@@ -3138,5 +3141,259 @@
         }
       }
     ]
+  },
+  {
+    "name": "standards.dp.ApplicationSecurity",
+    "cat": "DP Application Security",
+    "tag": ["highimpact", "security", "applications"],
+    "helpText": "Controls for application security including credential management and registration",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Block Certificate Credentials for Applications",
+        "name": "standards.dp.ApplicationSecurity.BlockCertCredentials",
+        "required": true,
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "label": "Block Client Secret Credentials",
+        "name": "standards.dp.ApplicationSecurity.BlockClientSecrets",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP Application Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-AzureADPolicy",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.DeviceSecurity",
+    "cat": "DP Device Security",
+    "tag": ["highimpact", "security", "devices"],
+    "helpText": "Controls for device security including endpoint protection and compliance",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable Endpoint Protection",
+        "name": "standards.dp.DeviceSecurity.EnableEndpointProtection",
+        "required": true,
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "label": "Enable Device Compliance",
+        "name": "standards.dp.DeviceSecurity.EnableDeviceCompliance",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP Device Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-IntuneDeviceConfiguration",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.DLPSecurity",
+    "cat": "DP Data Loss Prevention",
+    "tag": ["highimpact", "security", "dlp"],
+    "helpText": "Data Loss Prevention controls for protecting sensitive information",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable DLP Policies",
+        "name": "standards.dp.DLPSecurity.EnableDLPPolicies",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP DLP Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-DlpCompliancePolicy",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.DNSSecurity",
+    "cat": "DP DNS Security",
+    "tag": ["mediumimpact", "security", "dns"],
+    "helpText": "DNS security controls for protecting domain infrastructure",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable DNS Filtering",
+        "name": "standards.dp.DNSSecurity.EnableDNSFiltering",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP DNS Security Standards",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-DNSServerConfiguration",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.EDiscoverySecurity",
+    "cat": "DP eDiscovery",
+    "tag": ["mediumimpact", "security", "compliance"],
+    "helpText": "eDiscovery and compliance controls for data governance",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable eDiscovery",
+        "name": "standards.dp.EDiscoverySecurity.EnableEDiscovery",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP eDiscovery Standards",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-ComplianceSearch",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.EmailSecurity",
+    "cat": "DP Email Security",
+    "tag": ["highimpact", "security", "email"],
+    "helpText": "Email security controls for protecting messaging infrastructure",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable Advanced Threat Protection",
+        "name": "standards.dp.EmailSecurity.EnableATP",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP Email Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-HostedContentFilterPolicy",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.ExchangeSecurity",
+    "cat": "DP Exchange Security",
+    "tag": ["highimpact", "security", "exchange"],
+    "helpText": "Exchange security controls for protecting email services",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable Exchange Online Protection",
+        "name": "standards.dp.ExchangeSecurity.EnableEOP",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP Exchange Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-ExchangeOnlineProtection",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.IdentitySecurity",
+    "cat": "DP Identity Security",
+    "tag": ["highimpact", "security", "identity"],
+    "helpText": "Identity security controls for protecting user accounts and access",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable Identity Protection",
+        "name": "standards.dp.IdentitySecurity.EnableIdentityProtection",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP Identity Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-AzureADIdentityProtection",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.LinkedInSecurity",
+    "cat": "DP LinkedIn Security",
+    "tag": ["lowimpact", "security", "social"],
+    "helpText": "LinkedIn integration security controls",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable LinkedIn Controls",
+        "name": "standards.dp.LinkedInSecurity.EnableControls",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP LinkedIn Security Standards",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-LinkedInIntegration",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.PowerShellSecurity",
+    "cat": "DP PowerShell Security",
+    "tag": ["highimpact", "security", "powershell"],
+    "helpText": "PowerShell security controls for protecting administrative access",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable PowerShell Security",
+        "name": "standards.dp.PowerShellSecurity.EnableSecurity",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP PowerShell Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-PSSessionConfiguration",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.SharePointSecurity",
+    "cat": "DP SharePoint Security",
+    "tag": ["highimpact", "security", "sharepoint"],
+    "helpText": "SharePoint security controls for protecting content and collaboration",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable SharePoint Security",
+        "name": "standards.dp.SharePointSecurity.EnableSecurity",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP SharePoint Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-SPOTenant",
+    "recommendedBy": ["DP Security Team"]
+  },
+  {
+    "name": "standards.dp.TeamsSecurity",
+    "cat": "DP Teams Security",
+    "tag": ["highimpact", "security", "teams"],
+    "helpText": "Teams security controls for protecting collaboration and communication",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Enable Teams Security",
+        "name": "standards.dp.TeamsSecurity.EnableSecurity",
+        "required": true,
+        "defaultValue": true
+      }
+    ],
+    "label": "DP Teams Security Standards",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-CsTeamsSecurityPolicy",
+    "recommendedBy": ["DP Security Team"]
   }
 ]

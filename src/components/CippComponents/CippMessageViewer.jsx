@@ -41,7 +41,7 @@ import {
 import { CippTimeAgo } from "./CippTimeAgo";
 import { CippCodeBlock } from "./CippCodeBlock";
 import DOMPurify from "dompurify";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import { FileDropzone } from "/src/components/file-dropzone.js";
 import CippPageCard from "../CippCards/CippPageCard";
 import {
@@ -237,7 +237,7 @@ export const CippMessageViewer = ({ emailSource }) => {
         setEmlError(false);
         if (ReadEmlJson.html) {
           var sanitizedHtml = DOMPurify.sanitize(ReadEmlJson.html);
-          var parsedHtml = ReactHtmlParser(sanitizedHtml);
+          var parsedHtml = parse(sanitizedHtml);
           if (ReadEmlJson.attachments) {
             ReadEmlJson.attachments.forEach((attachment) => {
               if (attachment.id) {
@@ -477,7 +477,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                       </ThemeProvider>
                     ) : (
                       <div className="mt-4">
-                        <CodeBlock
+                        <CippCodeBlock
                           code={emlContent?.text ?? "No text"}
                           language="plain"
                           showLineNumbers={false}

@@ -1,0 +1,48 @@
+{
+  "name": "standards.dp.ExchangeSecurity",
+  "cat": "Exchange Security Standards",
+  "tag": ["highimpact", "security", "exchange"],
+  "helpText": "Exchange Online security controls including mailbox delegation, protocols, and auditing",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Disable IMAP Protocol",
+      "name": "standards.dp.ExchangeSecurity.DisableIMAP",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Disable POP Protocol",
+      "name": "standards.dp.ExchangeSecurity.DisablePOP",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Disable SMTP Authentication",
+      "name": "standards.dp.ExchangeSecurity.DisableSMTPAuth",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Monitor Delegate Access",
+      "name": "standards.dp.ExchangeSecurity.MonitorDelegates",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Block External Forwarding",
+      "name": "standards.dp.ExchangeSecurity.BlockExternalForward",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP Exchange Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-CASMailbox, Set-Mailbox, Set-TransportRule",
+  "recommendedBy": ["CIS", "NIST"]
+}

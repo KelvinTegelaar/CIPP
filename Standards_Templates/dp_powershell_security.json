@@ -1,0 +1,34 @@
+{
+  "name": "standards.dp.PowerShellSecurity",
+  "cat": "PowerShell Security Standards",
+  "tag": ["highimpact", "security", "powershell"],
+  "helpText": "PowerShell security controls including module access and service principal configuration",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Disable MSOnline PowerShell Module",
+      "name": "standards.dp.PowerShellSecurity.DisableMSOL",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enforce Azure PowerShell Service Principal",
+      "name": "standards.dp.PowerShellSecurity.EnforceAzureSPN",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Configure Azure PowerShell SPN Settings",
+      "name": "standards.dp.PowerShellSecurity.ConfigureAzureSPN",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP PowerShell Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-MsolCompanySettings, Register-AzureADServicePrincipal",
+  "recommendedBy": ["CIS"]
+}

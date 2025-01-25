@@ -1,0 +1,48 @@
+{
+  "name": "standards.dp.IdentitySecurity",
+  "cat": "Identity Security Standards",
+  "tag": ["highimpact", "security", "identity"],
+  "helpText": "Identity security controls including password policies and self-service features",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Enable Self-Service Password Reset",
+      "name": "standards.dp.IdentitySecurity.EnableSSPR",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Disable SSPR Email Authentication",
+      "name": "standards.dp.IdentitySecurity.DisableSSPREmail",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable Password Expiration",
+      "name": "standards.dp.IdentitySecurity.EnablePwdExpiration",
+      "required": false,
+      "defaultValue": false
+    },
+    {
+      "type": "number",
+      "label": "Password Expiration Days",
+      "name": "standards.dp.IdentitySecurity.PwdExpirationDays",
+      "required": false,
+      "defaultValue": 90
+    },
+    {
+      "type": "switch",
+      "label": "Enable Password Sync",
+      "name": "standards.dp.IdentitySecurity.EnablePwdSync",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP Identity Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-MsolPasswordPolicy, Set-MsolDirSyncFeature",
+  "recommendedBy": ["CIS", "NIST"]
+}

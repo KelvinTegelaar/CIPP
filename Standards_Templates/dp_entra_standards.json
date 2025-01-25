@@ -1,0 +1,146 @@
+{
+  "name": "standards.dp.EntraStandards",
+  "cat": "Entra (AAD) Standards",
+  "tag": ["highimpact", "CIS", "security"],
+  "helpText": "Comprehensive Entra ID (Azure AD) security standards including authentication methods and access controls",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnableLAPS",
+      "label": "Enable LAPS",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnablePasswordless",
+      "label": "Enable Passwordless Authentication",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnableOTPAuth",
+      "label": "Enable OTP via Authenticator",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnableFIDO2",
+      "label": "Enable FIDO2 Capabilities",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnableHardwareOAuth",
+      "label": "Enable Hardware OAuth Tokens",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnableTAP",
+      "label": "Enable Temporary Access Passwords",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisablePasswordExpiry",
+      "label": "Disable Password Expiration",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableTenantCreation",
+      "label": "Disable M365 Tenant Creation",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnableAppConsent",
+      "label": "Enable App Consent Admin Requests",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableGroupCreation",
+      "label": "Disable M365 Group Creation",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableAppCreation",
+      "label": "Disable App Creation",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableSecurityGroupCreation",
+      "label": "Disable Security Group Creation",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableSelfServiceLicensing",
+      "label": "Disable Self Service Licensing",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.BlockInactiveGuests",
+      "label": "Block Inactive Guest Accounts",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.RequireAdminConsent",
+      "label": "Require Admin Consent for Apps",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.EnableSecurityDefaults",
+      "label": "Enable Security Defaults",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableSMSMFA",
+      "label": "Disable SMS as MFA Method",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableVoiceMFA",
+      "label": "Disable Voice Call as MFA Method",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "name": "standards.dp.EntraStandards.DisableEmailMFA",
+      "label": "Disable Email as MFA Method",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP Entra ID Security Standards",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-MsolCompanySettings, Set-AzureADPolicy",
+  "recommendedBy": ["CIS", "NIST"]
+}

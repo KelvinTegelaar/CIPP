@@ -1,0 +1,34 @@
+{
+  "name": "standards.dp.eDiscoverySecurity",
+  "cat": "eDiscovery Security Standards",
+  "tag": ["highimpact", "security", "compliance"],
+  "helpText": "eDiscovery and compliance security controls",
+  "addedComponent": [
+    {
+      "type": "switch",
+      "label": "Monitor eDiscovery Administrators",
+      "name": "standards.dp.eDiscoverySecurity.MonitorAdmins",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Enable Case Logging",
+      "name": "standards.dp.eDiscoverySecurity.EnableCaseLogging",
+      "required": true,
+      "defaultValue": true
+    },
+    {
+      "type": "switch",
+      "label": "Restrict eDiscovery Access",
+      "name": "standards.dp.eDiscoverySecurity.RestrictAccess",
+      "required": true,
+      "defaultValue": true
+    }
+  ],
+  "label": "DP eDiscovery Security Controls",
+  "impact": "High Impact",
+  "impactColour": "danger",
+  "powershellEquivalent": "Set-ComplianceCase, Set-ComplianceSearch",
+  "recommendedBy": ["CIS"]
+}
