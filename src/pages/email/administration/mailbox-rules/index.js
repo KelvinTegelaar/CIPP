@@ -7,14 +7,13 @@ import { CippPropertyListCard } from "../../../../components/CippCards/CippPrope
 
 const Page = () => {
   const pageTitle = "Mailbox Rules";
-  const simpleColumns = ["Name", "Priority", "Enabled", "UserPrincipalName", "From"];
   const actions = [
     {
       label: "Remove Mailbox Rule",
       type: "GET",
       icon: <TrashIcon />,
       url: "/api/ExecRemoveMailboxRule",
-      data: { ruleId: "Identity", userPrincipalName: "UserPrincipalName" },
+      data: { ruleId: "Identity", userPrincipalName: "UserPrincipalName", ruleName: "Name" },
       confirmText: "Are you sure you want to remove this mailbox rule?",
       multiPost: false,
     },
@@ -48,7 +47,8 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListMailboxRules"
-      simpleColumns={simpleColumns}
+      apiDataKey="Results"
+      simpleColumns={["Name", "Priority", "Enabled", "UserPrincipalName", "From"]}
       offCanvas={offCanvas}
       actions={actions}
     />
