@@ -28,6 +28,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { Grid } from "@mui/system";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
+import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
 
 const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultValues }) => {
   const fields = useWatch({ control: formControl.control, name: "fields" });
@@ -322,153 +323,176 @@ const Page = () => {
         <Grid item size={9}>
           {selectedTable && (
             <Box sx={{ width: "100%" }}>
-              <CippButtonCard
-                title="Table Filters"
-                cardSx={{ mb: 2 }}
-                accordionExpanded={accordionExpanded}
-                component="accordion"
-                CardButton={
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={filterFormControl.handleSubmit((data) => {
-                      var properties = getSelectedProps(data);
-                      setTableFilterParams({ ...data, Property: properties });
-                      handleRefresh();
-                      setAccordionExpanded(false);
-                    })}
-                  >
-                    Apply Filters
-                  </Button>
-                }
-              >
-                <Stack spacing={1}>
-                  <CippFormComponent
-                    type="textField"
-                    name="Filter"
-                    formControl={filterFormControl}
-                    label="OData Filter"
-                  />
-                  <CippFormComponent
-                    type="autoComplete"
-                    name="Property"
-                    formControl={filterFormControl}
-                    label="Property"
-                    options={getTableFields().map((field) => ({
-                      label: field?.label,
-                      value: field?.name,
-                    }))}
-                  />
-                  <Stack direction="row" spacing={1}>
-                    <CippFormComponent
-                      type="number"
-                      name="First"
-                      formControl={filterFormControl}
-                      label="First"
-                    />
-                    <CippFormComponent
-                      type="number"
-                      name="Skip"
-                      formControl={filterFormControl}
-                      label="Skip"
-                    />
-                  </Stack>
-                </Stack>
-              </CippButtonCard>
-              <CippDataTable
-                title={`${selectedTable}`}
-                data={tableData}
-                refreshFunction={handleRefresh}
-                isFetching={fetchTableData.isPending}
-                cardButton={
-                  <Stack direction="row" spacing={1}>
+              <Stack spacing={1}>
+                <CippButtonCard
+                  title="Table Filters"
+                  accordionExpanded={accordionExpanded}
+                  component="accordion"
+                  CardButton={
                     <Button
                       variant="contained"
                       color="primary"
                       size="small"
-                      onClick={() => {
+                      onClick={filterFormControl.handleSubmit((data) => {
+                        var properties = getSelectedProps(data);
+                        setTableFilterParams({ ...data, Property: properties });
+                        handleRefresh();
+                        setAccordionExpanded(false);
+                      })}
+                    >
+                      Apply Filters
+                    </Button>
+                  }
+                >
+                  <Stack spacing={1}>
+                    <CippFormComponent
+                      type="textField"
+                      name="Filter"
+                      formControl={filterFormControl}
+                      label="OData Filter"
+                    />
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="Property"
+                      formControl={filterFormControl}
+                      label="Property"
+                      options={getTableFields().map((field) => ({
+                        label: field?.label,
+                        value: field?.name,
+                      }))}
+                    />
+                    <Stack direction="row" spacing={1}>
+                      <CippFormComponent
+                        type="number"
+                        name="First"
+                        formControl={filterFormControl}
+                        label="First"
+                      />
+                      <CippFormComponent
+                        type="number"
+                        name="Skip"
+                        formControl={filterFormControl}
+                        label="Skip"
+                      />
+                    </Stack>
+                  </Stack>
+                </CippButtonCard>
+                <CippApiResults apiObject={tableRowAction} />
+                <CippDataTable
+                  title={`${selectedTable}`}
+                  data={tableData}
+                  refreshFunction={handleRefresh}
+                  isFetching={fetchTableData.isPending}
+                  cardButton={
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={() => {
+                          setDefaultAddEditValues({
+                            fields: getTableFields().map((field) => ({
+                              name: field?.name,
+                              value: "",
+                              type: field?.type,
+                            })),
+                          });
+                          addEditRowDialog.handleOpen();
+                        }} // Open add/edit row dialog
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <Add />
+                          </SvgIcon>
+                        }
+                      >
+                        Add Row
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        onClick={deleteTableDialog.handleOpen} // Open delete table dialog
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <TrashIcon />
+                          </SvgIcon>
+                        }
+                      >
+                        Delete Table
+                      </Button>
+                    </Stack>
+                  }
+                  actions={[
+                    {
+                      label: "Edit",
+                      type: "POST",
+                      icon: (
+                        <SvgIcon fontSize="small">
+                          <PencilIcon />
+                        </SvgIcon>
+                      ),
+                      customFunction: (row) => {
                         setDefaultAddEditValues({
-                          fields: getTableFields().map((field) => ({
-                            name: field?.name,
-                            value: "",
-                            type: field?.type,
-                          })),
+                          fields: Object.keys(row)
+                            .filter((key) => key !== "ETag" && key !== "Timestamp")
+                            .map((key) => {
+                              const value = row[key];
+                              let type = "textField";
+                              if (typeof value === "number") {
+                                type = "number";
+                              } else if (typeof value === "boolean") {
+                                type = "switch";
+                              }
+                              return { name: key, value: value, type: type };
+                            }),
                         });
                         addEditRowDialog.handleOpen();
-                      }} // Open add/edit row dialog
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <Add />
-                        </SvgIcon>
-                      }
-                    >
-                      Add Row
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      size="small"
-                      onClick={deleteTableDialog.handleOpen} // Open delete table dialog
-                      startIcon={
+                      },
+                      noConfirm: true,
+                      hideBulk: true,
+                    },
+                    {
+                      label: "Delete",
+                      type: "POST",
+                      icon: (
                         <SvgIcon fontSize="small">
                           <TrashIcon />
                         </SvgIcon>
-                      }
-                    >
-                      Delete Table
-                    </Button>
-                  </Stack>
-                }
-                actions={[
-                  {
-                    label: "Edit",
-                    type: "POST",
-                    icon: (
-                      <SvgIcon fontSize="small">
-                        <PencilIcon />
-                      </SvgIcon>
-                    ),
-                    customFunction: (row) => {
-                      setDefaultAddEditValues({
-                        fields: Object.keys(row)
-                          .filter((key) => key !== "ETag" && key !== "Timestamp")
-                          .map((key) => {
-                            const value = row[key];
-                            let type = "textField";
-                            if (typeof value === "number") {
-                              type = "number";
-                            } else if (typeof value === "boolean") {
-                              type = "switch";
-                            }
-                            return { name: key, value: value, type: type };
-                          }),
-                      });
-                      addEditRowDialog.handleOpen();
-                    },
-                    noConfirm: true,
-                  },
-                  {
-                    label: "Delete",
-                    type: "POST",
-                    icon: (
-                      <SvgIcon fontSize="small">
-                        <TrashIcon />
-                      </SvgIcon>
-                    ),
-                    url: apiUrl,
-                    data: {
-                      FunctionName: "Remove-AzDataTableEntity",
-                      TableName: `!${selectedTable}`,
-                      Parameters: {
-                        Entity: { RowKey: "RowKey", PartitionKey: "PartitionKey", ETag: "ETag" },
+                      ),
+                      url: apiUrl,
+                      customFunction: (row) => {
+                        var entity = [];
+                        if (Array.isArray(row)) {
+                          entity = row.map((r) => ({
+                            RowKey: r.RowKey,
+                            PartitionKey: r.PartitionKey,
+                            ETag: r.ETag,
+                          }));
+                        } else {
+                          entity = {
+                            RowKey: row.RowKey,
+                            PartitionKey: row.PartitionKey,
+                            ETag: row.ETag,
+                          };
+                        }
+                        tableRowAction.mutate({
+                          url: apiUrl,
+                          data: {
+                            FunctionName: "Remove-AzDataTableEntity",
+                            TableName: selectedTable,
+                            Parameters: {
+                              Entity: entity,
+                            },
+                          },
+                        });
                       },
+                      confirmText:
+                        "Do you want to delete the selected row(s)? This action cannot be undone.",
+                      multiPost: true,
                     },
-                    onSuccess: handleRefresh,
-                    confirmText: "Do you want to delete this row?",
-                  },
-                ]}
-              />
+                  ]}
+                />
+              </Stack>
             </Box>
           )}
         </Grid>

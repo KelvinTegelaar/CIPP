@@ -16,7 +16,7 @@ import { CippPropertyListCard } from "./CippPropertyListCard";
 import { CippDataTable } from "../CippTable/CippDataTable";
 
 export const CippBannerListCard = (props) => {
-  const { items = [], isCollapsible = false, isFetching = false, ...other } = props;
+  const { items = [], isCollapsible = false, isFetching = false, children, ...other } = props;
   const [expanded, setExpanded] = useState(null);
 
   const handleExpand = useCallback((itemId) => {
@@ -145,14 +145,18 @@ export const CippBannerListCard = (props) => {
                   {isCollapsible && (
                     <Collapse in={isExpanded}>
                       <Divider />
-                      {item?.propertyItems?.length > 0 && (
-                        <CippPropertyListCard
-                          propertyItems={item.propertyItems || []}
-                          layout="dual"
-                          isFetching={item.isFetching || false}
-                        />
-                      )}
-                      {item?.table && <CippDataTable {...item.table} />}
+                      <Stack spacing={1}>
+                        {item?.propertyItems?.length > 0 && (
+                          <CippPropertyListCard
+                            propertyItems={item.propertyItems || []}
+                            layout="dual"
+                            isFetching={item.isFetching || false}
+                          />
+                        )}
+                        {item?.table && <CippDataTable {...item.table} />}
+                        {item?.children && <Box sx={{ pl: 3 }}>{item.children}</Box>}
+                        {item?.actionButton && <Box sx={{ pl: 3, pb: 2 }}>{item.actionButton}</Box>}
+                      </Stack>
                     </Collapse>
                   )}
                 </li>
@@ -180,8 +184,12 @@ CippBannerListCard.propTypes = {
       subtext: PropTypes.string,
       statusColor: PropTypes.string,
       statusText: PropTypes.string,
+      actionButton: PropTypes.element,
       propertyItems: PropTypes.array,
+      table: PropTypes.object,
+      actionButton: PropTypes.element,
       isFetching: PropTypes.bool,
+      children: PropTypes.node,
     })
   ).isRequired,
   isCollapsible: PropTypes.bool,
