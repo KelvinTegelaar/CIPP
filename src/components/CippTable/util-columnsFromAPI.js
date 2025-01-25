@@ -30,12 +30,17 @@ const mergeKeys = (dataArray) => {
 
 export const utilColumnsFromAPI = (dataArray) => {
   const dataSample = mergeKeys(dataArray);
-
+  const skipRecursion = ["location"];
   const generateColumns = (obj, parentKey = "") => {
     return Object.keys(obj)
       .map((key) => {
         const accessorKey = parentKey ? `${parentKey}.${key}` : key;
-        if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+        if (
+          typeof obj[key] === "object" &&
+          obj[key] !== null &&
+          !Array.isArray(obj[key]) &&
+          !skipRecursion.includes(key)
+        ) {
           return generateColumns(obj[key], accessorKey);
         }
 
