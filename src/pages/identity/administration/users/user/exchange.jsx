@@ -242,11 +242,11 @@ const Page = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
-      isFetching={userRequest.isLoading}
+      isFetching={graphUserRequest.isLoading}
     >
       <CippApiResults apiObject={userRequest} errorsOnly={true} />
-      {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
-      {userRequest.isSuccess && (
+      {graphUserRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
+      {graphUserRequest.isSuccess && (
         <Box
           sx={{
             flexGrow: 1,

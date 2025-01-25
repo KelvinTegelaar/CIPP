@@ -22,13 +22,13 @@ const Page = () => {
   const actions = [
     {
       label: "Edit permissions",
-      link: "/identity/administration/users/user/exchange?userId=[Id]",
+      link: "/identity/administration/users/user/exchange?userId=[ExternalDirectoryObjectId]",
       color: "info",
       icon: <Key />,
     },
     {
       label: "Research Compromised Account",
-      link: "/identity/administration/users/user/bec?userId=[UPN]",
+      link: "/identity/administration/users/user/bec?userId=[ExternalDirectoryObjectId]",
       color: "info",
       icon: <MagnifyingGlassIcon />,
     },
