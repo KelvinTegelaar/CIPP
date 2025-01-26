@@ -457,22 +457,6 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Do not use - not intended for general use.",
-    "IsEnabled": true,
-    "IsSystem": true,
-    "Name": "Partner Tier1 Support",
-    "ObjectId": "4ba39ca4-527c-499a-b93d-d9b492c50246"
-  },
-  {
-    "ExtensionData": {},
-    "Description": "Do not use - not intended for general use.",
-    "IsEnabled": true,
-    "IsSystem": true,
-    "Name": "Partner Tier2 Support",
-    "ObjectId": "e00e864a-17c5-4a4b-9c06-f5b95a8d5bd8"
-  },
-  {
-    "ExtensionData": {},
     "Description": "Can reset passwords for non-administrators and Password Administrators.",
     "IsEnabled": true,
     "IsSystem": true,

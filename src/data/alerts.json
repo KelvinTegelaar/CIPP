@@ -22,12 +22,17 @@
   {
     "name": "InactiveLicensedUsers",
     "label": "Alert on licensed users that have not logged in for 90 days",
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Exclude disabled users?",
+    "inputName": "InactiveLicensedUsersExcludeDisabled",
     "recommendedRunInterval": "1d"
   },
   {
     "name": "QuotaUsed",
     "label": "Alert on % mailbox quota used",
     "requiresInput": true,
+    "inputType": "textField",
     "inputLabel": "Enter quota percentage",
     "inputName": "QuotaUsedQuota",
     "recommendedRunInterval": "4h"
@@ -36,8 +41,9 @@
     "name": "SharePointQuota",
     "label": "Alert on % SharePoint quota used",
     "requiresInput": true,
+    "inputType": "textField",
     "inputLabel": "Enter quota percentage",
-    "inputName": "SharePointQuotaQuota",
+    "inputName": "SharePointQuota",
     "recommendedRunInterval": "4h"
   },
   {
@@ -84,6 +90,11 @@
     "name": "AppleTerms",
     "label": "Alert on new Apple Business Manager terms",
     "recommendedRunInterval": "30d"
+  },
+  {
+    "name": "AppCertificateExpiry ",
+    "label": "Alert on expiring application certificates",
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "ApnCertExpiry",
