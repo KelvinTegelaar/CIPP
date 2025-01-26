@@ -44,6 +44,9 @@ const Page = () => {
   };
 
   const handleIntegrationTest = () => {
+    if (testQuery.waiting) {
+      actionTestResults.refetch();
+    }
     setTestQuery({
       url: "/api/ExecExtensionTest",
       data: {

@@ -1,8 +1,11 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { useSettings } from "/src/hooks/use-settings";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Devices";
+  const tenantFilter = useSettings().currentTenant;
 
   const actions = [
     {
@@ -95,6 +98,15 @@ const Page = () => {
       },
       confirmText:
         "Are you sure you want to update the Windows Defender signatures for this device?",
+    },
+    {
+      label: "View in InTune",
+      link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
+      color: "info",
+      icon: <EyeIcon />,
+      target: "_blank",
+      multiPost: false,
+      external: true,
     },
   ];
 
