@@ -13,6 +13,7 @@ const CippAddGroupTemplateForm = (props) => {
           type="textField"
           label="Display Name"
           name="displayName"
+          required
           formControl={formControl}
           fullWidth
         />
