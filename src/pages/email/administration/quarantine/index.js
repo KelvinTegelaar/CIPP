@@ -133,6 +133,19 @@ const Page = () => {
     actions: actions,
   };
 
+  const filterList = [
+    {
+      filterName: "Not Released",
+      value: [{ id: "ReleaseStatus", value: "NOTRELEASED" }],
+      type: "column",
+    },
+    {
+      filterName: "Released",
+      value: [{ id: "ReleaseStatus", value: "RELEASED" }],
+      type: "column",
+    },
+  ];
+
   return (
     <>
       <CippTablePage
@@ -141,6 +154,7 @@ const Page = () => {
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
+        filters={filterList}
       />
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg" fullWidth>
         <DialogTitle sx={{ py: 2 }}>
