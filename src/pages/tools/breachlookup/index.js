@@ -8,6 +8,7 @@ import {
   Link,
   Chip,
   Avatar,
+  Alert,
 } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
@@ -54,6 +55,12 @@ const Page = () => {
         <Grid container spacing={3}>
           <Grid container item spacing={4}>
             <Grid item spacing={4} xs={4}>
+              <Alert severity="info">
+                <Typography variant="body1" color="textPrimary">
+                  This page is in beta and may not always give expected results.
+                </Typography>
+              </Alert>
+
               <CippButtonCard title="Breach lookup">
                 <Grid container spacing={2}>
                   <Grid item xs={8}>
@@ -234,7 +241,6 @@ const Page = () => {
                           </Typography>
                         )}
                       </Grid>
-                      {console.log(getGeoIP.error)}
                     </Grid>
                   </CippButtonCard>
                 </Grid>

@@ -209,7 +209,7 @@ const AlertWizard = () => {
     const getInputParams = () => {
       if (values.command.value.requiresInput) {
         return {
-          [values.command.value.inputName]: values[values.command.value.inputName],
+          InputValue: values[values.command.value.inputName],
         };
       }
       return {};
@@ -521,7 +521,7 @@ const AlertWizard = () => {
                             <Grid item xs={12} md={12}>
                               {commandValue?.value?.requiresInput && (
                                 <CippFormComponent
-                                  type="textField"
+                                  type={commandValue.value?.inputType}
                                   name={commandValue.value?.inputName}
                                   formControl={formControl}
                                   label={commandValue.value?.inputLabel}
