@@ -1,23 +1,23 @@
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { useSettings } from "/src/hooks/use-settings";
 
 const Page = () => {
   const pageTitle = "Analytics Device Score Report";
+  const tenantFilter = useSettings().currentTenant;
 
   // Actions from the source file
   const actions = [
-    /* TODO: Add direct link to InTune Device
     {
-      label: "View Device",
-      type: "LINK",
-      link: "https://intune.microsoft.com/[tenant]/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]",
-      linkParams: {
-        tenant: "TenantFilter",
-        id: "id",
-      },
+      label: "View in InTune",
+      link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
+      color: "info",
       icon: <EyeIcon />,
-    },*/
+      target: "_blank",
+      multiPost: false,
+      external: true,
+    },
   ];
 
   // OffCanvas details based on the source file

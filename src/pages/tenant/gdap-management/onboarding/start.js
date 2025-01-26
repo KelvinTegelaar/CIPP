@@ -206,8 +206,8 @@ const Page = () => {
 
       var missingDefaults = [];
       cippDefaults.forEach((defaultRole) => {
-        if (!relationshipRoles?.find((role) => defaultRole.value === role.roleDefinitionId)) {
-          missingDefaults.push(role);
+        if (!relationshipRoles?.find((role) => defaultRole?.value === role?.roleDefinitionId)) {
+          missingDefaults.push(defaultRole);
         }
       });
       setMissingDefaults(missingDefaults.length > 0);
@@ -409,7 +409,9 @@ const Page = () => {
                     {(currentInvite || selectedRole) && rolesMissingFromRelationship.length > 0 && (
                       <Alert severity="warning">
                         The following roles are not mapped with the current template:{" "}
-                        {rolesMissingFromRelationship.map((role) => role.Name).join(", ")}
+                        {rolesMissingFromRelationship
+                          .map((role) => role?.Name ?? "Unknown Role")
+                          .join(", ")}
                       </Alert>
                     )}
                     {(currentInvite || selectedRole) &&
