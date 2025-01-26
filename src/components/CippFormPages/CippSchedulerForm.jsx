@@ -120,7 +120,12 @@ const CippSchedulerForm = (props) => {
         <Skeleton width={"100%"} />
       )}
       <Grid item xs={12} md={12}>
-        <CippFormTenantSelector label="Select a Tenant" formControl={formControl} type="single" />
+        <CippFormTenantSelector
+          label="Select a Tenant"
+          formControl={formControl}
+          type="single"
+          allTenants={true}
+        />
       </Grid>
 
       <Grid item xs={12} md={12}>
