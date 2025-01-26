@@ -8,12 +8,21 @@ const mergeKeys = (dataArray) => {
   return dataArray.reduce((acc, item) => {
     const mergeRecursive = (obj, base = {}) => {
       Object.keys(obj).forEach((key) => {
-        if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key]) && !skipRecursion.includes(key)) {
+        if (
+          typeof obj[key] === "object" &&
+          obj[key] !== null &&
+          !Array.isArray(obj[key]) &&
+          !skipRecursion.includes(key)
+        ) {
           if (typeof base[key] === "boolean") {
             // Skip merging if base[key] is a boolean
             return;
           }
-          base[key] = mergeRecursive(obj[key], base[key] || {});
+          if (typeof base[key] !== "object" || Array.isArray(base[key])) {
+            // Re-initialize base[key] if it's not an object
+            base[key] = {};
+          }
+          base[key] = mergeRecursive(obj[key], base[key]);
         } else if (typeof obj[key] === "boolean") {
           base[key] = obj[key];
         } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
