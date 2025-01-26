@@ -10,6 +10,8 @@ import {
   Typography,
   Chip,
   Stack,
+  Divider,
+  FormControlLabel,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -19,7 +21,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import WarningIcon from "@mui/icons-material/Warning";
 import HelpIcon from "@mui/icons-material/Help";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Controller, get, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
@@ -268,6 +270,60 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
             </>
           ),
         }
+      : type === "HTTPS"
+      ? {
+          children: (
+            <>
+              {data?.Tests?.map((test, index) => (
+                <>
+                  <CippPropertyListCard
+                    key={index}
+                    title={`Certificate info for ${test.Hostname}`}
+                    copyItems={true}
+                    showDivider={false}
+                    propertyItems={[
+                      {
+                        label: "Issuer",
+                        value:
+                          test.Certificate.Issuer.match(/O=([^,]+)/)?.[1] ||
+                          test.Certificate.Issuer,
+                      },
+                      {
+                        label: "Subject",
+                        value:
+                          test.Certificate.Subject.match(/CN=([^,]+)/)?.[1] ||
+                          test.Certificate.Subject,
+                      },
+                      {
+                        label: "Created",
+                        value: getCippFormatting(test.Certificate.NotBefore, "NotBefore"),
+                      },
+                      {
+                        label: "Expires",
+                        value: getCippFormatting(test.Certificate.NotAfter, "NotAfter"),
+                      },
+                      { label: "Serial Number", value: test.Certificate.SerialNumber },
+                      { label: "Thumbprint", value: test.Certificate.Thumbprint },
+                      {
+                        label: "DNS Names",
+                        value: getCippFormatting(
+                          test.Certificate.DnsNameList.map((dns) => dns.Unicode),
+                          "DNSName"
+                        ),
+                      },
+                    ]}
+                  />
+                  <ResultList
+                    passes={test.ValidationPasses}
+                    warns={test.ValidationWarns}
+                    fails={test.ValidationFails}
+                  />
+                  <Divider />
+                </>
+              ))}
+            </>
+          ),
+        }
       : {};
 
   return (
@@ -326,6 +382,9 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
   });
   const [optionsVisible, setOptionsVisible] = useState(false);
   const [domain, setDomain] = useState(propDomain);
+  const [selector, setSelector] = useState("");
+  const [spfRecord, setSpfRecord] = useState("");
+  const [subdomains, setSubdomains] = useState("");
   const enableHttps = watch("enableHttps");
 
   useEffect(() => {
@@ -337,6 +396,9 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
 
   const onSubmit = (values) => {
     setDomain(values.domain);
+    setSelector(values.dkimSelector);
+    setSpfRecord(values.spfRecord);
+    setSubdomains(values.subdomains);
   };
 
   const handleClear = () => {
@@ -344,6 +406,10 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
     setValue("spfRecord", "");
     setValue("dkimSelector", "");
     setValue("subdomains", "");
+    setDomain("");
+    setSelector("");
+    setSpfRecord("");
+    setSubdomains("");
   };
 
   // API calls with dynamic queryKey using domain
@@ -370,8 +436,8 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
 
   const { data: spfData, isFetching: spfLoading } = ApiGetCall({
     url: "/api/ListDomainHealth",
-    queryKey: `spf-${domain}`,
-    data: { Domain: domain, Action: "ReadSPFRecord" },
+    queryKey: `spf-${domain}-${spfRecord}`,
+    data: { Domain: domain, Action: "ReadSPFRecord", Record: spfRecord },
     waiting: !!domain,
   });
 
@@ -384,8 +450,8 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
 
   const { data: dkimData, isFetching: dkimLoading } = ApiGetCall({
     url: "/api/ListDomainHealth",
-    queryKey: `dkim-${domain}`,
-    data: { Domain: domain, Action: "ReadDkimRecord" },
+    queryKey: `dkim-${domain}-${selector}`,
+    data: { Domain: domain, Action: "ReadDkimRecord", Selector: selector },
     waiting: !!domain,
   });
 
@@ -401,6 +467,13 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
     queryKey: `mtasts-${domain}`,
     data: { Domain: domain, Action: "TestMtaSts" },
     waiting: !!domain,
+  });
+
+  const { data: httpsData, isFetching: httpsLoading } = ApiGetCall({
+    url: "/api/ListDomainHealth",
+    queryKey: `https-${domain}-${subdomains}`,
+    data: { Domain: domain, Action: "TestHttpsCertificate", Subdomains: subdomains },
+    waiting: !!domain && enableHttps,
   });
 
   // Adjust grid item size based on fullwidth prop
@@ -438,45 +511,50 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
               </Grid>
             </Grid>
             <Collapse in={optionsVisible}>
-              <Controller
-                name="spfRecord"
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} fullWidth label="SPF Record" className="mt-2" />
-                )}
-              />
-              <Controller
-                name="dkimSelector"
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} fullWidth label="DKIM Selector" className="mt-2" />
-                )}
-              />
-              <Controller
-                name="enableHttps"
-                control={control}
-                render={({ field }) => (
-                  <Switch {...field} checked={field.value} label="Enable HTTPS check" />
-                )}
-              />
-              {enableHttps && (
+              <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
                 <Controller
-                  name="subdomains"
+                  name="spfRecord"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} fullWidth label="HTTPS Subdomains" className="mt-2" />
+                    <TextField {...field} fullWidth label="SPF Record" className="mt-2" />
                   )}
                 />
-              )}
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<ClearIcon />}
-                onClick={handleClear}
-                className="mt-2"
-              >
-                Clear
-              </Button>
+                <Controller
+                  name="dkimSelector"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullWidth label="DKIM Selector" className="mt-2" />
+                  )}
+                />
+                <Controller
+                  name="enableHttps"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      control={<Switch {...field} checked={field.value} />}
+                      label="Enable HTTPS check"
+                    />
+                  )}
+                />
+                {enableHttps && (
+                  <Controller
+                    name="subdomains"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label="HTTPS Subdomains" className="mt-2" />
+                    )}
+                  />
+                )}
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<ClearIcon />}
+                  onClick={handleClear}
+                  className="mt-2"
+                >
+                  Clear
+                </Button>
+              </Stack>
             </Collapse>
           </CippButtonCard>
         </Grid>
@@ -605,6 +683,25 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
+            {enableHttps && (
+              <Grid item xs={12} md={gridItemSize}>
+                <DomainResultCard
+                  title="HTTPS Certificate"
+                  type="HTTPS"
+                  data={httpsData}
+                  isFetching={httpsLoading}
+                  info={
+                    <div>
+                      <ResultList
+                        passes={httpsData?.ValidationPasses}
+                        warns={httpsData?.ValidationWarns}
+                        fails={httpsData?.ValidationFails}
+                      />
+                    </div>
+                  }
+                />
+              </Grid>
+            )}
           </>
         )}
       </Grid>

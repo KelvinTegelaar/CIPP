@@ -86,6 +86,7 @@ const ApplicationDeploymentForm = () => {
         const formattedData = { ...data };
         formattedData.selectedTenants = selectedTenants.map((tenant) => ({
           defaultDomainName: tenant.value,
+          customerId: tenant.addedFields.customerId,
         }));
         return formattedData;
       }}
@@ -174,11 +175,12 @@ const ApplicationDeploymentForm = () => {
               />
             </Grid>
             {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={tenant.value || index}>
+              <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
+                {console.log(tenant)}
                 <CippFormComponent
                   type="textField"
                   label={`Datto ID for ${tenant.label}`}
-                  name={`params.dattoGuid.${tenant.value}`}
+                  name={`params.dattoGuid.${tenant.addedFields.customerId}`}
                   formControl={formControl}
                   validators={{ required: `Datto ID for ${tenant.label} is required` }}
                 />
@@ -194,11 +196,11 @@ const ApplicationDeploymentForm = () => {
             compareValue="syncro"
           >
             {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={tenant.value || index}>
+              <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
                 <CippFormComponent
                   type="textField"
                   label={`Client URL for ${tenant.label}`}
-                  name={`params.ClientURL.${tenant.value}`}
+                  name={`params.ClientURL.${tenant.addedFields.customerId}`}
                   formControl={formControl}
                   validators={{ required: `Client URL for ${tenant.label} is required` }}
                 />
@@ -215,11 +217,11 @@ const ApplicationDeploymentForm = () => {
             compareValue="immy"
           >
             {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={tenant.value || index}>
+              <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
                 <CippFormComponent
                   type="textField"
                   label={`Client URL for ${tenant.label}`}
-                  name={`params.ClientURL.${tenant.value}`}
+                  name={`params.ClientURL.${tenant.addedFields.customerId}`}
                   formControl={formControl}
                   validators={{ required: `Client URL for ${tenant.label} is required` }}
                 />
@@ -244,11 +246,11 @@ const ApplicationDeploymentForm = () => {
               />
             </Grid>
             {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={tenant.value || index}>
+              <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
                 <CippFormComponent
                   type="textField"
                   label={`Organization Key for ${tenant.label}`}
-                  name={`params.Orgkey.${tenant.value}`}
+                  name={`params.Orgkey.${tenant.addedFields.customerId}`}
                   formControl={formControl}
                   validators={{ required: `Organization Key for ${tenant.label} is required` }}
                 />
@@ -273,22 +275,22 @@ const ApplicationDeploymentForm = () => {
               />
             </Grid>
             {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={tenant.value || index}>
+              <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
                 <CippFormComponent
                   type="textField"
                   label={`Installer Token for ${tenant.label}`}
-                  name={`params.InstallerToken.${tenant.value}`}
+                  name={`params.InstallerToken.${tenant.addedFields.customerId}`}
                   formControl={formControl}
                   validators={{ required: `Installer Token for ${tenant.label} is required` }}
                 />
               </Grid>
             ))}
             {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={`${tenant.value}_location_${index}`}>
+              <Grid item xs={12} md={6} key={`${tenant.addedFields.customerId}_location_${index}`}>
                 <CippFormComponent
                   type="textField"
                   label={`Location ID for ${tenant.label}`}
-                  name={`params.LocationID.${tenant.value}`}
+                  name={`params.LocationID.${tenant.addedFields.customerId}`}
                   formControl={formControl}
                   validators={{ required: `Location ID for ${tenant.label} is required` }}
                 />
@@ -304,11 +306,11 @@ const ApplicationDeploymentForm = () => {
             compareValue="cwcommand"
           >
             {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={tenant.value || index}>
+              <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
                 <CippFormComponent
                   type="textField"
                   label={`Client URL for ${tenant.label}`}
-                  name={`params.ClientURL.${tenant.value}`}
+                  name={`params.ClientURL.${tenant.addedFields.customerId}`}
                   formControl={formControl}
                   validators={{ required: `Client URL for ${tenant.label} is required` }}
                 />
