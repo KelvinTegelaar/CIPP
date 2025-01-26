@@ -115,7 +115,7 @@ export const CippGDAPResults = (props) => {
       ) : (
         <>
           <List>
-            {gdapTests.map((test) => {
+            {gdapTests.map((test, index) => {
               var matchedResults = results?.Results?.[test.resultProperty]?.filter((item) =>
                 new RegExp(test.match)?.test(item?.[test.matchProperty])
               );
@@ -128,7 +128,7 @@ export const CippGDAPResults = (props) => {
               }
 
               return (
-                <ListItem sx={{ py: 0 }}>
+                <ListItem sx={{ py: 0 }} key={index}>
                   <Typography variant="body2">
                     <SvgIcon fontSize="sm" style={{ marginRight: 4 }}>
                       {testResult ? <CheckCircle /> : <XMarkIcon />}
