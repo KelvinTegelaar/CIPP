@@ -118,6 +118,7 @@ const Page = () => {
         "updatedAt",
         "updatedBy",
         "runManually",
+        "standards",
       ]}
       queryKey="listStandardTemplates"
     />

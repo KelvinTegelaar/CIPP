@@ -44,7 +44,7 @@ const CippIntegrationFieldMapping = () => {
       var missingMappings = [];
       fieldMapping?.data?.Mappings?.forEach((mapping) => {
         const exists = fieldMapping?.data?.IntegrationFields?.some(
-          (integrationField) => integrationField.value === mapping.IntegrationId
+          (integrationField) => String(integrationField.value) === mapping.IntegrationId
         );
         if (exists) {
           newMappings[mapping.RowKey] = {

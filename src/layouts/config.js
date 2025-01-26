@@ -236,7 +236,6 @@ export const nativeMenuItems = [
           { title: "Autopilot Devices", path: "/endpoint/autopilot/list-devices" },
           { title: "Add Autopilot Device", path: "/endpoint/autopilot/add-device" },
           { title: "Profiles", path: "/endpoint/autopilot/list-profiles" },
-          { title: "Add Profile", path: "/endpoint/autopilot/add-profile" },
           { title: "Status Pages", path: "/endpoint/autopilot/list-status-pages" },
           { title: "Add Status Page", path: "/endpoint/autopilot/add-status-page" },
         ],
@@ -377,6 +376,10 @@ export const nativeMenuItems = [
             title: "Shared Mailbox with Enabled Account",
             path: "/email/reports/SharedMailboxEnabledAccount",
           },
+          {
+            title: "Global Address List",
+            path: "/email/reports/global-address-list",
+          },
         ],
       },
     ],
@@ -421,14 +424,14 @@ export const nativeMenuItems = [
           { title: "Message Viewer", path: "/email/tools/message-viewer" },
         ],
       },
-      // {
-      //   title: "Dark Web Tools",
-      //   path: "/tools/darkweb",
-      //   items: [
-      //     { title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" },
-      //     { title: "Breach Lookup", path: "/tools/breachlookup" },
-      //   ],
-      // },
+      {
+        title: "Dark Web Tools",
+        path: "/tools/darkweb",
+        items: [
+          { title: "Tenant Breach Lookup", path: "/tools/tenantbreachlookup" },
+          { title: "Breach Lookup", path: "/tools/breachlookup" },
+        ],
+      },
       {
         title: "Template Library",
         path: "/tools/templatelib",
@@ -467,6 +470,11 @@ export const nativeMenuItems = [
           {
             title: "Timers",
             path: "/cipp/advanced/timers",
+            roles: ["superadmin"],
+          },
+          {
+            title: "Table Maintenance",
+            path: "/cipp/advanced/table-maintenance",
             roles: ["superadmin"],
           },
         ],
