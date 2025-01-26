@@ -75,6 +75,10 @@ const CippStandardsSideBar = ({
   edit,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [savedItem, setSavedItem] = useState(null);
+  const dialogAfterEffect = (id) => {
+    setSavedItem(id);
+  };
 
   const watchForm = useWatch({ control: formControl.control });
 
@@ -208,6 +212,7 @@ const CippStandardsSideBar = ({
       </ActionList>
       <Divider />
       <CippApiDialog
+        dialogAfterEffect={(data) => dialogAfterEffect(data.id)}
         createDialog={createDialog}
         title="Add Standard"
         api={{
@@ -223,12 +228,17 @@ const CippStandardsSideBar = ({
             templateName: "templateName",
             standards: "standards",
             ...(edit ? { GUID: "GUID" } : {}),
+            ...(savedItem ? { GUID: savedItem } : {}),
             runManually: "runManually",
           },
         }}
         row={formControl.getValues()}
         formControl={formControl}
-        relatedQueryKeys={"listStandardTemplates"}
+        relatedQueryKeys={[
+          "listStandardTemplates",
+          "listStandards",
+          `listStandardTemplates-${watchForm.GUID}`,
+        ]}
       />
     </Card>
   );

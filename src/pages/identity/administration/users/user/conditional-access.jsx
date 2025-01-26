@@ -25,12 +25,8 @@ const Page = () => {
   const { userId } = router.query;
 
   const tenant = userSettingsDefaults.currentTenant;
-  const currentSettings = userSettingsDefaults.currentSettings; // Assuming currentSettings is part of useSettings
+  const [formParams, setFormParams] = useState(false);
 
-  // State for form parameters
-  const [formParams, setFormParams] = useState(null);
-
-  // Fetch user details for the header
   const userRequest = ApiGetCall({
     url: `/api/ListUsers?UserId=${userId}&tenantFilter=${tenant}`,
     queryKey: `ListUsers-${userId}`,
@@ -101,7 +97,6 @@ const Page = () => {
                     Test policies
                   </Button>
                 }
-                cardLabelBox={currentSettings?.ForwardAndDeliver ? <Forward /> : "-"} // Optional: Display an icon or placeholder
               >
                 {/* Form Starts Here */}
                 <form id="ca-test-form" onSubmit={formControl.handleSubmit(onSubmit)}>
@@ -234,7 +229,7 @@ const Page = () => {
                 title={"CA Test Results"}
                 simple={true}
                 simpleColumns={["displayName", "state", "policyApplies", "reasons"]}
-                data={postRequest.data?.data?.Results?.value}
+                data={postRequest.data?.data?.Results?.value || []}
               />
             </Grid>
           </Grid>
