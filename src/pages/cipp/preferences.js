@@ -14,6 +14,24 @@ const Page = () => {
   const settings = useSettings();
   const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
 
+  // retrieve StaticWebAppsAuthCookie from browser cookies
+  const cookieString = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("StaticWebAppsAuthCookie="));
+  const StaticWebAppsAuthCookie = cookieString.split("=")[1];
+  // base64 decode the cookie and log
+  console.log(atob(StaticWebAppsAuthCookie));
+
+  // retrieve the expiration date of the cookie
+  const expires = cookieString.split(";").find((part) => part.trim().startsWith("expires="));
+  if (expires) {
+    const expirationDate = new Date(expires.split("=")[1]);
+    console.log("Cookie expiration date:", expirationDate);
+  } else {
+    console.log("No expiration date found for the cookie.");
+  }
+
+
   const addedAttributes = [
     { value: "consentProvidedForMinor", label: "consentProvidedForMinor" },
     { value: "employeeId", label: "employeeId" },
