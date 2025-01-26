@@ -22,7 +22,7 @@ const Page = () => {
       }
       title={pageTitle}
       apiDataKey="Results"
-      apiUrl={apiFilter.endpoint ? "/api/ListGraphRequest" : null}
+      apiUrl={apiFilter.endpoint ? "/api/ListGraphRequest" : "/api/ListEmptyResults"}
       apiData={apiFilter}
       queryKey={queryKey}
       /*Key={`${apiFilter.endpoint}-${apiFilter.$select}`}*/

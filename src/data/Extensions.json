@@ -334,7 +334,7 @@
     "logoDark": "/assets/integrations/pwpush_dark.png",
     "forceSyncButton": false,
     "description": "Enable the PasswordPusher integration to generate password links instead of plain text passwords.",
-    "helpText": "This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords.",
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords. If you are a PWPush Pro customer and utilizing custom domains, please do not enter your custom domain in the Base URL field.",
     "links": [
       {
         "name": "PWPush Documentation",
@@ -420,6 +420,46 @@
         "type": "switch",
         "name": "HIBP.Enabled",
         "label": "Enable Integration - Allow darkweb scanning through tools and alerts"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "CloudFlare ZTNA Tunnel",
+    "id": "CTZTNA",
+    "type": "ztna",
+    "cat": "Zero Trust Network Tunnel",
+    "logo": "/assets/integrations/cloudflare.png",
+    "forceSyncButton": false,
+    "hideTestButton": true,
+    "description": "Enter your CloudFlare ZTNA Tunnel API Credentials to use with other Integrations",
+    "helpText": "These credentials can be used to allow traffic through a CloudFlare ZTNA Tunnel if your other Integrations are protected behind one. You need to select 'Behind a CF-ZTNA Tunnel' within the other Integration's settings to enable.",
+    "links": [
+      {
+        "name": "CloudFlare ZTNA Tunnel Information",
+        "url": "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/"
+      },
+      {
+        "name": "Installing Hudu behind Cloudflare Zero Trust Tunnel",
+        "url": "https://support.hudu.com/hc/en-us/articles/13929358997399-Installing-Hudu-behind-Cloudflare-Zero-Trust-Tunnel"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "password",
+        "name": "CloudFlareClientID.APIKey",
+        "label": "CloudFlare Tunnel Service Account Client ID"
+      },
+      {
+        "type": "password",
+        "name": "CloudFlareAPIKey.APIKey",
+        "label": "CloudFlare Tunnel Service Account Client Secret"
+      },
+      {
+        "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
+        "type": "switch",
+        "name": "Hudu.CFEnabled",
+        "label": " Connect to HUDU through CloudFlare Tunnel with the above Service Account credentials."
       }
     ],
     "mappingRequired": false
