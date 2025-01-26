@@ -15,15 +15,6 @@ module.exports = {
     react: {
       version: 'detect',
     },
-    'import/resolver': {
-      // added for `import {component} from 'src/component' style imports`
-      'eslint-import-resolver-custom-alias': {
-        alias: {
-          src: './src',
-        },
-        extensions: ['.js', '.jsx', '.json'],
-      },
-    },
   },
   extends: [
     'eslint:recommended',
