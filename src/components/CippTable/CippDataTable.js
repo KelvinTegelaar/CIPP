@@ -46,6 +46,7 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
     noCard = false,
+    hideTitle = false,
     refreshFunction,
     incorrectDataMessage = "Data not in correct format",
     onChange,
@@ -156,6 +157,13 @@ export const CippDataTable = (props) => {
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
   const memoizedData = useMemo(() => usedData, [usedData]);
 
+  const handleActionDisabled = (row, action) => {
+    if (action?.condition) {
+      return !action.condition(row);
+    }
+    return false;
+  };
+
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,
@@ -173,7 +181,6 @@ export const CippDataTable = (props) => {
       ) : undefined,
     onColumnVisibilityChange: setColumnVisibility,
     ...modeInfo,
-
     renderRowActionMenuItems: actions
       ? ({ closeMenu, row }) => [
           actions.map((action, index) => (
@@ -195,6 +202,7 @@ export const CippDataTable = (props) => {
                   closeMenu();
                 }
               }}
+              disabled={handleActionDisabled(row.original, action)}
             >
               <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
                 {action.icon}
@@ -240,6 +248,7 @@ export const CippDataTable = (props) => {
               table={table}
               api={api}
               queryKey={queryKey}
+              simpleColumns={simpleColumns}
               data={data}
               columnVisibility={columnVisibility}
               getRequestData={getRequestData}
@@ -291,8 +300,12 @@ export const CippDataTable = (props) => {
       ) : (
         // Render the table inside a Card
         <Card style={{ width: "100%" }}>
-          <CardHeader action={cardButton} title={title} />
-          <Divider />
+          {cardButton || !hideTitle ? (
+            <>
+              <CardHeader action={cardButton} title={hideTitle ? "" : title} />
+              <Divider />
+            </>
+          ) : null}
           <CardContent sx={{ padding: "1rem" }}>
             <Scrollbar>
               {!Array.isArray(usedData) && usedData ? (
