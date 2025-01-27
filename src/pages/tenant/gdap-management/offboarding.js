@@ -7,7 +7,7 @@ import { CippFormComponent } from "/src/components/CippComponents/CippFormCompon
 import vendorTenantList from "/src/data/vendorTenantList";
 import { Box, Grid, Stack } from "@mui/system";
 import { Alert, Divider, Typography } from "@mui/material";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination } from "/src/api/ApiCall";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { Apps, Description, Widgets } from "@mui/icons-material";
@@ -60,7 +60,7 @@ const Page = () => {
     queryKey: "ListMSPApps-" + tenantId?.value,
   });
 
-  const vendorApps = ApiGetCall({
+  const vendorApps = ApiGetCallWithPagination({
     url: "/api/ListGraphRequest",
     data: {
       Endpoint: "servicePrincipals",
@@ -193,7 +193,7 @@ const Page = () => {
                       },
                       valueField: "appId",
                     }}
-                    disabled={vendorApps?.data?.Results?.length > 0 ? false : true}
+                    disabled={vendorApps?.data?.pages?.[0]?.Results?.length > 0 ? false : true}
                   />
                   <CippFormComponent
                     formControl={formControl}
