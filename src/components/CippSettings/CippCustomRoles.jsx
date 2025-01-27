@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import Grid from "@mui/material/Grid2";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { Save } from "@mui/icons-material";
@@ -67,10 +67,14 @@ export const CippCustomRoles = () => {
     queryKey: "customRoleList",
   });
 
-  const { data: tenants = [], isSuccess: tenantsSuccess } = ApiGetCall({
+  const {
+    data: { pages = [] } = {},
+    isSuccess: tenantsSuccess,
+  } = ApiGetCallWithPagination({
     url: "/api/ListTenants?AllTenantSelector=true",
     queryKey: "ListTenants-AllTenantSelector",
   });
+  const tenants = pages[0] || [];
 
   useEffect(() => {
     if (customRoleListSuccess && tenantsSuccess && selectedRole !== currentRole?.value) {
