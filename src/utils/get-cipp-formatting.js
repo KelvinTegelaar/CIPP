@@ -13,11 +13,13 @@ import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClip
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
 import CippDataTableButton from "../components/CippTable/CippDataTableButton";
 import { LinearProgressWithLabel } from "../components/linearProgressWithLabel";
+import { CippLocationDialog } from "../components/CippComponents/CippLocationDialog";
 import { isoDuration, en } from "@musement/iso-duration";
 import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
 import { getCippRoleTranslation } from "./get-cipp-role-translation";
 import { CogIcon, ServerIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { getCippTranslation } from "./get-cipp-translation";
+import { getSignInErrorCodeTranslation } from "./get-cipp-signin-errorcode-translation";
 
 export const getCippFormatting = (data, cellName, type, canReceive) => {
   const isText = type === "text";
@@ -59,6 +61,20 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
+  if (cellName === "prohibitSendReceiveQuotaInBytes" || cellName === "storageUsedInBytes") {
+    //convert bytes to GB
+    const bytes = data;
+    if (bytes === null || bytes === undefined) {
+      return isText ? (
+        "No data"
+      ) : (
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      );
+    }
+    const gb = bytes / 1024 / 1024 / 1024;
+    return isText ? `${gb.toFixed(2)} GB` : `${gb.toFixed(2)} GB`;
+  }
+
   if (cellName === "info.logoUrl") {
     return isText ? (
       data
@@ -94,6 +110,8 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     "purchaseDate",
     "NextOccurrence",
     "LastOccurrence",
+    "NotBefore",
+    "NotAfter",
   ];
 
   const matchDateTime = /[dD]ate[tT]ime/;
@@ -187,8 +205,8 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
         ? data.join(", ")
         : data.map((item) => (
             <CippCopyToClipBoard
-              key={`${item.label}`}
-              text={item.label ? item.label : item}
+              key={`${item?.label}`}
+              text={item?.label ? item?.label : item}
               type="chip"
             />
           ));
@@ -196,7 +214,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
       return isText ? (
         data
       ) : (
-        <CippCopyToClipBoard text={data.label ? data.label : data} type="chip" />
+        <CippCopyToClipBoard text={data?.label ? data?.label : data} type="chip" />
       );
     }
   }
@@ -216,9 +234,13 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
   }
 
   if (data?.enabled === true && data?.date) {
-    return isText
-      ? `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`
-      : `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`;
+    return isText ? (
+      `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`
+    ) : (
+      <>
+        Yes, Scheduled for <CippTimeAgo data={data.date} />
+      </>
+    );
   }
   if (data?.enabled === true || data?.enabled === false) {
     return isText ? (
@@ -337,13 +359,15 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
-  const translateProps = [
-    "riskLevel",
-    "riskState",
-    "riskDetail",
-    "enrollmentType",
-    "profileType",
-  ];
+  if (cellName === "status.errorCode") {
+    return getSignInErrorCodeTranslation(data);
+  }
+
+  if (cellName === "location" && data?.geoCoordinates) {
+    return isText ? JSON.stringify(data) : <CippLocationDialog location={data} />;
+  }
+
+  const translateProps = ["riskLevel", "riskState", "riskDetail", "enrollmentType", "profileType"];
 
   if (translateProps.includes(cellName)) {
     return getCippTranslation(data);
