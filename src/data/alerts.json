@@ -92,7 +92,7 @@
     "recommendedRunInterval": "30d"
   },
   {
-    "name": "AppCertificateExpiry ",
+    "name": "AppCertificateExpiry",
     "label": "Alert on expiring application certificates",
     "recommendedRunInterval": "1d"
   },
