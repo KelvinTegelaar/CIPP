@@ -40,12 +40,12 @@ const Page = () => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListGDAPRoleTemplatesAutocomplete"],
+    relatedQueryKeys: ["ListGDAPRoleTemplatesAutocomplete", "ListGDAPRoleTemplates"],
   });
 
   const templateList = ApiGetCall({
     url: "/api/ExecGDAPRoleTemplate",
-    queryKey: "ListGDAPRoleTemplatesAutocomplete",
+    queryKey: "ListGDAPRoleTemplates",
   });
   const selectedTemplate = useWatch({ control: formControl.control, name: "roleMappings" });
 
