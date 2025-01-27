@@ -1,6 +1,8 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { Book, DoDisturb, Done } from "@mui/icons-material";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 const Page = () => {
@@ -11,50 +13,59 @@ const Page = () => {
       label: "Create template based on rule",
       type: "POST",
       url: "/api/AddTransportTemplate",
-      data: {}, // No extra data was specified for this action in the original file
+      postEntireRow: true,
       confirmText: "Are you sure you want to create a template based on this rule?",
+      icon: <Book />,
     },
     {
       label: "Enable Rule",
       type: "POST",
       url: "/api/EditTransportRule",
       data: {
-        State: "Enable",
-        TenantFilter: "Tenant",
+        State: "!Enable",
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to enable this rule?",
+      icon: <Done />,
     },
     {
       label: "Disable Rule",
       type: "POST",
       url: "/api/EditTransportRule",
       data: {
-        State: "Disable",
-        TenantFilter: "Tenant",
+        State: "!Disable",
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to disable this rule?",
+      icon: <DoDisturb />,
     },
     {
       label: "Delete Rule",
       type: "POST",
       url: "/api/RemoveTransportRule",
       data: {
-        TenantFilter: "Tenant",
         GUID: "Guid",
       },
       confirmText: "Are you sure you want to delete this rule?",
       color: "danger",
+      icon: <TrashIcon />,
     },
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["CreatedBy", "LastModifiedBy", "Description"],
+    extendedInfoFields: [
+      "Guid",
+      "CreatedBy",
+      "LastModifiedBy",
+      "WhenChanged",
+      "Name",
+      "Comments",
+      "Description",
+    ],
     actions: actions,
   };
 
-  const simpleColumns = ["Name", "State", "Mode", "RuleErrorAction"];
+  const simpleColumns = ["Name", "State", "Mode", "RuleErrorAction", "WhenChanged", "Comments"];
 
   return (
     <CippTablePage
@@ -63,6 +74,18 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      filters={[
+        {
+          filterName: "Enabled Rules",
+          value: [{ id: "State", value: "Enabled" }],
+          type: "column",
+        },
+        {
+          filterName: "Disabled Rules",
+          value: [{ id: "State", value: "Disabled" }],
+          type: "column",
+        },
+      ]}
       cardButton={
         <>
           <Button component={Link} href="/email/transport/list-rules/add">
