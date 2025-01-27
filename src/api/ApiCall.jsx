@@ -190,7 +190,11 @@ export function ApiGetCallWithPagination({
       return response.data;
     },
     getNextPageParam: (lastPage) => {
-      if (data?.noPagination || data?.manualPagination === false) {
+      if (
+        data?.noPagination ||
+        data?.manualPagination === false ||
+        data?.tenantFilter === "AllTenants"
+      ) {
         return undefined;
       }
       return lastPage?.Metadata?.nextLink ? { nextLink: lastPage.Metadata.nextLink } : undefined;
