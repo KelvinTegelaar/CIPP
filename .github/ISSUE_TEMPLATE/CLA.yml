@@ -1,0 +1,54 @@
+name: CLA - Contributor License Agreement
+description: Sign the CLA for CIPP and CIPP-API
+labels: [CLA]
+
+body:
+- type: markdown
+  attributes:
+    value: >
+      CONTRIBUTOR LICENSE AGREEMENT ("Agreement")
+
+      Version 1.0
+
+      1. Definitions
+
+      "Contribution" means any original work of authorship, including any modifications or additions to an existing work, that is intentionally submitted by You to Kelvin Tegelaar for inclusion in, or documentation of, any of the products owned or managed by Kelvin Tegelaar (the "Work"). For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to Kelvin Tegelaar or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, Kelvin Tegelaar for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by You as "Not a Contribution."
+
+      "You" (or "Your") means the copyright owner or legal entity authorized by the copyright owner that is making this Agreement with Kelvin Tegelaar. For legal entities, the entity making a Contribution and all other entities that control, are controlled by, or are under common control with that entity are considered to be a single contributor. This Agreement applies both to future Contributions and Contributions made prior to the date of this Agreement.
+
+      2. Grant of Copyright License
+
+      Subject to the terms and conditions of this Agreement, You hereby grant to Kelvin Tegelaar and to recipients of software distributed by Kelvin Tegelaar a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute Your Contributions and such derivative works for the purpose of dual licensing the application.
+
+      3. Grant of Patent License
+
+      You grant Kelvin Tegelaar, and those who receive the Contribution directly or indirectly from Kelvin Tegelaar, a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license under Your patent claims that are necessarily infringed by the Contribution or the combination of the Contribution with the Project to which it was submitted, to make, have made, use, offer to sell, sell, import, and otherwise dispose of the Contribution alone or with the Project.
+
+      4. Other Rights Reserved
+
+      Each party reserves all rights not expressly granted in this Agreement. No additional licenses or rights whatsoever (including, without limitation, any implied licenses) are granted by implication, exhaustion, estoppel, or otherwise.
+
+      You are not expected to provide support for your Contributions, except to the extent you desire to provide
+      support. You may provide support for free, for a fee, or not at all. Unless required by applicable law or agreed to in
+      writing, you provide your Contributions on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+      ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES
+      OR CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A
+      PARTICULAR PURPOSE.
+
+      5. Representations
+
+      You represent that you are legally entitled to grant the above licenses. If your employer(s) has rights to intellectual property that you create, you represent that you have received permission to make Contributions on behalf of that employer, or that your employer has waived such rights for your Contributions to Kelvin Tegelaar.
+
+      You represent that each of Your Contributions is Your original creation. You represent that Your Contribution submissions include complete details of any third-party license or other restriction (including, but not limited to, related patents and trademarks) of which you are personally aware and which are associated with any part of Your Contributions.
+
+      6. Project Sale 
+
+      In the event that the Project is sold or otherwise transferred in ownership in its entirety to a third party, a sum equivalent to fifteen percent (15%) of the total sale price or value of the consideration received shall be set aside. This sum shall be divided amongst all Contributors who have entered into this Agreement, with each Contributor receiving a portion proportional to the relative quantity and significance of their Contributions to the Project, as determined by Kelvin Tegelaar. The method and timeframe of the distribution shall be at the discretion of Kelvin Tegelaar and shall be communicated
+
+- type: textarea
+  attributes:
+    label: Description
+    description: >
+          Type "I Agree" in the text area.
+  validations:
+    required: true

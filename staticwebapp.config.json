@@ -1,0 +1,138 @@
+{
+  "routes": [
+    {
+      "route": "_next/static/*",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "*.{png,jpg,gif,xml,ico,css,js}",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "/assets/*",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "/login",
+      "rewrite": "/.auth/login/aad"
+    },
+    {
+      "route": "/.auth/login/twitter",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/login/github",
+      "statusCode": 404
+    },
+    {
+      "route": "/logout",
+      "redirect": "/.auth/logout?post_logout_redirect_uri=/LogoutRedirect"
+    },
+    {
+      "route": "/api/ExecSAMSetup",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
+    },
+    {
+      "route": "/api/AddStandardTemplate",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/RemoveStandardTemplate",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/LogoutRedirect",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
+    },
+    {
+      "route": "/404",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
+    },
+    {
+      "route": "/api/RemoveStandard",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/add*",
+      "allowedRoles": ["admin", "editor"]
+    },
+    {
+      "route": "/api/edit*",
+      "allowedRoles": ["admin", "editor"]
+    },
+    {
+      "route": "/api/ExecSendPush",
+      "allowedRoles": ["admin", "editor", "readonly"]
+    },
+    {
+      "route": "/api/ExecExcludeTenant",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/Exec*",
+      "allowedRoles": ["admin", "editor"]
+    },
+    {
+      "route": "/api/Remove*",
+      "allowedRoles": ["admin", "editor"]
+    },
+    {
+      "route": "/cipp/*",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/tenant/standards/*",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/",
+      "allowedRoles": ["admin", "editor", "readonly", "reader"]
+    },
+    {
+      "route": "/api/Public*",
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
+    },
+    {
+      "route": "*",
+      "allowedRoles": ["admin", "editor", "readonly", "reader"]
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": [
+      "_next/static/*",
+      "/css/*",
+      "public/*",
+      "assets/*",
+      "favicon.ico",
+      "robots.txt",
+      "sitemap.xml",
+      "manifest.json"
+    ]
+  },
+  "responseOverrides": {
+    "401": {
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=.referrer",
+      "statusCode": 302,
+      "exclude": ["/assets/illustrations/*.{png,jpg,gif}", "/css/*"]
+    },
+    "403": {
+      "rewrite": "/403"
+    },
+    "404": {
+      "rewrite": "/404"
+    }
+  },
+  "globalHeaders": {
+    "content-security-policy": "default-src https: blob: 'unsafe-eval' 'unsafe-inline'; object-src 'self' blob:; img-src 'self' blob: data: *"
+  },
+  "mimeTypes": {
+    ".json": "text/json"
+  }
+}

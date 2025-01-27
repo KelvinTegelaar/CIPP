@@ -1,0 +1,32 @@
+name: ✨ Feature request
+description: Suggest a new feature or improvement
+title: '[Feature Request]: '
+labels: [enhancement, no-priority]
+
+body:
+- type: markdown
+  attributes:
+    value: >
+      Thanks for suggesting a feature!
+      
+      - Please search the existing feature request to see if there has been a similar issue filed.
+      
+      - If a feature has been filed before, but not followed up by a contributor, you can develop the feature yourself by checking the development documentation [here](https://docs.cipp.app/dev-documentation/cipp-dev-guide/setting-up-for-local-development).
+      
+      - Repeat feature requests are allowed if the previous request has been closed for more than 30 days
+      
+      - drive-by feature requests without effort will be closed.
+      
+      - A feature request has 14 days to be fullfilled before automatically being closed. if you want to work on the feature yourself use the phrase "I'd like to work on this please!"
+      
+      - Feature requests that are detrimental to security will also be closed without notice.
+- type: textarea
+  attributes:
+    label: Description of the new feature - must be an in-depth explanation of the feature you want, reasoning why, and the added benefits for MSPs as a whole.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: PowerShell commands you would normally use to achieve above request
+  validations:
+    required: false
