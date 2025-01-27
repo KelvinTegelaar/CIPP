@@ -13,7 +13,7 @@ jobs:
       - name: Check for Changed Files
         uses: brettcannon/check-for-changed-files@v1.1.0
         with:
-          file-pattern: version.json
+          file-pattern: public/version.json
           failure-message: "You have not updated version.json. This is a required file to update at each PR. Please sync your latest changes and update the version number."
       - name: Prevent changes to workflow files
         uses: DovnarAlexander/github-action-file-detection@v0.3.0
