@@ -2,17 +2,27 @@ import { getCippFilterVariant } from "../../utils/get-cipp-filter-variant";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 
+const skipRecursion = ["location"];
 // Function to merge keys from all objects in the array
 const mergeKeys = (dataArray) => {
   return dataArray.reduce((acc, item) => {
     const mergeRecursive = (obj, base = {}) => {
       Object.keys(obj).forEach((key) => {
-        if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+        if (
+          typeof obj[key] === "object" &&
+          obj[key] !== null &&
+          !Array.isArray(obj[key]) &&
+          !skipRecursion.includes(key)
+        ) {
           if (typeof base[key] === "boolean") {
             // Skip merging if base[key] is a boolean
             return;
           }
-          base[key] = mergeRecursive(obj[key], base[key] || {});
+          if (typeof base[key] !== "object" || Array.isArray(base[key])) {
+            // Re-initialize base[key] if it's not an object
+            base[key] = {};
+          }
+          base[key] = mergeRecursive(obj[key], base[key]);
         } else if (typeof obj[key] === "boolean") {
           base[key] = obj[key];
         } else if (typeof obj[key] === "string" && obj[key].toUpperCase() === "FAILED") {
@@ -35,7 +45,12 @@ export const utilColumnsFromAPI = (dataArray) => {
     return Object.keys(obj)
       .map((key) => {
         const accessorKey = parentKey ? `${parentKey}.${key}` : key;
-        if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+        if (
+          typeof obj[key] === "object" &&
+          obj[key] !== null &&
+          !Array.isArray(obj[key]) &&
+          !skipRecursion.includes(key)
+        ) {
           return generateColumns(obj[key], accessorKey);
         }
 

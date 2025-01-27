@@ -5,7 +5,7 @@ import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Alert, CardContent, Stack, Typography } from "@mui/material";
 import { WarningAmberOutlined } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-import { ApiGetCall } from "../../../api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination } from "../../../api/ApiCall";
 import { useEffect } from "react";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import GDAPRoles from "/src/data/GDAPRoles";
@@ -23,10 +23,11 @@ const Page = () => {
     queryKey: "ExecSAMRoles",
   });
 
-  const { data: tenants = [], isSuccess: tenantsSuccess } = ApiGetCall({
+  const { data: tenantsData = { pages: [] }, isSuccess: tenantsSuccess } = ApiGetCallWithPagination({
     url: "/api/ListTenants?AllTenantSelector=true",
     queryKey: "ListTenants-AllTenantSelector",
   });
+  const tenants = tenantsData?.pages?.[0] || [];
 
   useEffect(() => {
     if (execSAMRoles.isSuccess && tenantsSuccess) {

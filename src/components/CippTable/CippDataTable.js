@@ -248,6 +248,7 @@ export const CippDataTable = (props) => {
               table={table}
               api={api}
               queryKey={queryKey}
+              simpleColumns={simpleColumns}
               data={data}
               columnVisibility={columnVisibility}
               getRequestData={getRequestData}

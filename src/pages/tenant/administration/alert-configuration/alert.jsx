@@ -209,7 +209,7 @@ const AlertWizard = () => {
     const getInputParams = () => {
       if (values.command.value.requiresInput) {
         return {
-          [values.command.value.inputName]: values[values.command.value.inputName],
+          InputValue: values[values.command.value.inputName],
         };
       }
       return {};

@@ -11,22 +11,68 @@ import { CippCopyToClipBoard } from "../../../../../components/CippComponents/Ci
 import { Box, Stack } from "@mui/system";
 import Grid from "@mui/material/Grid2";
 import { CippUserInfoCard } from "../../../../../components/CippCards/CippUserInfoCard";
-import { Typography } from "@mui/material";
+import { SvgIcon, Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { useEffect, useState } from "react";
-import { usePopover } from "../../../../../hooks/use-popover";
-import { useDialog } from "../../../../../hooks/use-dialog";
 import CippUserActions from "/src/components/CippComponents/CippUserActions";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import dynamic from "next/dynamic";
+const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), { ssr: false });
+
+import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { CippPropertyList } from "../../../../../components/CippComponents/CippPropertyList";
+
+const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+      <DialogTitle sx={{ py: 2 }}>
+        Sign-In Logs
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{ position: "absolute", right: 8, top: 8 }}
+        >
+          <Close />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>
+        <CippDataTable
+          noCard={true}
+          title="Sign-In Logs"
+          simpleColumns={[
+            "createdDateTime",
+            "status",
+            "ipAddress",
+            "clientAppUsed",
+            "resourceDisplayName",
+            "status.errorCode",
+            "location",
+          ]}
+          api={{
+            url: "/api/ListUserSigninLogs",
+            data: {
+              UserId: userId,
+              tenantFilter: tenantFilter,
+              top: 50,
+            },
+            queryKey: `ListSignIns-${userId}`,
+          }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 const Page = () => {
-  const popover = usePopover();
-  const createDialog = useDialog();
   const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { userId } = router.query;
   const [waiting, setWaiting] = useState(false);
+  const [signInLogsDialogOpen, setSignInLogsDialogOpen] = useState(false);
+
   useEffect(() => {
     if (userId) {
       setWaiting(true);
@@ -112,6 +158,20 @@ const Page = () => {
       subtext: `Logged into application ${signInData.resourceDisplayName || "Unknown Application"}`,
       statusColor: signInData.status.errorCode === 0 ? "success.main" : "error.main",
       statusText: signInData.status.errorCode === 0 ? "Success" : "Failed",
+      actionButton: (
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => setSignInLogsDialogOpen(true)}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <EyeIcon />
+            </SvgIcon>
+          }
+        >
+          More Sign-In Logs
+        </Button>
+      ),
       propertyItems: [
         {
           label: "Client App Used",
@@ -131,6 +191,39 @@ const Page = () => {
           value: signInData.status?.additionalDetails || "N/A",
         },
       ],
+      children: (
+        <>
+          {signInData?.location && (
+            <>
+              <Typography variant="h6">Location</Typography>
+              <Grid container spacing={2}>
+                <Grid item size={8}>
+                  <CippMap
+                    markers={[
+                      {
+                        position: [
+                          signInData.location.geoCoordinates.latitude,
+                          signInData.location.geoCoordinates.longitude,
+                        ],
+                        popup: `${signInData.location.city}, ${signInData.location.state}, ${signInData.location.countryOrRegion}`,
+                      },
+                    ]}
+                  />
+                </Grid>
+                <Grid item size={4}>
+                  <CippPropertyList
+                    propertyItems={[
+                      { label: "City", value: signInData.location.city },
+                      { label: "State", value: signInData.location.state },
+                      { label: "Country/Region", value: signInData.location.countryOrRegion },
+                    ]}
+                  />
+                </Grid>
+              </Grid>
+            </>
+          )}
+        </>
+      ),
     };
 
     // Prepare the conditional access policies items
@@ -459,6 +552,12 @@ const Page = () => {
           </Grid>
         </Box>
       )}
+      <SignInLogsDialog
+        open={signInLogsDialogOpen}
+        onClose={() => setSignInLogsDialogOpen(false)}
+        userId={userId}
+        tenantFilter={userSettingsDefaults.currentTenant}
+      />
     </HeaderedTabbedLayout>
   );
 };
