@@ -30,7 +30,13 @@ Before starting, ensure you have the following:
 
 * **backendFuncType**: The type of function app to deploy. Valid values are `proc`, `auditlog`, `standards`, and `usertasks`. For the first offloading function, you should always deploy the `proc` type. You can deploy additional function apps for specific workloads beyond that.
 
-#### ARM Template for Offloading
+{% hint style="warning" %}
+If you have migrated your resources to another resource group or subscription, you will want to use the second template below for Custom Function Apps.
+{% endhint %}
+
+<details>
+
+<summary>ARM Template for Offloading (Default)</summary>
 
 ```json
 {
@@ -171,6 +177,162 @@ Before starting, ensure you have the following:
 }
 ```
 
+
+
+</details>
+
+<details>
+
+<summary>ARM Template for Offloading (Custom Function App)</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "funcAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Function app name"
+      }
+    },
+    "backendFuncType": {
+      "type": "string",
+      "metadata": {
+        "description": "Type of function app"
+      },
+      "allowedValues": [
+        "proc",
+        "auditlog",
+        "standards",
+        "usertasks"
+      ]
+    }
+  },
+  "variables": {
+    "funcAppName": "[concat(parameters('funcAppName'),'-',parameters('backendFuncType'))]",
+    "suffix": "[replace(parameters('funcAppName'), 'cipp', '')]",
+    "funcStorageName": "[tolower(concat('cippstg', variables('suffix')))]",
+    "serverFarmName": "[concat('cipp-srv-', variables('suffix'),parameters('backendFuncType'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2018-02-01",
+      "name": "[variables('serverFarmName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y",
+        "capacity": 0
+      },
+      "properties": {
+        "perSiteScaling": false,
+        "maximumElasticWorkerCount": 1,
+        "isSpot": false,
+        "reserved": false,
+        "isXenon": false,
+        "hyperV": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0,
+        "name": "[variables('serverFarmName')]",
+        "computeMode": "Dynamic"
+      }
+    },
+    {
+      "apiVersion": "2015-08-01",
+      "type": "Microsoft.Web/sites",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "name": "[variables('funcAppName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "functionapp",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms',variables('serverFarmName'))]"
+      ],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
+        "siteConfig": {
+          "Use32BitWorkerProcess": false,
+          "powerShellVersion": "7.4",
+          "appSettings": [
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('funcStorageName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageName')),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[variables('funcAppName')]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "powershell"
+            },
+            {
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
+            },
+            {
+              "name": "CIPP_PROCESSOR",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[concat(variables('funcAppName'), '/ZipDeploy')]",
+      "type": "Microsoft.Web/sites/extensions",
+      "apiVersion": "2021-02-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"
+      ],
+      "properties": {
+        "packageUri": "https://cippreleases.blob.core.windows.net/cipp-api/latest.zip"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/accessPolicies",
+      "name": "[concat(parameters('funcAppName'), '/add')]",
+      "apiVersion": "2019-09-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"
+      ],
+      "properties": {
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantid]",
+            "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
+            "permissions": {
+              "keys": [],
+              "secrets": [ "all" ],
+              "certificates": []
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {}
+}
+
+```
+
+</details>
+
 ### Deploying the ARM Template
 
 You can deploy the ARM template to your Azure resource group using the Azure Portal, Azure CLI or PowerShell.
@@ -225,6 +387,8 @@ After successful deployment of the offloading function apps, follow these steps 
 2. Under Function Offloading, toggle the Offload Functions button and hit Save.
 
 ***
+
+###
 
 ### Feature Requests / Ideas
 
