@@ -343,6 +343,7 @@ To deploy a custom ARM template using the Azure Portal, follow these steps:
 
 1. **Navigate to the Azure Portal**: Go to [https://portal.azure.com](https://portal.azure.com) and sign in with your credentials.
 2. **Deploy**: In the search bar at the top of the portal, type **"Deploy a custom template"** and select the result that appears.
+   1. If you are using the Custom Function App template, you will be prompted at this stage to enter your Azure Function App name.
 3. **Template Options**:
    * On the **Custom deployment** page, click the **Build your own template in the editor** option.
 4. **Paste the ARM Template**:
