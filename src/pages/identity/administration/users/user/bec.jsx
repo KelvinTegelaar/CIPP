@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { CheckCircle, Download, Mail } from "@mui/icons-material";
+import { CheckCircle, Download, Mail, Fingerprint } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
@@ -142,34 +142,32 @@ const Page = () => {
     return "No mailbox permission changes found.";
   };
 
+  const subtitle = userRequest.isSuccess
+    ? [
+        {
+          icon: <Mail />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
+        },
+        {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
+        },
+        {
+          icon: <CalendarIcon />,
+          text: (
+            <>
+              Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
+            </>
+          ),
+        },
+      ]
+    : [];
+
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={userRequest.isSuccess ? userRequest.data?.[0]?.displayName : ""}
-      subtitle={
-        userRequest.isSuccess
-          ? [
-              {
-                icon: <Mail />,
-                text: (
-                  <CippCopyToClipBoard
-                    type="chip"
-                    text={userRequest.data?.[0]?.userPrincipalName}
-                  />
-                ),
-              },
-              {
-                icon: <CalendarIcon />,
-                text: (
-                  <>
-                    Created:{" "}
-                    <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
-                  </>
-                ),
-              },
-            ]
-          : []
-      }
+      subtitle={subtitle}
       isFetching={userRequest.isFetching}
     >
       {/* Loading State: Show only Remediation Card and Check 1 with Loading Skeleton */}
