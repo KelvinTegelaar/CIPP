@@ -66,6 +66,10 @@ For **typical** updates (e.g., moving from any v7+ patch releases):
 
 The v7 front-end introduced a **Next.js** + **Material-UI** stack, so older forks might need an extra step:
 
+{% hint style="info" %}
+If your "Sync fork" options button presents you with an error that there are conflicts that must be resolved, skip to [Option 3](updating.md#id-3.-updating-from-v6-or-older-to-v7-merge-conflicts).
+{% endhint %}
+
 
 
 {% stepper %}
@@ -77,7 +81,7 @@ The v7 front-end introduced a **Next.js** + **Material-UI** stack, so older fork
     ```
     .github/workflows
     ```
-* Look for filenames starting with **azure-static-web-apps** (e.g., `azure-static-web-apps-main.yml`).
+* Look for filenames starting with **azure-static-web-apps** (e.g., `azure-static-web-apps-main.yml`).&#x20;
 * **Important**: If you discarded commits previously, you might not see such a file at all—or it might be renamed.
 {% endstep %}
 
@@ -110,6 +114,50 @@ The v7 front-end introduced a **Next.js** + **Material-UI** stack, so older fork
 
 * Give Azure a few minutes to pick up changes. Check the **Actions** tab or the **Azure Logs** for success.
 * Clear your cache or try a different browser to confirm the new version is live.
+{% endstep %}
+{% endstepper %}
+
+## 3. Updating from v6 (or Older) to v7+ (Merge Conflicts)
+
+In many cases, there are so many changes to the repo that GitHub doesn't know how to properly merge your repo with the upstream repo. Follow these instructions to get your branch to update.
+
+{% stepper %}
+{% step %}
+### Locate your workflow file
+
+*   In your CIPP repo, open:
+
+    ```
+    .github/workflows
+    ```
+* Look for filenames starting with **azure-static-web-apps** (e.g., `azure-static-web-apps-main.yml`).
+* Open this file in a new browser tab.
+{% endstep %}
+
+{% step %}
+### Discard Commits
+
+* Return to your main repo view
+* Click "Sync fork"
+* Click "Discard XXX commits"
+{% endstep %}
+
+{% step %}
+### Recreate Workflow File
+
+*   In your CIPP repo, open:
+
+    ```
+    .github/workflows
+    ```
+* Click "Add file" in the top right of the page
+* Select "Create new file"
+* Name the file the same as the `azure-static-web-apps` file open in your other browser tab
+* Copy the contents of the file in your other tab to the new file
+{% endstep %}
+
+{% step %}
+### Resume with Step 2 from [Option 2](updating.md#id-2.-updating-from-v6-or-older-to-v7)
 {% endstep %}
 {% endstepper %}
 
