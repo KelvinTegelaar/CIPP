@@ -9,7 +9,16 @@ import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
 
 export const CippApiDialog = (props) => {
-  const { createDialog, title, fields, api, row = {}, relatedQueryKeys, ...other } = props;
+  const {
+    createDialog,
+    title,
+    fields,
+    api,
+    row = {},
+    relatedQueryKeys,
+    dialogAfterEffect,
+    ...other
+  } = props;
   const router = useRouter();
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
@@ -38,6 +47,9 @@ export const CippApiDialog = (props) => {
     bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
+      if (api?.onSuccess) {
+        api.onSuccess(result);
+      }
     },
   });
   const actionGetRequest = ApiGetCall({
@@ -50,6 +62,9 @@ export const CippApiDialog = (props) => {
     bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
+      if (api?.onSuccess) {
+        api.onSuccess(result);
+      }
     },
   });
 
@@ -58,8 +73,6 @@ export const CippApiDialog = (props) => {
       return api.dataFunction(row);
     }
     var newData = {};
-    console.log("the received row", row);
-    console.log("the received dataObject", dataObject);
 
     if (api?.postEntireRow) {
       newData = row;
@@ -87,7 +100,6 @@ export const CippApiDialog = (props) => {
         }
       });
     }
-    console.log("output", newData);
     return newData;
   };
   const tenantFilter = useSettings().currentTenant;
@@ -132,6 +144,7 @@ export const CippApiDialog = (props) => {
           data: arrayOfObjects,
         });
       }
+
       return;
     }
 
@@ -185,7 +198,12 @@ export const CippApiDialog = (props) => {
       });
     }
   };
-
+  //add a useEffect, when dialogAfterEffect exists, and the post or get request is successful, run the dialogAfterEffect function
+  useEffect(() => {
+    if (dialogAfterEffect && (actionPostRequest.isSuccess || actionGetRequest.isSuccess)) {
+      dialogAfterEffect(actionPostRequest.data.data || actionGetRequest.data);
+    }
+  }, [actionPostRequest.isSuccess, actionGetRequest.isSuccess]);
   const formHook = useForm();
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
