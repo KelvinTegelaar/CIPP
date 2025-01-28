@@ -300,7 +300,7 @@ export const nativeMenuItems = [
     items: [
       {
         title: "Administration",
-        path: "/email/Administration",
+        path: "/email/administration",
         items: [
           { title: "Mailboxes", path: "/email/administration/mailboxes" },
           { title: "Deleted Mailboxes", path: "/email/administration/deleted-mailboxes" },
