@@ -21,5 +21,9 @@ export const getCippLicenseTranslation = (licenseArray) => {
     }
   });
 
-  return licenses.join(", ");
+  const result = licenses.join(", ");
+  if (!result) {
+    return "No Licenses Assigned";
+  }
+  return result;
 };
