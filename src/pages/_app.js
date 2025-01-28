@@ -36,6 +36,21 @@ const App = (props) => {
   const getLayout = Component.getLayout ?? ((page) => page);
   const preferredTheme = useMediaPredicate("(prefers-color-scheme: dark)") ? "dark" : "light";
 
+  const speedDialActions = [
+    {
+      id: "bug-report",
+      icon: <BugReportIcon />,
+      name: "Report Bug",
+      href: "https://github.com/KelvinTegelaar/CIPP/issues/new?template=bug.yml",
+    },
+    {
+      id: "feature-request",
+      icon: <FeedbackIcon />,
+      name: "Request Feature",
+      href: "https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml",
+    },
+  ];
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
