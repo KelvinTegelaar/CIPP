@@ -244,7 +244,7 @@ export const nativeMenuItems = [
         title: "Device Management",
         path: "/endpoint/MEM",
         items: [
-          { title: "Devices", path: "/endpoint/reports/devices" },
+          { title: "Devices", path: "/endpoint/MEM/devices" },
           { title: "Configuration Policies", path: "/endpoint/MEM/list-policies" },
           { title: "Compliance Policies", path: "/endpoint/MEM/list-compliance-policies" },
           { title: "Protection Policies", path: "/endpoint/MEM/list-appprotection-policies" },
