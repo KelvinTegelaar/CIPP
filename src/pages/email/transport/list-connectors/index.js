@@ -83,7 +83,7 @@ const Page = () => {
       }}
       cardButton={
         <>
-          <Button component={Link} href="/email/connectors/list-connectors/add">
+          <Button component={Link} href="/email/transport/list-connectors/add">
             Deploy Connector
           </Button>
         </>
