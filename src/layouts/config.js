@@ -315,17 +315,17 @@ export const nativeMenuItems = [
       },
       {
         title: "Transport",
-        path: "/email/Transport",
+        path: "/email/transport",
         items: [
           { title: "Transport rules", path: "/email/transport/list-rules" },
           {
             title: "Transport Templates",
             path: "/email/transport/list-templates",
           },
-          { title: "Connectors", path: "/email/connectors/list-connectors" },
+          { title: "Connectors", path: "/email/transport/list-connectors" },
           {
             title: "Connector Templates",
-            path: "/email/connectors/list-connector-templates",
+            path: "/email/transport/list-connector-templates",
           },
         ],
       },
