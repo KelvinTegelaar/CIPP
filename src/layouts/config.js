@@ -402,11 +402,11 @@ export const nativeMenuItems = [
         items: [
           {
             title: "Graph Explorer",
-            path: "/tenant/administration/graph-explorer",
+            path: "/tenant/tools/graph-explorer",
           },
           {
             title: "Application Approval",
-            path: "/tenant/administration/appapproval",
+            path: "/tenant/tools/appapproval",
           },
           { title: "Tenant Lookup", path: "/tenant/tools/tenantlookup" },
 
@@ -414,7 +414,7 @@ export const nativeMenuItems = [
 
           {
             title: "Individual Domain Check",
-            path: "/tenant/standards/individual-domains",
+            path: "/tenant/tools/individual-domains",
           },
         ],
       },
