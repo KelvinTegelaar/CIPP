@@ -48,7 +48,6 @@ const Page = () => {
 
   const actions = [
     {
-      //tested
       label: "Set Per-User MFA",
       type: "POST",
       icon: <LockPerson />,
@@ -65,6 +64,7 @@ const Page = () => {
             { label: "Disabled", value: "Disabled" },
           ],
           multiple: false,
+          creatable: false,
         },
       ],
       confirmText: "Are you sure you want to set per-user MFA for these users?",
