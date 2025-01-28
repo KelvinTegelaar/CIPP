@@ -32,13 +32,7 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = [
-    "Name",
-    "IsDefault",
-    "IPAllowList",
-    "IPBlockList",
-    "EnableSafeList",
-  ];
+  const simpleColumns = ["Name", "IsDefault", "IPAllowList", "IPBlockList", "EnableSafeList"];
 
   return (
     <CippTablePage
@@ -49,7 +43,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/email/connectionfilter/list-connectionfilter/add">
+          <Button component={Link} href="/email/spamfilter/list-connectionfilter/add">
             Deploy ConnectionFilter
           </Button>
         </>
