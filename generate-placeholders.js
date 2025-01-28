@@ -82,7 +82,7 @@ const pages = [
   { title: "Add Profile", path: "/endpoint/autopilot/add-profile" },
   { title: "Status Pages", path: "/endpoint/autopilot/list-status-pages" },
   { title: "Add Status Page", path: "/endpoint/autopilot/add-status-page" },
-  { title: "Devices", path: "/endpoint/reports/devices" },
+  { title: "Devices", path: "/endpoint/MEM/devices" },
   { title: "Configuration Policies", path: "/endpoint/MEM/list-policies" },
   { title: "Compliance Policies", path: "/endpoint/MEM/list-compliance-policies" },
   { title: "Protection Policies", path: "/endpoint/MEM/list-appprotection-policies" },
