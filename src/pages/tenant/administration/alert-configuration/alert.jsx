@@ -206,12 +206,21 @@ const AlertWizard = () => {
   };
 
   const handleScriptSubmit = (values) => {
+    const getInputParams = () => {
+      if (values.command.value.requiresInput) {
+        return {
+          InputValue: values[values.command.value.inputName],
+        };
+      }
+      return {};
+    };
+
     const postObject = {
       RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
       tenantFilter: values.tenantFilter?.value,
       Name: `${values.tenantFilter.value}: ${values.command.label}`,
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
-      Parameters: {},
+      Parameters: getInputParams(),
       ScheduledTime: Math.floor(new Date().getTime() / 1000) + 60,
       Recurrence: values.recurrence,
       PostExecution: values.postExecution,
@@ -512,7 +521,7 @@ const AlertWizard = () => {
                             <Grid item xs={12} md={12}>
                               {commandValue?.value?.requiresInput && (
                                 <CippFormComponent
-                                  type="textField"
+                                  type={commandValue.value?.inputType}
                                   name={commandValue.value?.inputName}
                                   formControl={formControl}
                                   label={commandValue.value?.inputLabel}
