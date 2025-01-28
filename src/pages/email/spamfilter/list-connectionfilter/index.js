@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { Book } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -14,6 +15,7 @@ const Page = () => {
       dataFunction: (data) => {
         return { ...data };
       },
+      icon: <Book />,
       confirmText: "Are you sure you want to create a template based on this rule?",
     },
   ];
