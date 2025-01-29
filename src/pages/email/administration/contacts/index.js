@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Edit } from "@mui/icons-material";
+import { Edit, PersonAdd } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
@@ -38,7 +38,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/email/administration/contacts/add">
+          <Button
+            component={Link}
+            href="/email/administration/contacts/add"
+            startIcon={<PersonAdd />}
+          >
             Add contact
           </Button>
         </>

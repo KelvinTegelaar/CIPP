@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { Add, AddToPhotos } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -151,10 +152,14 @@ const Page = () => {
       ]}
       cardButton={
         <>
-          <Button component={Link} href="/teams-share/sharepoint/add-site">
+          <Button component={Link} href="/teams-share/sharepoint/add-site" startIcon={<Add />}>
             Add Site
           </Button>
-          <Button component={Link} href="/teams-share/sharepoint/bulk-add-site">
+          <Button
+            component={Link}
+            href="/teams-share/sharepoint/bulk-add-site"
+            startIcon={<AddToPhotos />}
+          >
             Bulk Add Sites
           </Button>
         </>
