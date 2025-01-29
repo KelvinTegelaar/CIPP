@@ -1,6 +1,7 @@
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { Button } from "@mui/material";
+import { Send, GroupAdd, PersonAdd } from "@mui/icons-material";
 import Link from "next/link";
 import { useSettings } from "/src/hooks/use-settings.js";
 import { CippUserActions } from "/src/components/CippComponents/CippUserActions.jsx";
@@ -53,14 +54,14 @@ const Page = () => {
       apiUrl="/api/ListGraphRequest"
       cardButton={
         <>
-          <Button component={Link} href="users/bulk-add">
+          <Button component={Link} href="users/add" startIcon={<PersonAdd />}>
+            Add User
+          </Button>
+          <Button component={Link} href="users/bulk-add" startIcon={<GroupAdd />}>
             Bulk Add Users
           </Button>
-          <Button component={Link} href="users/invite">
+          <Button component={Link} href="users/invite" startIcon={<Send />}>
             Invite Guest
-          </Button>
-          <Button component={Link} href="users/add">
-            Add User
           </Button>
         </>
       }

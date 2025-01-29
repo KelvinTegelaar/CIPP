@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { Book, Block, Check } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { RocketLaunch } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Spam Filters";
@@ -100,7 +101,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/email/spamfilter/list-spamfilter/add">
+          <Button
+            component={Link}
+            href="/email/spamfilter/list-spamfilter/add"
+            startIcon={<RocketLaunch />}
+          >
             Deploy Spamfilter
           </Button>
         </>

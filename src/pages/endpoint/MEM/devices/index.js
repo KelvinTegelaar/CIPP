@@ -2,6 +2,17 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { useSettings } from "/src/hooks/use-settings";
 import { EyeIcon } from "@heroicons/react/24/outline";
+import {
+  Sync,
+  RestartAlt,
+  LocationOn,
+  Password,
+  PasswordOutlined,
+  Key,
+  Security,
+  FindInPage,
+  Shield,
+} from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Devices";
@@ -11,6 +22,7 @@ const Page = () => {
     {
       label: "Sync Device",
       type: "POST",
+      icon: <Sync />,
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
@@ -21,6 +33,7 @@ const Page = () => {
     {
       label: "Reboot Device",
       type: "POST",
+      icon: <RestartAlt />,
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
@@ -31,6 +44,7 @@ const Page = () => {
     {
       label: "Locate Device",
       type: "POST",
+      icon: <LocationOn />,
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
@@ -41,6 +55,7 @@ const Page = () => {
     {
       label: "Retrieve LAPs password",
       type: "POST",
+      icon: <Password />,
       url: "/api/ExecGetLocalAdminPassword",
       data: {
         GUID: "azureADDeviceId",
@@ -50,6 +65,7 @@ const Page = () => {
     {
       label: "Rotate Local Admin Password",
       type: "POST",
+      icon: <PasswordOutlined />,
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
@@ -60,6 +76,7 @@ const Page = () => {
     {
       label: "Retrieve Bitlocker Keys",
       type: "POST",
+      icon: <Key />,
       url: "/api/ExecGetRecoveryKey",
       data: {
         GUID: "azureADDeviceId",
@@ -69,6 +86,7 @@ const Page = () => {
     {
       label: "Windows Defender Full Scan",
       type: "POST",
+      icon: <Security />,
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
@@ -80,6 +98,7 @@ const Page = () => {
     {
       label: "Windows Defender Quick Scan",
       type: "POST",
+      icon: <FindInPage />,
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
@@ -91,6 +110,7 @@ const Page = () => {
     {
       label: "Update Windows Defender",
       type: "POST",
+      icon: <Shield />,
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
