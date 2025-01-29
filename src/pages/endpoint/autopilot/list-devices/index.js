@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { PersonAdd, Delete } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -9,6 +10,7 @@ const Page = () => {
   const actions = [
     {
       label: "Assign device",
+      icon: <PersonAdd />,
       type: "POST",
       url: "/api/ExecAssignAPDevice",
       data: {
@@ -38,6 +40,7 @@ const Page = () => {
     },
     {
       label: "Delete Device",
+      icon: <Delete />,
       type: "POST",
       url: "/api/RemoveAPDevice",
       data: { ID: "id" },
