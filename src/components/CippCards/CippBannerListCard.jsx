@@ -13,9 +13,10 @@ import {
 } from "@mui/material";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import { CippPropertyListCard } from "./CippPropertyListCard";
+import { CippDataTable } from "../CippTable/CippDataTable";
 
 export const CippBannerListCard = (props) => {
-  const { items = [], isCollapsible = false, isFetching = false, ...other } = props;
+  const { items = [], isCollapsible = false, isFetching = false, children, ...other } = props;
   const [expanded, setExpanded] = useState(null);
 
   const handleExpand = useCallback((itemId) => {
@@ -113,17 +114,19 @@ export const CippBannerListCard = (props) => {
 
                     {/* Right Side: Status and Expand Icon */}
                     <Stack alignItems="center" direction="row" spacing={2}>
-                      <Stack alignItems="center" direction="row" spacing={1}>
-                        <Box
-                          sx={{
-                            backgroundColor: statusColor,
-                            borderRadius: "50%",
-                            height: 8,
-                            width: 8,
-                          }}
-                        />
-                        <Typography variant="body2">{item.statusText}</Typography>
-                      </Stack>
+                      {item?.statusText && (
+                        <Stack alignItems="center" direction="row" spacing={1}>
+                          <Box
+                            sx={{
+                              backgroundColor: statusColor,
+                              borderRadius: "50%",
+                              height: 8,
+                              width: 8,
+                            }}
+                          />
+                          <Typography variant="body2">{item.statusText}</Typography>
+                        </Stack>
+                      )}
                       {isCollapsible && (
                         <IconButton onClick={() => handleExpand(item.id)}>
                           <SvgIcon
@@ -142,11 +145,18 @@ export const CippBannerListCard = (props) => {
                   {isCollapsible && (
                     <Collapse in={isExpanded}>
                       <Divider />
-                      <CippPropertyListCard
-                        propertyItems={item.propertyItems || []}
-                        layout="dual"
-                        isFetching={item.isFetching || false}
-                      />
+                      <Stack spacing={1}>
+                        {item?.propertyItems?.length > 0 && (
+                          <CippPropertyListCard
+                            propertyItems={item.propertyItems || []}
+                            layout="dual"
+                            isFetching={item.isFetching || false}
+                          />
+                        )}
+                        {item?.table && <CippDataTable {...item.table} />}
+                        {item?.children && <Box sx={{ pl: 3 }}>{item.children}</Box>}
+                        {item?.actionButton && <Box sx={{ pl: 3, pb: 2 }}>{item.actionButton}</Box>}
+                      </Stack>
                     </Collapse>
                   )}
                 </li>
@@ -174,8 +184,12 @@ CippBannerListCard.propTypes = {
       subtext: PropTypes.string,
       statusColor: PropTypes.string,
       statusText: PropTypes.string,
+      actionButton: PropTypes.element,
       propertyItems: PropTypes.array,
+      table: PropTypes.object,
+      actionButton: PropTypes.element,
       isFetching: PropTypes.bool,
+      children: PropTypes.node,
     })
   ).isRequired,
   isCollapsible: PropTypes.bool,

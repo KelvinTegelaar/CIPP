@@ -9,18 +9,12 @@ const Page = () => {
 
   const actions = [
     {
-      label: "View Template",
-      icon: <EyeIcon />, // Placeholder icon for developer customization
-      color: "success",
-      offCanvas: true,
-    },
-    {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveTransportRuleTemplate",
       data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
-      icon: <TrashIcon />, // Placeholder icon for developer customization
+      icon: <TrashIcon />,
       color: "danger",
     },
   ];

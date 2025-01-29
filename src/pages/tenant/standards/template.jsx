@@ -92,6 +92,14 @@ const Page = () => {
   };
 
   const handleAddMultipleStandard = (standardName) => {
+    //if the standardname contains an array qualifier,e.g standardName[0], strip that away.
+    const arrayPattern = /(.*)\[(\d+)\]$/;
+    const match = standardName.match(arrayPattern);
+    if (match) {
+      standardName = match[1];
+    }
+    console.log("Adding multiple", standardName);
+
     setSelectedStandards((prev) => {
       const existingInstances = Object.keys(prev).filter((name) => name.startsWith(standardName));
       const newIndex = existingInstances.length;

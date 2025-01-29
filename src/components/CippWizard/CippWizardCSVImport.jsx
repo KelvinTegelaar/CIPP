@@ -43,7 +43,6 @@ export const CippWizardCSVImport = (props) => {
   const handleAddItem = () => {
     const newRowData = formControl.getValues("addrow");
     if (newRowData === undefined) return false;
-
     const newTableData = [...tableData, newRowData];
     setTableData(newTableData);
     setOpen(false);
@@ -87,6 +86,15 @@ export const CippWizardCSVImport = (props) => {
                   label={getCippTranslation(field)}
                   type="textField"
                   formControl={formControl}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      if (e.target.value === "") return false;
+                      handleAddItem();
+                      setTimeout(() => {
+                        formControl.setValue(`addrow.${field}`, "");
+                      }, 500);
+                    }
+                  }}
                 />
               </Grid>
             </>

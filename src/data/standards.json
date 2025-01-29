@@ -50,6 +50,36 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.ProfilePhotos",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Controls whether users can set their own profile photos in Microsoft 365.",
+    "docsDescription": "Controls whether users can set their own profile photos in Microsoft 365. When disabled, only User and Global administrators can update profile photos for users.",
+    "addedComponent": [
+      {
+        "type": "select",
+        "multiple": false,
+        "label": "Select value",
+        "name": "standards.ProfilePhotos.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Allow users to set profile photos",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-OrganizationConfig -ProfilePhotoOptions EnablePhotos and Update-MgBetaAdminPeople",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.PhishProtection",
     "cat": "Global Standards",
     "tag": ["lowimpact"],
@@ -642,6 +672,30 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.StaleEntraDevices",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["highimpact", "CIS"],
+    "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days.",
+    "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.StaleEntraDevices.deviceAgeThreshold",
+        "label": "Days before stale(Dont set below 30)"
+      }
+    ],
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": true
+    },
+    "label": "Cleanup stale Entra devices",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Remove-MgDevice, Update-MgDevice or Graph API",
     "recommendedBy": []
   },
   {
@@ -1270,7 +1324,13 @@
     "tag": ["mediumimpact"],
     "helpText": "Sets emails sent as and on behalf of shared mailboxes to also be stored in the shared mailbox sent items folder",
     "docsDescription": "This makes sure that e-mails sent from shared mailboxes or delegate mailboxes, end up in the mailbox of the shared/delegate mailbox instead of the sender, allowing you to keep replies in the same mailbox as the original e-mail.",
-    "addedComponent": [],
+    "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Include user mailboxes",
+        "name": "standards.DelegateSentItems.IncludeUserMailboxes"
+      }
+    ],
     "label": "Set mailbox Sent Items delegation (Sent items for shared mailboxes)",
     "impact": "Medium Impact",
     "impactColour": "warning",
