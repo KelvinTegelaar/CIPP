@@ -36,7 +36,7 @@ const Page = () => {
       apiUrl="/api/ListDomainAnalyser"
       cardButton={
         <>
-          <Button component={Link} href="/tenant/standards/individual-domains">
+          <Button component={Link} href="/tenant/tools/individual-domains">
             Check Individual Domain
           </Button>
           {/* This needs to be replaced with a CippApiDialog. */}
