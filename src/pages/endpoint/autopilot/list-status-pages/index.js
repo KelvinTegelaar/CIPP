@@ -25,7 +25,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/endpoint/autopilot/list-status-pages/add">
+          <Button component={Link} href="/endpoint/autopilot/add-status-page">
             Add Status Page
           </Button>
         </>

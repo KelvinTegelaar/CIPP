@@ -9,6 +9,24 @@ const Page = () => {
   const pageTitle = "Users";
   const tenant = useSettings().currentTenant;
 
+  const filters = [
+    {
+      filterName: "Account Enabled",
+      value: [{ id: "accountEnabled", value: "Yes" }],
+      type: "column",
+    },
+    {
+      filterName: "Account Disabled",
+      value: [{ id: "accountEnabled", value: "No" }],
+      type: "column",
+    },
+    {
+      filterName: "Guest Accounts",
+      value: [{ id: "userType", value: "Guest" }],
+      type: "column",
+    },
+  ];
+
   const offCanvas = {
     extendedInfoFields: [
       "createdDateTime", // Created Date (UTC)
@@ -67,24 +85,7 @@ const Page = () => {
         "proxyAddresses",
         "assignedLicenses",
       ]}
-      filters={[
-        {
-          filterName: "Account Enabled",
-          //true or false filters by yes/no
-          value: [{ id: "accountEnabled", value: "Yes" }],
-          type: "column",
-        },
-        {
-          filterName: "Account Disabled",
-          value: [{ id: "accountEnabled", value: "No" }],
-          type: "column",
-        },
-        {
-          filterName: "Guest Accounts",
-          value: [{ id: "userType", value: "Guest" }],
-          type: "column",
-        },
-      ]}
+      filters={filters}
     />
   );
 };
