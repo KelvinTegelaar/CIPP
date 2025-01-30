@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import { PlaylistAdd } from "@mui/icons-material";
 
 const Page = () => {
@@ -19,6 +20,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to delete?",
       color: "danger",
+      icon: <TrashIcon />,
     },
   ];
 

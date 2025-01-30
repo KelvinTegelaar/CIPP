@@ -3,6 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Button } from "@mui/material";
 import { GroupAdd } from "@mui/icons-material";
 import Link from "next/link";
+import { Edit } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Teams";
@@ -13,6 +14,7 @@ const Page = () => {
       link: "/identity/administration/groups/edit?groupId=[id]",
       multiPost: false,
       color: "warning",
+      icon: <Edit />,
     },
   ];
 
