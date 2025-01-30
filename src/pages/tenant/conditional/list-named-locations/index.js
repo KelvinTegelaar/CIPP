@@ -17,6 +17,7 @@ const Page = () => {
       },
       fields: [{ type: "textField", name: "input", label: "Country Code" }],
       confirmText: "Enter a two-letter country code, e.g., US.",
+      condition: (row) => row["@odata.type"] == "#microsoft.graph.countryNamedLocation",
     },
     {
       label: "Remove location from named location",
@@ -28,6 +29,7 @@ const Page = () => {
       },
       fields: [{ type: "textField", name: "input", label: "Country Code" }],
       confirmText: "Enter a two-letter country code, e.g., US.",
+      condition: (row) => row["@odata.type"] == "#microsoft.graph.countryNamedLocation",
     },
     {
       label: "Add IP to named location",
@@ -39,6 +41,7 @@ const Page = () => {
       },
       fields: [{ type: "textField", name: "input", label: "IP" }],
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
+      condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation",
     },
     {
       label: "Remove IP from named location",
@@ -49,13 +52,13 @@ const Page = () => {
         change: "removeIp",
       },
       fields: [{ type: "textField", name: "input", label: "IP" }],
-
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
+      condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation",
     },
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["displayName", "type", "rangeOrLocation"],
+    extendedInfoFields: ["displayName", "rangeOrLocation"],
     actions: actions,
   };
 
@@ -75,7 +78,7 @@ const Page = () => {
       simpleColumns={[
         "displayName",
         "includeUnknownCountriesAndRegions",
-        "type",
+        "isTrusted",
         "rangeOrLocation",
         "modifiedDateTime",
       ]}
