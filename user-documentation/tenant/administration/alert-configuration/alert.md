@@ -4,31 +4,32 @@ description: Manage scheduled tenant alerts.
 
 # Add Alert
 
-CIPP offers a set of scheduled, recurring alert checks. Some of these duplicate Microsoft Alerts functionality in a more MSP-friendly manner, some are not available as a Microsoft Alert at this time.
+CIPP offers a set of scheduled, recurring alert checks. Some of these duplicate Microsoft Alerts functionality in a more MSP-friendly manner and some are not available as a Microsoft Alert at this time. Similar to [Tenant Standards](../../standards/), you configure alerts using the wizard to select one or more tenants or -All Tenants- to apply alerts globally, then select from the list of available alerts.
 
-Within CIPP, there are two types of alerts.
+### Alert Types
 
-* Scripted CIPP Alert
-* Audit Log Alert
+Within CIPP, there are two types of alerts:
 
-Similar to [Tenant Standards](../../standards/edit-standards.md#meet-the-standards), you configure alerts using the wizard to select one or more tenants or -All Tenants- to apply alerts globally, then select from the list of available alerts.
+* Audit Log Alert - These alerts are based on Microsoft audit logs.&#x20;
+* Scripted CIPP Alert - These alerts have been developed by CIPP to pull from sources other than the audit logs.
 
-Alert email delivers to the email address or webhook provided in CIPP settings. Alerts are delivered as an HTML-formatted table. Alerts fire once per incident - for example, a full mailbox does not fire an alert every time it's checked.
+### Alert Timing
 
-{% hint style="info" %}
-Each alert comes with a default value suggested by the CIPP team, but you can adjust it as needed. The available runtime schedules for scripted CIPP alerts are:
+* Audit Log Alerts - Processed in near real-time, but a small delay of up to 15 minutes is normal.
+* Scripted CIPP Alerts - Each alert comes with a default value suggested by the CIPP team, but you can adjust it as needed. Alerts fire once per incident - for example, a full mailbox does not fire an alert every time it's checked. The available timings are:
+  * 365 days / 1 year
+  * 30 days / 1 month
+  * 7 days / 1 week
+  * 1 day
+  * 4 hours
+  * 1 hour
+  * 30 minutes
 
-* 365 days / 1 year
-* 30 days / 1 month
-* 7 days / 1 week
-* 1 day
-* 4 hours
-* 1 hour
-{% endhint %}
+### Alert Delivery Methods
 
-{% hint style="info" %}
-Audit Log Alerts are processed in near real-time, but a small delay of up to 15 minutes is normal.
-{% endhint %}
+* Webhook - This will deliver a JSON payload to the webhook configured in [CIPP Settings](../../../cipp/settings/notifications.md).
+* PSA - This will deliver a formatted payload to the configured PSA in [CIPP Settings](../../../cipp/settings/notifications.md).
+* Email - This will deliver an HTML-formatted table to the email address provided in [CIPP Settings](../../../cipp/settings/notifications.md).&#x20;
 
 ### Available Scripted CIPP Alerts
 
@@ -53,6 +54,7 @@ Audit Log Alerts are processed in near real-time, but a small delay of up to 15 
 * Alert on soft deleted mailboxes
 * Alert on device compliance issues
 * Alert on Huntress Rogue Apps detected
+* Alert on expiring application certificates
 
 ### Available Template Audit Log Alerts
 
@@ -77,22 +79,76 @@ Audit Log Alerts are processed in near real-time, but a small delay of up to 15 
 
 ### Example Usage
 
-You might want to be alerted when a particular account logs into one of your tenants. For example Global Admins or break glass accounts. This is relatively simple if you have consistent naming across your tenants i.e. mylovelybreakglassaccount@tentantdomains.com
+You might want to be alerted when a particular account logs into one of your tenants. For example, Global Admins or break glass accounts. This is relatively simple if you have consistent naming across your tenants i.e. mylovelybreakglassaccount@tentantdomains.com
 
-* Create an Audit log alert
-* In the tenant selector, select All Tenants
-* Select Azure AD as the log source
-* Select "Operation" as the When property
-* Select "Equals To" as the is property
-* In the unput field select "A user logged in"
-* Add an extra set of variables
-* Select "Username" as the When property
-* Select Like as the is property
-* Enter the username to test for across all tenants i.e. mylovelybreakglassaccount@\* (Note the \* after the @ to match all domains)
-* Choose the action(s) you want and save the alert.
+{% stepper %}
+{% step %}
+Create an Audit log alert
+
+
+{% endstep %}
+
+{% step %}
+In the tenant selector, select All Tenants
+
+
+{% endstep %}
+
+{% step %}
+Select Azure AD as the log source
+
+
+{% endstep %}
+
+{% step %}
+Select "Operation" as the When property
+
+
+{% endstep %}
+
+{% step %}
+Select "Equals To" as the is property
+
+
+{% endstep %}
+
+{% step %}
+In the unput field select "A user logged in"
+
+
+{% endstep %}
+
+{% step %}
+Add an extra set of variables
+
+
+{% endstep %}
+
+{% step %}
+Select "Username" as the When property
+
+
+{% endstep %}
+
+{% step %}
+Select Like as the is property
+
+
+{% endstep %}
+
+{% step %}
+Enter the username to test for across all tenants i.e. mylovelybreakglassaccount@\* (Note the \* after the @ to match all domains)
+
+
+{% endstep %}
+
+{% step %}
+Choose the action(s) you want and save the alert.
+
+
+{% endstep %}
+{% endstepper %}
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

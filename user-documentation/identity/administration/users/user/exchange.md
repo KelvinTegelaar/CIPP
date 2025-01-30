@@ -22,6 +22,7 @@ description: This page displays information about the user's Exchange settings.
 | Blocked For Spam             | A Boolean value indicating if this account has been blocked by Microsoft due to spam activity.                         |
 | Current Mailbox permissions  | Displays information regarding any mailbox permissions that have been granted to other users for this user's mailbox.  |
 | Current Calendar permissions | Displays information regarding any calendar permissions that have been granted to other users for this user's mailbox. |
+| Current Mailbox Rules        | Displays any currently configured mailbox rules.                                                                       |
 
 ### Actions
 
