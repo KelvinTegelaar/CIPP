@@ -54,6 +54,15 @@
     "icon": "laptop-code"
   },
   {
+    "label": "SharePoint Admin",
+    "name": "SharePoint_Admin",
+    "url": "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=customerId&CSDEST=SharePoint",
+    "variable": "customerId",
+    "target": "_blank",
+    "external": true,
+    "icon": "book"
+  },
+  {
     "label": "Security Portal",
     "name": "Security_Portal",
     "url": "https://security.microsoft.com/?tid=customerId",
@@ -70,14 +79,5 @@
     "target": "_blank",
     "external": true,
     "icon": "shield-alt"
-  },
-  {
-    "label": "SharePoint Admin",
-    "name": "SharePoint_Admin",
-    "url": "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=customerId&CSDEST=SharePoint",
-    "variable": "customerId",
-    "target": "_blank",
-    "external": true,
-    "icon": "book"
   }
 ]
