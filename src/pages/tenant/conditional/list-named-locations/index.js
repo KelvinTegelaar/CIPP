@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Named Locations";
@@ -11,6 +12,7 @@ const Page = () => {
       label: "Add location to named location",
       type: "GET",
       url: "/api/ExecNamedLocation",
+      icon: <PlusIcon />,
       data: {
         namedLocationId: "id",
         change: "addLocation",
@@ -23,6 +25,7 @@ const Page = () => {
       label: "Remove location from named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
+      icon: <MinusIcon />,
       data: {
         namedLocationId: "id",
         change: "removeLocation",
@@ -35,6 +38,7 @@ const Page = () => {
       label: "Add IP to named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
+      icon: <PlusIcon />,
       data: {
         namedLocationId: "id",
         change: "addIp",
@@ -47,6 +51,7 @@ const Page = () => {
       label: "Remove IP from named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
+      icon: <MinusIcon />,
       data: {
         namedLocationId: "id",
         change: "removeIp",
