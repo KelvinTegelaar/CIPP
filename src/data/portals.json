@@ -6,7 +6,7 @@
     "variable": "customerId",
     "target": "_blank",
     "external": true,
-    "icon": "cog"
+    "icon": "GlobeAltIcon"
   },
   {
     "label": "Exchange Portal",
@@ -15,7 +15,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "mail-bulk"
+    "icon": "Mail"
   },
   {
     "label": "Entra Portal",
@@ -24,7 +24,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "users"
+    "icon": "UsersIcon"
   },
   {
     "label": "Teams Portal",
@@ -33,7 +33,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "comments"
+    "icon": "FilePresent"
   },
   {
     "label": "Azure Portal",
@@ -42,7 +42,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "server"
+    "icon": "ServerIcon"
   },
   {
     "label": "Intune Portal",
@@ -51,7 +51,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "laptop-code"
+    "icon": "Laptop"
   },
   {
     "label": "SharePoint Admin",
@@ -60,7 +60,7 @@
     "variable": "customerId",
     "target": "_blank",
     "external": true,
-    "icon": "book"
+    "icon": "Share"
   },
   {
     "label": "Security Portal",
@@ -69,7 +69,7 @@
     "variable": "customerId",
     "target": "_blank",
     "external": true,
-    "icon": "shield-alt"
+    "icon": "Shield"
   },
   {
     "label": "Compliance Portal",
@@ -78,6 +78,6 @@
     "variable": "customerId",
     "target": "_blank",
     "external": true,
-    "icon": "shield-alt"
+    "icon": "ShieldMoon"
   }
 ]
