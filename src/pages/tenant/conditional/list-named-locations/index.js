@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { LocationOn } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Named Locations";
@@ -67,7 +68,7 @@ const Page = () => {
       offCanvas={offCanvas}
       cardButton={
         <>
-          <Button component={Link} href="list-named-locations/add">
+          <Button component={Link} href="list-named-locations/add" startIcon={<LocationOn />}>
             Add Named Location
           </Button>
         </>

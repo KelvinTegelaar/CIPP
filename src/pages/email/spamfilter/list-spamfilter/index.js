@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { RocketLaunch } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Spam Filters";
@@ -94,7 +95,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/email/spamfilter/list-spamfilter/add">
+          <Button
+            component={Link}
+            href="/email/spamfilter/list-spamfilter/add"
+            startIcon={<RocketLaunch />}
+          >
             Deploy Spamfilter
           </Button>
         </>

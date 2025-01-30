@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Book } from "@mui/icons-material";
+import { Book, AddModerator } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -45,7 +45,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/email/spamfilter/list-connectionfilter/add">
+          <Button
+            component={Link}
+            href="/email/spamfilter/list-connectionfilter/add"
+            startIcon={<AddModerator />}
+          >
             Deploy ConnectionFilter
           </Button>
         </>
