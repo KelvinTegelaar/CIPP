@@ -1,15 +1,19 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { Book, Block, Check } from "@mui/icons-material";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Spam Filters";
+  const apiUrl = "/api/ListSpamfilter"
 
   const actions = [
     {
       label: "Create template based on rule",
       type: "POST",
+      icon: <Book />,
       url: "/api/AddSpamfilterTemplate",
       dataFunction: (data) => {
         return { ...data };
@@ -18,32 +22,34 @@ const Page = () => {
     },
     {
       label: "Enable Rule",
-      type: "POST",
+      type: "GET",
+      icon: <Check />,
       url: "/api/EditSpamfilter",
       data: {
         State: "enable",
-        TenantFilter: "Tenant",
         name: "Name",
       },
       confirmText: "Are you sure you want to enable this rule?",
+      condition: (row) => row.ruleState === "Disabled",
     },
     {
       label: "Disable Rule",
-      type: "POST",
+      type: "GET",
+      icon: <Block />,
       url: "/api/EditSpamfilter",
       data: {
         State: "disable",
-        TenantFilter: "Tenant",
         name: "Name",
       },
       confirmText: "Are you sure you want to disable this rule?",
+      condition: (row) => row.ruleState === "Enabled",
     },
     {
       label: "Delete Rule",
-      type: "POST",
+      type: "GET",
+      icon: <TrashIcon />,
       url: "/api/RemoveSpamFilter",
       data: {
-        TenantFilter: "Tenant",
         name: "Name",
       },
       confirmText: "Are you sure you want to delete this rule?",
@@ -88,7 +94,7 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/Listspamfilter"
+      apiUrl={apiUrl}
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
