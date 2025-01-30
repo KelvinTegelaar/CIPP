@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { AddBox, RocketLaunch } from "@mui/icons-material";
+import { AddBox, RocketLaunch, Delete } from "@mui/icons-material";
 import Link from "next/link";
 import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 
@@ -13,6 +13,7 @@ const Page = () => {
       label: "Delete Template",
       type: "GET",
       url: "/api/RemoveGroupTemplate",
+      icon: <Delete />,
       data: {
         ID: "GUID",
       },
