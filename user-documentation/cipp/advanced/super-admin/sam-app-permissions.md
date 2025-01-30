@@ -8,4 +8,4 @@ This page will allow you to modify the permissions used for the CPV consent on c
 
 ***
 
-{% include "../../../.gitbook/includes/feature-request.md" %}
+{% include "../../../../.gitbook/includes/feature-request.md" %}

@@ -14,7 +14,7 @@ It's recommended that you have the following installed on the computer you're us
   * [Stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
 * [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4) `winget install --exact Microsoft.PowerShell`
 * [git](https://git-scm.com/download/win) `winget install --exact Git.Git`
-* [node.js V18.X LTS](https://nodejs.org/en/download/releases) `winget install --exact OpenJS.NodeJS.LTS --version 18.20.4;winget pin add OpenJS.NodeJS.LTS --version 18.20.*`&#x20;
+* [node.js V20.X LTS](https://nodejs.org/en/download/releases) `winget install --exact OpenJS.NodeJS.LTS --version 20.18.2;winget pin add OpenJS.NodeJS.LTS --version 20.18.* --force`&#x20;
 * [.NET Core 3.1](https://dotnet.microsoft.com/en-us/download/dotnet/3.1)
 * [.NET SDK 5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0) `winget install --exact Microsoft.DotNet.SDK.5`
 * [.NET SDK 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) `winget install --exact Microsoft.DotNet.SDK.6`
