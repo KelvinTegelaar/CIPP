@@ -5,25 +5,25 @@ import { usePopover } from "../hooks/use-popover";
 import { FilePresent, Laptop, Mail, Share, Shield, ShieldMoon } from "@mui/icons-material";
 import { GlobeAltIcon, UsersIcon, ServerIcon } from "@heroicons/react/24/outline";
 
-function getIconByName(name) {
-  switch (name) {
-    case "M365_Portal":
+function getIconByName(iconName) {
+  switch (iconName) {
+    case "GlobeAltIcon":
       return <GlobeAltIcon />;
-    case "Exchange_Portal":
+    case "Mail":
       return <Mail />;
-    case "Entra_Portal":
+    case "UsersIcon":
       return <UsersIcon />;
-    case "Teams_Portal":
+    case "FilePresent":
       return <FilePresent />;
-    case "Azure_Portal":
+    case "ServerIcon":
       return <ServerIcon />;
-    case "Intune_Portal":
+    case "Laptop":
       return <Laptop />;
-    case "SharePoint_Admin":
+    case "Share":
       return <Share />;
-    case "Security_Portal":
+    case "Shield":
       return <Shield />;
-    case "Compliance_Portal":
+    case "ShieldMoon":
       return <ShieldMoon />;
     default:
       return null;
