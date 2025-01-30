@@ -14,7 +14,7 @@ const Page = () => {
       icon: <Check />,
       url: "/api/EditSafeAttachmentsFilter",
       data: {
-        State: "!Enable",
+        State: "!enable",
         RuleName: "RuleName",
       },
       confirmText: "Are you sure you want to enable this rule?",
