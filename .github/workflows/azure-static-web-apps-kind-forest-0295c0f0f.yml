@@ -2,14 +2,14 @@ AZURE_STATIC_WEB_APPS_API_TOKEN_KIND_FOREST_0295C0F0F
 
 name: Azure Static Web Apps CI/CD
 
-#on:
-#  push:
-#    branches:
-#      - main
-#  pull_request:
-#    types: [opened, synchronize, reopened, closed]
-#    branches:
-#      - main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
 
 jobs:
   build_and_deploy_job:
