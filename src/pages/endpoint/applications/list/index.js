@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
-import { LaptopMac } from "@mui/icons-material";
+import { Add, LaptopMac } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
@@ -91,7 +91,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/endpoint/applications/list/add">
+          <Button component={Link} href="/endpoint/applications/list/add" startIcon={<Add />}>
             Add Application
           </Button>
         </>

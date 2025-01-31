@@ -1,6 +1,14 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import {
+  Add,
+  AddToPhotos,
+  PersonAdd,
+  PersonRemove,
+  AdminPanelSettings,
+  NoAccounts,
+} from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -10,6 +18,7 @@ const Page = () => {
     {
       label: "Add Member",
       type: "POST",
+      icon: <PersonAdd />,
       url: "/api/ExecSetSharePointMember",
       data: {
         groupId: "ownerPrincipalName",
@@ -40,6 +49,7 @@ const Page = () => {
     {
       label: "Remove Member",
       type: "POST",
+      icon: <PersonRemove />,
       url: "/api/ExecSetSharePointMember",
       data: {
         groupId: "ownerPrincipalName",
@@ -70,6 +80,7 @@ const Page = () => {
     {
       label: "Add Site Admin",
       type: "POST",
+      icon: <AdminPanelSettings />,
       url: "/api/ExecSharePointPerms",
       data: {
         UPN: "ownerPrincipalName",
@@ -99,6 +110,7 @@ const Page = () => {
     {
       label: "Remove Site Admin",
       type: "POST",
+      icon: <NoAccounts />,
       url: "/api/ExecSharePointPerms",
       data: {
         UPN: "ownerPrincipalName",
@@ -151,10 +163,14 @@ const Page = () => {
       ]}
       cardButton={
         <>
-          <Button component={Link} href="/teams-share/sharepoint/add-site">
+          <Button component={Link} href="/teams-share/sharepoint/add-site" startIcon={<Add />}>
             Add Site
           </Button>
-          <Button component={Link} href="/teams-share/sharepoint/bulk-add-site">
+          <Button
+            component={Link}
+            href="/teams-share/sharepoint/bulk-add-site"
+            startIcon={<AddToPhotos />}
+          >
             Bulk Add Sites
           </Button>
         </>

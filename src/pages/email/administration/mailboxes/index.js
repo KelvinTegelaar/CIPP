@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import Link from "next/link";
 import { Button } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 import {
   Archive,
@@ -269,7 +270,11 @@ const Page = () => {
       filters={filterList}
       cardButton={
         <>
-          <Button component={Link} href="/email/administration/mailboxes/addshared">
+          <Button
+            component={Link}
+            startIcon={<Add />}
+            href="/email/administration/mailboxes/addshared"
+          >
             Add Shared Mailbox
           </Button>
         </>

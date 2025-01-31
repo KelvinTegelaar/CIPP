@@ -2,7 +2,8 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import { PlaylistAdd } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Tenant Allow/Block Lists";
@@ -49,7 +50,11 @@ const Page = () => {
       }}
       cardButton={
         <>
-          <Button component={Link} href="/email/administration/tenant-allow-block-lists/add">
+          <Button
+            component={Link}
+            href="/email/administration/tenant-allow-block-lists/add"
+            startIcon={<PlaylistAdd />}
+          >
             Add Entry
           </Button>
         </>
