@@ -11,7 +11,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
         GUID: "id",
         Assigned: "currentUserId",
       },
@@ -22,7 +21,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
         GUID: "id",
         Status: "active",
         Assigned: "currentAssignedUser",
@@ -34,7 +32,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
         GUID: "id",
         Status: "inProgress",
         Assigned: "currentAssignedUser",
@@ -46,7 +43,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
         GUID: "id",
         Status: "resolved",
         Assigned: "currentAssignedUser",

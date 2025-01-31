@@ -13,7 +13,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecMailboxRestore",
       data: {
-        TenantFilter: "Tenant",
         Identity: "Identity",
         Action: "Resume",
       },
@@ -25,7 +24,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecMailboxRestore",
       data: {
-        TenantFilter: "Tenant",
         Identity: "Identity",
         Action: "Suspend",
       },
@@ -37,7 +35,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecMailboxRestore",
       data: {
-        TenantFilter: "Tenant",
         Identity: "Identity",
         Action: "Remove",
       },

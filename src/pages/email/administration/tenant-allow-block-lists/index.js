@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 
 const Page = () => {
   const pageTitle = "Tenant Allow/Block Lists";
@@ -12,12 +13,12 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveTenantAllowBlockList",
       data: {
-        TenantFilter: "Tenant",
         Entries: "Value",
         ListType: "ListType",
       },
       confirmText: "Are you sure you want to delete?",
       color: "danger",
+      icon: <TrashIcon />,
     },
   ];
 

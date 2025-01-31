@@ -15,7 +15,6 @@ const Page = () => {
       url: "/api/ExecAssignApp",
       data: {
         AssignTo: "AllUsers",
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users?",
@@ -28,7 +27,6 @@ const Page = () => {
       url: "/api/ExecAssignApp",
       data: {
         AssignTo: "AllDevices",
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all devices?",
@@ -41,7 +39,6 @@ const Page = () => {
       url: "/api/ExecAssignApp",
       data: {
         AssignTo: "Both",
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users and devices?",
@@ -53,7 +50,6 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveApp",
       data: {
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to delete this application?",

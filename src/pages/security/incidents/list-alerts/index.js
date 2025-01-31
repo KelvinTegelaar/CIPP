@@ -11,7 +11,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSetSecurityAlert",
       data: {
-        TenantFilter: "Tenant",
         GUID: "id",
         Status: "inProgress",
         Vendor: "vendorInformation.vendor",
@@ -24,7 +23,6 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecSetSecurityAlert",
       data: {
-        TenantFilter: "Tenant",
         GUID: "id",
         Status: "resolved",
         Vendor: "vendorInformation.vendor",
