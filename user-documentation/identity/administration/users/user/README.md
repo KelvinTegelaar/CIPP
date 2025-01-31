@@ -1,35 +1,80 @@
 # View Individual User
 
-This main page of View User displays the basic user details. There are additional tabs at the top for more information and a deeper dive on the user, such as Edit User, Compromise Remediation, etc.
+## View User
+
+The View User page provides a comprehensive overview of user details and settings. It serves as the main landing page when viewing a user, with additional tabs available for more specific operations, such as Edit User, Compromise Remediation, etc.
+
+### Overview
+
+* Primary display of user information
+* Additional tabs at top for extended functionality (Edit, Compromise Remediation, etc.)
+* Inherits Actions dropdown from list users page
 
 ### Actions
 
 The actions dropdown carries forward the same [actions from the list users page](../#per-user-actions).
 
-### User Details
-
-| Field                                | Description                                                                                                                                                                                                    |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| User Photo                           | Displays the user's photo from Entra ID. If no photo is uploaded, then this displays the user's initials.                                                                                                      |
-| Account Enabled                      | A Boolean field indicating if the account is enabled for sign in.                                                                                                                                              |
-| Synced from Active Directory         | A Boolean field indicating if the account is synced with on-premises Active Directory.                                                                                                                         |
-| Display Name                         | The display name for the user.                                                                                                                                                                                 |
-| User Principal Name                  | The user principal name for the user.                                                                                                                                                                          |
-| Licenses                             | The licenses assigned to the user.                                                                                                                                                                             |
-| Email Address                        | The email address(es) for the user.                                                                                                                                                                            |
-| Job Title                            | The job title for the user.                                                                                                                                                                                    |
-| Department                           | The department for the user.                                                                                                                                                                                   |
-| Address                              | The street address for the user.                                                                                                                                                                               |
-| Postal Code                          | The postal code for the user.                                                                                                                                                                                  |
-| Office Location                      | The office location for the user.                                                                                                                                                                              |
-| Mobile Phone                         | The mobile phone number for the user.                                                                                                                                                                          |
-| Business Phone                       | The business phone number for the user.                                                                                                                                                                        |
-| Last Logon                           | Displays information for the last logon attempt for the user. Toggling the arrow will display additional information about the logon attempt.                                                                  |
-| Applied Conditional Access Policies  | Displays information related to the conditional access policies that apply to the user. Toggling the arrow will display additional information about the conditional access policy or policies.                |
-| Multi-Factopr Authentication Devices | Displays information for the device(s) configured for MFA for the user. Toggling the arrow will display additional information related to the device(es).                                                      |
-| Group Memberships                    | This will display a table of all groups the user is a member of. The per-row actions will also allow you to jump to the [Edit Group](../../groups/edit.md) page for the associated group to manage membership. |
-| Admin Roles                          | This will display a table of all admin roles the user is a member of.                                                                                                                                          |
-
 ***
+
+### User Information Fields
+
+#### Profile & Identity
+
+| Field                        | Description                                                            |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| User Photo                   | Displays user's Entra ID photo; shows initials if no photo is uploaded |
+| Display Name                 | User's full display name as shown in the directory                     |
+| User Principal Name          | Primary username/login identity for the user                           |
+| Account Enabled              | Boolean indicator showing if user can sign in (✓/✗)                    |
+| Synced from Active Directory | Boolean indicator showing if account is AD-synced (✓/✗)                |
+
+#### Licensing & Contact
+
+| Field          | Description                                    |
+| -------------- | ---------------------------------------------- |
+| Licenses       | List of currently assigned M365/Azure licenses |
+| Email Address  | Primary and alternative email addresses        |
+| Business Phone | Primary business contact number                |
+| Mobile Phone   | User's mobile contact number                   |
+
+#### Professional Information
+
+| Field           | Description                  |
+| --------------- | ---------------------------- |
+| Job Title       | User's current position/role |
+| Department      | Organizational department    |
+| Office Location | Physical office location     |
+
+#### Address Information
+
+| Field       | Description            |
+| ----------- | ---------------------- |
+| Address     | Street address details |
+| Postal Code | ZIP/Postal code        |
+
+#### Security & Access
+
+| Field                               | Description                                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| Last Logon                          | <p>Most recent sign-in information<br>• Expandable for additional details (click arrow)</p> |
+| Applied Conditional Access Policies | <p>Active security policies<br>• Expandable for policy details (click arrow)</p>            |
+| Multi-Factor Authentication Devices | <p>Registered MFA devices<br>• Expandable for device details (click arrow)</p>              |
+
+#### Group & Role Memberships
+
+| Field             | Description                                                                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Group Memberships | <p>Table of all group associations<br>• Includes per-row actions<br>• Direct link to <a href="../../groups/edit.md">Edit Group</a> page for the associated group to manage membership.</p> |
+| Admin Roles       | Table of assigned administrative roles                                                                                                                                                     |
+
+### Notes
+
+* Information is read-only in this view
+* Use Edit tab to modify information
+* Expandable sections (▼) provide additional details
+* Direct links to related management pages
+* Real-time data from Entra ID/Azure AD
+
+This view serves as the central hub for user information, providing quick access to both basic details and advanced management options through the tabbed interface.
 
 {% include "../../../../../.gitbook/includes/feature-request.md" %}
