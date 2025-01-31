@@ -12,6 +12,9 @@ import {
   Security,
   FindInPage,
   Shield,
+  Archive,
+  AutoMode,
+  Recycling,
 } from "@mui/icons-material";
 
 const Page = () => {
@@ -19,6 +22,15 @@ const Page = () => {
   const tenantFilter = useSettings().currentTenant;
 
   const actions = [
+    {
+      label: "View in InTune",
+      link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
+      color: "info",
+      icon: <EyeIcon />,
+      target: "_blank",
+      multiPost: false,
+      external: true,
+    },
     {
       label: "Sync Device",
       type: "POST",
@@ -116,17 +128,133 @@ const Page = () => {
         GUID: "id",
         Action: "windowsDefenderUpdateSignatures",
       },
-      confirmText:
-        "Are you sure you want to update the Windows Defender signatures for this device?",
+      confirmText: "Are you sure you want to update the Windows Defender signatures for this device?",
     },
     {
-      label: "View in InTune",
-      link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
-      color: "info",
-      icon: <EyeIcon />,
-      target: "_blank",
-      multiPost: false,
-      external: true,
+      label: "Generate logs and ship to MEM",
+      type: "POST",
+      icon: <Archive />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "CreateDeviceLogCollectionRequest",
+      },
+      confirmText: "Are you sure you want to generate logs and ship these to MEM?",
+    },
+    /*
+    {
+      label: "Rename device",
+      type: "POST",
+      icon: null,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "setDeviceName",
+      },
+      confirmText: "Enter the new name for the device",
+    },
+    */
+    {
+      label: "Fresh Start (Remove user data)",
+      type: "POST",
+      icon: <RestartAlt />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "cleanWindowsDevice",
+        keepUserData: false,
+      },
+      confirmText: "Are you sure you want to Fresh Start this device?",
+    },
+    {
+      label: "Fresh Start (Do not remove user data)",
+      type: "POST",
+      icon: <RestartAlt />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "cleanWindowsDevice",
+        keepUserData: true,
+      },
+      confirmText: "Are you sure you want to Fresh Start this device?",
+    },
+    {
+      label: "Wipe Device, keep enrollment data",
+      type: "POST",
+      icon: <RestartAlt />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "cleanWindowsDevice",
+        keepUserData: false,
+        keepEnrollmentData: true,
+      },
+      confirmText: "Are you sure you want to wipe this device, and retain enrollment data?",
+    },
+    {
+      label: "Wipe Device, remove enrollment data",
+      type: "POST",
+      icon: <RestartAlt />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "cleanWindowsDevice",
+        keepUserData: false,
+        keepEnrollmentData: false,
+      },
+      confirmText: "Are you sure you want to wipe this device, and remove enrollment data?",
+    },
+    {
+      label: "Wipe Device, keep enrollment data, and continue at powerloss",
+      type: "POST",
+      icon: <RestartAlt />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "cleanWindowsDevice",
+        keepEnrollmentData: true,
+        keepUserData: false,
+        useProtectedWipe: true,
+      },
+      confirmText: "Are you sure you want to wipe this device? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+    },
+    {
+      label: "Wipe Device, remove enrollment data, and continue at powerloss",
+      type: "POST",
+      icon: <RestartAlt />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "cleanWindowsDevice",
+        keepEnrollmentData: false,
+        keepUserData: false,
+        useProtectedWipe: true,
+      },
+      confirmText: "Are you sure you want to wipe this device? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+    },
+    {
+      label: "Autopilot Reset",
+      type: "POST",
+      icon: <AutoMode />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "wipe",
+        keepUserData: "false",
+        keepEnrollmentData: "true",
+      },
+      confirmText: "Are you sure you want to Autopilot Reset this device?",
+    },
+    {
+      label: "Retire device",
+      type: "POST",
+      icon: <Recycling />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "retire",
+      },
+      confirmText: "Are you sure you want to retire this device?",
     },
   ];
 
