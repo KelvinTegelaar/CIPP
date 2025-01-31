@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { Box, Stack } from "@mui/system";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
-import { Edit } from "@mui/icons-material";
+import { Edit, AddBox } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "GDAP Role Templates";
@@ -42,7 +42,6 @@ const Page = () => {
     urlFromData: true,
     relatedQueryKeys: "ListGDAPRoleTemplates",
   });
-  
 
   useEffect(() => {
     if (currentTemplates.isSuccess) {
@@ -98,7 +97,11 @@ const Page = () => {
         tenantInTitle={false}
         sx={{ flexGrow: 1, pb: 4 }}
         cardButton={
-          <Button component={Link} href="/tenant/gdap-management/role-templates/add">
+          <Button
+            component={Link}
+            href="/tenant/gdap-management/role-templates/add"
+            startIcon={<AddBox />}
+          >
             Add Template
           </Button>
         }
