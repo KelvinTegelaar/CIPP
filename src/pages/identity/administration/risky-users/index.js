@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Clear } from "@mui/icons-material";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Clear, Search } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Risky Users";
@@ -19,7 +18,7 @@ const Page = () => {
     {
       label: "Research Compromised Account",
       type: "GET",
-      icon: <MagnifyingGlassIcon />,
+      icon: <Search />,
       link: "/identity/administration/users/user/bec?userId=[id]",
       confirmText: "Are you sure you want to research this compromised account?",
       multiPost: false,
