@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
+import { CippFormComponent } from "../../components/CippComponents/CippFormComponent";
 
 const CippSpeedDial = ({
   actions = [],

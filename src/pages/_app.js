@@ -20,7 +20,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
-import CippSpeedDial from "src/components/CippComponents/CippSpeedDial";
+import CippSpeedDial from "../components/CippComponents/CippSpeedDial";
 import {
   Help as HelpIcon,
   BugReport as BugReportIcon,
