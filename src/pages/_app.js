@@ -20,6 +20,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+import CippSpeedDial from 'src/components/CippComponents/CippSpeedDial'
+import {
+  Help as HelpIcon,
+  BugReport as BugReportIcon,
+  Feedback as FeedbackIcon,
+} from '@mui/icons-material'
 import React from "react";
 TimeAgo.addDefaultLocale(en);
 
@@ -84,6 +90,11 @@ const App = (props) => {
                             <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
                           </ErrorBoundary>
                           <Toaster position="top-center" />
+                          <CippSpeedDial 
+                          actions={speedDialActions}
+                          icon={<HelpIcon />}
+                          position={{ bottom: 16, right: 16 }}
+                        />
                         </RTL>
                       </ThemeProvider>
                       {settings?.showDevtools && (
