@@ -28,31 +28,63 @@ The main table provides an overview of information including display name, email
 
 ### Per-User Actions:
 
-| Field                            | Description                                                                                                                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 👁 View User                     | Display advanced user account details. \[[More information](user/)]                                                                                                                         |
-| ✏️Edit User                      | Allows editing user details, same as user edit view from Microsoft 365 admin. Additionally, you can copy group membership to the target user from another active user.                      |
-| Research Compromised Account     | Single pane of glass review of common indicators of compromise (IoC) \[[More information](user/bec.md)]                                                                                     |
-| Create Temporary Access Password | Create a temporary password to allow full passwordless enrollment. \[[More information](./#create-temporary-access-password)]                                                               |
-| Re-require MFA registration      | Sets user legacy MFA status to **Enabled**                                                                                                                                                  |
-| Send MFA Push                    | Sends an MFA approval prompt to a user's registered devices. A simple way to verify functionality.                                                                                          |
-| Set Per-User MFA                 | Sets the per-user MFA state for the selected user(s). Available options are "Enforced", "Enabled", or "Disabled".                                                                           |
-| Convert to Shared Mailbox        | Convert a mailbox to shared.                                                                                                                                                                |
-| Enable Online Archive            | Enables the online archive for this user's mailbox.                                                                                                                                         |
-| Set Out of Office                | Set an out of office message for the user or shared mailbox. **Note:** _Setting a different internal and external autoreply is currently not supported_                                     |
-| Disable Out of Office            | Disables out of office message for the user or shared mailbox.                                                                                                                              |
-| Add to Group                     | Add user to a group.                                                                                                                                                                        |
-| Disable Email Forwarding         | Disables all email forwarding set both ForwardingAddress and ForwardingSMTPAddress to $null                                                                                                 |
-| Pre-provision OneDrive           | This will start the provisioning of the user's OneDrive without a need for the user's first login.                                                                                          |
-| Add OneDrive Shortcut            | Adds a OneDrive shortcut in the root of the users OneDrive to a SharePoint site.                                                                                                            |
-| Block Sign In                    | Disable account sign in.                                                                                                                                                                    |
-| Unblock Sign In                  | Enable account sign in.                                                                                                                                                                     |
-| Reset Password (Must Change)     | Reset account password to a random value (Example: `2WcAu%VMy89P`) and require user to set a new password on login.                                                                         |
-| Reset Password                   | Reset account password to a random value (Example: `2WcAu%VMy89P`).                                                                                                                         |
-| Clear Immutable ID               | Sets the user's onPremisesImmutableId to $null to break the sync of the object from on-premises Active Directory.                                                                           |
-| Revoke all user sessions         | Revoke all sessions, requiring user to sign in again.                                                                                                                                       |
-| Delete User                      | Delete user account.                                                                                                                                                                        |
-| More info                        | Opens the Extended Info flyout panel for the user which shows some of the more common profile fields for the user. The other per-user actions are also listed at the bottom of this window. |
+### Account Management Actions
+
+| Action       | Description                                                                                                                                    | Requirements/Implications                                                                                                                                         |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 👁 View User | Displays comprehensive user account details in the admin interface                                                                             | <p>- Read access to user objects<br>- Shows all available user information<br>- Display advanced user account details. [<a href="user/">More information</a>]</p> |
+| ✏️ Edit User | <p>Modifies user account details and settings:<br>- Basic information<br>- License assignments<br>- Group memberships<br>- Contact details</p> | <p>- Write access to user objects<br>- Can copy group memberships from another user<br>- Changes apply immediately</p>                                            |
+| Delete User  | Permanently removes user account                                                                                                               | <p>- Administrative privileges required<br>- Irreversible action<br>- Consider backup/archival first</p>                                                          |
+
+### Security Actions
+
+| Action                           | Description                                                                                                      | Requirements/Implications                                                                                                                                                                         |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Research Compromised Account     | <p>Analyzes Indicators of Compromise (IoC):<br>- Sign-in patterns<br>- Mail rules<br>- Suspicious activities</p> | <p>- Security admin rights<br>- Provides comprehensive security review<br>- Single pane of glass review of common indicators of compromise (IoC) [<a href="user/bec.md">More information</a>]</p> |
+| Create Temporary Access Password | Creates temporary password for passwordless enrollment                                                           | <p>- Time-limited access<br>- Create a temporary password to allow full passwordless enrollment. [<a href="./#create-temporary-access-password">More information</a>]</p>                         |
+| Re-require MFA registration      | <p>Forces new MFA setup by:<br>- Resetting MFA status to Enabled<br>- Requiring new registration</p>             | <p>- User must complete new MFA setup<br>- Affects all MFA methods</p>                                                                                                                            |
+| Send MFA Push                    | Sends test MFA prompt to user's devices                                                                          | <p>- Verifies MFA configuration<br>- Tests user's registered devices</p>                                                                                                                          |
+| Set Per-User MFA                 | <p>Configures MFA state:<br>- Enforced<br>- Enabled<br>- Disabled</p>                                            | <p>- Overrides tenant-level settings<br>- Immediate effect on sign-ins</p>                                                                                                                        |
+| Block Sign In                    | Prevents account access                                                                                          | <p>- Immediate effect<br>- Doesn't affect existing sessions</p>                                                                                                                                   |
+| Unblock Sign In                  | Restores account access                                                                                          | <p>- Immediate effect<br>- User can sign in again</p>                                                                                                                                             |
+| Revoke all user sessions         | Forces re-authentication on all devices                                                                          | <p>- Terminates all active sessions<br>- Requires new sign-in everywhere</p>                                                                                                                      |
+
+### Password Management
+
+| Action                       | Description                            | Requirements/Implications                                                              |
+| ---------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------- |
+| Reset Password (Must Change) | Sets random password and forces change | <p>- User must create new password at next login<br>- Example format: 2WcAu%VMy89P</p> |
+| Reset Password               | Sets new random password               | <p>- Password immediately active<br>- No change requirement</p>                        |
+
+### Mail and Communication
+
+| Action                    | Description                            | Requirements/Implications                                                                                                                                                               |
+| ------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Convert to Shared Mailbox | Transforms user mailbox to shared type | <p>- Requires Exchange Online license<br>- Maintains data and access</p>                                                                                                                |
+| Enable Online Archive     | Activates archival mailbox             | <p>- Requires appropriate license<br>- Additional storage space</p>                                                                                                                     |
+| Set Out of Office         | Configures automatic replies           | <p>- Single message for internal/external<br>- No HTML formatting<br><strong>Note:</strong> <em>Setting a different internal and external autoreply is currently not supported</em></p> |
+| Disable Out of Office     | Removes automatic replies              | <p>- Immediate effect<br>- Clears all auto-reply settings</p>                                                                                                                           |
+| Disable Email Forwarding  | Removes all email forwarding rules     | <p>- Clears ForwardingAddress<br>- Clears ForwardingSMTPAddress</p>                                                                                                                     |
+
+### OneDrive Management
+
+| Action                 | Description                      | Requirements/Implications                                      |
+| ---------------------- | -------------------------------- | -------------------------------------------------------------- |
+| Pre-provision OneDrive | Initializes OneDrive storage     | <p>- No user login required<br>- Speeds up first access</p>    |
+| Add OneDrive Shortcut  | Creates SharePoint site shortcut | <p>- Adds to OneDrive root<br>- Requires existing OneDrive</p> |
+
+### Group and Directory Management
+
+| Action             | Description                        | Requirements/Implications                                                        |
+| ------------------ | ---------------------------------- | -------------------------------------------------------------------------------- |
+| Add to Group       | Assigns user to specified group(s) | <p>- Immediate membership<br>- Inherits group permissions</p>                    |
+| Clear Immutable ID | Breaks on-premises AD sync         | <p>- Sets onPremisesImmutableId to null<br>- Stops directory synchronization</p> |
+
+### Information Access
+
+| Action    | Description                                                                                  | Requirements/Implications                                                     |
+| --------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| More info | <p>Opens Extended Info panel showing:<br>- Common profile fields<br>- Additional actions</p> | <p>- Quick access to key information<br>- Alternative action access point</p> |
 
 {% hint style="info" %}
 Note that clicking one of these actions will present a confirmation modal dialog.
