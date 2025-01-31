@@ -13,7 +13,6 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveTenantAllowBlockList",
       data: {
-        TenantFilter: "Tenant",
         Entries: "Value",
         ListType: "ListType",
       },

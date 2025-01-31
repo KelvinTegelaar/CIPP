@@ -22,7 +22,6 @@ const Page = () => {
       url: "/api/ExecGroupsHideFromGAL",
       icon: <VisibilityOff />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
         HidefromGAL: true,
@@ -37,7 +36,6 @@ const Page = () => {
       url: "/api/ExecGroupsHideFromGAL",
       icon: <Visibility />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
       },
@@ -51,7 +49,6 @@ const Page = () => {
       url: "/api/ExecGroupsDeliveryManagement",
       icon: <LockClosedIcon />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
         OnlyAllowInternal: true,
@@ -66,7 +63,6 @@ const Page = () => {
       icon: <LockOpenIcon />,
       url: "/api/ExecGroupsDeliveryManagement",
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
       },
