@@ -26,6 +26,8 @@ import {
   BugReport as BugReportIcon,
   Feedback as FeedbackIcon,
 } from "@mui/icons-material";
+import { SvgIcon } from "@mui/material";
+import discordIcon from "../../public/discord-mark-blue.svg";
 import React from "react";
 TimeAgo.addDefaultLocale(en);
 
@@ -56,6 +58,16 @@ const App = (props) => {
       name: "Request Feature",
       href: "https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml",
       onClick: () => window.open("https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml", "_blank")
+    },
+    {
+      id: "discord",
+      icon: (
+        <SvgIcon component={discordIcon} viewBox="0 0 127.14 96.36" sx={{ fontSize: '1.5rem' }}>
+        </SvgIcon>
+      ),
+      name: "Join the Discord!",
+      href: "https://discord.gg/cyberdrain",
+      onClick: () => window.open("https://discord.gg/cyberdrain", "_blank")
     },
   ];
 
