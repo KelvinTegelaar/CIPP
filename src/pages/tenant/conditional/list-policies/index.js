@@ -5,6 +5,7 @@ import {
   Check as CheckIcon,
   Delete as DeleteIcon,
   MenuBook as MenuBookIcon,
+  AddModerator as AddModeratorIcon,
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
@@ -105,7 +106,11 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <Button component={Link} href="/tenant/conditional/list-policies/deploy">
+          <Button
+            component={Link}
+            href="/tenant/conditional/list-policies/deploy"
+            startIcon={<AddModeratorIcon />}
+          >
             Deploy Conditional Access Policy
           </Button>
         </>

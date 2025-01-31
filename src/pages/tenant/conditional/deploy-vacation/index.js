@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
+import { EventAvailable } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -8,7 +9,7 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <Button component={Link} href="deploy-vacation/add">
+          <Button component={Link} href="deploy-vacation/add" startIcon={<EventAvailable />}>
             Add Vacation Schedule
           </Button>
         </>

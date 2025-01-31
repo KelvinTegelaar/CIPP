@@ -3,6 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { AccountCircle } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 
 const Page = () => {
@@ -32,7 +33,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/endpoint/autopilot/list-profiles/add">
+          <Button
+            component={Link}
+            href="/endpoint/autopilot/list-profiles/add"
+            startIcon={<AccountCircle />}
+          >
             Add Profile
           </Button>
         </>
