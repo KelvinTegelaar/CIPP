@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { AddBox, RocketLaunch, Delete } from "@mui/icons-material";
 import Link from "next/link";
 import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 
@@ -12,6 +13,7 @@ const Page = () => {
       label: "Delete Template",
       type: "GET",
       url: "/api/RemoveGroupTemplate",
+      icon: <Delete />,
       data: {
         ID: "GUID",
       },
@@ -31,10 +33,10 @@ const Page = () => {
       actions={actions}
       cardButton={
         <>
-          <Button component={Link} href="group-templates/add">
+          <Button component={Link} href="group-templates/add" startIcon={<AddBox />}>
             Add Group Template
           </Button>
-          <Button component={Link} href="group-templates/deploy">
+          <Button component={Link} href="group-templates/deploy" startIcon={<RocketLaunch />}>
             Deploy Group Template
           </Button>
         </>

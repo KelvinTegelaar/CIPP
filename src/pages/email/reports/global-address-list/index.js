@@ -1,5 +1,6 @@
 ﻿import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Page = () => {
   const actions = [
@@ -7,21 +8,25 @@ const Page = () => {
       label: "Unhide from Global Address List",
       type: "POST",
       url: "/api/ExecHideFromGAL",
+      icon: <Visibility />,
       data: {
         HideFromGAL: false,
         ID: "PrimarySmtpAddress",
       },
       confirmText: "Are you sure you want to show this mailbox in the Global Address List?",
+      condition: (row) => row.HiddenFromAddressListsEnabled == true,
     },
     {
       label: "Hide from Global Address List",
       type: "POST",
       url: "/api/ExecHideFromGAL",
+      icon: <VisibilityOff />,
       data: {
         HideFromGAL: true,
         ID: "PrimarySmtpAddress",
       },
       confirmText: "Are you sure you want to hide this mailbox from the Global Address List?",
+      condition: (row) => row.HiddenFromAddressListsEnabled == false,
     },
   ];
 

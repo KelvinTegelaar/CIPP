@@ -101,7 +101,6 @@ const Page = () => {
           backButtonTitle="Integrations"
           headerText={extension.headerText}
           hideTitleText={true}
-          headerImage={logo}
         >
           <CardContent sx={{ pb: 0, mb: 0 }}>
             {logo && (
@@ -109,7 +108,7 @@ const Page = () => {
                 component="img"
                 src={logo}
                 alt={extension.name}
-                sx={{ width: "50%", mx: "auto" }}
+                sx={{ maxWidth: "50%", mx: "auto", maxHeight: "125px" }}
               />
             )}
             <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
@@ -187,6 +186,7 @@ const Page = () => {
                 <Tab label="Settings" {...tabProps(0)} />
                 {extension?.mappingRequired && <Tab label="Tenant Mapping" {...tabProps(1)} />}
                 {extension?.fieldMapping && <Tab label="Field Mapping" {...tabProps(2)} />}
+                {extension?.id === "cippapi" && <Tab label="API Clients" {...tabProps(3)} />}
               </Tabs>
             </Box>
             <CippCardTabPanel value={value} index={0}>
@@ -200,6 +200,11 @@ const Page = () => {
             {extension?.fieldMapping && (
               <CippCardTabPanel value={value} index={2}>
                 <CippIntegrationFieldMapping />
+              </CippCardTabPanel>
+            )}
+            {extension?.id === "cippapi" && (
+              <CippCardTabPanel value={value} index={3}>
+                API Client component to go here
               </CippCardTabPanel>
             )}
           </Box>
