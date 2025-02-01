@@ -167,6 +167,7 @@ const Page = () => {
         label: portal.label,
         target: "_blank",
         link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+        icon: portal.icon,
       }));
       setPortalMenuItems(menuItems);
     }
