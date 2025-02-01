@@ -51,7 +51,7 @@ const CippAddGroupForm = (props) => {
           formControl={formControl}
           name="owners"
           label="Owners"
-          multiple={false}
+          multiple={true}
           select={"id,userPrincipalName,displayName"}
         />
       </Grid>
@@ -62,7 +62,7 @@ const CippAddGroupForm = (props) => {
           formControl={formControl}
           name="members"
           label="Members"
-          multiple={false}
+          multiple={true}
           select={"id,userPrincipalName,displayName"}
         />
       </Grid>
