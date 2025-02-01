@@ -4,7 +4,7 @@ import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Mail, Forward } from "@mui/icons-material";
+import { Mail, Forward, Fingerprint } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
@@ -40,6 +40,10 @@ const Page = () => {
         {
           icon: <Mail />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
+        },
+        {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
         },
         {
           icon: <CalendarIcon />,

@@ -95,6 +95,7 @@ const Page = () => {
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
       queryKey={`Listlogs-${dateFilter}-${filterEnabled}`}
+      tenantInTitle={false}
       apiData={{
         DateFilter: dateFilter, // Pass date filter from state
         Filter: filterEnabled, // Pass filter toggle state
