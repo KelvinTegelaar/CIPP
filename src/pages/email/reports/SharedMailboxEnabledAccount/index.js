@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Block } from "@mui/icons-material";
 
 /* 
   NOTE for Devs:
@@ -18,10 +19,11 @@ const Page = () => {
       actions={[
         {
           label: "Block Sign In",
-          type: "POST",
+          type: "GET",
+          icon: <Block />,
           url: "/api/ExecDisableUser",
-          data: { TenantFilter: "Tenant", ID: "id" },
-          confirmText: "Are you sure you want to block this user from signing in?",
+          data: { ID: "id" },
+          confirmText: "Are you sure you want to block the sign-in for this user?",
         },
       ]}
       offCanvas={{
