@@ -7,8 +7,6 @@ import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 const Page = () => {
   const pageTitle = "Sign Ins Report";
   const apiUrl = "/api/ListSignIns";
-  const actions = [];
-  const offCanvas = null;
   const simpleColumns = [
     "createdDateTime",
     "userPrincipalName",
@@ -16,6 +14,7 @@ const Page = () => {
     "authenticationRequirement",
     "errorCode",
     "additionalDetails",
+    "ipAddress",
     "locationcipp",
   ];
 
@@ -102,8 +101,6 @@ const Page = () => {
         title={pageTitle}
         apiUrl={apiUrl}
         apiData={appliedFilters}
-        actions={actions}
-        offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         queryKey={`ListSignIns-${JSON.stringify(appliedFilters)}`}
       />
