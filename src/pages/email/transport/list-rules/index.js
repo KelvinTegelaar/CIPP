@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Book, DoDisturb, Done } from "@mui/icons-material";
+import { Book, DoDisturb, Done, RocketLaunch } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
@@ -88,7 +88,11 @@ const Page = () => {
       ]}
       cardButton={
         <>
-          <Button component={Link} href="/email/transport/list-rules/add">
+          <Button
+            component={Link}
+            href="/email/transport/list-rules/add"
+            startIcon={<RocketLaunch />}
+          >
             Deploy Template
           </Button>
         </>

@@ -5,12 +5,14 @@ import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/system";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const currentTenant = formControl.watch("tenantFilter");
   const selectedUsers = useWatch({ control: formControl.control, name: "user" });
   const [showAlert, setShowAlert] = useState(false);
+  const userSettingsDefaults = useSettings().userSettingsDefaults;
 
   useEffect(() => {
     if (selectedUsers.length >= 4) {
@@ -18,6 +20,14 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue("Scheduled.enabled", true);
     }
   }, [selectedUsers]);
+
+  useEffect(() => {
+    if (userSettingsDefaults?.offboardingDefaults) {
+      userSettingsDefaults.offboardingDefaults.forEach((setting) => {
+        formControl.setValue(setting.name, setting.value);
+      });
+    }
+  }, [userSettingsDefaults]);
 
   return (
     <Stack spacing={4}>

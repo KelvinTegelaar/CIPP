@@ -17,6 +17,7 @@ const Page = () => {
   return (
     <>
       <CippFormPage
+        resetForm={false}
         queryKey={`GroupTemplates-${userSettingsDefaults.currentTenant}`}
         formControl={formControl}
         title="Group Template"
