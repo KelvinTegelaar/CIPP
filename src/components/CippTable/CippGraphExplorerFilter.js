@@ -38,7 +38,7 @@ const GroupItems = styled("ul")({
 });
 
 const CippGraphExplorerFilter = ({
-  endpointFilter,
+  endpointFilter = "",
   onSubmitFilter,
   onPresetChange,
   component = "accordion",
@@ -81,16 +81,24 @@ const CippGraphExplorerFilter = ({
     gridSwitchSize = 12;
   }
 
+  const [currentEndpoint, setCurrentEndpoint] = useState(endpointFilter);
   const { control, handleSubmit } = formControl;
   const tenant = useSettings().currentTenant;
-  const endpoint = useWatch({ control, name: "endpoint" });
+  const watchedValues = useWatch({ control: formControl.control });
+
+  useEffect(() => {
+    const endpoint = watchedValues.endpoint;
+    if (endpoint && endpoint !== currentEndpoint) {
+      setCurrentEndpoint(endpoint);
+    }
+  }, [watchedValues.endpoint]);
 
   // API call for available properties
   const propertyList = ApiGetCall({
     url: "/api/ListGraphRequest",
-    queryKey: `graph-properties-${endpoint}`,
+    queryKey: `graph-properties-${currentEndpoint}`,
     data: {
-      Endpoint: endpoint,
+      Endpoint: currentEndpoint,
       ListProperties: true,
       TenantFilter: tenant,
       IgnoreErrors: true,
@@ -141,16 +149,16 @@ const CippGraphExplorerFilter = ({
       });
     }
     setPresetOptions(presetOptionList);
-  }, [defaultPresets, presetList.isSuccess]);
+  }, [defaultPresets, presetList.isSuccess, presetList.data]);
 
   // Debounced refetch when endpoint, put in in a useEffect dependand on endpoint
   const debouncedRefetch = useCallback(
     debounce(() => {
-      if (endpoint) {
+      if (currentEndpoint) {
         propertyList.refetch();
       }
     }, 1000),
-    [endpoint] // Dependencies that the debounce function depends on
+    [currentEndpoint] // Dependencies that the debounce function depends on
   );
 
   useEffect(() => {
@@ -159,10 +167,10 @@ const CippGraphExplorerFilter = ({
     return () => {
       debouncedRefetch.cancel();
     };
-  }, [endpoint, debouncedRefetch]);
+  }, [currentEndpoint, debouncedRefetch]);
 
   const savePresetApi = ApiPostCall({
-    relatedQueryKeys: "ListGraphExplorerPresets",
+    relatedQueryKeys: ["ListGraphExplorerPresets", "ListGraphRequest"],
   });
 
   // Save preset function
@@ -278,13 +286,13 @@ const CippGraphExplorerFilter = ({
   };
   // Schedule report function
   const handleScheduleReport = () => {
-    const formParameters = formControl.getValues();
+    const formParameters = watchedValues;
     const selectString = formParameters.$select
       ? formParameters.$select?.map((item) => item.value).join(",")
       : null;
 
     //compose the parameters for the form based on what is available
-    const Parameters = [
+    var Parameters = [
       {
         Key: "$select",
         Value: selectString,
@@ -310,31 +318,16 @@ const CippGraphExplorerFilter = ({
         Value: formParameters.$expand,
       },
       {
-        Key: "ReverseTenantLookup",
-        Value: formParameters.ReverseTenantLookup,
-      },
-      {
-        Key: "ReverseTenantLookupProperty",
-        Value: formParameters.ReverseTenantLookupProperty,
-      },
-      {
-        Key: "NoPagination",
-        Value: formParameters.NoPagination,
-      },
-      {
-        Key: "AsApp",
-        Value: formParameters.AsApp,
-      },
-      {
         Key: "$format",
         Value: formParameters.$format,
       },
     ];
-    Parameters.forEach((param) => {
-      if (param.Value == null || param.Value === "") {
-        //delete the index
-        Parameters.splice(Parameters.indexOf(param), 1);
-      }
+    Parameters = Parameters.filter((param) => {
+      return (
+        param.Value != null &&
+        param.Value !== "" &&
+        !(typeof param.Value === "boolean" && param.Value === false)
+      );
     });
     const resetParams = {
       tenantFilter: tenant,
@@ -350,6 +343,9 @@ const CippGraphExplorerFilter = ({
         Endpoint: formParameters.endpoint,
         skipCache: true,
         NoPagination: formParameters.NoPagination,
+        AsApp: formParameters.AsApp,
+        ReverseTenantLookup: formParameters.ReverseTenantLookup,
+        ReverseTenantLookupProperty: formParameters.ReverseTenantLookupProperty,
         Parameters: Parameters,
       },
       advancedParameters: false,
@@ -375,12 +371,14 @@ const CippGraphExplorerFilter = ({
 
   function getPresetProps(values) {
     var newvals = Object.assign({}, values);
+    console.log(values);
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(",");
     }
     delete newvals["reportTemplate"];
     delete newvals["tenantFilter"];
     delete newvals["IsShared"];
+    delete newvals["id"];
     if (newvals.ReverseTenantLookup === false) {
       delete newvals.ReverseTenantLookup;
     }
@@ -389,6 +387,9 @@ const CippGraphExplorerFilter = ({
     }
     if (newvals.$count === false) {
       delete newvals.$count;
+    }
+    if (newvals.AsApp === false) {
+      delete newvals.AsApp;
     }
     Object.keys(newvals).forEach((key) => {
       if (values[key] === "" || values[key] === null) {
@@ -399,7 +400,7 @@ const CippGraphExplorerFilter = ({
   }
 
   useEffect(() => {
-    var values = getPresetProps(formControl.getValues());
+    var values = getPresetProps(watchedValues);
     setOffCanvasContent(() => (
       <>
         <Typography variant="h5" sx={{ mb: 2 }}>
@@ -425,7 +426,7 @@ const CippGraphExplorerFilter = ({
         <CippApiResults apiObject={savePresetApi} />
       </>
     ));
-  }, [editorValues, savePresetApi.isPending, formControl, selectedPresets]);
+  }, [editorValues, savePresetApi.isPending, formControl, selectedPresets, watchedValues]);
 
   const handleImport = () => {
     setOffCanvasOpen(true); // Open the offCanvas, the content will be updated by useEffect
@@ -555,6 +556,7 @@ const CippGraphExplorerFilter = ({
               multiple={false}
               formControl={formControl}
               options={presetOptions}
+              isFetching={presetList.isFetching}
               groupBy={(option) => option.type}
               renderGroup={(params) => (
                 <li key={params.key}>
@@ -594,7 +596,7 @@ const CippGraphExplorerFilter = ({
               name="$select"
               label="Select"
               formControl={formControl}
-              isFetching={propertyList.isLoading}
+              isFetching={propertyList.isFetching}
               options={
                 (propertyList.isSuccess &&
                   propertyList?.data?.Results?.length > 0 &&
