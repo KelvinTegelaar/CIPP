@@ -3,15 +3,15 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "../tabOptions";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { AdminPanelSettings, Add, Delete } from "@mui/icons-material";
 import Link from "next/link";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const pageTitle = "GDAP Role Mappings";
 
 const actions = [
   {
     label: "Add to Template",
-    icon: <PlusIcon />,
+    icon: <Add />,
     type: "POST",
     url: "/api/ExecGDAPRoleTemplate?Action=Add",
     confirmText: "Select a template to add the selected role mapping(s) to.",
@@ -40,7 +40,7 @@ const actions = [
   },
   {
     label: "Delete Mapping",
-    icon: <TrashIcon />,
+    icon: <Delete />,
     type: "POST",
     url: "/api/ExecDeleteGDAPRoleMapping",
     data: {
@@ -64,7 +64,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="/tenant/gdap-management/roles/add">
+        <Button
+          component={Link}
+          href="/tenant/gdap-management/roles/add"
+          startIcon={<AdminPanelSettings />}
+        >
           Map GDAP Roles
         </Button>
       }
