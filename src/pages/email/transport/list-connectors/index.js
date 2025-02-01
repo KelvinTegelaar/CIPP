@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { RocketLaunch, Book, Check, Block, Delete } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -11,6 +12,7 @@ const Page = () => {
       label: "Create template based on connector",
       type: "POST",
       url: "/api/AddExConnectorTemplate",
+      icon: <Book />,
       postEntireRow: true,
       confirmText: "Are you sure you want to create a template based on this connector?",
       color: "info",
@@ -19,6 +21,7 @@ const Page = () => {
       label: "Enable Connector",
       type: "POST",
       url: "/api/EditExConnector",
+      icon: <Check />,
       data: {
         State: "Enable",
         GUID: "Guid",
@@ -31,6 +34,7 @@ const Page = () => {
       label: "Disable Connector",
       type: "POST",
       url: "/api/EditExConnector",
+      icon: <Block />,
       data: {
         State: "Disable",
         GUID: "Guid",
@@ -43,6 +47,7 @@ const Page = () => {
       label: "Delete Connector",
       type: "POST",
       url: "/api/RemoveExConnector",
+      icon: <Delete />,
       data: {
         GUID: "Guid",
         Type: "cippconnectortype",
@@ -80,10 +85,15 @@ const Page = () => {
       titleButton={{
         label: "Deploy Connector",
         href: "/email/connectors/deploy-connector",
+        startIcon: <RocketLaunch />, // Added icon
       }}
       cardButton={
         <>
-          <Button component={Link} href="/email/connectors/list-connectors/add">
+          <Button
+            component={Link}
+            href="/email/transport/list-connectors/add"
+            startIcon={<RocketLaunch />}
+          >
             Deploy Connector
           </Button>
         </>
