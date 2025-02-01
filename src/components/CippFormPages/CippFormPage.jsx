@@ -27,7 +27,7 @@ const CippFormPage = (props) => {
     formControl,
     postUrl,
     customDataformatter,
-    resetForm = true,
+    resetForm = false,
     hideBackButton = false,
     hidePageType = false,
     hideTitle = false,
@@ -36,7 +36,6 @@ const CippFormPage = (props) => {
     ...other
   } = props;
   const router = useRouter();
-
   //check if there are
   const postCall = ApiPostCall({
     datafromUrl: true,
