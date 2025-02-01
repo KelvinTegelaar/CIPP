@@ -93,6 +93,11 @@ export const CippUserInfoCard = (props) => {
         />
         <PropertyListItem
           divider
+          label="User ID"
+          value={isFetching ? <Skeleton variant="text" width={120} /> : user?.id || "N/A"}
+        />
+        <PropertyListItem
+          divider
           label="Email Address"
           value={
             isFetching ? (

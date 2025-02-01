@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { getCippLicenseTranslation } from "/src/utils/get-cipp-license-translation";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Mail } from "@mui/icons-material";
+import { Mail, Fingerprint } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
@@ -56,10 +56,14 @@ const Page = () => {
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
         },
         {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
+        },
+        {
           icon: <CalendarIcon />,
           text: (
             <>
-              Created <CippTimeAgo data={userRequest.data?.[0]?.createdDateTime} />
+              Created: <CippTimeAgo data={userRequest.data?.[0]?.createdDateTime} />
             </>
           ),
         },
