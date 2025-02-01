@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { CheckmarkIcon } from "react-hot-toast";
 import { Button } from "@mui/material";
+import { PlayArrow, Add } from "@mui/icons-material";
 import Link from "next/link";
 import { ApiPostCall } from "../../../../api/ApiCall";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
@@ -40,9 +41,11 @@ const Page = () => {
       tenantInTitle={false}
       cardButton={
         <>
-          <Button onClick={() => handleRunQueue()}>Run Queue now</Button>
+          <Button onClick={() => handleRunQueue()} startIcon={<PlayArrow />}>
+            Run Queue now
+          </Button>
 
-          <Button component={Link} href="/endpoint/applications/list/add">
+          <Button component={Link} href="/endpoint/applications/list/add" startIcon={<Add />}>
             Add Application
           </Button>
         </>
