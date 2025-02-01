@@ -5,7 +5,7 @@ import tabOptions from "./tabOptions";
 import { Button, SvgIcon } from "@mui/material";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
 import { useDialog } from "/src/hooks/use-dialog";
-import { Sync } from "@mui/icons-material";
+import { Sync, Block, PlayArrow, RestartAlt, Delete, Add } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Tenants - Backend";
@@ -17,6 +17,7 @@ const Page = () => {
       label: "Exclude Tenants",
       type: "POST",
       url: `/api/ExecExcludeTenant?AddExclusion=true`,
+      icon: <Block />,
       data: { value: "customerId" },
       confirmText: "Are you sure you want to exclude these tenants?",
       multiPost: false,
@@ -25,6 +26,7 @@ const Page = () => {
       label: "Include Tenants",
       type: "POST",
       url: `/api/ExecExcludeTenant?RemoveExclusion=true`,
+      icon: <Add />,
       data: { value: "customerId" },
       confirmText: "Are you sure you want to include these tenants?",
       multiPost: false,
@@ -33,6 +35,7 @@ const Page = () => {
       label: "Refresh CPV Permissions",
       type: "POST",
       url: `/api/ExecCPVPermissions`,
+      icon: <PlayArrow />,
       data: { TenantFilter: "customerId" },
       confirmText: "Are you sure you want to refresh the CPV permissions for these tenants?",
       multiPost: false,
@@ -41,6 +44,7 @@ const Page = () => {
       label: "Reset CPV Permissions",
       type: "POST",
       url: `/api/ExecCPVPermissions?&ResetSP=true`,
+      icon: <RestartAlt />,
       data: { TenantFilter: "customerId" },
       confirmText:
         "Are you sure you want to reset the CPV permissions for these tenants? (This will delete the Service Principal and re-add it.)",
@@ -50,6 +54,7 @@ const Page = () => {
       label: "Remove Tenant",
       type: "POST",
       url: `/api/ExecRemoveTenant`,
+      icon: <Delete />,
       data: { TenantID: "customerId" },
       confirmText: "Are you sure you want to remove this tenant?",
       multiPost: false,

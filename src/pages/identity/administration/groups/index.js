@@ -2,8 +2,8 @@ import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import Link from "next/link";
-import { EyeIcon, LockClosedIcon, LockOpenIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { LockOpen, Visibility, VisibilityOff } from "@mui/icons-material";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { Visibility, VisibilityOff, GroupAdd, Edit, LockOpen, Lock } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Groups";
@@ -13,7 +13,7 @@ const Page = () => {
       label: "Edit Group",
       link: "/identity/administration/groups/edit?groupId=[id]",
       multiPost: false,
-      icon: <PencilIcon />,
+      icon: <Edit />,
       color: "success",
     },
     {
@@ -22,7 +22,6 @@ const Page = () => {
       url: "/api/ExecGroupsHideFromGAL",
       icon: <VisibilityOff />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
         HidefromGAL: true,
@@ -37,7 +36,6 @@ const Page = () => {
       url: "/api/ExecGroupsHideFromGAL",
       icon: <Visibility />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
       },
@@ -49,9 +47,8 @@ const Page = () => {
       label: "Only allow messages from people inside the organisation",
       type: "GET",
       url: "/api/ExecGroupsDeliveryManagement",
-      icon: <LockClosedIcon />,
+      icon: <Lock />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
         OnlyAllowInternal: true,
@@ -63,10 +60,9 @@ const Page = () => {
     {
       label: "Allow messages from people inside and outside the organisation",
       type: "GET",
-      icon: <LockOpenIcon />,
+      icon: <LockOpen />,
       url: "/api/ExecGroupsDeliveryManagement",
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
       },
@@ -106,7 +102,7 @@ const Page = () => {
       title={pageTitle}
       cardButton={
         <>
-          <Button component={Link} href="groups/add">
+          <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
             Add Group
           </Button>
         </>

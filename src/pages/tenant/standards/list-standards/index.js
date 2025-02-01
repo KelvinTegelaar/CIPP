@@ -3,7 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete, PlayArrow } from "@mui/icons-material";
+import { CopyAll, Delete, PlayArrow, AddBox, Visibility, Edit } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
@@ -17,7 +17,7 @@ const Page = () => {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
       link: "/tenant/standards/template?id=[GUID]",
-      icon: <EyeIcon />,
+      icon: <Edit />,
       color: "success",
       target: "_self",
     },
@@ -105,7 +105,7 @@ const Page = () => {
       apiUrl="/api/listStandardTemplates"
       tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="template">
+        <Button component={Link} href="template" startIcon={<AddBox />}>
           Add Template
         </Button>
       }

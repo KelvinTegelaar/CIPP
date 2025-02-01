@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail } from "@mui/icons-material";
+import { Check, Error, Mail, Fingerprint } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
@@ -102,10 +102,14 @@ const Page = () => {
           ),
         },
         {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={graphUserRequest.data?.[0]?.id} />,
+        },
+        {
           icon: <CalendarIcon />,
           text: (
             <>
-              Created <CippTimeAgo data={graphUserRequest.data?.[0]?.createdDateTime} />
+              Created: <CippTimeAgo data={graphUserRequest.data?.[0]?.createdDateTime} />
             </>
           ),
         },

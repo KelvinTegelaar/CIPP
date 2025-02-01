@@ -3,6 +3,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "../tabOptions";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import Link from "next/link";
 
 const pageTitle = "GDAP Invites";
@@ -13,7 +14,7 @@ const Page = () => {
   return (
     <CippTablePage
       cardButton={
-        <Button component={Link} href="/tenant/gdap-management/invites/add">
+        <Button component={Link} href="/tenant/gdap-management/invites/add" startIcon={<Add />}>
           New Invite
         </Button>
       }
