@@ -1,9 +1,11 @@
 {
   "routes": [
     {
-      "route": "version.json",
+      "route": "/version.json",
       "headers": {
-        "cache-control": "no-cache, no-store, must-revalidate"
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "pragma": "no-cache",
+        "expires": "0"
       }
     },
     {
