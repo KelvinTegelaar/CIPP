@@ -1,4 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Button } from "@mui/material";
+import Link from "next/link";
+import { RocketLaunch } from "@mui/icons-material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import ConnectorTemplateDetails from "../../../../components/CippComponents/ConnectorTemplateDetails";
@@ -39,6 +42,17 @@ const Page = () => {
         label: "Add Template",
         href: "/email/connectors/add-connector-templates",
       }}
+      cardButton={
+        <>
+          <Button
+            component={Link}
+            href="/email/transport/list-connectors/add"
+            startIcon={<RocketLaunch />}
+          >
+            Deploy Connector
+          </Button>
+        </>
+      }
     />
   );
 };

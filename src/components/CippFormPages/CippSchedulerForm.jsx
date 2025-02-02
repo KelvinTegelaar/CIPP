@@ -206,7 +206,8 @@ const CippSchedulerForm = (props) => {
           formControl={formControl}
         >
           <Grid item xs={12} md={gridSize} key={idx}>
-            {param.Type === "System.Boolean" ? (
+            {param.Type === "System.Boolean" ||
+            param.Type === "System.Management.Automation.SwitchParameter" ? (
               <CippFormComponent
                 type="switch"
                 name={`parameters.${param.Name}`}
