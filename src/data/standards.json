@@ -1413,6 +1413,26 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.RetentionPolicyTag",
+    "cat": "Exchange Standards",
+    "tag": ["highimpact"],
+    "helpText": "Creates a CIPP - Deleted Items retention policy tag that permanently deletes items in the Deleted Items folder after X days.",
+    "docsDescription": "Creates a CIPP - Deleted Items retention policy tag that permanently deletes items in the Deleted Items folder after X days.",
+    "addedComponent": [
+      {
+      "type": "number",
+      "name": "standards.RetentionPolicyTag.AgeLimitForRetention",
+      "label": "Retention Days",
+      "required": true
+      }
+    ],
+    "label": "Retention Policy, permanently delete items in Deleted Items after X days",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-RetentionPolicyTag",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.QuarantineRequestAlert",
     "cat": "Defender Standards",
     "tag": ["lowimpact"],
