@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
-import { LaptopMac } from "@mui/icons-material";
+import { Add, LaptopMac } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
@@ -15,7 +15,6 @@ const Page = () => {
       url: "/api/ExecAssignApp",
       data: {
         AssignTo: "AllUsers",
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users?",
@@ -28,7 +27,6 @@ const Page = () => {
       url: "/api/ExecAssignApp",
       data: {
         AssignTo: "AllDevices",
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all devices?",
@@ -41,7 +39,6 @@ const Page = () => {
       url: "/api/ExecAssignApp",
       data: {
         AssignTo: "Both",
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users and devices?",
@@ -53,7 +50,6 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveApp",
       data: {
-        TenantFilter: "Tenant",
         ID: "id",
       },
       confirmText: "Are you sure you want to delete this application?",
@@ -95,7 +91,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/endpoint/applications/list/add">
+          <Button component={Link} href="/endpoint/applications/list/add" startIcon={<Add />}>
             Add Application
           </Button>
         </>

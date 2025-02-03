@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { DeleteForever } from "@mui/icons-material";
+import { DeleteForever, ShoppingCart } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
@@ -93,7 +93,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="add-subscription">
+          <Button component={Link} href="add-subscription" startIcon={<ShoppingCart />}>
             Add Subscription
           </Button>
         </>
