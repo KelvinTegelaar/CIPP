@@ -9,6 +9,15 @@ const Page = () => {
   const pageTitle = "Contacts";
 
   const actions = [
+    ,
+    {
+      label: "Edit Contact",
+      link: "/email/administration/contacts/edit?id=[id]",
+      multiPost: false,
+      postEntireRow: true,
+      icon: <Edit />,
+      color: "warning",
+    },
     {
       label: "Remove Contact",
       type: "GET",
@@ -19,14 +28,6 @@ const Page = () => {
       confirmText: "Are you sure you want to delete this contact?",
       color: "danger",
       icon: <TrashIcon />,
-    },
-    {
-      label: "Edit Contact",
-      link: "/email/administration/contacts/edit?id={id}",
-      multiPost: false,
-      postEntireRow: true,
-      icon: <Edit />,
-      color: "warning",
     },
   ];
 
