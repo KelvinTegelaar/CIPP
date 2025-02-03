@@ -1,6 +1,5 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { PersonAdd, PersonRemove, LocationOn } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Teams Business Voice";
@@ -10,7 +9,6 @@ const Page = () => {
     {
       label: "Assign User",
       type: "POST",
-      icon: <PersonAdd />,
       url: "/api/ExecTeamsVoicePhoneNumberAssignment",
       data: {
         PhoneNumber: "TelephoneNumber",
@@ -36,7 +34,6 @@ const Page = () => {
     {
       label: "Unassign User",
       type: "POST",
-      icon: <PersonRemove />,
       url: "/api/ExecRemoveTeamsVoicePhoneNumberAssignment",
       data: {
         PhoneNumber: "TelephoneNumber",
@@ -48,7 +45,6 @@ const Page = () => {
     {
       label: "Set Emergency Location",
       type: "POST",
-      icon: <LocationOn />,
       url: "/api/ExecTeamsVoicePhoneNumberAssignment",
       data: {
         PhoneNumber: "TelephoneNumber",

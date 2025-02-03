@@ -1,6 +1,5 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { PersonAdd, PersonRemove } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "OneDrive";
@@ -8,7 +7,6 @@ const Page = () => {
   const actions = [
     {
       label: "Add permissions to OneDrive",
-      icon: <PersonAdd />,
       type: "POST",
       url: "/api/ExecSharePointPerms",
       data: {
@@ -38,7 +36,6 @@ const Page = () => {
     },
     {
       label: "Remove permissions from OneDrive",
-      icon: <PersonRemove />,
       type: "POST",
       url: "/api/ExecSharePointPerms",
       data: {
@@ -68,11 +65,17 @@ const Page = () => {
     },
   ];
 
+  const offCanvas = {
+    extendedInfoFields: ["UPN"],
+    actions: actions,
+  };
+
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListSites?type=OneDriveUsageAccount"
       actions={actions}
+      offCanvas={offCanvas}
       simpleColumns={[
         "displayName",
         "createdDateTime",

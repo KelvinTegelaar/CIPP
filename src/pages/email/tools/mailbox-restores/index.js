@@ -2,7 +2,6 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { RestoreFromTrash, PlayArrow, Pause, Delete } from "@mui/icons-material";
 import MailboxRestoreDetails from "../../../../components/CippComponents/MailboxRestoreDetails";
 
 const Page = () => {
@@ -13,8 +12,8 @@ const Page = () => {
       label: "Resume Restore Request",
       type: "POST",
       url: "/api/ExecMailboxRestore",
-      icon: <PlayArrow />,
       data: {
+        TenantFilter: "Tenant",
         Identity: "Identity",
         Action: "Resume",
       },
@@ -25,8 +24,8 @@ const Page = () => {
       label: "Suspend Restore Request",
       type: "POST",
       url: "/api/ExecMailboxRestore",
-      icon: <Pause />,
       data: {
+        TenantFilter: "Tenant",
         Identity: "Identity",
         Action: "Suspend",
       },
@@ -37,8 +36,8 @@ const Page = () => {
       label: "Remove Restore Request",
       type: "POST",
       url: "/api/ExecMailboxRestore",
-      icon: <Delete />,
       data: {
+        TenantFilter: "Tenant",
         Identity: "Identity",
         Action: "Remove",
       },
@@ -64,11 +63,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/email/tools/mailbox-restores/add"
-            startIcon={<RestoreFromTrash />}
-          >
+          <Button component={Link} href="/email/tools/mailbox-restores/add">
             New Restore Job
           </Button>
         </>

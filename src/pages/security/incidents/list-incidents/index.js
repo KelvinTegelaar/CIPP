@@ -1,6 +1,5 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { PersonAdd, PlayArrow, Assignment, Done } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Incidents List";
@@ -10,9 +9,9 @@ const Page = () => {
     {
       label: "Assign to self",
       type: "POST",
-      icon: <PersonAdd />,
       url: "/api/ExecSetSecurityIncident",
       data: {
+        TenantFilter: "Tenant",
         GUID: "id",
         Assigned: "currentUserId",
       },
@@ -21,9 +20,9 @@ const Page = () => {
     {
       label: "Set status to active",
       type: "POST",
-      icon: <PlayArrow />,
       url: "/api/ExecSetSecurityIncident",
       data: {
+        TenantFilter: "Tenant",
         GUID: "id",
         Status: "active",
         Assigned: "currentAssignedUser",
@@ -33,9 +32,9 @@ const Page = () => {
     {
       label: "Set status to in progress",
       type: "POST",
-      icon: <Assignment />,
       url: "/api/ExecSetSecurityIncident",
       data: {
+        TenantFilter: "Tenant",
         GUID: "id",
         Status: "inProgress",
         Assigned: "currentAssignedUser",
@@ -45,9 +44,9 @@ const Page = () => {
     {
       label: "Set status to resolved",
       type: "POST",
-      icon: <Done />,
       url: "/api/ExecSetSecurityIncident",
       data: {
+        TenantFilter: "Tenant",
         GUID: "id",
         Status: "resolved",
         Assigned: "currentAssignedUser",

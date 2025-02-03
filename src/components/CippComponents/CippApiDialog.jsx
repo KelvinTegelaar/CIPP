@@ -79,6 +79,7 @@ export const CippApiDialog = (props) => {
     } else {
       Object.keys(dataObject).forEach((key) => {
         const value = dataObject[key];
+
         if (typeof value === "string" && value.startsWith("!")) {
           newData[key] = value.slice(1);
         } else if (typeof value === "string") {

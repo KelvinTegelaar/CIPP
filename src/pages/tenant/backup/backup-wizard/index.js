@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Restore, Backup } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -11,14 +10,10 @@ const Page = () => {
       apiUrl="/api/ListScheduledItems"
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/tenant/backup/backup-wizard/restore"
-            startIcon={<Restore />}
-          >
+          <Button component={Link} href="/tenant/backup/backup-wizard/restore">
             Restore Configuration Backup
           </Button>
-          <Button component={Link} href="/tenant/backup/backup-wizard/add" startIcon={<Backup />}>
+          <Button component={Link} href="/tenant/backup/backup-wizard/add">
             Add Configuration Backup Task
           </Button>
         </>

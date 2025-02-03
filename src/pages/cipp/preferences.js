@@ -255,26 +255,6 @@ const Page = () => {
                             />
                           ),
                         },
-                        {
-                          label: "Disable Sign in",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.DisableSignIn"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Remove all MFA Devices",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.RemoveMFADevices"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
                       ]}
                     />
                   </Stack>

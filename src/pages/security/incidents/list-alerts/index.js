@@ -1,6 +1,5 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Assignment, Done } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Alerts List";
@@ -10,9 +9,9 @@ const Page = () => {
     {
       label: "Set status to in progress",
       type: "POST",
-      icon: <Assignment />,
       url: "/api/ExecSetSecurityAlert",
       data: {
+        TenantFilter: "Tenant",
         GUID: "id",
         Status: "inProgress",
         Vendor: "vendorInformation.vendor",
@@ -23,9 +22,9 @@ const Page = () => {
     {
       label: "Set status to resolved",
       type: "POST",
-      icon: <Done />,
       url: "/api/ExecSetSecurityAlert",
       data: {
+        TenantFilter: "Tenant",
         GUID: "id",
         Status: "resolved",
         Vendor: "vendorInformation.vendor",

@@ -1,6 +1,5 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Block, Check } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "List of Anti-Phishing Filters";
@@ -9,27 +8,25 @@ const Page = () => {
   const actions = [
     {
       label: "Enable Rule",
-      type: "GET",
-      icon: <Check />,
+      type: "POST",
       url: "/api/EditAntiPhishingFilter",
       data: {
         State: "Enable",
-        RuleName: "RuleName",
+        TenantFilter: "TenantFilter", // TenantFilter used in API path as per original file
+        RuleName: "id",
       },
       confirmText: "Are you sure you want to enable this rule?",
-      condition: (row) => row.State === "Disabled",
     },
     {
       label: "Disable Rule",
-      type: "GET",
-      icon: <Block />,
+      type: "POST",
       url: "/api/EditAntiPhishingFilter",
       data: {
         State: "Disable",
-        RuleName: "RuleName",
+        TenantFilter: "TenantFilter",
+        RuleName: "id",
       },
       confirmText: "Are you sure you want to disable this rule?",
-      condition: (row) => row.State === "Enabled",
     },
     // Uncomment the following block if Delete Rule is to be re-enabled in the future
     /*
@@ -38,7 +35,8 @@ const Page = () => {
       type: "POST",
       url: "/api/RemoveAntiPhishingFilter",
       data: {
-        RuleName: "RuleName",
+        TenantFilter: "TenantFilter",
+        RuleName: "id",
       },
       confirmText: "Are you sure you want to delete this rule?",
     },

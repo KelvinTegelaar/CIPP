@@ -98,7 +98,6 @@ export const CippUserActions = () => {
             { label: "Disabled", value: "Disabled" },
           ],
           multiple: false,
-          creatable: false,
         },
       ],
       confirmText: "Are you sure you want to set per-user MFA for these users?",

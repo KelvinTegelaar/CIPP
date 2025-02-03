@@ -4,7 +4,7 @@ import tabOptions from "../tabOptions";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { Cancel, PlayArrow, Replay } from "@mui/icons-material";
+import { Cancel, Replay } from "@mui/icons-material";
 
 const pageTitle = "Tenant Onboarding";
 
@@ -49,11 +49,7 @@ const Page = () => {
       tenantInTitle={false}
       queryKey="ListTenantOnboarding"
       cardButton={
-        <Button
-          component={Link}
-          href="/tenant/gdap-management/onboarding/start"
-          startIcon={<PlayArrow />}
-        >
+        <Button component={Link} href="/tenant/gdap-management/onboarding/start">
           Start Tenant Onboarding
         </Button>
       }

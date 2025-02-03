@@ -101,7 +101,6 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to release this message?",
       icon: <Done />,
-      condition: (row) => row.ReleaseStatus !== "RELEASED",
     },
     {
       label: "Deny",
@@ -113,7 +112,6 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to deny this message?",
       icon: <Block />,
-      condition: (row) => row.ReleaseStatus !== "DENIED",
     },
     {
       label: "Release & Allow Sender",
@@ -127,7 +125,6 @@ const Page = () => {
       confirmText:
         "Are you sure you want to release this email and add the sender to the whitelist?",
       icon: <DoneAll />,
-      condition: (row) => row.ReleaseStatus !== "RELEASED",
     },
   ];
 

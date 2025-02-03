@@ -6,7 +6,7 @@
     "variable": "customerId",
     "target": "_blank",
     "external": true,
-    "icon": "GlobeAltIcon"
+    "icon": "cog"
   },
   {
     "label": "Exchange Portal",
@@ -15,7 +15,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "Mail"
+    "icon": "mail-bulk"
   },
   {
     "label": "Entra Portal",
@@ -24,7 +24,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "UsersIcon"
+    "icon": "users"
   },
   {
     "label": "Teams Portal",
@@ -33,7 +33,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "FilePresent"
+    "icon": "comments"
   },
   {
     "label": "Azure Portal",
@@ -42,7 +42,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "ServerIcon"
+    "icon": "server"
   },
   {
     "label": "Intune Portal",
@@ -51,16 +51,7 @@
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
-    "icon": "Laptop"
-  },
-  {
-    "label": "SharePoint Admin",
-    "name": "SharePoint_Admin",
-    "url": "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=customerId&CSDEST=SharePoint",
-    "variable": "customerId",
-    "target": "_blank",
-    "external": true,
-    "icon": "Share"
+    "icon": "laptop-code"
   },
   {
     "label": "Security Portal",
@@ -69,7 +60,7 @@
     "variable": "customerId",
     "target": "_blank",
     "external": true,
-    "icon": "Shield"
+    "icon": "shield-alt"
   },
   {
     "label": "Compliance Portal",
@@ -78,6 +69,15 @@
     "variable": "customerId",
     "target": "_blank",
     "external": true,
-    "icon": "ShieldMoon"
+    "icon": "shield-alt"
+  },
+  {
+    "label": "SharePoint Admin",
+    "name": "SharePoint_Admin",
+    "url": "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=customerId&CSDEST=SharePoint",
+    "variable": "customerId",
+    "target": "_blank",
+    "external": true,
+    "icon": "book"
   }
 ]

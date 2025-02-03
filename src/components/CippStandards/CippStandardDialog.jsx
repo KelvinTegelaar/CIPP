@@ -42,18 +42,13 @@ const CippStandardDialog = ({
 
   const handleSearchQueryChange = useCallback(
     debounce((query) => {
-      setSearchQuery(query.trim());
+      setSearchQuery(query);
     }, 50),
     []
   );
 
   return (
-    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl"
-      PaperProps={{ 
-        sx: {
-          minWidth: "720px",
-        },
-      }}>
+    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl">
       <DialogTitle>Select a Standard to Add</DialogTitle>
       <DialogContent sx={{ backgroundColor: "background.default" }}>
         <TextField
@@ -63,128 +58,105 @@ const CippStandardDialog = ({
           onChange={(e) => handleSearchQueryChange(e.target.value.toLowerCase())}
         />
         <Grid container spacing={3}>
-          {Object.keys(categories).every(
-            (category) => filterStandards(categories[category]).length === 0
-          ) ? (
-            <Typography
-              variant="h6"
-              color="textSecondary"
-              sx={{ mt: 4, textAlign: "center", width: "100%" }}
-            >
-              Search returned no results
-            </Typography>
-          ) : (
-            Object.keys(categories).map((category) =>
-              filterStandards(categories[category]).map((standard) => (
-                <Grid item xs={12} md={3} key={standard.name}>
-                  <Card
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
-                    }}
-                  >
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" gutterBottom>
-                        {standard.label}
-                      </Typography>
-                      {standard.helpText && (
-                        <>
-                          <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                            Description:
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary" paragraph>
-                            {standard.helpText}
-                          </Typography>
-                        </>
-                      )}
-                      <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                        Category:
-                      </Typography>
-                      <Chip
-                        label={category}
-                        size="small"
-                        color="primary"
-                        sx={{ mt: 1, mb: 2 }}
-                      />
-                      {standard.tag?.filter((tag) => !tag.toLowerCase().includes("impact")).length >
-                        0 && (
-                        <>
-                          <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                            Tags:
-                          </Typography>
-                          <Box sx={{ display: "flex", flexWrap: "wrap", mb: 2 }}>
-                            {standard.tag
-                              .filter((tag) => !tag.toLowerCase().includes("impact"))
-                              .map((tag, idx) => (
-                                <Chip
-                                  key={idx}
-                                  label={tag}
-                                  size="small"
-                                  color="info"
-                                  sx={{ mr: 1, mt: 1 }}
-                                />
-                              ))}
-                          </Box>
-                        </>
-                      )}
-                      <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                        Impact:
-                      </Typography>
-                      <Chip
-                        label={standard.impact}
-                        size="small"
-                        color={
-                          standard.impact === "High Impact"
-                            ? "error"
-                            : standard.impact === "Medium Impact"
-                            ? "warning"
-                            : "info"
-                        }
-                      />
-                      {standard.recommendedBy?.length > 0 && (
-                        <>
-                          <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                            Recommended By:
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            paragraph
-                          >
-                            {standard.recommendedBy.join(", ")}
-                          </Typography>
-                        </>
-                      )}
-                    </CardContent>
+          {Object.keys(categories).map((category) =>
+            filterStandards(categories[category]).map((standard) => (
+              <Grid item xs={12} md={3} key={standard.name}>
+                <Card
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                  }}
+                >
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" gutterBottom>
+                      {standard.label}
+                    </Typography>
+                    {standard.helpText && (
+                      <>
+                        <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                          Description:
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" paragraph>
+                          {standard.helpText}
+                        </Typography>
+                      </>
+                    )}
+                    <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                      Category:
+                    </Typography>
+                    <Chip label={category} size="small" color="primary" sx={{ mt: 1, mb: 2 }} />
+                    {standard.tag?.filter((tag) => !tag.toLowerCase().includes("impact")).length >
+                      0 && (
+                      <>
+                        <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                          Tags:
+                        </Typography>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", mb: 2 }}>
+                          {standard.tag
+                            .filter((tag) => !tag.toLowerCase().includes("impact"))
+                            .map((tag, idx) => (
+                              <Chip
+                                key={idx}
+                                label={tag}
+                                size="small"
+                                color="info"
+                                sx={{ mr: 1, mt: 1 }}
+                              />
+                            ))}
+                        </Box>
+                      </>
+                    )}
+                    <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                      Impact:
+                    </Typography>
+                    <Chip
+                      label={standard.impact}
+                      size="small"
+                      color={
+                        standard.impact === "High Impact"
+                          ? "error"
+                          : standard.impact === "Medium Impact"
+                          ? "warning"
+                          : "info"
+                      }
+                    />
+                    {standard.recommendedBy?.length > 0 && (
+                      <>
+                        <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                          Recommended By:
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" paragraph>
+                          {standard.recommendedBy.join(", ")}
+                        </Typography>
+                      </>
+                    )}
+                  </CardContent>
 
-                    <CardContent>
-                      {standard.multiple ? (
-                        <IconButton
-                          color="primary"
-                          disabled={isButtonDisabled}
-                          onClick={() => handleAddClick(standard.name)}
-                        >
-                          <Add />
-                        </IconButton>
-                      ) : (
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={!!selectedStandards[standard.name]}
-                              onChange={() =>
-                                handleToggleSingleStandard(standard.name)
-                              }
-                            />
-                          }
-                          label="Add this standard to the template"
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))
-            )
+                  <CardContent>
+                    {standard.multiple ? (
+                      <IconButton
+                        color="primary"
+                        disabled={isButtonDisabled}
+                        onClick={() => handleAddClick(standard.name)}
+                      >
+                        <Add />
+                      </IconButton>
+                    ) : (
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={!!selectedStandards[standard.name]}
+                            onChange={() => handleToggleSingleStandard(standard.name)}
+                          />
+                        }
+                        label="Add this standard to the template"
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
           )}
         </Grid>
       </DialogContent>

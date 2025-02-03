@@ -154,15 +154,15 @@ export const nativeMenuItems = [
         items: [
           {
             title: "Licence Report",
-            path: "/tenant/reports/list-licenses",
+            path: "/tenant/administration/list-licenses",
           },
           {
             title: "Sherweb Licence Report",
-            path: "/tenant/reports/list-csp-licenses",
+            path: "/tenant/administration/list-csp-licenses",
           },
           {
             title: "Consented Applications",
-            path: "/tenant/reports/application-consent",
+            path: "/tenant/administration/application-consent",
           },
         ],
       },
@@ -244,7 +244,7 @@ export const nativeMenuItems = [
         title: "Device Management",
         path: "/endpoint/MEM",
         items: [
-          { title: "Devices", path: "/endpoint/MEM/devices" },
+          { title: "Devices", path: "/endpoint/reports/devices" },
           { title: "Configuration Policies", path: "/endpoint/MEM/list-policies" },
           { title: "Compliance Policies", path: "/endpoint/MEM/list-compliance-policies" },
           { title: "Protection Policies", path: "/endpoint/MEM/list-appprotection-policies" },
@@ -300,7 +300,7 @@ export const nativeMenuItems = [
     items: [
       {
         title: "Administration",
-        path: "/email/administration",
+        path: "/email/Administration",
         items: [
           { title: "Mailboxes", path: "/email/administration/mailboxes" },
           { title: "Deleted Mailboxes", path: "/email/administration/deleted-mailboxes" },
@@ -315,17 +315,17 @@ export const nativeMenuItems = [
       },
       {
         title: "Transport",
-        path: "/email/transport",
+        path: "/email/Transport",
         items: [
           { title: "Transport rules", path: "/email/transport/list-rules" },
           {
             title: "Transport Templates",
             path: "/email/transport/list-templates",
           },
-          { title: "Connectors", path: "/email/transport/list-connectors" },
+          { title: "Connectors", path: "/email/connectors/list-connectors" },
           {
             title: "Connector Templates",
-            path: "/email/transport/list-connector-templates",
+            path: "/email/connectors/list-connector-templates",
           },
         ],
       },
@@ -335,11 +335,8 @@ export const nativeMenuItems = [
         items: [
           { title: "Spamfilter", path: "/email/spamfilter/list-spamfilter" },
           { title: "Spamfilter templates", path: "/email/spamfilter/list-templates" },
-          { title: "Connection filter", path: "/email/spamfilter/list-connectionfilter" },
-          {
-            title: "Connection filter templates",
-            path: "/email/spamfilter/list-connectionfilter-templates",
-          },
+          { title: "Connection filter", path: "/email/connectionfilter/list-connectionfilter" },
+          { title: "Connection filter templates", path: "/email/connectionfilter/list-templates" },
         ],
       },
       {
@@ -402,11 +399,11 @@ export const nativeMenuItems = [
         items: [
           {
             title: "Graph Explorer",
-            path: "/tenant/tools/graph-explorer",
+            path: "/tenant/administration/graph-explorer",
           },
           {
             title: "Application Approval",
-            path: "/tenant/tools/appapproval",
+            path: "/tenant/administration/appapproval",
           },
           { title: "Tenant Lookup", path: "/tenant/tools/tenantlookup" },
 
@@ -414,7 +411,7 @@ export const nativeMenuItems = [
 
           {
             title: "Individual Domain Check",
-            path: "/tenant/tools/individual-domains",
+            path: "/tenant/standards/individual-domains",
           },
         ],
       },

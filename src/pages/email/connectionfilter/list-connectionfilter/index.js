@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { Book, AddModerator } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
@@ -15,7 +14,6 @@ const Page = () => {
       dataFunction: (data) => {
         return { ...data };
       },
-      icon: <Book />,
       confirmText: "Are you sure you want to create a template based on this rule?",
     },
   ];
@@ -34,7 +32,13 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = ["Name", "IsDefault", "IPAllowList", "IPBlockList", "EnableSafeList"];
+  const simpleColumns = [
+    "Name",
+    "IsDefault",
+    "IPAllowList",
+    "IPBlockList",
+    "EnableSafeList",
+  ];
 
   return (
     <CippTablePage
@@ -45,11 +49,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/email/spamfilter/list-connectionfilter/add"
-            startIcon={<AddModerator />}
-          >
+          <Button component={Link} href="/email/connectionfilter/list-connectionfilter/add">
             Deploy ConnectionFilter
           </Button>
         </>

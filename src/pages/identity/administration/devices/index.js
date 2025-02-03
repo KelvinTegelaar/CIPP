@@ -1,7 +1,7 @@
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import { useSettings } from "/src/hooks/use-settings";
-import { Visibility, CheckCircleOutline, Block, VpnKey, DeleteForever } from "@mui/icons-material";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Devices";
@@ -12,7 +12,7 @@ const Page = () => {
       label: "View in Entra",
       link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/[id]/deviceId/`,
       color: "info",
-      icon: <Visibility />,
+      icon: <EyeIcon />,
       target: "_blank",
       multiPost: false,
       external: true,
@@ -27,7 +27,6 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to enable this device?",
       multiPost: false,
-      icon: <CheckCircleOutline />,
     },
     {
       label: "Disable Device",
@@ -39,7 +38,6 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to disable this device?",
       multiPost: false,
-      icon: <Block />,
     },
     {
       label: "Retrieve BitLocker Keys",
@@ -50,7 +48,6 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to retrieve the BitLocker keys?",
       multiPost: false,
-      icon: <VpnKey />,
     },
     {
       label: "Delete Device",
@@ -62,7 +59,6 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to delete this device?",
       multiPost: false,
-      icon: <DeleteForever />,
     },
   ];
 
