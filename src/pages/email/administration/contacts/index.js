@@ -3,7 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Edit, PersonAdd } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 
 const Page = () => {
   const pageTitle = "Contacts";
@@ -20,14 +20,14 @@ const Page = () => {
       color: "danger",
       icon: <TrashIcon />,
     },
-    /* TODO: Implement edit contact
     {
       label: "Edit Contact",
-      link: "/email/administration/edit-contact/[id]",
+      link: "/email/administration/contacts/edit?id={id}",
       multiPost: false,
+      postEntireRow: true,
       icon: <Edit />,
       color: "warning",
-    },*/
+    },
   ];
 
   const simpleColumns = ["displayName", "mail", "companyName", "onPremisesSyncEnabled"];
