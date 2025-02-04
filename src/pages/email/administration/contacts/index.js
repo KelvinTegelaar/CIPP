@@ -9,7 +9,6 @@ const Page = () => {
   const pageTitle = "Contacts";
 
   const actions = [
-    ,
     {
       label: "Edit Contact",
       link: "/email/administration/contacts/edit?id=[id]",
@@ -17,6 +16,7 @@ const Page = () => {
       postEntireRow: true,
       icon: <Edit />,
       color: "warning",
+      condition: (row) => !row.onPremisesSyncEnabled,
     },
     {
       label: "Remove Contact",
@@ -25,9 +25,11 @@ const Page = () => {
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to delete this contact?",
+      confirmText:
+        "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
       color: "danger",
       icon: <TrashIcon />,
+      condition: (row) => !row.onPremisesSyncEnabled,
     },
   ];
 
