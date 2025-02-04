@@ -46,21 +46,29 @@ const EditContact = () => {
   });
 
   useEffect(() => {
-    if (contactInfo.isSuccess && contactInfo.data?.Results?.[0]) {
-      const contact = contactInfo.data.Results[0];
+    if (contactInfo.isSuccess && contactInfo.data?.[0]) {
+      const contact = contactInfo.data[0];
+      // Get the address info from the first address entry
+      const address = contact.addresses?.[0] || {};
+
+      // Find phone numbers by type
+      const phones = contact.phones || [];
+      const mobilePhone = phones.find((p) => p.type === "mobile")?.number;
+      const businessPhone = phones.find((p) => p.type === "business")?.number;
+
       formControl.reset({
         displayName: contact.displayName || "",
-        firstName: contact.firstName || "",
-        lastName: contact.lastName || "",
+        firstName: contact.givenName || "",
+        lastName: contact.surname || "",
         email: contact.mail || "",
         hidefromGAL: contact.hidefromGAL || false,
-        streetAddress: contact.streetAddress || "",
-        postalCode: contact.postalCode || "",
-        city: contact.city || "",
-        country: contact.countryOrRegion || "",
+        streetAddress: address.street || "",
+        postalCode: address.postalCode || "",
+        city: address.city || "",
+        country: address.countryOrRegion || "",
         companyName: contact.companyName || "",
-        mobilePhone: contact.mobilePhone || "",
-        businessPhone: contact.phone || "",
+        mobilePhone: mobilePhone || "",
+        businessPhone: businessPhone || "",
         jobTitle: contact.jobTitle || "",
       });
     }
@@ -74,26 +82,28 @@ const EditContact = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={`ListContacts-${id}`}
-      title={`Contact: ${contactInfo.data?.Results?.[0]?.displayName || ""}`}
+      title={`Contact: ${contactInfo.data?.[0]?.displayName || ""}`}
       backButtonTitle="Contacts Overview"
+      formPageType="Edit"
       postUrl="/api/EditContact"
+      data={contactInfo.data?.[0]}
       customDataformatter={(values) => {
         return {
           tenantID: tenantDomain,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          displayName: values.displayName,
-          mail: values.email,
+          ContactID: contactInfo.data?.[0]?.id,
+          DisplayName: values.displayName,
           hidefromGAL: values.hidefromGAL,
-          ContactID: contactInfo.data?.Results?.[0]?.id,
+          email: values.email,
+          FirstName: values.firstName,
+          LastName: values.lastName,
+          Title: values.jobTitle,
           StreetAddress: values.streetAddress,
           PostalCode: values.postalCode,
           City: values.city,
-          Country: values.country,
-          companyName: values.companyName,
-          MobilePhone: values.mobilePhone,
-          BusinessPhone: values.businessPhone,
-          jobTitle: values.jobTitle,
+          CountryOrRegion: values.country,
+          Company: values.companyName,
+          mobilePhone: values.mobilePhone,
+          phone: values.businessPhone,
         };
       }}
     >
