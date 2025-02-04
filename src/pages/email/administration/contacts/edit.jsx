@@ -163,7 +163,7 @@ const EditContact = () => {
         <Grid item xs={12} md={4}>
           <CippFormComponent
             type="switch"
-            label="Hide from Global Address List"
+            label="Hidden from Global Address List"
             name="hidefromGAL"
             formControl={formControl}
           />
@@ -217,6 +217,7 @@ const EditContact = () => {
             label="Country"
             name="country"
             multiple={false}
+            creatable={false}
             options={countryList.map(({ Code, Name }) => ({
               label: Name,
               value: Code,
