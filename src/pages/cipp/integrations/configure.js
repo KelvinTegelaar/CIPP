@@ -174,10 +174,9 @@ const Page = () => {
                   ))}
                 </>
               )}
-
-              <CippApiResults apiObject={actionTestResults} />
-              <CippApiResults apiObject={actionSyncResults} />
             </Stack>
+            <CippApiResults apiObject={actionTestResults} />
+            <CippApiResults apiObject={actionSyncResults} />
           </CardContent>
 
           <Box sx={{ width: "100%" }}>

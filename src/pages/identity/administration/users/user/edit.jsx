@@ -25,7 +25,7 @@ const Page = () => {
   });
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
     },
@@ -34,8 +34,17 @@ const Page = () => {
   useEffect(() => {
     if (userRequest.isSuccess) {
       const user = userRequest.data?.[0];
+      //if we have userSettingsDefaults.userAttributes set, grab the .label from each userSsettingsDefaults, then set defaultAttributes.${label}.value to user.${label}
+      let defaultAttributes = {};
+      if (userSettingsDefaults.userAttributes) {
+        userSettingsDefaults.userAttributes.forEach((attribute) => {
+          defaultAttributes[attribute.label] = { Value: user?.[attribute.label] };
+        });
+      }
+      console.log(defaultAttributes);
       formControl.reset({
         ...user,
+        defaultAttributes: defaultAttributes,
         tenantFilter: userSettingsDefaults.currentTenant,
         licenses: user.assignedLicenses.map((license) => ({
           label: getCippLicenseTranslation([license]),
