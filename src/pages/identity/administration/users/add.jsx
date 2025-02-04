@@ -36,6 +36,7 @@ const Page = () => {
         newFields.usageLocation = { label: usageLocation, value: usageLocation };
       }
       newFields.tenantFilter = userSettingsDefaults.currentTenant;
+
       formControl.reset(newFields);
     }
   }, [formValues]);
