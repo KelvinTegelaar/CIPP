@@ -8,6 +8,7 @@ import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
 import { ApiGetCall } from "../../../../api/ApiCall";
+import countryList from "/src/data/countryList.json";
 
 const EditContact = () => {
   const tenantDomain = useSettings().currentTenant;
@@ -65,7 +66,9 @@ const EditContact = () => {
         streetAddress: address.street || "",
         postalCode: address.postalCode || "",
         city: address.city || "",
-        country: address.countryOrRegion || "",
+        country: address.countryOrRegion
+          ? countryList.find((c) => c.Name === address.countryOrRegion)?.Code || ""
+          : "",
         companyName: contact.companyName || "",
         mobilePhone: mobilePhone || "",
         businessPhone: businessPhone || "",
@@ -100,7 +103,7 @@ const EditContact = () => {
           StreetAddress: values.streetAddress,
           PostalCode: values.postalCode,
           City: values.city,
-          CountryOrRegion: values.country,
+          CountryOrRegion: values.country?.value || values.country,
           Company: values.companyName,
           mobilePhone: values.mobilePhone,
           phone: values.businessPhone,
@@ -210,9 +213,14 @@ const EditContact = () => {
         </Grid>
         <Grid item xs={12} md={4}>
           <CippFormComponent
-            type="textField"
+            type="autoComplete"
             label="Country"
             name="country"
+            multiple={false}
+            options={countryList.map(({ Code, Name }) => ({
+              label: Name,
+              value: Code,
+            }))}
             formControl={formControl}
           />
         </Grid>
