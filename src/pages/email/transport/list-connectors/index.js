@@ -24,7 +24,7 @@ const Page = () => {
       icon: <Check />,
       condition: (row) => !row.Enabled,
       data: {
-        State: "Enable",
+        State: "!Enable",
         GUID: "Guid",
         Type: "cippconnectortype",
       },
@@ -38,7 +38,7 @@ const Page = () => {
       icon: <Block />,
       condition: (row) => row.Enabled,
       data: {
-        State: "Disable",
+        State: "!Disable",
         GUID: "Guid",
         Type: "cippconnectortype",
       },
