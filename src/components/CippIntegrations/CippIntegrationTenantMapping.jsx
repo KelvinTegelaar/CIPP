@@ -95,37 +95,37 @@ const CippIntegrationSettings = ({ children }) => {
   };
 
   const handleAutoMap = () => {
-      const newTableData = [];
-      tenantList.data?.pages[0]?.forEach((tenant) => {
-        const matchingCompany = mappings.data.Companies.find(
-          (company) => company.name === tenant.displayName
-        );
-        if (
-          Array.isArray(tableData) &&
-          tableData?.find((item) => item.TenantId === tenant.customerId)
-        )
-          return;
-        if (matchingCompany) {
-          newTableData.push({
-            TenantId: tenant.customerId,
-            Tenant: tenant.displayName,
-            IntegrationName: matchingCompany.name,
-            IntegrationId: matchingCompany.value,
-          });
-        }
-      });
-      if (Array.isArray(tableData)) {
-        setTableData([...tableData, ...newTableData]);
-      } else {
-        setTableData(newTableData);
-      }
-      if (extension.autoMapSyncApi) {
-        automapPostCall.mutate({
-          url: `/api/ExecExtensionMapping?AutoMapping=${router.query.id}`,
-          queryKey: `IntegrationTenantMapping-${router.query.id}`,
+    const newTableData = [];
+    tenantList.data?.pages[0]?.forEach((tenant) => {
+      const matchingCompany = mappings.data.Companies.find(
+        (company) => company.name === tenant.displayName
+      );
+      if (
+        Array.isArray(tableData) &&
+        tableData?.find((item) => item.TenantId === tenant.customerId)
+      )
+        return;
+      if (matchingCompany) {
+        newTableData.push({
+          TenantId: tenant.customerId,
+          Tenant: tenant.displayName,
+          IntegrationName: matchingCompany.name,
+          IntegrationId: matchingCompany.value,
         });
       }
-    };
+    });
+    if (Array.isArray(tableData)) {
+      setTableData([...tableData, ...newTableData]);
+    } else {
+      setTableData(newTableData);
+    }
+    if (extension.autoMapSyncApi) {
+      automapPostCall.mutate({
+        url: `/api/ExecExtensionMapping?AutoMapping=${router.query.id}`,
+        queryKey: `IntegrationTenantMapping-${router.query.id}`,
+      });
+    }
+  };
 
   const actions = [
     {
@@ -140,7 +140,7 @@ const CippIntegrationSettings = ({ children }) => {
 
   useEffect(() => {
     if (mappings.isSuccess) {
-      setTableData(mappings.data.Mappings);
+      setTableData(mappings.data.Mappings ?? []);
     }
   }, [mappings.isSuccess]);
 
