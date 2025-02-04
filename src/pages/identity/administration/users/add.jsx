@@ -11,7 +11,7 @@ const Page = () => {
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
       usageLocation: userSettingsDefaults.usageLocation,

@@ -25,7 +25,7 @@ const Page = () => {
   });
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
     },
