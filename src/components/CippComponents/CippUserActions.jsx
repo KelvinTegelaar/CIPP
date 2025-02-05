@@ -292,7 +292,7 @@ export const CippUserActions = () => {
       },
       confirmText: "Are you sure you want to clear the Immutable ID for this user?",
       multiPost: false,
-      condition: (row) => !row.onPremisesSyncEnabled,
+      condition: (row) => !row.onPremisesSyncEnabled && row?.onPremisesImmutableId,
     },
     {
       label: "Revoke all user sessions",
