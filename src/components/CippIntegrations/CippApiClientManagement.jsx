@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { Create, Key, Save } from "@mui/icons-material";
+import { Create, Key, Save, Sync } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 
@@ -146,43 +146,7 @@ const CippApiClientManagement = () => {
       <Stack spacing={1}>
         <CippPropertyListCard
           title="Function Authentication"
-          propertyItems={[
-            { label: "API Auth Enabled", value: azureConfig.data?.Results?.Enabled },
-            {
-              label: "API Url",
-              value: azureConfig.data?.Results?.ApiUrl ? (
-                <CippCopyToClipBoard type="chip" text={azureConfig.data?.Results?.ApiUrl} />
-              ) : (
-                "Not Available"
-              ),
-            },
-            {
-              label: "Token URL",
-              value: azureConfig.data?.Results?.TenantID ? (
-                <CippCopyToClipBoard
-                  type="chip"
-                  text={`https://logon.microsoftonline.com/${azureConfig.data?.Results?.TenantID}/oauth2/v2.0/token`}
-                />
-              ) : (
-                "Not Available"
-              ),
-            },
-          ]}
-          layout="dual"
-          showDivider={false}
-          isFetching={azureConfig.isFetching}
-        />
-        <CippDataTable
-          actions={actions}
-          title="CIPP-API Clients"
-          api={{
-            url: "/api/ExecApiClient",
-            data: { Action: "List" },
-            dataKey: "Results",
-          }}
-          simpleColumns={["Enabled", "AppName", "ClientId", "Role", "IPRange"]}
-          queryKey={`ApiClients`}
-          cardButton={
+          actionButton={
             <>
               <Button
                 onClick={handleMenuOpen}
@@ -218,6 +182,12 @@ const CippApiClientManagement = () => {
                   </SvgIcon>
                   <ListItemText>Add Existing Client</ListItemText>
                 </MenuItem>
+                <MenuItem onClick={() => azureConfig.refetch()}>
+                  <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                    <Sync />
+                  </SvgIcon>
+                  <ListItemText>Refresh Configuration</ListItemText>
+                </MenuItem>
                 <MenuItem onClick={handleSaveToAzure}>
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
                     <Save />
@@ -227,6 +197,43 @@ const CippApiClientManagement = () => {
               </Menu>
             </>
           }
+          propertyItems={[
+            { label: "API Auth Enabled", value: azureConfig.data?.Results?.Enabled },
+            {
+              label: "API Url",
+              value: azureConfig.data?.Results?.ApiUrl ? (
+                <CippCopyToClipBoard type="chip" text={azureConfig.data?.Results?.ApiUrl} />
+              ) : (
+                "Not Available"
+              ),
+            },
+            {
+              label: "Token URL",
+              value: azureConfig.data?.Results?.TenantID ? (
+                <CippCopyToClipBoard
+                  type="chip"
+                  text={`https://logon.microsoftonline.com/${azureConfig.data?.Results?.TenantID}/oauth2/v2.0/token`}
+                />
+              ) : (
+                "Not Available"
+              ),
+            },
+          ]}
+          layout="dual"
+          showDivider={false}
+          isFetching={azureConfig.isFetching}
+        />
+
+        <CippDataTable
+          actions={actions}
+          title="CIPP-API Clients"
+          api={{
+            url: "/api/ExecApiClient",
+            data: { Action: "List" },
+            dataKey: "Results",
+          }}
+          simpleColumns={["Enabled", "AppName", "ClientId", "Role", "IPRange"]}
+          queryKey={`ApiClients`}
         />
         <CippApiResults apiObject={postCall} />
       </Stack>
