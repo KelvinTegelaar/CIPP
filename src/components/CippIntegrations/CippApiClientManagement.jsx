@@ -242,7 +242,6 @@ const CippApiClientManagement = () => {
             type: "textField",
             name: "AppName",
             placeholder: "Enter App Name",
-            formControl: formControl,
           },
           {
             type: "autoComplete",
