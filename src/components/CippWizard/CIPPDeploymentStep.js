@@ -254,14 +254,28 @@ export const CippDeploymentStep = (props) => {
               </Stack>
             }
             CardButton={
-              <Button
-                variant="contained"
-                disabled={appId.isLoading}
-                onClick={() => openPopup(appId.data.refreshUrl)}
-                color="primary"
-              >
-                Refresh Graph Token
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  disabled={
+                    appId.isLoading ||
+                    !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+                      appId.data.applicationId
+                    )
+                  }
+                  onClick={() => openPopup(appId.data.refreshUrl)}
+                  color="primary"
+                >
+                  Refresh Graph Token
+                </Button>
+                {!/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+                  appId.data.applicationId
+                ) && (
+                  <Alert severity="warning">
+                    The Application ID is not valid. Please return to the first page of the SAM wizard and use the Manual .
+                  </Alert>
+                )}
+              </>
             }
           >
             <Typography variant="body2" gutterBottom>
@@ -314,8 +328,13 @@ export const CippDeploymentStep = (props) => {
               placeholder="Enter the application secret. Leave blank to retain previous key."
               validators={{
                 validate: (value) => {
-                  const secretRegex = /^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)[0-9a-zA-Z]{40}$/;
-                  return value === "" || secretRegex.test(value) || "This should be the secret value, not the secret ID";
+                  const secretRegex =
+                    /^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)[0-9a-zA-Z]{40}$/;
+                  return (
+                    value === "" ||
+                    secretRegex.test(value) ||
+                    "This should be the secret value, not the secret ID"
+                  );
                 },
               }}
             />
@@ -329,7 +348,7 @@ export const CippDeploymentStep = (props) => {
                 validate: (value) => {
                   const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;
                   return value === "" || jwtRegex.test(value) || "Invalid Refresh Token";
-                }
+                },
               }}
             />
           </>
