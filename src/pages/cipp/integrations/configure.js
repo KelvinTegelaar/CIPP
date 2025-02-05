@@ -15,6 +15,7 @@ import CippPageCard from "../../../components/CippCards/CippPageCard";
 import CippIntegrationTenantMapping from "../../../components/CippIntegrations/CippIntegrationTenantMapping";
 import CippIntegrationFieldMapping from "../../../components/CippIntegrations/CippIntegrationFieldMapping";
 import { CippCardTabPanel } from "../../../components/CippComponents/CippCardTabPanel";
+import CippApiClientManagement from "../../../components/CippIntegrations/CippApiClientManagement";
 
 function tabProps(index) {
   return {
@@ -77,7 +78,7 @@ const Page = () => {
     defaultValues: integrations?.data,
   });
 
-  const extension = extensions.find((extension) => extension.id === router.query.id);
+  const extension = extensions.find((extension) => extension.id === router.query.id) || {};
 
   var logo = extension?.logo;
   if (preferredTheme === "dark" && extension?.logoDark) {
@@ -185,12 +186,16 @@ const Page = () => {
                 <Tab label="Settings" {...tabProps(0)} />
                 {extension?.mappingRequired && <Tab label="Tenant Mapping" {...tabProps(1)} />}
                 {extension?.fieldMapping && <Tab label="Field Mapping" {...tabProps(2)} />}
-                {extension?.id === "cippapi" && <Tab label="API Clients" {...tabProps(3)} />}
               </Tabs>
             </Box>
             <CippCardTabPanel value={value} index={0}>
-              <CippIntegrationSettings />
+              {extension?.id === "cippapi" ? (
+                <CippApiClientManagement />
+              ) : (
+                <CippIntegrationSettings />
+              )}
             </CippCardTabPanel>
+
             {extension?.mappingRequired && (
               <CippCardTabPanel value={value} index={1}>
                 <CippIntegrationTenantMapping />
@@ -199,11 +204,6 @@ const Page = () => {
             {extension?.fieldMapping && (
               <CippCardTabPanel value={value} index={2}>
                 <CippIntegrationFieldMapping />
-              </CippCardTabPanel>
-            )}
-            {extension?.id === "cippapi" && (
-              <CippCardTabPanel value={value} index={3}>
-                API Client component to go here
               </CippCardTabPanel>
             )}
           </Box>

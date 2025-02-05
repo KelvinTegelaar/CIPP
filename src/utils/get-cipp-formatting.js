@@ -219,6 +219,10 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     }
   }
 
+  if (cellName === "ClientId") {
+    return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
+  }
+
   if (cellName === "excludedTenants") {
     //check if data is an array.
     if (Array.isArray(data)) {
