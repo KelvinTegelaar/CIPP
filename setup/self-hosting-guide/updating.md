@@ -173,6 +173,12 @@ If you accidentally chose **Discard (X) Commits** while syncing your fork, you m
 
 ### Recreate the Workflow File
 
+{% hint style="info" %}
+If you're comfortable with GitHub, the easiest way to ensure you have the appropriate values for your token is to review your Actions tab on your CIPP repo for the most recent successfully run update. The contents of your old workflow file will be found by clicking "Workflow file" in the left side column of the Build and Deploy task. You'll still need to ensure the `/out` changes have been made to the file.
+{% endhint %}
+
+
+
 {% stepper %}
 {% step %}
 **Check Repository Secrets**
@@ -185,7 +191,7 @@ If you accidentally chose **Discard (X) Commits** while syncing your fork, you m
 **Create a New `.yml` in `.github/workflows`**
 
 * The filename can be anything (`azure-static-web-apps-fix.yml`, `deploy.yml`, etc.)—just make sure it ends in `.yml`.
-* [Use an example from the main repo](https://github.com/KelvinTegelaar/CIPP/blob/main/.github/workflows/azure-static-web-apps-main.yml) if you need a reference.
+* Use this example file as the contents
 {% endstep %}
 
 {% step %}
@@ -193,12 +199,6 @@ If you accidentally chose **Discard (X) Commits** while syncing your fork, you m
 
 * In that new file, look for lines referencing the token (e.g., `AZURE_STATIC_WEB_APPS_API_TOKEN_...`).
 * Replace them with **your** token name from Step 1.
-{% endstep %}
-
-{% step %}
-**(Optional) Output Location**
-
-* If you’re on v7 or higher and see a line like `output_location: ""`, change it to `"/out"`.
 {% endstep %}
 
 {% step %}
@@ -212,7 +212,7 @@ If you accidentally chose **Discard (X) Commits** while syncing your fork, you m
 **Confirm Deployment**
 
 * After the workflow succeeds, your Static Web App should serve the updated version.
-* If you still see the old UI, do a **Hard Refresh** (Open DevTools, then Right Click Refresh Button) or wait up to 30 minutes for Azure’s distribution/CDN to update.
+* If you still see the old UI, do a **Hard Refresh** (Open DevTools, then Right Click Refresh Button) or wait up to 30 minutes for Azure’s distribution/CDN to update
 {% endstep %}
 {% endstepper %}
 
@@ -225,3 +225,7 @@ At this point, your **CIPP** front-end and API should be updated to the latest r
 3. **Hard-refresh** or wait for CDN caches to clear for a truly up-to-date view
 
 Congratulations! You’re now up-to-date and ready to use the newest features.
+
+
+
+{% file src="../../.gitbook/assets/cipp-workflow.yml" %}
