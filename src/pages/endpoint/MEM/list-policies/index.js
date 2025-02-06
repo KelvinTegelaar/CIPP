@@ -60,7 +60,7 @@ const Page = () => {
     },
     {
       label: "Delete Policy",
-      type: "GET",
+      type: "POST",
       url: "/api/RemovePolicy",
       data: {
         ID: "id",
