@@ -7,6 +7,7 @@ import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "/src/data/Extensions.json";
 import { useEffect } from "react";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 const CippIntegrationSettings = ({ children }) => {
   const router = useRouter();
@@ -57,16 +58,31 @@ const CippIntegrationSettings = ({ children }) => {
             {extension.SettingOptions.map((setting, index) => (
               <Grid item xs={12} md={setting.type == "switch" ? 12 : 6} key={index}>
                 <Box sx={{ p: 1 }}>
-                  <CippFormComponent
-                    name={setting.name}
-                    type={setting.type}
-                    label={setting.label}
-                    options={setting.options}
-                    formControl={formControl}
-                    placeholder={setting?.placeholder}
-                    fullWidth
-                    {...setting}
-                  />
+                  {setting?.condition ? (
+                    <CippFormCondition {...setting.condition} formControl={formControl}>
+                      <CippFormComponent
+                        name={setting.name}
+                        type={setting.type}
+                        label={setting.label}
+                        options={setting.options}
+                        formControl={formControl}
+                        placeholder={setting?.placeholder}
+                        fullWidth
+                        {...setting}
+                      />
+                    </CippFormCondition>
+                  ) : (
+                    <CippFormComponent
+                      name={setting.name}
+                      type={setting.type}
+                      label={setting.label}
+                      options={setting.options}
+                      formControl={formControl}
+                      placeholder={setting?.placeholder}
+                      fullWidth
+                      {...setting}
+                    />
+                  )}
                 </Box>
               </Grid>
             ))}
