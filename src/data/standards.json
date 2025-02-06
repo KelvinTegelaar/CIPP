@@ -1704,8 +1704,8 @@
       {
         "type": "select",
         "multiple": false,
-        "label": "Action",
-        "name": "standards.SafeAttachmentPolicy.Action",
+        "label": "Safe Attachment Action",
+        "name": "standards.SafeAttachmentPolicy.SafeAttachmentAction",
         "options": [
           {
             "label": "Allow",
