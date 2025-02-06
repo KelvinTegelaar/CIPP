@@ -1,5 +1,11 @@
 import { ArrowDropDown } from "@mui/icons-material";
-import { Autocomplete, CircularProgress, createFilterOptions, TextField, IconButton } from "@mui/material";
+import {
+  Autocomplete,
+  CircularProgress,
+  createFilterOptions,
+  TextField,
+  IconButton,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
@@ -189,7 +195,9 @@ export const CippAutoComplete = (props) => {
             }
             return item;
           });
-          newValue = newValue.filter((item) => item.value && item.value.trim() !== "" && item.value !== "error");
+          newValue = newValue.filter(
+            (item) => item.value && item.value !== "" && item.value !== "error" && item.value !== -1
+          );
         } else {
           if (newValue?.manual || !newValue?.label) {
             newValue = {
@@ -200,7 +208,7 @@ export const CippAutoComplete = (props) => {
               onCreateOption(newValue, newValue?.addedFields);
             }
           }
-          if (!newValue?.value || !newValue.value.trim() || newValue.value === "error") {
+          if (!newValue?.value || newValue.value === "error") {
             newValue = null;
           }
         }

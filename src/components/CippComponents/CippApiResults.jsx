@@ -52,40 +52,47 @@ const extractAllResults = (data) => {
       return;
     }
 
-    const ignoreKeys = ["metadata", "Metadata"];
+    if (obj?.resultText) {
+      const processed = processResultItem(obj);
+      if (processed) {
+        results.push(processed);
+      }
+    } else {
+      const ignoreKeys = ["metadata", "Metadata"];
 
-    if (typeof obj === "object") {
-      Object.keys(obj).forEach((key) => {
-        const value = obj[key];
-        if (ignoreKeys.includes(key)) return;
-        if (["Results", "Result", "results", "result"].includes(key)) {
-          if (Array.isArray(value)) {
-            value.forEach((valItem) => {
-              const processed = processResultItem(valItem);
+      if (typeof obj === "object") {
+        Object.keys(obj).forEach((key) => {
+          const value = obj[key];
+          if (ignoreKeys.includes(key)) return;
+          if (["Results", "Result", "results", "result"].includes(key)) {
+            if (Array.isArray(value)) {
+              value.forEach((valItem) => {
+                const processed = processResultItem(valItem);
+                if (processed) {
+                  results.push(processed);
+                } else {
+                  extractFrom(valItem);
+                }
+              });
+            } else if (typeof value === "object") {
+              const processed = processResultItem(value);
               if (processed) {
                 results.push(processed);
               } else {
-                extractFrom(valItem);
+                extractFrom(value);
               }
-            });
-          } else if (typeof value === "object") {
-            const processed = processResultItem(value);
-            if (processed) {
-              results.push(processed);
-            } else {
-              extractFrom(value);
+            } else if (typeof value === "string") {
+              results.push({
+                text: value,
+                copyField: value,
+                severity: getSeverity(value),
+              });
             }
-          } else if (typeof value === "string") {
-            results.push({
-              text: value,
-              copyField: value,
-              severity: getSeverity(value),
-            });
+          } else {
+            extractFrom(value);
           }
-        } else {
-          extractFrom(value);
-        }
-      });
+        });
+      }
     }
   };
 
