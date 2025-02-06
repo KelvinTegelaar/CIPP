@@ -207,6 +207,40 @@ export const CippApiDialog = (props) => {
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
 
+  if (api?.setDefaultValues) {
+    fields.map((field) => {
+      if (
+        ((typeof row[field.name] === "string" && field.type === "textField") ||
+          (typeof row[field.name] === "boolean" && field.type === "switch")) &&
+        row[field.name] !== undefined &&
+        row[field.name] !== null &&
+        row[field.name] !== ""
+      ) {
+        formHook.setValue(field.name, row[field.name]);
+      } else if (Array.isArray(row[field.name]) && field.type === "autoComplete") {
+        var values = [];
+        row[field.name].map((element) => {
+          values.push({
+            label: element,
+            value: element,
+          });
+        });
+        formHook.setValue(field.name, values);
+      } else if (
+        field.type === "autoComplete" &&
+        row[field.name] !== undefined &&
+        row[field.name] !== null &&
+        row[field.name] !== "" &&
+        typeof row[field.name] === "string"
+      ) {
+        formHook.setValue(field.name, {
+          label: row[field.name],
+          value: row[field.name],
+        });
+      }
+    });
+  }
+
   // Handling link navigation
   if (api.link) {
     const getNestedValue = (obj, path) => {

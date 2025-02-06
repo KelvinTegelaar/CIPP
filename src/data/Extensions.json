@@ -7,19 +7,12 @@
     "logo": "/assets/integrations/cipp-api.png",
     "forceSyncButton": false,
     "hideTestButton": true,
-    "disableWhenhosted": true,
-    "description": "Enable the CIPP API to access CIPP data outside of CIPP using a RESTful API.",
-    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
-    "SettingOptions": [
+    "description": "The CIPP API allows you to access CIPP data outside of CIPP using a RESTful API.",
+    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. This is useful for integrations with other systems or custom scripts.",
+    "links": [
       {
-        "type": "switch",
-        "name": "cippapi.ResetPassword",
-        "label": "Reset application secret - this will invalidate all existing API tokens"
-      },
-      {
-        "type": "switch",
-        "name": "cippapi.Enabled",
-        "label": "Enable Integration"
+        "name": "CIPP API Documentation",
+        "url": "https://docs.cipp.app/api-documentation/setup-and-authentication"
       }
     ],
     "mappingRequired": false
@@ -76,7 +69,7 @@
         "name": "Sherweb.AllowedCustomRoles",
         "label": "Select custom roles that are allowed to purchase licenses",
         "api": {
-          "url": "/api/ExecCustomRole",
+          "url": "/api/ListCustomRole",
           "queryKey": "CustomRoles",
           "labelField": "RowKey",
           "valueField": "RowKey"
@@ -460,6 +453,37 @@
         "type": "switch",
         "name": "Hudu.CFEnabled",
         "label": " Connect to HUDU through CloudFlare Tunnel with the above Service Account credentials."
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "GitHub",
+    "id": "GitHub",
+    "type": "DevOps",
+    "cat": "Source Control",
+    "logo": "/assets/integrations/github.png",
+    "logoDark": "/assets/integrations/github_dark.png",
+    "description": "Enable the GitHub integration to manage your repositories from CIPP.",
+    "helpText": "This integration allows you to manage your GitHub repositories from CIPP. Requires a GitHub Fine Grained Personal Access Token (PAT).",
+    "links": [
+      {
+        "name": "GitHub Token",
+        "url": "https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "password",
+        "name": "GitHub.APIKey",
+        "label": "GitHub Fine Grained Personal Access Token",
+        "placeholder": "Enter your GitHub PAT",
+        "required": true
+      },
+      {
+        "type": "switch",
+        "name": "GitHub.Enabled",
+        "label": "Enable Integration"
       }
     ],
     "mappingRequired": false

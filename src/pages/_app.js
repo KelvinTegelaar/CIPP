@@ -20,6 +20,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+import CippSpeedDial from "../components/CippComponents/CippSpeedDial";
+import {
+  Help as HelpIcon,
+  BugReport as BugReportIcon,
+  Feedback as FeedbackIcon,
+} from "@mui/icons-material";
+import { SvgIcon } from "@mui/material";
+import discordIcon from "../../public/discord-mark-blue.svg";
 import React from "react";
 TimeAgo.addDefaultLocale(en);
 
@@ -35,6 +43,33 @@ const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const getLayout = Component.getLayout ?? ((page) => page);
   const preferredTheme = useMediaPredicate("(prefers-color-scheme: dark)") ? "dark" : "light";
+
+  const speedDialActions = [
+    {
+      id: "bug-report",
+      icon: <BugReportIcon />,
+      name: "Report Bug",
+      href: "https://github.com/KelvinTegelaar/CIPP/issues/new?template=bug.yml",
+      onClick: () => window.open("https://github.com/KelvinTegelaar/CIPP/issues/new?template=bug.yml", "_blank")
+    },
+    {
+      id: "feature-request",
+      icon: <FeedbackIcon />,
+      name: "Request Feature",
+      href: "https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml",
+      onClick: () => window.open("https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml", "_blank")
+    },
+    {
+      id: "discord",
+      icon: (
+        <SvgIcon component={discordIcon} viewBox="0 0 127.14 96.36" sx={{ fontSize: '1.5rem' }}>
+        </SvgIcon>
+      ),
+      name: "Join the Discord!",
+      href: "https://discord.gg/cyberdrain",
+      onClick: () => window.open("https://discord.gg/cyberdrain", "_blank")
+    },
+  ];
 
   return (
     <CacheProvider value={emotionCache}>
@@ -69,6 +104,11 @@ const App = (props) => {
                             <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
                           </ErrorBoundary>
                           <Toaster position="top-center" />
+                          <CippSpeedDial
+                            actions={speedDialActions}
+                            icon={<HelpIcon />}
+                            position={{ bottom: 16, right: 16 }}
+                          />
                         </RTL>
                       </ThemeProvider>
                       {settings?.showDevtools && (
