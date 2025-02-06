@@ -35,7 +35,7 @@ const TemplateLibrary = () => {
       Command: { value: `New-CIPPTemplateRun` },
       Parameters: { TemplateSettings: { ...values } },
       ScheduledTime: unixTime,
-      Recurrence: { value: "4h" },
+      Recurrence: { value: values.tenantFilter?.value ? "4h" : "7d" },
     };
   };
 
@@ -158,6 +158,18 @@ const TemplateLibrary = () => {
               type="switch"
               name="groupTemplates"
               label="Create Group Templates"
+              formControl={formControl}
+            />
+            <CippFormComponent
+              type="switch"
+              name="policyTemplates"
+              label="Create Policy Templates"
+              formControl={formControl}
+            />
+            <CippFormComponent
+              type="switch"
+              name="caTemplates"
+              label="Create CA Templates"
               formControl={formControl}
             />
           </Grid>
