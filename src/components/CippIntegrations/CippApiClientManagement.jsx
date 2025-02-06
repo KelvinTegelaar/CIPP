@@ -1,7 +1,8 @@
-import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText } from "@mui/material";
+import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mui/material";
 import { useState } from "react";
+import isEqual from "lodash/isEqual";
 import { useForm } from "react-hook-form";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "/src/api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import {
   ChevronDownIcon,
@@ -15,6 +16,7 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { Create, Key, Save, Sync } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
+import { Box } from "@mui/system";
 
 const CippApiClientManagement = () => {
   const [openAddClientDialog, setOpenAddClientDialog] = useState(false);
@@ -34,6 +36,12 @@ const CippApiClientManagement = () => {
     url: "/api/ExecApiClient",
     data: { Action: "GetAzureConfiguration" },
     queryKey: "AzureConfiguration",
+  });
+
+  const apiClients = ApiGetCallWithPagination({
+    url: "/api/ExecApiClient",
+    data: { Action: "List" },
+    queryKey: "ApiClients",
   });
 
   const handleMenuOpen = (event) => {
@@ -223,7 +231,27 @@ const CippApiClientManagement = () => {
           showDivider={false}
           isFetching={azureConfig.isFetching}
         />
-
+        {azureConfig.isSuccess && Array.isArray(azureConfig.data?.Results?.ClientIDs) && (
+          <>
+            {!isEqual(
+              apiClients.data?.pages?.[0]?.Results?.filter((c) => c.Enabled)
+                .map((c) => c.ClientId)
+                .sort(),
+              azureConfig.data?.Results?.ClientIDs?.sort()
+            ) && (
+              <Box sx={{ px: 3 }}>
+                <Alert severity="warning">
+                  You have unsaved changes. Click Actions &gt; Save Azure Configuration to update
+                  the allowed API Clients.
+                </Alert>
+              </Box>
+            )}
+          </>
+        )}
+        {}
+        <Box>
+          <CippApiResults apiObject={postCall} />
+        </Box>
         <CippDataTable
           actions={actions}
           title="CIPP-API Clients"
@@ -235,7 +263,6 @@ const CippApiClientManagement = () => {
           simpleColumns={["Enabled", "AppName", "ClientId", "Role", "IPRange"]}
           queryKey={`ApiClients`}
         />
-        <CippApiResults apiObject={postCall} />
       </Stack>
 
       <CippApiDialog
