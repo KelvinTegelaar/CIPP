@@ -193,7 +193,10 @@ const CippApiClientManagement = () => {
                   </SvgIcon>
                   <ListItemText>Add Existing Client</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => azureConfig.refetch()}>
+                <MenuItem onClick={() => {
+                  azureConfig.refetch();
+                  handleMenuClose();
+                }}>
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
                     <Sync />
                   </SvgIcon>
