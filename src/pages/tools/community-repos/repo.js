@@ -68,7 +68,6 @@ const Page = () => {
       <CippTablePage
         title={`Templates for ${name}`}
         tenantInTitle={false}
-        backButtonTitle="Back to Repos"
         data={fileResults}
         apiDataKey="Results"
         queryKey="JsonTemplates"
@@ -79,6 +78,7 @@ const Page = () => {
             customFunction: (row) => handleJsonView(row.url),
             noConfirm: true,
             icon: <EyeIcon />,
+            hideBulk: true,
           },
         ]}
       />
@@ -92,7 +92,7 @@ const Page = () => {
         <DialogContent>
           {fileMutation.isPending ? (
             <Box>
-              <Skeleton height={200} />
+              <Skeleton height={300} />
             </Box>
           ) : (
             <CippJSONView object={jsonContent} defaultOpen={true} />
