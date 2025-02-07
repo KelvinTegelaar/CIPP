@@ -118,6 +118,7 @@ const CippApiClientManagement = () => {
         Action: "ResetSecret",
         ClientId: "ClientId",
       },
+      hideBulk: true,
     },
     {
       label: "Copy API Scope",
@@ -127,6 +128,7 @@ const CippApiClientManagement = () => {
         var scope = `api://${row.ClientId}/.default`;
         navigator.clipboard.writeText(scope);
       },
+      hideBulk: true,
     },
     {
       label: "Delete Client",
@@ -146,6 +148,7 @@ const CippApiClientManagement = () => {
         },
       ],
       relatedQueryKeys: ["ApiClients"],
+      multiPost: false,
     },
   ];
 
