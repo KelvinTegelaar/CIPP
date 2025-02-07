@@ -2,13 +2,13 @@ name: PR Branch Check
 
 on:
   # Using pull_request_target instead of pull_request for secure handling of fork PRs
-  pull_request_target:
+  #pull_request_target:
     # Only run on these PR events
-    types: [opened, synchronize, reopened]
+    #types: [opened, synchronize, reopened]
     # Only check PRs targeting these branches
-    branches:
-      - main
-      - master
+    #branches:
+    #  - main
+    #  - master
 
 permissions:
   pull-requests: write
