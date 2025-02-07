@@ -257,7 +257,7 @@ const CippExchangeSettingsForm = (props) => {
           <CippFormComponent
             type="hidden"
             name="calendar.FolderName"
-            value={calPermissions?.[0]?.FolderName}
+            value={calPermissions?.[0]?.FolderName ?? "Calendar"}
             formControl={formControl}
           />
           <CippFormCondition

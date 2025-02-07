@@ -111,8 +111,8 @@ const TemplateLibrary = () => {
         <CippFormCondition
           formControl={formControl}
           field="templateRepo"
-          compareType="isNot"
-          compareValue={''}
+          compareType="doesNotContain"
+          compareValue={"CIPP"}
         >
           <Grid item xs={12}>
             <Typography variant="h6">Conditional Access</Typography>
