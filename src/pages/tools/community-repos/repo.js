@@ -81,6 +81,19 @@ const Page = () => {
             hideBulk: true,
           },
         ]}
+        isFetching={searchMutation.isPending}
+        refreshFunction={() =>
+          searchMutation.mutate({
+            url: "/api/ExecGitHubAction",
+            data: {
+              Search: {
+                Repository: [name],
+                Type: "code",
+                Language: "json",
+              },
+            },
+          })
+        }
       />
       <Dialog
         fullWidth

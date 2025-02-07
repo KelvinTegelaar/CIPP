@@ -40,6 +40,11 @@ const Page = () => {
 
   const actions = [
     {
+      label: "View Templates",
+      link: "/tools/community-repos/repo?name=[FullName]",
+      icon: <OpenInNew />,
+    },
+    {
       label: "Delete",
       type: "POST",
       url: "/api/ExecCommunityRepo",
@@ -47,11 +52,6 @@ const Page = () => {
       confirmText: "Are you sure you want to delete this repo?",
       icon: <TrashIcon />,
       queryKey: "CommunityRepos",
-    },
-    {
-      label: "View Templates",
-      link: "/tools/community-repos/repo?name=[FullName]",
-      icon: <OpenInNew />,
     },
   ];
 

@@ -45,4 +45,5 @@ export const CippTranslations = {
   storageUsedInBytes: "Storage Used",
   prohibitSendReceiveQuotaInBytes: "Quota",
   ClientId: "Client ID",
+  html_url: "URL",
 };

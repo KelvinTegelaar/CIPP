@@ -442,6 +442,11 @@ export const nativeMenuItems = [
         roles: ["editor", "admin", "superadmin"],
       },
       {
+        title: "Community Repositories",
+        path: "/tools/community-repos",
+        roles: ["editor", "admin", "superadmin"],
+      },
+      {
         title: "Scheduler",
         path: "/cipp/scheduler",
         roles: ["editor", "admin", "superadmin"],
