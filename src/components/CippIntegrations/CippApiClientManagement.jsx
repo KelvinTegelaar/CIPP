@@ -193,10 +193,12 @@ const CippApiClientManagement = () => {
                   </SvgIcon>
                   <ListItemText>Add Existing Client</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => {
-                  azureConfig.refetch();
-                  handleMenuClose();
-                }}>
+                <MenuItem
+                  onClick={() => {
+                    azureConfig.refetch();
+                    handleMenuClose();
+                  }}
+                >
                   <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
                     <Sync />
                   </SvgIcon>
@@ -212,7 +214,10 @@ const CippApiClientManagement = () => {
             </>
           }
           propertyItems={[
-            { label: "API Auth Enabled", value: azureConfig.data?.Results?.Enabled },
+            {
+              label: "Microsoft Authentication Enabled",
+              value: azureConfig.data?.Results?.Enabled,
+            },
             {
               label: "API Url",
               value: azureConfig.data?.Results?.ApiUrl ? (
@@ -228,6 +233,14 @@ const CippApiClientManagement = () => {
                   type="chip"
                   text={`https://logon.microsoftonline.com/${azureConfig.data?.Results?.TenantID}/oauth2/v2.0/token`}
                 />
+              ) : (
+                "Not Available"
+              ),
+            },
+            {
+              label: "Tenant ID",
+              value: azureConfig.data?.Results?.TenantID ? (
+                <CippCopyToClipBoard type="chip" text={azureConfig.data?.Results?.TenantID} />
               ) : (
                 "Not Available"
               ),
@@ -254,7 +267,14 @@ const CippApiClientManagement = () => {
             )}
           </>
         )}
-        {}
+        {azureConfig.isSuccess && azureConfig.data?.Results?.Enabled === false && (
+          <Box sx={{ px: 3 }}>
+            <Alert severity="warning">
+              Microsoft Authentication is disabled. Configure API Clients and click Actions &gt;
+              Save Azure Configuration.
+            </Alert>
+          </Box>
+        )}
         <Box sx={{ px: 3 }}>
           <CippApiResults apiObject={postCall} />
         </Box>
