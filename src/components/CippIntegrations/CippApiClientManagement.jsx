@@ -231,7 +231,7 @@ const CippApiClientManagement = () => {
           showDivider={false}
           isFetching={azureConfig.isFetching}
         />
-        {azureConfig.isSuccess && Array.isArray(azureConfig.data?.Results?.ClientIDs) && (
+        {azureConfig.isSuccess && azureConfig.data?.Results?.ClientIDs && (
           <>
             {!isEqual(
               apiClients.data?.pages?.[0]?.Results?.filter((c) => c.Enabled)
@@ -249,7 +249,7 @@ const CippApiClientManagement = () => {
           </>
         )}
         {}
-        <Box>
+        <Box sx={{ px: 3 }}>
           <CippApiResults apiObject={postCall} />
         </Box>
         <CippDataTable
