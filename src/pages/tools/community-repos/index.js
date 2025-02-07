@@ -48,6 +48,11 @@ const Page = () => {
       icon: <TrashIcon />,
       queryKey: "CommunityRepos",
     },
+    {
+      label: "View Templates",
+      link: "/tools/community-repos/repo?name=[FullName]",
+      icon: <OpenInNew />,
+    },
   ];
 
   const offCanvas = {
@@ -188,30 +193,42 @@ const Page = () => {
                 <Skeleton height={200} />
               </Box>
             ) : (
-              results.map((r) => (
-                <Card key={r.id} variant="outlined" sx={{ mt: 1 }}>
-                  <CardContent>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Tooltip title="Add Repository">
-                        <IconButton size="small" onClick={() => handleAdd(r.id)}>
-                          <AddIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Open GitHub">
-                        <IconButton size="small" onClick={() => window.open(r.html_url, "_blank")}>
-                          <OpenInNew />
-                        </IconButton>
-                      </Tooltip>
-                      <Box>
-                        <Typography variant="h6">{r.full_name}</Typography>
-                        <Typography variant="body2" color="text-secondary">
-                          {r.html_url}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              ))
+              <>
+                {results.length === 0 && (
+                  <Alert severity="warning">
+                    No search results found. Refine your query and try again.
+                  </Alert>
+                )}
+                <Box sx={{ overflowY: "scroll", maxHeight: 300 }}>
+                  {results.map((r) => (
+                    <Card key={r.id} variant="outlined" sx={{ mt: 1 }}>
+                      <CardContent>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <Tooltip title="Add Repository">
+                            <IconButton size="small" onClick={() => handleAdd(r.id)}>
+                              <AddIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Open GitHub">
+                            <IconButton
+                              size="small"
+                              onClick={() => window.open(r.html_url, "_blank")}
+                            >
+                              <OpenInNew />
+                            </IconButton>
+                          </Tooltip>
+                          <Box>
+                            <Typography variant="h6">{r.full_name}</Typography>
+                            <Typography variant="body2" color="text-secondary">
+                              {r.html_url}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
+              </>
             )}
             <Box>
               <CippApiResults apiObject={addMutation} />
