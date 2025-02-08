@@ -230,7 +230,16 @@ const CippSchedulerForm = (props) => {
                 placeholder={`Enter a value for ${param.Name}`}
                 validators={fieldRequired(param)}
               />
-            ) : null}
+            ) : (
+              <CippFormComponent
+                type="textField"
+                name={`parameters.${param.Name}`}
+                label={param.Name}
+                formControl={formControl}
+                placeholder={`Enter a value for ${param.Name}`}
+                validators={fieldRequired(param)}
+              />
+            )}
           </Grid>
         </CippFormCondition>
       ))}
