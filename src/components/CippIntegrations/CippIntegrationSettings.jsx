@@ -45,7 +45,7 @@ const CippIntegrationSettings = ({ children }) => {
     <>
       {integrations.isSuccess && extension ? (
         <CippFormSection
-          queryKey={"Integrations"}
+          relatedQueryKeys={"Integrations"}
           formControl={formControl}
           formPageType="Integration"
           title={extension.name}

@@ -322,6 +322,17 @@
         "type": "switch",
         "name": "Hudu.MonitorDomains",
         "label": "Monitor domains in Hudu"
+      },
+      {
+        "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
+        "type": "switch",
+        "name": "Hudu.CFEnabled",
+        "label": "Connect to HUDU through CloudFlare Tunnel with the Service Account credentials.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "mappingRequired": true,
@@ -459,7 +470,7 @@
   },
   {
     "name": "CloudFlare ZTNA Tunnel",
-    "id": "CTZTNA",
+    "id": "CFZTNA",
     "type": "ztna",
     "cat": "Zero Trust Network Tunnel",
     "logo": "/assets/integrations/cloudflare.png",
@@ -479,20 +490,19 @@
     ],
     "SettingOptions": [
       {
+        "type": "switch",
+        "name": "CFZTNA.Enabled",
+        "label": "Enable Integration"
+      },
+      {
         "type": "password",
-        "name": "CloudFlareClientID.APIKey",
+        "name": "CFZTNA.ClientID",
         "label": "CloudFlare Tunnel Service Account Client ID"
       },
       {
         "type": "password",
-        "name": "CloudFlareAPIKey.APIKey",
+        "name": "CFZTNA.APIKey",
         "label": "CloudFlare Tunnel Service Account Client Secret"
-      },
-      {
-        "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
-        "type": "switch",
-        "name": "Hudu.CFEnabled",
-        "label": " Connect to HUDU through CloudFlare Tunnel with the above Service Account credentials."
       }
     ],
     "mappingRequired": false
