@@ -125,7 +125,7 @@ const Page = () => {
         queryKey="CommunityRepos"
         actions={actions}
         offCanvas={offCanvas}
-        simpleColumns={["Owner", "Name", "URL", "Visibility", "WriteAccess"]}
+        simpleColumns={["Name", "Owner", "URL", "Visibility", "WriteAccess"]}
         cardButton={
           <Button onClick={() => setOpenSearch(true)} startIcon={<Add />}>
             Add Repo
@@ -194,16 +194,16 @@ const Page = () => {
               </Box>
             ) : (
               <>
-                {results.length === 0 && (
+                {searchMutation.isSuccess && results.length === 0 && (
                   <Alert severity="warning">
                     No search results found. Refine your query and try again.
                   </Alert>
                 )}
                 <Box sx={{ overflowY: "scroll", maxHeight: 300 }}>
                   {results.map((r) => (
-                    <Card key={r.id} variant="outlined" sx={{ mt: 1 }}>
+                    <Card key={r.id} variant="outlined" sx={{ mt: 1, mr: 1 }}>
                       <CardContent>
-                        <Stack direction="row" spacing={1} alignItems="center">
+                        <Stack direction="row" spacing={1.5} alignItems="center">
                           <Tooltip title="Add Repository">
                             <IconButton size="small" onClick={() => handleAdd(r.id)}>
                               <AddIcon />
@@ -219,7 +219,7 @@ const Page = () => {
                           </Tooltip>
                           <Box>
                             <Typography variant="h6">{r.full_name}</Typography>
-                            <Typography variant="body2" color="text-secondary">
+                            <Typography variant="body2" color="textSecondary">
                               {r.html_url}
                             </Typography>
                           </Box>
