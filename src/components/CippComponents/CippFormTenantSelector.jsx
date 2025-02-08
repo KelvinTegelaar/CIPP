@@ -38,6 +38,7 @@ export const CippFormTenantSelector = ({
           customerId: "customerId",
         },
       }}
+      creatable={false}
       multiple={type === "single" ? false : true}
       disableClearable={disableClearable}
       validators={validators}
