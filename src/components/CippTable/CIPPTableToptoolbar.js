@@ -1,4 +1,4 @@
-import { DeveloperMode, Sync, Tune, ViewColumn } from "@mui/icons-material";
+import { DeveloperMode, SevereCold, Sync, Tune, ViewColumn } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -442,6 +442,11 @@ export const CIPPTableToptoolbar = ({
         </Box>
         <Box>
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
+            {getRequestData?.data?.Metadata?.ColdStart === true && (
+              <Tooltip title="Function App cold start was detected, data takes a little longer to retrieve on first load.">
+                <SevereCold />
+              </Tooltip>
+            )}
             {actions && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
               <>
                 <Button
