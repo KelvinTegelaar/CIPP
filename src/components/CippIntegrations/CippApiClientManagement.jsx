@@ -84,6 +84,7 @@ const CippApiClientManagement = () => {
             queryKey: "CustomRoleList",
             labelField: "RowKey",
             valueField: "RowKey",
+            showRefresh: true,
           },
         },
         {
@@ -317,6 +318,7 @@ const CippApiClientManagement = () => {
               queryKey: "CustomRoleList",
               labelField: "RowKey",
               valueField: "RowKey",
+              showRefresh: true,
             },
             placeholder: "Choose a role from the Custom Role list.",
           },
@@ -367,6 +369,7 @@ const CippApiClientManagement = () => {
                 displayName: "displayName",
                 createdDateTime: "createdDateTime",
               },
+              showRefresh: true,
             },
             creatable: false,
             multiple: false,
@@ -383,6 +386,7 @@ const CippApiClientManagement = () => {
               queryKey: "CustomRoleList",
               labelField: "RowKey",
               valueField: "RowKey",
+              showRefresh: true,
             },
           },
           {
