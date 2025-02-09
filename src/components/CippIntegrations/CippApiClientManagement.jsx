@@ -78,6 +78,7 @@ const CippApiClientManagement = () => {
           multiple: false,
           creatable: false,
           label: "Select Role",
+          placeholder: "Choose a role from the Custom Role list.",
           api: {
             url: "/api/ListCustomRole",
             queryKey: "CustomRoleList",
@@ -93,6 +94,7 @@ const CippApiClientManagement = () => {
           creatable: true,
           options: [],
           label: "Enter IP Range (Single hosts or CIDR notation)",
+          placeholder: "Type in the IP addresses and hit enter.",
         },
         {
           type: "switch",
