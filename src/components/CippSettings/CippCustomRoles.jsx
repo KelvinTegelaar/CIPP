@@ -67,10 +67,7 @@ export const CippCustomRoles = () => {
     queryKey: "customRoleList",
   });
 
-  const {
-    data: { pages = [] } = {},
-    isSuccess: tenantsSuccess,
-  } = ApiGetCallWithPagination({
+  const { data: { pages = [] } = {}, isSuccess: tenantsSuccess } = ApiGetCallWithPagination({
     url: "/api/ListTenants?AllTenantSelector=true",
     queryKey: "ListTenants-AllTenantSelector",
   });
@@ -280,7 +277,7 @@ export const CippCustomRoles = () => {
                 label: role.RowKey,
                 value: role.RowKey,
               }))}
-              isLoading={customRoleListFetching}
+              isFetching={customRoleListFetching}
               refreshFunction={() => refetchCustomRoleList()}
               creatable={true}
               formControl={formControl}
