@@ -233,17 +233,19 @@ export const CippFormComponent = (props) => {
               name={convertedName}
               control={formControl.control}
               rules={validators}
-              render={({ field }) => (
-                <CippAutoComplete
-                  {...other}
-                  isFetching={other.isFetching}
-                  variant="filled"
-                  defaultValue={field.value}
-                  label={label}
-                  multiple={false}
-                  onChange={(value) => field.onChange(value.value)}
-                />
-              )}
+              render={({ field }) =>
+                React.memo(
+                  <CippAutoComplete
+                    {...other}
+                    isFetching={other.isFetching}
+                    variant="filled"
+                    defaultValue={field.value}
+                    label={label}
+                    multiple={false}
+                    onChange={(value) => field.onChange(value.value)}
+                  />
+                )
+              }
             />
           </div>
           <Typography variant="subtitle3" color="error">

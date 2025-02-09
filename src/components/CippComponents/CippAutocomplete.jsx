@@ -6,12 +6,42 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
 import { Sync } from "@mui/icons-material";
 import { Stack } from "@mui/system";
+import React from "react";
+
+const MemoTextField = React.memo(function MemoTextField({ params, label, ...otherProps }) {
+  const { InputProps, ...otherParams } = params;
+
+  return (
+    <TextField
+      {...otherParams}
+      label={label}
+      variant="outlined"
+      {...otherProps}
+      slotProps={{
+        inputLabel: {
+          shrink: true,
+          sx: { transition: "none" },
+        },
+        input: {
+          ...InputProps,
+          notched: true,
+          sx: {
+            transition: "none",
+            "& .MuiOutlinedInput-notchedOutline": {
+              transition: "none",
+            },
+          },
+        },
+      }}
+    />
+  );
+});
 
 export const CippAutoComplete = (props) => {
   const {
@@ -136,6 +166,8 @@ export const CippAutoComplete = (props) => {
     }
   }, [api, actionGetRequest.data, actionGetRequest.isSuccess, actionGetRequest.isError]);
 
+  const memoizedOptions = useMemo(() => (api ? usedOptions : options), [api, usedOptions, options]);
+
   const rand = Math.random().toString(36).substring(5);
 
   return (
@@ -143,7 +175,7 @@ export const CippAutoComplete = (props) => {
       key={`${defaultValue}-${rand}`}
       disabled={disabled || actionGetRequest.isFetching || isFetching}
       popupIcon={
-        actionGetRequest.isFetching ? (
+        actionGetRequest.isFetching || isFetching ? (
           <CircularProgress color="inherit" size={20} />
         ) : (
           <ArrowDropDown />
@@ -216,24 +248,20 @@ export const CippAutoComplete = (props) => {
           onChange(newValue, newValue?.addedFields);
         }
       }}
-      options={api ? usedOptions : options}
-      getOptionLabel={(option) =>
-        option
-          ? option.label === null
-            ? ""
-            : option.label || "Label not found - Are you missing a labelField?"
-          : ""
-      }
+      options={memoizedOptions}
+      getOptionLabel={useCallback(
+        (option) =>
+          option
+            ? option.label === null
+              ? ""
+              : option.label || "Label not found - Are you missing a labelField?"
+            : "",
+        []
+      )}
       sx={sx}
       renderInput={(params) => (
         <Stack direction="row" spacing={1}>
-          <TextField
-            variant="filled"
-            placeholder={placeholder}
-            required={required}
-            label={label}
-            {...params}
-          />
+          <MemoTextField params={params} label={label} {...other} />
           {api?.url && api?.showRefresh && (
             <IconButton
               size="small"
