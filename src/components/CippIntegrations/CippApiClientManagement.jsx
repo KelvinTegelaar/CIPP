@@ -77,7 +77,7 @@ const CippApiClientManagement = () => {
           name: "Role",
           multiple: false,
           creatable: false,
-          placeholder: "Select Role",
+          label: "Select Role",
           api: {
             url: "/api/ListCustomRole",
             queryKey: "CustomRoleList",
@@ -92,7 +92,7 @@ const CippApiClientManagement = () => {
           freeSolo: true,
           creatable: true,
           options: [],
-          placeholder: "Enter IP Range (Single hosts or CIDR notation)",
+          label: "Enter IP Range (Single hosts or CIDR notation)",
         },
         {
           type: "switch",
@@ -301,20 +301,22 @@ const CippApiClientManagement = () => {
           {
             type: "textField",
             name: "AppName",
-            placeholder: "Enter App Name",
+            label: "App Name",
+            placeholder: "Enter a name for this Application Registration.",
           },
           {
             type: "autoComplete",
             name: "Role",
             multiple: false,
             creatable: false,
-            placeholder: "Select Role",
+            label: "Select Role",
             api: {
               url: "/api/ListCustomRole",
               queryKey: "CustomRoleList",
               labelField: "RowKey",
               valueField: "RowKey",
             },
+            placeholder: "Choose a role from the Custom Role list.",
           },
           {
             type: "autoComplete",
@@ -323,7 +325,8 @@ const CippApiClientManagement = () => {
             freeSolo: true,
             creatable: true,
             options: [],
-            placeholder: "Enter IP Range (Single hosts or CIDR notation)",
+            label: "Enter IP Ranges (Single hosts or CIDR notation)",
+            placeholder: "Type in the IP addresses and hit enter.",
           },
           {
             type: "switch",
@@ -348,7 +351,8 @@ const CippApiClientManagement = () => {
           {
             type: "autoComplete",
             name: "ClientId",
-            placeholder: "Select Existing App",
+            label: "Existing App",
+            placeholder: "Select an existing API application.",
             api: {
               type: "GET",
               url: "/api/ExecApiClient",
@@ -370,7 +374,8 @@ const CippApiClientManagement = () => {
             name: "Role",
             multiple: false,
             creatable: false,
-            placeholder: "Select Role",
+            label: "Select Role",
+            placeholder: "Choose a role from the Custom Role list.",
             api: {
               url: "/api/ListCustomRole",
               queryKey: "CustomRoleList",
@@ -385,7 +390,8 @@ const CippApiClientManagement = () => {
             freeSolo: true,
             creatable: true,
             options: [],
-            placeholder: "Enter IP Range(s)",
+            label: "Enter IP Ranges (Single hosts or CIDR notation)",
+            placeholder: "Type in the IP addresses and hit enter.",
           },
           {
             type: "switch",

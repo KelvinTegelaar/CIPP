@@ -14,13 +14,19 @@ import { Sync } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import React from "react";
 
-const MemoTextField = React.memo(function MemoTextField({ params, label, ...otherProps }) {
+const MemoTextField = React.memo(function MemoTextField({
+  params,
+  label,
+  placeholder,
+  ...otherProps
+}) {
   const { InputProps, ...otherParams } = params;
 
   return (
     <TextField
       {...otherParams}
       label={label}
+      placeholder={placeholder}
       variant="outlined"
       {...otherProps}
       slotProps={{
@@ -187,6 +193,7 @@ export const CippAutoComplete = (props) => {
       disableClearable={disableClearable}
       multiple={multiple}
       fullWidth
+      placeholder={placeholder}
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
         const isExisting =
@@ -261,7 +268,7 @@ export const CippAutoComplete = (props) => {
       sx={sx}
       renderInput={(params) => (
         <Stack direction="row" spacing={1}>
-          <MemoTextField params={params} label={label} {...other} />
+          <MemoTextField params={params} label={label} placeholder={placeholder} {...other} />
           {api?.url && api?.showRefresh && (
             <IconButton
               size="small"
