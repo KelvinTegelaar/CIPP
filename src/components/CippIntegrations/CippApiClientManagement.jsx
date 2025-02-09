@@ -234,7 +234,7 @@ const CippApiClientManagement = () => {
               value: azureConfig.data?.Results?.TenantID ? (
                 <CippCopyToClipBoard
                   type="chip"
-                  text={`https://logon.microsoftonline.com/${azureConfig.data?.Results?.TenantID}/oauth2/v2.0/token`}
+                  text={`https://login.microsoftonline.com/${azureConfig.data?.Results?.TenantID}/oauth2/v2.0/token`}
                 />
               ) : (
                 "Not Available"
