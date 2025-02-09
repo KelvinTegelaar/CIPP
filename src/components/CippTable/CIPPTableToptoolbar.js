@@ -442,7 +442,7 @@ export const CIPPTableToptoolbar = ({
         </Box>
         <Box>
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            {getRequestData?.data?.Metadata?.ColdStart === true && (
+            {getRequestData?.data?.pages?.[0].Metadata?.ColdStart === true && (
               <Tooltip title="Function App cold start was detected, data takes a little longer to retrieve on first load.">
                 <SevereCold />
               </Tooltip>
