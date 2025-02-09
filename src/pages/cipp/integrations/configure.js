@@ -1,4 +1,14 @@
-import { Alert, Box, Button, CardContent, Stack, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CardContent,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import CippIntegrationSettings from "/src/components/CippIntegrations/CippIntegrationSettings";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
@@ -96,6 +106,17 @@ const Page = () => {
 
   return (
     <>
+      {integrations.isLoading && (
+        <CippPageCard title="Integrations" headerText={extension.headerText} hideTitleText={true}>
+          <CardContent>
+            <Stack spacing={2}>
+              <Skeleton variant="rectangular" height={150} />
+              <Skeleton variant="rectangular" height={150} />
+              <Skeleton variant="rectangular" height={400} />
+            </Stack>
+          </CardContent>
+        </CippPageCard>
+      )}
       {integrations.isSuccess && extension && (
         <CippPageCard
           title={extension.name}
