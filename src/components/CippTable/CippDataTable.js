@@ -358,16 +358,19 @@ export const CippDataTable = (props) => {
         customComponent={offCanvas?.customComponent}
         {...offCanvas}
       />
-      {actionData.ready && (
-        <CippApiDialog
-          createDialog={createDialog}
-          title="Confirmation"
-          fields={actionData.action?.fields}
-          api={actionData.action}
-          row={actionData.data}
-          relatedQueryKeys={queryKey ? queryKey : title}
-        />
-      )}
+      {useMemo(() => {
+        if (!actionData.ready) return null;
+        return (
+          <CippApiDialog
+            createDialog={createDialog}
+            title="Confirmation"
+            fields={actionData.action?.fields}
+            api={actionData.action}
+            row={actionData.data}
+            relatedQueryKeys={queryKey ? queryKey : title}
+          />
+        );
+      }, [actionData.ready, createDialog, actionData.action, actionData.data, queryKey, title])}
     </>
   );
 };

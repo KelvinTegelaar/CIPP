@@ -17,11 +17,20 @@ export const CippApiDialog = (props) => {
     row = {},
     relatedQueryKeys,
     dialogAfterEffect,
+    allowResubmit = false,
     ...other
   } = props;
   const router = useRouter();
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (createDialog.open) {
+      setIsFormSubmitted(false);
+    }
+  }, [createDialog.open]);
+
   const [getRequestInfo, setGetRequestInfo] = useState({
     url: "",
     waiting: false,
@@ -103,6 +112,7 @@ export const CippApiDialog = (props) => {
   };
   const tenantFilter = useSettings().currentTenant;
   const handleActionClick = (row, action, formData) => {
+    setIsFormSubmitted(true);
     if (action.multiPost === undefined) {
       action.multiPost = false;
     }
@@ -304,9 +314,10 @@ export const CippApiDialog = (props) => {
           <Button color="inherit" onClick={() => handleClose()}>
             Close
           </Button>
-          <Button variant="contained" type="submit">
-            Confirm
+          <Button variant="contained" type="submit" disabled={isFormSubmitted && !allowResubmit}>
+            {isFormSubmitted && allowResubmit ? "Reconfirm" : "Confirm"}
           </Button>
+          {console.log("isFormSubmitted", isFormSubmitted)}
         </DialogActions>
       </form>
     </Dialog>
