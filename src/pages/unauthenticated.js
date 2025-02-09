@@ -9,6 +9,10 @@ const Page = () => {
     url: "/.auth/me",
     queryKey: "me",
   });
+  const blockedRoles = ["anonymous", "authenticated"];
+  const userRoles = orgData.data?.clientPrincipal?.userRoles.filter(
+    (role) => !blockedRoles.includes(role)
+  );
   return (
     <>
       <DashboardLayout>
@@ -37,8 +41,8 @@ const Page = () => {
                     imageUrl="/assets/illustrations/undraw_online_test_re_kyfx.svg"
                     text="You're not allowed to be here, or are logged in under the wrong account. Hit the button below to return to the homepage."
                     title="Access Denied"
-                    linkText={orgData.data?.clientPrincipal?.userDetails ? "Return" : "Login"}
-                    link={orgData.data?.clientPrincipal?.userDetails ? "/" : "/.auth/login/aad"}
+                    linkText={userRoles.length > 0 ? "Return" : "Login"}
+                    link={userRoles.length > 0 ? "/" : "/.auth/login/aad"}
                   />
                 </Grid>
               </Grid>
