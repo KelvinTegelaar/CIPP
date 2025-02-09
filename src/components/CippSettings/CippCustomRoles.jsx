@@ -286,8 +286,9 @@ export const CippCustomRoles = () => {
             />
             {cippApiRoleSelected && (
               <Alert color="info">
-                This role will limit access for the CIPP-API integration. It is not intended to be
-                used for users.
+                This is the default role for all API clients in the CIPP-API integration. If you
+                would like different permissions for specific applications, create a role per
+                application and select it from the CIPP-API integrations page.
               </Alert>
             )}
           </Stack>
