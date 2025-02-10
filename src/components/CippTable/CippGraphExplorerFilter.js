@@ -371,7 +371,6 @@ const CippGraphExplorerFilter = ({
 
   function getPresetProps(values) {
     var newvals = Object.assign({}, values);
-    console.log(values);
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(",");
     }

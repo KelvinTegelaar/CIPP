@@ -43,7 +43,6 @@ const Page = () => {
           defaultAttributes[attribute.label] = { Value: user?.[attribute.label] };
         });
       }
-      console.log(defaultAttributes);
       formControl.reset({
         ...user,
         defaultAttributes: defaultAttributes,

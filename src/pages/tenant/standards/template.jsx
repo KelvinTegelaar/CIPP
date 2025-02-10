@@ -101,7 +101,6 @@ const Page = () => {
     if (match) {
       standardName = match[1];
     }
-    console.log("Adding multiple", standardName);
 
     setSelectedStandards((prev) => {
       const existingInstances = Object.keys(prev).filter((name) => name.startsWith(standardName));

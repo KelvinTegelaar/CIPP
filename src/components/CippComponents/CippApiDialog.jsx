@@ -221,7 +221,6 @@ export const CippApiDialog = (props) => {
   useEffect(() => {
     if (api?.setDefaultValues && createDialog.open) {
       fields.map((field) => {
-        console.log(field.name, row[field.name]);
         if (
           ((typeof row[field.name] === "string" && field.type === "textField") ||
             (typeof row[field.name] === "boolean" && field.type === "switch")) &&
@@ -308,7 +307,6 @@ export const CippApiDialog = (props) => {
   } else if (Array.isArray(row) && row.length > 1) {
     confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, "the selected rows");
   } else if (Array.isArray(row) && row.length === 1) {
-    console.log("single row in array");
     confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
       return getNestedValue(row[0], key) || `[${key}]`;
     });
