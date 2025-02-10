@@ -28,6 +28,7 @@ export const CippApiDialog = (props) => {
   useEffect(() => {
     if (createDialog.open) {
       setIsFormSubmitted(false);
+      formHook.reset();
     }
   }, [createDialog.open]);
 
@@ -217,39 +218,55 @@ export const CippApiDialog = (props) => {
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
 
-  if (api?.setDefaultValues) {
-    fields.map((field) => {
-      if (
-        ((typeof row[field.name] === "string" && field.type === "textField") ||
-          (typeof row[field.name] === "boolean" && field.type === "switch")) &&
-        row[field.name] !== undefined &&
-        row[field.name] !== null &&
-        row[field.name] !== ""
-      ) {
-        formHook.setValue(field.name, row[field.name]);
-      } else if (Array.isArray(row[field.name]) && field.type === "autoComplete") {
-        var values = [];
-        row[field.name].map((element) => {
-          values.push({
-            label: element,
-            value: element,
+  useEffect(() => {
+    if (api?.setDefaultValues && createDialog.open) {
+      fields.map((field) => {
+        console.log(field.name, row[field.name]);
+        if (
+          ((typeof row[field.name] === "string" && field.type === "textField") ||
+            (typeof row[field.name] === "boolean" && field.type === "switch")) &&
+          row[field.name] !== undefined &&
+          row[field.name] !== null &&
+          row[field.name] !== ""
+        ) {
+          formHook.setValue(field.name, row[field.name]);
+        } else if (Array.isArray(row[field.name]) && field.type === "autoComplete") {
+          var values = [];
+          row[field.name].map((element) => {
+            if (element.label && element.value) {
+              values.push(element);
+            } else if (typeof element === "string" || typeof element === "number") {
+              values.push({
+                label: element,
+                value: element,
+              });
+            }
           });
-        });
-        formHook.setValue(field.name, values);
-      } else if (
-        field.type === "autoComplete" &&
-        row[field.name] !== undefined &&
-        row[field.name] !== null &&
-        row[field.name] !== "" &&
-        typeof row[field.name] === "string"
-      ) {
-        formHook.setValue(field.name, {
-          label: row[field.name],
-          value: row[field.name],
-        });
-      }
-    });
-  }
+          formHook.setValue(field.name, values);
+        } else if (
+          field.type === "autoComplete" &&
+          row[field.name] !== "" &&
+          (typeof row[field.name] === "string" ||
+            (typeof row[field.name] === "object" &&
+              row[field.name] !== undefined &&
+              row[field.name] !== null))
+        ) {
+          if (typeof row[field.name] === "string") {
+            formHook.setValue(field.name, {
+              label: row[field.name],
+              value: row[field.name],
+            });
+          } else if (
+            typeof row[field.name] === "object" &&
+            row[field.name]?.label &&
+            row[field.name]?.value
+          ) {
+            formHook.setValue(field.name, row[field.name]);
+          }
+        }
+      });
+    }
+  }, [createDialog.open, api?.setDefaultValues]);
 
   // Handling link navigation
   if (api.link) {
@@ -317,7 +334,6 @@ export const CippApiDialog = (props) => {
           <Button variant="contained" type="submit" disabled={isFormSubmitted && !allowResubmit}>
             {isFormSubmitted && allowResubmit ? "Reconfirm" : "Confirm"}
           </Button>
-          {console.log("isFormSubmitted", isFormSubmitted)}
         </DialogActions>
       </form>
     </Dialog>

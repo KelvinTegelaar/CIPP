@@ -89,7 +89,7 @@ const CippApiClientManagement = () => {
         },
         {
           type: "autoComplete",
-          name: "IpRange",
+          name: "IPRange",
           multiple: true,
           freeSolo: true,
           creatable: true,
@@ -324,7 +324,7 @@ const CippApiClientManagement = () => {
           },
           {
             type: "autoComplete",
-            name: "IpRange",
+            name: "IPRange",
             multiple: true,
             freeSolo: true,
             creatable: true,
@@ -391,7 +391,7 @@ const CippApiClientManagement = () => {
           },
           {
             type: "autoComplete",
-            name: "IpRange",
+            name: "IPRange",
             multiple: true,
             freeSolo: true,
             creatable: true,
