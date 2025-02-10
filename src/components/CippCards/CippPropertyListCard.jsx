@@ -122,15 +122,25 @@ export const CippPropertyListCard = (props) => {
                 )}
               </PropertyList>
               <PropertyList>
-                {secondHalf.map((item, index) => (
+                {isFetching ? (
                   <PropertyListItem
+                    key={"loading-bar"}
                     align={align}
                     divider={showDivider}
-                    copyItems={copyItems}
-                    key={`${index}-index-PropertyListOffCanvas`}
-                    {...item}
+                    label="Loading"
+                    value={<Skeleton width={280} />}
                   />
-                ))}
+                ) : (
+                  secondHalf.map((item, index) => (
+                    <PropertyListItem
+                      align={align}
+                      divider={showDivider}
+                      copyItems={copyItems}
+                      key={`${index}-index-PropertyListOffCanvas`}
+                      {...item}
+                    />
+                  ))
+                )}
               </PropertyList>
             </Stack>
           )}
