@@ -1,6 +1,6 @@
-import { Close, ContentCopy } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import { Alert, CircularProgress, Collapse, IconButton, Typography } from "@mui/material";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { getCippError } from "../../utils/get-cipp-error";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { Grid } from "@mui/system";
@@ -136,7 +136,7 @@ export const CippApiResults = (props) => {
   const allResults = useMemo(() => {
     const apiResults = extractAllResults(correctResultObj);
     return apiResults;
-  }, [apiObject]);
+  }, [correctResultObj]);
 
   useEffect(() => {
     setErrorVisible(!!apiObject.isError);
@@ -170,9 +170,9 @@ export const CippApiResults = (props) => {
     errorsOnly,
   ]);
 
-  const handleCloseResult = (id) => {
+  const handleCloseResult = useCallback((id) => {
     setFinalResults((prev) => prev.map((r) => (r.id === id ? { ...r, visible: false } : r)));
-  };
+  }, []);
 
   const hasVisibleResults = finalResults.some((r) => r.visible);
   return (
