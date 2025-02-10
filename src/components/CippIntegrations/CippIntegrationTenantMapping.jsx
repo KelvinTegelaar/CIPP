@@ -85,7 +85,7 @@ const CippIntegrationSettings = ({ children }) => {
     if (tableData?.find((item) => item.TenantId === selectedTenant.addedFields.customerId)) return;
 
     const newRowData = {
-      TenantId: selectedTenant.addedFields.customerId,
+      TenantId: selectedTenant.value,
       Tenant: selectedTenant.label,
       IntegrationName: selectedCompany.label,
       IntegrationId: selectedCompany.value,
@@ -167,6 +167,8 @@ const CippIntegrationSettings = ({ children }) => {
                     multiple={false}
                     required={false}
                     disableClearable={false}
+                    removeOptions={tableData.map((item) => item.TenantId)}
+                    valueField="customerId"
                   />
                 </Box>
               </Grid>

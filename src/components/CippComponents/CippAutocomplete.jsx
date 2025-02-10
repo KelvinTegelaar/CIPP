@@ -68,6 +68,7 @@ export const CippAutoComplete = (props) => {
     required = false,
     isFetching = false,
     sx,
+    removeOptions = [],
     ...other
   } = props;
 
@@ -172,7 +173,15 @@ export const CippAutoComplete = (props) => {
     }
   }, [api, actionGetRequest.data, actionGetRequest.isSuccess, actionGetRequest.isError]);
 
-  const memoizedOptions = useMemo(() => (api ? usedOptions : options), [api, usedOptions, options]);
+  const memoizedOptions = useMemo(() => {
+    let finalOptions = api ? usedOptions : options;
+    if (removeOptions && removeOptions.length) {
+      finalOptions = finalOptions.filter(
+        (o) => !removeOptions.includes(o.value)
+      );
+    }
+    return finalOptions;
+  }, [api, usedOptions, options, removeOptions]);
 
   const rand = Math.random().toString(36).substring(5);
 
@@ -201,7 +210,7 @@ export const CippAutoComplete = (props) => {
           options.some(
             (option) => params.inputValue === option.value || params.inputValue === option.label
           );
-
+        console.log(removeOptions);
         if (params.inputValue !== "" && creatable && !isExisting) {
           filtered.push({
             label: `Add option: "${params.inputValue}"`,
