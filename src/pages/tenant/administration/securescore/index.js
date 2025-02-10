@@ -8,7 +8,6 @@ import { CheckCircleIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 import { Map, Score } from "@mui/icons-material";
 import { CippChartCard } from "../../../../components/CippCards/CippChartCard";
 import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en.json";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import DOMPurify from "dompurify";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
@@ -26,7 +25,6 @@ const Page = () => {
   const [updatesData, setUpdatesData] = useState({ data: {}, ready: false });
   const cippTableDialog = useDialog();
 
-  TimeAgo.addLocale(en);
   const timeAgo = new TimeAgo("en-US");
 
   const openRemediation = (url) => {
