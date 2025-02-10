@@ -284,7 +284,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Clear Immutable ID",
-      type: "GET",
+      type: "POST",
       icon: <Clear />,
       url: "/api/ExecClrImmId",
       data: {
