@@ -182,7 +182,12 @@ const Page = () => {
                           <Typography
                             variant="body2"
                             color="textPrimary"
-                            sx={{ "& a": { color: (theme) => theme.palette.primary.main, textDecoration: "underline" } }}
+                            sx={{
+                              "& a": {
+                                color: (theme) => theme.palette.primary.main,
+                                textDecoration: "underline",
+                              },
+                            }}
                             dangerouslySetInnerHTML={{
                               __html: DOMPurify.sanitize(secureScoreControl.description),
                             }}
@@ -199,6 +204,12 @@ const Page = () => {
                             <Typography
                               variant="body2"
                               color="textPrimary"
+                              sx={{
+                                "& a": {
+                                  color: (theme) => theme.palette.primary.main,
+                                  textDecoration: "underline",
+                                },
+                              }}
                               dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(secureScoreControl.remediation),
                               }}
