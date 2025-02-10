@@ -74,7 +74,10 @@ const Page = () => {
   }, {});
 
   const handleOpenDialog = () => setDialogOpen(true);
-  const handleCloseDialog = () => setDialogOpen(false);
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSearchQuery("");
+  };
 
   const filterStandards = (standardsList) =>
     standardsList.filter(
