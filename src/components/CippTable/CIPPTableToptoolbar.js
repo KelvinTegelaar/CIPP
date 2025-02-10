@@ -81,6 +81,10 @@ export const CIPPTableToptoolbar = ({
     }
   }, [settings?.columnDefaults?.[pageName], router, usedColumns]);
 
+  useEffect(() => {
+    setOriginalSimpleColumns(simpleColumns);
+  }, [simpleColumns]);
+
   const presetList = ApiGetCall({
     url: "/api/ListGraphExplorerPresets",
     queryKey: `ListGraphExplorerPresets${api?.data?.Endpoint ?? ""}`,
@@ -254,7 +258,7 @@ export const CIPPTableToptoolbar = ({
       // update filters to include graph explorer presets
       setFilterList([...filters, ...graphPresetList]);
     }
-  }, [presetList?.isSuccess]);
+  }, [presetList?.isSuccess, simpleColumns]);
 
   return (
     <>

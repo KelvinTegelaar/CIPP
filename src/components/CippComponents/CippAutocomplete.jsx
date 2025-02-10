@@ -210,7 +210,6 @@ export const CippAutoComplete = (props) => {
           options.some(
             (option) => params.inputValue === option.value || params.inputValue === option.label
           );
-        console.log(removeOptions);
         if (params.inputValue !== "" && creatable && !isExisting) {
           filtered.push({
             label: `Add option: "${params.inputValue}"`,

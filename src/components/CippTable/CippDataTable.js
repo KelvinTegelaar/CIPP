@@ -291,6 +291,10 @@ export const CippDataTable = (props) => {
     }
   }, [table.getSelectedRowModel().rows]);
 
+  useEffect(() => {
+    setConfiguredSimpleColumns(simpleColumns);
+  }, [simpleColumns]);
+
   return (
     <>
       {noCard ? (
