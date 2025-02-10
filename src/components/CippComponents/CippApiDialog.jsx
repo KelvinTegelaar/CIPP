@@ -301,7 +301,6 @@ export const CippApiDialog = (props) => {
   };
 
   var confirmText;
-  console.log(row);
   if (typeof api?.confirmText === "string" && !Array.isArray(row)) {
     confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
       return getNestedValue(row, key) || `[${key}]`;
