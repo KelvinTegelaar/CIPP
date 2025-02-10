@@ -429,6 +429,25 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
+  if (cellName === "Visibility") {
+    const gitHubVisibility = ["public", "private", "internal"];
+    if (gitHubVisibility.includes(data)) {
+      return isText ? (
+        data
+      ) : (
+        <Chip
+          variant="outlined"
+          label={data}
+          size="small"
+          color={
+            data === "private" ? "error" :data === "public" ? "success" : "primary"
+          }
+          sx={{ textTransform: "capitalize" }}
+        />
+      );
+    }
+  }
+
   if (cellName === "AutoMapUrl") {
     return isText ? data : <CippCopyToClipBoard text={data} />;
   }

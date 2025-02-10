@@ -515,7 +515,7 @@
     "logo": "/assets/integrations/github.png",
     "logoDark": "/assets/integrations/github_dark.png",
     "description": "Enable the GitHub integration to manage your repositories from CIPP.",
-    "helpText": "This integration allows you to manage your GitHub repositories from CIPP. Requires a GitHub Fine Grained Personal Access Token (PAT).",
+    "helpText": "This integration allows you to manage GitHub repositories from CIPP, including the Community Repositorities functionality. Requires a GitHub Personal Access Token (PAT) with a minimum of repo:public_repo permissions. You can create a PAT in your GitHub account settings, see the GitHub Token documentation for more info.",
     "links": [
       {
         "name": "GitHub Token",
@@ -526,7 +526,7 @@
       {
         "type": "password",
         "name": "GitHub.APIKey",
-        "label": "GitHub Fine Grained Personal Access Token",
+        "label": "GitHub Personal Access Token",
         "placeholder": "Enter your GitHub PAT",
         "required": true
       },

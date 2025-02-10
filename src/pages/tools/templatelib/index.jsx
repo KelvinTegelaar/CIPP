@@ -76,7 +76,11 @@ const TemplateLibrary = () => {
         >
           <Grid item xs={12} md={5}>
             <Box sx={{ my: "auto" }}>
-              <CippFormTenantSelector formControl={formControl} multiple={false} />
+              <CippFormTenantSelector
+                formControl={formControl}
+                multiple={false}
+                disableClearable={false}
+              />
             </Box>
           </Grid>
           <Grid item xs={12} md={0.7}>
@@ -89,18 +93,14 @@ const TemplateLibrary = () => {
               <CippFormComponent
                 name="templateRepo"
                 type="autoComplete"
-                label="Template Repository"
-                options={[
-                  {
-                    label: "Open Intune Baseline - https://skiptotheendpoint.co.uk/",
-                    value: "CIPP-OIB",
-                  },
-                  { label: "CIPP Recommended Baseline - https://cipp.app", value: "CIPP-CIPP" },
-                  {
-                    label: "Conditional Access Framework - https://www.joeyverlinden.com/",
-                    value: "CIPP-CAF",
-                  },
-                ]}
+                label="Community Repository"
+                api={{
+                  url: "/api/ListCommunityRepos",
+                  queryKey: "CommunityRepos",
+                  dataKey: "Results",
+                  valueField: "FullName",
+                  labelField: (option) => `${option.Name} (${option.URL})`,
+                }}
                 formControl={formControl}
                 multiple={false}
               />

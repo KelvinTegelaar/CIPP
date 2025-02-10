@@ -18,6 +18,7 @@ import {
   Typography,
   Alert,
   Link,
+  Chip,
 } from "@mui/material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { ApiPostCall } from "/src/api/ApiCall";
@@ -37,6 +38,7 @@ const Page = () => {
   const [results, setResults] = useState([]);
   const [repo, setRepo] = useState("");
   const [user, setUser] = useState("");
+  const [org, setOrg] = useState("");
 
   const actions = [
     {
@@ -51,6 +53,7 @@ const Page = () => {
       data: { Action: "Delete", Id: "Id" },
       confirmText: "Are you sure you want to delete this repo?",
       icon: <TrashIcon />,
+      multiPost: false,
       queryKey: "CommunityRepos",
     },
   ];
@@ -80,8 +83,9 @@ const Page = () => {
       url: "/api/ExecGitHubAction",
       data: {
         Search: {
-          Repository: repo ? [repo] : [],
-          User: user ? [user] : [],
+          Repository: repo ? repo : "",
+          User: user ? user : "",
+          Org: org ? org : "",
           SearchTerm: searchTerms,
           Type: "repositories",
         },
@@ -143,6 +147,7 @@ const Page = () => {
                 onChange={(e) => searchForm.setValue("searchType", e.target.value)}
               >
                 <FormControlLabel value="user" control={<Radio />} label="User" />
+                <FormControlLabel value="org" control={<Radio />} label="Org" />
                 <FormControlLabel value="repository" control={<Radio />} label="Repository" />
               </RadioGroup>
               <Stack spacing={1} sx={{ mt: 2 }}>
@@ -172,6 +177,28 @@ const Page = () => {
                     onChange={(e) => setUser(e.target.value)}
                   />
 
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="searchTerm"
+                    formControl={searchForm}
+                    freeSolo
+                    fullWidth
+                    options={[]}
+                    label="Search Terms"
+                  />
+                </CippFormCondition>
+                <CippFormCondition
+                  field="searchType"
+                  compareType="is"
+                  compareValue="org"
+                  formControl={searchForm}
+                >
+                  <TextField
+                    fullWidth
+                    label="Organization"
+                    value={org}
+                    onChange={(e) => setOrg(e.target.value)}
+                  />
                   <CippFormComponent
                     type="autoComplete"
                     name="searchTerm"
@@ -217,8 +244,32 @@ const Page = () => {
                               <OpenInNew />
                             </IconButton>
                           </Tooltip>
-                          <Box>
-                            <Typography variant="h6">{r.full_name}</Typography>
+                          <Box sx={{ flexGrow: 1 }}>
+                            <Box
+                              sx={{
+                                width: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                flexGrow: 1,
+                              }}
+                            >
+                              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                                {r.full_name}
+                              </Typography>
+                              <Chip
+                                size="small"
+                                color={
+                                  r.visibility === "private"
+                                    ? "error"
+                                    : r.visibility === "public"
+                                    ? "success"
+                                    : "primary"
+                                }
+                                variant="outlined"
+                                label={r.visibility}
+                                sx={{ textTransform: "capitalize" }}
+                              />
+                            </Box>
                             <Typography variant="body2" color="textSecondary">
                               {r.html_url}
                             </Typography>

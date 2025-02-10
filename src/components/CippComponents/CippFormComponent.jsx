@@ -24,7 +24,7 @@ import {
 } from "mui-tiptap";
 import StarterKit from "@tiptap/starter-kit";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import React, { useMemo } from "react";
+import React from "react";
 
 // Helper function to convert bracket notation to dot notation
 const convertBracketsToDots = (name) => {
