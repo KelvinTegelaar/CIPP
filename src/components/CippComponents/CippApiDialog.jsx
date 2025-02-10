@@ -268,14 +268,14 @@ export const CippApiDialog = (props) => {
     }
   }, [createDialog.open, api?.setDefaultValues]);
 
+  const getNestedValue = (obj, path) => {
+    return path
+      .split(".")
+      .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+  };
+
   // Handling link navigation
   if (api.link) {
-    const getNestedValue = (obj, path) => {
-      return path
-        .split(".")
-        .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
-    };
-
     const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
       return getNestedValue(row, key) || `[${key}]`;
     });
@@ -300,12 +300,29 @@ export const CippApiDialog = (props) => {
     setPartialResults([]);
   };
 
+  var confirmText;
+  console.log(row);
+  if (typeof api?.confirmText === "string" && !Array.isArray(row)) {
+    confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
+      return getNestedValue(row, key) || `[${key}]`;
+    });
+  } else if (Array.isArray(row) && row.length > 1) {
+    confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, "the selected rows");
+  } else if (Array.isArray(row) && row.length === 1) {
+    console.log("single row in array");
+    confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
+      return getNestedValue(row[0], key) || `[${key}]`;
+    });
+  } else {
+    confirmText = api.confirmText;
+  }
+
   return (
     <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={createDialog.open}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <Stack spacing={3}>{api.confirmText}</Stack>
+          <Stack spacing={3}>{confirmText}</Stack>
         </DialogContent>
         <DialogContent>
           <Grid container spacing={2}>

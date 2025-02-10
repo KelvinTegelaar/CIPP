@@ -68,7 +68,7 @@ const CippApiClientManagement = () => {
           <PencilIcon />
         </SvgIcon>
       ),
-      confirmText: "Update the API client settings:",
+      confirmText: "Update the API client settings for [AppName]?",
       hideBulk: true,
       setDefaultValues: true,
       fields: [
@@ -114,7 +114,7 @@ const CippApiClientManagement = () => {
     {
       label: "Reset Application Secret",
       icon: <Key />,
-      confirmText: "Are you sure you want to reset the application secret?",
+      confirmText: "Are you sure you want to reset the application secret for [AppName]?",
       type: "POST",
       url: "/api/ExecApiClient",
       data: {
@@ -136,7 +136,7 @@ const CippApiClientManagement = () => {
     {
       label: "Delete Client",
       icon: <TrashIcon />,
-      confirmText: "Are you sure you want to delete this client?",
+      confirmText: "Are you sure you want to delete [AppName]?",
       type: "POST",
       url: "/api/ExecApiClient",
       data: {
