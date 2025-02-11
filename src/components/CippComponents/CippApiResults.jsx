@@ -10,7 +10,7 @@ const extractAllResults = (data) => {
 
   const getSeverity = (text) => {
     if (typeof text !== "string") return "success";
-    return /error|failed|exception|not found/i.test(text) ? "error" : "success";
+    return /error|failed|exception|not found|invalid_grant/i.test(text) ? "error" : "success";
   };
 
   const processResultItem = (item) => {
