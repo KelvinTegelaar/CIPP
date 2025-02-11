@@ -217,7 +217,7 @@ export const CippApiResults = (props) => {
     <Stack spacing={2}>
       {/* Loading alert */}
       {!errorsOnly && (
-        <Collapse in={fetchingVisible}>
+        <Collapse in={fetchingVisible} unmountOnExit>
           <Alert
             sx={alertSx}
             action={
@@ -241,7 +241,7 @@ export const CippApiResults = (props) => {
       )}
 
       {/* Error alert */}
-      <Collapse in={errorVisible}>
+      <Collapse in={errorVisible} unmountOnExit>
         {apiObject.isError && (
           <Alert
             sx={alertSx}
@@ -268,7 +268,7 @@ export const CippApiResults = (props) => {
         <>
           {finalResults.map((resultObj) => (
             <React.Fragment key={resultObj.id}>
-              <Collapse in={resultObj.visible}>
+              <Collapse in={resultObj.visible} unmountOnExit>
                 <Alert
                   sx={alertSx}
                   variant="filled"
