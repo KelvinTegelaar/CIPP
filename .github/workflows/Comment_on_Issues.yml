@@ -16,15 +16,7 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Thank you for reporting a potential bug. Before proceeding, please ensure:
-            
-            1. You have reviewed existing open and closed issues for duplicates.
-            2. You have consulted the documentation at https://docs.cipp.app/ to confirm this is not a known or documented issue.
-            
-            If, after these checks, you still believe this is a new bug, please confirm by copying the following text into a comment below:
-            > I confirm that I have thoroughly checked existing issues and the documentation, and I believe this to be a genuine bug.
-            
-            We will close this issue in 24 hours if no confirmation is provided. If you would like to work on this bug, please comment:
+            Thank you for reporting a potential bug.  If you would like to work on this bug, please comment:
             > I would like to work on this please!
             
             Thank you for helping us maintain the project!
