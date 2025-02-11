@@ -52,7 +52,7 @@ const TemplateLibrary = () => {
     <CippFormPage
       formControl={formControl}
       queryKey="TemplateLibrary"
-      title="Add Template Library"
+      title="Template Library"
       hideBackButton
       postUrl="/api/AddScheduledItem?DisallowDuplicateName=true"
       customDataformatter={customDataFormatter}
