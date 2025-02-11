@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Divider, Typography, CircularProgress, Alert, Chip } from "@mui/material";
+import { Grid, Divider, Typography, CircularProgress, Alert, Chip, Link } from "@mui/material";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
@@ -9,6 +9,7 @@ import { CippFormTenantSelector } from "../../../components/CippComponents/CippF
 import { Box } from "@mui/system";
 import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
 import { ApiGetCall } from "/src/api/ApiCall";
+import NextLink from "next/link";
 
 const TemplateLibrary = () => {
   const currentTenant = useSettings().currentTenant;
@@ -22,7 +23,6 @@ const TemplateLibrary = () => {
       intuneprotection: false,
     },
   });
-
 
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
@@ -85,13 +85,14 @@ const TemplateLibrary = () => {
           )}
         </Grid>
 
-        <Divider sx={{ my: 2, width: "100%" }} />
+        <Divider sx={{ mt: 2, width: "100%" }} />
         <Grid
           container
           spacing={2}
           sx={{
             alignItems: "center",
-            m: 3,
+            my: 1,
+            mx: 1,
           }}
         >
           <Grid item xs={12} md={5}>
@@ -128,7 +129,7 @@ const TemplateLibrary = () => {
             </Box>
           </Grid>
         </Grid>
-        <Divider sx={{ my: 2, width: "100%" }} />
+        <Divider sx={{ mt: 2, width: "100%" }} />
         {templateRepo?.value && (
           <Grid item xs={12} md={5}>
             <Typography variant="h6" sx={{ mb: 2 }}>
