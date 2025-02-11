@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid, Divider, Typography, CircularProgress, Alert, Chip, Link } from "@mui/material";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
@@ -47,6 +47,15 @@ const TemplateLibrary = () => {
       Recurrence: { value: values.tenantFilter?.value ? "4h" : "7d" },
     };
   };
+
+  useEffect(() => {
+    if (templateRepo?.value) {
+      formControl.setValue("templateRepoBranch", {
+        label: templateRepo.addedFields.branch,
+        value: templateRepo.addedFields.branch,
+      });
+    }
+  }, [templateRepo?.value]);
 
   return (
     <CippFormPage
@@ -121,6 +130,9 @@ const TemplateLibrary = () => {
                   dataKey: "Results",
                   valueField: "FullName",
                   labelField: (option) => `${option.Name} (${option.URL})`,
+                  addedField: {
+                    branch: "DefaultBranch",
+                  },
                 }}
                 formControl={formControl}
                 multiple={false}
