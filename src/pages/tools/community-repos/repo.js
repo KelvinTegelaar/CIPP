@@ -87,12 +87,14 @@ const Page = () => {
     }
   };
 
-  const handleJsonView = (url) => {
+  const handleJsonView = (path) => {
     fileQuery.mutate({
       url: "/api/ExecGitHubAction",
       data: {
         Action: "GetFileContents",
-        Url: url,
+        FullName: selectedRepo,
+        Path: path,
+        Branch: branch,
       },
     });
     setOpenJsonDialog(true);
@@ -190,7 +192,7 @@ const Page = () => {
         actions={[
           {
             label: "View Template",
-            customFunction: (row) => handleJsonView(row.url),
+            customFunction: (row) => handleJsonView(row.path),
             noConfirm: true,
             icon: <EyeIcon />,
             hideBulk: true,
