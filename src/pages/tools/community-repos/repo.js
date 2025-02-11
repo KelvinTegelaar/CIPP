@@ -171,7 +171,8 @@ const Page = () => {
                     ? { label: selectedBranch, value: selectedBranch }
                     : { label: "Loading branches", value: "" }
                 }
-                onChange={(event, newValue) => {
+                onChange={(newValue) => {
+                  if (newValue.value === selectedBranch) return;
                   setSelectedBranch(newValue.value);
                   updateQueryParams("branch", newValue.value);
                 }}
