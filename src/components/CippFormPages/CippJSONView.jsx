@@ -189,6 +189,9 @@ function CippJsonView({
   };
 
   useEffect(() => {
+    if (!type && (object?.omaSettings || object?.settings || object?.added)) {
+      type = "intune";
+    }
     const blacklist = [
       "selectedOption",
       "GUID",

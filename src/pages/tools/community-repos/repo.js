@@ -28,16 +28,20 @@ const Page = () => {
   const [selectedBranch, setSelectedBranch] = useState(branch);
   const [selectedRepo, setSelectedRepo] = useState(name);
 
-  const searchMutation = ApiPostCall({
-    onResult: (resp) => {
-      if (resp?.Results === null || resp?.Results?.[0] === null) return;
-      setFileResults(resp?.Results || []);
-    },
-  });
-
   const fileQuery = ApiPostCall({
     onResult: (resp) => {
-      setJsonContent(JSON.parse(resp?.Results?.content || "{}"));
+      let content = resp?.Results?.content?.trim() || "{}";
+      // remove non-printable characters from the beginning and end
+      content = content.replace(
+        /^[\u0000-\u001F\u007F-\u009F]+|[\u0000-\u001F\u007F-\u009F]+$/g,
+        ""
+      );
+      try {
+        setJsonContent(JSON.parse(content));
+      } catch (e) {
+        console.error("Invalid JSON content:", e);
+        setJsonContent({});
+      }
     },
   });
 
