@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Divider, Typography, CircularProgress, Alert, Chip } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -21,6 +21,8 @@ const TemplateLibrary = () => {
       intuneprotection: false,
     },
   });
+
+  const templateRepo = useWatch({ control: formControl.control, name: "templateRepo" });
 
   const customDataFormatter = (values) => {
     const startDate = new Date();
@@ -108,6 +110,31 @@ const TemplateLibrary = () => {
           </Grid>
         </Grid>
         <Divider sx={{ my: 2, width: "100%" }} />
+        {templateRepo?.value && (
+          <Grid item xs={12} md={5}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Repository Branch
+            </Typography>
+            <CippFormComponent
+              type="autoComplete"
+              name="templateRepoBranch"
+              label="Select Branch"
+              formControl={formControl}
+              api={{
+                url: "/api/ExecGitHubAction",
+                data: {
+                  Action: "GetBranches",
+                  FullName: templateRepo?.value,
+                },
+                queryKey: `${templateRepo?.value}-Branches`,
+                dataKey: "Results",
+                valueField: "name",
+                labelField: "name",
+              }}
+              multiple={false}
+            />
+          </Grid>
+        )}
         <CippFormCondition
           formControl={formControl}
           field="templateRepo"
@@ -115,7 +142,9 @@ const TemplateLibrary = () => {
           compareValue={"CIPP"}
         >
           <Grid item xs={12}>
-            <Typography variant="h6">Conditional Access</Typography>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              Conditional Access
+            </Typography>
             <CippFormComponent
               type="switch"
               name="ca"
@@ -125,7 +154,9 @@ const TemplateLibrary = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Typography variant="h6">Intune</Typography>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              Intune
+            </Typography>
             <CippFormComponent
               type="switch"
               name="intuneconfig"
@@ -153,7 +184,9 @@ const TemplateLibrary = () => {
           compareValue={"CIPP-"}
         >
           <Grid item xs={12}>
-            <Typography variant="h6">Template Repository files</Typography>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              Template Repository files
+            </Typography>
             <CippFormComponent
               type="switch"
               name="standardsconfig"
