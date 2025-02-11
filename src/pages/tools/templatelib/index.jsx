@@ -8,6 +8,7 @@ import { useSettings } from "/src/hooks/use-settings";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
 import { Box } from "@mui/system";
 import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
+import { ApiGetCall } from "/src/api/ApiCall";
 
 const TemplateLibrary = () => {
   const currentTenant = useSettings().currentTenant;
@@ -20,6 +21,12 @@ const TemplateLibrary = () => {
       intunecompliance: false,
       intuneprotection: false,
     },
+  });
+
+
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
   });
 
   const templateRepo = useWatch({ control: formControl.control, name: "templateRepo" });
@@ -65,6 +72,17 @@ const TemplateLibrary = () => {
           <Alert severity="warning" sx={{ my: 2 }}>
             Enabling this feature will overwrite templates with the same name.
           </Alert>
+
+          {integrations.isSuccess && !integrations.data?.GitHub?.Enabled && (
+            <Alert severity="info">
+              The community repositories feature requires the GitHub Integration to be enabled. Go
+              to the{" "}
+              <Link component={NextLink} href={"/cipp/integrations/configure?id=GitHub"}>
+                GitHub Integration
+              </Link>{" "}
+              page to enable it.
+            </Alert>
+          )}
         </Grid>
 
         <Divider sx={{ my: 2, width: "100%" }} />
@@ -105,6 +123,7 @@ const TemplateLibrary = () => {
                 }}
                 formControl={formControl}
                 multiple={false}
+                disabled={!integrations.data?.GitHub?.Enabled}
               />
             </Box>
           </Grid>
