@@ -43,7 +43,7 @@ const Page = () => {
   const actions = [
     {
       label: "View Templates",
-      link: "/tools/community-repos/repo?name=[FullName]",
+      link: "/tools/community-repos/repo?name=[FullName]&branch=[DefaultBranch]",
       icon: <OpenInNew />,
     },
     {

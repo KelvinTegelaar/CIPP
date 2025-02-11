@@ -20,12 +20,12 @@ import React from "react";
 
 const Page = () => {
   const router = useRouter();
-  const { name } = router.query;
+  const { name, branch } = router.query;
   const [openJsonDialog, setOpenJsonDialog] = useState(false);
   const [fileResults, setFileResults] = useState([]);
   const [jsonContent, setJsonContent] = useState({});
   const [branches, setBranches] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState(branch);
   const [selectedRepo, setSelectedRepo] = useState(name);
 
   const searchMutation = ApiPostCall({
@@ -110,10 +110,10 @@ const Page = () => {
     }
   }, [selectedBranch]);
 
-  const updateQueryParams = (newRepo) => {
+  const updateQueryParams = (prop, newValue) => {
     const query = { ...router.query };
-    if (query.name !== newRepo) {
-      query.name = newRepo;
+    if (query[prop] !== newValue) {
+      query[prop] = newValue;
       router.replace(
         {
           pathname: router.pathname,
@@ -169,7 +169,10 @@ const Page = () => {
                     ? { label: selectedBranch, value: selectedBranch }
                     : { label: "Loading branches", value: "" }
                 }
-                onChange={(event, newValue) => setSelectedBranch(newValue.value)}
+                onChange={(event, newValue) => {
+                  setSelectedBranch(newValue.value);
+                  updateQueryParams("branch", newValue.value);
+                }}
                 options={branches.map((branch) => ({ label: branch.name, value: branch.name }))}
                 multiple={false}
                 label="Select Branch"
