@@ -235,7 +235,7 @@ function CippJsonView({
           {viewJson ? <VisibilityOffIcon /> : <VisibilityIcon />}
         </IconButton>
         {viewJson ? (
-          <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object))} />
+          <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object), null, 2)} />
         ) : (
           <Grid container spacing={2}>
             {drilldownData.slice(0, 4).map((data, index) => (

@@ -230,7 +230,7 @@ const Page = () => {
         <DialogContent>
           {fileQuery.isPending ? (
             <Box>
-              <Skeleton height={300} />
+              <Skeleton height={300} variant="rectangular" />
             </Box>
           ) : (
             <CippJSONView object={jsonContent} defaultOpen={true} />
