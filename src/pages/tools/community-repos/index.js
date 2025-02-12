@@ -27,7 +27,7 @@ import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
-import { Add, OpenInNew } from "@mui/icons-material";
+import { Add, ForkLeft, OpenInNew } from "@mui/icons-material";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import { ApiGetCall } from "../../../api/ApiCall";
 import NextLink from "next/link";
@@ -78,10 +78,48 @@ const Page = () => {
       multiPost: false,
       queryKey: "CommunityRepos",
     },
+    {
+      label: "Set Upload Branch",
+      type: "POST",
+      url: "/api/ExecCommunityRepo",
+      data: { Action: "SetBranch", Id: "Id" },
+      icon: <ForkLeft />,
+      fields: [
+        {
+          type: "select",
+          name: "Branch",
+          label: "Branch",
+          api: {
+            url: "/api/ExecGitHubAction",
+            type: "GET",
+            data: {
+              Action: "GetBranches",
+              FullName: "FullName",
+            },
+            dataKey: "Results",
+            labelField: "name",
+            valueField: "name",
+            processFieldData: true,
+          },
+        },
+      ],
+      hideBulk: true,
+      confirmText: "Are you sure you want to set the branch for this repository?",
+      condition: (row) => row.WriteAccess === true,
+    },
   ];
 
   const offCanvas = {
-    extendedInfoFields: ["Owner", "Name", "Description", "URL", "Visibility", "Permissions"],
+    extendedInfoFields: [
+      "Owner",
+      "Name",
+      "Description",
+      "URL",
+      "Visibility",
+      "DefaultBranch",
+      "UploadBranch",
+      "Permissions",
+    ],
     actions: actions,
   };
 
@@ -132,7 +170,7 @@ const Page = () => {
         queryKey="CommunityRepos"
         actions={actions}
         offCanvas={offCanvas}
-        simpleColumns={["Name", "Owner", "URL", "Visibility", "WriteAccess"]}
+        simpleColumns={["Name", "Owner", "URL", "Visibility", "WriteAccess", "UploadBranch"]}
         cardButton={
           <>
             <Button onClick={() => setOpenSearch(true)} startIcon={<Add />}>

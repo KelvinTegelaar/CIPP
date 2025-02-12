@@ -325,6 +325,9 @@ export const CippApiDialog = (props) => {
           <Grid container spacing={2}>
             {fields &&
               fields.map((fieldProps, index) => {
+                if (fieldProps?.api?.processFieldData) {
+                  fieldProps.api.data = processActionData(fieldProps.api.data, row);
+                }
                 return (
                   <Grid item xs={12} key={index}>
                     <CippFormComponent

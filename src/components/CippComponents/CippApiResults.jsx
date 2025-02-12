@@ -294,7 +294,7 @@ export const CippApiResults = (props) => {
           ))}
         </>
       )}
-      {(apiObject.isSuccess || apiObject.isError) && !errorsOnly ? (
+      {(apiObject.isSuccess || apiObject.isError) && finalResults.length > 0 ? (
         <Box display="flex" flexDirection="row">
           <Tooltip title="View Results">
             <IconButton onClick={() => tableDialog.handleOpen()}>
