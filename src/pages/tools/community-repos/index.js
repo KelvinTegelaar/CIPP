@@ -52,7 +52,6 @@ const Page = () => {
   });
 
   const handleCreateRepo = (values) => {
-    console.log(values);
     createMutation.mutate({
       url: "/api/ExecGitHubAction",
       data: {
@@ -265,13 +264,14 @@ const Page = () => {
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={() => setOpenCreate(false)} startIcon={<Close />}>
-            Cancel
+            Close
           </Button>
           <Button
             variant="contained"
             type="submit"
             onClick={createForm.handleSubmit(handleCreateRepo)}
             startIcon={<Add />}
+            disabled={createMutation.isPending}
           >
             Create
           </Button>
@@ -386,7 +386,7 @@ const Page = () => {
                     No search results found. Refine your query and try again.
                   </Alert>
                 ))}
-              <Box sx={{ overflowY: "scroll", maxHeight: 300 }}>
+              <Box sx={{ overflowY: "scroll", maxHeight: 300, mb: 1.5 }}>
                 {results.map((r) => (
                   <Card key={r.id} variant="outlined" sx={{ mt: 1.5, mr: 1 }}>
                     <CardContent>
