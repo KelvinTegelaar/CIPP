@@ -800,7 +800,7 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": []
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.DisableVoice",
@@ -813,7 +813,7 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": []
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.DisableEmail",
@@ -835,6 +835,19 @@
     "docsDescription": "",
     "addedComponent": [],
     "label": "Disables Certificates as an MFA method",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.DisableQRCodePin",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["highimpact"],
+    "helpText": "This blocks users from using QR Code Pin as an MFA method. If a user only has QR Code Pin as a MFA method, they will be unable to log in.",
+    "docsDescription": "Disables QR Code Pin as an MFA method for the tenant. If a user only has QR Code Pin as a MFA method, they will be unable to sign in.",
+    "addedComponent": [],
+    "label": "Disables QR Code Pin as an MFA method",
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
