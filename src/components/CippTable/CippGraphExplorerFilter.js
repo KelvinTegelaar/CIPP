@@ -462,7 +462,7 @@ const CippGraphExplorerFilter = ({
       if (presetName) onPresetChange(presetName);
     }
     onSubmitFilter(values);
-    setCardExpanded(!cardExpanded);
+    setCardExpanded(false);
   };
 
   console.log(cardExpanded);

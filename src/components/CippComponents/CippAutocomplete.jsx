@@ -275,7 +275,7 @@ export const CippAutoComplete = (props) => {
       sx={sx}
       renderInput={(params) => (
         <Stack direction="row" spacing={1}>
-          <MemoTextField params={params} label={label} placeholder={placeholder} required= {...other} />
+          <MemoTextField params={params} label={label} placeholder={placeholder} required={required} {...other} />
           {api?.url && api?.showRefresh && (
             <IconButton
               size="small"
