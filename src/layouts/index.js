@@ -84,11 +84,14 @@ export const Layout = (props) => {
     url: "/.auth/me",
     queryKey: "authmecipp",
   });
+  const [hideSidebar, setHideSidebar] = useState(false);
 
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
       if (!userRoles) {
+        setMenuItems([]);
+        setHideSidebar(true);
         return;
       }
       const filterItemsByRole = (items) => {
@@ -200,15 +203,19 @@ export const Layout = (props) => {
 
   return (
     <>
-      <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
-      {mdDown && (
-        <MobileNav items={menuItems} onClose={mobileNav.handleClose} open={mobileNav.open} />
+      {hideSidebar === false && (
+        <>
+          <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
+          {mdDown && (
+            <MobileNav items={menuItems} onClose={mobileNav.handleClose} open={mobileNav.open} />
+          )}
+          {!mdDown && <SideNav items={menuItems} onPin={handleNavPin} pinned={!!settings.pinNav} />}
+        </>
       )}
-      {!mdDown && <SideNav items={menuItems} onPin={handleNavPin} pinned={!!settings.pinNav} />}
       <LayoutRoot
         sx={{
           pl: {
-            md: offset + "px",
+            md: (hideSidebar ? "0" : offset) + "px",
           },
         }}
       >

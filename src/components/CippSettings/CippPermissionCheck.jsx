@@ -142,7 +142,7 @@ const CippPermissionCheck = (props) => {
         {(executeCheck.isSuccess || executeCheck.isLoading) && (
           <>
             {executeCheck.data?.Metadata?.AlertMessage && (
-              <Collapse in={showAlertMessage}>
+              <Collapse in={showAlertMessage} unmountOnExit>
                 <Alert
                   severity={executeCheck?.data?.Metadata?.AlertSeverity ?? "info"}
                   sx={{ mb: 2 }}
