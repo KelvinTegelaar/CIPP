@@ -27,7 +27,7 @@ import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
-import { Add, AddBox, ForkLeft, OpenInNew } from "@mui/icons-material";
+import { Add, AddBox, Close, ForkLeft, OpenInNew } from "@mui/icons-material";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
@@ -264,13 +264,14 @@ const Page = () => {
           <CippApiResults apiObject={createMutation} />
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => setOpenCreate(false)}>
+          <Button variant="outlined" onClick={() => setOpenCreate(false)} startIcon={<Close />}>
             Cancel
           </Button>
           <Button
             variant="contained"
             type="submit"
             onClick={createForm.handleSubmit(handleCreateRepo)}
+            startIcon={<Add />}
           >
             Create
           </Button>
@@ -445,10 +446,18 @@ const Page = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => setOpenSearch(false)}>
+          <Button variant="outlined" onClick={() => setOpenSearch(false)} startIcon={<Close />}>
             Close
           </Button>
-          <Button variant="contained" onClick={() => handleSearch()}>
+          <Button
+            variant="contained"
+            onClick={() => handleSearch()}
+            startIcon={
+              <SvgIcon>
+                <MagnifyingGlassIcon />
+              </SvgIcon>
+            }
+          >
             Search
           </Button>
         </DialogActions>
