@@ -18,15 +18,16 @@ import {
   Typography,
   Alert,
   Chip,
+  SvgIcon,
 } from "@mui/material";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { useForm, FormProvider } from "react-hook-form";
 import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
-import { Add, ForkLeft, OpenInNew } from "@mui/icons-material";
+import { Add, AddBox, ForkLeft, OpenInNew } from "@mui/icons-material";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
@@ -176,15 +177,22 @@ const Page = () => {
         simpleColumns={["Name", "Owner", "URL", "Visibility", "WriteAccess", "UploadBranch"]}
         cardButton={
           <>
-            <Button onClick={() => setOpenSearch(true)} startIcon={<Add />}>
-              Add Repo
+            <Button
+              onClick={() => setOpenSearch(true)}
+              startIcon={
+                <SvgIcon>
+                  <MagnifyingGlassIcon />
+                </SvgIcon>
+              }
+            >
+              Find a Repository
             </Button>
             <Button
               onClick={() => setOpenCreate(true)}
-              startIcon={<Add />}
+              startIcon={<AddBox />}
               disabled={!integrations.isSuccess || !integrations?.data?.GitHub?.Enabled}
             >
-              Create Repo
+              Create Repository
             </Button>
           </>
         }
@@ -226,6 +234,10 @@ const Page = () => {
                     valueField: "login",
                   }}
                   multiple={false}
+                  required={true}
+                  validators={{
+                    required: { value: true, message: "Organization is required" },
+                  }}
                 />
               </CippFormCondition>
               <CippFormComponent
@@ -233,6 +245,7 @@ const Page = () => {
                 name="repoName"
                 label="Repository Name"
                 formControl={createForm}
+                required={true}
               />
               <CippFormComponent
                 type="textField"
@@ -266,152 +279,170 @@ const Page = () => {
       <Dialog fullWidth maxWidth="md" open={openSearch} onClose={() => setOpenSearch(false)}>
         <DialogTitle>Add Community Repositories from GitHub</DialogTitle>
         <DialogContent>
-          <Stack spacing={2}>
-            <FormProvider {...searchForm}>
-              <RadioGroup
-                row
-                value={searchForm.watch("searchType")}
-                onChange={(e) => searchForm.setValue("searchType", e.target.value)}
+          <FormProvider {...searchForm}>
+            <RadioGroup
+              row
+              value={searchForm.watch("searchType")}
+              onChange={(e) => searchForm.setValue("searchType", e.target.value)}
+            >
+              <FormControlLabel value="user" control={<Radio />} label="User" />
+              <FormControlLabel value="org" control={<Radio />} label="Org" />
+              <FormControlLabel value="repository" control={<Radio />} label="Repository" />
+            </RadioGroup>
+            <Stack spacing={1.5} sx={{ mt: 2, mb: 2 }}>
+              <CippFormCondition
+                field="searchType"
+                compareType="is"
+                compareValue="repository"
+                formControl={searchForm}
               >
-                <FormControlLabel value="user" control={<Radio />} label="User" />
-                <FormControlLabel value="org" control={<Radio />} label="Org" />
-                <FormControlLabel value="repository" control={<Radio />} label="Repository" />
-              </RadioGroup>
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <CippFormCondition
-                  field="searchType"
-                  compareType="is"
-                  compareValue="repository"
-                  formControl={searchForm}
-                >
-                  <TextField
-                    fullWidth
-                    label="Repository in 'owner/repo' format (e.g. KelvinTegelaar/CIPP)"
-                    value={repo}
-                    onChange={(e) => setRepo(e.target.value)}
-                  />
-                </CippFormCondition>
-                <CippFormCondition
-                  field="searchType"
-                  compareType="is"
-                  compareValue="user"
-                  formControl={searchForm}
-                >
-                  <TextField
-                    fullWidth
-                    label="User"
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
-                  />
+                <TextField
+                  fullWidth
+                  label="Repository in 'owner/repo' format (e.g. KelvinTegelaar/CIPP)"
+                  value={repo}
+                  onChange={(e) => setRepo(e.target.value)}
+                  required={true}
+                />
+              </CippFormCondition>
+              <CippFormCondition
+                field="searchType"
+                compareType="is"
+                compareValue="user"
+                formControl={searchForm}
+              >
+                <TextField
+                  fullWidth
+                  label="User"
+                  value={user}
+                  onChange={(e) => setUser(e.target.value)}
+                  required={true}
+                />
 
-                  <CippFormComponent
-                    type="autoComplete"
-                    name="searchTerm"
-                    formControl={searchForm}
-                    freeSolo
-                    fullWidth
-                    options={[]}
-                    label="Search Terms"
-                  />
-                </CippFormCondition>
-                <CippFormCondition
-                  field="searchType"
-                  compareType="is"
-                  compareValue="org"
+                <CippFormComponent
+                  type="autoComplete"
+                  name="searchTerm"
                   formControl={searchForm}
-                >
-                  <TextField
-                    fullWidth
-                    label="Organization"
-                    value={org}
-                    onChange={(e) => setOrg(e.target.value)}
-                  />
-                  <CippFormComponent
-                    type="autoComplete"
-                    name="searchTerm"
-                    formControl={searchForm}
-                    freeSolo
-                    fullWidth
-                    options={[]}
-                    label="Search Terms"
-                  />
-                </CippFormCondition>
+                  freeSolo
+                  fullWidth
+                  options={[]}
+                  label="Search Terms"
+                />
+              </CippFormCondition>
+              <CippFormCondition
+                field="searchType"
+                compareType="is"
+                compareValue="org"
+                formControl={searchForm}
+              >
+                <TextField
+                  fullWidth
+                  label="Organization"
+                  value={org}
+                  onChange={(e) => setOrg(e.target.value)}
+                  required={true}
+                />
+                <CippFormComponent
+                  type="autoComplete"
+                  name="searchTerm"
+                  formControl={searchForm}
+                  freeSolo
+                  fullWidth
+                  options={[]}
+                  label="Search Terms"
+                />
+              </CippFormCondition>
+            </Stack>
+          </FormProvider>
+
+          {searchMutation.isPending ||
+            (searchMutation.isSuccess && (
+              <Stack spacing={2}>
+                <Divider />
+                <Typography variant="h6">Search Results</Typography>
               </Stack>
-            </FormProvider>
-
-            <Divider />
-            {searchMutation.isPending ||
-              (searchMutation.isSuccess && <Typography variant="h6">Search Results</Typography>)}
-            {searchMutation.isPending ? (
-              <Box>
-                <Skeleton height={200} />
-              </Box>
-            ) : (
-              <>
-                {searchMutation.isSuccess && results.length === 0 && (
+            ))}
+          {searchMutation.isPending ? (
+            <>
+              <Stack spacing={2}>
+                <Divider />
+                <Typography variant="h6">Searching...</Typography>
+              </Stack>
+              <Card variant="outlined" sx={{ p: 1, mt: 1.5 }}>
+                <Skeleton height={80} variant="rectangular" />
+              </Card>
+              <Card variant="outlined" sx={{ p: 1, mt: 1.5 }}>
+                <Skeleton height={80} variant="rectangular" />
+              </Card>
+              <Card variant="outlined" sx={{ p: 1, mt: 1.5 }}>
+                <Skeleton height={80} variant="rectangular" />
+              </Card>
+            </>
+          ) : (
+            <>
+              {(searchMutation.isSuccess && results.length === 0) ||
+                (searchMutation.isError && (
                   <Alert severity="warning">
                     No search results found. Refine your query and try again.
                   </Alert>
-                )}
-                <Box sx={{ overflowY: "scroll", maxHeight: 300 }}>
-                  {results.map((r) => (
-                    <Card key={r.id} variant="outlined" sx={{ mt: 1, mr: 1 }}>
-                      <CardContent>
-                        <Stack direction="row" spacing={1.5} alignItems="center">
-                          <Tooltip title="Add Repository">
-                            <IconButton size="small" onClick={() => handleAdd(r.id)}>
-                              <AddIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Open GitHub">
-                            <IconButton
-                              size="small"
-                              onClick={() => window.open(r.html_url, "_blank")}
-                            >
-                              <OpenInNew />
-                            </IconButton>
-                          </Tooltip>
-                          <Box sx={{ flexGrow: 1 }}>
-                            <Box
-                              sx={{
-                                width: "100%",
-                                display: "flex",
-                                alignItems: "center",
-                                flexGrow: 1,
-                              }}
-                            >
-                              <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                {r.full_name}
-                              </Typography>
-                              <Chip
-                                size="small"
-                                color={
-                                  r.visibility === "private"
-                                    ? "error"
-                                    : r.visibility === "public"
-                                    ? "success"
-                                    : "primary"
-                                }
-                                variant="outlined"
-                                label={r.visibility}
-                                sx={{ textTransform: "capitalize" }}
-                              />
-                            </Box>
-                            <Typography variant="body2" color="textSecondary">
-                              {r.html_url}
+                ))}
+              <Box sx={{ overflowY: "scroll", maxHeight: 300 }}>
+                {results.map((r) => (
+                  <Card key={r.id} variant="outlined" sx={{ mt: 1.5, mr: 1 }}>
+                    <CardContent>
+                      <Stack direction="row" spacing={1.5} alignItems="center">
+                        <Tooltip title="Add Repository">
+                          <IconButton size="small" onClick={() => handleAdd(r.id)}>
+                            <AddIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Open GitHub">
+                          <IconButton
+                            size="small"
+                            onClick={() => window.open(r.html_url, "_blank")}
+                          >
+                            <OpenInNew />
+                          </IconButton>
+                        </Tooltip>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Box
+                            sx={{
+                              width: "100%",
+                              display: "flex",
+                              alignItems: "center",
+                              flexGrow: 1,
+                            }}
+                          >
+                            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                              {r.full_name}
                             </Typography>
+                            <Chip
+                              size="small"
+                              color={
+                                r.visibility === "private"
+                                  ? "error"
+                                  : r.visibility === "public"
+                                  ? "success"
+                                  : "primary"
+                              }
+                              variant="outlined"
+                              label={r.visibility}
+                              sx={{ textTransform: "capitalize" }}
+                            />
                           </Box>
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </Box>
-              </>
-            )}
-            <Box>
-              <CippApiResults apiObject={addMutation} />
-            </Box>
-          </Stack>
+                          <Typography variant="body2" color="textSecondary">
+                            {r.html_url}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            </>
+          )}
+          <Box>
+            <CippApiResults apiObject={addMutation} />
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={() => setOpenSearch(false)}>
