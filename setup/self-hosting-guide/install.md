@@ -12,7 +12,7 @@ This guide walks you through deploying your **self-hosted** instance of CIPP usi
 
 ## Confirm You’ve Met All Prerequisites
 
-Before deploying, ensure you’ve completed everything in the [Prerequisites](https://chatgpt.com/c/6792ed35-a9b4-8009-a8af-7f23f4ebc621) section (forks, Azure subscription, GitHub PAT, etc.).
+Before deploying, ensure you’ve completed everything in the [Prerequisites](https://docs.cipp.app/setup/self-hosting-guide/index) section (forks, Azure subscription, GitHub PAT, etc.).
 
 ***
 
