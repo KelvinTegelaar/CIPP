@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { AddBox, RocketLaunch, Delete } from "@mui/icons-material";
+import { AddBox, RocketLaunch, Delete, GitHub } from "@mui/icons-material";
 import Link from "next/link";
 import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 
@@ -9,6 +9,49 @@ const Page = () => {
   const pageTitle = "Group Templates";
 
   const actions = [
+    {
+      label: "Save to GitHub",
+      type: "POST",
+      url: "/api/ExecCommunityRepo",
+      icon: <GitHub />,
+      data: {
+        Action: "UploadTemplate",
+        GUID: "GUID",
+      },
+      fields: [
+        {
+          label: "Repository",
+          name: "FullName",
+          type: "select",
+          api: {
+            url: "/api/ListCommunityRepos",
+            data: {
+              WriteAccess: true,
+            },
+            queryKey: "CommunityRepos-Write",
+            dataKey: "Results",
+            valueField: "FullName",
+            labelField: "FullName",
+          },
+          multiple: false,
+          creatable: false,
+          required: true,
+          validators: {
+            required: { value: true, message: "This field is required" },
+          },
+        },
+        {
+          label: "Commit Message",
+          placeholder: "Enter a commit message for adding this file to GitHub",
+          name: "Message",
+          type: "textField",
+          multiline: true,
+          required: true,
+          rows: 4,
+        },
+      ],
+      confirmText: "Are you sure you want to save this template to the selected repository?",
+    },
     {
       label: "Delete Template",
       type: "GET",

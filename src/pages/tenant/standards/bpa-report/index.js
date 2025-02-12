@@ -3,7 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete, Edit, AddBox } from "@mui/icons-material";
+import { CopyAll, Delete, Edit, AddBox, GitHub } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Best Practice Reports";
@@ -31,6 +31,49 @@ const Page = () => {
       target: "_self",
     },
     {
+      label: "Save to GitHub",
+      type: "POST",
+      url: "/api/ExecCommunityRepo",
+      icon: <GitHub />,
+      data: {
+        Action: "UploadTemplate",
+        GUID: "GUID",
+      },
+      fields: [
+        {
+          label: "Repository",
+          name: "FullName",
+          type: "select",
+          api: {
+            url: "/api/ListCommunityRepos",
+            data: {
+              WriteAccess: true,
+            },
+            queryKey: "CommunityRepos-Write",
+            dataKey: "Results",
+            valueField: "FullName",
+            labelField: "FullName",
+          },
+          multiple: false,
+          creatable: false,
+          required: true,
+          validators: {
+            required: { value: true, message: "This field is required" },
+          },
+        },
+        {
+          label: "Commit Message",
+          placeholder: "Enter a commit message for adding this file to GitHub",
+          name: "Message",
+          type: "textField",
+          multiline: true,
+          required: true,
+          rows: 4,
+        },
+      ],
+      confirmText: "Are you sure you want to save this template to the selected repository?",
+    },
+    {
       label: "Delete Template",
       type: "GET",
       url: "/api/RemoveBPATemplate",
@@ -54,7 +97,7 @@ const Page = () => {
       }
       actions={actions}
       simpleColumns={["Name", "Style"]}
-      queryKey="ListPATemplates"
+      queryKey="ListBPATemplates"
     />
   );
 };

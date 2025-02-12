@@ -75,7 +75,7 @@ const Page = () => {
             labelField: "FullName",
           },
           multiple: false,
-          createable: false,
+          creatable: false,
           required: true,
           validators: {
             required: { value: true, message: "This field is required" },
