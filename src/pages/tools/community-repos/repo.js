@@ -17,6 +17,7 @@ import CippJSONView from "/src/components/CippFormPages/CippJSONView";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { CippAutoComplete } from "/src/components/CippComponents/CippAutocomplete";
 import React from "react";
+import { CloudDownload } from "@mui/icons-material";
 
 const Page = () => {
   const router = useRouter();
@@ -201,6 +202,19 @@ const Page = () => {
             noConfirm: true,
             icon: <EyeIcon />,
             hideBulk: true,
+          },
+          {
+            label: "Import Template",
+            url: "/api/ExecCommunityRepo",
+            icon: <CloudDownload />,
+            type: "POST",
+            data: {
+              Action: "ImportTemplate",
+              FullName: selectedRepo,
+              Path: "path",
+              Branch: selectedBranch,
+            },
+            confirmText: "Are you sure you want to import [path]?",
           },
         ]}
         isFetching={fileTreeQuery.isFetching}
