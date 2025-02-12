@@ -17,7 +17,6 @@ import {
   Tooltip,
   Typography,
   Alert,
-  Link,
   Chip,
 } from "@mui/material";
 import { TrashIcon } from "@heroicons/react/24/outline";
@@ -29,9 +28,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { Add, ForkLeft, OpenInNew } from "@mui/icons-material";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import { ApiGetCall } from "../../../api/ApiCall";
-import NextLink from "next/link";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
+import { ApiGetCall } from "../../../api/ApiCall";
 
 const Page = () => {
   const [openSearch, setOpenSearch] = useState(false);
@@ -41,6 +39,11 @@ const Page = () => {
   const [org, setOrg] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
   const createForm = useForm({ mode: "onChange", defaultValues: { Type: "user" } });
+
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+  });
 
   const createMutation = ApiPostCall({
     urlFromData: true,
@@ -176,7 +179,11 @@ const Page = () => {
             <Button onClick={() => setOpenSearch(true)} startIcon={<Add />}>
               Add Repo
             </Button>
-            <Button onClick={() => setOpenCreate(true)} startIcon={<Add />}>
+            <Button
+              onClick={() => setOpenCreate(true)}
+              startIcon={<Add />}
+              disabled={!integrations.isSuccess || !integrations?.data?.GitHub?.Enabled}
+            >
               Create Repo
             </Button>
           </>

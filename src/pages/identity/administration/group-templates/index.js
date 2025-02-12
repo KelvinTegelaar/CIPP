@@ -4,10 +4,14 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { AddBox, RocketLaunch, Delete, GitHub } from "@mui/icons-material";
 import Link from "next/link";
 import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
+import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Group Templates";
-
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+  });
   const actions = [
     {
       label: "Save to GitHub",
@@ -51,6 +55,7 @@ const Page = () => {
         },
       ],
       confirmText: "Are you sure you want to save this template to the selected repository?",
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub.Enabled,
     },
     {
       label: "Delete Template",

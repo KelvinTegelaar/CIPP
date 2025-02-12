@@ -2,10 +2,14 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { GitHub } from "@mui/icons-material";
+import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Connection filter Templates";
-
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+  });
   const actions = [
     {
       label: "Save to GitHub",
@@ -49,6 +53,7 @@ const Page = () => {
         },
       ],
       confirmText: "Are you sure you want to save this template to the selected repository?",
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub.Enabled,
     },
     {
       label: "Delete Template",

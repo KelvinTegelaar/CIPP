@@ -3,10 +3,14 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Button } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { Delete, GitHub } from "@mui/icons-material";
+import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Available Conditional Access Templates";
-
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+  });
   const actions = [
     {
       label: "Save to GitHub",
@@ -50,6 +54,7 @@ const Page = () => {
         },
       ],
       confirmText: "Are you sure you want to save this template to the selected repository?",
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub.Enabled,
     },
     {
       label: "Delete Template",

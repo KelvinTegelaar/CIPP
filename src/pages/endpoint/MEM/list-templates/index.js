@@ -3,10 +3,14 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { GitHub } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
+import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Available Endpoint Manager Templates";
-
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+  });
   const actions = [
     {
       label: "Edit Template Name and Description",
@@ -73,6 +77,7 @@ const Page = () => {
         },
       ],
       confirmText: "Are you sure you want to save this template to the selected repository?",
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub.Enabled,
     },
     {
       label: "Delete Template",
