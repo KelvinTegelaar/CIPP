@@ -33,6 +33,7 @@ const MemoTextField = React.memo(function MemoTextField({
         inputLabel: {
           shrink: true,
           sx: { transition: "none" },
+          required: otherProps.required,
         },
         input: {
           ...InputProps,
@@ -176,9 +177,7 @@ export const CippAutoComplete = (props) => {
   const memoizedOptions = useMemo(() => {
     let finalOptions = api ? usedOptions : options;
     if (removeOptions && removeOptions.length) {
-      finalOptions = finalOptions.filter(
-        (o) => !removeOptions.includes(o.value)
-      );
+      finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value));
     }
     return finalOptions;
   }, [api, usedOptions, options, removeOptions]);
@@ -276,7 +275,7 @@ export const CippAutoComplete = (props) => {
       sx={sx}
       renderInput={(params) => (
         <Stack direction="row" spacing={1}>
-          <MemoTextField params={params} label={label} placeholder={placeholder} {...other} />
+          <MemoTextField params={params} label={label} placeholder={placeholder} required= {...other} />
           {api?.url && api?.showRefresh && (
             <IconButton
               size="small"

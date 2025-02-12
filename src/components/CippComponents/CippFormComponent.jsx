@@ -246,7 +246,7 @@ export const CippFormComponent = (props) => {
                   defaultValue={field.value}
                   label={label}
                   multiple={false}
-                  onChange={(value) => field.onChange(value.value)}
+                  onChange={(value) => field.onChange(value?.value)}
                 />
               )}
             />

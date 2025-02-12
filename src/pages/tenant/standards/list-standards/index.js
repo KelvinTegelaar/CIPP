@@ -2,8 +2,7 @@ import { Alert, Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete, PlayArrow, AddBox, Visibility, Edit, GitHub } from "@mui/icons-material";
+import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
@@ -77,8 +76,20 @@ const Page = () => {
           },
           multiple: false,
           createable: false,
+          required: true,
+          validators: {
+            required: { value: true, message: "This field is required" },
+          },
         },
-        
+        {
+          label: "Commit Message",
+          placeholder: "Enter a commit message for adding this file to GitHub",
+          name: "Message",
+          type: "textField",
+          multiline: true,
+          required: true,
+          rows: 4,
+        },
       ],
       confirmText: "Are you sure you want to save this template to the selected repository?",
     },
