@@ -515,7 +515,7 @@ const CippExchangeSettingsForm = (props) => {
                 </SvgIcon>
               </IconButton>
             </Box>
-            <Collapse in={isExpanded}>
+            <Collapse in={isExpanded} unmountOnExit>
               <Divider />
               <Box sx={{ p: 2 }}>{section.formContent}</Box>
             </Collapse>
