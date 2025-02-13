@@ -33,7 +33,7 @@ Go to **Application Settings** → click **Run Backup**.
 
 {% stepper %}
 {% step %}
-**Go to** CIPP's [Management Portal](https://chatgpt.com/c/6792ed35-a9b4-8009-a8af-7f23f4ebc621) and log in with the GitHub account you used to sponsor.
+**Go to** CIPP's [Management Portal](https://management.cipp.app/) and log in with the GitHub account you used to sponsor.
 {% endstep %}
 
 {% step %}
