@@ -53,7 +53,7 @@ const Page = () => {
         },
       ],
       confirmText: "Are you sure you want to save this template to the selected repository?",
-      condition: () => integrations.isSuccess && integrations?.data?.GitHub.Enabled,
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub?.Enabled,
     },
     {
       label: "Delete Template",
