@@ -15,7 +15,7 @@ if ($Process -eq 'y') {
   kitty @new-window --new-tab --tab-title `"Azurite`" --cwd $Path -- azurite ;
   kitty @new-window --new-tab --tab-title `"FunctionApp`" --cwd (Join-Path $Path `"CIPP-API`") -- func start;
   kitty @new-window --new-tab --tab-title `"CIPP Frontend`" --cwd (Join-Path $Path `"CIPP`") -- yarn run dev ;
-  kitty @new-window --new-tab --tab-title `"SWA`" --cwd (Join-Path $Path `"CIPP`") -- npm run start-swa;
+  kitty @new-window --new-tab --tab-title `"SWA`" --cwd (Join-Path $Path `"CIPP`") -- yarn run start-swa;
   kitty @new-window --new-tab --tab-title `"CIPP-API-Processor`" --cwd (Join-Path $Path `"CIPP-API-Processor`") -- func start --port 7072"
   
 } else {
@@ -23,5 +23,5 @@ if ($Process -eq 'y') {
   kitty @new-window --new-tab --tab-title `"Azurite`" --cwd $Path -- azurite ;
   kitty @new-window --new-tab --tab-title `"FunctionApp`" --cwd (Join-Path $Path `"CIPP-API`") -- func start;
   kitty @new-window --new-tab --tab-title `"CIPP Frontend`" --cwd (Join-Path $Path `"CIPP`") -- yarn run dev ;
-  kitty @new-window --new-tab --tab-title `"SWA`" --cwd (Join-Path $Path `"CIPP`") -- npm run start-swa"
+  kitty @new-window --new-tab --tab-title `"SWA`" --cwd (Join-Path $Path `"CIPP`") -- yarn run start-swa"
 }
