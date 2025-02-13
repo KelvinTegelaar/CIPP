@@ -22,12 +22,20 @@
   {
     "name": "InactiveLicensedUsers",
     "label": "Alert on licensed users that have not logged in for 90 days",
+<<<<<<< HEAD
+=======
+    "requiresInput": true,
+    "inputType": "switch",
+    "inputLabel": "Exclude disabled users?",
+    "inputName": "InactiveLicensedUsersExcludeDisabled",
+>>>>>>> 6135d24769e18e3dc604f8fed68041e9dc39d27b
     "recommendedRunInterval": "1d"
   },
   {
     "name": "QuotaUsed",
     "label": "Alert on % mailbox quota used",
     "requiresInput": true,
+    "inputType": "textField",
     "inputLabel": "Enter quota percentage",
     "inputName": "QuotaUsedQuota",
     "recommendedRunInterval": "4h"
@@ -36,8 +44,9 @@
     "name": "SharePointQuota",
     "label": "Alert on % SharePoint quota used",
     "requiresInput": true,
+    "inputType": "textField",
     "inputLabel": "Enter quota percentage",
-    "inputName": "SharePointQuotaQuota",
+    "inputName": "SharePointQuota",
     "recommendedRunInterval": "4h"
   },
   {
@@ -76,8 +85,27 @@
     "recommendedRunInterval": "7d"
   },
   {
+    "name": "EntraLicenseUtilization",
+    "label": "Alert on Entra ID P1/P2 license over-utilization",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Alert when utilization exceeds % (default: 110)",
+    "inputName": "EntraLicenseUtilizationThreshold"
+  },
+  {
     "name": "AppSecretExpiry",
     "label": "Alert on expiring application secrets",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "AppleTerms",
+    "label": "Alert on new Apple Business Manager terms",
+    "recommendedRunInterval": "30d"
+  },
+  {
+    "name": "AppCertificateExpiry",
+    "label": "Alert on expiring application certificates",
     "recommendedRunInterval": "1d"
   },
   {
@@ -104,6 +132,11 @@
     "name": "DeviceCompliance",
     "label": "Alert on device compliance issues",
     "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "BreachAlert",
+    "label": "Alert on (new) potentially breached passwords. Generates an alert if a password is found to be breached.",
+    "recommendedRunInterval": "7d"
   },
   {
     "name": "HuntressRogueApps",
