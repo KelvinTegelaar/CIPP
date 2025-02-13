@@ -51,7 +51,7 @@ export const CippFormCondition = (props) => {
         if (watcher.includes(compareValue)) {
           return children;
         }
-      } else if (typeof watcher === "object" && compareValue in watcher) {
+      } else if (typeof watcher === "object" && watcher !== null && compareValue in watcher) {
         // Check if object contains the key
         return children;
       }
@@ -66,6 +66,9 @@ export const CippFormCondition = (props) => {
         if (!watcher.includes(compareValue)) {
           return children;
         }
+        //extra elsseif; if the value is undefined or null, return children because it does not contain the compareValue
+      } else if (watcher === undefined || watcher === null) {
+        return children;
       } else if (typeof watcher === "object" && !(compareValue in watcher)) {
         // Check if object does not contain the key
         return children;
