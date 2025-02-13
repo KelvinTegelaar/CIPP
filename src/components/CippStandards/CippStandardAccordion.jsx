@@ -204,7 +204,7 @@ const CippStandardAccordion = ({
           </Stack>
         </Stack>
 
-        <Collapse in={isExpanded}>
+        <Collapse in={isExpanded} unmountOnExit>
           <Divider />
           <Box sx={{ p: 3 }}>
             <Grid container spacing={2}>
