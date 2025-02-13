@@ -7,24 +7,36 @@ description: >-
 
 # Standards
 
+
+
+## **Overview**
+
+Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours**. This automatic enforcement prevents unauthorized changes and helps maintain security.
+
+CIPP allows you to set standards in three different settings. Some standards can only be set to specific items, such as Intune standards which can only be "Remediated".
+
+| Action    | Description                                                                                                        |
+| --------- | ------------------------------------------------------------------------------------------------------------------ |
+| Report    | Logs the current configuration and stores this inside of the CIPP database for custom reports.                     |
+| Alert     | Sends you a notification email to the configured email addresses in CIPP -> Application Settings -> Notifications. |
+| Remediate | Changes the configuration of the tenant.                                                                           |
+
+For example, when you wish to create a report for Audit log state across all your tenants, you can create an "All Tenants" standard that has the Audit Log standard set to "Report" - This fills the CIPP database with the current setting without editing the clients settings.
+
+Setting this same standard to "Alert" allows you to receive an alert inside of your e-mail or ticketing system.
+
+Setting this same standard to "Remediate" changes the clients configuration, and in this case would enable the audit log for the client.
+
+{% hint style="warning" %}
+**Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects, detailed in the video and walkthrough on[ this page](../../../setup/implementation-guide/).
+{% endhint %}
+
 {% hint style="danger" %}
 ### CIPP v7 Standards Updates
 
 As of the update to v7 of CIPP, standards now operate via templates. Where previously, standards were either configured via the AllTenants "Edit Standards" page or an individual tenants "Edit Standards" page, multiple templates can be created to provide you with a more granular standards experience. Templates can be assigned to "AllTenants", "AllTenants" with excluded tenants, or just specific list of tenants.
 
 If you are upgrading to v7 from a prior version of CIPP, you'll need to complete a one-time conversion of your existing standards by clicking the "Convert Standards" button at the top of the page. These standards will still not run on a schedule until you edit each template to your choosing and then toggling off the "Do not run on schedule" option.
-{% endhint %}
-
-## **Overview**
-
-Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours**. This automatic enforcement prevents unauthorized changes and helps maintain security.
-
-{% hint style="info" %}
-**Developer Note:** For a full list of current and future standards in JSON format, reference the [standards.json](https://github.com/KelvinTegelaar/CIPP/blob/main/src/data/standards.json) file or review the category-specific subpages below.
-{% endhint %}
-
-{% hint style="warning" %}
-**Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects, detailed in the video and walkthrough on[ this page](../../../setup/implementation-guide/).
 {% endhint %}
 
 ### **Standards Categories**
@@ -58,14 +70,6 @@ Each of the separate standards category pages have a table listing of their resp
 * Display Name: "Set Sharing Level for Default Calendar"
 * API Name: `calDefault`
 {% endhint %}
-
-### Standards Actions:
-
-| Action    | Description                                        |
-| --------- | -------------------------------------------------- |
-| Report    | Logs the current configuration.                    |
-| Alert     | Sends notifications via ticket, email, or webhook. |
-| Remediate | Applies the configuration to the tenant.           |
 
 **Note**: Disabling the "Remediate" option prevents future enforcement but does not undo previously applied changes.
 
