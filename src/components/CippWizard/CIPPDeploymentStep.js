@@ -16,7 +16,7 @@ import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { ApiGetCall } from "../../api/ApiCall";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
-import { CheckCircle } from "@mui/icons-material";
+import { CheckCircle, Sync } from "@mui/icons-material";
 import CippPermissionCheck from "../CippSettings/CippPermissionCheck";
 import { useQueryClient } from "@tanstack/react-query";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -43,7 +43,7 @@ export const CippDeploymentStep = (props) => {
   const appId = ApiGetCall({
     url: `/api/ExecListAppId`,
     queryKey: `ExecListAppId`,
-    waiting: values.selectedOption !== "UpdateTokens" ? false : true,
+    waiting: true,
   });
   useEffect(() => {
     if (
@@ -260,19 +260,29 @@ export const CippDeploymentStep = (props) => {
                   disabled={
                     appId.isLoading ||
                     !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-                      appId.data.applicationId
+                      appId?.data?.applicationId
                     )
                   }
-                  onClick={() => openPopup(appId.data.refreshUrl)}
+                  onClick={() => openPopup(appId?.data?.refreshUrl)}
                   color="primary"
                 >
                   Refresh Graph Token
                 </Button>
+                <Button
+                  onClick={() => appId.refetch()}
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Sync />}
+                  disabled={appId.isFetching}
+                >
+                  Check Application ID
+                </Button>
                 {!/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-                  appId.data.applicationId
+                  appId?.data?.applicationId
                 ) && (
                   <Alert severity="warning">
-                    The Application ID is not valid. Please return to the first page of the SAM wizard and use the Manual .
+                    The Application ID is not valid. Please return to the first page of the SAM
+                    wizard and use the Manual .
                   </Alert>
                 )}
               </>
