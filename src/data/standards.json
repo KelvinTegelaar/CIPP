@@ -59,6 +59,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": false,
         "label": "Select value",
         "name": "standards.ProfilePhotos.state",
         "options": [
@@ -225,6 +226,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": false,
         "label": "Select value",
         "name": "standards.ActivityBasedTimeout.timeout",
         "options": [
@@ -256,6 +258,64 @@
     "impactColour": "warning",
     "powershellEquivalent": "Portal or Graph API",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.AuthMethodsSettings",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Configures the report suspicious activity settings and system credential preferences in the authentication methods policy.",
+    "docsDescription": "Controls the authentication methods policy settings for reporting suspicious activity and system credential preferences. These settings help enhance the security of authentication in your organization.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "name": "standards.AuthMethodsSettings.ReportSuspiciousActivity",
+        "label": "Report Suspicious Activity Settings",
+        "options": [
+          {
+            "label": "Microsoft managed",
+            "value": "default"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": false,
+        "name": "standards.AuthMethodsSettings.SystemCredential",
+        "label": "System Credential Preferences",
+        "options": [
+          {
+            "label": "Microsoft managed",
+            "value": "default"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Configure Authentication Methods Policy Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicy",
+    "recommendedBy": []
   },
   {
     "name": "standards.AppDeploy",
@@ -325,6 +385,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": false,
         "label": "Select value",
         "name": "standards.PWcompanionAppAllowedState.state",
         "options": [
@@ -394,6 +455,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": false,
         "label": "Select TAP Lifetime",
         "name": "standards.TAP.config",
         "options": [
@@ -436,6 +498,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": false,
         "label": "Select value",
         "name": "standards.ExternalMFATrusted.state",
         "options": [
@@ -498,6 +561,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": false,
         "label": "Select value",
         "name": "standards.NudgeMFA.state",
         "options": [
@@ -645,7 +709,9 @@
     "addedComponent": [
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "Who can send invites?",
         "name": "standards.GuestInvite.allowInvitesFrom",
         "options": [
@@ -734,7 +800,7 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": []
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.DisableVoice",
@@ -747,7 +813,7 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": []
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.DisableEmail",
@@ -769,6 +835,19 @@
     "docsDescription": "",
     "addedComponent": [],
     "label": "Disables Certificates as an MFA method",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.DisableQRCodePin",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["highimpact"],
+    "helpText": "This blocks users from using QR Code Pin as an MFA method. If a user only has QR Code Pin as a MFA method, they will be unable to log in.",
+    "docsDescription": "Disables QR Code Pin as an MFA method for the tenant. If a user only has QR Code Pin as a MFA method, they will be unable to sign in.",
+    "addedComponent": [],
+    "label": "Disables QR Code Pin as an MFA method",
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
@@ -1201,6 +1280,18 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standardsAutoAddProxy",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Automatically adds all available domains as a proxy address.",
+    "docsDescription": "Automatically finds all available domain names in the tenant, and tries to add proxyaddresses based on the users UPN to each of these.",
+    "addedComponent": [],
+    "label": "Automatically deploy proxy addresses",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "set-mailbox -emailaddresses @{add=$emailaddress}"
+  },
+  {
     "name": "standards.DisableAdditionalStorageProviders",
     "cat": "Exchange Standards",
     "tag": ["lowimpact", "CIS", "exo_storageproviderrestricted"],
@@ -1411,6 +1502,26 @@
     "impactColour": "danger",
     "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy -AutoForwardingMode 'Off'",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.RetentionPolicyTag",
+    "cat": "Exchange Standards",
+    "tag": ["highimpact"],
+    "helpText": "Creates a CIPP - Deleted Items retention policy tag that permanently deletes items in the Deleted Items folder after X days.",
+    "docsDescription": "Creates a CIPP - Deleted Items retention policy tag that permanently deletes items in the Deleted Items folder after X days.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.RetentionPolicyTag.AgeLimitForRetention",
+        "label": "Retention Days",
+        "required": true
+      }
+    ],
+    "label": "Retention Policy, permanently delete items in Deleted Items after X days",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-RetentionPolicyTag",
+    "recommendedBy": []
   },
   {
     "name": "standards.QuarantineRequestAlert",
@@ -1683,8 +1794,8 @@
       {
         "type": "select",
         "multiple": false,
-        "label": "Action",
-        "name": "standards.SafeAttachmentPolicy.Action",
+        "label": "Safe Attachment Action",
+        "name": "standards.SafeAttachmentPolicy.SafeAttachmentAction",
         "options": [
           {
             "label": "Allow",
@@ -1851,7 +1962,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "Spam Action",
         "name": "standards.SpamFilterPolicy.SpamAction",
         "options": [
@@ -1867,7 +1980,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.SpamQuarantineTag",
         "options": [
@@ -1887,7 +2002,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "High Confidence Spam Action",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamAction",
         "options": [
@@ -1903,7 +2020,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "High Confidence Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
         "options": [
@@ -1923,7 +2042,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "Bulk Spam Action",
         "name": "standards.SpamFilterPolicy.BulkSpamAction",
         "options": [
@@ -1939,7 +2060,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "Bulk Quarantine Tag",
         "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
         "options": [
@@ -1959,7 +2082,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "Phish Spam Action",
         "name": "standards.SpamFilterPolicy.PhishSpamAction",
         "options": [
@@ -1975,7 +2100,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.PhishQuarantineTag",
         "options": [
@@ -1995,7 +2122,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "label": "High Confidence Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidencePhishQuarantineTag",
         "options": [
@@ -2118,7 +2247,9 @@
     "addedComponent": [
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "name": "standards.IntuneComplianceSettings.secureByDefault",
         "label": "Mark devices with no compliance policy as",
         "options": [
@@ -2354,6 +2485,7 @@
       {
         "type": "autoComplete",
         "multiple": false,
+        "creatable": false,
         "label": "Add Shortcuts To OneDrive button state",
         "name": "standards.DisableAddShortcutsToOneDrive.state",
         "options": [
@@ -2383,6 +2515,7 @@
       {
         "type": "autoComplete",
         "multiple": false,
+        "creatable": false,
         "label": "SharePoint Sync Button state",
         "name": "standards.SPSyncButtonState.state",
         "options": [
@@ -2568,7 +2701,9 @@
     "addedComponent": [
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "name": "standards.TeamsGlobalMeetingPolicy.DesignatedPresenterRoleMode",
         "label": "Default value of the `Who can present?`",
         "options": [
@@ -2597,7 +2732,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "name": "standards.TeamsGlobalMeetingPolicy.MeetingChatEnabledType",
         "label": "Meeting chat policy",
         "options": [
@@ -2688,6 +2825,9 @@
     "addedComponent": [
       {
         "type": "autoComplete",
+        "required": true,
+        "multiple": false,
+        "creatable": false,
         "name": "standards.TeamsEnrollUser.EnrollUserOverride",
         "label": "Voice and Face Enrollment",
         "options": [
@@ -2756,7 +2896,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "name": "standards.TeamsFederationConfiguration.DomainControl",
         "label": "Communication Mode",
         "options": [
@@ -2824,7 +2966,9 @@
       },
       {
         "type": "autoComplete",
+        "required": true,
         "multiple": false,
+        "creatable": false,
         "name": "standards.TeamsMessagingPolicy.ReadReceiptsEnabledType",
         "label": "Read Receipts Enabled Type",
         "options": [
@@ -2974,6 +3118,7 @@
       {
         "type": "autoComplete",
         "multiple": false,
+        "creatable": false,
         "name": "standards.AutopilotProfile.Languages",
         "label": "Languages",
         "api": {
@@ -3058,6 +3203,7 @@
       {
         "type": "autoComplete",
         "multiple": false,
+        "creatable": false,
         "name": "TemplateList",
         "label": "Select Intune Template",
         "api": {
