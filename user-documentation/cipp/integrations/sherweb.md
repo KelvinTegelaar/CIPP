@@ -1,7 +1,7 @@
 # Sherweb
 
 {% hint style="info" %}
-**Current Status: Open Beta**
+**Current Status: General Availability**
 
 * Available to all CIPP users
 * Best suited for existing Sherweb partners
