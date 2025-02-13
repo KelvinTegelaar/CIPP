@@ -7,19 +7,12 @@
     "logo": "/assets/integrations/cipp-api.png",
     "forceSyncButton": false,
     "hideTestButton": true,
-    "disableWhenhosted": true,
-    "description": "Enable the CIPP API to access CIPP data outside of CIPP using a RESTful API.",
-    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
-    "SettingOptions": [
+    "description": "The CIPP API allows you to access CIPP data outside of CIPP using a RESTful API.",
+    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. This is useful for integrations with other systems or custom scripts.",
+    "links": [
       {
-        "type": "switch",
-        "name": "cippapi.ResetPassword",
-        "label": "Reset application secret - this will invalidate all existing API tokens"
-      },
-      {
-        "type": "switch",
-        "name": "cippapi.Enabled",
-        "label": "Enable Integration"
+        "name": "CIPP API Documentation",
+        "url": "https://docs.cipp.app/api-documentation/setup-and-authentication"
       }
     ],
     "mappingRequired": false
@@ -76,7 +69,7 @@
         "name": "Sherweb.AllowedCustomRoles",
         "label": "Select custom roles that are allowed to purchase licenses",
         "api": {
-          "url": "/api/ExecCustomRole",
+          "url": "/api/ListCustomRole",
           "queryKey": "CustomRoles",
           "labelField": "RowKey",
           "valueField": "RowKey"
@@ -163,15 +156,25 @@
         "type": "textField",
         "name": "HaloPSA.Tenant",
         "label": "HaloPSA Tenant",
-        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted",
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted)",
         "required": true
       },
       {
-        "type": "textField",
+        "type": "autoComplete",
         "name": "HaloPSA.TicketType",
-        "label": "HaloPSA Ticket Type ID",
-        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default.",
-        "required": true
+        "label": "Select your HaloPSA Ticket Type, leave blank for default.",
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloTicketTypes",
+          "dataKey": "TicketTypes",
+          "labelField": "name",
+          "valueField": "id",
+          "showRefresh": true
+        }
       },
       {
         "type": "textField",
@@ -319,6 +322,17 @@
         "type": "switch",
         "name": "Hudu.MonitorDomains",
         "label": "Monitor domains in Hudu"
+      },
+      {
+        "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
+        "type": "switch",
+        "name": "Hudu.CFEnabled",
+        "label": "Connect to HUDU through CloudFlare Tunnel with the Service Account credentials.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "mappingRequired": true,
@@ -334,7 +348,7 @@
     "logoDark": "/assets/integrations/pwpush_dark.png",
     "forceSyncButton": false,
     "description": "Enable the PasswordPusher integration to generate password links instead of plain text passwords.",
-    "helpText": "This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords. If you are a PWPush Pro customer and utilizing custom domains, please do not enter your custom domain in the Base URL field.",
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords. If you are a Hosted PWPush Pro customer you can also select an account for branding if you enable Bearer Authentication. Self-Hosted must use the Email Address and API Key method for authenticated pushes.",
     "links": [
       {
         "name": "PWPush Documentation",
@@ -349,7 +363,12 @@
       {
         "type": "switch",
         "name": "PWPush.Enabled",
-        "label": "Enable Integration - Replace passwords with PWPush links"
+        "label": "Enable Integration"
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.UseBearerAuth",
+        "label": "Use Bearer Authentication (Hosted only)"
       },
       {
         "type": "textField",
@@ -358,21 +377,41 @@
         "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)"
       },
       {
-        "type": "textField",
-        "name": "PWPush.EmailAddress",
-        "label": "PWPush email address",
-        "placeholder": "Enter your email address for PWPush. (optional)"
-      },
-      {
         "type": "password",
         "name": "PWPush.APIKey",
         "label": "PWPush API Key",
         "placeholder": "Enter your PWPush API Key. (optional)"
       },
       {
-        "type": "switch",
-        "name": "PWPush.RetrievalStep",
-        "label": "Click to retrieve password (recommended)"
+        "type": "textField",
+        "name": "PWPush.EmailAddress",
+        "label": "PWPush email address",
+        "placeholder": "Enter your email address for PWPush. (Email & API Key auth)",
+        "condition": {
+          "field": "PWPush.UseBearerAuth",
+          "compareType": "is",
+          "compareValue": false
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "PWPush.AccountId",
+        "label": "Select your PWPush Account for branding (Pro/Premium only, optional with Custom Domain)",
+        "multiple": false,
+        "creatable": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping?List=PWPushFields",
+          "queryKey": "PWPushAccounts",
+          "dataKey": "Accounts",
+          "labelField": "name",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "PWPush.UseBearerAuth",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "number",
@@ -385,6 +424,11 @@
         "name": "PWPush.ExpireAfterViews",
         "label": "Expiration after views",
         "placeholder": "Expiration after views. (optional)"
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.RetrievalStep",
+        "label": "Click to retrieve password (recommended)"
       },
       {
         "type": "switch",
@@ -426,7 +470,7 @@
   },
   {
     "name": "CloudFlare ZTNA Tunnel",
-    "id": "CTZTNA",
+    "id": "CFZTNA",
     "type": "ztna",
     "cat": "Zero Trust Network Tunnel",
     "logo": "/assets/integrations/cloudflare.png",
@@ -446,20 +490,50 @@
     ],
     "SettingOptions": [
       {
+        "type": "switch",
+        "name": "CFZTNA.Enabled",
+        "label": "Enable Integration"
+      },
+      {
         "type": "password",
-        "name": "CloudFlareClientID.APIKey",
+        "name": "CFZTNA.ClientID",
         "label": "CloudFlare Tunnel Service Account Client ID"
       },
       {
         "type": "password",
-        "name": "CloudFlareAPIKey.APIKey",
+        "name": "CFZTNA.APIKey",
         "label": "CloudFlare Tunnel Service Account Client Secret"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "GitHub",
+    "id": "GitHub",
+    "type": "DevOps",
+    "cat": "Source Control",
+    "logo": "/assets/integrations/github.png",
+    "logoDark": "/assets/integrations/github_dark.png",
+    "description": "Enable the GitHub integration to manage your repositories from CIPP.",
+    "helpText": "This integration allows you to manage GitHub repositories from CIPP, including the Community Repositorities functionality. Requires a GitHub Personal Access Token (PAT) with a minimum of repo:public_repo permissions. If you plan on saving your templates to GitHub or accessing private/internal repositories, you will need to grant the whole repo scope. You can create a PAT in your GitHub account settings, see the GitHub Token documentation for more info. If you do not enable the extension, a read-only API will be provided.",
+    "links": [
+      {
+        "name": "GitHub Token",
+        "url": "https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "password",
+        "name": "GitHub.APIKey",
+        "label": "GitHub Personal Access Token",
+        "placeholder": "Enter your GitHub PAT",
+        "required": true
       },
       {
-        "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
         "type": "switch",
-        "name": "Hudu.CFEnabled",
-        "label": " Connect to HUDU through CloudFlare Tunnel with the above Service Account credentials."
+        "name": "GitHub.Enabled",
+        "label": "Enable Integration"
       }
     ],
     "mappingRequired": false

@@ -22,8 +22,9 @@ const Page = () => {
       type: "POST",
       url: "/api/EditExConnector",
       icon: <Check />,
+      condition: (row) => !row.Enabled,
       data: {
-        State: "Enable",
+        State: "!Enable",
         GUID: "Guid",
         Type: "cippconnectortype",
       },
@@ -35,8 +36,9 @@ const Page = () => {
       type: "POST",
       url: "/api/EditExConnector",
       icon: <Block />,
+      condition: (row) => row.Enabled,
       data: {
-        State: "Disable",
+        State: "!Disable",
         GUID: "Guid",
         Type: "cippconnectortype",
       },
@@ -82,11 +84,6 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      titleButton={{
-        label: "Deploy Connector",
-        href: "/email/connectors/deploy-connector",
-        startIcon: <RocketLaunch />, // Added icon
-      }}
       cardButton={
         <>
           <Button
