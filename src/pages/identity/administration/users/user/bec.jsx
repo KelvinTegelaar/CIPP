@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { CheckCircle, Download, Mail, Fingerprint } from "@mui/icons-material";
+import { CheckCircle, Download, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
@@ -158,6 +158,21 @@ const Page = () => {
             <>
               Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
             </>
+          ),
+        },
+        {
+          icon: <Launch style={{ color: "#667085" }} />,
+          text: (
+            <Button
+                color="muted"
+                style={{ paddingLeft: 0 }}
+                size="small"
+                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View in Entra
+              </Button>
           ),
         },
       ]

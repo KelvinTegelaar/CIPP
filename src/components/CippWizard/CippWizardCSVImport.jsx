@@ -32,6 +32,11 @@ export const CippWizardCSVImport = (props) => {
   const [newTableData, setTableData] = useState([]);
   const [open, setOpen] = useState(false);
 
+  // Register form field with validation
+  formControl.register(name, {
+    validate: (value) => Array.isArray(value) && value.length > 0,
+  });
+
   const handleRemoveItem = (row) => {
     if (row === undefined) return false;
     const index = tableData?.findIndex((item) => item === row);
@@ -49,7 +54,9 @@ export const CippWizardCSVImport = (props) => {
   };
 
   useEffect(() => {
-    formControl.setValue(name, newTableData);
+    formControl.setValue(name, newTableData, {
+      shouldValidate: true,
+    });
   }, [newTableData]);
 
   const actions = [
