@@ -98,6 +98,12 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
               />
               <CippFormComponent
+                name="ClearImmutableId"
+                label="Clear Immutable ID"
+                type="switch"
+                formControl={formControl}
+              />
+              <CippFormComponent
                 name="ResetPass"
                 label="Reset Password"
                 type="switch"

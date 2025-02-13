@@ -510,7 +510,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 </Button>
               </Grid>
             </Grid>
-            <Collapse in={optionsVisible}>
+            <Collapse in={optionsVisible} unmountOnExit>
               <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
                 <Controller
                   name="spfRecord"

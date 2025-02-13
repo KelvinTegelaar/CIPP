@@ -81,6 +81,7 @@ const Page = () => {
       resetForm={false}
       postUrl="/api/ExecNotificationConfig"
       relatedQueryKeys={["ListNotificationConfig"]}
+      isFetching={listNotificationConfig.isFetching}
       addedButtons={
         <Button variant="outlined" onClick={notificationDialog.handleOpen}>
           Send Test Alert
@@ -150,13 +151,25 @@ const Page = () => {
         </Grid>
       </Box>
       <CippApiDialog
+        row={{ writeLog: true }}
+        useDefaultValues={true}
         title="Send Test Alert"
         createDialog={notificationDialog}
         fields={[
           {
             type: "switch",
+            name: "writeLog",
+            label: "Write Alert to Logbook (Notifications are sent hourly)",
+          },
+          {
+            type: "switch",
             name: "sendEmailNow",
             label: "Send Email Now",
+          },
+          {
+            type: "switch",
+            name: "sendWebhookNow",
+            label: "Send Webhook Now",
           },
         ]}
         api={{
@@ -164,7 +177,7 @@ const Page = () => {
             "Are you sure you want to send a test alert to the email address(es) and webhook URL configured?",
           url: "/api/ExecAddAlert",
           type: "POST",
-          data: {},
+          data: { text: "This is a test from Notification Settings" },
         }}
       />
     </CippFormPage>
