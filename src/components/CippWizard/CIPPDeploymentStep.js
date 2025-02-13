@@ -16,7 +16,7 @@ import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { ApiGetCall } from "../../api/ApiCall";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
-import { CheckCircle } from "@mui/icons-material";
+import { CheckCircle, Sync } from "@mui/icons-material";
 import CippPermissionCheck from "../CippSettings/CippPermissionCheck";
 import { useQueryClient } from "@tanstack/react-query";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -43,7 +43,7 @@ export const CippDeploymentStep = (props) => {
   const appId = ApiGetCall({
     url: `/api/ExecListAppId`,
     queryKey: `ExecListAppId`,
-    waiting: values.selectedOption !== "UpdateTokens" ? false : true,
+    waiting: true,
   });
   useEffect(() => {
     if (
@@ -254,14 +254,38 @@ export const CippDeploymentStep = (props) => {
               </Stack>
             }
             CardButton={
-              <Button
-                variant="contained"
-                disabled={appId.isLoading}
-                onClick={() => openPopup(appId.data.refreshUrl)}
-                color="primary"
-              >
-                Refresh Graph Token
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  disabled={
+                    appId.isLoading ||
+                    !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+                      appId?.data?.applicationId
+                    )
+                  }
+                  onClick={() => openPopup(appId?.data?.refreshUrl)}
+                  color="primary"
+                >
+                  Refresh Graph Token
+                </Button>
+                <Button
+                  onClick={() => appId.refetch()}
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Sync />}
+                  disabled={appId.isFetching}
+                >
+                  Check Application ID
+                </Button>
+                {!/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+                  appId?.data?.applicationId
+                ) && (
+                  <Alert severity="warning">
+                    The Application ID is not valid. Please return to the first page of the SAM
+                    wizard and use the Manual .
+                  </Alert>
+                )}
+              </>
             }
           >
             <Typography variant="body2" gutterBottom>
@@ -284,6 +308,13 @@ export const CippDeploymentStep = (props) => {
               name="TenantID"
               label="Tenant ID"
               placeholder="Enter the Tenant ID. Leave blank to retain previous key."
+              validators={{
+                validate: (value) => {
+                  const guidRegex =
+                    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+                  return value === "" || guidRegex.test(value) || "Invalid Tenant ID";
+                },
+              }}
             />
             <CippFormComponent
               formControl={formControl}
@@ -291,6 +322,13 @@ export const CippDeploymentStep = (props) => {
               name="ApplicationID"
               label="Application ID"
               placeholder="Enter the Application ID. Leave blank to retain previous key."
+              validators={{
+                validate: (value) => {
+                  const guidRegex =
+                    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+                  return value === "" || guidRegex.test(value) || "Invalid Application ID";
+                },
+              }}
             />
             <CippFormComponent
               formControl={formControl}
@@ -298,6 +336,17 @@ export const CippDeploymentStep = (props) => {
               name="ApplicationSecret"
               label="Application Secret"
               placeholder="Enter the application secret. Leave blank to retain previous key."
+              validators={{
+                validate: (value) => {
+                  const secretRegex =
+                    /^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)[0-9a-zA-Z]{40}$/;
+                  return (
+                    value === "" ||
+                    secretRegex.test(value) ||
+                    "This should be the secret value, not the secret ID"
+                  );
+                },
+              }}
             />
             <CippFormComponent
               formControl={formControl}
@@ -305,6 +354,12 @@ export const CippDeploymentStep = (props) => {
               name="RefreshToken"
               label="Refresh Token"
               placeholder="Enter the refresh token. Leave blank to retain previous key."
+              validators={{
+                validate: (value) => {
+                  const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;
+                  return value === "" || jwtRegex.test(value) || "Invalid Refresh Token";
+                },
+              }}
             />
           </>
         )}

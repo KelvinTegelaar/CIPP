@@ -13,7 +13,7 @@ const Page = () => {
       url: "/api/AddIntuneTemplate",
       data: {
         ID: "id",
-        URLName: "URLName",
+        ODataType: "@odata.type",
       },
       confirmText: "Are you sure you want to create a template based on this policy?",
       icon: <Book />,
