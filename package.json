@@ -105,7 +105,6 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@types/react": "^18.2.39",
     "@types/react-helmet": "^6.1.5",
     "@vitejs/plugin-react": "^4.2.1",
@@ -137,10 +136,9 @@
   "overrides": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-=======
+
     "@svgr/webpack": "6.5.1",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.6"
->>>>>>> 6135d24769e18e3dc604f8fed68041e9dc39d27b
   }
 }
