@@ -8,6 +8,8 @@ import { CippFormLicenseSelector } from "/src/components/CippComponents/CippForm
 import Grid from "@mui/material/Grid";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
+import { useWatch } from "react-hook-form";
+import { useEffect } from "react";
 
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = "add" } = props;
@@ -16,6 +18,15 @@ const CippAddEditUser = (props) => {
     url: "/api/ListExtensionsConfig",
     queryKey: "ListExtensionsConfig",
   });
+
+  const watcher = useWatch({ control: formControl.control });
+  useEffect(() => {
+    //if watch.firstname changes, and watch.lastname changes, set displayname to firstname + lastname
+    if (watcher.givenName && watcher.surname && formType === "add") {
+      formControl.setValue("displayName", `${watcher.givenName} ${watcher.surname}`);
+    }
+  }, [watcher.givenName, watcher.surname]);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={6}>
