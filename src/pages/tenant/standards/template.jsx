@@ -74,7 +74,10 @@ const Page = () => {
   }, {});
 
   const handleOpenDialog = () => setDialogOpen(true);
-  const handleCloseDialog = () => setDialogOpen(false);
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSearchQuery("");
+  };
 
   const filterStandards = (standardsList) =>
     standardsList.filter(
@@ -98,7 +101,6 @@ const Page = () => {
     if (match) {
       standardName = match[1];
     }
-    console.log("Adding multiple", standardName);
 
     setSelectedStandards((prev) => {
       const existingInstances = Object.keys(prev).filter((name) => name.startsWith(standardName));

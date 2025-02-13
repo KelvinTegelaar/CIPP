@@ -3,7 +3,7 @@ import { Grid, Stack } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
-import { Delete, Search } from "@mui/icons-material";
+import { Add, Delete, Search } from "@mui/icons-material";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { ApiPostCall } from "../../../../api/ApiCall";
 import { getCippValidator } from "../../../../utils/get-cipp-validator";
@@ -26,15 +26,33 @@ const Page = () => {
       customFunction: (row) => setIpAddress(row.RowKey),
       noConfirm: true,
       icon: <MapPinIcon />,
+      hideBulk: true,
+    },
+    {
+      label: "Add to Whitelist",
+      url: `/api/ExecAddTrustedIP`,
+      type: "POST",
+      data: {
+        IP: "RowKey",
+        State: "!Trusted",
+      },
+      icon: <Add />,
+      confirmText: "Are you sure you want to add this IP to the whitelist?",
+      multiPost: false,
+      condition: (row) => row.state !== "Trusted",
     },
     {
       label: "Remove from Whitelist",
-      customFunction: (row) =>
-        addGeoIP.mutate({
-          url: `/api/ExecAddTrustedIP?IP=${row.RowKey}&TenantFilter=${currentTenant}&State=NotTrusted`,
-        }),
+      url: `/api/ExecAddTrustedIP`,
+      type: "POST",
+      data: {
+        IP: "RowKey",
+        State: "!NotTrusted",
+      },
       icon: <Delete />,
       confirmText: "Are you sure you want to remove this IP from the whitelist?",
+      multiPost: false,
+      condition: (row) => row.state !== "NotTrusted",
     },
   ];
 
@@ -44,13 +62,23 @@ const Page = () => {
 
   const handleAddToWhitelist = () => {
     addGeoIP.mutate({
-      url: `/api/ExecAddTrustedIP?IP=${ip}&TenantFilter=${currentTenant}&State=Trusted`,
+      url: `/api/ExecAddTrustedIP`,
+      data: {
+        IP: ip,
+        State: "Trusted",
+        tenantFilter: currentTenant,
+      }
     });
   };
 
   const handleRemoveFromWhitelist = () => {
     addGeoIP.mutate({
-      url: `/api/ExecAddTrustedIP?IP=${ip}&TenantFilter=${currentTenant}&State=NotTrusted`,
+      url: `/api/ExecAddTrustedIP`,
+      data: {
+        IP: ip,
+        State: "NotTrusted",
+        tenantFilter: currentTenant,
+      }
     });
   };
 

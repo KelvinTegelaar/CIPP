@@ -42,6 +42,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       actions={actions}
+      apiDataKey="ListRoomListsResults"
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
     />
