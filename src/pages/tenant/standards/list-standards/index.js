@@ -2,15 +2,17 @@ import { Alert, Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete, PlayArrow, AddBox, Visibility, Edit } from "@mui/icons-material";
+import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 
 const Page = () => {
   const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });
-
+  const integrations = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "Integrations",
+  });
   const pageTitle = "Standard Templates";
   const actions = [
     {
@@ -50,6 +52,50 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to force a run of this template?",
       multiPost: false,
+    },
+    {
+      label: "Save to GitHub",
+      type: "POST",
+      url: "/api/ExecCommunityRepo",
+      icon: <GitHub />,
+      data: {
+        Action: "UploadTemplate",
+        GUID: "GUID",
+      },
+      fields: [
+        {
+          label: "Repository",
+          name: "FullName",
+          type: "select",
+          api: {
+            url: "/api/ListCommunityRepos",
+            data: {
+              WriteAccess: true,
+            },
+            queryKey: "CommunityRepos-Write",
+            dataKey: "Results",
+            valueField: "FullName",
+            labelField: "FullName",
+          },
+          multiple: false,
+          creatable: false,
+          required: true,
+          validators: {
+            required: { value: true, message: "This field is required" },
+          },
+        },
+        {
+          label: "Commit Message",
+          placeholder: "Enter a commit message for adding this file to GitHub",
+          name: "Message",
+          type: "textField",
+          multiline: true,
+          required: true,
+          rows: 4,
+        },
+      ],
+      confirmText: "Are you sure you want to save this template to the selected repository?",
+      condition: () => integrations.isSuccess && integrations?.data?.GitHub.Enabled,
     },
     {
       label: "Delete Template",
