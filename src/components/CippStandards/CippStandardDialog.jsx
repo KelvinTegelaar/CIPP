@@ -48,21 +48,25 @@ const CippStandardDialog = ({
   );
 
   return (
-    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl"
-      PaperProps={{ 
+    <Dialog
+      open={dialogOpen}
+      onClose={handleCloseDialog}
+      maxWidth="xxl"
+      PaperProps={{
         sx: {
           minWidth: "720px",
         },
-      }}>
+      }}
+    >
       <DialogTitle>Select a Standard to Add</DialogTitle>
       <DialogContent sx={{ backgroundColor: "background.default" }}>
         <TextField
           label="Filter Standards"
           fullWidth
-          sx={{ mb: 3, mt: 3 }}
+          sx={{ mt: 3 }}
           onChange={(e) => handleSearchQueryChange(e.target.value.toLowerCase())}
         />
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ overflowY: "auto", maxHeight: "60vh", mt: 2 }}>
           {Object.keys(categories).every(
             (category) => filterStandards(categories[category]).length === 0
           ) ? (
@@ -101,12 +105,7 @@ const CippStandardDialog = ({
                       <Typography variant="subtitle2" sx={{ mt: 2 }}>
                         Category:
                       </Typography>
-                      <Chip
-                        label={category}
-                        size="small"
-                        color="primary"
-                        sx={{ mt: 1, mb: 2 }}
-                      />
+                      <Chip label={category} size="small" color="primary" sx={{ mt: 1, mb: 2 }} />
                       {standard.tag?.filter((tag) => !tag.toLowerCase().includes("impact")).length >
                         0 && (
                         <>
@@ -147,11 +146,7 @@ const CippStandardDialog = ({
                           <Typography variant="subtitle2" sx={{ mt: 2 }}>
                             Recommended By:
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            paragraph
-                          >
+                          <Typography variant="body2" color="textSecondary" paragraph>
                             {standard.recommendedBy.join(", ")}
                           </Typography>
                         </>
@@ -172,9 +167,7 @@ const CippStandardDialog = ({
                           control={
                             <Switch
                               checked={!!selectedStandards[standard.name]}
-                              onChange={() =>
-                                handleToggleSingleStandard(standard.name)
-                              }
+                              onChange={() => handleToggleSingleStandard(standard.name)}
                             />
                           }
                           label="Add this standard to the template"
