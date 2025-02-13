@@ -3,12 +3,24 @@ import Head from "next/head";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
 import { Layout as DashboardLayout } from "../layouts/index.js";
 import { ApiGetCall } from "../api/ApiCall";
+import { useState, useEffect } from "react";
 
 const Page = () => {
   const orgData = ApiGetCall({
     url: "/.auth/me",
     queryKey: "me",
   });
+  const blockedRoles = ["anonymous", "authenticated"];
+  const [userRoles, setUserRoles] = useState([]);
+
+  useEffect(() => {
+    if (orgData.isSuccess) {
+      const roles = orgData.data?.clientPrincipal?.userRoles.filter(
+        (role) => !blockedRoles.includes(role)
+      );
+      setUserRoles(roles ?? []);
+    }
+  }, [orgData, blockedRoles]);
   return (
     <>
       <DashboardLayout>
@@ -32,14 +44,16 @@ const Page = () => {
                 sx={{ height: "100%" }} // Ensure the container takes full height
               >
                 <Grid item xs={12} md={6}>
-                  <CippImageCard
-                    isFetching={false}
-                    imageUrl="/assets/illustrations/undraw_online_test_re_kyfx.svg"
-                    text="You're not allowed to be here, or are logged in under the wrong account. Hit the button below to return to the homepage."
-                    title="Access Denied"
-                    linkText={orgData.data?.clientPrincipal?.userDetails ? "Return" : "Login"}
-                    link={orgData.data?.clientPrincipal?.userDetails ? "/" : "/.auth/login/aad"}
-                  />
+                  {orgData.isSuccess && Array.isArray(userRoles) && (
+                    <CippImageCard
+                      isFetching={false}
+                      imageUrl="/assets/illustrations/undraw_online_test_re_kyfx.svg"
+                      text="You're not allowed to be here, or are logged in under the wrong account. Hit the button below to return to the homepage."
+                      title="Access Denied"
+                      linkText={userRoles.length > 0 ? "Return" : "Login"}
+                      link={userRoles.length > 0 ? "/" : "/.auth/login/aad"}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </Stack>

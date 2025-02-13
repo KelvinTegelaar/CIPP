@@ -9,6 +9,7 @@ export const CippFormTenantSelector = ({
   valueField = "defaultDomainName",
   required = true,
   disableClearable = true,
+  removeOptions = [],
   ...other
 }) => {
   const validators = () => {
@@ -38,9 +39,11 @@ export const CippFormTenantSelector = ({
           customerId: "customerId",
         },
       }}
+      creatable={false}
       multiple={type === "single" ? false : true}
       disableClearable={disableClearable}
       validators={validators}
+      removeOptions={removeOptions}
       {...other}
     />
   );

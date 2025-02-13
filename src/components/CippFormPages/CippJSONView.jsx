@@ -76,8 +76,13 @@ const renderListItems = (data, onItemClick) => {
   });
 };
 
-function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, type }) {
+function CippJsonView({
+  object = { "No Data Selected": "No Data Selected" },
+  type,
+  defaultOpen = false,
+}) {
   const [viewJson, setViewJson] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState(defaultOpen);
   const [drilldownData, setDrilldownData] = useState([]);
 
   const renderIntuneItems = (data) => {
@@ -184,6 +189,9 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
   };
 
   useEffect(() => {
+    if (!type && (object?.omaSettings || object?.settings || object?.added)) {
+      type = "intune";
+    }
     const blacklist = [
       "selectedOption",
       "GUID",
@@ -209,7 +217,11 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
   };
 
   return (
-    <Accordion variant="outlined">
+    <Accordion
+      variant="outlined"
+      expanded={accordionOpen}
+      onChange={() => setAccordionOpen(!accordionOpen)}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{ display: "flex", alignItems: "center" }}
@@ -223,7 +235,7 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
           {viewJson ? <VisibilityOffIcon /> : <VisibilityIcon />}
         </IconButton>
         {viewJson ? (
-          <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object))} />
+          <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object), null, 2)} />
         ) : (
           <Grid container spacing={2}>
             {drilldownData.slice(0, 4).map((data, index) => (
