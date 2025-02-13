@@ -1,6 +1,5 @@
 {
   "name": "cipp",
-
   "version": "7.1.3",
   "author": "CIPP Contributors",
   "homepage": "https://cipp.app/",
@@ -105,38 +104,6 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
-    "@types/react": "^18.2.39",
-    "@types/react-helmet": "^6.1.5",
-    "@vitejs/plugin-react": "^4.2.1",
-    "auto-changelog": "~2.3.0",
-    "browserslist-to-esbuild": "^1.2.0",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-import-resolver-custom-alias": "^1.3.2",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.4",
-    "husky": "^7.0.4",
-    "postcss-scss": "^4.0.3",
-    "prettier": "2.4.1",
-    "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.64.2",
-    "stylelint": "^14.3.0",
-    "stylelint-config-sass-guidelines": "^9.0.1",
-    "stylelint-order": "^5.0.0",
-    "vite": "^5.0.6",
-    "vite-plugin-eslint": "^1.8.1"
-  },
-  "engines": {
-    "node": "20.17.0",
-    "npm": ">=8.3.0"
-  },
-  "overrides": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-
     "@svgr/webpack": "6.5.1",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.6"
