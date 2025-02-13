@@ -250,6 +250,7 @@ export const nativeMenuItems = [
           { title: "Protection Policies", path: "/endpoint/MEM/list-appprotection-policies" },
           { title: "Apply Policy", path: "/endpoint/MEM/add-policy" },
           { title: "Policy Templates", path: "/endpoint/MEM/list-templates" },
+          { title: "Scripts", path: "/endpoint/MEM/list-scripts" },
         ],
       },
       {
@@ -438,6 +439,11 @@ export const nativeMenuItems = [
       {
         title: "Template Library",
         path: "/tools/templatelib",
+        roles: ["editor", "admin", "superadmin"],
+      },
+      {
+        title: "Community Repositories",
+        path: "/tools/community-repos",
         roles: ["editor", "admin", "superadmin"],
       },
       {

@@ -45,7 +45,7 @@ const Page = () => {
         TenantMode: execPartnerMode.data?.TenantMode,
       });
     }
-  }, [execPartnerMode.isSuccess]);
+  }, [execPartnerMode.isSuccess, execPartnerMode.data]);
 
   return (
     <CippFormPage

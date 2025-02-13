@@ -21,6 +21,8 @@ const simpleColumns = [
   "Message",
   "API",
   "Severity",
+  "AppId",
+  "IP",
   "LogData",
 ];
 

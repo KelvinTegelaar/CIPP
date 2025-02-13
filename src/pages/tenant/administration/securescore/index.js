@@ -8,7 +8,6 @@ import { CheckCircleIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 import { Map, Score } from "@mui/icons-material";
 import { CippChartCard } from "../../../../components/CippCards/CippChartCard";
 import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en.json";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import DOMPurify from "dompurify";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
@@ -26,8 +25,15 @@ const Page = () => {
   const [updatesData, setUpdatesData] = useState({ data: {}, ready: false });
   const cippTableDialog = useDialog();
 
-  TimeAgo.addLocale(en);
   const timeAgo = new TimeAgo("en-US");
+
+  const openRemediation = (url) => {
+    if (url.startsWith("https")) {
+      window.open(url, "_blank");
+    } else {
+      navigate(url);
+    }
+  };
   return (
     <Container
       sx={{
@@ -111,6 +117,7 @@ const Page = () => {
                     CardButton={
                       <>
                         <Button
+                          size="small"
                           onClick={() => {
                             setActionData({
                               data: secureScoreControl,
@@ -122,9 +129,16 @@ const Page = () => {
                         >
                           Change Status
                         </Button>
-                        <Button variant="outlined">Remediate</Button>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => openRemediation(secureScoreControl.actionUrl)}
+                        >
+                          Remediate
+                        </Button>
                         {secureScoreControl.controlStateUpdates?.length > 0 && (
                           <Button
+                            size="small"
                             onClick={() => {
                               setUpdatesData({
                                 data: secureScoreControl,
@@ -166,6 +180,12 @@ const Page = () => {
                           <Typography
                             variant="body2"
                             color="textPrimary"
+                            sx={{
+                              "& a": {
+                                color: (theme) => theme.palette.primary.main,
+                                textDecoration: "underline",
+                              },
+                            }}
                             dangerouslySetInnerHTML={{
                               __html: DOMPurify.sanitize(secureScoreControl.description),
                             }}
@@ -182,6 +202,12 @@ const Page = () => {
                             <Typography
                               variant="body2"
                               color="textPrimary"
+                              sx={{
+                                "& a": {
+                                  color: (theme) => theme.palette.primary.main,
+                                  textDecoration: "underline",
+                                },
+                              }}
                               dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(secureScoreControl.remediation),
                               }}
