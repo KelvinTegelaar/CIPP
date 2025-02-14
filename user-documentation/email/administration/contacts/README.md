@@ -6,21 +6,43 @@ description: View & Edit Contacts in your M365 tenants
 
 This page provides information on Exchange contacts.
 
-### Details
-
-| Fields           | Description                                           |
-| ---------------- | ----------------------------------------------------- |
-| Display Name     | The display name of the contact.                      |
-| E-Mail Address   | The e-mail address of the contact.                    |
-| Company          | The company of the contact.                           |
-| On Premises Sync | Whether the user's synced to an on-premise directory. |
-
 ### Actions
 
-* Edit Contact
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
+
+### Details
+
+| Fields       | Description                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| Display Name | The display name of the contact.                                                          |
+| Mail         | The e-mail address of the contact.                                                        |
+| ID           | The GUID of the contact.                                                                  |
+| Given Name   | The first name of the contact.                                                            |
+| Surname      | The last name of the contact.                                                             |
+| Addresses    | A button that will pop open a table containing the addresses of the contact.              |
+| Phones       | A button that will pop open a table containing the various phone numbers for the contact. |
+
+### Bulk Actions
+
+Selecting the check box next to more than one contact will open the following options:
+
+| Action         | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| Remove Contact | Opens a modal to confirm deletion of the selected contacts. |
+
+
+
+### Per-Row Actions
+
+| Action         | Description                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| Edit Contact   | Opens the [page to edi](edit.md)t the selected contact            |
+| Delete Contact | Opens a modal to confirm you want to delete the selected contact. |
+
+
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

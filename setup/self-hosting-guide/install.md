@@ -20,7 +20,7 @@ Before deploying, ensure you’ve completed everything in the [Prerequisites](ht
 
 {% stepper %}
 {% step %}
-### Default (Regional) Deployment
+#### Default (Regional) Deployment
 
 **When to use**:
 
@@ -47,9 +47,9 @@ You **must replace** the preset "Github Repository" and "Github API Repository" 
 {% endstep %}
 
 {% step %}
-### Alternative (Central US) Deployment
+#### Alternative (Central US) Deployment
 
-Azure Static Web Apps (SWA) is global by default (it picks the data center closest to you) however some regions don't support deployment. To work around this use the alternative installation button below.&#x20;
+Azure Static Web Apps (SWA) is global by default (it picks the data center closest to you) however some regions don't support deployment. To work around this use the alternative installation button below.
 
 **When to use**:
 

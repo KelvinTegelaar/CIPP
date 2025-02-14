@@ -58,6 +58,14 @@ For **typical** updates (e.g., moving from any v7+ patch releases):
 
 * If you see an older version in your browser, try a **Hard Refresh**: open DevTools (F12), then right-click the refresh icon beside the URL bar and select **Hard reload and empty cache.**
 {% endstep %}
+
+{% step %}
+**Permissions Check**
+
+* Updates to CIPP can often include additional permissions required as new features are added or existing features get updated for new requirements from Microsoft. Go into CIPP > Application Settings > Permissions and perform a Permissions Check. If any roles are missing, you'll be presented with the option to Repair Permissions in v7+.
+
+
+{% endstep %}
 {% endstepper %}
 
 ***
@@ -114,6 +122,12 @@ If your "Sync fork" options button presents you with an error that there are con
 
 * Give Azure a few minutes to pick up changes. Check the **Actions** tab or the **Azure Logs** for success.
 * Clear your cache or try a different browser to confirm the new version is live.
+{% endstep %}
+
+{% step %}
+**Permissions Check**
+
+* Updates to CIPP can often include additional permissions required as new features are added or existing features get updated for new requirements from Microsoft. Go into CIPP > Application Settings > Permissions and perform a Permissions Check. If any roles are missing, you'll be presented with the option to Repair Permissions in v7+.
 {% endstep %}
 {% endstepper %}
 
@@ -195,6 +209,10 @@ If you're comfortable with GitHub, the easiest way to ensure you have the approp
 {% endstep %}
 
 {% step %}
+{% file src="../../.gitbook/assets/cipp-workflow.yml" %}
+Example file
+{% endfile %}
+
 **Update References to Your Secrets**
 
 * In that new file, look for lines referencing the token (e.g., `AZURE_STATIC_WEB_APPS_API_TOKEN_...`).
@@ -214,6 +232,12 @@ If you're comfortable with GitHub, the easiest way to ensure you have the approp
 * After the workflow succeeds, your Static Web App should serve the updated version.
 * If you still see the old UI, do a **Hard Refresh** (Open DevTools, then Right Click Refresh Button) or wait up to 30 minutes for Azure’s distribution/CDN to update
 {% endstep %}
+
+{% step %}
+**Permissions Check**
+
+* Updates to CIPP can often include additional permissions required as new features are added or existing features get updated for new requirements from Microsoft. Go into CIPP > Application Settings > Permissions and perform a Permissions Check. If any roles are missing, you'll be presented with the option to Repair Permissions in v7+.
+{% endstep %}
 {% endstepper %}
 
 ## Done & Dusted
@@ -226,6 +250,3 @@ At this point, your **CIPP** front-end and API should be updated to the latest r
 
 Congratulations! You’re now up-to-date and ready to use the newest features.
 
-
-
-{% file src="../../.gitbook/assets/cipp-workflow.yml" %}

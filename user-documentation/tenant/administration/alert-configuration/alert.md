@@ -35,7 +35,7 @@ Within CIPP, there are two types of alerts:
 
 * Alert on users without any form of MFA
 * Alert on admins without any form of MFA
-* Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available
+* Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.
 * Alert on changed admin Passwords
 * Alert on licensed users that have not logged in for 90 days
 * Alert on % mailbox quota used
@@ -47,14 +47,17 @@ Within CIPP, there are two types of alerts:
 * Alert on Defender Malware found (Tenant must be on-boarded in Lighthouse)
 * Alert on unused licenses
 * Alert on overused licenses
+* Alert on Entra ID P1/P2 license over-utilization
 * Alert on expiring application secrets
+* Alert on new Apple Business Manager terms
+* Alert on expiring application certificates
 * Alert on expiring APN certificates
 * Alert on expiring VPP tokens
 * Alert on expiring DEP tokens
 * Alert on soft deleted mailboxes
 * Alert on device compliance issues
+* Alert on (new) potentially breached passwords. Generates an alert if a password is found to be breached.
 * Alert on Huntress Rogue Apps detected
-* Alert on expiring application certificates
 
 ### Available Template Audit Log Alerts
 
