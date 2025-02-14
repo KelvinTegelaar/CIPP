@@ -1,0 +1,52 @@
+name: CIPP Frontend Build
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.event.repository.fork == false
+    name: Build and Upload CIPP Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.18.1'
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: yarn install
+
+      # Build the project
+      - name: Build Project
+        run: npm run build
+
+      # Create ZIP File in a New Source Directory
+      - name: Prepare and Zip Build Files
+        run: |
+          mkdir -p build
+          cp staticwebapp.config.json out/
+          zip -r build/dev.zip out
+
+      # Upload to Azure Blob Storage
+      - name: Azure Blob Upload
+        uses: LanceMcCarthy/Action-AzureBlobUpload@v3.3.0
+        with:
+          connection_string: ${{ secrets.AZURE_CONNECTION_STRING }}
+          container_name: cipp
+          source_folder: build/
+          destination_folder: /
+          delete_if_exists: true
