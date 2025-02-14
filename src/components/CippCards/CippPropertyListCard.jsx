@@ -165,6 +165,7 @@ export const CippPropertyListCard = (props) => {
                   }
                 }}
                 disabled={handleActionDisabled(data, item)}
+                link={item.link}
               />
             ))}
         </ActionList>
