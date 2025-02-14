@@ -16,7 +16,7 @@ import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { ApiGetCall } from "../../api/ApiCall";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
-import { CheckCircle, Sync } from "@mui/icons-material";
+import { CheckCircle, OpenInNew, Sync } from "@mui/icons-material";
 import CippPermissionCheck from "../CippSettings/CippPermissionCheck";
 import { useQueryClient } from "@tanstack/react-query";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -265,12 +265,15 @@ export const CippDeploymentStep = (props) => {
                   }
                   onClick={() => openPopup(appId?.data?.refreshUrl)}
                   color="primary"
+                  startIcon={
+                    <OpenInNew />
+                  }
                 >
                   Refresh Graph Token
                 </Button>
                 <Button
                   onClick={() => appId.refetch()}
-                  variant="contained"
+                  variant="outlined"
                   color="primary"
                   startIcon={<Sync />}
                   disabled={appId.isFetching}
