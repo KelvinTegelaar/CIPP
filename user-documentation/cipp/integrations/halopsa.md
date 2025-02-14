@@ -20,11 +20,16 @@ description: Configuring the Halo PSA Ticketing integration
 10. Grant the application the permissions required for your purposes.\
     &#xNAN;_&#x47;enerally speaking you want to limit the API to only the permissions it needs. For CIPP this currently requires read:tickets, edit:tickets, read:customers, edit:customers._
 
-#### Enter credentials in CIPP
+#### Configure the HaloPSA Integration in CIPP
 
-Enter the information found in **Settings** > **CIPP** > **Extensions Settings** > **Halo PSA Ticketing** in CIPP. If you are self-hosting Halo, you can leave the HaloPSA Tenant blank.
-
-After entering the credentials, click **Test Extension.** If the test is successful Alerts will automatically become a HaloPSA ticket.
+1. In your CIPP instance head to **CIPP** > **Integrations** > **HALOPSA**
+2. Enter your HaloPSA URL in the **HaloPSA Resource Server URL** field adding /api at the end, for example *https://yourcompany.halopsa.com/api*
+3. Enter your HaloPSA URL in the **HaloPSA Authorisation Endpoint URL** field adding /auth at the end, for example *https://yourcompany.halopsa.com/auth*
+4. If you are self-hosting Halo, you can leave the HaloPSA Tenant blank, otherwise enter the first part of your HaloPSA URL in the ***HaloPSA Tenant** field, for example *yourcompany*
+5. Paste in the **Client ID** and **Client Secret** that you captured during the first part in to the respective fields
+6. After entering the credentials, click the **Test** button, if you get a green success banner then all good, but if you get a red error banner, double check the settings in both HaloPSA and CIPP and correct where necessary
+7. Make sure the **Enable Integration** button is enabled, and then click on the **Submit** button to save the config
+8. Map the tenants in CIPP to the customers in Halo in the **Tenant Mapping** screen, either manually or using automap.  Remember to click on the **Submit** button to save the mappings
 
 #### Ticket Type
 
