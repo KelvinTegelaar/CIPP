@@ -3,7 +3,7 @@ name: CIPP Frontend Build
 on:
   push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 permissions:
@@ -39,7 +39,7 @@ jobs:
         run: |
           mkdir -p build
           cp staticwebapp.config.json out/
-          zip -r build/latest.zip out
+          zip -r build/dev.zip out
 
       # Upload to Azure Blob Storage
       - name: Azure Blob Upload
@@ -50,4 +50,3 @@ jobs:
           source_folder: build/
           destination_folder: /
           delete_if_exists: true
-
