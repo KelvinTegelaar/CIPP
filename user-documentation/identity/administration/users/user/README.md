@@ -6,7 +6,7 @@ The View User page provides a comprehensive overview of user details and setting
 
 ### Overview
 
-* Primary display of user information
+* Primary display of user information including a quick link to view the user in Entra
 * Additional tabs at top for extended functionality (Edit, Compromise Remediation, etc.)
 * Inherits Actions dropdown from list users page
 
