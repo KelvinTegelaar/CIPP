@@ -29,10 +29,6 @@
     "mappingRequired": true,
     "links": [
       {
-        "name": "Register for beta",
-        "url": "https://go.cyberdrain.com/sherweb"
-      },
-      {
         "name": "Sherweb Cloud Services for MSPs",
         "url": "https://info.sherweb.com/sherweb-cloud-services-for-msps"
       }
@@ -495,7 +491,7 @@
         "label": "Enable Integration"
       },
       {
-        "type": "password",
+        "type": "textField",
         "name": "CFZTNA.ClientID",
         "label": "CloudFlare Tunnel Service Account Client ID"
       },
