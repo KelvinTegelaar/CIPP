@@ -1574,7 +1574,6 @@
     "name": "standards.AntiPhishPolicy",
     "cat": "Defender Standards",
     "tag": [
-      ,
       "CIS",
       "mdo_safeattachments",
       "mdo_highconfidencespamaction",
@@ -1783,7 +1782,6 @@
     "name": "standards.SafeAttachmentPolicy",
     "cat": "Defender Standards",
     "tag": [
-      ,
       "CIS",
       "mdo_safedocuments",
       "mdo_commonattachmentsfilter",
