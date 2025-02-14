@@ -2,7 +2,7 @@
   {
     "name": "standards.MailContacts",
     "cat": "Global Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Defines the email address to receive general updates and information related to M365 subscriptions. Leave a contact field blank if you do not want to update the contact information.",
     "docsDescription": "",
     "addedComponent": [
@@ -40,7 +40,7 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "tag": ["lowimpact", "CIS", "mip_search_auditlog"],
+    "tag": ["CIS", "mip_search_auditlog"],
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
@@ -52,7 +52,7 @@
   {
     "name": "standards.ProfilePhotos",
     "cat": "Global Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Controls whether users can set their own profile photos in Microsoft 365.",
     "docsDescription": "Controls whether users can set their own profile photos in Microsoft 365. When disabled, only User and Global administrators can update profile photos for users.",
     "addedComponent": [
@@ -83,7 +83,7 @@
   {
     "name": "standards.PhishProtection",
     "cat": "Global Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Adds branding to the logon page that only appears if the url is not login.microsoftonline.com. This potentially prevents AITM attacks via EvilNginx. This will also automatically generate alerts if a clone of your login page has been found when set to Remediate.",
     "addedComponent": [],
     "label": "Enable Phishing Protection system via branding CSS",
@@ -100,7 +100,7 @@
   {
     "name": "standards.Branding",
     "cat": "Global Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the branding for the tenant. This includes the login page, and the Office 365 portal.",
     "addedComponent": [
       {
@@ -156,7 +156,7 @@
   {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
-    "tag": ["lowimpact", "CIS", "CustomerLockBoxEnabled"],
+    "tag": ["CIS", "CustomerLockBoxEnabled"],
     "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
     "docsDescription": "Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
     "addedComponent": [],
@@ -169,7 +169,7 @@
   {
     "name": "standards.EnablePronouns",
     "cat": "Global Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables the Pronouns feature for the tenant. This allows users to set their pronouns in their profile.",
     "addedComponent": [],
     "label": "Enable Pronouns",
@@ -181,7 +181,7 @@
   {
     "name": "standards.AnonReportDisable",
     "cat": "Global Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Shows usernames instead of pseudo anonymised names in reports. This standard is required for reporting to work correctly.",
     "docsDescription": "Microsoft announced some APIs and reports no longer return names, to comply with compliance and legal requirements in specific countries. This proves an issue for a lot of MSPs because those reports are often helpful for engineers. This standard applies a setting that shows usernames in those API calls / reports.",
     "addedComponent": [],
@@ -194,7 +194,7 @@
   {
     "name": "standards.DisableGuestDirectory",
     "cat": "Global Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from seeing other users or guests in the directory.",
     "docsDescription": "Sets it so guests can view only their own user profile. Permission to view other users isn't allowed. Also restricts guest users from seeing the membership of groups they're in. See exactly what get locked down in the [Microsoft documentation.](https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions)",
     "addedComponent": [],
@@ -220,7 +220,7 @@
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global Standards",
-    "tag": ["mediumimpact", "CIS", "spo_idle_session_timeout"],
+    "tag": ["CIS", "spo_idle_session_timeout"],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": [
       {
@@ -262,7 +262,7 @@
   {
     "name": "standards.AuthMethodsSettings",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Configures the report suspicious activity settings and system credential preferences in the authentication methods policy.",
     "docsDescription": "Controls the authentication methods policy settings for reporting suspicious activity and system credential preferences. These settings help enhance the security of authentication in your organization.",
     "addedComponent": [
@@ -320,7 +320,7 @@
   {
     "name": "standards.AppDeploy",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Deploys selected applications to the tenant. Use a comma separated list of application IDs to deploy multiple applications. Permissions will be copied from the source application.",
     "docsDescription": "Uses the CIPP functionality that deploys applications across an entire tenant base as a standard.",
     "addedComponent": [
@@ -339,7 +339,7 @@
   {
     "name": "standards.laps",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
     "docsDescription": "Enables the LAPS functionality on the tenant. Prerequisite for using Windows LAPS via Azure AD.",
     "addedComponent": [],
@@ -352,7 +352,7 @@
   {
     "name": "standards.PWdisplayAppInformationRequiredState",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Enables the MS authenticator app to display information about the app that is requesting authentication. This displays the application name.",
     "docsDescription": "Allows users to use Passwordless with Number Matching and adds location information from the last request",
     "addedComponent": [],
@@ -365,7 +365,7 @@
   {
     "name": "standards.allowOTPTokens",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Allows you to use MS authenticator OTP token generator",
     "docsDescription": "Allows you to use Microsoft Authenticator OTP token generator. Useful for using the NPS extension as MFA on VPN clients.",
     "addedComponent": [],
@@ -378,7 +378,7 @@
   {
     "name": "standards.PWcompanionAppAllowedState",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the state of Authenticator Lite, Authenticator lite is a companion app for passwordless authentication.",
     "docsDescription": "Sets the Authenticator Lite state to enabled. This allows users to use the Authenticator Lite built into the Outlook app instead of the full Authenticator app.",
     "addedComponent": [
@@ -409,7 +409,7 @@
   {
     "name": "standards.EnableFIDO2",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables the FIDO2 authenticationMethod for the tenant",
     "docsDescription": "Enables FIDO2 capabilities for the tenant. This allows users to use FIDO2 keys like a Yubikey for authentication.",
     "addedComponent": [],
@@ -422,7 +422,7 @@
   {
     "name": "standards.EnableHardwareOAuth",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables the HardwareOath authenticationMethod for the tenant. This allows you to use hardware tokens for generating 6 digit MFA codes.",
     "docsDescription": "Enables Hardware OAuth tokens for the tenant. This allows users to use hardware tokens like a Yubikey for authentication.",
     "addedComponent": [],
@@ -435,7 +435,7 @@
   {
     "name": "standards.allowOAuthTokens",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Allows you to use any software OAuth token generator",
     "docsDescription": "Enables OTP Software OAuth tokens for the tenant. This allows users to use OTP codes generated via software, like a password manager to be used as an authentication method.",
     "addedComponent": [],
@@ -448,7 +448,7 @@
   {
     "name": "standards.TAP",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
     "docsDescription": "Enables Temporary Password generation for the tenant.",
     "addedComponent": [
@@ -479,7 +479,7 @@
   {
     "name": "standards.PasswordExpireDisabled",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact", "CIS", "PWAgePolicyNew"],
+    "tag": ["CIS", "PWAgePolicyNew"],
     "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "docsDescription": "Sets passwords to never expire for tenant, recommended to use in conjunction with secure password requirements.",
     "addedComponent": [],
@@ -492,7 +492,7 @@
   {
     "name": "standards.ExternalMFATrusted",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the state of the Cross-tenant access setting to trust external MFA. This allows guest users to use their home tenant MFA to access your tenant.",
     "addedComponent": [
       {
@@ -522,7 +522,7 @@
   {
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles. ",
     "docsDescription": "Users by default are allowed to create M365 tenants. This disables that so only admins can create new M365 tenants.",
     "addedComponent": [],
@@ -535,7 +535,7 @@
   {
     "name": "standards.EnableAppConsentRequests",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
     "docsDescription": "Enables the ability for users to request admin consent for applications. Should be used in conjunction with the \"Require admin consent for applications\" standards",
     "addedComponent": [
@@ -554,7 +554,7 @@
   {
     "name": "standards.NudgeMFA",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the state of the registration campaign for the tenant",
     "docsDescription": "Sets the state of the registration campaign for the tenant. If enabled nudges users to set up the Microsoft Authenticator during sign-in.",
     "addedComponent": [
@@ -591,7 +591,7 @@
   {
     "name": "standards.DisableM365GroupUsers",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "addedComponent": [],
@@ -604,7 +604,7 @@
   {
     "name": "standards.DisableAppCreation",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Disables the ability for users to create App registrations in the tenant.",
     "docsDescription": "Disables the ability for users to create applications in Entra. Done to prevent breached accounts from creating an app to maintain access to the tenant, even after the breached account has been secured.",
     "addedComponent": [],
@@ -672,7 +672,7 @@
   {
     "name": "standards.OauthConsent",
     "cat": "Entra (AAD) Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
     "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
     "addedComponent": [
@@ -692,7 +692,7 @@
   {
     "name": "standards.OauthConsentLowSec",
     "cat": "Entra (AAD) Standards",
-    "tag": ["mediumimpact", "IntegratedApps"],
+    "tag": ["IntegratedApps"],
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
     "docsDescription": "Allows users to consent to applications with low assigned risk.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
@@ -743,7 +743,7 @@
   {
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
-    "tag": ["highimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days.",
     "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "addedComponent": [
@@ -868,7 +868,7 @@
   {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Set the Outbound Spam Alert e-mail address",
     "docsDescription": "Sets the e-mail address to which outbound spam alerts are sent.",
     "addedComponent": [
@@ -887,7 +887,7 @@
   {
     "name": "standards.MessageExpiration",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the transport message configuration to timeout a message at 12 hours.",
     "docsDescription": "Expires messages in the transport queue after 12 hours. Makes the NDR for failed messages show up faster for users. Default is 24 hours.",
     "addedComponent": [],
@@ -900,7 +900,7 @@
   {
     "name": "standards.GlobalQuarantineNotifications",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the Global Quarantine Notification Interval to the selected value. Determines how often the quarantine notification is sent to users.",
     "docsDescription": "Sets the global quarantine notification interval for the tenant. This is the time between the quarantine notification emails are sent out to users. Default is 24 hours.",
     "addedComponent": [
@@ -934,7 +934,7 @@
   {
     "name": "standards.DisableTNEF",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Disables Transport Neutral Encapsulation Format (TNEF)/winmail.dat for the tenant. TNEF can cause issues if the recipient is not using a client supporting TNEF.",
     "docsDescription": "Disables Transport Neutral Encapsulation Format (TNEF)/winmail.dat for the tenant. TNEF can cause issues if the recipient is not using a client supporting TNEF. Cannot be overridden by the user. For more information, see [Microsoft's documentation.](https://learn.microsoft.com/en-us/exchange/mail-flow/content-conversion/tnef-conversion?view=exchserver-2019)",
     "addedComponent": [],
@@ -947,7 +947,7 @@
   {
     "name": "standards.FocusedInbox",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the default Focused Inbox state for the tenant. This can be overridden by the user.",
     "docsDescription": "Sets the default Focused Inbox state for the tenant. This can be overridden by the user in their Outlook settings. For more information, see [Microsoft's documentation.](https://support.microsoft.com/en-us/office/focused-inbox-for-outlook-f445ad7f-02f4-4294-a82e-71d8964e3978)",
     "addedComponent": [
@@ -977,7 +977,7 @@
   {
     "name": "standards.CloudMessageRecall",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the Cloud Message Recall state for the tenant. This allows users to recall messages from the cloud.",
     "docsDescription": "Sets the default state for Cloud Message Recall for the tenant. By default this is enabled. You can read more about the feature [here.](https://techcommunity.microsoft.com/t5/exchange-team-blog/cloud-based-message-recall-in-exchange-online/ba-p/3744714)",
     "addedComponent": [
@@ -1007,7 +1007,7 @@
   {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables auto-expanding archives for the tenant",
     "docsDescription": "Enables auto-expanding archives for the tenant. Does not enable archives for users.",
     "addedComponent": [],
@@ -1020,7 +1020,7 @@
   {
     "name": "standards.EnableOnlineArchiving",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables the In-Place Online Archive for all UserMailboxes with a valid license.",
     "addedComponent": [],
     "label": "Enable Online Archive for all users",
@@ -1032,7 +1032,7 @@
   {
     "name": "standards.EnableLitigationHold",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Enables litigation hold for all UserMailboxes with a valid license.",
     "addedComponent": [],
     "label": "Enable Litigation Hold for all users",
@@ -1044,7 +1044,7 @@
   {
     "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Adds or removes indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
     "docsDescription": "Adds or removes indicators to e-mail messages received from external senders in Outlook. You can read more about this feature on [Microsoft's Exchange Team Blog.](https://techcommunity.microsoft.com/t5/exchange-team-blog/native-external-sender-callouts-on-email-in-outlook/ba-p/2250098)",
     "addedComponent": [
@@ -1074,7 +1074,7 @@
   {
     "name": "standards.EnableMailTips",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS", "exo_mailtipsenabled"],
+    "tag": ["CIS", "exo_mailtipsenabled"],
     "helpText": "Enables all MailTips in Outlook. MailTips are the notifications Outlook and Outlook on the web shows when an email you create, meets some requirements",
     "addedComponent": [
       {
@@ -1094,7 +1094,7 @@
   {
     "name": "standards.TeamsMeetingsByDefault",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the default state for automatically turning meetings into Teams meetings for the tenant. This can be overridden by the user in Outlook.",
     "addedComponent": [
       {
@@ -1123,7 +1123,7 @@
   {
     "name": "standards.DisableViva",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Disables the daily viva reports for all users.",
     "docsDescription": "",
     "addedComponent": [],
@@ -1136,7 +1136,7 @@
   {
     "name": "standards.RotateDKIM",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Rotate DKIM keys that are 1024 bit to 2048 bit",
     "addedComponent": [],
     "label": "Rotate DKIM keys that are 1024 bit to 2048 bit",
@@ -1148,7 +1148,7 @@
   {
     "name": "standards.AddDKIM",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Enables DKIM for all domains that currently support it",
     "addedComponent": [],
     "label": "Enables DKIM for all domains that currently support it",
@@ -1160,7 +1160,7 @@
   {
     "name": "standards.EnableMailboxAuditing",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS", "exo_mailboxaudit"],
+    "tag": ["CIS", "exo_mailboxaudit"],
     "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. Disables audit bypass on all mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "docsDescription": "Enables mailbox auditing on tenant level and for all mailboxes. Disables audit bypass on all mailboxes. By default Microsoft does not enable mailbox auditing for Resource Mailboxes, Public Folder Mailboxes and DiscoverySearch Mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "addedComponent": [],
@@ -1173,7 +1173,7 @@
   {
     "name": "standards.SendReceiveLimitTenant",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the Send and Receive limits for new users. Valid values are 1MB to 150MB",
     "addedComponent": [
       {
@@ -1198,7 +1198,7 @@
   {
     "name": "standards.calDefault",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the default sharing level for the default calendar, for all users",
     "docsDescription": "Sets the default sharing level for the default calendar for all users in the tenant. You can read about the different sharing levels [here.](https://learn.microsoft.com/en-us/powershell/module/exchange/set-mailboxfolderpermission?view=exchange-ps#-accessrights)",
     "disabledFeatures": {
@@ -1269,7 +1269,7 @@
   {
     "name": "standards.DisableExternalCalendarSharing",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS", "exo_individualsharing"],
+    "tag": ["CIS", "exo_individualsharing"],
     "helpText": "Disables the ability for users to share their calendar with external users. Only for the default policy, so exclusions can be made if needed.",
     "docsDescription": "Disables external calendar sharing for the entire tenant. This is not a widely used feature, and it's therefore unlikely that this will impact users. Only for the default policy, so exclusions can be made if needed by making a new policy and assigning it to users.",
     "addedComponent": [],
@@ -1282,7 +1282,7 @@
   {
     "name": "standardsAutoAddProxy",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Automatically adds all available domains as a proxy address.",
     "docsDescription": "Automatically finds all available domain names in the tenant, and tries to add proxyaddresses based on the users UPN to each of these.",
     "addedComponent": [],
@@ -1294,7 +1294,7 @@
   {
     "name": "standards.DisableAdditionalStorageProviders",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS", "exo_storageproviderrestricted"],
+    "tag": ["CIS", "exo_storageproviderrestricted"],
     "helpText": "Disables the ability for users to open files in Outlook on the Web, from other providers such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.",
     "docsDescription": "Disables additional storage providers in OWA. This is to prevent users from using personal storage providers like Dropbox, Google Drive, etc. Usually this has little user impact.",
     "addedComponent": [],
@@ -1382,7 +1382,7 @@
   {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
-    "tag": ["mediumimpact", "CIS", "exo_outlookaddins"],
+    "tag": ["CIS", "exo_outlookaddins"],
     "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
     "docsDescription": "Disables users from being able to install add-ins in Outlook. Only admins are able to approve add-ins for the users. This is done to reduce the threat surface for data exfiltration.",
     "addedComponent": [],
@@ -1480,7 +1480,7 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "docsDescription": "Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact.",
     "addedComponent": [],
@@ -1493,7 +1493,7 @@
   {
     "name": "standards.EXODisableAutoForwarding",
     "cat": "Exchange Standards",
-    "tag": ["highimpact", "CIS", "mdo_autoforwardingmode", "mdo_blockmailforward"],
+    "tag": ["CIS", "mdo_autoforwardingmode", "mdo_blockmailforward"],
     "helpText": "Disables the ability for users to automatically forward e-mails to external recipients.",
     "docsDescription": "Disables the ability for users to automatically forward e-mails to external recipients. This is to prevent data exfiltration. Please check if there are any legitimate use cases for this feature before implementing, like forwarding invoices and such.",
     "addedComponent": [],
@@ -1526,7 +1526,7 @@
   {
     "name": "standards.QuarantineRequestAlert",
     "cat": "Defender Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message.",
     "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released.",
     "addedComponent": [
@@ -1545,7 +1545,7 @@
   {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
+    "tag": ["CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
     "helpText": "This creates a safelink policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
@@ -1574,7 +1574,6 @@
     "name": "standards.AntiPhishPolicy",
     "cat": "Defender Standards",
     "tag": [
-      "lowimpact",
       "CIS",
       "mdo_safeattachments",
       "mdo_highconfidencespamaction",
@@ -1783,7 +1782,6 @@
     "name": "standards.SafeAttachmentPolicy",
     "cat": "Defender Standards",
     "tag": [
-      "lowimpact",
       "CIS",
       "mdo_safedocuments",
       "mdo_commonattachmentsfilter",
@@ -1852,7 +1850,7 @@
   {
     "name": "standards.AtpPolicyForO365",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "This creates a Atp policy that enables Defender for Office 365 for SharePoint, OneDrive and Microsoft Teams.",
     "addedComponent": [
       {
@@ -1872,7 +1870,7 @@
   {
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS", "mdo_zapspam", "mdo_zapphish", "mdo_zapmalware"],
+    "tag": ["CIS", "mdo_zapspam", "mdo_zapphish", "mdo_zapmalware"],
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
@@ -2152,7 +2150,7 @@
   {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement, retired devices are removed from Intune after the specified number of days.",
     "addedComponent": [
       {
@@ -2170,7 +2168,7 @@
   {
     "name": "standards.intuneBrandingProfile",
     "cat": "Intune Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the branding profile for the Intune Company Portal app. This is a tenant wide setting and overrules any settings set on the app level.",
     "addedComponent": [
       {
@@ -2242,7 +2240,7 @@
   {
     "name": "standards.IntuneComplianceSettings",
     "cat": "Intune Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the mark devices with no compliance policy assigned as compliance/non compliant and Compliance status validity period.",
     "addedComponent": [
       {
@@ -2307,7 +2305,7 @@
   {
     "name": "standards.DeletedUserRentention",
     "cat": "SharePoint Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the retention period for deleted users OneDrive to the specified period of time. The default is 30 days.",
     "docsDescription": "When a OneDrive user gets deleted, the personal SharePoint site is saved for selected amount of time that data can be retrieved from it.",
     "addedComponent": [
@@ -2377,7 +2375,7 @@
   {
     "name": "standards.TenantDefaultTimezone",
     "cat": "SharePoint Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Sets the default timezone for the tenant. This will be used for all new users and sites.",
     "addedComponent": [
       {
@@ -2395,7 +2393,7 @@
   {
     "name": "standards.SPAzureB2B",
     "cat": "SharePoint Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
     "addedComponent": [],
     "label": "Enable SharePoint and OneDrive integration with Azure AD B2B",
@@ -2407,7 +2405,7 @@
   {
     "name": "standards.SPDisallowInfectedFiles",
     "cat": "SharePoint Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Ensure Office 365 SharePoint infected files are disallowed for download",
     "addedComponent": [],
     "label": "Disallow downloading infected files from SharePoint",
@@ -2419,7 +2417,7 @@
   {
     "name": "standards.SPDisableLegacyWorkflows",
     "cat": "SharePoint Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Disables the creation of new SharePoint 2010 and 2013 classic workflows and removes the 'Return to classic SharePoint' link on modern SharePoint list and library pages.",
     "addedComponent": [],
     "label": "Disable Legacy Workflows",
@@ -2431,7 +2429,7 @@
   {
     "name": "standards.SPDirectSharing",
     "cat": "SharePoint Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Ensure default link sharing is set to Direct in SharePoint and OneDrive",
     "addedComponent": [],
     "label": "Default sharing to Direct users",
@@ -2443,7 +2441,7 @@
   {
     "name": "standards.SPExternalUserExpiration",
     "cat": "SharePoint Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Ensure guest access to a site or OneDrive will expire automatically",
     "addedComponent": [
       {
@@ -2461,7 +2459,7 @@
   {
     "name": "standards.SPEmailAttestation",
     "cat": "SharePoint Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Ensure reauthentication with verification code is restricted",
     "addedComponent": [
       {
@@ -2539,7 +2537,7 @@
   {
     "name": "standards.DisableSharePointLegacyAuth",
     "cat": "SharePoint Standards",
-    "tag": ["mediumimpact", "CIS", "spo_legacy_auth"],
+    "tag": ["CIS", "spo_legacy_auth"],
     "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
     "docsDescription": "Disables the ability for users and applications to access SharePoint via legacy basic authentication. This will likely not have any user impact, but will block systems/applications depending on basic auth or the SharePointOnlineCredentials class.",
     "addedComponent": [],
@@ -2552,7 +2550,7 @@
   {
     "name": "standards.sharingCapability",
     "cat": "SharePoint Standards",
-    "tag": ["highimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Sets the default sharing level for OneDrive and SharePoint. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [
       {
@@ -2589,7 +2587,7 @@
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint Standards",
-    "tag": ["highimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "docsDescription": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [],
@@ -2657,7 +2655,7 @@
   {
     "name": "standards.sharingDomainRestriction",
     "cat": "SharePoint Standards",
-    "tag": ["highimpact", "CIS"],
+    "tag": ["CIS"],
     "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
     "addedComponent": [
       {
@@ -2696,7 +2694,7 @@
   {
     "name": "standards.TeamsGlobalMeetingPolicy",
     "cat": "Teams Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl",
     "addedComponent": [
       {
@@ -2762,7 +2760,7 @@
   {
     "name": "standards.TeamsEmailIntegration",
     "cat": "Teams Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Should users be allowed to send emails directly to a channel email addresses?",
     "docsDescription": "Teams channel email addresses are an optional feature that allows users to email the Teams channel directly.",
     "addedComponent": [
@@ -2781,7 +2779,7 @@
   {
     "name": "standards.TeamsExternalFileSharing",
     "cat": "Teams Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Ensure external file sharing in Teams is enabled for only approved cloud storage services.",
     "addedComponent": [
       {
@@ -2819,7 +2817,7 @@
   {
     "name": "standards.TeamsEnrollUser",
     "cat": "Teams Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "helpText": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
     "docsDescription": "Controls whether users with this policy can set the voice profile capture and enrollment through the Recognition tab in their Teams client settings.",
     "addedComponent": [
@@ -3020,7 +3018,7 @@
   {
     "name": "standards.AutopilotStatusPage",
     "cat": "Device Management Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -3091,7 +3089,7 @@
   {
     "name": "standards.AutopilotProfile",
     "cat": "Device Management Standards",
-    "tag": ["lowimpact"],
+    "tag": [],
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -3197,7 +3195,7 @@
       "warn": true,
       "remediate": false
     },
-    "impact": "High",
+    "impact": "High Impact",
     "helpText": "Deploy and manage Intune templates across devices.",
     "addedComponent": [
       {
@@ -3242,7 +3240,7 @@
       "warn": true,
       "remediate": false
     },
-    "impact": "Medium",
+    "impact": "Medium Impact",
     "helpText": "Deploy transport rules to manage email flow.",
     "addedComponent": [
       {
@@ -3268,7 +3266,7 @@
       "warn": true,
       "remediate": false
     },
-    "impact": "High",
+    "impact": "High Impact",
     "helpText": "Manage conditional access policies for better security.",
     "addedComponent": [
       {
@@ -3304,7 +3302,7 @@
       "warn": true,
       "remediate": false
     },
-    "impact": "Medium",
+    "impact": "Medium Impact",
     "helpText": "Deploy and manage Exchange connectors.",
     "addedComponent": [
       {
@@ -3330,7 +3328,7 @@
       "warn": true,
       "remediate": false
     },
-    "impact": "Medium",
+    "impact": "Medium Impact",
     "helpText": "Deploy and manage group templates.",
     "addedComponent": [
       {
