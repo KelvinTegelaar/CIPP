@@ -64,6 +64,10 @@ export const CIPPTableToptoolbar = ({
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = useSettings()?.currentTenant;
 
+  useEffect(() => {
+    //if usedData changes, deselect all rows
+    table.toggleAllRowsSelected(false);
+  }, [usedData]);
   //if the currentTenant Switches, remove Graph filters
   useEffect(() => {
     if (currentTenant) {
