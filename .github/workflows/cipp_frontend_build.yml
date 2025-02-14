@@ -38,6 +38,7 @@ jobs:
       - name: Prepare and Zip Build Files
         run: |
           mkdir -p build
+          cp staticwebapp.config.json out/
           zip -r build/latest.zip out
 
       # Upload to Azure Blob Storage
