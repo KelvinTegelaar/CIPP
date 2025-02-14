@@ -238,14 +238,17 @@ function CippJsonView({
           <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object), null, 2)} />
         ) : (
           <Grid container spacing={2}>
-            {drilldownData.slice(0, 4).map((data, index) => (
+            {drilldownData?.map((data, index) => (
               <Grid
                 item
                 xs={12}
                 sm={type === "intune" ? 12 : 3}
                 key={index}
                 sx={{
-                  borderRight: index < 3 && type !== "intune" ? "1px solid lightgrey" : "none",
+                  //give a top border if the item is > 4, and add spacing between the top and bottom items
+                  paddingTop: index === 0 ? 0 : 2,
+                  borderTop: index >= 4 && type !== "intune" ? "1px solid lightgrey" : "none",
+                  borderRight: index < drilldownData.length - 1 ? "1px solid lightgrey" : "none",
                   overflowWrap: "anywhere",
                   whiteSpace: "pre-line",
                   paddingRight: 2,
