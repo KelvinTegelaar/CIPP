@@ -274,7 +274,7 @@ export const CippDataTable = (props) => {
               refreshFunction={refreshFunction}
               setColumnVisibility={setColumnVisibility}
               filters={filters}
-              queryKeys={queryKey}
+              queryKeys={queryKey ? queryKey : title}
               graphFilterData={graphFilterData}
               setGraphFilterData={setGraphFilterData}
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
