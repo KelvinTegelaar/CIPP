@@ -341,8 +341,7 @@ export const CippDeploymentStep = (props) => {
               placeholder="Enter the application secret. Leave blank to retain previous key."
               validators={{
                 validate: (value) => {
-                  const secretRegex =
-                    /^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)[0-9a-zA-Z]{40}$/;
+                  const secretRegex = /^(?!^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)[A-Za-z0-9-_~.]{20,}$/;
                   return (
                     value === "" ||
                     secretRegex.test(value) ||
