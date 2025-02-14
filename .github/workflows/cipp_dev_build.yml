@@ -1,13 +1,10 @@
-name: CIPP Frontend Build
+name: CIPP Frontend Dev Build
 
 on:
   push:
     branches:
       - dev
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   build:
@@ -18,11 +15,11 @@ jobs:
     steps:
       # Checkout the repository
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       # Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4.2.0
         with:
           node-version: '20.18.1'
 
@@ -43,7 +40,7 @@ jobs:
 
       # Upload to Azure Blob Storage
       - name: Azure Blob Upload
-        uses: LanceMcCarthy/Action-AzureBlobUpload@v3.3.0
+        uses: LanceMcCarthy/Action-AzureBlobUpload@v3.3.1
         with:
           connection_string: ${{ secrets.AZURE_CONNECTION_STRING }}
           container_name: cipp
