@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - main
-      - master
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
-      - master
 
 jobs:
   build_and_deploy_job:
@@ -24,7 +22,7 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_62BE25734BA4444FAD7664AD8D36E805 }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BLUE_GROUND_0D26E4210 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/"
@@ -40,5 +38,5 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_62BE25734BA4444FAD7664AD8D36E805 }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BLUE_GROUND_0D26E4210 }}
           action: "close"
