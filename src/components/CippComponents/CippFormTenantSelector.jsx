@@ -3,6 +3,7 @@ import { CippFormComponent } from "./CippFormComponent";
 
 export const CippFormTenantSelector = ({
   formControl,
+  componentType='autoComplete',
   allTenants = false,
   type = "multiple",
   name = "tenantFilter",
@@ -23,7 +24,7 @@ export const CippFormTenantSelector = ({
 
   return (
     <CippFormComponent
-      type="autoComplete"
+      type={componentType}
       name={name}
       formControl={formControl}
       placeholder="Select a tenant"
