@@ -1311,6 +1311,25 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.AntiSpamSafeList",
+    "cat": "Defender Standards",
+    "tag": [],
+    "helpText": "Sets the anti-spam connection filter policy option 'safe list' in Defender.",
+    "docsDescription": "Sets [Microsoft's built-in 'safe list'](https://learn.microsoft.com/en-us/powershell/module/exchange/set-hostedconnectionfilterpolicy?view=exchange-ps#-enablesafelist) in the anti-spam connection filter policy, rather than setting a custom safe/block list of IPs.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.AntiSpamSafeList.EnableSafeList",
+        "label": "Enable Safe List"
+      }
+    ],
+    "label": "Set Anti-Spam Connection Filter Safe List",
+    "impact": "Medium Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-HostedConnectionFilterPolicy \"Default\" -EnableSafeList $true",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.ShortenMeetings",
     "cat": "Exchange Standards",
     "tag": [],
