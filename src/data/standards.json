@@ -1280,7 +1280,7 @@
     "recommendedBy": ["CIS"]
   },
   {
-    "name": "standardsAutoAddProxy",
+    "name": "standards.AutoAddProxy",
     "cat": "Exchange Standards",
     "tag": ["CIS"],
     "helpText": "Automatically adds all available domains as a proxy address.",
@@ -1290,7 +1290,12 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "Set-Mailbox -EmailAddresses @{add=$EmailAddress}",
-    "recommendedBy": []
+    "recommendedBy": [],
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    }
   },
   {
     "name": "standards.DisableAdditionalStorageProviders",
