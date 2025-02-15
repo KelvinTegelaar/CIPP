@@ -270,6 +270,19 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
   }
 
+  if (cellName === "Parameters.ScheduledBackupValues") {
+    return isText ? (
+      JSON.stringify(data)
+    ) : (
+      <CippDataTableButton
+        data={Object.keys(data).map((key) => {
+          return { key, value: data[key] };
+        })}
+        tableTitle={getCippTranslation(cellName)}
+      />
+    );
+  }
+
   // Handle null or undefined data
   if (data === null || data === undefined) {
     return isText ? (
@@ -439,9 +452,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
           variant="outlined"
           label={data}
           size="small"
-          color={
-            data === "private" ? "error" :data === "public" ? "success" : "primary"
-          }
+          color={data === "private" ? "error" : data === "public" ? "success" : "primary"}
           sx={{ textTransform: "capitalize" }}
         />
       );
