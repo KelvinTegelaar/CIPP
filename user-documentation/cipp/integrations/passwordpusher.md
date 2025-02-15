@@ -1,17 +1,14 @@
 # PasswordPusher
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+Password Push integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords. 
+If you are a Hosted PWPush Pro customer you can also select an account for branding if you enable Bearer Authentication. 
+Self-Hosted must use the Email Address and API Key method for authenticated pushes.
 
-### **Looking for documentation contributors**
+*Currently
+PWPUSH website policy.
+Force the default value?
+Forces the use of this option with the default value for all account members. It cannot be changed by account members.
+Currently when enabled will break the pwpush url. Dont turn on for now.
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
-
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
-
-***
-
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+**The policy in Password Pusher only applies to the password generator on the front-end of the site which is only a helper / convenience tool.
+Cipp Password Policy reside in cipp -> Applications -> General -> Tab Password Styles.
