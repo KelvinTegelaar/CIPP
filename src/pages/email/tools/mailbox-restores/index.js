@@ -16,7 +16,7 @@ const Page = () => {
       icon: <PlayArrow />,
       data: {
         Identity: "Identity",
-        Action: "Resume",
+        Action: "!Resume",
       },
       confirmText: "Are you sure you want to resume this restore request?",
       color: "info",
@@ -28,7 +28,7 @@ const Page = () => {
       icon: <Pause />,
       data: {
         Identity: "Identity",
-        Action: "Suspend",
+        Action: "!Suspend",
       },
       confirmText: "Are you sure you want to suspend this restore request?",
       color: "warning",
@@ -40,7 +40,7 @@ const Page = () => {
       icon: <Delete />,
       data: {
         Identity: "Identity",
-        Action: "Remove",
+        Action: "!Remove",
       },
       confirmText: "Are you sure you want to remove this restore request?",
       color: "danger",

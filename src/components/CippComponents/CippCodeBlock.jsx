@@ -25,7 +25,7 @@ const CodeContainer = styled("div")`
 export const CippCodeBlock = (props) => {
   const {
     code,
-    language = "javascript",
+    language = "json",
     showLineNumbers = false,
     startingLineNumber = 1,
     wrapLongLines = true,
@@ -47,7 +47,7 @@ export const CippCodeBlock = (props) => {
       </div>
       {type === "editor" && (
         <Editor
-          defaultLanguage="json"
+          defaultLanguage={language}
           defaultValue={code}
           theme={currentTheme === "dark" ? "vs-dark" : "vs-light"}
           height={editorHeight}

@@ -1,4 +1,4 @@
-import { DeveloperMode, Sync, Tune, ViewColumn } from "@mui/icons-material";
+import { DeveloperMode, SevereCold, Sync, Tune, ViewColumn } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -64,6 +64,10 @@ export const CIPPTableToptoolbar = ({
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = useSettings()?.currentTenant;
 
+  useEffect(() => {
+    //if usedData changes, deselect all rows
+    table.toggleAllRowsSelected(false);
+  }, [usedData]);
   //if the currentTenant Switches, remove Graph filters
   useEffect(() => {
     if (currentTenant) {
@@ -80,6 +84,10 @@ export const CIPPTableToptoolbar = ({
       setColumnVisibility(settings?.columnDefaults?.[pageName]);
     }
   }, [settings?.columnDefaults?.[pageName], router, usedColumns]);
+
+  useEffect(() => {
+    setOriginalSimpleColumns(simpleColumns);
+  }, [simpleColumns]);
 
   const presetList = ApiGetCall({
     url: "/api/ListGraphExplorerPresets",
@@ -254,7 +262,7 @@ export const CIPPTableToptoolbar = ({
       // update filters to include graph explorer presets
       setFilterList([...filters, ...graphPresetList]);
     }
-  }, [presetList?.isSuccess]);
+  }, [presetList?.isSuccess, simpleColumns]);
 
   return (
     <>
@@ -442,6 +450,11 @@ export const CIPPTableToptoolbar = ({
         </Box>
         <Box>
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
+            {getRequestData?.data?.pages?.[0].Metadata?.ColdStart === true && (
+              <Tooltip title="Function App cold start was detected, data takes a little longer to retrieve on first load.">
+                <SevereCold />
+              </Tooltip>
+            )}
             {actions && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
               <>
                 <Button
@@ -529,13 +542,43 @@ export const CIPPTableToptoolbar = ({
         size="md"
         title="Edit Filters"
         visible={filterCanvasVisible}
-        onClose={() => setFilterCanvasVisible(false)}
+        onClose={() => setFilterCanvasVisible(!filterCanvasVisible)}
       >
         <CippGraphExplorerFilter
           endpointFilter={api?.data?.Endpoint}
           onSubmitFilter={(filter) => {
             setTableFilter(filter, "graph", "Custom Filter");
-            setFilterCanvasVisible(false);
+            if (filter?.$select) {
+              let selectedColumns = [];
+              if (Array.isArray(filter?.$select)) {
+                selectedColumns = filter?.$select;
+              } else {
+                selectedColumns = filter?.$select.split(",");
+              }
+              const setNestedVisibility = (col) => {
+                if (typeof col === "object" && col !== null) {
+                  Object.keys(col).forEach((key) => {
+                    if (usedColumns.includes(key.trim())) {
+                      setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
+                      setNestedVisibility(col[key]);
+                    }
+                  });
+                } else {
+                  if (usedColumns.includes(col.trim())) {
+                    setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
+                  }
+                }
+              };
+              if (selectedColumns.length > 0) {
+                setConfiguredSimpleColumns(selectedColumns);
+                selectedColumns.forEach((col) => {
+                  setNestedVisibility(col);
+                });
+              }
+            } else {
+              setConfiguredSimpleColumns(originalSimpleColumns);
+            }
+            setFilterCanvasVisible(!filterCanvasVisible);
           }}
           component="card"
         />
