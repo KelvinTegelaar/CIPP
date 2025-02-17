@@ -18,7 +18,7 @@ const Page = () => {
     },
     {
       label: "Block Sign In",
-      type: "GET",
+      type: "POST",
       icon: <Block />,
       url: "/api/ExecDisableUser",
       data: { ID: "id" },
@@ -28,7 +28,7 @@ const Page = () => {
     },
     {
       label: "Unblock Sign In",
-      type: "GET",
+      type: "POST",
       icon: <LockOpen />,
       url: "/api/ExecDisableUser",
       data: { ID: "id", Enable: true },
@@ -62,7 +62,7 @@ const Page = () => {
         "city",
         "state",
         "countryOrRegion",
-        "hiddenFromAddressListsEnabled"
+        "hiddenFromAddressListsEnabled",
       ]}
       cardButton={
         <Button

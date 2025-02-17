@@ -237,7 +237,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Block Sign In",
-      type: "GET",
+      type: "POST",
       icon: <Block />,
       url: "/api/ExecDisableUser",
       data: { ID: "id" },
@@ -247,7 +247,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Unblock Sign In",
-      type: "GET",
+      type: "POST",
       icon: <LockOpen />,
       url: "/api/ExecDisableUser",
       data: { ID: "id", Enable: true },
