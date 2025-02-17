@@ -35,7 +35,7 @@ const Page = () => {
     },
     {
       label: "Send MFA Push",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecSendPush",
       data: {
         UserEmail: "UPN",
