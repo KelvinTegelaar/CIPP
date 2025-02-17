@@ -68,7 +68,7 @@ const Page = () => {
     },
     {
       label: "Convert to Room Mailbox",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecConvertToRoomMailbox",
       icon: <Room />,
       data: {
