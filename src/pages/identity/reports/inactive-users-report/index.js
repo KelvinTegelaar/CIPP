@@ -32,7 +32,7 @@ const Page = () => {
     },
     {
       label: "Delete User",
-      type: "GET",
+      type: "POST",
       icon: <TrashIcon />,
       url: "/api/RemoveUser",
       data: { ID: "azureAdUserId" },
