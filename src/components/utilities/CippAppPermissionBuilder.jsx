@@ -34,7 +34,14 @@ import { Editor } from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
 import { CippCallout } from '../layout'
 
-const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitting }) => {
+const CippAppPermissionBuilder = ({
+  onSubmit,
+  currentPermissions = {},
+  isSubmitting,
+  colSize = 8,
+  removePermissionConfirm = true,
+  appDisplayName = 'CIPP-SAM',
+}) => {
   const [selectedApp, setSelectedApp] = useState([])
   const [permissionsImported, setPermissionsImported] = useState(false)
   const [newPermissions, setNewPermissions] = useState({})
@@ -42,6 +49,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
   const [manifestVisible, setManifestVisible] = useState(false)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const [calloutMessage, setCalloutMessage] = useState(null)
+  const [initialPermissions, setInitialPermissions] = useState()
 
   const {
     data: servicePrincipals = [],
@@ -52,42 +60,55 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
   } = useGenericGetRequestQuery({
     path: 'api/ExecServicePrincipals',
   })
-
   const [createServicePrincipal, createResult] = useLazyGenericGetRequestQuery()
 
   const removeServicePrincipal = (appId) => {
     var servicePrincipal = selectedApp.find((sp) => sp?.appId === appId)
     var newServicePrincipals = selectedApp.filter((sp) => sp?.appId !== appId)
 
-    ModalService.confirm({
-      title: 'Remove Service Principal',
-      body: `Are you sure you want to remove ${servicePrincipal.displayName}?`,
-      onConfirm: () => {
-        setSelectedApp(newServicePrincipals)
-        var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
-        delete updatedPermissions.Permissions[appId]
-        setNewPermissions(updatedPermissions)
-      },
-    })
+    if (removePermissionConfirm) {
+      ModalService.confirm({
+        title: 'Remove Service Principal',
+        body: `Are you sure you want to remove ${servicePrincipal.displayName}?`,
+        onConfirm: () => {
+          setSelectedApp(newServicePrincipals)
+          var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+          delete updatedPermissions.Permissions[appId]
+          setNewPermissions(updatedPermissions)
+        },
+      })
+    } else {
+      setSelectedApp(newServicePrincipals)
+      var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+      delete updatedPermissions.Permissions[appId]
+      setNewPermissions(updatedPermissions)
+    }
   }
 
   const confirmReset = () => {
-    ModalService.confirm({
-      title: 'Reset to Default',
-      body: 'Are you sure you want to reset all permissions to default?',
-      onConfirm: () => {
-        setSelectedApp([])
-        setPermissionsImported(false)
-        setManifestVisible(false)
-        setCalloutMessage('Permissions reset to default.')
-      },
-    })
+    if (removePermissionConfirm) {
+      ModalService.confirm({
+        title: 'Reset to Default',
+        body: 'Are you sure you want to reset all permissions to default?',
+        onConfirm: () => {
+          setSelectedApp([])
+          setPermissionsImported(false)
+          setManifestVisible(false)
+          setCalloutMessage('Permissions reset to default.')
+        },
+      })
+    } else {
+      setSelectedApp([])
+      setPermissionsImported(false)
+      setManifestVisible(false)
+      setCalloutMessage('Permissions reset to default.')
+    }
   }
 
   const handleSubmit = (values) => {
     if (onSubmit) {
       var postBody = {
-        Permissions: newPermissions,
+        Permissions: newPermissions.Permissions,
       }
       onSubmit(postBody)
     }
@@ -127,30 +148,43 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
   }
 
   const removePermissionRow = (servicePrincipal, permissionType, permissionId, permissionValue) => {
-    // modal confirm
-    ModalService.confirm({
-      title: 'Remove Permission',
-      body: `Are you sure you want to remove the permission: ${permissionValue}?`,
-      onConfirm: () => {
-        var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
-        var currentPermission = updatedPermissions?.Permissions[servicePrincipal][permissionType]
-        var newPermission = []
-        if (currentPermission) {
-          currentPermission.map((perm) => {
-            if (perm.id !== permissionId) {
-              newPermission.push(perm)
-            }
-          })
-        }
-        updatedPermissions.Permissions[servicePrincipal][permissionType] = newPermission
-        setNewPermissions(updatedPermissions)
-      },
-    })
+    if (removePermissionConfirm) {
+      ModalService.confirm({
+        title: 'Remove Permission',
+        body: `Are you sure you want to remove the permission: ${permissionValue}?`,
+        onConfirm: () => {
+          var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+          var currentPermission = updatedPermissions?.Permissions[servicePrincipal][permissionType]
+          var newPermission = []
+          if (currentPermission) {
+            currentPermission.map((perm) => {
+              if (perm.id !== permissionId) {
+                newPermission.push(perm)
+              }
+            })
+          }
+          updatedPermissions.Permissions[servicePrincipal][permissionType] = newPermission
+          setNewPermissions(updatedPermissions)
+        },
+      })
+    } else {
+      var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+      var currentPermission = updatedPermissions?.Permissions[servicePrincipal][permissionType]
+      var newPermission = []
+      if (currentPermission) {
+        currentPermission.map((perm) => {
+          if (perm.id !== permissionId) {
+            newPermission.push(perm)
+          }
+        })
+      }
+      updatedPermissions.Permissions[servicePrincipal][permissionType] = newPermission
+      setNewPermissions(updatedPermissions)
+    }
   }
 
-  const generateManifest = (appDisplayName = 'CIPP-SAM', prompt = false) => {
-    if (prompt) {
-      // modal input form for appDisplayName
+  const generateManifest = ({ appDisplayName = 'CIPP-SAM', prompt = false }) => {
+    if (prompt || appDisplayName === '') {
       ModalService.prompt({
         title: 'Generate Manifest',
         body: 'Please enter the display name for the application.',
@@ -337,6 +371,11 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
           },
         },
       })
+    } else if (spSuccess & (currentPermissions !== initialPermissions)) {
+      setSelectedApp([])
+      setNewPermissions(currentPermissions)
+      setInitialPermissions(currentPermissions)
+      setPermissionsImported(false)
     } else if (spSuccess && initialAppIds.length > 0 && permissionsImported == false) {
       var newApps = []
       initialAppIds?.map((appId) => {
@@ -350,10 +389,12 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
       })
       setSelectedApp(newApps)
       setNewPermissions(currentPermissions)
+      setInitialPermissions(currentPermissions)
       setPermissionsImported(true)
     }
   }, [
     currentPermissions,
+    initialPermissions,
     permissionsImported,
     spSuccess,
     selectedApp,
@@ -361,12 +402,21 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
     setSelectedApp,
     setPermissionsImported,
     setNewPermissions,
+    setInitialPermissions,
   ])
 
   const ApiPermissionRow = ({ servicePrincipal = null }) => {
+    const {
+      data: servicePrincipalData = [],
+      isFetching: spFetching,
+      isSuccess: spIdSuccess,
+    } = useGenericGetRequestQuery({
+      path: 'api/ExecServicePrincipals?Id=' + servicePrincipal.id,
+    })
+
     return (
       <>
-        {spSuccess && servicePrincipal !== null && (
+        {spSuccess && servicePrincipal !== null && spIdSuccess && (
           <CRow>
             <CCol xl={12}>
               <CRow>
@@ -414,7 +464,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                                       '.applicationPermissions'
                                     }
                                     label="Application Permissions"
-                                    values={servicePrincipal?.appRoles
+                                    values={servicePrincipalData?.Results?.appRoles
                                       ?.filter((role) => {
                                         return newPermissions?.Permissions[
                                           servicePrincipal.appId
@@ -481,8 +531,9 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                             },
                             {
                               selector: (row) =>
-                                servicePrincipal.appRoles.find((role) => role.id === row.id)
-                                  .description,
+                                servicePrincipalData?.Results?.appRoles.find(
+                                  (role) => role.id === row.id,
+                                ).description,
                               name: 'Description',
                               cell: cellGenericFormatter({ wrap: true }),
                               maxWidth: '60%',
@@ -534,7 +585,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
               </CRow>
               <CRow>
                 <CCol xl={12}>
-                  {servicePrincipal?.publishedPermissionScopes?.length == 0 && (
+                  {servicePrincipalData?.Results?.publishedPermissionScopes?.length == 0 && (
                     <CCallout color="warning">
                       <FontAwesomeIcon icon="exclamation-triangle" className="me-2" />
                       No Published Delegated Permissions found.
@@ -551,8 +602,8 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                               }
                               label="Delegated Permissions"
                               values={
-                                servicePrincipal?.publishedPermissionScopes?.length > 0
-                                  ? servicePrincipal?.publishedPermissionScopes
+                                servicePrincipalData?.Results?.publishedPermissionScopes?.length > 0
+                                  ? servicePrincipalData?.Results?.publishedPermissionScopes
                                       .filter((scopes) => {
                                         return newPermissions?.Permissions[
                                           servicePrincipal.appId
@@ -621,7 +672,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                         },
                         {
                           selector: (row) =>
-                            servicePrincipal.publishedPermissionScopes.find(
+                            servicePrincipalData?.Results?.publishedPermissionScopes.find(
                               (scope) => scope?.id === row?.id,
                             )?.userConsentDescription ?? 'No Description',
                           name: 'Description',
@@ -679,7 +730,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
             return (
               <CForm onSubmit={handleSubmit}>
                 <CRow className="mb-3">
-                  <CCol xl={8} md={12} className="mb-3">
+                  <CCol xl={colSize} md={12} className="mb-3">
                     <CRow className="mb-3">
                       <CCol xl={8}>
                         {servicePrincipals?.Metadata?.Success && (
@@ -738,7 +789,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                         <CTooltip content="Download Manifest">
                           <CButton
                             onClick={() => {
-                              generateManifest()
+                              generateManifest({ appDisplayName: appDisplayName })
                             }}
                             className={`circular-button`}
                             title={'+'}
@@ -764,7 +815,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                       title="Import Manifest"
                       id="importManifest"
                       visible={manifestVisible}
-                      onHide={() => {
+                      hideFunction={() => {
                         setManifestVisible(false)
                       }}
                       addedClass="offcanvas-large"
@@ -878,6 +929,9 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                                             Object.keys(
                                               newPermissions?.MissingPermissions[perm],
                                             ).map((type) => {
+                                              if (!updatedPermissions.Permissions[perm][type]) {
+                                                updatedPermissions.Permissions[perm][type] = []
+                                              }
                                               newPermissions?.MissingPermissions[perm][type].map(
                                                 (p) => {
                                                   updatedPermissions.Permissions[perm][type].push(p)
@@ -957,6 +1011,9 @@ CippAppPermissionBuilder.propTypes = {
   onSubmit: PropTypes.func,
   currentPermissions: PropTypes.object,
   isSubmitting: PropTypes.bool,
+  colSize: PropTypes.number,
+  removePermissionConfirm: PropTypes.bool,
+  appDisplayName: PropTypes.string,
 }
 
 export default CippAppPermissionBuilder

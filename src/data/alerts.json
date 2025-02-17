@@ -20,6 +20,11 @@
     "recommendedRunInterval": "30m"
   },
   {
+    "name": "InactiveLicensedUsers",
+    "label": "Alert on licensed users that have not logged in for 90 days",
+    "recommendedRunInterval": "1d"
+  },
+  {
     "name": "QuotaUsed",
     "label": "Alert on % mailbox quota used",
     "requiresInput": true,

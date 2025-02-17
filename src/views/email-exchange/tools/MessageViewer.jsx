@@ -23,7 +23,7 @@ import DOMPurify from 'dompurify'
 import ReactHtmlParser from 'react-html-parser'
 import CippDropzone from 'src/components/utilities/CippDropzone'
 
-const MessageViewer = ({ emailSource }) => {
+export const MessageViewer = ({ emailSource }) => {
   const [emlContent, setEmlContent] = useState(null)
   const [emlError, setEmlError] = useState(false)
   const [messageHtml, setMessageHtml] = useState('')

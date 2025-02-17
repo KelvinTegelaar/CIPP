@@ -257,6 +257,10 @@ h3.underline:after {
   }
 }
 
+.modal {
+  z-index: 1555 !important;
+}
+
 .modal-content {
   border-radius: var(--cipp-border-radius);
 }
