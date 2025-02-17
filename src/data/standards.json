@@ -2274,6 +2274,37 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.MDMScope",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Configures the MDM user scope. This also sets the terms of use, discovery and compliance URL to default URLs.",
+    "docsDescription": "Configures the MDM user scope. This also sets the terms of use URL, discovery URL and compliance URL to default values.",
+    "addedComponent": [
+      {
+        "name": "appliesTo",
+        "label": "MDM User Scope?",
+        "type": "radio",
+        "options": [
+          { "label": "All", "value": "all" },
+          { "label": "None", "value": "none" },
+          { "label": "Custom Group", "value": "selected" }
+        ]
+      },
+      {
+        "type": "textField",
+        "name": "standards.MDMScope.customGroup",
+        "label": "Custom Group Name",
+        "required": false
+      }
+    ],
+    "label": "Configure MDM user scope",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-02-18",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": ["mediumimpact"],
