@@ -296,7 +296,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Revoke all user sessions",
-      type: "GET",
+      type: "POST",
       icon: <PersonOff />,
       url: "/api/ExecRevokeSessions",
       data: { ID: "id", Username: "userPrincipalName" },
