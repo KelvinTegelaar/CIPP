@@ -126,7 +126,7 @@ export const CippUserActions = () => {
     {
       //tested
       label: "Enable Online Archive",
-      type: "GET",
+      type: "POST",
       icon: <Archive />,
       url: "/api/ExecEnableArchive",
       data: { ID: "userPrincipalName" },
