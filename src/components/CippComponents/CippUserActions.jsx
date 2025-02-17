@@ -257,7 +257,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Reset Password (Must Change)",
-      type: "GET",
+      type: "POST",
       icon: <LockReset />,
       url: "/api/ExecResetPass",
       data: {
@@ -271,7 +271,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Reset Password",
-      type: "GET",
+      type: "POST",
       icon: <LockReset />,
       url: "/api/ExecResetPass",
       data: {
