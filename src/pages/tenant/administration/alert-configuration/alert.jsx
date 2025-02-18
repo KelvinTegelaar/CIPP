@@ -474,7 +474,7 @@ const AlertWizard = () => {
                           </Typography>
                           <CippFormTenantSelector
                             allTenants={true}
-                            multiple={false}
+                            multiple={true}
                             formControl={formControl}
                           />
                         </CippButtonCard>
