@@ -24,8 +24,7 @@ const Page = () => {
             value: "CreateApp",
           },
           {
-            description:
-              "I would like to refresh my token or replace the user I've used for my previous token.",
+            description: "I would like to refresh my token or replace the account I've used.",
             icon: <CloudIcon />,
             label: "Refresh Tokens for existing application ",
             value: "UpdateTokens",

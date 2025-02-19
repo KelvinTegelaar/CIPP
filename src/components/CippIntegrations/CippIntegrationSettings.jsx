@@ -1,4 +1,5 @@
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";
@@ -6,7 +7,8 @@ import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "/src/data/Extensions.json";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 const CippIntegrationSettings = ({ children }) => {
   const router = useRouter();
@@ -43,7 +45,7 @@ const CippIntegrationSettings = ({ children }) => {
     <>
       {integrations.isSuccess && extension ? (
         <CippFormSection
-          queryKey={"Integrations"}
+          relatedQueryKeys={"Integrations"}
           formControl={formControl}
           formPageType="Integration"
           title={extension.name}
@@ -55,20 +57,41 @@ const CippIntegrationSettings = ({ children }) => {
 
           <Grid container sx={{ alignItems: "center" }}>
             {extension.SettingOptions.map((setting, index) => (
-              <Grid item xs={12} md={setting.type == "switch" ? 12 : 6} key={index}>
-                <Box sx={{ p: 1 }}>
-                  <CippFormComponent
-                    name={setting.name}
-                    type={setting.type}
-                    label={setting.label}
-                    options={setting.options}
-                    formControl={formControl}
-                    placeholder={setting?.placeholder}
-                    fullWidth
-                    {...setting}
-                  />
-                </Box>
-              </Grid>
+              <React.Fragment key={index}>
+                {setting?.condition ? (
+                  <CippFormCondition {...setting.condition} formControl={formControl}>
+                    <Grid item size={{ xs: 12, md: setting.type === "switch" ? 12 : 6 }}>
+                      <Box sx={{ p: 1 }}>
+                        <CippFormComponent
+                          name={setting.name}
+                          type={setting.type}
+                          label={setting.label}
+                          options={setting.options}
+                          formControl={formControl}
+                          placeholder={setting?.placeholder}
+                          fullWidth
+                          {...setting}
+                        />
+                      </Box>
+                    </Grid>
+                  </CippFormCondition>
+                ) : (
+                  <Grid item size={{ xs: 12, md: setting.type === "switch" ? 12 : 6 }}>
+                    <Box sx={{ p: 1 }}>
+                      <CippFormComponent
+                        name={setting.name}
+                        type={setting.type}
+                        label={setting.label}
+                        options={setting.options}
+                        formControl={formControl}
+                        placeholder={setting?.placeholder}
+                        fullWidth
+                        {...setting}
+                      />
+                    </Box>
+                  </Grid>
+                )}
+              </React.Fragment>
             ))}
           </Grid>
         </CippFormSection>
