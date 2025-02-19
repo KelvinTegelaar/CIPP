@@ -3228,6 +3228,13 @@
         "required": false,
         "name": "customGroup",
         "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
+      },
+      {
+        "name": "excludeGroup",
+        "label": "Exclude Groups",
+        "type": "textField",
+        "required": false,
+        "helpText": "Enter the group name to exclude from the assignment. Wildcards are allowed."
       }
     ]
   },
