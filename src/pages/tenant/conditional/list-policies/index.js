@@ -65,7 +65,7 @@ const Page = () => {
     },
     {
       label: "Delete policy",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveCAPolicy",
       data: {
         GUID: "id",
