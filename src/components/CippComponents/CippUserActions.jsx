@@ -53,7 +53,7 @@ export const CippUserActions = () => {
       //tested
 
       label: "Create Temporary Access Password",
-      type: "GET",
+      type: "POST",
       icon: <Password />,
       url: "/api/ExecCreateTAP",
       data: { ID: "userPrincipalName" },
@@ -63,7 +63,7 @@ export const CippUserActions = () => {
     {
       //tested
       label: "Re-require MFA registration",
-      type: "GET",
+      type: "POST",
       icon: <PhonelinkSetup />,
       url: "/api/ExecResetMFA",
       data: { ID: "userPrincipalName" },
