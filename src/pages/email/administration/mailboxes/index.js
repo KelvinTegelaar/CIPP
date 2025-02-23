@@ -136,7 +136,7 @@ const Page = () => {
     },
     {
       label: "Copy Sent Items to Shared Mailbox",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecCopyForSent",
       data: { ID: "UPN" },
       confirmText: "Are you sure you want to enable Copy Sent Items to Shared Mailbox?",
@@ -146,7 +146,7 @@ const Page = () => {
     },
     {
       label: "Disable Copy Sent Items to Shared Mailbox",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecCopyForSent",
       data: { ID: "UPN", MessageCopyForSentAsEnabled: false },
       confirmText: "Are you sure you want to disable Copy Sent Items to Shared Mailbox?",
