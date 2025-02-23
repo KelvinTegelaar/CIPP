@@ -38,10 +38,10 @@ const Page = () => {
     },
     {
       label: "Delete Room",
-      type: "GET",
+      type: "POST",
       icon: <TrashIcon />,
-      url: "/api/RemoveMailbox",
-      data: { ID: "mail" },
+      url: "/api/RemoveUser",
+      data: { ID: "id" },
       confirmText: "Are you sure you want to delete this room mailbox?",
       multiPost: false,
       condition: (row) => !row.isDirSynced,

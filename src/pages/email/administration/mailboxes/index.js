@@ -127,9 +127,9 @@ const Page = () => {
     },
     {
       label: "Delete Mailbox",
-      type: "GET",
+      type: "POST",
       icon: <TrashIcon />, // Added
-      url: "/api/RemoveMailbox",
+      url: "/api/RemoveUser",
       data: { ID: "UPN" },
       confirmText: "Are you sure you want to delete this mailbox?",
       multiPost: false,
