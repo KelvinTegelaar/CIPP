@@ -117,7 +117,7 @@ const Page = () => {
     },
     {
       label: "Start Managed Folder Assistant",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecStartManagedFolderAssistant",
       icon: <PlayCircleIcon />,
       data: {
