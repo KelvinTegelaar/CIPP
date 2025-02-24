@@ -1326,6 +1326,7 @@
     "label": "Set Anti-Spam Connection Filter Safe List",
     "impact": "Medium Impact",
     "impactColour": "info",
+    "addedDate": "2025-02-15",
     "powershellEquivalent": "Set-HostedConnectionFilterPolicy \"Default\" -EnableSafeList $true",
     "recommendedBy": []
   },
