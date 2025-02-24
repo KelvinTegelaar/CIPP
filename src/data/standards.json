@@ -2434,7 +2434,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "powershellEquivalent": "Set-SPOTenant -DisallowInfectedFileDownload $true",
-    "recommendedBy": ["CIS 3.0", "CIPP"]
+    "recommendedBy": ["CIS", "CIPP"]
   },
   {
     "name": "standards.SPDisableLegacyWorkflows",
