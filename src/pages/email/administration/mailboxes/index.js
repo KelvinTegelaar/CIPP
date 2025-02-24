@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import Link from "next/link";
 import { Button } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Add, Mail } from "@mui/icons-material";
 
 import {
   Archive,
@@ -35,7 +35,7 @@ const Page = () => {
     },
     {
       label: "Send MFA Push",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecSendPush",
       data: {
         UserEmail: "UPN",
@@ -44,35 +44,37 @@ const Page = () => {
       icon: <PhonelinkLock />,
     },
     {
-      label: "Convert to Shared Mailbox",
-      type: "GET",
-      icon: <MailOutline />,
-      url: "/api/ExecConvertToSharedMailbox",
-      data: {
-        ID: "UPN",
-      },
-      confirmText: "Are you sure you want to convert this mailbox to a shared mailbox?",
-      condition: (row) => row.recipientTypeDetails !== "SharedMailbox",
-    },
-    {
       label: "Convert to User Mailbox",
-      type: "GET",
-      url: "/api/ExecConvertToSharedMailbox",
+      type: "POST",
+      url: "/api/ExecConvertMailbox",
       icon: <Person />,
       data: {
         ID: "UPN",
-        ConvertToUser: true,
+        MailboxType: "!Regular",
       },
       confirmText: "Are you sure you want to convert this mailbox to a user mailbox?",
       condition: (row) => row.recipientTypeDetails !== "UserMailbox",
     },
     {
+      label: "Convert to Shared Mailbox",
+      type: "POST",
+      icon: <MailOutline />,
+      url: "/api/ExecConvertMailbox",
+      data: {
+        ID: "UPN",
+        MailboxType: "!Shared",
+      },
+      confirmText: "Are you sure you want to convert this mailbox to a shared mailbox?",
+      condition: (row) => row.recipientTypeDetails !== "SharedMailbox",
+    },
+    {
       label: "Convert to Room Mailbox",
-      type: "GET",
-      url: "/api/ExecConvertToRoomMailbox",
+      type: "POST",
+      url: "/api/ExecConvertMailbox",
       icon: <Room />,
       data: {
         ID: "UPN",
+        MailboxType: "!Room",
       },
       confirmText: "Are you sure you want to convert this mailbox to a room mailbox?",
       condition: (row) => row.recipientTypeDetails !== "RoomMailbox",
@@ -80,7 +82,7 @@ const Page = () => {
     {
       //tested
       label: "Enable Online Archive",
-      type: "GET",
+      type: "POST",
       icon: <Archive />,
       url: "/api/ExecEnableArchive",
       data: { ID: "UPN" },
@@ -115,7 +117,7 @@ const Page = () => {
     },
     {
       label: "Start Managed Folder Assistant",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecStartManagedFolderAssistant",
       icon: <PlayCircleIcon />,
       data: {
@@ -125,16 +127,16 @@ const Page = () => {
     },
     {
       label: "Delete Mailbox",
-      type: "GET",
+      type: "POST",
       icon: <TrashIcon />, // Added
-      url: "/api/RemoveMailbox",
+      url: "/api/RemoveUser",
       data: { ID: "UPN" },
       confirmText: "Are you sure you want to delete this mailbox?",
       multiPost: false,
     },
     {
       label: "Copy Sent Items to Shared Mailbox",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecCopyForSent",
       data: { ID: "UPN" },
       confirmText: "Are you sure you want to enable Copy Sent Items to Shared Mailbox?",
@@ -144,7 +146,7 @@ const Page = () => {
     },
     {
       label: "Disable Copy Sent Items to Shared Mailbox",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecCopyForSent",
       data: { ID: "UPN", MessageCopyForSentAsEnabled: false },
       confirmText: "Are you sure you want to disable Copy Sent Items to Shared Mailbox?",
