@@ -2458,7 +2458,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "Set-SPOTenant -DefaultSharingLinkType Direct",
-    "recommendedBy": ["CIS 3.0", "CIPP"]
+    "recommendedBy": ["CIS", "CIPP"]
   },
   {
     "name": "standards.SPExternalUserExpiration",
