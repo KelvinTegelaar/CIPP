@@ -2749,6 +2749,11 @@
             "value": "Disabled"
           }
         ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsGlobalMeetingPolicy.AllowExternalParticipantGiveRequestControl",
+        "label": "External participants can give or request control"
       }
     ],
     "label": "Define Global Meeting Policy for Teams",
