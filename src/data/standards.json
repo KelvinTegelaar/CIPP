@@ -34,6 +34,7 @@
     "label": "Set contact e-mails",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-03-13",
     "powershellEquivalent": "Set-MsolCompanyContactInformation",
     "recommendedBy": []
   },
@@ -46,6 +47,7 @@
     "label": "Enable the Unified Audit Log",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Enable-OrganizationCustomization",
     "recommendedBy": ["CIS"]
   },
@@ -77,6 +79,7 @@
     "label": "Allow users to set profile photos",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2025-01-19",
     "powershellEquivalent": "Set-OrganizationConfig -ProfilePhotoOptions EnablePhotos and Update-MgBetaAdminPeople",
     "recommendedBy": []
   },
@@ -89,6 +92,7 @@
     "label": "Enable Phishing Protection system via branding CSS",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-01-22",
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -150,6 +154,7 @@
     "label": "Set branding for the tenant",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-05-13",
     "powershellEquivalent": "Portal only",
     "recommendedBy": []
   },
@@ -163,6 +168,7 @@
     "label": "Enable Customer Lockbox",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-01-08",
     "powershellEquivalent": "Set-OrganizationConfig -CustomerLockBoxEnabled $true",
     "recommendedBy": ["CIS"]
   },
@@ -175,6 +181,7 @@
     "label": "Enable Pronouns",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-06-05",
     "powershellEquivalent": "Update-MgBetaAdminPeoplePronoun -IsEnabledInOrganization:$true",
     "recommendedBy": []
   },
@@ -188,6 +195,7 @@
     "label": "Enable Usernames instead of pseudo anonymised names in reports",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgBetaAdminReportSetting -BodyParameter @{displayConcealedNames = $true}",
     "recommendedBy": []
   },
@@ -201,6 +209,7 @@
     "label": "Restrict guest user access to directory objects",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-05-04",
     "powershellEquivalent": "Set-AzureADMSAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa82404023b'",
     "recommendedBy": []
   },
@@ -214,6 +223,7 @@
     "label": "Disable SMTP Basic Authentication",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Set-TransportConfig -SmtpClientAuthenticationDisabled $true",
     "recommendedBy": []
   },
@@ -256,6 +266,7 @@
     "label": "Enable Activity based Timeout",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2022-04-13",
     "powershellEquivalent": "Portal or Graph API",
     "recommendedBy": ["CIS"]
   },
@@ -314,6 +325,7 @@
     "label": "Configure Authentication Methods Policy Settings",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2025-02-10",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicy",
     "recommendedBy": []
   },
@@ -333,6 +345,7 @@
     "label": "Deploy Application",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-07-07",
     "powershellEquivalent": "Portal or Graph API",
     "recommendedBy": []
   },
@@ -346,6 +359,7 @@
     "label": "Enable LAPS on the tenant",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-04-25",
     "powershellEquivalent": "Portal or Graph API",
     "recommendedBy": []
   },
@@ -359,6 +373,7 @@
     "label": "Enable Passwordless with Location information and Number Matching",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": ["CIS"]
   },
@@ -372,6 +387,7 @@
     "label": "Enable OTP via Authenticator",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-12-06",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -403,6 +419,7 @@
     "label": "Set Authenticator Lite state",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-05-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -416,6 +433,7 @@
     "label": "Enable FIDO2 capabilities",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-12-08",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -429,6 +447,7 @@
     "label": "Enable Hardware OAuth tokens",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -442,6 +461,7 @@
     "label": "Enable OTP Software OAuth tokens",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -473,6 +493,7 @@
     "label": "Enable Temporary Access Passwords",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-03-15",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -486,6 +507,7 @@
     "label": "Do not expire passwords",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgDomain",
     "recommendedBy": ["CIS"]
   },
@@ -516,6 +538,7 @@
     "label": "Sets the Cross-tenant access setting to trust external MFA",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-03-26",
     "powershellEquivalent": "Update-MgBetaPolicyCrossTenantAccessPolicyDefault",
     "recommendedBy": []
   },
@@ -529,6 +552,7 @@
     "label": "Disable M365 Tenant creation by users",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-11-29",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -548,6 +572,7 @@
     "label": "Enable App consent admin requests",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-11-27",
     "powershellEquivalent": "Update-MgPolicyAdminConsentRequestPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -585,6 +610,7 @@
     "label": "Sets the state for the request to setup Authenticator",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-12-08",
     "powershellEquivalent": "Update-MgPolicyAuthenticationMethodPolicy",
     "recommendedBy": []
   },
@@ -598,6 +624,7 @@
     "label": "Disable M365 Group creation by users",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-07-17",
     "powershellEquivalent": "Update-MgBetaDirectorySetting",
     "recommendedBy": []
   },
@@ -611,6 +638,7 @@
     "label": "Disable App creation by users",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-03-20",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -623,6 +651,7 @@
     "label": "Disable Security Group creation by users",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2022-07-17",
     "powershellEquivalent": "Update-MgBetaPolicyAuthorizationPolicy",
     "recommendedBy": []
   },
@@ -635,6 +664,7 @@
     "label": "Remove Legacy MFA if SD or CA is active",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Set-MsolUser -StrongAuthenticationRequirements $null",
     "recommendedBy": []
   },
@@ -654,6 +684,7 @@
     "label": "Disable Self Service Licensing",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Set-MsolCompanySettings -AllowAdHocSubscriptions $false",
     "recommendedBy": []
   },
@@ -666,6 +697,7 @@
     "label": "Disable Guest accounts that have not logged on for 90 days",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2022-10-20",
     "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
@@ -686,6 +718,7 @@
     "label": "Require admin consent for applications (Prevent OAuth phishing)",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -698,6 +731,7 @@
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2022-08-16",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
     "recommendedBy": []
   },
@@ -737,6 +771,7 @@
     "label": "Guest Invite setting",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-11-12",
     "powershellEquivalent": "",
     "recommendedBy": []
   },
@@ -761,6 +796,7 @@
     "label": "Cleanup stale Entra devices",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2025-01-19",
     "powershellEquivalent": "Remove-MgDevice, Update-MgDevice or Graph API",
     "recommendedBy": []
   },
@@ -773,6 +809,7 @@
     "label": "Undo App Consent Standard",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2022-01-07",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
     "recommendedBy": []
   },
@@ -786,6 +823,7 @@
     "label": "Enable Security Defaults",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2021-11-19",
     "powershellEquivalent": "[Read more here](https://www.cyberdrain.com/automating-with-powershell-enabling-secure-defaults-and-sd-explained/)",
     "recommendedBy": []
   },
@@ -799,6 +837,7 @@
     "label": "Disables SMS as an MFA method",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": ["CIPP"]
   },
@@ -812,6 +851,7 @@
     "label": "Disables Voice call as an MFA method",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": ["CIPP"]
   },
@@ -824,6 +864,7 @@
     "label": "Disables Email as an MFA method",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -837,6 +878,7 @@
     "label": "Disables Certificates as an MFA method",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -850,6 +892,7 @@
     "label": "Disables QR Code Pin as an MFA method",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2024-02-10",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
   },
@@ -862,6 +905,7 @@
     "label": "Enables per user MFA for all users.",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2024-06-14",
     "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
@@ -881,6 +925,7 @@
     "label": "Set Outbound Spam Alert e-mail",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-05-03",
     "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -894,6 +939,7 @@
     "label": "Lower Transport Message Expiration to 12 hours",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-02-23",
     "powershellEquivalent": "Set-TransportConfig -MessageExpirationTimeout 12.00:00:00",
     "recommendedBy": []
   },
@@ -928,6 +974,7 @@
     "label": "Set Global Quarantine Notification Interval",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-05-03",
     "powershellEquivalent": "Set-QuarantinePolicy -EndUserSpamNotificationFrequency",
     "recommendedBy": []
   },
@@ -941,6 +988,7 @@
     "label": "Disable TNEF/winmail.dat",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-04-26",
     "powershellEquivalent": "Set-RemoteDomain -Identity 'Default' -TNEFEnabled $false",
     "recommendedBy": []
   },
@@ -971,6 +1019,7 @@
     "label": "Set Focused Inbox state",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-04-26",
     "powershellEquivalent": "Set-OrganizationConfig -FocusedInboxOn $true or $false",
     "recommendedBy": []
   },
@@ -1001,6 +1050,7 @@
     "label": "Set Cloud Message Recall state",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-05-31",
     "powershellEquivalent": "Set-OrganizationConfig -MessageRecallEnabled",
     "recommendedBy": []
   },
@@ -1014,6 +1064,7 @@
     "label": "Enable Auto-expanding archives",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Set-OrganizationConfig -AutoExpandingArchive",
     "recommendedBy": []
   },
@@ -1026,6 +1077,7 @@
     "label": "Enable Online Archive for all users",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-01-20",
     "powershellEquivalent": "Enable-Mailbox -Archive $true",
     "recommendedBy": []
   },
@@ -1038,6 +1090,7 @@
     "label": "Enable Litigation Hold for all users",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-06-25",
     "powershellEquivalent": "Set-Mailbox -LitigationHoldEnabled $true",
     "recommendedBy": []
   },
@@ -1068,6 +1121,7 @@
     "label": "Enable or disable 'external' warning in Outlook",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "et-ExternalInOutlook \u2013Enabled $true or $false",
     "recommendedBy": ["CIS"]
   },
@@ -1088,6 +1142,7 @@
     "label": "Enable all MailTips",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-01-14",
     "powershellEquivalent": "Set-OrganizationConfig",
     "recommendedBy": ["CIS"]
   },
@@ -1117,6 +1172,7 @@
     "label": "Set Teams Meetings by default state",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-05-31",
     "powershellEquivalent": "Set-OrganizationConfig -OnlineMeetingsByDefaultEnabled",
     "recommendedBy": []
   },
@@ -1130,6 +1186,7 @@
     "label": "Disable daily Insight/Viva reports",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-05-25",
     "powershellEquivalent": "Set-UserBriefingConfig",
     "recommendedBy": []
   },
@@ -1142,6 +1199,7 @@
     "label": "Rotate DKIM keys that are 1024 bit to 2048 bit",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-03-14",
     "powershellEquivalent": "Rotate-DkimSigningConfig",
     "recommendedBy": ["CIS"]
   },
@@ -1154,6 +1212,7 @@
     "label": "Enables DKIM for all domains that currently support it",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-03-14",
     "powershellEquivalent": "New-DkimSigningConfig and Set-DkimSigningConfig",
     "recommendedBy": ["CIS"]
   },
@@ -1167,6 +1226,7 @@
     "label": "Enable Mailbox auditing",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-01-08",
     "powershellEquivalent": "Set-OrganizationConfig -AuditDisabled $false",
     "recommendedBy": ["CIS"]
   },
@@ -1192,6 +1252,7 @@
     "label": "Set send/receive size limits",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-11-16",
     "powershellEquivalent": "Set-MailboxPlan",
     "recommendedBy": []
   },
@@ -1263,6 +1324,7 @@
     "label": "Set Sharing Level for Default calendar",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-04-27",
     "powershellEquivalent": "Set-MailboxFolderPermission",
     "recommendedBy": []
   },
@@ -1276,6 +1338,7 @@
     "label": "Disable external calendar sharing",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-01-08",
     "powershellEquivalent": "Get-SharingPolicy | Set-SharingPolicy -Enabled $False",
     "recommendedBy": ["CIS"]
   },
@@ -1289,6 +1352,7 @@
     "label": "Automatically deploy proxy addresses",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2025-02-07",
     "powershellEquivalent": "set-mailbox -emailaddresses @{add=$emailaddress}"
   },
   {
@@ -1301,6 +1365,7 @@
     "label": "Disable additional storage providers in OWA",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-01-17",
     "powershellEquivalent": "Get-OwaMailboxPolicy | Set-OwaMailboxPolicy -AdditionalStorageProvidersEnabled $False",
     "recommendedBy": ["CIS"]
   },
@@ -1346,6 +1411,7 @@
     "label": "Set shorten meetings state",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-05-27",
     "powershellEquivalent": "Set-OrganizationConfig -ShortenEventScopeDefault -DefaultMinutesToReduceShortEventsBy -DefaultMinutesToReduceLongEventsBy",
     "recommendedBy": []
   },
@@ -1376,6 +1442,7 @@
     "label": "Set Bookings state",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-05-31",
     "powershellEquivalent": "Set-OrganizationConfig -BookingsEnabled",
     "recommendedBy": []
   },
@@ -1389,6 +1456,7 @@
     "label": "Disable users from installing add-ins in Outlook",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-02-05",
     "powershellEquivalent": "Get-ManagementRoleAssignment | Remove-ManagementRoleAssignment",
     "recommendedBy": ["CIS"]
   },
@@ -1406,6 +1474,7 @@
     "label": "Remove Safe Senders to prevent SPF bypass",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2023-10-26",
     "powershellEquivalent": "Set-MailboxJunkEmailConfiguration",
     "recommendedBy": []
   },
@@ -1425,6 +1494,7 @@
     "label": "Set mailbox Sent Items delegation (Sent items for shared mailboxes)",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Set-Mailbox",
     "recommendedBy": []
   },
@@ -1438,6 +1508,7 @@
     "label": "Allow users to send from their alias addresses",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2022-05-25",
     "powershellEquivalent": "Set-Mailbox",
     "recommendedBy": []
   },
@@ -1474,6 +1545,7 @@
     "label": "Set the state of the built-in Report button in Outlook",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-06-28",
     "powershellEquivalent": "New-ReportSubmissionPolicy or Set-ReportSubmissionPolicy and New-ReportSubmissionRule or Set-ReportSubmissionRule",
     "recommendedBy": []
   },
@@ -1487,6 +1559,7 @@
     "label": "Disable Shared Mailbox AAD accounts",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2021-11-16",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
     "recommendedBy": ["CIS"]
   },
@@ -1500,6 +1573,7 @@
     "label": "Disable automatic forwarding to external recipients",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2024-07-26",
     "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy -AutoForwardingMode 'Off'",
     "recommendedBy": ["CIS"]
   },
@@ -1520,6 +1594,7 @@
     "label": "Retention Policy, permanently delete items in Deleted Items after X days",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2025-02-02",
     "powershellEquivalent": "Set-RetentionPolicyTag",
     "recommendedBy": []
   },
@@ -1539,6 +1614,7 @@
     "label": "Quarantine Release Request Alert",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-07-15",
     "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
     "recommendedBy": []
   },
@@ -1567,6 +1643,7 @@
     "label": "Default SafeLinks Policy",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-SafeLinksPolicy or New-SafeLinksPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -1775,6 +1852,7 @@
     "label": "Default Anti-Phishing Policy",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-AntiphishPolicy or New-AntiphishPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -1844,6 +1922,7 @@
     "label": "Default Safe Attachment Policy",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-SafeAttachmentPolicy or New-SafeAttachmentPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -1864,6 +1943,7 @@
     "label": "Default Atp Policy For O365",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-AtpPolicyForO365",
     "recommendedBy": ["CIS"]
   },
@@ -1943,6 +2023,7 @@
     "label": "Default Malware Filter Policy",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-MalwareFilterPolicy or New-MalwareFilterPolicy",
     "recommendedBy": ["CIS"]
   },
@@ -2144,6 +2225,7 @@
     "label": "Default Spam Filter Policy",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-07-15",
     "powershellEquivalent": "New-HostedContentFilterPolicy or Set-HostedContentFilterPolicy",
     "recommendedBy": []
   },
@@ -2162,6 +2244,7 @@
     "label": "Set inactive device retirement days",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-05-19",
     "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
@@ -2234,6 +2317,7 @@
     "label": "Set Intune Company Portal branding profile",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-06-20",
     "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
@@ -2270,6 +2354,7 @@
     "label": "Set Intune Compliance Settings",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-11-12",
     "powershellEquivalent": "",
     "recommendedBy": []
   },
@@ -2288,6 +2373,7 @@
     "label": "Set Maximum Number of Devices per user",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2023-03-27",
     "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
     "recommendedBy": []
   },
@@ -2299,6 +2385,7 @@
     "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2023-10-23",
     "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
     "recommendedBy": []
   },
@@ -2369,6 +2456,7 @@
     "label": "Set deleted user retention time in OneDrive",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgBetaAdminSharepointSetting",
     "recommendedBy": []
   },
@@ -2387,6 +2475,7 @@
     "label": "Set Default Timezone for Tenant",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-04-20",
     "powershellEquivalent": "Update-MgBetaAdminSharepointSetting",
     "recommendedBy": []
   },
@@ -2399,6 +2488,7 @@
     "label": "Enable SharePoint and OneDrive integration with Azure AD B2B",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -EnableAzureADB2BIntegration $true",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2411,6 +2501,7 @@
     "label": "Disallow downloading infected files from SharePoint",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -DisallowInfectedFileDownload $true",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2423,6 +2514,7 @@
     "label": "Disable Legacy Workflows",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-07-15",
     "powershellEquivalent": "Set-SPOTenant -DisableWorkflow2010 $true -DisableWorkflow2013 $true -DisableBackToClassic $true",
     "recommendedBy": []
   },
@@ -2435,6 +2527,7 @@
     "label": "Default sharing to Direct users",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -DefaultSharingLinkType Direct",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2453,6 +2546,7 @@
     "label": "Set guest access to expire automatically",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2471,6 +2565,7 @@
     "label": "Require reauthentication with verification code",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -EmailAttestationRequired $true -EmailAttestationReAuthDays 15",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2501,6 +2596,7 @@
     "label": "Set Add Shortcuts To OneDrive button state",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2023-07-25",
     "powershellEquivalent": "Set-SPOTenant -DisableAddShortcutsToOneDrive $true or $false",
     "recommendedBy": []
   },
@@ -2531,6 +2627,7 @@
     "label": "Set SharePoint sync button state",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-07-26",
     "powershellEquivalent": "Set-SPOTenant -HideSyncButtonOnTeamSite $true or $false",
     "recommendedBy": []
   },
@@ -2544,6 +2641,7 @@
     "label": "Disable legacy basic authentication for SharePoint",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-02-05",
     "powershellEquivalent": "Set-SPOTenant -LegacyAuthProtocolsEnabled $false",
     "recommendedBy": ["CIS"]
   },
@@ -2581,6 +2679,7 @@
     "label": "Set Sharing Level for OneDrive and SharePoint",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgBetaAdminSharepointSetting",
     "recommendedBy": ["CIS"]
   },
@@ -2594,6 +2693,7 @@
     "label": "Disable Resharing by External Users",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgBetaAdminSharepointSetting",
     "recommendedBy": ["CIS"]
   },
@@ -2607,6 +2707,7 @@
     "label": "Disable site creation by standard users",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
     "recommendedBy": []
   },
@@ -2625,6 +2726,7 @@
     "label": "Exclude File Extensions from Syncing",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
     "recommendedBy": []
   },
@@ -2637,6 +2739,7 @@
     "label": "Do not allow Mac devices to sync using OneDrive",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
     "recommendedBy": []
   },
@@ -2649,6 +2752,7 @@
     "label": "Only allow users to sync OneDrive from AAD joined devices",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
     "recommendedBy": []
   },
@@ -2688,6 +2792,7 @@
     "label": "Restrict sharing to a specific domain",
     "impact": "High Impact",
     "impactColour": "danger",
+    "addedDate": "2024-06-20",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
     "recommendedBy": []
   },
@@ -2759,6 +2864,7 @@
     "label": "Define Global Meeting Policy for Teams",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-11-12",
     "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2778,6 +2884,7 @@
     "label": "Disallow emails to be sent to channel email addresses",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-07-30",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2816,6 +2923,7 @@
     "label": "Define approved cloud storage services for external file sharing in Teams",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-07-28",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
     "recommendedBy": ["CIS 3.0"]
   },
@@ -2848,6 +2956,7 @@
     "label": "Default voice and face enrollment",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2024-11-12",
     "powershellEquivalent": "Set-CsTeamsMeetingPolicy -Identity Global -EnrollUserOverride $false",
     "recommendedBy": []
   },
@@ -2877,6 +2986,7 @@
     "label": "External Access Settings for Microsoft Teams",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-07-30",
     "powershellEquivalent": "Set-CsExternalAccessPolicy",
     "recommendedBy": []
   },
@@ -2933,6 +3043,7 @@
     "label": "Federation Configuration for Microsoft Teams",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2024-07-31",
     "powershellEquivalent": "Set-CsTenantFederationConfiguration",
     "recommendedBy": []
   },
@@ -3017,6 +3128,7 @@
     "label": "Global Messaging Policy for Microsoft Teams",
     "impact": "Medium Impact",
     "impactColour": "warning",
+    "addedDate": "2025-01-10",
     "powershellEquivalent": "Set-CsTeamsMessagingPolicy",
     "recommendedBy": []
   },
@@ -3088,6 +3200,7 @@
     ],
     "label": "Enable Autopilot Status Page",
     "impact": "Low Impact",
+    "addedDate": "2023-12-30",
     "impactColour": "info",
     "recommendedBy": []
   },
@@ -3188,6 +3301,7 @@
     "label": "Enable Autopilot Profile",
     "impact": "Low Impact",
     "impactColour": "info",
+    "addedDate": "2023-12-30",
     "recommendedBy": []
   },
   {
@@ -3201,6 +3315,7 @@
       "remediate": false
     },
     "impact": "High Impact",
+    "addedDate": "2023-12-30",
     "helpText": "Deploy and manage Intune templates across devices.",
     "addedComponent": [
       {
@@ -3253,6 +3368,7 @@
       "remediate": false
     },
     "impact": "Medium Impact",
+    "addedDate": "2023-12-30",
     "helpText": "Deploy transport rules to manage email flow.",
     "addedComponent": [
       {
@@ -3279,6 +3395,7 @@
       "remediate": false
     },
     "impact": "High Impact",
+    "addedDate": "2023-12-30",
     "helpText": "Manage conditional access policies for better security.",
     "addedComponent": [
       {
@@ -3315,6 +3432,7 @@
       "remediate": false
     },
     "impact": "Medium Impact",
+    "addedDate": "2023-12-30",
     "helpText": "Deploy and manage Exchange connectors.",
     "addedComponent": [
       {
@@ -3341,6 +3459,7 @@
       "remediate": false
     },
     "impact": "Medium Impact",
+    "addedDate": "2023-12-30",
     "helpText": "Deploy and manage group templates.",
     "addedComponent": [
       {
