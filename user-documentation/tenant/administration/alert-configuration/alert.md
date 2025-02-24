@@ -16,7 +16,7 @@ Within CIPP, there are two types of alerts:
 ### Alert Timing
 
 * Audit Log Alerts - Processed in near real-time, but a small delay of up to 15 minutes is normal.
-* Scripted CIPP Alerts - Each alert comes with a default value suggested by the CIPP team, but you can adjust it as needed. Alerts fire once per incident - for example, a full mailbox does not fire an alert every time it's checked. The available timings are:
+* Scripted CIPP Alerts - Each alert comes with a default value suggested by the CIPP team, but you can adjust it as needed. The available timings are:
   * 365 days / 1 year
   * 30 days / 1 month
   * 7 days / 1 week
