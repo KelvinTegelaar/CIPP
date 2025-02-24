@@ -1,9 +1,9 @@
-name: CIPP Frontend Build
+name: CIPP Frontend Dev Build
 
 on:
   push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir -p build
           cp staticwebapp.config.json out/
-          zip -r build/latest.zip out
+          zip -r build/dev.zip out
 
       # Upload to Azure Blob Storage
       - name: Azure Blob Upload
