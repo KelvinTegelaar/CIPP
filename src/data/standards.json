@@ -2493,7 +2493,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "Set-SPOTenant -EmailAttestationRequired $true -EmailAttestationReAuthDays 15",
-    "recommendedBy": ["CIS 3.0", "CIPP"]
+    "recommendedBy": ["CIS", "CIPP"]
   },
   {
     "name": "standards.DisableAddShortcutsToOneDrive",
