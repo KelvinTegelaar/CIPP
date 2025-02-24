@@ -10,7 +10,7 @@ description: >-
 
 {% hint style="warning" %}
 **Note (Hosted / Sponsored Clients)**\
-If you’re using a CyberDrain-hosted instance of CIPP, updates happen automatically—generally within **48 hours** of a new release. You can safely skip the rest of this page.
+If you’re using a CyberDrain-hosted instance of CIPP, updates happen automatically—generally within **48 hours** of a new release. You can safely skip the rest of this page; however, it is important to perform a permissions check via CIPP > Application Settings > Permissions to ensure any newly added permissions are accounted for via an automated Permissions Repair in v7+.
 {% endhint %}
 
 Update your self-hosted CIPP instance to the latest release using the following instructions:
