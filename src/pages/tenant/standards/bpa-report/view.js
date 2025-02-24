@@ -28,7 +28,7 @@ const Page = () => {
   const [layoutMode, setLayoutMode] = useState("Table");
   const bpaTemplateList = ApiGetCall({
     url: "/api/listBPATemplates",
-    queryKey: "ListBPATemplates",
+    queryKey: "ListBPATemplates-All",
   });
   const tenantFilter = useSettings().currentTenant;
   const bpaData = ApiGetCall({
