@@ -91,3 +91,5 @@ Always review the matches before saving to ensure accuracy.
 5. Click **Save Mappings** to finalize
 
 ***
+
+{% include "../../../.gitbook/includes/feature-request.md" %}
