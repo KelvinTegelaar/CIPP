@@ -270,7 +270,7 @@
     * [Halo PSA Ticketing](user-documentation/cipp/integrations/halopsa.md)
     * [NinjaOne](user-documentation/cipp/integrations/ninjaone.md)
     * [Hudu](user-documentation/cipp/integrations/hudu.md)
-    * [PasswordPusher](user-documentation/cipp/integrations/passwordpusher.md)
+    * [Password Pusher](user-documentation/cipp/integrations/passwordpusher.md)
     * [Have I Been Pwned?](user-documentation/cipp/integrations/have-i-been-pwned.md)
     * [Cloudflare](user-documentation/cipp/integrations/cloudflare.md)
     * [GitHub](user-documentation/cipp/integrations/github.md)
