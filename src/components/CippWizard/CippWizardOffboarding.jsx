@@ -292,18 +292,18 @@ export const CippWizardOffboarding = (props) => {
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2">Send results to:</Typography>
                 <CippFormComponent
-                  name="webhook"
+                  name="postExecution.webhook"
                   label="Webhook"
                   type="switch"
                   formControl={formControl}
                 />
                 <CippFormComponent
-                  name="email"
+                  name="postExecution.email"
                   label="E-mail"
                   type="switch"
                   formControl={formControl}
                 />
-                <CippFormComponent name="psa" label="PSA" type="switch" formControl={formControl} />
+                <CippFormComponent name="postExecution.psa" label="PSA" type="switch" formControl={formControl} />
               </Grid>
             </CippFormCondition>
           </Grid>
