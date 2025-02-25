@@ -59,7 +59,7 @@ const Page = () => {
     },
     {
       label: "Delete Template",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveGroupTemplate",
       icon: <Delete />,
       data: {
