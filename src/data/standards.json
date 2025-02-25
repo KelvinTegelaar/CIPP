@@ -604,7 +604,7 @@
         "type": "number",
         "name": "standards.NudgeMFA.snoozeDurationInDays",
         "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)",
-        "default": 1
+        "defaultValue": 1
       }
     ],
     "label": "Sets the state for the request to setup Authenticator",
@@ -1136,7 +1136,7 @@
         "name": "standards.EnableMailTips.MailTipsLargeAudienceThreshold",
         "label": "Number of recipients to trigger the large audience MailTip (Default is 25)",
         "placeholder": "Enter a profile name",
-        "default": 25
+        "defaultValue": 25
       }
     ],
     "label": "Enable all MailTips",
@@ -1240,13 +1240,13 @@
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.SendLimit",
         "label": "Send limit in MB (Default is 35)",
-        "default": 35
+        "defaultValue": 35
       },
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.ReceiveLimit",
         "label": "Receive Limit in MB (Default is 36)",
-        "default": 36
+        "defaultValue": 36
       }
     ],
     "label": "Set send/receive size limits",
@@ -1399,13 +1399,13 @@
         "type": "number",
         "name": "standards.ShortenMeetings.DefaultMinutesToReduceShortEventsBy",
         "label": "Minutes to reduce short calendar events by (Default is 5)",
-        "default": 5
+        "defaultValue": 5
       },
       {
         "type": "number",
         "name": "standards.ShortenMeetings.DefaultMinutesToReduceLongEventsBy",
         "label": "Minutes to reduce long calendar events by (Default is 10)",
-        "default": 10
+        "defaultValue": 10
       }
     ],
     "label": "Set shorten meetings state",
@@ -1666,31 +1666,31 @@
         "type": "number",
         "label": "Phishing email threshold. (Default 1)",
         "name": "standards.AntiPhishPolicy.PhishThresholdLevel",
-        "default": 1
+        "defaultValue": 1
       },
       {
         "type": "switch",
         "label": "Show first contact safety tip",
         "name": "standards.AntiPhishPolicy.EnableFirstContactSafetyTips",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "label": "Show user impersonation safety tip",
         "name": "standards.AntiPhishPolicy.EnableSimilarUsersSafetyTips",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "label": "Show domain impersonation safety tip",
         "name": "standards.AntiPhishPolicy.EnableSimilarDomainsSafetyTips",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "label": "Show user impersonation unusual characters safety tip",
         "name": "standards.AntiPhishPolicy.EnableUnusualCharactersSafetyTips",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "select",
@@ -1936,7 +1936,7 @@
         "type": "switch",
         "label": "Allow people to click through Protected View even if Safe Documents identified the file as malicious",
         "name": "standards.AtpPolicyForO365.AllowSafeDocsOpen",
-        "default": false,
+        "defaultValue": false,
         "required": false
       }
     ],
@@ -2037,7 +2037,7 @@
         "type": "number",
         "label": "Bulk email threshold (Default 7)",
         "name": "standards.SpamFilterPolicy.BulkThreshold",
-        "default": 7
+        "defaultValue": 7
       },
       {
         "type": "autoComplete",
@@ -3089,25 +3089,25 @@
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowOwnerDeleteMessage",
         "label": "Allow Owner to Delete Messages",
-        "default": false
+        "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowUserDeleteMessage",
         "label": "Allow User to Delete Messages",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowUserEditMessage",
         "label": "Allow User to Edit Messages",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowUserDeleteChat",
         "label": "Allow User to Delete Chats",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "autoComplete",
@@ -3135,25 +3135,25 @@
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.CreateCustomEmojis",
         "label": "Allow Creating Custom Emojis",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.DeleteCustomEmojis",
         "label": "Allow Deleting Custom Emojis",
-        "default": false
+        "defaultValue": false
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowSecurityEndUserReporting",
         "label": "Allow reporting message as security concern",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.TeamsMessagingPolicy.AllowCommunicationComplianceEndUserReporting",
         "label": "Allow reporting message as inappropriate content",
-        "default": true
+        "defaultValue": true
       }
     ],
     "label": "Global Messaging Policy for Microsoft Teams",
@@ -3179,7 +3179,7 @@
         "type": "number",
         "name": "standards.AutopilotStatusPage.TimeOutInMinutes",
         "label": "Timeout in minutes",
-        "default": 60
+        "defaultValue": 60
       },
       {
         "type": "textField",
@@ -3190,43 +3190,43 @@
         "type": "switch",
         "name": "standards.AutopilotStatusPage.ShowProgress",
         "label": "Show progress to users",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotStatusPage.EnableLog",
         "label": "Turn on log collection",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotStatusPage.OBEEOnly",
         "label": "Show status page only with OOBE setup",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotStatusPage.BlockDevice",
         "label": "Block device usage during setup",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotStatusPage.AllowRetry",
         "label": "Allow retry",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotStatusPage.AllowReset",
         "label": "Allow reset",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotStatusPage.AllowFail",
         "label": "Allow users to use device if setup fails",
-        "default": true
+        "defaultValue": true
       }
     ],
     "label": "Enable Autopilot Status Page",
@@ -3278,55 +3278,55 @@
         "type": "switch",
         "name": "standards.AutopilotProfile.CollectHash",
         "label": "Convert all targeted devices to Autopilot",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.AssignToAllDevices",
         "label": "Assign to all devices",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.SelfDeployingMode",
         "label": "Enable Self-deploying Mode",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.HideTerms",
         "label": "Hide Terms and Conditions",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.HidePrivacy",
         "label": "Hide Privacy Settings",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.HideChangeAccount",
         "label": "Hide Change Account Options",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.NotLocalAdmin",
         "label": "Setup user as a standard user (not local admin)",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.AllowWhiteGlove",
         "label": "Allow White Glove OOBE",
-        "default": true
+        "defaultValue": true
       },
       {
         "type": "switch",
         "name": "standards.AutopilotProfile.AutoKeyboard",
         "label": "Automatically configure keyboard",
-        "default": true
+        "defaultValue": true
       }
     ],
     "label": "Enable Autopilot Profile",
