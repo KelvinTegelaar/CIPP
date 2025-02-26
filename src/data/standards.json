@@ -3206,7 +3206,8 @@
       {
         "type": "textField",
         "name": "standards.AutopilotStatusPage.ErrorMessage",
-        "label": "Custom Error Message"
+        "label": "Custom Error Message",
+        "required": false
       },
       {
         "type": "switch",
