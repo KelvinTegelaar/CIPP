@@ -111,11 +111,11 @@ const App = (props) => {
                           />
                         </RTL>
                       </ThemeProvider>
-                      {settings?.showDevtools && (
+                      {settings?.showDevtools ? (
                         <React.Suspense fallback={null}>
                           <ReactQueryDevtoolsProduction />
                         </React.Suspense>
-                      )}
+                      ) : null}
                     </>
                   );
                 }}
