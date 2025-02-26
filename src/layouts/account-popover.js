@@ -9,7 +9,6 @@ import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import {
   Avatar,
   Box,
-  FormControlLabel,
   List,
   ListItem,
   ListItemButton,
@@ -18,10 +17,8 @@ import {
   Popover,
   Stack,
   SvgIcon,
-  Switch,
   Typography,
   useMediaQuery,
-  IconButton,
 } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
 import { paths } from "../paths";
@@ -42,7 +39,9 @@ export const AccountPopover = (props) => {
 
   const orgData = ApiGetCall({
     url: "/.auth/me",
-    queryKey: "me",
+    queryKey: "authmecipp",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
   });
 
   const handleLogout = useCallback(async () => {

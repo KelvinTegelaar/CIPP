@@ -83,6 +83,8 @@ export const Layout = (props) => {
   const currentRole = ApiGetCall({
     url: "/.auth/me",
     queryKey: "authmecipp",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
   });
   const [hideSidebar, setHideSidebar] = useState(false);
 

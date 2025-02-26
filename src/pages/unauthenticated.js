@@ -8,7 +8,9 @@ import { useState, useEffect } from "react";
 const Page = () => {
   const orgData = ApiGetCall({
     url: "/.auth/me",
-    queryKey: "me",
+    queryKey: "authmecipp",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
   });
   const blockedRoles = ["anonymous", "authenticated"];
   const [userRoles, setUserRoles] = useState([]);

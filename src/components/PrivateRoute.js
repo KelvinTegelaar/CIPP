@@ -5,13 +5,15 @@ export const PrivateRoute = ({ children, routeType }) => {
   const {
     data: profile,
     error,
-    isFetching,
+    isLoading,
   } = ApiGetCall({
     url: "/.auth/me",
     queryKey: "authmecipp",
+    refetchOnWindowFocus: true,
+    staleTime: 120000, // 2 minutes
   });
 
-  if (isFetching) {
+  if (isLoading) {
     return "Loading...";
   }
 
