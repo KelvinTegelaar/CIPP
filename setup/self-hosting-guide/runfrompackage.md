@@ -73,6 +73,12 @@ For **Authentication Type**, pick **“Basic Authentication.”** (Azure portal 
 {% step %}
 Click **Add a workflow**, then **Save.**
 {% endstep %}
+
+{% step %}
+Repeat this for any additional function apps you may have deployed for [function offloading](../../user-documentation/cipp/advanced/super-admin/function-offloading.md).&#x20;
+
+
+{% endstep %}
 {% endstepper %}
 
 ### 3. Done!
