@@ -39,6 +39,10 @@ Look for an **Application Setting** named `WEBSITE_RUN_FROM_PACKAGE`.
 * It should be set to `1`.
 * If it is, great—your Function App is already running from a package zip.
 {% endstep %}
+
+{% step %}
+
+{% endstep %}
 {% endstepper %}
 
 ### 2. Connect to GitHub for Continuous Deployment
@@ -72,6 +76,12 @@ For **Authentication Type**, pick **“Basic Authentication.”** (Azure portal 
 
 {% step %}
 Click **Add a workflow**, then **Save.**
+{% endstep %}
+
+{% step %}
+Repeat this for any additional function apps you may have deployed for [function offloading](../../user-documentation/cipp/advanced/super-admin/function-offloading.md).&#x20;
+
+
 {% endstep %}
 {% endstepper %}
 
