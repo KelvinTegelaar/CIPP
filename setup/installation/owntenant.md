@@ -24,6 +24,14 @@ It is highly recommended to use a custom role if multiple users have access to y
 
 GDAP permissions will not apply and you must directly assign roles to the service account in the Entra portal (e.g. User Administrator, Exchange Administrator, etc.).
 
+## To set the tenant mode, follow these steps
+
+1. Add the role 'superadmin' to your admin user as an additional role. This role will allow you access to the menu to change this setting.
+2. Go to the Application Settings menu
+3. Go to the SuperAdmin tab
+4. Select one of the three modes. The default mode is "Multi Tenant - GDAP Mode"
+5. Clear the tenant cache. Users of CIPP now have access to the CSP Partner tenant, or to the single tenant it's been configured for.
+
 ***
 
 {% include "../../.gitbook/includes/feature-request.md" %}
