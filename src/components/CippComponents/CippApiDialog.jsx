@@ -274,19 +274,21 @@ export const CippApiDialog = (props) => {
   };
 
   // Handling link navigation
-  if (api.link) {
-    const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
-      return getNestedValue(row, key) || `[${key}]`;
-    });
+  useEffect(() => {
+    if (api.link && createDialog.open) {
+      const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
+        return getNestedValue(row, key) || `[${key}]`;
+      });
 
-    if (linkWithRowData.startsWith("/")) {
-      router.push(linkWithRowData, undefined, { shallow: true });
-    } else {
-      window.open(linkWithRowData, api.target || "_blank");
+      if (linkWithRowData.startsWith("/")) {
+        router.push(linkWithRowData, undefined, { shallow: true });
+      } else {
+        window.open(linkWithRowData, api.target || "_blank");
+      }
+      createDialog.handleClose();
     }
+  }, [api.link, createDialog.open]);
 
-    return null;
-  }
   useEffect(() => {
     if (api.noConfirm) {
       formHook.handleSubmit(onSubmit)(); // Submits the form on mount
