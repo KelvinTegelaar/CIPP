@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Migrating to hosted CIPP
 
 When starting a CIPP sponsorship you have the option to self-host and receive support for this self-hosted instance, or use the version of CIPP hosted by CyberDrain. To migrate from self-hosted CIPP to hosted CIPP you can follow these instructions.

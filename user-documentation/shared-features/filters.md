@@ -4,16 +4,16 @@
 
 Harness the power of CIPPs filtering capabilities to effortlessly sift through data. Whether you're searching for a specific user or refining a larger dataset, this guide will walk you through the basic and advanced filtering techniques at your disposal.
 
----
+***
 
 ### 1. Overview
 
 There are two main filtering methods:
 
-- **Basic Filtering**: Search for a keyword or phrase across all properties.
-- **Advanced Filtering**: Apply specific conditions to filter data based on individual properties.
+* **Basic Filtering**: Search for a keyword or phrase across all properties.
+* **Advanced Filtering**: Apply specific conditions to filter data based on individual properties.
 
----
+***
 
 ### 2. Basic Filtering
 
@@ -25,7 +25,7 @@ Simply type in the keyword or phrase you wish to search in the textbox.
 
 To find all users with the name "Megan", type `Megan.`
 
----
+***
 
 ### 3. Advanced Filtering
 
@@ -48,11 +48,11 @@ Complex: [PROPERTY] [OPERATOR] [VALUE]; ...
 | gt       | Greater than (for numerical values) | Complex: createdDateTime gt 2023-01-01 | `{ "displayName": "Megan Bowen", "createdDateTime": "2023-07-06T18:01:16Z" }` |
 | lt       | Less than (for numerical values)    | Complex: postalCode lt 20000           | `{ "displayName": "Megan Bowen", "postalCode": "15212" }`                     |
 
-- **PROPERTY**: Indicate the property name you wish to filter on. You can find the possible properties by using the column selector button.
-- **OPERATOR**: Use the operation you want to perform from the table above.
-- **VALUE**: Specify the value you want to compare the property against.
+* **PROPERTY**: Indicate the property name you wish to filter on. You can find the possible properties by using the column selector button.
+* **OPERATOR**: Use the operation you want to perform from the table above.
+* **VALUE**: Specify the value you want to compare the property against.
 
-You can combine multiple conditions with a semicolon (`;`) or with (`or`).  
+You can combine multiple conditions with a semicolon (`;`) or with (`or`).\
 The (`;`) separator operates as an `AND`, while the (`or`) operates as an `OR`.
 
 #### Example 1:
@@ -106,3 +106,7 @@ Alerts can be filtered using the same method as Complex filtering, allowing the 
 ```vbnet
 UserId eq 123
 ```
+
+
+
+{% include "../../.gitbook/includes/feature-request.md" %}

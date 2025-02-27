@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Configuring Automatic Updates
 
 {% hint style="warning" %}

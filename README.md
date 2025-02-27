@@ -32,24 +32,7 @@ We hope this documentation serves as a valuable resource as you explore and util
 
 ## Our Sponsors
 
-<div>
+<div><figure><img src=".gitbook/assets/ninjaone.svg" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/ImmyBot.png" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/halo.svg" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/Huntress.png" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/oit.png" alt=""><figcaption></figcaption></figure></div>
 
-<figure><img src=".gitbook/assets/ninjaone.svg" alt=""><figcaption></figcaption></figure>
+<div align="left"><figure><img src=".gitbook/assets/Compliance-Risk-Scorecard-logo.png.webp" alt="" width="229"><figcaption></figcaption></figure></div>
 
- 
-
-<figure><img src=".gitbook/assets/ImmyBot.png" alt=""><figcaption></figcaption></figure>
-
- 
-
-<figure><img src=".gitbook/assets/halo.svg" alt=""><figcaption></figcaption></figure>
-
- 
-
-<figure><img src=".gitbook/assets/Huntress.png" alt=""><figcaption></figcaption></figure>
-
- 
-
-<figure><img src=".gitbook/assets/oit.png" alt=""><figcaption></figcaption></figure>
-
-</div>

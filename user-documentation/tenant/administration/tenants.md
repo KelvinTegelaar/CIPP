@@ -5,12 +5,12 @@ description: View and manage your Microsoft 365 CSP tenants.
 # Tenants
 
 {% hint style="warning" %}
-When you select one of the portal links the permissions of the currently logged in user are the ones that matter, they need permission to access the portal in question either by virtue of direct administrative roles or the Admin Agent/Helpdesk Agent role in Partner Center.
+When you select one of the portal links, the permissions of the currently logged in user are the ones that matter. They need permission to access the portal in question either by virtue of direct administrative roles or the Admin Agent/Helpdesk Agent role in Partner Center.
 {% endhint %}
 
 The Tenant page provides the ability for you to jump to the specific tenant administration centers for that client using your individual partner credentials. Allowing you to administer that specific tenant.
 
-Tenants are cached for 24 hours. By using the Clear Tenant Cache button in settings you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
+Tenants are cached for 24 hours. By using the Clear Tenant Cache button in settings, you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
 
 ### Details
 
@@ -21,20 +21,9 @@ Tenants are cached for 24 hours. By using the Clear Tenant Cache button in setti
 
 The page also features several columns which contain links to the different Microsoft 365 administration centers for the tenant.
 
-### Actions
-
-* Edit Tenant
-
-{% hint style="info" %}
-The Edit Tenant page gives you the ability you to change the Display Name or Default Domain Name of the tenant shown in the Partner Center.
-
-This _only_ affects what's shown in the Partner Center (and tenant list in CIPP) and doesn't change anything in the tenant itself.
-
-By default Microsoft only picks up this information when you create a new relationship, and never updates this after.
-{% endhint %}
-
-
+***
 
 ### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+

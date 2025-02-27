@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # GDAP Invite Wizard
 
 ## Overview

@@ -2,7 +2,7 @@
 description: Manage Autopilot devices across your Microsoft 365 tenants.
 ---
 
-# Add Device
+# Add Autopilot Device
 
 The following two pages in CIPP give you the ability to manage Autopilot devices:
 
@@ -20,12 +20,14 @@ As a partner, you can register devices to Windows Autopilot using any one of the
 
 #### Known Issues / Limitations <a href="#adddevice-knownissues" id="adddevice-knownissues"></a>
 
-{% hint style="warning" %} A Reseller Relationship with the customer tenant may be required in addition to GDAP in order to add Autopilot devices. {% endhint %}
+{% hint style="warning" %}
+A Reseller Relationship with the customer tenant may be required in addition to GDAP in order to add Autopilot devices.
+{% endhint %}
 
 This API does not directly return data to CIPP, and thus can incorrectly report the upload has failed.
 
-###
+***
 
 ### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

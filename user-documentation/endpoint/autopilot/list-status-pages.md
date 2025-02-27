@@ -12,8 +12,8 @@ This page shows the status of the **Default** Status Page and the settings confi
 
 <table><thead><tr><th width="281">Field</th><th>Description</th></tr></thead><tbody><tr><td>Name</td><td>The name of the status page.</td></tr><tr><td>Description</td><td>The status page description.</td></tr><tr><td>Installation Timeout</td><td>The time in minutes before the installation times out.</td></tr><tr><td>Show Installation Progress</td><td>Whether to display installation progress on the status page.</td></tr><tr><td>Block Retries</td><td>Whether it's possible to retry in the event of autopilot failure.</td></tr><tr><td>Reset on failure</td><td>Whether it's possible to reset in the event of autopilot failure.</td></tr><tr><td>Usage on failure</td><td>Whether the user can continue to use the device in the event of autopilot failure.</td></tr></tbody></table>
 
-
+***
 
 ### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

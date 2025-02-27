@@ -4,8 +4,8 @@ The Mail Testing Tool is a powerful utility that allows you to read messages in 
 
 ## Requirements
 
-- The CIPP service account has a mailbox
-- The **Mail.Read** Delegated permission has been added to the Microsoft Graph API permissions.
+* The CIPP service account has a mailbox
+* The **Mail.Read** Delegated permission has been added to the Microsoft Graph API permissions.
 
 ## Usage
 
@@ -13,6 +13,8 @@ The Mail Testing Tool is a powerful utility that allows you to read messages in 
 2. Wait until the email arrives in the inbox.
 3. Click on the details in the table to see email authentication information.
 
+***
+
 ### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=enhancement%2Cno-priority&projects=&template=feature.yml&title=%5BFeature+Request%5D%3A+) on GitHub.
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

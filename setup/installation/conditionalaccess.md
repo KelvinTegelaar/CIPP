@@ -1,5 +1,6 @@
 ---
 description: Setup your Conditional Access policies for CIPP.
+hidden: true
 ---
 
 # Conditional Access best practices
@@ -8,7 +9,7 @@ To make sure CIPP is able to access your tenants securely we recommend the usage
 
 ## Setup of your conditional access policies
 
-1. Browse to the [Conditional Access Policies](https://portal.azure.com/#view/Microsoft\_AAD\_ConditionalAccess/ConditionalAccessBlade/\~/Policies) blade in Azure.
+1. Browse to the [Conditional Access Policies](https://portal.azure.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) blade in Azure.
 2. Exclude the CIPP service account from **each** existing policy, this way we have a dedicated policy for the CIPP service account
 3. Create a new policy and include the CIPP user. Enforce Azure Multi-factor Authentication for each logon (set sign in frequency under session to every time) and for all cloud applications, do not add any exclusions or trusted locations.
    1. If you have trusted locations under the classic MFA portal you must always remove those.
@@ -18,5 +19,5 @@ To make sure CIPP is able to access your tenants securely we recommend the usage
 
 DAP and GDAP are affected by your clients conditional access policies. To make sure you can access your clients using your CIPP integration user we recommend excluding the MSP from the Conditional Access Policy per [Microsoft's Documentation](https://learn.microsoft.com/en-us/partner-center/gdap-faq#what-is-the-recommended-next-step-if-the-conditional-access-policy-set-by-the-customer-blocks-all-external-access-including-csps-access-aobo-to-the-customers-tenant)
 
-1. Browse to your client's [Conditional Access Policies](https://portal.azure.com/#view/Microsoft\_AAD\_ConditionalAccess/ConditionalAccessBlade/\~/Policies) blade in Azure.
+1. Browse to your client's [Conditional Access Policies](https://portal.azure.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) blade in Azure.
 2. For each policy listed. Add an exclusion to "Users and Groups" with the following settings: - Guest or external users - Service Provider Users - Selected, enter your tenantid. If you do not know what your tenant id is you can look this up at https://whatismytenantid.com

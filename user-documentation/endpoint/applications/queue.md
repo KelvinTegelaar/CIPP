@@ -15,8 +15,8 @@ You can view a list of all applications queued for deployment to your tenants, a
 | Install Command    | The command to install the application.    |
 | Assigned to Groups | List the groups assignments for the app.   |
 
-
+***
 
 ### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

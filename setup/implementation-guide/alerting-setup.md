@@ -1,2 +1,6 @@
+---
+hidden: true
+---
+
 # Alerting Setup
 

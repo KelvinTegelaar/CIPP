@@ -1,66 +1,48 @@
 ---
 description: Apply pre-defined standards to your Microsoft 365 CSP tenants.
+hidden: true
 ---
 
 # Edit Standards
 
-## Video Walkthrough of Standards Setup
+## **Overview**
 
-This guide walks you through the process of setting up and running standards in CIPP. From accessing the standards editing feature to initiating standards runs, you'll learned how to ensure compliance and maintain security in your organization.
-
-{% embed url="https://app.guidde.com/share/playbooks/evB2vKUYjj1CAPCm6dQQAY" %}
+The **Edit Standards** page is where you manage and customize pre-defined standards. It allows you to configure reporting, apply settings, and tailor standards to meet the needs of specific tenants.
 
 {% hint style="info" %}
-**Note that by default, Standards aren't applied to any tenants upon setup of CIPP.** Applying any standard should only be undertaken with full understanding of the effects of the standard, detailed in the video and walkthrough on this page, and with the following details in mind:
-
-* Template standards work by reapplying the template from your database every 3 hours.&#x20;
-* Each standard has three options. **`Report`, `Alert`, and `Remediate`.**&#x20;
-* A standard with Remediate applies actual configuration to the selected tenant.
-* Disabling the Remediate option does not undo a standard if it has already applied. Only prevents it from applying again.&#x20;
+Standards aren’t applied by default after initial setup. Admins must configure and enable them manually. **For first-time setup, refer to the** [**Implementation Guide.**](../../../setup/implementation-guide/standards-setup.md)
 {% endhint %}
 
-## Walkthrough Steps  of Standards Setup
+***
 
-1. To get started with Standards in CIPP, first navigate to `Tenant Administration` -> `Standards`, and then `Edit Standards`. In our example, we'll add a standard for `All Tenants` which will apply to every tenant in our CIPP environment.
+## **Key Features**
 
-![Click 'Edit Standards'](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2F9PtA6nkRnRJKCAyvwoUvwq\_doc.png?alt=media\&token=ce2be33a-dfe8-4208-b3ca-d55cbb5cb66a)
+1. **Actionable Options**
+   * **Report**: Log the current configuration in a Best Practices Report.
+   * **Alert**: Notify admins of changes through tickets, emails, or webhooks.
+   * **Remediate**: Automatically enforce the desired configuration.
+   * _Disabling Remediate_ stops enforcement but does not revert previously applied changes.
+2. **Customizing Standards**
+   * Input fields or dropdowns are available for tailoring settings to specific requirements.
+   * Use categories (e.g., Security, Compliance, Usability) to quickly find relevant standards.
+3. **Running Standards**
+   * Use the **Run Now** button to apply standards immediately.
+   * Options include applying standards to:
+     * A single tenant.
+     * All tenants in your environment.
+4. **Template Reapplication**
+   * Templates reapply every **three hours** to maintain consistent configurations.
+   * If changes are made by admins, they will automatically revert to match the template.
+   * Templates simplify updates by allowing a single change to propagate across all linked tenants.
+5.  **Excluding Tenants**
 
-2.  Each standard has three options. `Report`, `Alert`, and `Remediate`.&#x20;
+    * Exclude a tenant from **All Tenants** standards to prevent global enforcement.
+    * This allows for custom configurations specific to that tenant.
 
-    1. **Report** stores the current value of the standard in a Best Practices Report.&#x20;
-    2. **Alert** generates a ticket, email, or webhook depending on your notification configuration.&#x20;
-    3. **Remediate** applies the fix for the specific standard and makes the necessary change on your clients tenant.
 
-    _Disabling the remediate option does not undo a standard if it has already applied. Only prevents it from applying again._&#x20;
 
-![Reporting](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2Fro5DLkaAP3uvXCiV9VqS6w\_doc.png?alt=media\&token=01535725-2019-4e77-8707-83f6c4844715)
+    ***
 
-3. Each standard has a description explaining what the setting does, and a label on how much end-user impact the standard will have.
+### Feature Requests / Ideas
 
-![Standards impact](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2FumFDArrjyZLHEdfwTPyWgN\_doc.png?alt=media\&token=9485eb28-0148-4d40-94bf-84951dcdba38)
-
-4. Some of the standards have settings, such as input fields to enter custom text, or selections
-
-![Standards input](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2F4sfQ1tpUosgrhMZ8fLXeQx\_doc.png?alt=media\&token=918741b5-07b6-4677-9060-c52afe137791)
-
-5. Standards can be found for each aspect of M365. Inside of CIPP we've made sure to split these out by category so you can easily find the standard you need. [There are over 60 standards](./#meet-the-standards) which each release adding new ones.
-
-![Catagories](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2Fp8vzXiAHDU9mroKFtMhJPr\_doc.png?alt=media\&token=39f2ccea-d611-43d4-9e23-59ac7821273c)
-
-6. Lets check out the Templates Standard Deployment section next, which allows us to deploy our own custom templates to Intune, Exchange, Conditional Access and more.
-
-![Templates Standard Deployment](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2Fwp8XgyP3RwzKJXEym97Tb9\_doc.png?alt=media\&token=25aaa44a-cb51-42a3-b6dd-c71d739a611f)
-
-7. Template standards work by reapplying the template from your database every 3 hours. That means when we deploy an Intune Template it'll always be exactly in the state we need it to be. If an admin changes a setting it will revert to our template. That also makes it easy to deploy updates to templates, as you only have a single location to change the template before it's applied to all clients.
-
-![Deployment of a Template Standard](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2Fd2vyBpSr5h75z5E4k4NikT\_doc.png?alt=media\&token=033b29e7-9bb3-4b41-a30e-bd5d5facb7e0)
-
-8. At the top of the page you'll find the option to run the standards immediately. You can do this for a single tenant, or all tenants in one go.
-
-![Run now](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2FeMGbXx2ph7iQ3U25hyfv2y\_doc.png?alt=media\&token=f547ab85-d62f-46ac-9de3-d55e94358d26)
-
-9. Click "Enabling this feature excludes this tenant from any top-level "All Tenants" standard. This means that only the standards you explicitly set for this tenant will be applied. Standards previously..."
-
-![Click 'Enabling this feature excludes this tenant from any top-level 'All Tenants' standard. This means that only the standards you explicitly set for this tenant will be applied. Standards previously...'](https://static.guidde.com/v0/qg%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FevB2vKUYjj1CAPCm6dQQAY%2FpQex4jGu9BfWANuECiTbjW\_doc.png?alt=media\&token=d5fd4762-604a-420f-ae9b-3a08eeffd48c)
-
-When selecting a specific tenant you can choose to exclude this tenant from "All Tenant" standards. This means that none of the standards applied to All Tenants will apply to this tenant, allowing you to create a completely custom standard for this client.
+We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
