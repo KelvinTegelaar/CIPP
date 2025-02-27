@@ -219,7 +219,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     }
   }
 
-  if (cellName === "ClientId") {
+  if (cellName === "ClientId" || cellName === "role") {
     return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
   }
 
