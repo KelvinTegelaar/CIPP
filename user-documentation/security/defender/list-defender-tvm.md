@@ -1,13 +1,21 @@
 # Vulnerabilities
 
-### [john](https://app.gitbook.com/u/LqxnmoEUSlN5hrfNXx2f5zhRCIf2 "mention") please document this
+The "Software Vulnerabilities Status" page provides an overview of software vulnerabilities detected across devices. The page displays a table with the following columns:
 
-~~**Looking for documentation contributors**~~\
-~~FOSS (~~[~~Free and Open-Source Software~~](https://en.wikipedia.org/wiki/Free_and_open-source_software)~~) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.~~&#x20;
+| Column Name                  | Description                                      |
+|------------------------------|--------------------------------------------------|
+| **Affected Devices Count**   | Number of devices affected by the vulnerability. |
+| **Affected Devices**         | List of affected devices.                        |
+| **OS Platform**              | Operating system platform of the affected devices. |
+| **Software Vendor**          | Vendor of the vulnerable software.               |
+| **Software Name**            | Name of the vulnerable software.                 |
+| **Vulnerability Severity Level** | Severity level of the vulnerability.         |
+| **CVSS Score**               | CVSS score of the vulnerability.                 |
+| **Security Update Available**| Indicates if a security update is available.     |
+| **Exploitability Level**     | Level of exploitability of the vulnerability.    |
+| **CVE Id**                   | CVE identifier of the vulnerability.             |
 
-~~If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.~~
-
-***
+The data is fetched from the Microsoft Defender for Endpoint API. For more information, refer to the [Microsoft Defender for Endpoint API documentation](https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-software-vulnerabilities).
 
 ### Feature Requests / Ideas
 

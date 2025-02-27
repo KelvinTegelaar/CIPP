@@ -1,16 +1,21 @@
 # Device Compliance
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+The Device Compliance page provides a comprehensive overview of device compliance status within your organization. It displays a table with the following columns:
 
-### **Looking for documentation contributors**
+| Column                          | Description                                                                 |
+|---------------------------------|-----------------------------------------------------------------------------|
+| **Display Name**                | The name of the device.                                                     |
+| **Is Compliant**                | Indicates if the device is compliant with the organization's policies.       |
+| **Is Managed**                  | Indicates if the device is managed.                                         |
+| **Account Enabled**             | Shows if the account associated with the device is enabled.                 |
+| **Trust Type**                  | The type of trust relationship the device has.                              |
+| **Compliance Expiration DateTime** | The date and time when the device's compliance status will expire.          |
+| **Approximate Last Sign-In DateTime** | The last approximate date and time the device signed in.                   |
+| **Hostnames**                   | The hostnames associated with the device.                                   |
+| **Model**                       | The model of the device.                                                    |
+| **Last Sync DateTime**          | The last date and time the device synced.                                   |
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
-
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
-
-***
+For more information, refer to the [Microsoft Graph devices endpoint documentation](https://docs.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0).
 
 ### Feature Requests / Ideas
 
