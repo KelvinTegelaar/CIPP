@@ -910,6 +910,33 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.UserPreferredLanguage",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Sets the preferred language property for all users in the tenant. This will override the user's language settings.",
+    "docsDescription": "Sets the preferred language property for all users in the tenant. This will override the user's language settings.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.UserPreferredLanguage.preferredLanguage",
+        "label": "Preferred Language",
+        "api": {
+          "url": "/languageList.json",
+          "labelField": "language",
+          "valueField": "tag"
+        }
+      }
+    ],
+    "label": "Preferred language for all users",
+    "impact": "High Impact",
+    "impactColour": "info",
+    "addedDate": "2025-02-26",
+    "powershellEquivalent": "Update-MgUser -UserId user@domain.com -BodyParameter @{preferredLanguage='en-US'}",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
     "tag": ["CIS"],
