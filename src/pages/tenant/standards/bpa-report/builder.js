@@ -24,6 +24,7 @@ import { useRouter } from "next/router";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import { CippHead } from "../../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const router = useRouter();
@@ -177,9 +178,7 @@ const Page = () => {
   const onSubmit = (data) => {};
   return (
     <>
-      <Head>
-        <title>{pageTitle}</title>
-      </Head>
+      <CippHead title={pageTitle} />
       <Box
         sx={{
           flexGrow: 1,
