@@ -46,7 +46,7 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecGetRecoveryKey",
       data: {
-        GUID: "id",
+        GUID: "deviceId",
       },
       confirmText: "Are you sure you want to retrieve the BitLocker keys?",
       multiPost: false,
