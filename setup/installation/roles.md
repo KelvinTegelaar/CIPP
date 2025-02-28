@@ -2,7 +2,7 @@
 description: How to grant users access to the CIPP App
 ---
 
-# Roles
+# User Roles in CIPP
 
 CIPP utilizes the Secure Application model, which means that each action will be done under the user permissions of the CIPP-SAM user. To limit the access users have you can use the role management system.
 
@@ -10,11 +10,11 @@ For hosted clients, invites and roles can be managed by logging into the managem
 
 CIPP features a role management system which utilises the [Roles feature of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
 
-| Role Name  | Description                                                                                                                                                           |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                  |
-| editor     | Allowed to perform everything, except editing tenants, exclusions, and standards.                                                                                     |
-| admin      | Allowed to perform everything.                                                                                                                                        |
+| Role Name  | Description                                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                                                          |
+| editor     | Allowed to perform everything, except editing tenants, exclusions, and standards.                                                                                                                             |
+| admin      | Allowed to perform everything.                                                                                                                                                                                |
 | superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. This role must be combined with 'admin' |
 
 You can assign these roles to users using the [Role Management system of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#role-management)
@@ -36,8 +36,7 @@ To assign a role to a user you would follow these steps:
 
 While CIPP only supplies the above roles by default, you can create your own Custom Roles and apply them to your users with 'editor' or 'readonly' rights, admin users are unaffected by custom roles. Set up Custom Roles by following these steps:
 
-* Go to CIPP.
-* Go to Application Settings > SuperAdmin > Custom Roles.
+* Go to CIPP -> Advanced > Super Admin > Custom Roles.
 * Select a Custom Role from the list or start typing to create a new one if you do not yet have any.
   * Please ensure that your custom role is entirely in lowercase and does not contain spaces or special characters.
 * For Allowed Tenants select a subset of tenants to manage or AllTenants.
