@@ -3,12 +3,21 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Edit, PersonAdd } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 
 const Page = () => {
   const pageTitle = "Contacts";
 
   const actions = [
+    {
+      label: "Edit Contact",
+      link: "/email/administration/contacts/edit?id=[id]",
+      multiPost: false,
+      postEntireRow: true,
+      icon: <Edit />,
+      color: "warning",
+      condition: (row) => !row.onPremisesSyncEnabled,
+    },
     {
       label: "Remove Contact",
       type: "GET",
@@ -16,18 +25,12 @@ const Page = () => {
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to delete this contact?",
+      confirmText:
+        "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
       color: "danger",
       icon: <TrashIcon />,
+      condition: (row) => !row.onPremisesSyncEnabled,
     },
-    /* TODO: Implement edit contact
-    {
-      label: "Edit Contact",
-      link: "/email/administration/edit-contact/[id]",
-      multiPost: false,
-      icon: <Edit />,
-      color: "warning",
-    },*/
   ];
 
   const simpleColumns = ["displayName", "mail", "companyName", "onPremisesSyncEnabled"];

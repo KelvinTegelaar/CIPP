@@ -82,6 +82,15 @@
     "recommendedRunInterval": "7d"
   },
   {
+    "name": "EntraLicenseUtilization",
+    "label": "Alert on Entra ID P1/P2 license over-utilization",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Alert when utilization exceeds % (default: 110)",
+    "inputName": "EntraLicenseUtilizationThreshold"
+  },
+  {
     "name": "AppSecretExpiry",
     "label": "Alert on expiring application secrets",
     "recommendedRunInterval": "1d"

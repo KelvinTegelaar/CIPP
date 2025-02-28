@@ -1,4 +1,14 @@
-import { Alert, Box, Button, CardContent, Stack, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CardContent,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import CippIntegrationSettings from "/src/components/CippIntegrations/CippIntegrationSettings";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
@@ -15,6 +25,7 @@ import CippPageCard from "../../../components/CippCards/CippPageCard";
 import CippIntegrationTenantMapping from "../../../components/CippIntegrations/CippIntegrationTenantMapping";
 import CippIntegrationFieldMapping from "../../../components/CippIntegrations/CippIntegrationFieldMapping";
 import { CippCardTabPanel } from "../../../components/CippComponents/CippCardTabPanel";
+import CippApiClientManagement from "../../../components/CippIntegrations/CippApiClientManagement";
 
 function tabProps(index) {
   return {
@@ -77,7 +88,7 @@ const Page = () => {
     defaultValues: integrations?.data,
   });
 
-  const extension = extensions.find((extension) => extension.id === router.query.id);
+  const extension = extensions.find((extension) => extension.id === router.query.id) || {};
 
   var logo = extension?.logo;
   if (preferredTheme === "dark" && extension?.logoDark) {
@@ -95,6 +106,17 @@ const Page = () => {
 
   return (
     <>
+      {integrations.isLoading && (
+        <CippPageCard title="Integrations" headerText={extension.headerText} hideTitleText={true}>
+          <CardContent>
+            <Stack spacing={2}>
+              <Skeleton variant="rectangular" height={150} />
+              <Skeleton variant="rectangular" height={150} />
+              <Skeleton variant="rectangular" height={400} />
+            </Stack>
+          </CardContent>
+        </CippPageCard>
+      )}
       {integrations.isSuccess && extension && (
         <CippPageCard
           title={extension.name}
@@ -174,10 +196,9 @@ const Page = () => {
                   ))}
                 </>
               )}
-
-              <CippApiResults apiObject={actionTestResults} />
-              <CippApiResults apiObject={actionSyncResults} />
             </Stack>
+            <CippApiResults apiObject={actionTestResults} />
+            <CippApiResults apiObject={actionSyncResults} />
           </CardContent>
 
           <Box sx={{ width: "100%" }}>
@@ -186,12 +207,16 @@ const Page = () => {
                 <Tab label="Settings" {...tabProps(0)} />
                 {extension?.mappingRequired && <Tab label="Tenant Mapping" {...tabProps(1)} />}
                 {extension?.fieldMapping && <Tab label="Field Mapping" {...tabProps(2)} />}
-                {extension?.id === "cippapi" && <Tab label="API Clients" {...tabProps(3)} />}
               </Tabs>
             </Box>
             <CippCardTabPanel value={value} index={0}>
-              <CippIntegrationSettings />
+              {extension?.id === "cippapi" ? (
+                <CippApiClientManagement />
+              ) : (
+                <CippIntegrationSettings />
+              )}
             </CippCardTabPanel>
+
             {extension?.mappingRequired && (
               <CippCardTabPanel value={value} index={1}>
                 <CippIntegrationTenantMapping />
@@ -200,11 +225,6 @@ const Page = () => {
             {extension?.fieldMapping && (
               <CippCardTabPanel value={value} index={2}>
                 <CippIntegrationFieldMapping />
-              </CippCardTabPanel>
-            )}
-            {extension?.id === "cippapi" && (
-              <CippCardTabPanel value={value} index={3}>
-                API Client component to go here
               </CippCardTabPanel>
             )}
           </Box>
