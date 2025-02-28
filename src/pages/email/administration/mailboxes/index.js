@@ -121,14 +121,15 @@ const Page = () => {
       url: "/api/ExecStartManagedFolderAssistant",
       icon: <PlayCircleIcon />,
       data: {
-        ID: "UPN",
+        ID: "ExchangeGuid",
+        UserPrincipalName: "UPN",
       },
       confirmText: "Are you sure you want to start the managed folder assistant for this user?",
     },
     {
       label: "Delete Mailbox",
       type: "POST",
-      icon: <TrashIcon />, // Added
+      icon: <TrashIcon />,
       url: "/api/RemoveUser",
       data: { ID: "UPN" },
       confirmText: "Are you sure you want to delete this mailbox?",
