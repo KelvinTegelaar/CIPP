@@ -5,7 +5,7 @@ export const CippHead = ({ title }) => {
   const tenant = useSettings().currentTenant;
   return (
     <Head>
-      <title>{tenant ? `${tenant} - ${title}` : title}</title>
+      <title>{tenant ? `${title} - ${tenant}` : title}</title>
     </Head>
   );
 };
