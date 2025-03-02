@@ -532,7 +532,13 @@
       {
         "type": "switch",
         "name": "PWPush.UseBearerAuth",
-        "label": "Use Bearer Authentication (Hosted only)"
+        "label": "Use Bearer Authentication (Hosted only)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",

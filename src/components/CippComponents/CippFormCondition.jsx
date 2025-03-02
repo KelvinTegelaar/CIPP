@@ -3,7 +3,15 @@ import isEqual from "lodash/isEqual"; // lodash for deep comparison
 import React from "react";
 
 export const CippFormCondition = (props) => {
-  let { field, compareType = "is", compareValue, action = 'hide', children, formControl } = props;
+  let {
+    field,
+    compareType = "is",
+    compareValue,
+    action = "hide",
+    children,
+    formControl,
+    disabled = false,
+  } = props;
 
   if (
     field === undefined ||
@@ -26,17 +34,22 @@ export const CippFormCondition = (props) => {
   const disableChildren = (children) => {
     return React.Children.map(children, (child) => {
       if (React.isValidElement(child)) {
-        if (child.props?.children && child.type.name !== "CippFormCondition") {
+        if (child.props?.children) {
           return React.cloneElement(child, {
             children: disableChildren(child.props.children),
             disabled: true,
           });
+        } else {
+          return React.cloneElement(child, { disabled: true });
         }
-        return React.cloneElement(child, { disabled: true });
       }
       return child;
     });
   };
+
+  if (disabled) {
+    return disableChildren(children);
+  }
 
   switch (compareType) {
     case "regex":
