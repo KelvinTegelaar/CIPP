@@ -140,12 +140,6 @@ const CippIntegrationFieldMapping = () => {
                           fullWidth
                           isFetching={fieldMapping.isFetching}
                           disableClearable={true}
-                          required={true}
-                          validators={{
-                            validate: (value) => {
-                              return value ? true : "Please select a value";
-                            },
-                          }}
                         />
                       </Box>
                     </Grid>
