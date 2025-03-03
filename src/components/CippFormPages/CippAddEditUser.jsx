@@ -291,7 +291,6 @@ const CippAddEditUser = (props) => {
           multiple={false}
         />
       </Grid>
-      {/* Schedule User Creation */}
       <Grid item xs={12}>
         <CippFormUserSelector
           formControl={formControl}
@@ -300,6 +299,27 @@ const CippAddEditUser = (props) => {
           multiple={false}
         />
       </Grid>
+      {formType === "edit" && (
+        <Grid item xs={12}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Add to Groups"
+            name="AddToGroups"
+            multiple={true}
+            api={{
+              url: "/api/ListGroups",
+              queryKey: `ListGroups-${tenantDomain}`,
+              labelField: "displayName",
+              valueField: "id",
+              addedField: {
+                calculatedGroupType: "calculatedGroupType",
+              },
+            }}
+            formControl={formControl}
+          />
+        </Grid>
+      )}
+      {/* Schedule User Creation */}
       {formType === "add" && (
         <Grid item xs={12}>
           <CippFormComponent
