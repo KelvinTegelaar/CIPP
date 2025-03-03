@@ -97,6 +97,8 @@ export const CippApiDialog = (props) => {
           } else {
             newData[key] = value;
           }
+        } else if (typeof value === 'boolean') {
+          newData[key] = value;
         } else if (typeof value === "object" && value !== null) {
           const processedValue = processActionData(value, row, replacementBehaviour);
           if (replacementBehaviour !== "removeNulls" || Object.keys(processedValue).length > 0) {
