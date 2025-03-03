@@ -135,14 +135,23 @@ export const Layout = (props) => {
 
   useEffect(() => {
     if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
-      //if usersettingsAPI.data contains offboardingDefaults.user, delete that specific key.
+      //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
       if (userSettingsAPI.data.offboardingDefaults?.user) {
         delete userSettingsAPI.data.offboardingDefaults.user;
       }
       if (userSettingsAPI?.data?.currentTheme) {
         delete userSettingsAPI.data.currentTheme;
       }
-      settings.handleUpdate(userSettingsAPI.data);
+      // get current devtools settings
+      var showDevtools = settings.showDevtools;
+      // get current bookmarks
+      var bookmarks = settings.bookmarks;
+
+      settings.handleUpdate({
+        ...userSettingsAPI.data,
+        bookmarks,
+        showDevtools,
+      });
       setUserSettingsComplete(true);
     }
   }, [
