@@ -2,8 +2,6 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import Link from "next/link";
 import { Button } from "@mui/material";
-import { Add, Mail } from "@mui/icons-material";
-
 import {
   Archive,
   MailOutline,
@@ -13,6 +11,8 @@ import {
   VisibilityOff,
   PhonelinkLock,
   Key,
+  PostAdd,
+  Add,
 } from "@mui/icons-material";
 import { TrashIcon, MagnifyingGlassIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
 
@@ -85,10 +85,21 @@ const Page = () => {
       type: "POST",
       icon: <Archive />,
       url: "/api/ExecEnableArchive",
-      data: { ID: "UPN" },
+      data: { ID: "Id", username: "UPN" },
       confirmText: "Are you sure you want to enable the online archive for this user?",
       multiPost: false,
       condition: (row) => row.ArchiveGuid === "00000000-0000-0000-0000-000000000000",
+    },
+    {
+      label: "Enable Auto-Expanding Archive",
+      type: "POST",
+      icon: <PostAdd />,
+      url: "/api/ExecEnableAutoExpandingArchive",
+      data: { ID: "Id", username: "UPN" },
+      confirmText:
+        "Are you sure you want to enable auto-expanding archive for this user? The archive must already be enabled.",
+      multiPost: false,
+      condition: (row) => row.ArchiveGuid !== "00000000-0000-0000-0000-000000000000",
     },
     {
       label: "Hide from Global Address List",
