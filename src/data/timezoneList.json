@@ -1,0 +1,335 @@
+[
+  {
+    "timezone": "(UTC-12:00) International Date Line West"
+  },
+  {
+    "timezone": "(UTC-11:00) Coordinated Universal Time-11"
+  },
+  {
+    "timezone": "(UTC-10:00) Hawaii"
+  },
+  {
+    "timezone": "(UTC-09:00) Alaska"
+  },
+  {
+    "timezone": "(UTC-08:00) Baja California"
+  },
+  {
+    "timezone": "(UTC-08:00) Pacific Time (US and Canada)"
+  },
+  {
+    "timezone": "(UTC-07:00) Arizona"
+  },
+  {
+    "timezone": "(UTC-07:00) Chihuahua, La Paz, Mazatlan"
+  },
+  {
+    "timezone": "(UTC-07:00) Mountain Time (US and Canada)"
+  },
+  {
+    "timezone": "(UTC-06:00) Central America"
+  },
+  {
+    "timezone": "(UTC-06:00) Central Time (US and Canada)"
+  },
+  {
+    "timezone": "(UTC-06:00) Guadalajara, Mexico City, Monterrey"
+  },
+  {
+    "timezone": "(UTC-06:00) Saskatchewan"
+  },
+  {
+    "timezone": "(UTC-05:00) Bogota, Lima, Quito"
+  },
+  {
+    "timezone": "(UTC-05:00) Eastern Time (US and Canada)"
+  },
+  {
+    "timezone": "(UTC-05:00) Indiana (East)"
+  },
+  {
+    "timezone": "(UTC-04:30) Caracas"
+  },
+  {
+    "timezone": "(UTC-04:00) Asuncion"
+  },
+  {
+    "timezone": "(UTC-04:00) Atlantic Time (Canada)"
+  },
+  {
+    "timezone": "(UTC-04:00) Cuiaba"
+  },
+  {
+    "timezone": "(UTC-04:00) Georgetown, La Paz, Manaus, San Juan"
+  },
+  {
+    "timezone": "(UTC-04:00) Santiago"
+  },
+  {
+    "timezone": "(UTC-03:30) Newfoundland"
+  },
+  {
+    "timezone": "(UTC-03:00) Brasilia"
+  },
+  {
+    "timezone": "(UTC-03:00) Buenos Aires"
+  },
+  {
+    "timezone": "(UTC-03:00) Cayenne, Fortaleza"
+  },
+  {
+    "timezone": "(UTC-03:00) Greenland"
+  },
+  {
+    "timezone": "(UTC-03:00) Montevideo"
+  },
+  {
+    "timezone": "(UTC-03:00) Salvador"
+  },
+  {
+    "timezone": "(UTC-02:00) Coordinated Universal Time-02"
+  },
+  {
+    "timezone": "(UTC-02:00) Mid-Atlantic"
+  },
+  {
+    "timezone": "(UTC-01:00) Azores"
+  },
+  {
+    "timezone": "(UTC-01:00) Cabo Verde"
+  },
+  {
+    "timezone": "(UTC) Casablanca"
+  },
+  {
+    "timezone": "(UTC) Coordinated Universal Time"
+  },
+  {
+    "timezone": "(UTC) Dublin, Edinburgh, Lisbon, London"
+  },
+  {
+    "timezone": "(UTC) Monrovia, Reykjavik"
+  },
+  {
+    "timezone": "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"
+  },
+  {
+    "timezone": "(UTC+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague"
+  },
+  {
+    "timezone": "(UTC+01:00) Brussels, Copenhagen, Madrid, Paris"
+  },
+  {
+    "timezone": "(UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb"
+  },
+  {
+    "timezone": "(UTC+01:00) West Central Africa"
+  },
+  {
+    "timezone": "(UTC+01:00) Windhoek"
+  },
+  {
+    "timezone": "(UTC+02:00) Amman"
+  },
+  {
+    "timezone": "(UTC+02:00) Athens, Bucharest"
+  },
+  {
+    "timezone": "(UTC+02:00) Beirut"
+  },
+  {
+    "timezone": "(UTC+02:00) Cairo"
+  },
+  {
+    "timezone": "(UTC+02:00) Damascus"
+  },
+  {
+    "timezone": "(UTC+02:00) Harare, Pretoria"
+  },
+  {
+    "timezone": "(UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius"
+  },
+  {
+    "timezone": "(UTC+02:00) Jerusalem"
+  },
+  {
+    "timezone": "(UTC+02:00) Minsk (old)"
+  },
+  {
+    "timezone": "(UTC+02:00) E. Europe"
+  },
+  {
+    "timezone": "(UTC+02:00) Kaliningrad"
+  },
+  {
+    "timezone": "(UTC+03:00) Baghdad"
+  },
+  {
+    "timezone": "(UTC+03:00) Istanbul"
+  },
+  {
+    "timezone": "(UTC+03:00) Kuwait, Riyadh"
+  },
+  {
+    "timezone": "(UTC+03:00) Minsk"
+  },
+  {
+    "timezone": "(UTC+03:00) Moscow, St. Petersburg, Volgograd"
+  },
+  {
+    "timezone": "(UTC+03:00) Nairobi"
+  },
+  {
+    "timezone": "(UTC+03:30) Tehran"
+  },
+  {
+    "timezone": "(UTC+04:00) Abu Dhabi, Muscat"
+  },
+  {
+    "timezone": "(UTC+04:00) Astrakhan, Ulyanovsk"
+  },
+  {
+      "timezone": "(UTC+04:00) Baku"
+  },
+  {
+    "timezone": "(UTC+04:00) Izhevsk, Samara"
+  },
+  {
+    "timezone": "(UTC+04:00) Port Louis"
+  },
+  {
+    "timezone": "(UTC+04:00) Tbilisi"
+  },
+  {
+    "timezone": "(UTC+04:00) Yerevan"
+  },
+  {
+    "timezone": "(UTC+04:30) Kabul"
+  },
+  {
+    "timezone": "(UTC+05:00) Ekaterinburg"
+  },
+  {
+    "timezone": "(UTC+05:00) Islamabad, Karachi"
+  },
+  {
+    "timezone": "(UTC+05:00) Tashkent"
+  },
+  {
+    "timezone": "(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi"
+  },
+  {
+    "timezone": "(UTC+05:30) Sri Jayawardenepura"
+  },
+  {
+    "timezone": "(UTC+05:45) Kathmandu"
+  },
+  {
+    "timezone": "(UTC+06:00) Astana"
+  },
+  {
+    "timezone": "(UTC+06:00) Dhaka"
+  },
+  {
+    "timezone": "(UTC+06:00) Omsk"
+  },
+  {
+    "timezone": "(UTC+06:30) Yangon (Rangoon)"
+  },
+  {
+    "timezone": "(UTC+07:00) Bangkok, Hanoi, Jakarta"
+  },
+  {
+    "timezone": "(UTC+07:00) Barnaul, Gorno-Altaysk"
+  },
+  {
+    "timezone": "(UTC+07:00) Krasnoyarsk"
+  },
+  {
+    "timezone": "(UTC+07:00) Novosibirsk"
+  },
+  {
+    "timezone": "(UTC+07:00) Tomsk"
+  },
+  {
+    "timezone": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi"
+  },
+  {
+    "timezone": "(UTC+08:00) Irkutsk"
+  },
+  {
+    "timezone": "(UTC+08:00) Kuala Lumpur, Singapore"
+  },
+  {
+    "timezone": "(UTC+08:00) Perth"
+  },
+  {
+    "timezone": "(UTC+08:00) Taipei"
+  },
+  {
+    "timezone": "(UTC+08:00) Ulaanbaatar"
+  },
+  {
+    "timezone": "(UTC+09:00) Osaka, Sapporo, Tokyo"
+  },
+  {
+    "timezone": "(UTC+09:00) Seoul"
+  },
+  {
+    "timezone": "(UTC+09:00) Yakutsk"
+  },
+  {
+    "timezone": "(UTC+09:30) Adelaide"
+  },
+  {
+    "timezone": "(UTC+09:30) Darwin"
+  },
+  {
+    "timezone": "(UTC+10:00) Brisbane"
+  },
+  {
+    "timezone": "(UTC+10:00) Canberra, Melbourne, Sydney"
+  },
+  {
+    "timezone": "(UTC+10:00) Guam, Port Moresby"
+  },
+  {
+    "timezone": "(UTC+10:00) Hobart"
+  },
+  {
+    "timezone": "(UTC+10:00) Magadan"
+  },
+  {
+    "timezone": "(UTC+10:00) Vladivostok"
+  },
+  {
+    "timezone": "(UTC+11:00) Chokurdakh"
+  },
+  {
+    "timezone": "(UTC+11:00) Sakhalin"
+  },
+  {
+    "timezone": "(UTC+11:00) Solomon Is., New Caledonia"
+  },
+  {
+    "timezone": "(UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky"
+  },
+  {
+    "timezone": "(UTC+12:00) Auckland, Wellington"
+  },
+  {
+    "timezone": "(UTC+12:00) Coordinated Universal Time+12"
+  },
+  {
+    "timezone": "(UTC+12:00) Fiji"
+  },
+  {
+    "timezone": "(UTC+12:00) Petropavlovsk-Kamchatsky - Old"
+  },
+  {
+    "timezone": "(UTC+13:00) Nuku'alofa"
+  },
+  {
+    "timezone": "(UTC+13:00) Samoa"
+  }
+]
