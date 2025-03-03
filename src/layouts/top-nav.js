@@ -173,6 +173,7 @@ export const TopNav = (props) => {
                     href={bookmark.path}
                     key={idx}
                     sx={{ color: "inherit" }}
+                    onClick={() => handleBookmarkClose()}
                   >
                     <ListItemText
                       primary={
