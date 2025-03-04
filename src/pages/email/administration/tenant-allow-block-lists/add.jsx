@@ -65,6 +65,7 @@ const AddTenantAllowBlockList = () => {
             name="listType"
             formControl={formControl}
             multiple={false}
+            creatable={false}
             options={[
               { label: "Sender", value: "Sender" },
               { label: "Url", value: "Url" },
@@ -82,6 +83,7 @@ const AddTenantAllowBlockList = () => {
             name="listMethod"
             formControl={formControl}
             multiple={false}
+            creatable={false}
             options={[
               { label: "Block", value: "Block" },
               { label: "Allow", value: "Allow" },

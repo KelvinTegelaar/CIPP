@@ -26,6 +26,7 @@ const CippIntegrationSettings = ({ children }) => {
   });
 
   const extension = extensions.find((extension) => extension.id === router.query.id);
+  const enabled = formControl.watch(`${extension?.id}.Enabled`);
 
   var logo = extension?.logo;
   if (preferredTheme === "dark" && extension?.logoDark) {
@@ -54,12 +55,11 @@ const CippIntegrationSettings = ({ children }) => {
           resetForm={false}
         >
           {children}
-
           <Grid container sx={{ alignItems: "center" }}>
             {extension.SettingOptions.map((setting, index) => (
               <React.Fragment key={index}>
                 {setting?.condition ? (
-                  <CippFormCondition {...setting.condition} formControl={formControl}>
+                  <CippFormCondition {...setting.condition} formControl={formControl} disabled={extension.SettingOptions.find(s => s.name === `${extension.id}.Enabled`) && !enabled}>
                     <Grid item size={{ xs: 12, md: setting.type === "switch" ? 12 : 6 }}>
                       <Box sx={{ p: 1 }}>
                         <CippFormComponent
