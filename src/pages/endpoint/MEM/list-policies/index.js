@@ -9,7 +9,7 @@ const Page = () => {
   const actions = [
     {
       label: "Create template based on policy",
-      type: "GET",
+      type: "POST",
       url: "/api/AddIntuneTemplate",
       data: {
         ID: "id",
