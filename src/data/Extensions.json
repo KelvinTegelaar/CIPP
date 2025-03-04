@@ -44,21 +44,39 @@
         "name": "Sherweb.clientId",
         "label": "Client ID",
         "placeholder": "Enter your Sherweb Client ID",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",
         "name": "Sherweb.SubscriptionKey",
         "label": "Subscription Key",
         "placeholder": "Enter your Sherweb Subscription Key",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "password",
         "name": "Sherweb.APIKey",
         "label": "Client Secret",
         "placeholder": "Enter your Sherweb Client Secret",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "autoComplete",
@@ -70,7 +88,13 @@
           "labelField": "RowKey",
           "valueField": "RowKey"
         },
-        "multiple": true
+        "multiple": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ]
   },
@@ -92,28 +116,46 @@
     ],
     "SettingOptions": [
       {
+        "type": "switch",
+        "name": "Gradient.Enabled",
+        "label": "Enable Integration"
+      },
+      {
         "type": "textField",
         "name": "Gradient.VendorKey",
         "label": "Gradient Vendor API Key",
         "placeholder": "Enter your Gradient Vendor Key.",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "Gradient.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "password",
         "name": "Gradient.APIKey",
         "label": "Gradient Partner API Key",
         "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key.",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "Gradient.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "Gradient.BillingEnabled",
-        "label": "Enable sending all license information to Gradient"
-      },
-      {
-        "type": "switch",
-        "name": "Gradient.Enabled",
-        "label": "Enable Integration"
+        "label": "Enable sending all license information to Gradient",
+        "condition": {
+          "field": "Gradient.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": false
@@ -135,25 +177,60 @@
     ],
     "SettingOptions": [
       {
+        "type": "switch",
+        "name": "HaloPSA.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "switch",
+        "name": "HaloPSA.ConsolidateTickets",
+        "label": "Consolidate Tickets",
+        "placeholder": "Consolidate tickets for the same alert into one ticket.",
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
         "type": "textField",
         "name": "HaloPSA.ResourceURL",
         "label": "HaloPSA Resource Server URL",
         "placeholder": "Enter your HaloPSA Resource Server URL.",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",
         "name": "HaloPSA.AuthURL",
         "label": "HaloPSA Authorisation Endpoint URL",
         "placeholder": "Enter your HaloPSA Authorisation Endpoint URL.",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",
         "name": "HaloPSA.Tenant",
         "label": "HaloPSA Tenant",
         "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted)",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "autoComplete",
@@ -170,6 +247,12 @@
           "labelField": "name",
           "valueField": "id",
           "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
         }
       },
       {
@@ -177,19 +260,26 @@
         "name": "HaloPSA.ClientID",
         "label": "HaloPSA Client ID",
         "placeholder": "Enter your HaloPSA Client ID",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "password",
         "name": "HaloPSA.APIKey",
         "label": "HaloPSA Client Secret",
         "placeholder": "Enter your client Secret. Leave blank to keep your current key.",
-        "required": true
-      },
-      {
-        "type": "switch",
-        "name": "HaloPSA.Enabled",
-        "label": "Enable Integration"
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": true
@@ -212,45 +302,81 @@
     ],
     "SettingOptions": [
       {
+        "type": "switch",
+        "name": "NinjaOne.Enabled",
+        "label": "Enable Integration"
+      },
+      {
         "type": "textField",
         "name": "NinjaOne.Instance",
         "label": "Please enter your NinjaOne Instance hostname",
         "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",
         "name": "NinjaOne.ClientID",
         "label": "NinjaOne API Client ID",
         "placeholder": "Enter your NinjaOne API Client ID",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "password",
         "name": "NinjaOne.APIKey",
         "label": "NinjaOne API Client Secret",
         "placeholder": "Enter your NinjaOne API Client Secret",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "NinjaOne.LicenseDocumentsEnabled",
-        "label": "Sync Licenses (Requires NinjaOne Documentation)"
+        "label": "Sync Licenses (Requires NinjaOne Documentation)",
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "NinjaOne.UserDocumentsEnabled",
-        "label": "Sync Users (Requires NinjaOne Documentation)"
+        "label": "Sync Users (Requires NinjaOne Documentation)",
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "NinjaOne.LicensedOnly",
-        "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)"
-      },
-      {
-        "type": "switch",
-        "name": "NinjaOne.Enabled",
-        "label": "Enable Integration"
+        "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)",
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": true,
@@ -276,48 +402,90 @@
     ],
     "SettingOptions": [
       {
+        "type": "switch",
+        "name": "Hudu.Enabled",
+        "label": "Enable Integration"
+      },
+      {
         "type": "textField",
         "name": "Hudu.BaseUrl",
         "label": "Please enter your Hudu URL",
         "placeholder": "https://yourcompany.huducloud.com",
-        "required": true
+        "required": true,
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "password",
         "name": "Hudu.APIKey",
         "label": "Hudu API Key",
         "placeholder": "Enter your Hudu API Key",
-        "required": true
-      },
-      {
-        "type": "switch",
-        "name": "Hudu.Enabled",
-        "label": "Enable Integration"
+        "required": true,
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "Hudu.CreateMissingUsers",
-        "label": "Create missing users in Hudu"
+        "label": "Create missing users in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "Hudu.CreateMissingDevices",
-        "label": "Create missing devices in Hudu"
+        "label": "Create missing devices in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",
         "name": "Hudu.ExcludeSerials",
-        "label": "Exclude device serials (comma separated)"
+        "label": "Exclude device serials (comma separated)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "Hudu.ImportDomains",
-        "label": "Import domains from M365"
+        "label": "Import domains from M365",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "Hudu.MonitorDomains",
-        "label": "Monitor domains in Hudu"
+        "label": "Monitor domains in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
@@ -364,19 +532,37 @@
       {
         "type": "switch",
         "name": "PWPush.UseBearerAuth",
-        "label": "Use Bearer Authentication (Hosted only)"
+        "label": "Use Bearer Authentication (Hosted only)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",
         "name": "PWPush.BaseUrl",
         "label": "PWPush URL",
-        "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)"
+        "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "password",
         "name": "PWPush.APIKey",
         "label": "PWPush API Key",
-        "placeholder": "Enter your PWPush API Key. (optional)"
+        "placeholder": "Enter your PWPush API Key. (optional)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "textField",
@@ -413,23 +599,47 @@
         "type": "number",
         "name": "PWPush.ExpireAfterDays",
         "label": "Expiration in Days",
-        "placeholder": "Expiration time in days. (optional)"
+        "placeholder": "Expiration time in days. (optional)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "number",
         "name": "PWPush.ExpireAfterViews",
         "label": "Expiration after views",
-        "placeholder": "Expiration after views. (optional)"
+        "placeholder": "Expiration after views. (optional)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "PWPush.RetrievalStep",
-        "label": "Click to retrieve password (recommended)"
+        "label": "Click to retrieve password (recommended)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
         "name": "PWPush.DeletableByViewer",
-        "label": "Allow deletion of passwords"
+        "label": "Allow deletion of passwords",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": false
@@ -454,7 +664,13 @@
       {
         "type": "password",
         "name": "HIBP.APIKey",
-        "label": "Enter your own HIBP API Key. When you are a CyberDrain hosted partner, leave this key blank."
+        "label": "Enter your own HIBP API Key. When you are a CyberDrain hosted partner, leave this key blank.",
+        "condition": {
+          "field": "HIBP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "switch",
@@ -493,12 +709,24 @@
       {
         "type": "textField",
         "name": "CFZTNA.ClientID",
-        "label": "CloudFlare Tunnel Service Account Client ID"
+        "label": "CloudFlare Tunnel Service Account Client ID",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       },
       {
         "type": "password",
         "name": "CFZTNA.APIKey",
-        "label": "CloudFlare Tunnel Service Account Client Secret"
+        "label": "CloudFlare Tunnel Service Account Client Secret",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": false
@@ -520,16 +748,22 @@
     ],
     "SettingOptions": [
       {
+        "type": "switch",
+        "name": "GitHub.Enabled",
+        "label": "Enable Integration"
+      },
+      {
         "type": "password",
         "name": "GitHub.APIKey",
         "label": "GitHub Personal Access Token",
         "placeholder": "Enter your GitHub PAT",
-        "required": true
-      },
-      {
-        "type": "switch",
-        "name": "GitHub.Enabled",
-        "label": "Enable Integration"
+        "required": true,
+        "condition": {
+          "field": "GitHub.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": false
