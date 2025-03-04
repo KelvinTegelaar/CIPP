@@ -8,7 +8,7 @@ import { RocketLaunch } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Spam Filters";
-  const apiUrl = "/api/ListSpamfilter"
+  const apiUrl = "/api/ListSpamfilter";
 
   const actions = [
     {
@@ -23,11 +23,11 @@ const Page = () => {
     },
     {
       label: "Enable Rule",
-      type: "GET",
+      type: "POST",
       icon: <Check />,
       url: "/api/EditSpamfilter",
       data: {
-        State: "enable",
+        State: "!enable",
         name: "Name",
       },
       confirmText: "Are you sure you want to enable this rule?",
@@ -35,11 +35,11 @@ const Page = () => {
     },
     {
       label: "Disable Rule",
-      type: "GET",
+      type: "POST",
       icon: <Block />,
       url: "/api/EditSpamfilter",
       data: {
-        State: "disable",
+        State: "!disable",
         name: "Name",
       },
       confirmText: "Are you sure you want to disable this rule?",
@@ -47,7 +47,7 @@ const Page = () => {
     },
     {
       label: "Delete Rule",
-      type: "GET",
+      type: "POST",
       icon: <TrashIcon />,
       url: "/api/RemoveSpamFilter",
       data: {
