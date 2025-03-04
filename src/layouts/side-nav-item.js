@@ -150,6 +150,9 @@ export const SideNavItem = (props) => {
         sx={{
           display: "flex",
           alignItems: "center",
+          width: "100%",
+          px: `${indent * 6}px`,
+          py: "12px",
         }}
       >
         <ButtonBase
@@ -161,11 +164,9 @@ export const SideNavItem = (props) => {
             fontSize: fontSize,
             fontWeight: 500,
             justifyContent: "flex-start",
-            px: `${indent * 6}px`,
-            py: "12px",
             textAlign: "left",
             whiteSpace: "nowrap",
-            width: "100%",
+            width: "calc(100% - 20px)", // Adjust the width to leave space for the bookmark icon
           }}
           {...linkProps}
         >
@@ -191,6 +192,12 @@ export const SideNavItem = (props) => {
               flexGrow: 1,
               mx: "12px",
               transition: "opacity 250ms ease-in-out",
+              whiteSpace: "nowrap",
+              ...(hovered && {
+                maxWidth: "calc(100% - 45px)", // Adjust the width to leave space for the bookmark icon
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }),
               ...(active && {
                 color: "primary.main",
               }),
@@ -223,7 +230,7 @@ export const SideNavItem = (props) => {
             fontSize: 16,
             transition: "opacity 250ms ease-in-out",
             cursor: "pointer",
-            mx: 1,
+            mr: 1,
             display: hovered ? "block" : "none",
           }}
         >
