@@ -203,7 +203,6 @@ const CippSchedulerForm = (props) => {
             options={recurrenceOptions}
             multiple={false}
             disableClearable={true}
-            creatable={false}
           />
         </Grid>
         {selectedCommand?.addedFields?.Synopsis && (
