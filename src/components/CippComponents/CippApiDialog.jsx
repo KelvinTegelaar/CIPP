@@ -275,21 +275,31 @@ export const CippApiDialog = (props) => {
       .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
   };
 
-  // Handling link navigation
+  // Handling external link navigation
   useEffect(() => {
     if (api.link && createDialog.open) {
       const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
         return getNestedValue(row, key) || `[${key}]`;
       });
 
-      if (linkWithRowData.startsWith("/")) {
-        router.push(linkWithRowData, undefined, { shallow: true });
-      } else {
+      if (!linkWithRowData.startsWith("/")) {
         window.open(linkWithRowData, api.target || "_blank");
+        createDialog.handleClose();
       }
-      createDialog.handleClose();
     }
   }, [api.link, createDialog.open]);
+
+  // Handling internal link navigation
+  if (api.link && createDialog.open) {
+    const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
+      return getNestedValue(row, key) || `[${key}]`;
+    });
+
+    if (linkWithRowData.startsWith("/")) {
+      router.push(linkWithRowData, undefined, { shallow: true });
+      createDialog.handleClose();
+    }
+  }
 
   useEffect(() => {
     if (api.noConfirm) {
