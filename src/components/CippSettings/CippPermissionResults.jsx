@@ -231,6 +231,21 @@ export const CippPermissionResults = (props) => {
                 />
               </>
             )}
+            {results?.Results?.ApplicationTokenDetails?.Roles.length > 0 && (
+              <>
+                <CippDataTable
+                  title="Current Application Roles"
+                  isFetching={executeCheck.isFetching}
+                  refreshFunction={executeCheck}
+                  data={results?.Results?.ApplicationTokenDetails?.Roles.map((role) => {
+                    return {
+                      Role: role,
+                    };
+                  })}
+                  simpleColumns={["Role"]}
+                />
+              </>
+            )}
           </CippOffCanvas>
         </>
       )}

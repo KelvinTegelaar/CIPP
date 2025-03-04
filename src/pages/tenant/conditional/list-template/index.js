@@ -58,7 +58,7 @@ const Page = () => {
     },
     {
       label: "Delete Template",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveCATemplate",
       icon: <Delete />,
       data: { ID: "GUID" },
