@@ -352,7 +352,7 @@ const Page = () => {
                           <Grid item xs={12}>
                             <CippFormComponent
                               label="Use Application Permissions"
-                              name={`Fields.${index}.parameters.asApp`} // Corrected index
+                              name={`Fields.${index}.Parameters.asApp`} // Corrected index
                               formControl={formControl}
                               type="switch"
                             />
