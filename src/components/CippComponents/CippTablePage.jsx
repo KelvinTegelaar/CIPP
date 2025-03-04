@@ -3,6 +3,7 @@ import { Box, Container, Stack } from "@mui/system";
 import Head from "next/head";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useSettings } from "../../hooks/use-settings";
+import { CippHead } from "./CippHead";
 
 export const CippTablePage = (props) => {
   const {
@@ -28,9 +29,7 @@ export const CippTablePage = (props) => {
   const tenant = useSettings().currentTenant;
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
+      <CippHead title={title} />
       <Box sx={sx}>
         <Container maxWidth={false} sx={{ height: "100%" }}>
           <Stack spacing={2} sx={{ height: "100%" }}>
