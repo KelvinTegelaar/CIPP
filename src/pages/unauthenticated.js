@@ -8,7 +8,9 @@ import { useState, useEffect } from "react";
 const Page = () => {
   const orgData = ApiGetCall({
     url: "/.auth/me",
-    queryKey: "me",
+    queryKey: "authmecipp",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
   });
   const blockedRoles = ["anonymous", "authenticated"];
   const [userRoles, setUserRoles] = useState([]);
@@ -48,10 +50,10 @@ const Page = () => {
                     <CippImageCard
                       isFetching={false}
                       imageUrl="/assets/illustrations/undraw_online_test_re_kyfx.svg"
-                      text="You're not allowed to be here, or are logged in under the wrong account. Hit the button below to return to the homepage."
+                      text="You're not allowed to be here, or are logged in under the wrong account."
                       title="Access Denied"
-                      linkText={userRoles.length > 0 ? "Return" : "Login"}
-                      link={userRoles.length > 0 ? "/" : "/.auth/login/aad"}
+                      linkText={userRoles.length > 0 ? "Return to Home" : "Login"}
+                      link={userRoles.length > 0 ? "/" : `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(window.location.href)}`}
                     />
                   )}
                 </Grid>
