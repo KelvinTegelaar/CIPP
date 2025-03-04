@@ -49,6 +49,7 @@ const CippAddedComponent = React.memo(({ standardName, component, formControl })
       label: tz.timezone,
       value: tz.timezone,
     }));
+    updatedComponent.multiple = false;
   } else {
     updatedComponent.type = component.type;
   }

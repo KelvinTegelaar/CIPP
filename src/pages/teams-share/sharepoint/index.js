@@ -129,7 +129,7 @@ const Page = () => {
             url: "/api/listUsers",
             labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
             valueField: "userPrincipalName",
-            addedFields: {
+            addedField: {
               id: "id",
             },
           },
