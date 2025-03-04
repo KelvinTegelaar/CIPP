@@ -11,7 +11,7 @@ const Page = () => {
   const actions = [
     {
       label: "Add location to named location",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecNamedLocation",
       icon: <PlusIcon />,
       data: {

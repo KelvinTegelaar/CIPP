@@ -97,6 +97,8 @@ export const CippApiDialog = (props) => {
           } else {
             newData[key] = value;
           }
+        } else if (typeof value === 'boolean') {
+          newData[key] = value;
         } else if (typeof value === "object" && value !== null) {
           const processedValue = processActionData(value, row, replacementBehaviour);
           if (replacementBehaviour !== "removeNulls" || Object.keys(processedValue).length > 0) {
@@ -273,20 +275,32 @@ export const CippApiDialog = (props) => {
       .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
   };
 
-  // Handling link navigation
-  if (api.link) {
+  // Handling external link navigation
+  useEffect(() => {
+    if (api.link && createDialog.open) {
+      const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
+        return getNestedValue(row, key) || `[${key}]`;
+      });
+
+      if (!linkWithRowData.startsWith("/")) {
+        window.open(linkWithRowData, api.target || "_blank");
+        createDialog.handleClose();
+      }
+    }
+  }, [api.link, createDialog.open]);
+
+  // Handling internal link navigation
+  if (api.link && createDialog.open) {
     const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
       return getNestedValue(row, key) || `[${key}]`;
     });
 
     if (linkWithRowData.startsWith("/")) {
       router.push(linkWithRowData, undefined, { shallow: true });
-    } else {
-      window.open(linkWithRowData, api.target || "_blank");
+      createDialog.handleClose();
     }
-
-    return null;
   }
+
   useEffect(() => {
     if (api.noConfirm) {
       formHook.handleSubmit(onSubmit)(); // Submits the form on mount

@@ -10,7 +10,7 @@ const Page = () => {
   const actions = [
     {
       label: "Enable Rule",
-      type: "GET",
+      type: "POST",
       icon: <Check />,
       url: "/api/EditSafeAttachmentsFilter",
       data: {
@@ -19,11 +19,11 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to enable this rule?",
       color: "info",
-      condition: (row) => row.State === "Disabled"
+      condition: (row) => row.State === "Disabled",
     },
     {
       label: "Disable Rule",
-      type: "GET",
+      type: "POST",
       icon: <Block />,
       url: "/api/EditSafeAttachmentsFilter",
       data: {
