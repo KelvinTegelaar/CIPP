@@ -5,6 +5,7 @@ import { Box, Divider, Drawer, Stack, Typography } from "@mui/material";
 import { Scrollbar } from "../components/scrollbar";
 import { SideNavItem } from "./side-nav-item";
 import { useSettings } from "../hooks/use-settings";
+import { ApiGetCall } from "../api/ApiCall.jsx";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_COLLAPSED_WIDTH = 73; // icon size + padding + border right
@@ -106,6 +107,7 @@ export const SideNav = (props) => {
   const pathname = usePathname();
   const [hovered, setHovered] = useState(false);
   const collapse = !(pinned || hovered);
+  const { data: profile } = ApiGetCall({ url: "/.auth/me", queryKey: "authmecipp" });
 
   // Preprocess items to mark which should be open
   const processedItems = markOpenItems(items, pathname);
@@ -212,28 +214,32 @@ export const SideNav = (props) => {
               pathname,
             })}
           </Box>
-          <Divider />
-          <Typography
-            color="text.secondary"
-            variant="caption"
-            sx={{ lineHeight: 4, textAlign: "center" }}
-          >
-            This application is sponsored by
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              src={randomimg.imagesrc}
-              alt="sponsor"
-              style={{ cursor: "pointer" }}
-              onClick={() => window.open(randomimg.link)}
-              width={"100px"}
-            />
-          </Box>
+          {profile?.clientPrincipal && (
+            <>
+              <Divider />
+              <Typography
+                color="text.secondary"
+                variant="caption"
+                sx={{ lineHeight: 4, textAlign: "center" }}
+              >
+                This application is sponsored by
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src={randomimg.imagesrc}
+                  alt="sponsor"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => window.open(randomimg.link)}
+                  width={"100px"}
+                />
+              </Box>
+            </>
+          )}
         </Box>
       </Scrollbar>
     </Drawer>
