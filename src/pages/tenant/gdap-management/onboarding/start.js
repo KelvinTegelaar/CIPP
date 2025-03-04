@@ -53,12 +53,9 @@ const Page = () => {
     data: {
       TenantFilter: "",
       Endpoint: "tenantRelationships/delegatedAdminRelationships",
-      $filter:
-        "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
     },
     queryKey: "GDAPRelationshipOnboarding",
   });
-
   const onboardingList = ApiGetCallWithPagination({
     url: "/api/ListTenantOnboarding",
     queryKey: "ListTenantOnboarding",
@@ -108,7 +105,11 @@ const Page = () => {
           (relationship) => relationship?.id === queryId
         );
 
-        if (relationship) {
+        if (
+          relationship &&
+          (relationship?.status === "active" || relationship?.status === "approvalPending") &&
+          !relationship?.customer?.displayName.startsWith("MLT_")
+        ) {
           formValue = {
             label:
               (relationship?.customer?.displayName ?? "Pending Invite") +
