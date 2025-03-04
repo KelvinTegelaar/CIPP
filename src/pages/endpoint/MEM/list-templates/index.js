@@ -81,7 +81,7 @@ const Page = () => {
     },
     {
       label: "Delete Template",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveIntuneTemplate",
       data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
