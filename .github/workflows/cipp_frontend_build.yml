@@ -18,10 +18,17 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       # Set up Node.js
+      - name: Get Node version
+        id: get_node_version
+        run: |
+          node_raw_version=$(node -p "require('./package.json').engines.node")
+          node_sanitized_version=$(echo $node_raw_version | sed -E 's/[^0-9.]+//g')
+          echo "node_version=$node_sanitized_version" >> $GITHUB_OUTPUT
+
       - name: Set up Node.js
         uses: actions/setup-node@v4.2.0
         with:
-          node-version: '20.18.1'
+          node-version: ${{ steps.get_node_version.outputs.node_version }}
 
       # Install dependencies
       - name: Install Dependencies

@@ -68,9 +68,9 @@ const CippCacheSettings = () => {
         api={{
           url: "/api/ListTenants",
           confirmText:
-            "This will clear the cache used by CIPP. This will slow down some aspects of the application, and should only be used when instructed to do so by support.",
-          type: "GET",
-          data: { ClearCache: "!true", TenantsOnly: "tenantsOnly" },
+            "This will clear the cache used by CIPP. This will slow down some aspects of the application, and should only be used when instructed to do so by support. This will delete any cache tables including pending audit logs that have not yet been processed. Are you sure you want to continue?",
+          type: "POST",
+          data: { ClearCache: true },
           replacementBehaviour: "removeNulls",
         }}
         row={{}}
