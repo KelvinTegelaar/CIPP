@@ -35,6 +35,7 @@ const Page = () => {
     { value: "otherMails", label: "otherMails" },
     { value: "showInAddressList", label: "showInAddressList" },
     { value: "state", label: "state" },
+    { value: "sponsor", label: "sponsor" },
   ];
 
   const pageSizes = [
