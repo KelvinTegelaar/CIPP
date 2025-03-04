@@ -20,7 +20,7 @@ const Page = () => {
     },
     {
       label: "Remove Contact",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveContact",
       data: {
         GUID: "id",
