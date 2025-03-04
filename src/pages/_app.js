@@ -12,7 +12,6 @@ import { createEmotionCache } from "../utils/create-emotion-cache";
 import "../libs/nprogress";
 import { PrivateRoute } from "../components/PrivateRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useMediaPredicate } from "react-media-hook";
 import Error500 from "./500";
 import { ErrorBoundary } from "react-error-boundary";
@@ -25,10 +24,14 @@ import {
   Help as HelpIcon,
   BugReport as BugReportIcon,
   Feedback as FeedbackIcon,
+  AutoStories,
+  Gavel,
 } from "@mui/icons-material";
 import { SvgIcon } from "@mui/material";
 import discordIcon from "../../public/discord-mark-blue.svg";
 import React from "react";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 TimeAgo.addDefaultLocale(en);
 
 const ReactQueryDevtoolsProduction = React.lazy(() =>
@@ -43,31 +46,55 @@ const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const getLayout = Component.getLayout ?? ((page) => page);
   const preferredTheme = useMediaPredicate("(prefers-color-scheme: dark)") ? "dark" : "light";
+  const pathname = usePathname();
+  const route = useRouter();
 
   const speedDialActions = [
+    {
+      id: "license",
+      icon: <Gavel />,
+      name: "License",
+      href: "/license",
+      onClick: () => route.push("/license"),
+    },
     {
       id: "bug-report",
       icon: <BugReportIcon />,
       name: "Report Bug",
       href: "https://github.com/KelvinTegelaar/CIPP/issues/new?template=bug.yml",
-      onClick: () => window.open("https://github.com/KelvinTegelaar/CIPP/issues/new?template=bug.yml", "_blank")
+      onClick: () =>
+        window.open("https://github.com/KelvinTegelaar/CIPP/issues/new?template=bug.yml", "_blank"),
     },
     {
       id: "feature-request",
       icon: <FeedbackIcon />,
       name: "Request Feature",
       href: "https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml",
-      onClick: () => window.open("https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml", "_blank")
+      onClick: () =>
+        window.open(
+          "https://github.com/KelvinTegelaar/CIPP/issues/new?template=feature.yml",
+          "_blank"
+        ),
     },
     {
       id: "discord",
       icon: (
-        <SvgIcon component={discordIcon} viewBox="0 0 127.14 96.36" sx={{ fontSize: '1.5rem' }}>
-        </SvgIcon>
+        <SvgIcon
+          component={discordIcon}
+          viewBox="0 0 127.14 96.36"
+          sx={{ fontSize: "1.5rem" }}
+        ></SvgIcon>
       ),
       name: "Join the Discord!",
       href: "https://discord.gg/cyberdrain",
-      onClick: () => window.open("https://discord.gg/cyberdrain", "_blank")
+      onClick: () => window.open("https://discord.gg/cyberdrain", "_blank"),
+    },
+    {
+      id: "documentation",
+      icon: <AutoStories />,
+      name: "Check the Documentation",
+      href: `https://docs.cipp.app/user-documentation/${pathname}`,
+      onClick: () => window.open(`https://docs.cipp.app/user-documentation/${pathname}`, "_blank"),
     },
   ];
 
@@ -111,11 +138,11 @@ const App = (props) => {
                           />
                         </RTL>
                       </ThemeProvider>
-                      {settings?.showDevtools && (
+                      {settings.isInitialized && settings?.showDevtools === true ? (
                         <React.Suspense fallback={null}>
                           <ReactQueryDevtoolsProduction />
                         </React.Suspense>
-                      )}
+                      ) : null}
                     </>
                   );
                 }}
