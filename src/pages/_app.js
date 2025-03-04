@@ -31,7 +31,6 @@ import { SvgIcon } from "@mui/material";
 import discordIcon from "../../public/discord-mark-blue.svg";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { icon } from "leaflet";
 import { useRouter } from "next/router";
 TimeAgo.addDefaultLocale(en);
 
