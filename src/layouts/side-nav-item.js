@@ -152,7 +152,6 @@ export const SideNavItem = (props) => {
           alignItems: "center",
           width: "100%",
           px: `${indent * 6}px`,
-          py: "12px",
         }}
       >
         <ButtonBase
@@ -167,6 +166,7 @@ export const SideNavItem = (props) => {
             textAlign: "left",
             whiteSpace: "nowrap",
             width: "calc(100% - 20px)", // Adjust the width to leave space for the bookmark icon
+            py: "12px",
           }}
           {...linkProps}
         >
