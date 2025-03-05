@@ -124,7 +124,7 @@ export const TopNav = (props) => {
             </IconButton>
           )}
         </Stack>
-        <Stack alignItems="center" direction="row" spacing={2}>
+        <Stack alignItems="center" direction="row" spacing={1.5}>
           {!mdDown && (
             <IconButton color="inherit" onClick={handleThemeSwitch}>
               <SvgIcon color="action" fontSize="small">
@@ -187,7 +187,6 @@ export const TopNav = (props) => {
           </Popover>
           <CippCentralSearch open={searchDialog.open} handleClose={searchDialog.handleClose} />
           <NotificationsPopover />
-
           <AccountPopover
             onThemeSwitch={handleThemeSwitch}
             paletteMode={settings.currentTheme?.value === "light" ? "dark" : "light"}
