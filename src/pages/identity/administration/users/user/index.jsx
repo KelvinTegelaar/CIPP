@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { AdminPanelSettings, Check, Group, Mail, Fingerprint, Launch } from "@mui/icons-material";
@@ -85,33 +85,44 @@ const Page = () => {
     waiting: waiting,
   });
 
-  const userMemberOf = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      Endpoint: `/users/${userId}/memberOf`,
-      tenantFilter: userSettingsDefaults.currentTenant,
-      $top: 99,
-    },
-    queryKey: `UserMemberOf-${userId}`,
+  const userBulkRequest = ApiPostCall({
+    urlfromdata: true,
   });
 
-  const MFARequest = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      Endpoint: `/users/${userId}/authentication/methods`,
-      tenantFilter: userSettingsDefaults.currentTenant,
-      noPagination: true,
-      $top: 99,
-    },
-    queryKey: `MFA-${userId}`,
-    waiting: waiting,
-  });
+  useEffect(() => {
+    if (userId && userSettingsDefaults.currentTenant && !userBulkRequest.isSuccess) {
+      userBulkRequest.mutate({
+        url: "/api/ListGraphBulkRequest",
+        data: {
+          Requests: [
+            {
+              id: "userMemberOf",
+              url: `/users/${userId}/memberOf`,
+              method: "GET",
+            },
+            {
+              id: "mfaDevices",
+              url: `/users/${userId}/authentication/methods?$top=99`,
+              method: "GET",
+            },
+            {
+              id: "signInLogs",
+              url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
+              method: "GET",
+            },
+          ],
+          tenantFilter: userSettingsDefaults.currentTenant,
+          noPaginateIds: ["signInLogs"],
+        },
+      });
+    }
+  }, [userId, userSettingsDefaults.currentTenant, userBulkRequest.isSuccess]);
 
-  const signInLogs = ApiGetCall({
-    url: `/api/ListUserSigninLogs?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}&top=1`,
-    queryKey: `ListSignIns-${userId}`,
-    waiting: waiting,
-  });
+  const bulkData = userBulkRequest?.data?.data ?? [];
+  const signInLogs = bulkData?.find((item) => item.id === "signInLogs")?.body?.value || [];
+  const userMemberOf = bulkData?.find((item) => item.id === "userMemberOf")?.body?.value || [];
+  const mfaDevices = bulkData?.find((item) => item.id === "mfaDevices")?.body?.value || [];
+  console.log(bulkData);
 
   // Set the title and subtitle for the layout
   const title = userRequest.isSuccess ? <>{userRequest.data?.[0]?.displayName}</> : "Loading...";
@@ -138,15 +149,15 @@ const Page = () => {
           icon: <Launch style={{ color: "#667085" }} />,
           text: (
             <Button
-                color="muted"
-                style={{ paddingLeft: 0 }}
-                size="small"
-                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View in Entra
-              </Button>
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -159,8 +170,8 @@ const Page = () => {
   let conditionalAccessPoliciesItems = [];
   let mfaDevicesItems = [];
 
-  if (signInLogs.isSuccess && signInLogs.data && signInLogs.data.length > 0) {
-    const signInData = signInLogs.data[0];
+  if (signInLogs.length > 0) {
+    const signInData = signInLogs[0];
 
     signInLogItem = {
       id: 1,
@@ -330,12 +341,12 @@ const Page = () => {
         },
       ];
     }
-  } else if (signInLogs.isError) {
+  } else if (userBulkRequest.isError) {
     signInLogItem = {
       id: 1,
       cardLabelBox: "!",
       text: "Error loading sign-in logs. Do you have a P1 license?",
-      subtext: signInLogs.error.message,
+      subtext: userBulkRequest.error.message,
       statusColor: "error.main",
       statusText: "Error",
       propertyItems: [],
@@ -347,13 +358,13 @@ const Page = () => {
         id: 1,
         cardLabelBox: "!",
         text: "Error loading conditional access policies. Do you have a P1 license?",
-        subtext: signInLogs.error.message,
+        subtext: userBulkRequest.error.message,
         statusColor: "error.main",
         statusText: "Error",
         propertyItems: [],
       },
     ];
-  } else if (signInLogs.isSuccess && (!signInLogs.data || signInLogs.data.length === 0)) {
+  } else if (signInLogs.length === 0) {
     signInLogItem = {
       id: 1,
       cardLabelBox: "-",
@@ -380,16 +391,14 @@ const Page = () => {
   }
 
   // Prepare MFA devices items
-  if (MFARequest.isSuccess && MFARequest.data) {
-    const mfaResults = MFARequest.data.Results || [];
-
+  if (mfaDevices.length > 0) {
     // Exclude password authentication method
-    const mfaDevices = mfaResults.filter(
+    const mfaDevicesFiltered = mfaDevices.filter(
       (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod"
     );
 
-    if (mfaDevices.length > 0) {
-      mfaDevicesItems = mfaDevices.map((device, index) => ({
+    if (mfaDevicesFiltered.length > 0) {
+      mfaDevicesItems = mfaDevicesFiltered.map((device, index) => ({
         id: index,
         cardLabelBox: {
           cardLabelBoxHeader: <Check />,
@@ -433,20 +442,20 @@ const Page = () => {
         },
       ];
     }
-  } else if (MFARequest.isError) {
+  } else if (userBulkRequest.isError) {
     // Error fetching MFA devices
     mfaDevicesItems = [
       {
         id: 1,
         cardLabelBox: "!",
         text: "Error loading MFA devices",
-        subtext: MFARequest.error.message,
+        subtext: userBulkRequest.error.message,
         statusColor: "error.main",
         statusText: "Error",
         propertyItems: [],
       },
     ];
-  } else if (MFARequest.isSuccess && (!MFARequest.data || !MFARequest.data.Results)) {
+  } else if (mfaDevices.length === 0) {
     // No MFA devices data available
     mfaDevicesItems = [
       {
@@ -461,54 +470,33 @@ const Page = () => {
     ];
   }
 
-  const groupMembershipItems = userMemberOf.isSuccess
-    ? [
-        {
-          id: 1,
-          cardLabelBox: {
-            cardLabelBoxHeader: <Group />,
-          },
-          text: "Groups",
-          subtext: "List of groups the user is a member of",
-          table: {
-            title: "Group Memberships",
-            hideTitle: true,
-            actions: [
-              {
-                icon: <PencilIcon />,
-                label: "Edit Group",
-                link: "/identity/administration/groups/edit?groupId=[id]",
-              },
-            ],
-            data: userMemberOf?.data?.Results.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.group"
-            ),
-            simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
-          },
-        },
-      ]
-    : [];
+  const groupMembershipItems = userMemberOf
+    .filter((item) => item["@odata.type"] === "#microsoft.graph.group")
+    .map((group, index) => ({
+      id: index,
+      cardLabelBox: {
+        cardLabelBoxHeader: <Group />,
+      },
+      text: group.displayName,
+      subtext: "Group",
+      propertyItems: [
+        { label: "Group Types", value: group.groupTypes.join(", ") || "N/A" },
+        { label: "Security Enabled", value: group.securityEnabled ? "Yes" : "No" },
+        { label: "Mail Enabled", value: group.mailEnabled ? "Yes" : "No" },
+      ],
+    }));
 
-  const roleMembershipItems = userMemberOf.isSuccess
-    ? [
-        {
-          id: 1,
-          cardLabelBox: {
-            cardLabelBoxHeader: <AdminPanelSettings />,
-          },
-          text: "Admin Roles",
-          subtext: "List of roles the user is a member of",
-          table: {
-            title: "Admin Roles",
-            hideTitle: true,
-            data: userMemberOf?.data?.Results.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
-            ),
-            simpleColumns: ["displayName", "description"],
-          },
-        },
-      ]
-    : [];
+  const roleMembershipItems = userMemberOf
+    .filter((item) => item["@odata.type"] === "#microsoft.graph.directoryRole")
+    .map((role, index) => ({
+      id: index,
+      cardLabelBox: {
+        cardLabelBoxHeader: <AdminPanelSettings />,
+      },
+      text: role.displayName,
+      subtext: "Admin Role",
+      propertyItems: [{ label: "Description", value: role.description || "N/A" }],
+    }));
 
   return (
     <HeaderedTabbedLayout
@@ -539,32 +527,32 @@ const Page = () => {
               <Stack spacing={3}>
                 <Typography variant="h6">Latest Logon</Typography>
                 <CippBannerListCard
-                  isFetching={signInLogs.isLoading}
+                  isFetching={userBulkRequest.isPending}
                   items={signInLogItem ? [signInLogItem] : []}
                   isCollapsible={signInLogItem ? true : false}
                 />
                 <Typography variant="h6">Applied Conditional Access Policies</Typography>
                 <CippBannerListCard
-                  isFetching={signInLogs.isLoading}
+                  isFetching={userBulkRequest.isPending}
                   items={conditionalAccessPoliciesItems}
                   isCollapsible={conditionalAccessPoliciesItems.length > 0 ? true : false}
                 />
                 <Typography variant="h6">Multi-Factor Authentication Devices</Typography>
                 <CippBannerListCard
-                  isFetching={MFARequest.isLoading}
+                  isFetching={userBulkRequest.isPending}
                   items={mfaDevicesItems}
                   isCollapsible={mfaDevicesItems.length > 0 ? true : false}
                 />
                 <Typography variant="h6">Memberships</Typography>
                 <CippBannerListCard
-                  isFetching={userMemberOf.isLoading}
-                  items={groupMembershipItems}
-                  isCollapsible={groupMembershipItems.length > 0 ? true : false}
-                />
-                <CippBannerListCard
-                  isFetching={userMemberOf.isLoading}
+                  isFetching={userBulkRequest.isPending}
                   items={roleMembershipItems}
                   isCollapsible={roleMembershipItems.length > 0 ? true : false}
+                />
+                <CippBannerListCard
+                  isFetching={userBulkRequest.isPending}
+                  items={groupMembershipItems}
+                  isCollapsible={groupMembershipItems.length > 0 ? true : false}
                 />
               </Stack>
             </Grid>
