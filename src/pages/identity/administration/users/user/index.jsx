@@ -24,6 +24,7 @@ const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), 
 import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { CippPropertyList } from "../../../../../components/CippComponents/CippPropertyList";
+import { CippCodeBlock } from "../../../../../components/CippComponents/CippCodeBlock";
 
 const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
   return (
@@ -119,10 +120,13 @@ const Page = () => {
   }, [userId, userSettingsDefaults.currentTenant, userBulkRequest.isSuccess]);
 
   const bulkData = userBulkRequest?.data?.data ?? [];
-  const signInLogs = bulkData?.find((item) => item.id === "signInLogs")?.body?.value || [];
-  const userMemberOf = bulkData?.find((item) => item.id === "userMemberOf")?.body?.value || [];
-  const mfaDevices = bulkData?.find((item) => item.id === "mfaDevices")?.body?.value || [];
-  console.log(bulkData);
+  const signInLogsData = bulkData?.find((item) => item.id === "signInLogs");
+  const userMemberOfData = bulkData?.find((item) => item.id === "userMemberOf");
+  const mfaDevicesData = bulkData?.find((item) => item.id === "mfaDevices");
+
+  const signInLogs = signInLogsData?.body?.value || [];
+  const userMemberOf = userMemberOfData?.body?.value || [];
+  const mfaDevices = mfaDevicesData?.body?.value || [];
 
   // Set the title and subtitle for the layout
   const title = userRequest.isSuccess ? <>{userRequest.data?.[0]?.displayName}</> : "Loading...";
@@ -341,12 +345,12 @@ const Page = () => {
         },
       ];
     }
-  } else if (userBulkRequest.isError) {
+  } else if (signInLogsData?.status !== 200) {
     signInLogItem = {
       id: 1,
       cardLabelBox: "!",
       text: "Error loading sign-in logs. Do you have a P1 license?",
-      subtext: userBulkRequest.error.message,
+      subtext: signInLogsData?.error?.message || "Unknown error",
       statusColor: "error.main",
       statusText: "Error",
       propertyItems: [],
@@ -358,7 +362,7 @@ const Page = () => {
         id: 1,
         cardLabelBox: "!",
         text: "Error loading conditional access policies. Do you have a P1 license?",
-        subtext: userBulkRequest.error.message,
+        subtext: signInLogsData?.error?.message || "Unknown error",
         statusColor: "error.main",
         statusText: "Error",
         propertyItems: [],
@@ -373,7 +377,21 @@ const Page = () => {
         "There are no sign-in logs for this user, or you do not have a P1 license to detect this data.",
       statusColor: "warning.main",
       statusText: "No Data",
-      propertyItems: [],
+      propertyItems: [
+        {
+          label: "Error",
+          value: signInLogsData?.error?.message || "Unknown error",
+        },
+        {
+          label: "Inner Error",
+          value: (
+            <CippCodeBlock
+              language="json"
+              code={JSON.stringify(signInLogsData?.error?.innerError, null, 2) || "Unknown error"}
+            />
+          ),
+        },
+      ],
     };
 
     conditionalAccessPoliciesItems = [
@@ -442,17 +460,34 @@ const Page = () => {
         },
       ];
     }
-  } else if (userBulkRequest.isError) {
+  } else if (mfaDevicesData?.status !== 200) {
     // Error fetching MFA devices
     mfaDevicesItems = [
       {
         id: 1,
         cardLabelBox: "!",
         text: "Error loading MFA devices",
-        subtext: userBulkRequest.error.message,
+        subtext: `Status code: ${mfaDevicesData?.status}`,
         statusColor: "error.main",
         statusText: "Error",
-        propertyItems: [],
+        propertyItems: [
+          {
+            label: "Error",
+            value: mfaDevicesData?.body?.error?.message || "Unknown Error",
+          },
+          {
+            label: "Inner Error",
+            value: (
+              <CippCodeBlock
+                language="json"
+                code={
+                  JSON.stringify(mfaDevicesData?.body?.error?.innerError, null, 2) ||
+                  "Unknown Error"
+                }
+              />
+            ),
+          },
+        ],
       },
     ];
   } else if (mfaDevices.length === 0) {
@@ -471,32 +506,53 @@ const Page = () => {
   }
 
   const groupMembershipItems = userMemberOf
-    .filter((item) => item["@odata.type"] === "#microsoft.graph.group")
-    .map((group, index) => ({
-      id: index,
-      cardLabelBox: {
-        cardLabelBoxHeader: <Group />,
-      },
-      text: group.displayName,
-      subtext: "Group",
-      propertyItems: [
-        { label: "Group Types", value: group.groupTypes.join(", ") || "N/A" },
-        { label: "Security Enabled", value: group.securityEnabled ? "Yes" : "No" },
-        { label: "Mail Enabled", value: group.mailEnabled ? "Yes" : "No" },
-      ],
-    }));
+    ? [
+        {
+          id: 1,
+          cardLabelBox: {
+            cardLabelBoxHeader: <Group />,
+          },
+          text: "Groups",
+          subtext: "List of groups the user is a member of",
+          table: {
+            title: "Group Memberships",
+            hideTitle: true,
+            actions: [
+              {
+                icon: <PencilIcon />,
+                label: "Edit Group",
+                link: "/identity/administration/groups/edit?groupId=[id]",
+              },
+            ],
+            data: userMemberOf?.filter(
+              (item) => item?.["@odata.type"] === "#microsoft.graph.group"
+            ),
+            simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
+          },
+        },
+      ]
+    : [];
 
   const roleMembershipItems = userMemberOf
-    .filter((item) => item["@odata.type"] === "#microsoft.graph.directoryRole")
-    .map((role, index) => ({
-      id: index,
-      cardLabelBox: {
-        cardLabelBoxHeader: <AdminPanelSettings />,
-      },
-      text: role.displayName,
-      subtext: "Admin Role",
-      propertyItems: [{ label: "Description", value: role.description || "N/A" }],
-    }));
+    ? [
+        {
+          id: 1,
+          cardLabelBox: {
+            cardLabelBoxHeader: <AdminPanelSettings />,
+          },
+          text: "Admin Roles",
+          subtext: "List of roles the user is a member of",
+          table: {
+            title: "Admin Roles",
+            hideTitle: true,
+            data: userMemberOf?.filter(
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+            ),
+            simpleColumns: ["displayName", "description"],
+          },
+        },
+      ]
+    : [];
 
   return (
     <HeaderedTabbedLayout
@@ -546,13 +602,13 @@ const Page = () => {
                 <Typography variant="h6">Memberships</Typography>
                 <CippBannerListCard
                   isFetching={userBulkRequest.isPending}
-                  items={roleMembershipItems}
-                  isCollapsible={roleMembershipItems.length > 0 ? true : false}
+                  items={groupMembershipItems}
+                  isCollapsible={groupMembershipItems.length > 0 ? true : false}
                 />
                 <CippBannerListCard
                   isFetching={userBulkRequest.isPending}
-                  items={groupMembershipItems}
-                  isCollapsible={groupMembershipItems.length > 0 ? true : false}
+                  items={roleMembershipItems}
+                  isCollapsible={roleMembershipItems.length > 0 ? true : false}
                 />
               </Stack>
             </Grid>
