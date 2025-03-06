@@ -24,7 +24,7 @@ const Page = () => {
     },
     {
       label: "Delete Alert",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveQueuedAlert",
       data: {
         ID: "RowKey",
