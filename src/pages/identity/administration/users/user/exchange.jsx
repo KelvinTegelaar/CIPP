@@ -22,6 +22,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
+import CippExchangeActions from "../../../../../components/CippComponents/CippExchangeActions";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -261,6 +262,8 @@ const Page = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
+      actions={CippExchangeActions()}
+      actionsData={userRequest.data?.[0]?.MailboxActionsData}
       isFetching={graphUserRequest.isLoading}
     >
       <CippApiResults apiObject={userRequest} errorsOnly={true} />
