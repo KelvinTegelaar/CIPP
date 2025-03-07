@@ -27,7 +27,7 @@ jobs:
       - name: Create sync branch
         run: |
           git checkout -B upstream-sync
-          git reset --hard upstream/master
+          git reset --hard upstream/main
           
       - name: Push changes to sync branch
         uses: ad-m/github-push-action@master
@@ -40,7 +40,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           source_branch: "upstream-sync"
-          destination_branch: "master"
+          destination_branch: "main"
           pr_title: "chore: sync changes from upstream repository"
           pr_body: |
             This PR syncs changes from the upstream CIPP repository.
