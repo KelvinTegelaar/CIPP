@@ -219,6 +219,24 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     }
   }
 
+  if (cellName === "PostExecution") {
+    const values = data ? data?.split(",").map((item) => item.trim()) : [];
+    if (values.length > 0) {
+      return isText
+        ? data
+        : values.map((value, index) => (
+            <Chip
+              key={index}
+              size="small"
+              variant="outlined"
+              label={value}
+              color="info"
+              sx={{ mr: 0.5 }}
+            />
+          ));
+    }
+  }
+
   if (cellName === "ClientId" || cellName === "role") {
     return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
   }
