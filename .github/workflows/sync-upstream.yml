@@ -1,9 +1,14 @@
 name: Sync Fork with Upstream
-
+#tony edit
 on:
   schedule:
     - cron: '0 */12 * * *'  # Run twice daily
   workflow_dispatch:  # Allow manual triggers
+
+# Add permissions needed for pull requests
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   sync:
@@ -29,22 +34,22 @@ jobs:
           git checkout -B upstream-sync
           git reset --hard upstream/main
           
-      - name: Push changes to sync branch
+      - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: upstream-sync
           force: true
           
-      - name: Create Pull Request to our own repository
-        uses: repo-sync/pull-request@v2
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
-          source_branch: "upstream-sync"
-          destination_branch: "main"
-          pr_title: "chore: sync changes from upstream repository"
-          pr_body: |
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: upstream-sync
+          base: main
+          title: "chore: sync changes from upstream repository"
+          body: |
             This PR syncs changes from the upstream CIPP repository.
             
             Please review the changes carefully before merging to ensure no custom modifications are overwritten.
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_allow_empty: false
+          delete-branch: false
