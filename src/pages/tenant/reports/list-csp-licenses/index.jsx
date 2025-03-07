@@ -93,7 +93,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="add-subscription" startIcon={<ShoppingCart />}>
+          <Button component={Link} href="/tenant/administration/add-subscription" startIcon={<ShoppingCart />}>
             Add Subscription
           </Button>
         </>
