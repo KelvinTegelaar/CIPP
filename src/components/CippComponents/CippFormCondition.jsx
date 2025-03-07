@@ -12,7 +12,6 @@ export const CippFormCondition = (props) => {
     formControl,
     disabled = false,
   } = props;
-
   if (
     field === undefined ||
     compareValue === undefined ||
