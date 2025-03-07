@@ -6,6 +6,8 @@ Deploying Conditional Access is possible in two ways; using the deploy condition
 
 Using the Deploy Conditional access Wizard you can change several settings in the policy such as the way usernames are replaced, the method used to deploy the state, and which exclusions are in place.
 
+When using a standard, you also are able to select these options; however the replacement mode used will always be "Replace IDs with Display Names" to prevent the policy from not working on other tenants.
+
 ***
 
 ### Feature Requests / Ideas
