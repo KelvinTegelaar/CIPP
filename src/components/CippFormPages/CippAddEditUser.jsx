@@ -269,7 +269,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      {userSettingsDefaults?.userAttributes?.map((attribute, idx) => (
+      {userSettingsDefaults?.userAttributes?.filter((attribute) => attribute.value !== "sponsor").map((attribute, idx) => (
         <Grid item xs={6} key={idx}>
           <CippFormComponent
             type="textField"
