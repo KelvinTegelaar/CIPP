@@ -15,7 +15,6 @@ const Page = () => {
       url: "/api/ExecSetSecurityIncident",
       data: {
         GUID: "Id",
-        Assigned: "currentUserId",
       },
       confirmText: "Are you sure you want to assign this incident to yourself?",
     },
