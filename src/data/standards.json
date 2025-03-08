@@ -2352,6 +2352,14 @@
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
         "label": "Regions to block (uppercase ISO 3166-1 two-letter)"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SpamFilterPolicy.AllowedSenderDomains",
+        "label": "Allowed sender domains"
       }
     ],
     "label": "Default Spam Filter Policy",
