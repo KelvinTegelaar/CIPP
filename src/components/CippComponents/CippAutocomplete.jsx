@@ -69,6 +69,7 @@ export const CippAutoComplete = (props) => {
     isFetching = false,
     sx,
     removeOptions = [],
+    sortOptions = false,
     ...other
   } = props;
 
@@ -177,6 +178,9 @@ export const CippAutoComplete = (props) => {
     let finalOptions = api ? usedOptions : options;
     if (removeOptions && removeOptions.length) {
       finalOptions = finalOptions.filter((o) => !removeOptions.includes(o.value));
+    }
+    if (sortOptions) {
+      finalOptions.sort((a, b) => a.label?.localeCompare(b.label));
     }
     return finalOptions;
   }, [api, usedOptions, options, removeOptions]);
