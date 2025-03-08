@@ -1,6 +1,14 @@
 {
   "routes": [
     {
+      "route": "/version.json",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "pragma": "no-cache",
+        "expires": "0"
+      }
+    },
+    {
       "route": "_next/static/*",
       "headers": {
         "cache-control": "must-revalidate, max-age=15770000"
