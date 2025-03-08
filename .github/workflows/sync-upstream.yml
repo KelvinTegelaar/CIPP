@@ -1,0 +1,56 @@
+name: Sync Fork with Upstream
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # Run twice daily
+  workflow_dispatch:  # Allow manual triggers
+
+# Add permissions needed for pull requests
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Configure Git
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/KelvinTegelaar/CIPP.git || true
+          git fetch upstream
+          
+      - name: Create sync branch
+        run: |
+          git checkout -B upstream-sync
+          git reset --hard upstream/main
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: upstream-sync
+          force: true
+          
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: upstream-sync
+          base: interface-rewrite
+          title: "chore: sync changes from upstream repository"
+          body: |
+            This PR syncs changes from the upstream CIPP repository.
+            
+            Please review the changes carefully before merging to ensure no custom modifications are overwritten.
+            This PR targets the interface-rewrite branch which is used for Azure Static Web App deployment.
+          delete-branch: false
