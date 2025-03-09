@@ -1691,6 +1691,14 @@
         "type": "switch",
         "label": "EnableOrganizationBranding",
         "name": "standards.SafeLinksPolicy.EnableOrganizationBranding"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SafeLinksPolicy.DoNotRewriteUrls",
+        "label": "Do not rewrite the following URLs in email"
       }
     ],
     "label": "Default SafeLinks Policy",
@@ -2344,6 +2352,14 @@
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
         "label": "Regions to block (uppercase ISO 3166-1 two-letter)"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SpamFilterPolicy.AllowedSenderDomains",
+        "label": "Allowed sender domains"
       }
     ],
     "label": "Default Spam Filter Policy",
