@@ -45,6 +45,9 @@ export const CippExchangeInfoCard = (props) => {
               <LinearProgressWithLabel
                 sx={{ width: "100%" }}
                 variant="determinate"
+                addedLabel={`(${Math.round(exchangeData.TotalItemSize)}/${Math.round(
+                  exchangeData?.ProhibitSendReceiveQuota
+                )}GB)`}
                 value={
                   Math.round(
                     (exchangeData?.TotalItemSize / exchangeData?.ProhibitSendReceiveQuota) *
