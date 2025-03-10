@@ -70,6 +70,7 @@ export const CippAutoComplete = (props) => {
     sx,
     removeOptions = [],
     sortOptions = false,
+    preselectedValue,
     ...other
   } = props;
 
@@ -166,13 +167,35 @@ export const CippAutoComplete = (props) => {
           };
         });
         setUsedOptions(convertedOptions);
+        if (preselectedValue && !defaultValue && !value && convertedOptions.length > 0) {
+          const preselectedOption = convertedOptions.find(
+            (option) => option.value === preselectedValue
+          );
+
+          if (preselectedOption) {
+            const newValue = multiple ? [preselectedOption] : preselectedOption;
+            if (onChange) {
+              onChange(newValue, newValue?.addedFields);
+            }
+          }
+        }
       }
     }
 
     if (actionGetRequest.isError) {
       setUsedOptions([{ label: getCippError(actionGetRequest.error), value: "error" }]);
     }
-  }, [api, actionGetRequest.data, actionGetRequest.isSuccess, actionGetRequest.isError]);
+  }, [
+    api,
+    actionGetRequest.data,
+    actionGetRequest.isSuccess,
+    actionGetRequest.isError,
+    preselectedValue,
+    defaultValue,
+    value,
+    multiple,
+    onChange,
+  ]);
 
   const memoizedOptions = useMemo(() => {
     let finalOptions = api ? usedOptions : options;
