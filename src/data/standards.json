@@ -3490,8 +3490,8 @@
     "label": "Intune Template",
     "multiple": true,
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "impact": "High Impact",
