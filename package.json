@@ -8,7 +8,7 @@
   },
   "license": "AGPL-3.0",
   "engines": {
-    "node": "^20.18.1"
+    "node": "^22.13.0"
   },
   "repository": {
     "type": "git",

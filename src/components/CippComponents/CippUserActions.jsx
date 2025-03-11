@@ -53,7 +53,7 @@ export const CippUserActions = () => {
       //tested
 
       label: "Create Temporary Access Password",
-      type: "GET",
+      type: "POST",
       icon: <Password />,
       url: "/api/ExecCreateTAP",
       data: { ID: "userPrincipalName" },
@@ -63,7 +63,7 @@ export const CippUserActions = () => {
     {
       //tested
       label: "Re-require MFA registration",
-      type: "GET",
+      type: "POST",
       icon: <PhonelinkSetup />,
       url: "/api/ExecResetMFA",
       data: { ID: "userPrincipalName" },
@@ -107,26 +107,26 @@ export const CippUserActions = () => {
     {
       //tested
       label: "Convert to Shared Mailbox",
-      type: "GET",
+      type: "POST",
       icon: <Email />,
-      url: "/api/ExecConvertToSharedMailbox",
-      data: { ID: "userPrincipalName" },
+      url: "/api/ExecConvertMailbox",
+      data: { ID: "userPrincipalName", MailboxType: "!Shared" },
       confirmText: "Are you sure you want to convert this user to a shared mailbox?",
       multiPost: false,
     },
     {
       label: "Convert to User Mailbox",
-      type: "GET",
+      type: "POST",
       icon: <Email />,
-      url: "/api/ExecConvertToSharedMailbox",
-      data: { ID: "userPrincipalName", ConvertToUser: true },
+      url: "/api/ExecConvertMailbox",
+      data: { ID: "userPrincipalName", MailboxType: "!Regular" },
       confirmText: "Are you sure you want to convert this user to a user mailbox?",
       multiPost: false,
     },
     {
       //tested
       label: "Enable Online Archive",
-      type: "GET",
+      type: "POST",
       icon: <Archive />,
       url: "/api/ExecEnableArchive",
       data: { ID: "userPrincipalName" },
@@ -237,7 +237,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Block Sign In",
-      type: "GET",
+      type: "POST",
       icon: <Block />,
       url: "/api/ExecDisableUser",
       data: { ID: "id" },
@@ -247,7 +247,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Unblock Sign In",
-      type: "GET",
+      type: "POST",
       icon: <LockOpen />,
       url: "/api/ExecDisableUser",
       data: { ID: "id", Enable: true },
@@ -257,7 +257,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Reset Password (Must Change)",
-      type: "GET",
+      type: "POST",
       icon: <LockReset />,
       url: "/api/ExecResetPass",
       data: {
@@ -271,7 +271,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Reset Password",
-      type: "GET",
+      type: "POST",
       icon: <LockReset />,
       url: "/api/ExecResetPass",
       data: {
@@ -296,7 +296,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Revoke all user sessions",
-      type: "GET",
+      type: "POST",
       icon: <PersonOff />,
       url: "/api/ExecRevokeSessions",
       data: { ID: "id", Username: "userPrincipalName" },
@@ -305,7 +305,7 @@ export const CippUserActions = () => {
     },
     {
       label: "Delete User",
-      type: "GET",
+      type: "POST",
       icon: <TrashIcon />,
       url: "/api/RemoveUser",
       data: { ID: "id" },
