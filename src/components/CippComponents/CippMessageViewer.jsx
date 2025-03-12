@@ -477,7 +477,7 @@ export const CippMessageViewer = ({ emailSource }) => {
                       </ThemeProvider>
                     ) : (
                       <div className="mt-4">
-                        <CodeBlock
+                        <CippCodeBlock
                           code={emlContent?.text ?? "No text"}
                           language="plain"
                           showLineNumbers={false}
