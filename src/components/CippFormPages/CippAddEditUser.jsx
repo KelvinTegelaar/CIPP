@@ -8,6 +8,8 @@ import { CippFormLicenseSelector } from "/src/components/CippComponents/CippForm
 import Grid from "@mui/material/Grid";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
+import { useWatch } from "react-hook-form";
+import { useEffect } from "react";
 
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = "add" } = props;
@@ -16,6 +18,15 @@ const CippAddEditUser = (props) => {
     url: "/api/ListExtensionsConfig",
     queryKey: "ListExtensionsConfig",
   });
+
+  const watcher = useWatch({ control: formControl.control });
+  useEffect(() => {
+    //if watch.firstname changes, and watch.lastname changes, set displayname to firstname + lastname
+    if (watcher.givenName && watcher.surname && formType === "add") {
+      formControl.setValue("displayName", `${watcher.givenName} ${watcher.surname}`);
+    }
+  }, [watcher.givenName, watcher.surname]);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={6}>
@@ -53,7 +64,7 @@ const CippAddEditUser = (props) => {
           InputProps={{
             endAdornment: <InputAdornment position="end">@</InputAdornment>,
           }}
-          name="mailNickname"
+          name="username"
           formControl={formControl}
         />
       </Grid>
@@ -258,7 +269,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      {userSettingsDefaults?.userAttributes?.map((attribute, idx) => (
+      {userSettingsDefaults?.userAttributes?.filter((attribute) => attribute.value !== "sponsor").map((attribute, idx) => (
         <Grid item xs={6} key={idx}>
           <CippFormComponent
             type="textField"
@@ -280,7 +291,17 @@ const CippAddEditUser = (props) => {
           multiple={false}
         />
       </Grid>
-      {/* Schedule User Creation */}
+      {userSettingsDefaults?.userAttributes?.some((attribute) => attribute.value === "sponsor") && (
+        <Grid item xs={12}>
+          <CippFormUserSelector
+            formControl={formControl}
+            name="setSponsor"
+            label="Set Sponsor"
+            valueField="userPrincipalName"
+            multiple={false}
+          />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <CippFormUserSelector
           formControl={formControl}
@@ -289,6 +310,27 @@ const CippAddEditUser = (props) => {
           multiple={false}
         />
       </Grid>
+      {formType === "edit" && (
+        <Grid item xs={12}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Add to Groups"
+            name="AddToGroups"
+            multiple={true}
+            api={{
+              url: "/api/ListGroups",
+              queryKey: `ListGroups-${tenantDomain}`,
+              labelField: "displayName",
+              valueField: "id",
+              addedField: {
+                calculatedGroupType: "calculatedGroupType",
+              },
+            }}
+            formControl={formControl}
+          />
+        </Grid>
+      )}
+      {/* Schedule User Creation */}
       {formType === "add" && (
         <Grid item xs={12}>
           <CippFormComponent

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail, Fingerprint } from "@mui/icons-material";
+import { Check, Error, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
@@ -22,6 +22,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
+import CippExchangeActions from "../../../../../components/CippComponents/CippExchangeActions";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -113,6 +114,21 @@ const Page = () => {
             </>
           ),
         },
+        {
+          icon: <Launch style={{ color: "#667085" }} />,
+          text: (
+            <Button
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
+          ),
+        },
       ]
     : [];
 
@@ -174,7 +190,7 @@ const Page = () => {
   const mailboxRuleActions = [
     {
       label: "Remove Mailbox Rule",
-      type: "GET",
+      type: "POST",
       icon: <TrashIcon />,
       url: "/api/ExecRemoveMailboxRule",
       data: {
@@ -246,6 +262,8 @@ const Page = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
+      actions={CippExchangeActions()}
+      actionsData={userRequest.data?.[0]?.MailboxActionsData}
       isFetching={graphUserRequest.isLoading}
     >
       <CippApiResults apiObject={userRequest} errorsOnly={true} />

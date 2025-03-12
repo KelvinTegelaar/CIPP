@@ -18,7 +18,7 @@ const Page = () => {
     },
     {
       label: "Hide from Global Address List",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsHideFromGAL",
       icon: <VisibilityOff />,
       data: {
@@ -32,12 +32,13 @@ const Page = () => {
     },
     {
       label: "Unhide from Global Address List",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsHideFromGAL",
       icon: <Visibility />,
       data: {
         ID: "mail",
         GroupType: "calculatedGroupType",
+        HidefromGAL: false,
       },
       confirmText:
         "Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the group is AD Synched.",
@@ -45,7 +46,7 @@ const Page = () => {
     },
     {
       label: "Only allow messages from people inside the organisation",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsDeliveryManagement",
       icon: <Lock />,
       data: {
@@ -59,12 +60,13 @@ const Page = () => {
     },
     {
       label: "Allow messages from people inside and outside the organisation",
-      type: "GET",
+      type: "POST",
       icon: <LockOpen />,
       url: "/api/ExecGroupsDeliveryManagement",
       data: {
         ID: "mail",
         GroupType: "calculatedGroupType",
+        OnlyAllowInternal: false,
       },
       confirmText:
         "Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.",
@@ -72,7 +74,7 @@ const Page = () => {
     },
     {
       label: "Delete Group",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsDelete",
       icon: <TrashIcon />,
       data: {
@@ -107,17 +109,7 @@ const Page = () => {
           </Button>
         </>
       }
-      apiUrl="/api/ListGraphRequest"
-      apiData={{
-        Endpoint: "groups",
-        $select:
-          "id,createdDateTime,displayName,description,mail,mailEnabled,mailNickname,resourceProvisioningOptions,securityEnabled,visibility,organizationId,onPremisesSamAccountName,membershipRule,grouptypes,onPremisesSyncEnabled,resourceProvisioningOptions,userPrincipalName,assignedLicenses",
-        $count: true,
-        $orderby: "displayName",
-        $top: 999,
-        manualPagination: true,
-      }}
-      apiDataKey="Results"
+      apiUrl="/api/ListGroups"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[
