@@ -62,7 +62,7 @@ const Page = () => {
       title={
         tenantDetails.isSuccess
           ? `Edit Tenant - ${
-              tenantDetails?.data?.customProperties?.tenantAlias ?? tenantDetails?.data?.displayName
+              tenantDetails?.data?.customProperties?.Alias ?? tenantDetails?.data?.displayName
             }`
           : "Loading..."
       }
@@ -106,7 +106,7 @@ const Page = () => {
                 postUrl="/api/EditTenant"
                 customDataformatter={(values) => {
                   const formattedValues = {
-                    tenantAlias: values.tenantAlias,
+                    tenantAlias: values.Alias,
                     tenantGroups: values.Groups.map((group) => ({
                       groupId: group.value,
                       groupName: group.label,
