@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { tabOptions } from "./tabOptions";
+import tabOptions from "./tabOptions";
 import { Edit } from "@mui/icons-material";
 
 const Page = () => {
