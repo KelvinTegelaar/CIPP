@@ -1,0 +1,10 @@
+export const tabOptions = [
+  {
+    label: "Tenants",
+    path: "/tenant/administration/tenants",
+  },
+  {
+    label: "Groups",
+    path: "/tenant/administration/tenants/groups",
+  },
+];
