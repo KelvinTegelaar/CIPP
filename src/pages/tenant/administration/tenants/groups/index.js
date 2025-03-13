@@ -4,19 +4,29 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { tabOptions } from "../tabOptions";
 import { Edit } from "@mui/icons-material";
 import { Button, SvgIcon } from "@mui/material";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import NextLink from "next/link";
 
 const Page = () => {
   const pageTitle = "Tenant Groups";
 
-  const simpleColumns = ["groupName", "groupDescription", "groupMembersCount"];
+  const simpleColumns = ["Name", "Description", "Members"];
 
   const actions = [
     {
       label: "Edit Group",
-      link: "/tenant/administration/tenants/groups/edit?id=[groupId]",
+      link: "/tenant/administration/tenants/groups/edit?id=[Id]",
       icon: <Edit />,
     },
+    {
+      label: "Delete Group",
+      icon: <TrashIcon />,
+      url: "/api/ExecTenantGroup",
+      type: "POST",
+      data: { action: "Delete", groupId: "Id" },
+      queryKey: "TenantGroupListPage",
+      confirmText: "Are you sure you want to delete [Name]?",
+    }
   ];
 
   return (
@@ -33,6 +43,7 @@ const Page = () => {
           variant="contained"
           color="primary"
           size="small"
+          component={NextLink}
           href="/tenant/administration/tenants/groups/add"
           startIcon={
             <SvgIcon fontSize="small">

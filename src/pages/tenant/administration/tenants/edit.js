@@ -46,8 +46,8 @@ const Page = () => {
         Alias: tenantDetails?.data?.customProperties?.Alias ?? "",
         Groups:
           tenantDetails.data.Groups?.map((group) => ({
-            label: group.groupName,
-            value: group.groupId,
+            label: group.Name,
+            value: group.Id,
           })) || [],
       });
     }
@@ -111,6 +111,7 @@ const Page = () => {
                       groupId: group.value,
                       groupName: group.label,
                     })),
+                    customerId: id,
                   };
                   return formattedValues;
                 }}
@@ -133,12 +134,13 @@ const Page = () => {
                     placeholder="Select the groups this tenant belongs to."
                     formControl={formControl}
                     multiple
-                    options={
-                      tenantDetails.data?.availableGroups?.map((group) => ({
-                        label: group.groupName,
-                        value: group.groupId,
-                      })) || []
-                    }
+                    api={{
+                      url: "/api/ListTenantGroups",
+                      queryKey: "AllTenantGroups",
+                      dataKey: "Results",
+                      labelField: "Name",
+                      valueField: "Id",
+                    }}
                     disabled={tenantDetails.isFetching}
                   />
                 </Stack>

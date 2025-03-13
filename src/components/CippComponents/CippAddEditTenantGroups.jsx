@@ -12,6 +12,7 @@ const CippAddEditTenantGroups = ({ formControl, initialValues, title, backButton
       backButtonTitle={backButtonTitle}
       postUrl="/api/ExecTenantGroup"
       relatedQueryKeys={["TenantGroupListPage"]}
+      resetForm={false}
       customDataformatter={(values) => {
         return {
           ...values,

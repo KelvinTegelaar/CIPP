@@ -7,7 +7,6 @@ import { Box, Grid } from "@mui/material";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import CippAddEditTenantGroups from "/src/components/CippComponents/CippAddEditTenantGroups";
-import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
 
 const Page = () => {
   const router = useRouter();
@@ -33,34 +32,22 @@ const Page = () => {
     if (groupDetails.isSuccess && groupDetails.data) {
       formControl.reset({
         groupId: id,
-        groupName: groupDetails?.data?.groupName ?? "",
-        groupDescription: groupDetails?.data?.groupDescription ?? "",
-        members: groupDetails?.data?.members?.map((member) => ({
-          label: member.displayName,
-          value: member.customerId,
-        })) || [],
+        groupName: groupDetails?.data?.Results?.[0]?.Name ?? "",
+        groupDescription: groupDetails?.data?.Results?.[0]?.Description ?? "",
+        members:
+          groupDetails?.data?.Results?.[0]?.Members?.map((member) => ({
+            label: member.displayName,
+            value: member.customerId,
+          })) || [],
       });
     }
   }, [groupDetails.isSuccess, groupDetails.data]);
-
-  const handleUpdateGroup = (data) => {
-    updateGroupApi.mutate({
-      url: "/api/EditTenantGroup",
-      data: {
-        Action: "AddEdit",
-        groupId: id,
-        groupName: data.groupName,
-        groupDescription: data.groupDescription,
-        membersToAdd: data.members.map((member) => member.value),
-      },
-    });
-  };
 
   return (
     <CippPageCard
       title={
         groupDetails.isSuccess
-          ? `Edit Tenant Group - ${groupDetails?.data?.groupName}`
+          ? `Edit Tenant Group - ${groupDetails?.data?.Results?.[0]?.Name}`
           : "Loading..."
       }
       backButtonTitle="Tenant Groups"
@@ -71,15 +58,9 @@ const Page = () => {
           <Grid item xs={12} md={8}>
             <CippAddEditTenantGroups
               formControl={formControl}
-              onSubmit={handleUpdateGroup}
-              initialValues={{
-                groupName: groupDetails?.data?.groupName ?? "",
-                groupDescription: groupDetails?.data?.groupDescription ?? "",
-              }}
               title="Edit Tenant Group"
               backButtonTitle="Tenant Groups"
             />
-
           </Grid>
         </Grid>
       </Box>
