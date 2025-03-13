@@ -4,13 +4,20 @@ import { Stack, Typography, Grid } from "@mui/material";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 
-const CippAddEditTenantGroups = ({ formControl, onSubmit, initialValues, title, backButtonTitle }) => {
+const CippAddEditTenantGroups = ({ formControl, initialValues, title, backButtonTitle }) => {
   return (
     <CippFormSection
       formControl={formControl}
       title={title}
       backButtonTitle={backButtonTitle}
-      onSubmit={onSubmit}
+      postUrl="/api/ExecTenantGroup"
+      relatedQueryKeys={["TenantGroupListPage"]}
+      customDataformatter={(values) => {
+        return {
+          ...values,
+          Action: "AddEdit",
+        };
+      }}
       initialValues={initialValues}
     >
       <Typography variant="h6">Properties</Typography>
@@ -35,6 +42,7 @@ const CippAddEditTenantGroups = ({ formControl, onSubmit, initialValues, title, 
           multiple={true}
           required={false}
           disableClearable={false}
+          name="members"
           valueField="customerId"
           placeholder="Select members to add to this group."
         />

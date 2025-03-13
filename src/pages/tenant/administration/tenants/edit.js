@@ -9,23 +9,15 @@ import {
   Box,
   Tab,
   Tabs,
-  CardContent,
-  Button,
-  SvgIcon,
-  Alert,
-  Typography,
   Grid,
+  Typography,
 } from "@mui/material";
 import { CippCardTabPanel } from "/src/components/CippComponents/CippCardTabPanel";
-import { PlusIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import { ApiPostCall } from "../../../../api/ApiCall";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
+import CippCustomVariables from "/src/components/CippComponents/CippCustomVariables";
 
 function tabProps(index) {
   return {
@@ -41,22 +33,10 @@ const Page = () => {
     mode: "onChange",
   });
   const [value, setValue] = useState(0);
-  const [customVariables, setCustomVariables] = useState([]);
-  const [openAddDialog, setOpenAddDialog] = useState(false);
 
   const tenantDetails = ApiGetCall({
     url: id ? `/api/ListTenantDetails?tenantFilter=${id}` : null,
     queryKey: id ? `TenantProperties_${id}` : null,
-  });
-
-  const updateCustomVariablesApi = ApiPostCall({
-    urlFromData: true,
-    relatedQueryKeys: [
-      `CustomVariables_${id}`,
-      "TenantSelector",
-      "ListTenants-notAllTenants",
-      `TenantProperties-${id}`,
-    ],
   });
 
   useEffect(() => {
@@ -76,70 +56,6 @@ const Page = () => {
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  const handleAddVariable = () => {
-    setOpenAddDialog(true);
-  };
-
-  const actions = [
-    {
-      label: "Edit",
-      icon: (
-        <SvgIcon>
-          <PencilIcon />
-        </SvgIcon>
-      ),
-      confirmText: "Update the custom variable '[RowKey]'?",
-      hideBulk: true,
-      setDefaultValues: true,
-      fields: [
-        {
-          type: "textField",
-          name: "RowKey",
-          label: "Key",
-          placeholder: "Enter the key for the custom variable.",
-          required: true,
-          validators: {
-            validate: (value) => {
-              if (!value.includes(" ") && !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value)) {
-                return true;
-              } else {
-                return "The variable name must not contain spaces or special characters.";
-              }
-            },
-          },
-        },
-        {
-          type: "textField",
-          name: "Value",
-          label: "Value",
-          placeholder: "Enter the value for the custom variable.",
-          required: true,
-        },
-      ],
-      type: "POST",
-      url: "/api/ExecCippReplacemap",
-      data: {
-        Action: "!AddEdit",
-        customerId: id,
-      },
-      relatedQueryKeys: [`CustomVariables_${id}`],
-    },
-    {
-      label: "Delete",
-      icon: <TrashIcon />,
-      confirmText: "Are you sure you want to delete [RowKey]?",
-      type: "POST",
-      url: "/api/ExecCippReplacemap",
-      data: {
-        Action: "Delete",
-        RowKey: "RowKey",
-        customerId: id,
-      },
-      relatedQueryKeys: [`CustomVariables_${id}`],
-      multiPost: false,
-    },
-  ];
 
   return (
     <CippPageCard
@@ -231,80 +147,9 @@ const Page = () => {
           </Grid>
         </CippCardTabPanel>
         <CippCardTabPanel value={value} index={1}>
-          <CardContent>
-            <Alert severity="info" sx={{ mb: 2 }}>
-              Custom variables are key-value pairs that can be used to store additional information
-              about a tenant. These are applied to templates in standards using the format
-              %VariableName%.
-            </Alert>
-            <CippDataTable
-              queryKey={`CustomVariables_${id}`}
-              title="Custom Variables"
-              actions={actions}
-              api={{
-                url: `/api/ExecCippReplacemap?Action=List&customerId=${id}`,
-                dataKey: "Results",
-              }}
-              simpleColumns={["RowKey", "Value"]}
-              cardButton={
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={handleAddVariable}
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <PlusIcon />
-                    </SvgIcon>
-                  }
-                >
-                  Add Variable
-                </Button>
-              }
-            />
-            <CippApiResults apiObject={updateCustomVariablesApi} />
-          </CardContent>
+          <CippCustomVariables id={id} />
         </CippCardTabPanel>
       </Box>
-
-      <CippApiDialog
-        createDialog={{
-          open: openAddDialog,
-          handleClose: () => setOpenAddDialog(false),
-        }}
-        title="Add Variable"
-        fields={[
-          {
-            type: "textField",
-            name: "RowKey",
-            label: "Key",
-            placeholder: "Enter the key for the custom variable.",
-            required: true,
-            validators: {
-              validate: (value) => {
-                if (!value.includes(" ") && !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value)) {
-                  return true;
-                } else {
-                  return "The variable name must not contain spaces or special characters.";
-                }
-              },
-            },
-          },
-          {
-            type: "textField",
-            name: "Value",
-            label: "Value",
-            placeholder: "Enter the value for the custom variable.",
-            required: true,
-          },
-        ]}
-        api={{
-          type: "POST",
-          url: "/api/ExecCippReplacemap",
-          data: { Action: "AddEdit", customerId: id },
-          relatedQueryKeys: [`CustomVariables_${id}`],
-        }}
-      />
     </CippPageCard>
   );
 };
