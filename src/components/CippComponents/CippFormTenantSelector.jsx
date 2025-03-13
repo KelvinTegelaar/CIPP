@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useSettings } from "../../hooks/use-settings";
+import { GroupHeader, GroupItems } from "../CippComponents/CippAutocompleteGrouping";
+import { ApiGetCall } from "/src/api/ApiCall";
 
 export const CippFormTenantSelector = ({
   formControl,
@@ -12,6 +14,7 @@ export const CippFormTenantSelector = ({
   required = true,
   disableClearable = true,
   removeOptions = [],
+  includeGroups = false, // New parameter
   ...other
 }) => {
   const validators = () => {
@@ -23,6 +26,48 @@ export const CippFormTenantSelector = ({
     return {};
   };
   const currentTenant = useSettings()?.currentTenant;
+
+  // Fetch tenant list
+  const tenantList = ApiGetCall({
+    url: allTenants ? "/api/ListTenants?AllTenantSelector=true" : "/api/ListTenants",
+    queryKey: allTenants ? "ListTenants-FormAllTenantSelector" : "ListTenants-FormnotAllTenants",
+  });
+
+  // Fetch tenant group list if includeGroups is true
+  const tenantGroupList = ApiGetCall({
+    url: "/api/ListTenantGroups",
+    data: { AllTenantSelector: true },
+    queryKey: "TenantGroupSelector",
+    waiting: includeGroups,
+  });
+
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    if (tenantList.isSuccess && (!includeGroups || tenantGroupList.isSuccess)) {
+      const tenantData = tenantList.data.map((tenant) => ({
+        value: tenant[valueField],
+        label: `${tenant.displayName} (${tenant.defaultDomainName})`,
+        type: "Tenant",
+        addedField: {
+          defaultDomainName: tenant.defaultDomainName,
+          displayName: tenant.displayName,
+          customerId: tenant.customerId,
+        },
+      }));
+
+      const groupData = includeGroups
+        ? tenantGroupList?.data?.Results?.map((group) => ({
+            value: group.Id,
+            label: group.Name,
+            type: "Group",
+          }))
+        : [];
+
+      setOptions([...tenantData, ...groupData]);
+    }
+  }, [tenantList.isSuccess, tenantGroupList.isSuccess, includeGroups]);
+
   return (
     <CippFormComponent
       type={componentType}
@@ -30,24 +75,19 @@ export const CippFormTenantSelector = ({
       formControl={formControl}
       preselectedValue={currentTenant ? currentTenant : null}
       placeholder="Select a tenant"
-      //default value is: if currentTenant is not null, then FIND
-      api={{
-        excludeTenantFilter: true,
-        url: allTenants ? "/api/ListTenants?AllTenantSelector=true" : "/api/ListTenants",
-        queryKey: allTenants ? "ListTenants-AllTenantSelector" : "ListTenants-notAllTenants",
-        labelField: (option) => `${option.displayName} (${option.defaultDomainName})`,
-        valueField: valueField,
-        addedField: {
-          defaultDomainName: "defaultDomainName",
-          displayName: "displayName",
-          customerId: "customerId",
-        },
-      }}
       creatable={false}
       multiple={type === "single" ? false : true}
       disableClearable={disableClearable}
       validators={validators}
       removeOptions={removeOptions}
+      options={options}
+      groupBy={(option) => option.type}
+      renderGroup={(params) => (
+        <li key={params.key}>
+          {includeGroups && <GroupHeader>{params.group}</GroupHeader>}
+          {includeGroups ? <GroupItems>{params.children}</GroupItems> : params.children}
+        </li>
+      )}
       {...other}
     />
   );

@@ -132,6 +132,7 @@ const CippStandardsSideBar = ({
             label="Included Tenants"
             formControl={formControl}
             required={true}
+            includeGroups={true}
           />
           {watchForm.tenantFilter?.some((tenant) => tenant.value === "AllTenants") && (
             <>

@@ -6,6 +6,10 @@ import {
   MailOutline,
   Shield,
   Description,
+  Group,
+  MeetingRoom,
+  GroupWork,
+  GroupOutlined,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
 import { Box } from "@mui/system";
@@ -17,7 +21,13 @@ import { CippLocationDialog } from "../components/CippComponents/CippLocationDia
 import { isoDuration, en } from "@musement/iso-duration";
 import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
 import { getCippRoleTranslation } from "./get-cipp-role-translation";
-import { CogIcon, ServerIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
+import {
+  BuildingOfficeIcon,
+  CogIcon,
+  ServerIcon,
+  UserIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
 import { getCippTranslation } from "./get-cipp-translation";
 import DOMPurify from "dompurify";
 import { getSignInErrorCodeTranslation } from "./get-cipp-signin-errorcode-translation";
@@ -208,6 +218,17 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
             <CippCopyToClipBoard
               key={`${item?.label}`}
               text={item?.label ? item?.label : item}
+              icon={
+                item?.type === "Group" ? (
+                  <SvgIcon sx={{ ml: 0.25 }}>
+                    <GroupOutlined />
+                  </SvgIcon>
+                ) : item?.type === "Tenant" ? (
+                  <SvgIcon sx={{ ml: 0.25 }}>
+                    <BuildingOfficeIcon />
+                  </SvgIcon>
+                ) : null
+              }
               type="chip"
             />
           ));
