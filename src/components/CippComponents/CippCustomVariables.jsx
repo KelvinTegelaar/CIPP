@@ -121,8 +121,8 @@ const CippCustomVariables = ({ id }) => {
           {
             type: "textField",
             name: "RowKey",
-            label: "Key",
-            placeholder: "Enter the key for the custom variable.",
+            label: "Variable Name",
+            placeholder: "Enter the name for the custom variable without %.",
             required: true,
             validators: {
               validate: (value) => {
