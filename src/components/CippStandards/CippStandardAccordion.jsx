@@ -49,6 +49,7 @@ const CippAddedComponent = React.memo(({ standardName, component, formControl })
       label: tz.timezone,
       value: tz.timezone,
     }));
+    updatedComponent.multiple = false;
   } else {
     updatedComponent.type = component.type;
   }
@@ -204,7 +205,7 @@ const CippStandardAccordion = ({
           </Stack>
         </Stack>
 
-        <Collapse in={isExpanded}>
+        <Collapse in={isExpanded} unmountOnExit>
           <Divider />
           <Box sx={{ p: 3 }}>
             <Grid container spacing={2}>

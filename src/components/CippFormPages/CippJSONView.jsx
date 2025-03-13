@@ -76,8 +76,13 @@ const renderListItems = (data, onItemClick) => {
   });
 };
 
-function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, type }) {
+function CippJsonView({
+  object = { "No Data Selected": "No Data Selected" },
+  type,
+  defaultOpen = false,
+}) {
   const [viewJson, setViewJson] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState(defaultOpen);
   const [drilldownData, setDrilldownData] = useState([]);
 
   const renderIntuneItems = (data) => {
@@ -184,6 +189,9 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
   };
 
   useEffect(() => {
+    if (!type && (object?.omaSettings || object?.settings || object?.added)) {
+      type = "intune";
+    }
     const blacklist = [
       "selectedOption",
       "GUID",
@@ -209,7 +217,11 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
   };
 
   return (
-    <Accordion variant="outlined">
+    <Accordion
+      variant="outlined"
+      expanded={accordionOpen}
+      onChange={() => setAccordionOpen(!accordionOpen)}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{ display: "flex", alignItems: "center" }}
@@ -223,17 +235,20 @@ function CippJsonView({ object = { "No Data Selected": "No Data Selected" }, typ
           {viewJson ? <VisibilityOffIcon /> : <VisibilityIcon />}
         </IconButton>
         {viewJson ? (
-          <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object))} />
+          <CippCodeBlock type="editor" code={JSON.stringify(cleanObject(object), null, 2)} />
         ) : (
           <Grid container spacing={2}>
-            {drilldownData.slice(0, 4).map((data, index) => (
+            {drilldownData?.map((data, index) => (
               <Grid
                 item
                 xs={12}
                 sm={type === "intune" ? 12 : 3}
                 key={index}
                 sx={{
-                  borderRight: index < 3 && type !== "intune" ? "1px solid lightgrey" : "none",
+                  //give a top border if the item is > 4, and add spacing between the top and bottom items
+                  paddingTop: index === 0 ? 0 : 2,
+                  borderTop: index >= 4 && type !== "intune" ? "1px solid lightgrey" : "none",
+                  borderRight: index < drilldownData.length - 1 ? "1px solid lightgrey" : "none",
                   overflowWrap: "anywhere",
                   whiteSpace: "pre-line",
                   paddingRight: 2,

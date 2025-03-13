@@ -178,7 +178,11 @@ export const CippDataTable = (props) => {
     data: memoizedData,
     state: {
       columnVisibility,
-      showSkeletons: getRequestData.isFetching ? getRequestData.isFetching : isFetching,
+      showSkeletons: getRequestData.isFetchingNextPage
+        ? false
+        : getRequestData.isFetching
+        ? getRequestData.isFetching
+        : isFetching,
     },
     renderEmptyRowsFallback: ({ table }) =>
       getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
@@ -274,7 +278,7 @@ export const CippDataTable = (props) => {
               refreshFunction={refreshFunction}
               setColumnVisibility={setColumnVisibility}
               filters={filters}
-              queryKeys={queryKey}
+              queryKeys={queryKey ? queryKey : title}
               graphFilterData={graphFilterData}
               setGraphFilterData={setGraphFilterData}
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
@@ -283,6 +287,7 @@ export const CippDataTable = (props) => {
         </>
       );
     },
+    enableGlobalFilterModes: true,
   });
 
   useEffect(() => {
@@ -290,6 +295,10 @@ export const CippDataTable = (props) => {
       onChange(table.getSelectedRowModel().rows.map((row) => row.original));
     }
   }, [table.getSelectedRowModel().rows]);
+
+  useEffect(() => {
+    setConfiguredSimpleColumns(simpleColumns);
+  }, [simpleColumns]);
 
   return (
     <>
@@ -358,16 +367,19 @@ export const CippDataTable = (props) => {
         customComponent={offCanvas?.customComponent}
         {...offCanvas}
       />
-      {actionData.ready && (
-        <CippApiDialog
-          createDialog={createDialog}
-          title="Confirmation"
-          fields={actionData.action?.fields}
-          api={actionData.action}
-          row={actionData.data}
-          relatedQueryKeys={queryKey ? queryKey : title}
-        />
-      )}
+      {useMemo(() => {
+        if (!actionData.ready) return null;
+        return (
+          <CippApiDialog
+            createDialog={createDialog}
+            title="Confirmation"
+            fields={actionData.action?.fields}
+            api={actionData.action}
+            row={actionData.data}
+            relatedQueryKeys={queryKey ? queryKey : title}
+          />
+        );
+      }, [actionData.ready, createDialog, actionData.action, actionData.data, queryKey, title])}
     </>
   );
 };
