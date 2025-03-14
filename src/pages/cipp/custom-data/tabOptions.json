@@ -1,5 +1,9 @@
 [
   {
+    "label": "Directory Extensions",
+    "path": "/cipp/custom-data/directory-extensions"
+  },
+  {
     "label": "Schema Extensions",
     "path": "/cipp/custom-data/schema-extensions"
   }

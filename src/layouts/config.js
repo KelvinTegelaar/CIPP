@@ -468,7 +468,7 @@ export const nativeMenuItems = [
       { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
       {
         title: "Custom Data",
-        path: "/cipp/custom-data/schema-extensions",
+        path: "/cipp/custom-data/directory-extensions",
         roles: ["admin", "superadmin"]
       },
       {

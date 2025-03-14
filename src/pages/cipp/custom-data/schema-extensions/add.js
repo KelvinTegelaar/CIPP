@@ -119,6 +119,7 @@ const Page = () => {
         { value: "InDevelopment", label: "In Development" },
         { value: "Available", label: "Available" },
       ],
+      creatable: false,
     },
     {
       name: "targetTypes",
@@ -128,6 +129,7 @@ const Page = () => {
       required: true,
       multiple: true,
       options: availableTargetTypes,
+      creatable: false,
       validate: (value) => {
         if (value.length > 0) return true;
         return "Please select at least one target type.";
