@@ -47,7 +47,15 @@ const Page = () => {
             allow you to add custom properties to Microsoft Entra directory objects.
             <ul>
               <li>Directory extensions must have unique names.</li>
-              <li>Ensure the data type matches the intended usage.</li>
+              <li>There is a limit of 100 extension values per resource instance</li>
+              <li>
+                <Link
+                  target="_blank"
+                  href="https://learn.microsoft.com/en-us/graph/extensibility-overview?tabs=http#considerations-for-using-directory-extensions"
+                >
+                  Considerations for using directory extensions
+                </Link>
+              </li>
             </ul>
           </Alert>
         }
