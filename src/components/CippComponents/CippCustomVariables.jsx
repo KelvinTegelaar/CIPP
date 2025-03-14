@@ -14,6 +14,24 @@ const CippCustomVariables = ({ id }) => {
     relatedQueryKeys: [`CustomVariables_${id}`],
   });
 
+  const reservedVariables = [
+    "tenantid",
+    "tenantname",
+    "tenantfilter",
+    "partnertenantid",
+    "samappid",
+  ];
+
+  const validateVariableName = (value) => {
+    if (reservedVariables.includes(value.toLowerCase())) {
+      return "The variable name is reserved and cannot be used.";
+    } else if (!value.includes(" ") && !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value)) {
+      return true;
+    } else {
+      return "The variable name must not contain spaces or special characters.";
+    }
+  };
+
   const actions = [
     {
       label: "Edit",
@@ -29,18 +47,10 @@ const CippCustomVariables = ({ id }) => {
         {
           type: "textField",
           name: "RowKey",
-          label: "Key",
+          label: "Variable Name",
           placeholder: "Enter the key for the custom variable.",
           required: true,
-          validators: {
-            validate: (value) => {
-              if (!value.includes(" ") && !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value)) {
-                return true;
-              } else {
-                return "The variable name must not contain spaces or special characters.";
-              }
-            },
-          },
+          validators: validateVariableName,
         },
         {
           type: "textField",
@@ -124,15 +134,7 @@ const CippCustomVariables = ({ id }) => {
             label: "Variable Name",
             placeholder: "Enter the name for the custom variable without %.",
             required: true,
-            validators: {
-              validate: (value) => {
-                if (!value.includes(" ") && !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value)) {
-                  return true;
-                } else {
-                  return "The variable name must not contain spaces or special characters.";
-                }
-              },
-            },
+            validators: validateVariableName,
           },
           {
             type: "textField",
