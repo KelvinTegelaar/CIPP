@@ -13,7 +13,7 @@ import {
   Tooltip,
   Chip,
 } from "@mui/material";
-import { ExpandMore as ExpandMoreIcon, Delete, Add, Public, TableChart } from "@mui/icons-material";
+import { ExpandMore as ExpandMoreIcon, Delete, Add, Public } from "@mui/icons-material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useWatch } from "react-hook-form";
 import _ from "lodash";

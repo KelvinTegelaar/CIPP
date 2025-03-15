@@ -34,8 +34,15 @@ const Page = () => {
     }
 
     if (existingTemplate.isSuccess) {
-      formControl.reset(existingTemplate.data?.[0]);
+      //formControl.reset(existingTemplate.data?.[0]);
       const apiData = existingTemplate.data?.[0];
+
+      Object.keys(apiData.standards).forEach((key) => {
+        if (Array.isArray(apiData.standards[key])) {
+          apiData.standards[key] = apiData.standards[key].filter((value) => value !== null && value !== undefined);
+        }
+      });
+
       formControl.reset(apiData);
       if (router.query.clone) {
         formControl.setValue("templateName", `${apiData.templateName} (Clone)`);
@@ -105,7 +112,6 @@ const Page = () => {
     setSelectedStandards((prev) => {
       const existingInstances = Object.keys(prev).filter((name) => name.startsWith(standardName));
       const newIndex = existingInstances.length;
-
       return {
         ...prev,
         [`${standardName}[${newIndex}]`]: true,
