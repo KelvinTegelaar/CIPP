@@ -3,7 +3,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
-import { Typography } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
@@ -58,6 +58,9 @@ const Page = () => {
             </Link>{" "}
             for more information on how to configure this for your environment.
           </Typography>
+          <Alert severity="warning">
+            If you are self-hosted, you must deploy the additional function app(s) to your CIPP resource group and enable CI/CD or all background tasks will fail.
+          </Alert>
         </Grid>
         <Grid item xs={12} md={12}>
           <CippFormComponent
