@@ -528,8 +528,8 @@ const CippAppPermissionBuilder = ({
     const handleSavePermissions = () => {
       savePermissionChanges(
         servicePrincipal.appId,
-        appTable.map((perm) => ({ id: perm.id, value: perm.value })),
-        delegatedTable.map((perm) => ({ id: perm.id, value: perm.value }))
+        appTable?.map((perm) => ({ id: perm.id, value: perm.value })) ?? [],
+        delegatedTable?.map((perm) => ({ id: perm.id, value: perm.value })) ?? []
       );
     };
 
@@ -574,8 +574,8 @@ const CippAppPermissionBuilder = ({
                             label="Application Permissions"
                             name={`Permissions.${servicePrincipal.appId}.applicationPermissions`}
                             isFetching={spInfoFetching}
-                            options={spInfo?.Results?.appRoles
-                              ?.filter((role) => !appTable.find((perm) => perm.id === role.id))
+                            options={(spInfo?.Results?.appRoles || [])
+                              .filter((role) => !appTable?.find((perm) => perm.id === role.id))
                               .map((role) => ({
                                 label: role.value,
                                 value: role.id,
@@ -636,8 +636,8 @@ const CippAppPermissionBuilder = ({
                         label="Delegated Permissions"
                         name={`Permissions.${servicePrincipal.appId}.delegatedPermissions`}
                         isFetching={spInfoFetching}
-                        options={spInfo?.Results?.publishedPermissionScopes
-                          ?.filter((scope) => !delegatedTable.find((perm) => perm.id === scope.id))
+                        options={(spInfo?.Results?.publishedPermissionScopes || [])
+                          .filter((scope) => !delegatedTable?.find((perm) => perm.id === scope.id))
                           .map((scope) => ({
                             label: scope.value,
                             value: scope.id,
