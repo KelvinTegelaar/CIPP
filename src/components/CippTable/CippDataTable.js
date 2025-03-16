@@ -297,7 +297,10 @@ export const CippDataTable = (props) => {
   }, [table.getSelectedRowModel().rows]);
 
   useEffect(() => {
-    setConfiguredSimpleColumns(simpleColumns);
+    //check if the simplecolumns are an array,
+    if (Array.isArray(simpleColumns) && simpleColumns.length > 0) {
+      setConfiguredSimpleColumns(simpleColumns);
+    }
   }, [simpleColumns]);
 
   return (
