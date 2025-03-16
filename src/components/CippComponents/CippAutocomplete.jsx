@@ -196,6 +196,7 @@ export const CippAutoComplete = (props) => {
     return finalOptions;
   }, [api, usedOptions, options, removeOptions, sortOptions]);
 
+  // Dedicated effect for handling preselected value
   useEffect(() => {
     if (preselectedValue && !defaultValue && !value && memoizedOptions.length > 0) {
       const preselectedOption = memoizedOptions.find(

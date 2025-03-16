@@ -50,7 +50,7 @@ export const CippFormTenantSelector = ({
         value: tenant[valueField],
         label: `${tenant.displayName} (${tenant.defaultDomainName})`,
         type: "Tenant",
-        addedField: {
+        addedFields: {
           defaultDomainName: tenant.defaultDomainName,
           displayName: tenant.displayName,
           customerId: tenant.customerId,
