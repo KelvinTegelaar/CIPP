@@ -90,7 +90,10 @@ const Page = () => {
             name="OffloadFunctions"
             formControl={formControl}
             label="Enable Function Offloading"
-            disabled={execOffloadFunctions.isFetching || !execOffloadFunctions?.data?.CanEnable}
+            disabled={
+              execOffloadFunctions.isFetching ||
+              (!execOffloadFunctions?.data?.CanEnable && !execOffloadFunctions?.data?.OffloadFunctions)
+            }
           />
         </Grid>
       </Grid>
