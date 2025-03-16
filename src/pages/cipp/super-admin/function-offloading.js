@@ -93,7 +93,7 @@ const Page = () => {
             cardProps={{
               variant: "outlined",
             }}
-            title="Functions App Versions"
+            title="Registered Functions Apps"
             data={execOffloadFunctions.data?.Version}
             simpleColumns={["Name", "Version", "Default"]}
             refreshFunction={execOffloadFunctions.refetch}
