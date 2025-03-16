@@ -95,7 +95,7 @@ const Page = () => {
             }}
             title="Functions App Versions"
             data={execOffloadFunctions.data?.Version}
-            simpleColumns={["Name", "Version"]}
+            simpleColumns={["Name", "Version", "Default"]}
             refreshFunction={execOffloadFunctions.refetch}
             isFetching={execOffloadFunctions.isFetching}
             actions={[
@@ -107,6 +107,7 @@ const Page = () => {
                 customFunction: handleDeleteOffloadEntry,
                 confirmText:
                   "Are you sure you want to delete the offloaded function entry for [Name]? This does not delete the function app from Azure, this must be done first or it will register again.",
+                condition: (row) => row.Default !== true,
               },
             ]}
           />
