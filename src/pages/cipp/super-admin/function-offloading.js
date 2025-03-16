@@ -73,7 +73,6 @@ const Page = () => {
             simpleColumns={["Name", "Version"]}
             refreshFunction={execOffloadFunctions.refetch}
             isFetching={execOffloadFunctions.isFetching}
-            simple={true}
           />
         </Grid>
         {execOffloadFunctions.data?.Alerts?.length > 0 && (
