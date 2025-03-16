@@ -6,10 +6,11 @@ import { useForm } from "react-hook-form";
 import { Alert, Typography, Link } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiGetCall } from "../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
 import NextLink from "next/link";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Function Offloading";
@@ -25,6 +26,30 @@ const Page = () => {
     url: "/api/ExecOffloadFunctions?Action=ListCurrent",
     queryKey: "execOffloadFunctions",
   });
+
+  const deleteOffloadEntry = ApiPostCall({
+    urlfromdata: true,
+    relatedQueryKeys: ["execOffloadFunctions"],
+  });
+
+  const handleDeleteOffloadEntry = (row) => {
+    const entity = {
+      RowKey: row.Name,
+      PartitionKey: "Version",
+    };
+
+    deleteOffloadEntry.mutate({
+      url: "/api/ExecAzBobbyTables",
+      data: {
+        FunctionName: "Remove-AzDataTableEntity",
+        TableName: "Version",
+        Parameters: {
+          Entity: entity,
+          Force: true,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (execOffloadFunctions.isSuccess) {
@@ -73,6 +98,17 @@ const Page = () => {
             simpleColumns={["Name", "Version"]}
             refreshFunction={execOffloadFunctions.refetch}
             isFetching={execOffloadFunctions.isFetching}
+            actions={[
+              {
+                label: "Delete Offloading Entry",
+                icon: <TrashIcon />,
+                url: "/api/ExecAzBobbyTables",
+                type: "POST",
+                customFunction: handleDeleteOffloadEntry,
+                confirmText:
+                  "Are you sure you want to delete the offloaded function entry for [Name]? This does not delete the function app from Azure, this must be done first or it will register again.",
+              },
+            ]}
           />
         </Grid>
         {execOffloadFunctions.data?.Alerts?.length > 0 && (
@@ -92,7 +128,8 @@ const Page = () => {
             label="Enable Function Offloading"
             disabled={
               execOffloadFunctions.isFetching ||
-              (!execOffloadFunctions?.data?.CanEnable && !execOffloadFunctions?.data?.OffloadFunctions)
+              (!execOffloadFunctions?.data?.CanEnable &&
+                !execOffloadFunctions?.data?.OffloadFunctions)
             }
           />
         </Grid>
