@@ -167,18 +167,6 @@ export const CippAutoComplete = (props) => {
           };
         });
         setUsedOptions(convertedOptions);
-        if (preselectedValue && !defaultValue && !value && convertedOptions.length > 0) {
-          const preselectedOption = convertedOptions.find(
-            (option) => option.value === preselectedValue
-          );
-
-          if (preselectedOption) {
-            const newValue = multiple ? [preselectedOption] : preselectedOption;
-            if (onChange) {
-              onChange(newValue, newValue?.addedFields);
-            }
-          }
-        }
       }
     }
 
@@ -206,13 +194,38 @@ export const CippAutoComplete = (props) => {
       finalOptions.sort((a, b) => a.label?.localeCompare(b.label));
     }
     return finalOptions;
-  }, [api, usedOptions, options, removeOptions]);
+  }, [api, usedOptions, options, removeOptions, sortOptions]);
 
-  const rand = Math.random().toString(36).substring(5);
+  useEffect(() => {
+    if (preselectedValue && !defaultValue && !value && memoizedOptions.length > 0) {
+      const preselectedOption = memoizedOptions.find(
+        (option) => option.value === preselectedValue
+      );
+
+      if (preselectedOption) {
+        const newValue = multiple ? [preselectedOption] : preselectedOption;
+        if (onChange) {
+          onChange(newValue, newValue?.addedFields);
+        }
+      }
+    }
+  }, [preselectedValue, defaultValue, value, memoizedOptions, multiple, onChange]);
+
+  // Create a stable key that only changes when necessary inputs change
+  const stableKey = useMemo(() => {
+    // Only regenerate the key when these values change
+    const keyParts = [
+      JSON.stringify(defaultValue),
+      JSON.stringify(preselectedValue),
+      api?.url,
+      currentTenant
+    ];
+    return keyParts.join('-');
+  }, [defaultValue, preselectedValue, api?.url, currentTenant]);
 
   return (
     <Autocomplete
-      key={`${defaultValue}-${rand}`}
+      key={stableKey}
       disabled={disabled || actionGetRequest.isFetching || isFetching}
       popupIcon={
         actionGetRequest.isFetching || isFetching ? (

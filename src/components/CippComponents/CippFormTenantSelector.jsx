@@ -13,6 +13,7 @@ export const CippFormTenantSelector = ({
   valueField = "defaultDomainName",
   required = true,
   disableClearable = true,
+  preselectedEnabled = false,
   removeOptions = [],
   includeGroups = false, // New parameter
   ...other
@@ -73,7 +74,7 @@ export const CippFormTenantSelector = ({
       type={componentType}
       name={name}
       formControl={formControl}
-      preselectedValue={currentTenant ? currentTenant : null}
+      preselectedValue={preselectedEnabled ?? currentTenant ? currentTenant : null}
       placeholder="Select a tenant"
       creatable={false}
       multiple={type === "single" ? false : true}
