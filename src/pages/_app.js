@@ -140,7 +140,9 @@ const App = (props) => {
                       </ThemeProvider>
                       {settings.isInitialized && settings?.showDevtools === true ? (
                         <React.Suspense fallback={null}>
-                          <ReactQueryDevtoolsProduction />
+                          <ReactQueryDevtoolsProduction
+                            buttonPosition="top-right"
+                          />
                         </React.Suspense>
                       ) : null}
                     </>
