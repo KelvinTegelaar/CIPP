@@ -6,7 +6,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   Tooltip,
-  Grid,
   Alert,
   Skeleton,
   IconButton,
@@ -17,7 +16,7 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
-
+import { Grid } from "@mui/system";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { PlusIcon, ShieldCheckIcon, WrenchIcon } from "@heroicons/react/24/outline";
@@ -29,6 +28,7 @@ import {
   Error,
   ExpandMore,
   Save,
+  Sync,
   TaskAlt,
   Undo,
   Upload,
@@ -76,6 +76,7 @@ const CippAppPermissionBuilder = ({
     isSuccess: spSuccess,
     isFetching: spFetching,
     isLoading: spLoading,
+    refetch: refetchServicePrincipals,
   } = ApiGetCall({
     url: "/api/ExecServicePrincipals",
     queryKey: "execServicePrincipals",
@@ -366,6 +367,7 @@ const CippAppPermissionBuilder = ({
               },
             },
           });
+          setExpanded("00000003-0000-0000-c000-000000000000"); // Automatically expand Microsoft Graph
         }
       } else if (!_.isEqual(currentPermissions, initialPermissions)) {
         setSelectedApp([]); // Avoid redundant updates
@@ -384,6 +386,11 @@ const CippAppPermissionBuilder = ({
         setNewPermissions(currentPermissions);
         setInitialPermissions(currentPermissions);
         setPermissionsImported(true);
+
+        // Automatically expand if only one service principal exists
+        if (newApps.length === 1) {
+          setExpanded(newApps[0].appId);
+        }
       }
     }
   }, [
@@ -560,7 +567,7 @@ const CippAppPermissionBuilder = ({
                   <>
                     <Stack spacing={2}>
                       <Grid container sx={{ display: "flex", alignItems: "center" }} spacing={2}>
-                        <Grid item xl={8} xs={12}>
+                        <Grid item size={{ xl: 8, xs: 12 }}>
                           <CippFormComponent
                             type="autoComplete"
                             label="Application Permissions"
@@ -622,7 +629,7 @@ const CippAppPermissionBuilder = ({
                     </Alert>
                   )}
                   <Grid container sx={{ display: "flex", alignItems: "center" }} spacing={2}>
-                    <Grid item xl={8} xs={12}>
+                    <Grid item size={{ xl: 8, xs: 12 }}>
                       <CippFormComponent
                         type="autoComplete"
                         label="Delegated Permissions"
@@ -694,30 +701,40 @@ const CippAppPermissionBuilder = ({
       {spSuccess && (
         <>
           <Grid container>
-            <Grid item xl={12} md={12} sx={{ mb: 3 }}>
+            <Grid size={{ xl: 12, md: 12 }} sx={{ mb: 3 }}>
               <Grid
                 container
                 spacing={2}
                 sx={{ display: "flex", alignItems: "center" }}
                 justifyContent="space-between"
               >
-                <Grid item xs={12} xl={8}>
-                  {servicePrincipals?.Metadata?.Success && (
-                    <CippFormComponent
-                      type="autoComplete"
-                      fullWidth
-                      label="Select a Service Principal or enter an AppId if not listed"
-                      name="servicePrincipal"
-                      createOption={true}
-                      onCreateOption={onCreateServicePrincipal}
-                      isFetching={spFetching}
-                      options={servicePrincipals?.Results.map((sp) => {
-                        return { label: `${sp.displayName} (${sp.appId})`, value: sp.appId };
-                      })}
-                      formControl={formControl}
-                      multiple={false}
-                    />
-                  )}
+                <Grid size={{ xl: 8, xs: 12 }}>
+                  <Stack direction="row" spacing={1}>
+                    {servicePrincipals?.Metadata?.Success && (
+                      <Box width="100%">
+                        <CippFormComponent
+                          type="autoComplete"
+                          fullWidth
+                          label="Select a Service Principal or enter an AppId if not listed"
+                          name="servicePrincipal"
+                          createOption={true}
+                          onCreateOption={onCreateServicePrincipal}
+                          isFetching={spFetching}
+                          options={servicePrincipals?.Results.map((sp) => {
+                            return { label: `${sp.displayName} (${sp.appId})`, value: sp.appId };
+                          })}
+                          formControl={formControl}
+                          multiple={false}
+                        />
+                      </Box>
+                    )}
+                    <IconButton
+                      onClick={() => refetchServicePrincipals()}
+                      disabled={servicePrincipals.isFetching}
+                    >
+                      <Sync />
+                    </IconButton>
+                  </Stack>
                 </Grid>
                 <Grid item>
                   <Stack direction="row" spacing={1}>
@@ -787,7 +804,7 @@ const CippAppPermissionBuilder = ({
               </Grid>
               <Grid
                 item
-                xs={12}
+                size={12}
                 sx={{
                   mt: createServicePrincipal.isSuccess || createServicePrincipal.isPending ? 3 : 0,
                 }}
@@ -802,7 +819,7 @@ const CippAppPermissionBuilder = ({
                 }}
               >
                 <Grid container>
-                  <Grid item xl={12}>
+                  <Grid item size={12}>
                     <Typography variant="h4" sx={{ mb: 2 }}>
                       Import Permission Manifest
                     </Typography>
@@ -814,7 +831,7 @@ const CippAppPermissionBuilder = ({
                   </Grid>
                 </Grid>
                 <Grid container>
-                  <Grid item xl={12}>
+                  <Grid item size={12}>
                     <FileDropzone
                       onDrop={onManifestImport}
                       accept={{
@@ -834,12 +851,12 @@ const CippAppPermissionBuilder = ({
                 {importedManifest && (
                   <>
                     <Grid container sx={{ mt: 2 }} spacing={2}>
-                      <Grid item xl={12}>
+                      <Grid item size={12}>
                         <Alert color="success" icon={<TaskAlt />}>
                           Manifest is valid. Click Import to apply the permissions.
                         </Alert>
                       </Grid>
-                      <Grid item xl={12}>
+                      <Grid item size={12}>
                         <Button
                           variant="contained"
                           onClick={() => importManifest()}
@@ -854,7 +871,7 @@ const CippAppPermissionBuilder = ({
                       </Grid>
                     </Grid>
                     <Grid container className="mt-3">
-                      <Grid item xl={12}>
+                      <Grid item size={12}>
                         <h4>Preview</h4>
                         <CippCodeBlock
                           code={JSON.stringify(importedManifest, null, 2)}
@@ -868,7 +885,7 @@ const CippAppPermissionBuilder = ({
               </CippOffCanvas>
               {calloutMessage && (
                 <Grid container sx={{ my: 3 }}>
-                  <Grid item xs={12} xl={8}>
+                  <Grid size={{ xl: 8, xs: 12 }}>
                     <Alert variant="outlined" color="info" onClose={() => setCalloutMessage(null)}>
                       {calloutMessage}
                     </Alert>
@@ -880,7 +897,7 @@ const CippAppPermissionBuilder = ({
                 newPermissions?.Type === "Table" &&
                 Object.keys(newPermissions?.MissingPermissions).length > 0 && (
                   <Grid container sx={{ width: "100%", mt: 3 }}>
-                    <Grid item xs={12} xl={8}>
+                    <Grid size={{ xl: 8, xs: 12 }}>
                       <Alert
                         color="warning"
                         icon={<WarningAmberOutlined />}
@@ -1041,13 +1058,13 @@ const CippAppPermissionBuilder = ({
                   ))}
               </Box>
             </Grid>
-            <Grid item xl={12} xs={12}>
+            <Grid size={{ xl: 12, xs: 12 }}>
               <CippApiResults apiObject={updatePermissions} />
             </Grid>
           </Grid>
 
           <Grid container sx={{ display: "flex", alignItems: "center" }}>
-            <Grid item xl={1} xs={12}>
+            <Grid item size={{ xl: 1, xs: 12 }}>
               <Button
                 variant="contained"
                 startIcon={
