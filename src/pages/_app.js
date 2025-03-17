@@ -134,15 +134,17 @@ const App = (props) => {
                           <CippSpeedDial
                             actions={speedDialActions}
                             icon={<HelpIcon />}
-                            position={{ bottom: 16, right: 16 }}
+                            position={{
+                              bottom: 12,
+                              right:
+                                settings.isInitialized && settings?.showDevtools === true ? 60 : 12,
+                            }}
                           />
                         </RTL>
                       </ThemeProvider>
                       {settings.isInitialized && settings?.showDevtools === true ? (
                         <React.Suspense fallback={null}>
-                          <ReactQueryDevtoolsProduction
-                            buttonPosition="top-right"
-                          />
+                          <ReactQueryDevtoolsProduction />
                         </React.Suspense>
                       ) : null}
                     </>
