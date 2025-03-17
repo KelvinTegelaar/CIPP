@@ -351,35 +351,34 @@ const CippAppPermissionBuilder = ({
         initialAppIds = [];
       }
 
-      if (selectedApp.length == 0 && initialAppIds.length == 0) {
+      if (selectedApp.length === 0 && initialAppIds.length === 0) {
         var microsoftGraph = servicePrincipals?.Results?.find(
           (sp) => sp?.appId === "00000003-0000-0000-c000-000000000000"
         );
-        setSelectedApp([microsoftGraph]);
-        setNewPermissions({
-          Permissions: {
-            "00000003-0000-0000-c000-000000000000": {
-              applicationPermissions: [],
-              delegatedPermissions: [],
+        if (microsoftGraph) {
+          setSelectedApp([microsoftGraph]); // Ensure this does not trigger a loop
+          setNewPermissions({
+            Permissions: {
+              "00000003-0000-0000-c000-000000000000": {
+                applicationPermissions: [],
+                delegatedPermissions: [],
+              },
             },
-          },
-        });
-      } else if (currentPermissions !== initialPermissions) {
-        setSelectedApp([]);
+          });
+        }
+      } else if (!_.isEqual(currentPermissions, initialPermissions)) {
+        setSelectedApp([]); // Avoid redundant updates
         setNewPermissions(currentPermissions);
         setInitialPermissions(currentPermissions);
         setPermissionsImported(false);
-      } else if (initialAppIds.length > 0 && permissionsImported == false) {
+      } else if (initialAppIds.length > 0 && !permissionsImported) {
         const newApps = servicePrincipals?.Results?.filter((sp) =>
           initialAppIds.includes(sp.appId)
         )?.sort((a, b) => a.displayName.localeCompare(b.displayName));
 
-        setSelectedApp((prevApps) => {
-          if (JSON.stringify(prevApps) !== JSON.stringify(newApps)) {
-            return newApps;
-          }
-          return prevApps;
-        });
+        if (!_.isEqual(selectedApp, newApps)) {
+          setSelectedApp(newApps); // Prevent unnecessary updates
+        }
 
         setNewPermissions(currentPermissions);
         setInitialPermissions(currentPermissions);
@@ -431,6 +430,8 @@ const CippAppPermissionBuilder = ({
       waiting: true,
     });
 
+    console.log(spInfo);
+
     const currentAppPermission = useWatch({
       control: formControl.control,
       name: `Permissions.${servicePrincipal.appId}.applicationPermissions`,
@@ -442,7 +443,7 @@ const CippAppPermissionBuilder = ({
 
     useEffect(() => {
       if (spInfoSuccess && !spInitialized) {
-        if (appTable.length === 0) {
+        if (appTable !== undefined && appTable?.length === 0) {
           setAppTable(
             spPermissions?.applicationPermissions
               ?.sort((a, b) => a.value.localeCompare(b.value))
@@ -454,7 +455,7 @@ const CippAppPermissionBuilder = ({
               }))
           );
         }
-        if (delegatedTable.length === 0) {
+        if (delegatedTable !== undefined && delegatedTable.length === 0) {
           setDelegatedTable(
             spPermissions?.delegatedPermissions
               ?.sort((a, b) => a.value.localeCompare(b.value))
@@ -469,10 +470,10 @@ const CippAppPermissionBuilder = ({
         }
         setSpInitialized(true);
       }
-    }, [spInitialized, spInfoSuccess, appTable?.length, delegatedTable?.length]);
+    }, [spInitialized, spInfoSuccess, appTable, delegatedTable]);
 
     useEffect(() => {
-      if (spInfoSuccess) {
+      if (spInfoSuccess && appTable !== undefined && delegatedTable !== undefined) {
         var appRoles = appTable?.map((perm) => perm.id).sort();
         var delegatedPermissions = delegatedTable?.map((perm) => perm.id).sort();
         var originalAppRoles = spPermissions?.applicationPermissions.map((perm) => perm.id).sort();
@@ -546,6 +547,7 @@ const CippAppPermissionBuilder = ({
 
     return (
       <>
+        {spInfoFetching && <Skeleton variant="rectangle" height={250} />}
         {servicePrincipal && spInfoSuccess && (
           <>
             <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
@@ -603,7 +605,7 @@ const CippAppPermissionBuilder = ({
                       <CippDataTable
                         title={`${servicePrincipal.displayName} Application Permissions`}
                         noCard={true}
-                        data={appTable}
+                        data={appTable ?? []}
                         simpleColumns={["value", "description"]}
                         actions={[
                           {
@@ -667,7 +669,7 @@ const CippAppPermissionBuilder = ({
                     noCard={true}
                     sx={{ width: "100%" }}
                     title={`${servicePrincipal.displayName} Delegated Permissions`}
-                    data={delegatedTable}
+                    data={delegatedTable ?? []}
                     simpleColumns={["value", "description"]}
                     actions={[
                       {
@@ -698,7 +700,7 @@ const CippAppPermissionBuilder = ({
 
   return (
     <>
-      {spLoading && <Skeleton height={300} />}
+      {spLoading && <Skeleton variant="rectangle" height={300} />}
       {spSuccess && (
         <>
           <Grid container>
@@ -1025,6 +1027,9 @@ const CippAppPermissionBuilder = ({
                   ))}
               </Box>
             </Grid>
+            <Grid item xl={12} xs={12}>
+              <CippApiResults apiObject={updatePermissions} />
+            </Grid>
           </Grid>
 
           <Grid container sx={{ display: "flex", alignItems: "center" }}>
@@ -1045,9 +1050,6 @@ const CippAppPermissionBuilder = ({
               >
                 Save
               </Button>
-            </Grid>
-            <Grid item xl={11} xs={12}>
-              <CippApiResults apiObject={updatePermissions} />
             </Grid>
           </Grid>
         </>
