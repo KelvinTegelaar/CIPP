@@ -144,7 +144,7 @@ export const CippPermissionReport = (props) => {
     reader.onload = (e) => {
       const report = JSON.parse(e.target.result);
 
-      if (!report.Permissions || !report.GDAP || !report.Tenants) {
+      if (!report?.Permissions && !report?.GDAP && !report?.Tenants) {
         setImportError("Invalid report format");
         return;
       }
@@ -161,7 +161,7 @@ export const CippPermissionReport = (props) => {
       const text = await navigator.clipboard.readText();
       const report = JSON.parse(text);
 
-      if (!report.Permissions || !report.GDAP || !report.Tenants) {
+      if (!report?.Permissions && !report?.GDAP && !report?.Tenants) {
         setImportError("Invalid report format");
         return;
       }
