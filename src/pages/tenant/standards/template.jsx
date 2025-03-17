@@ -39,7 +39,9 @@ const Page = () => {
 
       Object.keys(apiData.standards).forEach((key) => {
         if (Array.isArray(apiData.standards[key])) {
-          apiData.standards[key] = apiData.standards[key].filter((value) => value !== null && value !== undefined);
+          apiData.standards[key] = apiData.standards[key].filter(
+            (value) => value !== null && value !== undefined
+          );
         }
       });
 
@@ -213,17 +215,20 @@ const Page = () => {
             </Grid>
             <Grid item xs={12} lg={8}>
               <Stack spacing={3}>
-                {existingTemplate.isLoading && <Skeleton />}
                 {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
-                <CippStandardAccordion
-                  standards={standards}
-                  selectedStandards={selectedStandards} // Render only the relevant standards
-                  expanded={expanded}
-                  handleAccordionToggle={handleAccordionToggle}
-                  handleRemoveStandard={handleRemoveStandard}
-                  handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
-                  formControl={formControl}
-                />
+                {existingTemplate.isLoading ? (
+                  <Skeleton variant="rectangular" height="700px" />
+                ) : (
+                  <CippStandardAccordion
+                    standards={standards}
+                    selectedStandards={selectedStandards} // Render only the relevant standards
+                    expanded={expanded}
+                    handleAccordionToggle={handleAccordionToggle}
+                    handleRemoveStandard={handleRemoveStandard}
+                    handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
+                    formControl={formControl}
+                  />
+                )}
               </Stack>
             </Grid>
           </Grid>
