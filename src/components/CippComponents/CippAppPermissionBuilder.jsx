@@ -23,6 +23,7 @@ import { CippDataTable } from "../CippTable/CippDataTable";
 import { PlusIcon, ShieldCheckIcon, WrenchIcon } from "@heroicons/react/24/outline";
 import CippFormComponent from "./CippFormComponent";
 import {
+  Apps,
   Delete,
   Download,
   Error,
@@ -399,18 +400,7 @@ const CippAppPermissionBuilder = ({
     var delegatedPermissions = newPermissions?.Permissions[appId]?.delegatedPermissions;
 
     var counts = `${appRoles?.length ?? 0}/${delegatedPermissions?.length ?? 0}`;
-    return (
-      <Stack
-        direction="row"
-        sx={{ alignItems: "center", justifyContent: "flex-start" }}
-        spacing={2}
-      >
-        <SvgIcon fontSize="small" sx={{ mr: 1 }}>
-          <ShieldCheckIcon />
-        </SvgIcon>
-        {counts}
-      </Stack>
-    );
+    return counts;
   };
 
   const ApiPermissionRow = ({ servicePrincipal = null, spPermissions, formControl }) => {
@@ -980,13 +970,37 @@ const CippAppPermissionBuilder = ({
                           sx={{ width: "100%", mr: 1 }}
                         >
                           <Typography variant="h6">{sp.displayName}</Typography>
-                          <Stack direction="row" spacing={2}>
+                          <Stack direction="row" spacing={2} alignItems="center">
+                            <Tooltip title="Copy Application ID to clipboard">
+                              <Chip
+                                label={sp.appId}
+                                variant="outlined"
+                                size="small"
+                                color="info"
+                                sx={{ mr: "0.25rem", fontFamily: "monospace" }}
+                                icon={
+                                  <SvgIcon>
+                                    <Apps />
+                                  </SvgIcon>
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigator.clipboard.writeText(sp.appId);
+                                }}
+                              />
+                            </Tooltip>
                             <Tooltip title="Application/Delegated">
                               <Chip
                                 color="info"
                                 variant="outlined"
+                                size="small"
                                 label={getPermissionCounts(sp.appId)}
                                 sx={{ width: "100px" }}
+                                icon={
+                                  <SvgIcon fontSize="small">
+                                    <ShieldCheckIcon />
+                                  </SvgIcon>
+                                }
                               />
                             </Tooltip>
                             <Tooltip
