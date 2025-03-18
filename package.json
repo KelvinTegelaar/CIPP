@@ -58,7 +58,7 @@
     "gray-matter": "4.0.3",
     "i18next": "22.4.9",
     "javascript-time-ago": "^2.5.11",
-    "jspdf": "^2.5.1",
+    "jspdf": "^3.0.1",
     "jspdf-autotable": "^3.8.2",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
