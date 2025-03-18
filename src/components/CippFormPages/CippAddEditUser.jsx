@@ -256,7 +256,7 @@ const CippAddEditUser = (props) => {
           type="textField"
           fullWidth
           label="Business #"
-          name="businessPhones"
+          name="businessPhones[0]"
           formControl={formControl}
         />
       </Grid>
@@ -269,17 +269,19 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      {userSettingsDefaults?.userAttributes?.filter((attribute) => attribute.value !== "sponsor").map((attribute, idx) => (
-        <Grid item xs={6} key={idx}>
-          <CippFormComponent
-            type="textField"
-            fullWidth
-            label={attribute.label}
-            name={`defaultAttributes.${attribute.label}.Value`}
-            formControl={formControl}
-          />
-        </Grid>
-      ))}
+      {userSettingsDefaults?.userAttributes
+        ?.filter((attribute) => attribute.value !== "sponsor")
+        .map((attribute, idx) => (
+          <Grid item xs={6} key={idx}>
+            <CippFormComponent
+              type="textField"
+              fullWidth
+              label={attribute.label}
+              name={`defaultAttributes.${attribute.label}.Value`}
+              formControl={formControl}
+            />
+          </Grid>
+        ))}
 
       {/* Set Manager */}
       <Grid item xs={12}>
