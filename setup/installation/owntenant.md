@@ -10,6 +10,15 @@ If you want to manage your own tenant or if you are not a Microsoft Partner but 
 To manage the tenant mode, a user with the CIPP "admin" and "superadmin" roles will need to access the [Tenant Mode](../../user-documentation/cipp/advanced/super-admin/tenant-mode.md) page of the Super Admin settings.
 {% endhint %}
 
+### There are 3 different modes in CIPP to choose from:
+
+* **Multi Tenant - GDAP mode**
+  * This is the default mode in CIPP, it does not allow access to the partner tenant.
+* **Multi Tenant - Add Partner Tenant**
+  * This mode allows access to the partner tenant and customers via GDAP. See the Limitations below for more details.
+* **Single Tenant - Own Tenant Mode**
+  * This mode is for if you would like to manage your own tenant and/or are not a Microsoft Partner. See the limitations below for more details.
+
 ## Limitations Single Tenant Mode
 
 When using Single Tenant Mode CIPP runs in a somewhat more limited state - You are not able to add any other tenant to CIPP and it only works for the configured tenant. GDAP permissions will not apply, and you must directly assigned roles such as Global Admin to the service account.
