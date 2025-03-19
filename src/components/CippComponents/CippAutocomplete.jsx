@@ -166,7 +166,12 @@ export const CippAutoComplete = (props) => {
             addedFields,
           };
         });
-        setUsedOptions(convertedOptions);
+
+        if (api?.dataFilter) {
+          setUsedOptions(api.dataFilter(convertedOptions));
+        } else {
+          setUsedOptions(convertedOptions);
+        }
       }
     }
 
@@ -199,9 +204,7 @@ export const CippAutoComplete = (props) => {
   // Dedicated effect for handling preselected value
   useEffect(() => {
     if (preselectedValue && !defaultValue && !value && memoizedOptions.length > 0) {
-      const preselectedOption = memoizedOptions.find(
-        (option) => option.value === preselectedValue
-      );
+      const preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue);
 
       if (preselectedOption) {
         const newValue = multiple ? [preselectedOption] : preselectedOption;
@@ -219,9 +222,9 @@ export const CippAutoComplete = (props) => {
       JSON.stringify(defaultValue),
       JSON.stringify(preselectedValue),
       api?.url,
-      currentTenant
+      currentTenant,
     ];
-    return keyParts.join('-');
+    return keyParts.join("-");
   }, [defaultValue, preselectedValue, api?.url, currentTenant]);
 
   return (
