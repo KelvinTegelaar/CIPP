@@ -31,30 +31,22 @@ const Page = () => {
   const { templateId } = router.query;
   const [comparisonData, setComparisonData] = useState(null);
   const settings = useSettings();
-  const currentTenant = settings.currentTenant;
+  const currentTenant = settings?.currentTenant;
   const formControl = useForm({
     mode: "onBlur",
     defaultValues: {
-      comparisonMode: "standard" // Set default comparison mode to "Compare Tenant to standard"
-    }
+      comparisonMode: "standard",
+    },
   });
   const runReportDialog = useDialog();
 
-  // Get template details
   const templateDetails = ApiGetCall({
     url: `/api/listStandardTemplates`,
-    data: { id: templateId },
-    queryKey: `listStandardTemplates-${templateId}`,
-  });
-
-  // Get tenants for dropdown
-  const tenants = ApiGetCall({
-    url: "/api/ListTenants",
-    queryKey: "ListTenants",
+    queryKey: `listStandardTemplates-reports`,
   });
 
   // Run the report once
-  const runReport = ApiPostCall({ relatedQueryKeys: ["ListStandardCompare"] });
+  const runReport = ApiPostCall({ relatedQueryKeys: ["ListStandardsCompare"] });
 
   // Dialog configuration for Run Report Once
   const runReportApi = {
@@ -66,166 +58,82 @@ const Page = () => {
     confirmText: "Are you sure you want to run this standard report?",
   };
 
-  // Mock data for ListStandardCompare API
-  const mockComparisonData = [
-    {
-      standardName: "Password Complexity",
-      currentTenantValue: "Requires 8+ characters, uppercase, lowercase, numbers, and symbols",
-      standardValue: "Requires 12+ characters, uppercase, lowercase, numbers, and symbols",
-      secondTenantValue: "Requires 10+ characters, uppercase, lowercase, and numbers",
-      complianceStatus: "Non-Compliant",
-      secondTenantComplianceStatus: "Non-Compliant",
-      complianceDetails:
-        "Current tenant password policy is less strict than the standard requirement",
-      standardId: "standards.PasswordComplexity",
-    },
-    {
-      standardName: "MFA Enforcement",
-      currentTenantValue: "Enabled for all users",
-      standardValue: "Enabled for all users",
-      secondTenantValue: "Enabled for administrators only",
-      complianceStatus: "Compliant",
-      secondTenantComplianceStatus: "Non-Compliant",
-      complianceDetails: "MFA is properly configured according to standards",
-      standardId: "standards.PWdisplayAppInformationRequiredState",
-    },
-    {
-      standardName: "Conditional Access Policies",
-      currentTenantValue:
-        "4 policies configured (Block legacy authentication, Require MFA for admins, Require approved apps, Block high-risk sign-ins)",
-      standardValue:
-        "5 policies required (Block legacy authentication, Require MFA for all users, Require approved apps, Block high-risk sign-ins, Require compliant devices)",
-      secondTenantValue:
-        "3 policies configured (Block legacy authentication, Require MFA for admins, Require approved apps)",
-      complianceStatus: "Non-Compliant",
-      secondTenantComplianceStatus: "Non-Compliant",
-      complianceDetails: "Missing required policy: Require compliant devices",
-      standardId: "standards.OauthConsent",
-    },
-    {
-      standardName: "External Sharing",
-      currentTenantValue: "Restricted to specific domains",
-      standardValue: "Restricted to specific domains",
-      secondTenantValue: "Allowed with anyone",
-      complianceStatus: "Compliant",
-      secondTenantComplianceStatus: "Non-Compliant",
-      complianceDetails: null,
-      standardId: "standards.sharingCapability",
-    },
-    {
-      standardName: "Audit Logging",
-      currentTenantValue: "Enabled",
-      standardValue: "Enabled",
-      secondTenantValue: "Enabled",
-      complianceStatus: "Compliant",
-      secondTenantComplianceStatus: "Compliant",
-      complianceDetails: null,
-      standardId: "standards.AuditLog",
-    },
-    {
-      standardName: "Retention Policies",
-      currentTenantValue: "Default policy: 1 year retention",
-      standardValue: "Default policy: 3 year retention",
-      secondTenantValue: "No retention policies configured",
-      complianceStatus: "Non-Compliant",
-      secondTenantComplianceStatus: "Non-Compliant",
-      complianceDetails: "Retention period is shorter than required by standard",
-      standardId: "standards.RetentionPolicyTag",
-    },
-    {
-      standardName: "Device Management",
-      currentTenantValue: "Intune policies configured for Windows and iOS devices",
-      standardValue: "Intune policies required for all device types (Windows, iOS, Android, macOS)",
-      secondTenantValue: "Intune policies configured for Windows devices only",
-      complianceStatus: "Non-Compliant",
-      secondTenantComplianceStatus: "Non-Compliant",
-      complianceDetails:
-        "Missing required device management policies for Android and macOS devices",
-      standardId: "standards.intuneDeviceRetirementDays",
-    },
-    {
-      standardName: "Admin Account Protection",
-      currentTenantValue: "Privileged Identity Management enabled, Just-in-time access configured",
-      standardValue: "Privileged Identity Management enabled, Just-in-time access configured",
-      secondTenantValue: "No PIM configuration",
-      complianceStatus: "Compliant",
-      secondTenantComplianceStatus: "Non-Compliant",
-      complianceDetails: "Admin accounts are properly protected with PIM and JIT access",
-      standardId: "standards.DisableTenantCreation",
-    },
-  ];
-
   // Get comparison data
   const comparisonApi = ApiGetCall({
-    url: "/api/ListStandardCompare",
+    url: "/api/ListStandardsCompare",
     data: {
       TemplateId: templateId,
       CompareTenantId: formControl.watch("compareTenantId"),
       CompareToStandard: true, // Always compare to standard, even in tenant comparison mode
     },
-    queryKey: `ListStandardCompare-${templateId}-${
+    queryKey: `ListStandardsCompare-${templateId}-${
       formControl.watch("compareTenantId") || "standard"
     }-${currentTenant}`,
+    enabled: !!templateId, // Only run the query if templateId is available
   });
 
   useEffect(() => {
-    // Use mock data for now, replace with API data when available
-    // Enhance mock data with information from standards.json
-    const enhancedData = mockComparisonData.map((item) => {
-      // Find the standard in standards.json
-      const standardInfo = standards.find((s) => s.name === item.standardId);
+    if (templateId && templateDetails.isSuccess && templateDetails.data) {
+      const selectedTemplate = templateDetails.data.find(
+        (template) => template.GUID === templateId
+      );
 
-      if (standardInfo) {
-        return {
-          ...item,
-          standardName: standardInfo.label || item.standardName,
-          standardDescription: standardInfo.helpText || "",
-          standardImpact: standardInfo.impact || "Medium Impact",
-          standardImpactColour: standardInfo.impactColour || "warning",
-          // Use only information from standards.json for descriptive content
-          complianceDetails:
-            standardInfo.docsDescription || standardInfo.helpText || item.complianceDetails,
-        };
+      if (selectedTemplate && comparisonApi.isSuccess && comparisonApi.data) {
+        const tenantData = comparisonApi.data;
+        
+        // Find the current tenant's data by matching tenantFilter with currentTenant
+        const currentTenantObj = tenantData.find(t => t.tenantFilter === currentTenant);
+        const currentTenantData = currentTenantObj ? currentTenantObj.standardsResults || [] : [];
+        
+        const allStandards = [];
+        if (selectedTemplate.standards) {
+          Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
+            const standardId = `standards.${standardKey}`;
+            const standardInfo = standards.find((s) => s.name === standardId);
+            const standardSettings = standardConfig.standards?.[standardKey] || {};
+
+            // Find the tenant's value for this standard
+            const currentTenantStandard = currentTenantData.find(
+              (s) => s.standardId === standardId
+            );
+
+            // Determine compliance status
+            const isCompliant =
+              currentTenantStandard &&
+              JSON.stringify(currentTenantStandard.value) === JSON.stringify(standardSettings);
+
+            allStandards.push({
+              standardId,
+              standardName: standardInfo?.label || standardKey,
+              currentTenantValue: currentTenantStandard?.value,
+              standardValue: standardSettings,
+              complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+              complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
+              standardDescription: standardInfo?.helpText || "",
+              standardImpact: standardInfo?.impact || "Medium Impact",
+              standardImpactColour: standardInfo?.impactColour || "warning",
+              templateName: selectedTemplate.templateName || "Standard Template",
+              templateActions: standardConfig.action || [],
+            });
+          });
+        }
+
+        setComparisonData(allStandards);
+      } else {
+        setComparisonData([]);
       }
-
-      return item;
-    });
-
-    setComparisonData(enhancedData);
-
-    // Uncomment this when the API is ready
-    // if (comparisonApi.isSuccess) {
-    //   const enhancedApiData = comparisonApi.data.map(item => {
-    //     const standardInfo = standards.find(s => s.name === item.standardId);
-    //     if (standardInfo) {
-    //       return {
-    //         ...item,
-    //         standardName: standardInfo.label || item.standardName,
-    //         standardDescription: standardInfo.helpText || "",
-    //         standardImpact: standardInfo.impact || "Medium Impact",
-    //         standardImpactColour: standardInfo.impactColour || "warning",
-    //         complianceDetails: standardInfo.docsDescription || standardInfo.helpText || item.complianceDetails,
-    //       };
-    //     }
-    //     return item;
-    //   });
-    //   setComparisonData(enhancedApiData);
-    // }
-  }, [comparisonApi.isSuccess, comparisonApi.data]);
-
-  // Prepare tenant options for dropdown
-  const tenantOptions = tenants.isSuccess
-    ? tenants.data?.map((tenant) => ({
-        label: tenant.displayName,
-        value: tenant.defaultDomainName,
-      }))
-    : [];
-
-  // Prepare comparison mode options
-  const comparisonModeOptions = [
-    { label: "Compare Tenant to Standard", value: "standard" },
-    { label: "Compare Two Tenants to Standard", value: "tenant" },
-  ];
+    } else if (comparisonApi.isError) {
+      setComparisonData([]);
+    }
+  }, [
+    templateId,
+    templateDetails.isSuccess,
+    templateDetails.data,
+    comparisonApi.isSuccess,
+    comparisonApi.data,
+    comparisonApi.isError,
+  ]);
+  const comparisonModeOptions = [{ label: "Compare Tenant to Standard", value: "standard" }];
 
   return (
     <Box sx={{ flexGrow: 1, py: 4 }}>
@@ -245,16 +153,11 @@ const Page = () => {
         </Stack>
         <Stack
           direction="row"
-          justifyContent="space-between"
+          justifyContent="flex-end"
           alignItems="center"
           spacing={4}
           sx={{ mb: 3 }}
         >
-          <Typography variant="h4">
-            {`Standard Comparison${
-              templateDetails.isSuccess ? ` - ${templateDetails.data[0]?.templateName}` : ""
-            }`}
-          </Typography>
           <Button
             variant="contained"
             color="primary"
@@ -264,65 +167,6 @@ const Page = () => {
             Run Report Once
           </Button>
         </Stack>
-
-        <Card sx={{ mb: 2, borderRadius: 2, boxShadow: 3 }}>
-          <CardContent sx={{ p: 3 }}>
-            <Grid container spacing={3} alignItems="center">
-              <Grid item size={6}>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  Comparison Settings
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Select how you want to compare the standards
-                </Typography>
-              </Grid>
-              <Grid item size={3}>
-                <Box
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    bgcolor: "background.paper",
-                    border: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <CippFormComponent
-                    type="radio"
-                    name="comparisonMode"
-                    label="Comparison Mode"
-                    formControl={formControl}
-                    options={comparisonModeOptions}
-                    defaultValue="standard"
-                  />
-                </Box>
-              </Grid>
-              {formControl.watch("comparisonMode") === "tenant" && (
-                <Grid item size={3}>
-                  <Box
-                    sx={{
-                      p: 2,
-                      borderRadius: 2,
-                      bgcolor: "background.paper",
-                      border: "1px solid",
-                      borderColor: "divider",
-                    }}
-                  >
-                    <CippFormComponent
-                      type="select"
-                      name="compareTenantId"
-                      label="Second Tenant"
-                      formControl={formControl}
-                      options={tenantOptions}
-                      isFetching={tenants.isLoading}
-                    />
-                  </Box>
-                </Grid>
-              )}
-            </Grid>
-          </CardContent>
-        </Card>
-
-        <CippApiResults apiObject={runReport} />
 
         {comparisonApi.isLoading && (
           <>
@@ -401,46 +245,60 @@ const Page = () => {
           Comparison Results
         </Typography>
 
+        {comparisonApi.isError && (
+          <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+            <Alert severity="error" sx={{ mb: 2 }}>
+              Error fetching comparison data
+            </Alert>
+            <Typography variant="body2">
+              There was an error retrieving the comparison data. Please try running the report again
+              by clicking the "Run Report Once" button above.
+            </Typography>
+            {comparisonApi.error && (
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: "background.default",
+                  borderRadius: 1,
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <Typography variant="caption" component="pre" sx={{ whiteSpace: "pre-wrap" }}>
+                  {comparisonApi.error.message || JSON.stringify(comparisonApi.error, null, 2)}
+                </Typography>
+              </Box>
+            )}
+          </Card>
+        )}
+
+        {comparisonApi.isSuccess && (!comparisonApi.data || comparisonApi.data.length === 0) && (
+          <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+            <Alert severity="info" sx={{ mb: 2 }}>
+              No comparison data is available. This might be because:
+            </Alert>
+            <Box sx={{ pl: 2 }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                • The tenant has not been scanned yet
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                • The template has no standards configured
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                • There was an issue with the comparison
+              </Typography>
+            </Box>
+            <Typography variant="body2">
+              Try running the report by clicking the "Run Report Once" button above.
+            </Typography>
+          </Card>
+        )}
+
         {comparisonData &&
+          comparisonData.length > 0 &&
           comparisonData.map((standard, index) => (
             <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
-              <Grid item size={12}>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mb: 2, px: 1 }}
-                >
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Box
-                      sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        bgcolor:
-                          standard.complianceStatus === "Compliant" ? "success.main" : "error.main",
-                      }}
-                    >
-                      {standard.complianceStatus === "Compliant" ? (
-                        <CheckCircle sx={{ color: "white" }} />
-                      ) : (
-                        <Cancel sx={{ color: "white" }} />
-                      )}
-                    </Box>
-                    <Typography variant="h6">{standard.standardName}</Typography>
-                  </Stack>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  ></Box>
-                </Stack>
-              </Grid>
-
               <Grid item size={6}>
                 <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                   <Stack
@@ -464,27 +322,22 @@ const Page = () => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            bgcolor: "info.main",
+                            bgcolor:
+                              standard.complianceStatus === "Compliant"
+                                ? "success.main"
+                                : "error.main",
                           }}
                         >
-                          {formControl.watch("comparisonMode") === "standard" ? (
-                            <Public sx={{ color: "white" }} />
+                          {standard.complianceStatus === "Compliant" ? (
+                            <CheckCircle sx={{ color: "white" }} />
                           ) : (
-                            <Microsoft sx={{ color: "white" }} />
+                            <Cancel sx={{ color: "white" }} />
                           )}
                         </Box>
                         <Stack>
-                          <Typography variant="h6">
-                            {formControl.watch("comparisonMode") === "standard"
-                              ? "Standard Value"
-                              : formControl.watch("compareTenantId")}
-                          </Typography>
+                          <Typography variant="h6">{standard?.standardName}</Typography>
                           <Chip
-                            label={
-                              formControl.watch("comparisonMode") === "standard"
-                                ? "Standard"
-                                : "Comparison Tenant (vs Standard)"
-                            }
+                            label="Standard"
                             size="small"
                             color="info"
                             variant="outlined"
@@ -496,28 +349,56 @@ const Page = () => {
                   </Stack>
                   <Divider />
                   <Box sx={{ p: 3 }}>
-                    {(formControl.watch("comparisonMode") === "standard" && !standard.standardValue) ||
-                     (formControl.watch("comparisonMode") === "tenant" && !standard.secondTenantValue) ? (
+                    {!standard.standardValue ? (
                       <Alert severity="info" sx={{ mb: 2 }}>
-                        This data has not yet been collected. Collect the data by pressing the report button on the top of the page.
+                        This data has not yet been collected. Collect the data by pressing the
+                        report button on the top of the page.
                       </Alert>
                     ) : (
-                      <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-                        {formControl.watch("comparisonMode") === "standard"
-                          ? standard.standardValue
-                          : standard.secondTenantValue}
-                      </Typography>
+                      <Box>
+                        <Box>
+                          <Box
+                            sx={{
+                              p: 2,
+                              bgcolor: "background.default",
+                              borderRadius: 1,
+                              border: "1px solid",
+                              borderColor: "divider",
+                            }}
+                          >
+                            {standard.standardValue &&
+                            typeof standard.standardValue === "object" &&
+                            Object.keys(standard.standardValue).length > 0 ? (
+                              Object.entries(standard.standardValue).map(([key, value]) => (
+                                <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                  <Typography variant="body2" sx={{ fontWeight: "medium", mr: 1 }}>
+                                    {key}:
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    {typeof value === "object"
+                                      ? value.label || JSON.stringify(value)
+                                      : value === true
+                                      ? "Enabled"
+                                      : value === false
+                                      ? "Disabled"
+                                      : String(value)}
+                                  </Typography>
+                                </Box>
+                              ))
+                            ) : (
+                              <Typography variant="body2">
+                                {standard.standardValue !== undefined
+                                  ? typeof standard.standardValue === "object"
+                                    ? "No settings configured"
+                                    : String(standard.standardValue)
+                                  : "Not configured"}
+                              </Typography>
+                            )}
+                          </Box>
+                        </Box>
+                      </Box>
                     )}
-                    {formControl.watch("comparisonMode") === "tenant" && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        Standard value: {standard.standardValue || "Not configured"}
-                      </Typography>
-                    )}
-                    {standard.standardDescription && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                        {standard.standardDescription}
-                      </Typography>
-                    )}
+
                     <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
                       <Chip
                         label={standard.standardImpact || "Medium Impact"}
@@ -601,9 +482,71 @@ const Page = () => {
                   </Stack>
                   <Divider />
                   <Box sx={{ p: 3 }}>
-                    <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-                      {standard.currentTenantValue || "Not configured"}
-                    </Typography>
+                    {typeof standard.currentTenantValue === "object" &&
+                    standard.currentTenantValue !== null ? (
+                      <Box
+                        sx={{
+                          p: 2,
+                          bgcolor: "background.default",
+                          borderRadius: 1,
+                          border: "1px solid",
+                          borderColor: "divider",
+                        }}
+                      >
+                        {Object.entries(standard.currentTenantValue).map(([key, value]) => {
+                          const standardValueForKey =
+                            standard.standardValue && typeof standard.standardValue === "object"
+                              ? standard.standardValue[key]
+                              : undefined;
+
+                          const isDifferent =
+                            standardValueForKey !== undefined &&
+                            JSON.stringify(value) !== JSON.stringify(standardValueForKey);
+
+                          return (
+                            <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: "medium", mr: 1 }}>
+                                {key}:
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: isDifferent ? "error.main" : "inherit",
+                                  fontWeight: isDifferent ? "medium" : "inherit",
+                                }}
+                              >
+                                {typeof value === "object"
+                                  ? value.label || JSON.stringify(value)
+                                  : value === true
+                                  ? "Enabled"
+                                  : value === false
+                                  ? "Disabled"
+                                  : String(value)}
+                              </Typography>
+                            </Box>
+                          );
+                        })}
+                      </Box>
+                    ) : (
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          whiteSpace: "pre-wrap",
+                          color:
+                            standard.currentTenantValue !== standard.standardValue
+                              ? "error.main"
+                              : "inherit",
+                          fontWeight:
+                            standard.currentTenantValue !== standard.standardValue
+                              ? "medium"
+                              : "inherit",
+                        }}
+                      >
+                        {standard.currentTenantValue !== undefined
+                          ? String(standard.currentTenantValue)
+                          : "Not configured"}
+                      </Typography>
+                    )}
                   </Box>
                 </Card>
               </Grid>
@@ -631,7 +574,6 @@ const Page = () => {
           ))}
       </Stack>
 
-      {/* CippApiDialog for Run Report Once */}
       <CippApiDialog
         createDialog={runReportDialog}
         title="Run Standard Report"
@@ -642,7 +584,7 @@ const Page = () => {
             TemplateId: templateId,
           },
         }}
-        relatedQueryKeys={["ListStandardCompare"]}
+        relatedQueryKeys={["ListStandardsCompare"]}
       />
     </Box>
   );
