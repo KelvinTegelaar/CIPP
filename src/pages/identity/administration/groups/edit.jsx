@@ -34,7 +34,7 @@ const EditGroup = () => {
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
-      tenantId: tenantFilter,
+      tenantFilter: tenantFilter,
     },
   });
 
@@ -57,7 +57,7 @@ const EditGroup = () => {
         setCombinedData(combinedData);
 
         formControl.reset({
-          tenantId: tenantFilter,
+          tenantFilter: tenantFilter,
           mail: group.mail,
           allowExternal: groupInfo?.data?.allowExternal,
           sendCopies: groupInfo?.data?.sendCopies,
