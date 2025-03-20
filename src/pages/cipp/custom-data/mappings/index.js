@@ -15,8 +15,8 @@ const Page = () => {
     "tenant",
     "sourceType",
     "dataset",
-    "directoryObject",
     "syncProperty",
+    "directoryObject",
     "customDataAttribute",
   ];
 
@@ -45,7 +45,8 @@ const Page = () => {
         tableFilter={
           <Alert severity="info">
             <Typography variant="body2">
-              Custom data mappings are used to synchronize custom data to directory objects. You can add, edit, or delete mappings here.
+              Custom data mappings are used to synchronize custom data to directory objects. You can
+              add, edit, or delete mappings here.
             </Typography>
           </Alert>
         }
