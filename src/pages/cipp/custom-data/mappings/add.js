@@ -14,7 +14,7 @@ import { Grid } from "@mui/system";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "/src/components/CippComponents/CippCopyToClipboard";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
-import extensionDataMapping from "/src/data/ExtensionDataMapping";
+import extensionDataMapping from "/src/data/extensionDataMapping";
 import { validate } from "numeral";
 
 const Page = () => {
