@@ -11,7 +11,12 @@ export const ActionsMenu = (props) => {
   const popover = usePopover();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const createDialog = useDialog();
-
+  const handleActionDisabled = (row, action) => {
+    if (action?.condition) {
+      return !action.condition(row);
+    }
+    return false;
+  };
   return (
     <>
       <Button
@@ -51,6 +56,7 @@ export const ActionsMenu = (props) => {
           ?.filter((action) => !action.link)
           .map((action, index) => (
             <MenuItem
+              disabled={handleActionDisabled(data, action)}
               key={index}
               onClick={() => {
                 setActionData({
