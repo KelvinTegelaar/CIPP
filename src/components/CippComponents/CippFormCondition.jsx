@@ -7,6 +7,7 @@ export const CippFormCondition = (props) => {
     field,
     compareType = "is",
     compareValue,
+    propertyName = "value",
     action = "hide",
     children,
     formControl,
@@ -22,12 +23,24 @@ export const CippFormCondition = (props) => {
   }
 
   let watcher = useWatch({ control: formControl.control, name: field });
-  if (watcher?.value !== undefined) {
-    watcher = watcher.value;
-  }
 
-  if (compareValue?.value !== undefined) {
-    compareValue = compareValue.value;
+  if (propertyName.includes(".")) {
+    propertyName.split(".").forEach((prop) => {
+      if (watcher?.[prop] !== undefined) {
+        watcher = watcher?.[prop];
+      }
+      if (compareValue?.[prop] !== undefined) {
+        compareValue = compareValue?.[prop];
+      }
+    });
+  } else {
+    if (watcher?.[propertyName] !== undefined) {
+      watcher = watcher?.[propertyName];
+    }
+
+    if (compareValue?.[propertyName] !== undefined) {
+      compareValue = compareValue?.[propertyName];
+    }
   }
 
   const disableChildren = (children) => {
@@ -195,6 +208,16 @@ export const CippFormCondition = (props) => {
     case "valueEq":
       // Checks if any object in array has .value exactly equal to compareValue
       if (Array.isArray(watcher) && watcher.some((item) => item?.value === compareValue)) {
+        return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
+      return null;
+
+    case "valueNotEq":
+      // Checks if any object in array has .value exactly equal to compareValue
+      if (Array.isArray(watcher) && watcher.some((item) => item?.value !== compareValue)) {
         return children;
       }
       if (action === "disable") {
