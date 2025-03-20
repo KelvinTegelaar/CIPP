@@ -7,8 +7,6 @@ description: >-
 
 # Standards
 
-
-
 ## **Overview**
 
 Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours**. This automatic enforcement prevents unauthorized changes and helps maintain security.
@@ -94,7 +92,7 @@ Each standard is labeled based on the level of change it introduces and its impa
 {% endhint %}
 
 {% hint style="info" %}
-Plans exist to implement more standardized options and settings, along with an alerting system supporting RMM systems, webhooks or, e-mail.
+Plans exist to implement more standardized options and settings. If there's a standard that you want, see the "Feature Requests / Ideas" section below.
 {% endhint %}
 
 ***

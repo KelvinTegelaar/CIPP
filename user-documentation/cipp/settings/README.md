@@ -1,5 +1,4 @@
 ---
-icon: gear
 description: View and amend the settings for your CIPP instance.
 ---
 

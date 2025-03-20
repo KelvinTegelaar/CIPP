@@ -49,12 +49,15 @@
 ## 🙋 User Documentation
 
 * [Shared Features](user-documentation/shared-features/README.md)
-  * [Tenant Select](user-documentation/shared-features/tenant-select.md)
-  * [User Preferences](user-documentation/shared-features/user-settings.md)
+  * [Menu Bar](user-documentation/shared-features/menu-bar/README.md)
+    * [Tenant Select](user-documentation/shared-features/menu-bar/tenant-select.md)
+    * [Display Mode](user-documentation/shared-features/menu-bar/display-mode.md)
+    * [🔍 Search](user-documentation/shared-features/menu-bar/search.md)
+    * [Bookmarks](user-documentation/shared-features/menu-bar/bookmarks.md)
+    * [User Preferences](user-documentation/shared-features/menu-bar/user-settings.md)
   * [Table Features](user-documentation/shared-features/table-features.md)
   * [Filters](user-documentation/shared-features/filters.md)
   * [Speed Dial](user-documentation/shared-features/speed-dial.md)
-* [Recent Pages](user-documentation/recent-pages.md)
 * [CIPP Dashboard](user-documentation/dashboard.md)
 * [Identity Management](user-documentation/identity/README.md)
   * [Administration](user-documentation/identity/administration/README.md)

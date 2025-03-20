@@ -25,7 +25,6 @@ You can also use this page to jump to the most common portals or actions
 
 **Actions**
 
-* Edit Tenant
 * M365 Portal
 * Exchange Portal
 * Entra Portal
@@ -37,4 +36,4 @@ You can also use this page to jump to the most common portals or actions
 
 
 
-{% include "../../.gitbook/includes/feature-request.md" %}
+{% include "../../../.gitbook/includes/feature-request.md" %}

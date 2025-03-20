@@ -4,7 +4,7 @@ On this page you can find a list of frequently asked questions about the CyberDr
 
 <details>
 
-<summary>I updated , but CIPP still says my frontend is out of date. How do I fix this?</summary>
+<summary>I updated, but CIPP still says my frontend is out of date. How do I fix this?</summary>
 
 SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](../../setup/installation/updating.md).
 
@@ -47,6 +47,20 @@ For more information, refer to the [maintenance instructions](https://docs.cipp.
 
 If you are self-hosted, you will also want to ensure you have configured [Run From Package](../../setup/self-hosting-guide/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
 
+If you have completed all of these, your instance may benefit from implementing function offloading. Refer to the [documentation on function offloading for limitations and setup](../../user-documentation/cipp/advanced/super-admin/function-offloading.md).
+
+</details>
+
+<details>
+
+<summary>CIPP runs slow when I first open it. How can I speed that up?</summary>
+
+If users in your organization have not accessed CIPP in a while, the Static Web App will put itself into a sleep state to save on resource usage. It's normal to see an initial 15-20 second delay on the first results being called from the CIPP-API backend. This is sometimes known as a cold start.
+
+If you want to avoid cold starts, it's possible to utilize the [CIPP API](broken-reference) and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `/getversion` every 5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making.&#x20;
+
+Self-hosted clients should see minimal impact to their overall costs.
+
 </details>
 
 <details>
@@ -63,6 +77,28 @@ To add Conditional Access to CIPP, follow the below steps:
 6. Select **Save**
 
 Your app is now protected with Conditional Access.
+
+</details>
+
+<details>
+
+<summary>I renamed a tenant. How do I get this to show up in CIPP?</summary>
+
+Beginning with v7, CIPP relies on the tenant's name at the time a GDAP relationship was created. Much of the tenant naming and renaming API capabilities were deprecated. As such, it will no longer pull in live information if you rename a tenant through your Microsoft Partner Portal.
+
+To have the new tenant name show up in CIPP:
+
+1. After renaming the tenant, create a new GDAP relationship. You can use the [GDAP Management](../../user-documentation/tenant/gdap/) page to expedite this process.
+2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the [GDAP Relationships](../../user-documentation/tenant/gdap/relationships.md) page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
+3. Cleare your tenant cache from [CIPP Application Settings](../../user-documentation/cipp/settings/).
+
+</details>
+
+<details>
+
+<summary>I remediated an admin with no MFA, why is it still alerting?</summary>
+
+The CIPP alert "Alert on admins without any form of MFA" is based on checking a report created by Microsoft. This report is only updated once every 7 days. As such, CIPP recommends only running this alert every 7 days. It's possible the user may still show up on the report after remediation if the report has not refreshed since you completed your remediation steps.
 
 </details>
 
@@ -232,8 +268,7 @@ This permits users the ability to grant consent when access CIPP now.
 
 <summary>Can I replace the default branding with my own in CIPP?</summary>
 
-No, CIPP's branding is compiled into the code. Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.\
-However, a custom logo can be added to reports. This can be done in the [User Settings page](../../user-documentation/shared-features/user-settings.md#user-settings).
+No, CIPP's branding is compiled into the code. Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.
 
 </details>
 

@@ -6,7 +6,7 @@ The User Preferences page provides a tailored interface for users to manage and 
 
 In this section, users can manage general settings related to their account and workspace:
 
-* **Added Attributes when creating a new user:** Users can&#x20;
+* **Added Attributes when creating a new user:** Users can select additional user object attributes that are available when creating a new user.
 * **Default new user usage location**: This setting allows users to specify the default user location when creating or editing a user.
 * **Default Page Size**: Set the default page size for tables across CIPP.
 * **Menu Favourites**: Set pages that will display in your favourites section.

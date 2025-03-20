@@ -1,14 +1,19 @@
-# Extension Sync
+# Integration Sync
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page will display a table of the scheduled integration syncs for the integrations you have configured.
 
-### **Looking for documentation contributors**
+### Details
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+| Column         | Details                                                                                |
+| -------------- | -------------------------------------------------------------------------------------- |
+| Tenant         | Displays the tenant(s) the sync job will run for                                       |
+| Sync Type      | Displays information relating to which integration or integration sync job is running. |
+| Scheduled Time | The relative time until the next sync runs.                                            |
+| Executed Time  | The relative time since the last sync run.                                             |
+| Repeats Every  | The task recurrence for the sync.                                                      |
+| Results        | The results of the last sync.                                                          |
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+
 
 ***
 
