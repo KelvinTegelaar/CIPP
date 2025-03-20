@@ -12,6 +12,7 @@ export const ActionsMenu = (props) => {
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const createDialog = useDialog();
   const handleActionDisabled = (row, action) => {
+    console.log("row", row);
     if (action?.condition) {
       return !action.condition(row);
     }
