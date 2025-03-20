@@ -13,9 +13,9 @@ const Page = () => {
   // Columns for the table
   const columns = [
     "tenant",
-    "dataset",
     "sourceType",
-    "directoryType",
+    "dataset",
+    "directoryObject",
     "syncProperty",
     "customDataAttribute",
   ];
