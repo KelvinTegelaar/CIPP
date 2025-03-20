@@ -6,5 +6,9 @@
   {
     "label": "Schema Extensions",
     "path": "/cipp/custom-data/schema-extensions"
+  },
+  {
+    "label": "Mappings",
+    "path": "/cipp/custom-data/mappings"
   }
 ]
