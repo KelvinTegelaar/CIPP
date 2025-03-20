@@ -110,9 +110,9 @@ export const CippIntunePolicy = (props) => {
                     defaultValue={
                       //if the placeholder is tenantid then replace it with tenant.addedFields.customerId, if the placeholder is tenantdomain then replace it with tenant.addedFields.defaultDomainName.
                       placeholder === "tenantid"
-                        ? tenant.addedFields.customerId
+                        ? tenant?.addedFields?.customerId
                         : placeholder === "tenantdomain"
-                        ? tenant.addedFields.defaultDomainName
+                        ? tenant?.addedFields?.defaultDomainName
                         : ""
                     }
                     name={`replacemap.${tenant.value}.%${placeholder}%`}
