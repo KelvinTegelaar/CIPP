@@ -5,6 +5,11 @@ export const getCippTranslation = (field) => {
     return "No data";
   }
 
+  // special translations for extensions (e.g. extension_72f71a9c4da142deaa01b194448aaea8_mailboxPermissions)
+  if (field.startsWith("extension_")) {
+    field = field.split("_").pop();
+  }
+
   return (
     CippTranslations[field] ||
     field

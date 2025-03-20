@@ -323,6 +323,14 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
+  if (cellName === 'AccessRights') {
+    // split on comma with spaces and create chips per access right
+    const accessRights = data.split(", ");
+    return isText
+      ? accessRights.join(", ")
+      : accessRights.map((accessRight) => <CippCopyToClipBoard key={accessRight} text={accessRight} type="chip" />);
+  }
+
   // Handle null or undefined data
   if (data === null || data === undefined) {
     return isText ? (
@@ -519,6 +527,18 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
 
   // Handle arrays of strings
   if (Array.isArray(data) && data.every((item) => typeof item === "string")) {
+    // if string matches json format, parse it
+    if (data.every((item) => item.startsWith("{") || item.startsWith("["))) {
+      return isText ? (
+        JSON.stringify(data)
+      ) : (
+        <CippDataTableButton
+          data={data.map((item) => JSON.parse(item))}
+          tableTitle={getCippTranslation(cellName)}
+        />
+      );
+    }
+
     //if the array is empty, return "No data"
     return isText
       ? data.join(", ")
