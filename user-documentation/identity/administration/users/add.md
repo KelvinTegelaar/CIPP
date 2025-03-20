@@ -85,4 +85,6 @@ When [SherWeb integration](../../../cipp/integrations/sherweb.md) is enabled and
 * Group copying includes all accessible groups
 * Scheduled creation can be monitored in tasks
 
+***
+
 {% include "../../../../.gitbook/includes/feature-request.md" %}

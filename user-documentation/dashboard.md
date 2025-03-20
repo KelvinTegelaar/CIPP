@@ -1,6 +1,6 @@
 ---
-icon: chart-line
 description: About the Dashboard which includes versions and quick links
+icon: chart-line
 ---
 
 # CIPP Dashboard
@@ -22,5 +22,7 @@ The Home page includes the following sections:
   * Domain Names
   * Partner Relationships
   * Tenant Capabilities
+
+***
 
 {% include "../.gitbook/includes/feature-request.md" %}

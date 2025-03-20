@@ -16,7 +16,7 @@ description: >-
 
 ### Page Layout
 
-**Header Information** on this page displays the user's Display Name, their User Principal Name (with copy option) and the Account Creation Date
+**Header Information** on this page displays the user's Display Name, their User Principal Name (with copy option), their User ID (with copy option, the Account Creation Date, and a button to launch Entra to view the user.
 
 ### Basic Information
 
@@ -41,15 +41,19 @@ description: >-
 
 * **Current Licenses**
   * Shows currently assigned licenses
+  * Drop down box allows you to multi-select the licenses you want the user to have after editing
   * Option to remove all licenses (toggle)
-* **License Modifications**
-  * Replace Licenses (toggle)
-    * When enabled: Select new licenses to assign
-    * Shows available license count for each option
 * **SherWeb Integration** (if enabled)
   * Auto-purchase option appears when licenses unavailable
   * Select license SKU for purchase
   * System handles purchase and assignment
+
+### Group Management
+
+* Copy groups from user
+  * Allows you to select another Entra ID user to copy groups from&#x20;
+* Add to Groups
+  * Multi-select dropdown that will allow you to add the user to groups
 
 ### **Custom Attributes**
 
@@ -70,5 +74,7 @@ description: >-
 * Password resets follow complexity requirements
 * Group membership changes are processed in order (removals then additions)
 * On-premises synced accounts show warning about limited editability
+
+***
 
 {% include "../../../../../.gitbook/includes/feature-request.md" %}

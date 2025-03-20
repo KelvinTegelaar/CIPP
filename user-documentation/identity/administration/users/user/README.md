@@ -77,4 +77,6 @@ The actions dropdown carries forward the same [actions from the list users page]
 
 This view serves as the central hub for user information, providing quick access to both basic details and advanced management options through the tabbed interface.
 
+***
+
 {% include "../../../../../.gitbook/includes/feature-request.md" %}

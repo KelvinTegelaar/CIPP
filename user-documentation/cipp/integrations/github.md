@@ -13,6 +13,10 @@ CIPP has a built in token that will be able to provide you with read-only access
 ### Create a GitHub Personal Access Token
 
 See [GitHub's documentation](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) on how to create this and a description of the various access rights.
+
+{% hint style="warning" %}
+We do not recommend utilization of a fine-grained PAT. Given the differences in access rights scoping between the traditional PAT and the fine-grained PAT, unexpected issues will arise with the fine-grained PAT.
+{% endhint %}
 {% endstep %}
 
 {% step %}

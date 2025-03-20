@@ -4,7 +4,7 @@
 This is an advanced configuration of CIPP currently in beta. Please proceed with caution.
 {% endhint %}
 
-This page can be used to add admin roles directly to the CIPP-SAMM application Service Principal
+This page can be used to add admin roles directly to the CIPP-SAM application Service Principal
 
 ***
 

@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Filters
 
 ## Advanced Table Filtering
