@@ -25,7 +25,7 @@ const Page = () => {
     addMappingApi.mutate({
       url: "/api/ExecCustomData",
       data: {
-        Action: "AddMapping",
+        Action: "AddEditMapping",
         Mapping: data,
       },
     });
