@@ -98,14 +98,34 @@ const Page = () => {
             );
 
             // Determine compliance status
-            const isCompliant =
-              currentTenantStandard &&
-              JSON.stringify(currentTenantStandard.value) === JSON.stringify(standardSettings);
+            let isCompliant = false;
+            
+            // Check if the standard is directly in the tenant object (like "standards.AuditLog": true)
+            const standardIdWithoutPrefix = standardId.replace('standards.', '');
+            const directStandardValue = currentTenantObj?.[standardId];
+            
+            // Special case for boolean standards that are true in the tenant
+            if (directStandardValue === true) {
+              // If the standard is directly in the tenant and is true, it's compliant
+              isCompliant = true;
+            } else if (directStandardValue !== undefined) {
+              // For non-boolean values, use strict equality
+              isCompliant = JSON.stringify(directStandardValue) === JSON.stringify(standardSettings);
+            } else if (currentTenantStandard) {
+              // Fall back to the previous logic if the standard is not directly in the tenant object
+              if (typeof standardSettings === 'boolean' && standardSettings === true) {
+                isCompliant = currentTenantStandard.value === true;
+              } else {
+                isCompliant = JSON.stringify(currentTenantStandard.value) === JSON.stringify(standardSettings);
+              }
+            }
 
+            // Use the direct standard value from the tenant object if it exists
+            
             allStandards.push({
               standardId,
               standardName: standardInfo?.label || standardKey,
-              currentTenantValue: currentTenantStandard?.value,
+              currentTenantValue: directStandardValue !== undefined ? directStandardValue : currentTenantStandard?.value,
               standardValue: standardSettings,
               complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
               complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
@@ -375,8 +395,8 @@ const Page = () => {
                                     {key}:
                                   </Typography>
                                   <Typography variant="body2">
-                                    {typeof value === "object"
-                                      ? value.label || JSON.stringify(value)
+                                    {typeof value === "object" && value !== null
+                                      ? (value.label || JSON.stringify(value))
                                       : value === true
                                       ? "Enabled"
                                       : value === false
@@ -511,17 +531,23 @@ const Page = () => {
                               <Typography
                                 variant="body2"
                                 sx={{
-                                  color: isDifferent ? "error.main" : "inherit",
-                                  fontWeight: isDifferent ? "medium" : "inherit",
+                                  color: standard.complianceStatus === "Compliant"
+                                    ? "success.main"
+                                    : (isDifferent ? "error.main" : "inherit"),
+                                  fontWeight: standard.complianceStatus !== "Compliant" && isDifferent
+                                    ? "medium"
+                                    : "inherit",
                                 }}
                               >
-                                {typeof value === "object"
-                                  ? value.label || JSON.stringify(value)
-                                  : value === true
-                                  ? "Enabled"
-                                  : value === false
-                                  ? "Disabled"
-                                  : String(value)}
+                                {standard.complianceStatus === "Compliant" && value === true
+                                  ? "Compliant"
+                                  : (typeof value === "object" && value !== null
+                                      ? (value.label || JSON.stringify(value))
+                                      : value === true
+                                      ? "Enabled"
+                                      : value === false
+                                      ? "Disabled"
+                                      : String(value))}
                               </Typography>
                             </Box>
                           );
@@ -533,18 +559,20 @@ const Page = () => {
                         sx={{
                           whiteSpace: "pre-wrap",
                           color:
-                            standard.currentTenantValue !== standard.standardValue
-                              ? "error.main"
-                              : "inherit",
+                            standard.complianceStatus === "Compliant"
+                              ? "success.main"
+                              : "error.main",
                           fontWeight:
-                            standard.currentTenantValue !== standard.standardValue
+                            standard.complianceStatus !== "Compliant"
                               ? "medium"
                               : "inherit",
                         }}
                       >
-                        {standard.currentTenantValue !== undefined
-                          ? String(standard.currentTenantValue)
-                          : "Not configured"}
+                        {standard.complianceStatus === "Compliant" && standard.currentTenantValue === true
+                          ? "Compliant"
+                          : (standard.currentTenantValue !== undefined
+                              ? String(standard.currentTenantValue)
+                              : "Not configured")}
                       </Typography>
                     )}
                   </Box>
