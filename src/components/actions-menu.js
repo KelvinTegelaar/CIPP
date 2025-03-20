@@ -16,7 +16,6 @@ export const ActionsMenu = (props) => {
     if (!row) {
       return true;
     }
-    console.log("row", row);
     if (action?.condition) {
       return !action?.condition(row);
     }
