@@ -202,8 +202,7 @@ const Page = () => {
                     <CippFormTenantSelector
                       name="tenantFilter"
                       formControl={formControl}
-                      multiple={false}
-                      includeGroups={true}
+                      multiple={true}
                       disableClearable={true}
                       allTenants={true}
                     />
