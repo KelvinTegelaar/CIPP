@@ -1,10 +1,57 @@
-import { InputAdornment } from "@mui/material";
-import { Grid } from "@mui/system";
+import { CircularProgress, InputAdornment } from "@mui/material";
+import { Box, Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
+import { ApiGetCall } from "../../api/ApiCall";
+import { useWatch, useFormState } from "react-hook-form";
+import debounce from "lodash/debounce";
+import { useState, useEffect } from "react";
 
 export const CippAddTenantForm = (props) => {
-  const { formControl, onPreviousStep, onNextStep, currentStep } = props;
+  const { formControl, currentStep, onPreviousStep, onNextStep } = props;
+
+  const tenantDomain = useWatch({ control: formControl.control, name: "TenantName" });
+  const [debouncedTenantDomain, setDebouncedTenantDomain] = useState("");
+
+  const updateTenantDomain = debounce((value) => {
+    setDebouncedTenantDomain(value);
+  }, 500);
+
+  useEffect(() => {
+    updateTenantDomain(tenantDomain);
+    return () => updateTenantDomain.cancel();
+  }, [tenantDomain]);
+
+  const checkDomain = ApiGetCall({
+    url: "/api/AddTenant",
+    data: { action: "ValidateDomain", TenantName: debouncedTenantDomain },
+    queryKey: `ValidateDomain-${debouncedTenantDomain}`,
+    waiting: debouncedTenantDomain !== "" && debouncedTenantDomain !== undefined,
+  });
+
+  useEffect(() => {
+    validateDomain();
+  }, [checkDomain.data]);
+
+  const validateDomain = () => {
+    console.log("validating domain");
+    if (!tenantDomain) {
+      // set error state on TenantName form field
+      formControl.setError("TenantName", { type: "required", message: "Tenant Name is required" });
+    }
+    if (checkDomain.isSuccess) {
+      if (checkDomain.data.Success === true) {
+        // clear error
+        formControl.clearErrors("TenantName");
+      } else {
+        // set error state on TenantName form field
+        formControl.setError("TenantName", { type: "validate", message: checkDomain.data.Message });
+      }
+    }
+    if (checkDomain.isError) {
+      formControl.setError("TenantName", { type: "error", message: "An error occurred" });
+    }
+  };
 
   const fields = [
     {
@@ -14,7 +61,23 @@ export const CippAddTenantForm = (props) => {
       type: "textField",
       required: true,
       InputProps: {
-        endAdornment: <InputAdornment position="end">.onmicrosoft.com</InputAdornment>,
+        endAdornment: (
+          <InputAdornment position="end">
+            .onmicrosoft.com{" "}
+            {checkDomain.isFetching ? (
+              <CircularProgress size={20} sx={{ ml: 2 }} />
+            ) : (
+              <>
+                {checkDomain.isSuccess && checkDomain.data.Success && (
+                  <Box sx={{ color: "green", ml: 1 }}>✔</Box>
+                )}
+                {checkDomain.isSuccess && !checkDomain.data.Success && (
+                  <Box sx={{ color: "red", ml: 1 }}>✘</Box>
+                )}
+              </>
+            )}
+          </InputAdornment>
+        ),
       },
       gridSize: 12,
     },
@@ -102,10 +165,7 @@ export const CippAddTenantForm = (props) => {
     <Grid container spacing={3}>
       {fields.map((field, index) => (
         <Grid size={field?.gridSize ?? { xs: 12, md: 6 }} key={index}>
-          <CippFormComponent
-            {...field}
-            formControl={formControl}
-          />
+          <CippFormComponent {...field} formControl={formControl} />
         </Grid>
       ))}
       <Grid item xs={12}>
