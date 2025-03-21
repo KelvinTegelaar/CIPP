@@ -58,6 +58,7 @@
   * [Table Features](user-documentation/shared-features/table-features.md)
   * [Filters](user-documentation/shared-features/filters.md)
   * [Speed Dial](user-documentation/shared-features/speed-dial.md)
+  * [Keyboard Shortcuts](user-documentation/shared-features/keyboard-shortcuts.md)
 * [CIPP Dashboard](user-documentation/dashboard.md)
 * [Identity Management](user-documentation/identity/README.md)
   * [Administration](user-documentation/identity/administration/README.md)
