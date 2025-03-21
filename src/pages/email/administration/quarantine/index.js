@@ -147,6 +147,11 @@ const Page = () => {
       value: [{ id: "ReleaseStatus", value: "RELEASED" }],
       type: "column",
     },
+    {
+      filterName: "Requested",
+      value: [{ id: "ReleaseStatus", value: "REQUESTED" }],
+      type: "column",
+    },
   ];
 
   return (
