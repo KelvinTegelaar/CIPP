@@ -34,7 +34,6 @@ export const CippAddTenantForm = (props) => {
   }, [checkDomain.data]);
 
   const validateDomain = () => {
-    console.log("validating domain");
     if (!tenantDomain) {
       // set error state on TenantName form field
       formControl.setError("TenantName", { type: "required", message: "Tenant Name is required" });
@@ -190,6 +189,7 @@ export const CippAddTenantForm = (props) => {
         ))}
       </Grid>
       <CippWizardStepButtons
+        postUrl="/api/AddTenant"
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
