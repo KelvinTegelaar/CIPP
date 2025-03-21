@@ -1,5 +1,5 @@
 import { CircularProgress, Divider, InputAdornment, Typography } from "@mui/material";
-import { Box, Grid } from "@mui/system";
+import { Box, Grid, Stack } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { ApiGetCall } from "../../api/ApiCall";
@@ -170,32 +170,31 @@ export const CippAddTenantForm = (props) => {
   ];
 
   return (
-    <Grid container spacing={2}>
-      {fields.map((field, index) => (
-        <React.Fragment key={index}>
-          {field.type === "header" ? (
-            <>
-              <Grid item size={12}>
-                <Typography variant="h5">{field.label}</Typography>
-                <Divider sx={{ mt: 1 }} />
+    <Stack spacing={2}>
+      <Grid container spacing={2}>
+        {fields.map((field, index) => (
+          <React.Fragment key={index}>
+            {field.type === "header" ? (
+              <>
+                <Grid item size={12}>
+                  <Typography variant="h5">{field.label}</Typography>
+                  <Divider sx={{ mt: 1 }} />
+                </Grid>
+              </>
+            ) : (
+              <Grid item size={field?.gridSize ?? { xs: 12, md: 6 }}>
+                <CippFormComponent {...field} formControl={formControl} />
               </Grid>
-            </>
-          ) : (
-            <Grid item size={field?.gridSize ?? { xs: 12, md: 6 }}>
-              <CippFormComponent {...field} formControl={formControl} />
-            </Grid>
-          )}
-        </React.Fragment>
-      ))}
-      <Grid item xs={12}>
-        <CippWizardStepButtons
-          currentStep={currentStep}
-          onPreviousStep={onPreviousStep}
-          onNextStep={onNextStep}
-          formControl={formControl}
-          noSubmitButton={true}
-        />
+            )}
+          </React.Fragment>
+        ))}
       </Grid>
-    </Grid>
+      <CippWizardStepButtons
+        currentStep={currentStep}
+        onPreviousStep={onPreviousStep}
+        onNextStep={onNextStep}
+        formControl={formControl}
+      />
+    </Stack>
   );
 };
