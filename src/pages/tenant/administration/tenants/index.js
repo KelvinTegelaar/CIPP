@@ -1,8 +1,10 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Button, SvgIcon } from "@mui/material";
+import { Add, Edit } from "@mui/icons-material";
 import tabOptions from "./tabOptions";
-import { Edit } from "@mui/icons-material";
+import NextLink from "next/link";
 
 const Page = () => {
   const pageTitle = "Tenants";
@@ -40,6 +42,20 @@ const Page = () => {
         tenantFilter: null,
       }}
       actions={actions}
+      cardButton={
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          component={NextLink}
+          href="/tenant/administration/tenants/add"
+        >
+          <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
+            <Add />
+          </SvgIcon>
+          Add Tenant
+        </Button>
+      }
     />
   );
 };
