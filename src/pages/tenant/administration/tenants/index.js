@@ -44,7 +44,7 @@ const Page = () => {
       actions={actions}
       cardButton={
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           size="small"
           component={NextLink}

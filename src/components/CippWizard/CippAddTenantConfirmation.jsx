@@ -3,6 +3,7 @@ import { Grid, Typography, CircularProgress } from "@mui/material";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { Stack } from "@mui/system";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
 
 export const CippAddTenantConfirmation = ({
   postUrl,
@@ -22,7 +23,7 @@ export const CippAddTenantConfirmation = ({
         layout="dual"
         showDivider={false}
         propertyItems={Object.keys(values)?.map((item) => {
-          return { label: item, value: values[item] };
+          return { label: getCippTranslation(item), value: values[item] };
         })}
       />
       <CippWizardStepButtons
