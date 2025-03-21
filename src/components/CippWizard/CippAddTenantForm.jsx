@@ -1,11 +1,11 @@
-import { CircularProgress, InputAdornment } from "@mui/material";
+import { CircularProgress, Divider, InputAdornment, Typography } from "@mui/material";
 import { Box, Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { ApiGetCall } from "../../api/ApiCall";
-import { useWatch, useFormState } from "react-hook-form";
+import { useWatch } from "react-hook-form";
 import debounce from "lodash/debounce";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 export const CippAddTenantForm = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
@@ -55,6 +55,10 @@ export const CippAddTenantForm = (props) => {
 
   const fields = [
     {
+      type: "header",
+      label: "Company Information",
+    },
+    {
       name: "TenantName",
       label: "Tenant Name",
       placeholder: "Enter the desired subdomain for the onmicrosoft.com domain",
@@ -90,39 +94,18 @@ export const CippAddTenantForm = (props) => {
       placeholder: "Enter the registered company/organization name",
     },
     {
-      name: "FirstName",
-      label: "First Name",
+      name: "AddressLine1",
+      label: "Address Line 1",
       type: "textField",
       required: true,
-      placeholder: "Enter the first name of the contact person",
+      placeholder: "Enter the primary address line",
     },
     {
-      name: "LastName",
-      label: "Last Name",
+      name: "AddressLine2",
+      label: "Address Line 2",
       type: "textField",
-      required: true,
-      placeholder: "Enter the last name of the contact person",
-    },
-    {
-      name: "Email",
-      label: "Email",
-      type: "email",
-      required: true,
-      placeholder: "Enter the customer's email address",
-    },
-    {
-      name: "PhoneNumber",
-      label: "Phone Number",
-      type: "textField",
-      required: true,
-      placeholder: "Enter the contact phone number",
-    },
-    {
-      name: "Country",
-      label: "Country",
-      type: "textField",
-      required: true,
-      placeholder: "Enter the country (e.g., US)",
+      required: false,
+      placeholder: "Enter the secondary address line (optional)",
     },
     {
       name: "City",
@@ -139,34 +122,70 @@ export const CippAddTenantForm = (props) => {
       placeholder: "Enter the state or region",
     },
     {
-      name: "AddressLine1",
-      label: "Address Line 1",
-      type: "textField",
-      required: true,
-      placeholder: "Enter the primary address line",
-    },
-    {
-      name: "AddressLine2",
-      label: "Address Line 2",
-      type: "textField",
-      required: false,
-      placeholder: "Enter the secondary address line (optional)",
-    },
-    {
       name: "PostalCode",
       label: "Postal Code",
       type: "textField",
       required: true,
       placeholder: "Enter the postal code",
     },
+    {
+      name: "Country",
+      label: "Country",
+      type: "textField",
+      required: true,
+      placeholder: "Enter the country (e.g., US)",
+    },
+    {
+      type: "header",
+      label: "Contact Information",
+    },
+    {
+      name: "FirstName",
+      label: "First Name",
+      type: "textField",
+      required: true,
+      placeholder: "Enter the first name of the contact person",
+    },
+    {
+      name: "LastName",
+      label: "Last Name",
+      type: "textField",
+      required: true,
+      placeholder: "Enter the last name of the contact person",
+    },
+    {
+      name: "Email",
+      label: "Email",
+      type: "textField",
+      required: true,
+      placeholder: "Enter the customer's email address",
+    },
+    {
+      name: "PhoneNumber",
+      label: "Phone Number",
+      type: "textField",
+      required: true,
+      placeholder: "Enter the contact phone number",
+    },
   ];
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2}>
       {fields.map((field, index) => (
-        <Grid size={field?.gridSize ?? { xs: 12, md: 6 }} key={index}>
-          <CippFormComponent {...field} formControl={formControl} />
-        </Grid>
+        <React.Fragment key={index}>
+          {field.type === "header" ? (
+            <>
+              <Grid item size={12}>
+                <Typography variant="h5">{field.label}</Typography>
+                <Divider sx={{ mt: 1 }} />
+              </Grid>
+            </>
+          ) : (
+            <Grid item size={field?.gridSize ?? { xs: 12, md: 6 }}>
+              <CippFormComponent {...field} formControl={formControl} />
+            </Grid>
+          )}
+        </React.Fragment>
       ))}
       <Grid item xs={12}>
         <CippWizardStepButtons

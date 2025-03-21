@@ -35,13 +35,11 @@ const Page = () => {
       title: "Step 2",
       description: "Enter Tenant Details",
       component: CippAddTenantForm,
-      componentProps: {},
     },
     {
       title: "Step 3",
       description: "Confirm and Submit",
       component: CippAddTenantConfirmation,
-      componentProps: {},
     },
   ];
 
