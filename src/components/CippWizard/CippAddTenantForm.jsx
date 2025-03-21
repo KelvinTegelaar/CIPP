@@ -31,17 +31,24 @@ export const CippAddTenantForm = (props) => {
 
   useEffect(() => {
     validateDomain();
-  }, [checkDomain.data]);
+  }, [checkDomain.data, checkDomain.isFetching]);
 
   const validateDomain = () => {
     if (!tenantDomain) {
       // set error state on TenantName form field
       formControl.setError("TenantName", { type: "required", message: "Tenant Name is required" });
     }
+    if (checkDomain.isFetching) {
+      formControl.setError("TenantName", {
+        type: "required",
+        message: "Checking domain availability...",
+      });
+    }
     if (checkDomain.isSuccess) {
       if (checkDomain.data.Success === true) {
         // clear error
         formControl.clearErrors("TenantName");
+        formControl.trigger();
       } else {
         // set error state on TenantName form field
         formControl.setError("TenantName", { type: "validate", message: checkDomain.data.Message });

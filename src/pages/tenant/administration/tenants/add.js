@@ -2,31 +2,26 @@ import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import CippWizardPage from "../../../../components/CippWizard/CippWizardPage.jsx";
 import { CippWizardOptionsList } from "../../../../components/CippWizard/CippWizardOptionsList.jsx";
 import { CippAddTenantForm } from "../../../../components/CippWizard/CippAddTenantForm.jsx";
-import { CippAddTenantConfirmation } from "../../../../components/CippWizard/CippAddTenantConfirmation.jsx";
 import { BuildingOfficeIcon, CloudIcon } from "@heroicons/react/24/outline";
+import CippWizardConfirmation from "../../../../components/CippWizard/CippWizardConfirmation.js";
 
 const Page = () => {
   const steps = [
     {
       title: "Step 1",
-      description: "Select Reseller Type",
+      description: "Tenant Type",
       component: CippWizardOptionsList,
       componentProps: {
-        title: "Select your reseller type",
-        subtext: `Choose the type of reseller you are to proceed with adding a new tenant.`,
-        valuesKey: "ResellerType",
+        name: "TenantType",
+        title: "New Tenant Deployment",
+        subtext: `Choose the type of tenant you would like to deploy.`,
+        valuesKey: "TenantType",
         options: [
           {
-            description: "Use this option if you are a Direct Reseller",
-            icon: <CloudIcon />,
-            label: "I'm a Tier 1 CSP",
-            value: "Tier1",
-          },
-          {
-            description: "Use this option if you are an Indirect Reseller",
+            description: "I would like to deploy a new tenant for my customer",
             icon: <BuildingOfficeIcon />,
-            label: "I'm a Tier 2 CSP",
-            value: "Tier2",
+            label: "Customer Tenant",
+            value: "CustomerTenant",
           },
         ],
       },
@@ -39,7 +34,7 @@ const Page = () => {
     {
       title: "Step 3",
       description: "Confirm and Submit",
-      component: CippAddTenantConfirmation,
+      component: CippWizardConfirmation,
     },
   ];
 
@@ -49,7 +44,7 @@ const Page = () => {
         backButton={false}
         steps={steps}
         wizardTitle="Add New Tenant"
-        postUrl={"/api/AddTenant"}
+        postUrl={"/api/AddTenant?Action=AddTenant"}
       />
     </>
   );
