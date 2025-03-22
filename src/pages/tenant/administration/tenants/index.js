@@ -42,21 +42,6 @@ const Page = () => {
         tenantFilter: null,
       }}
       actions={actions}
-      cardButton={
-        <Button
-          color="primary"
-          size="small"
-          component={NextLink}
-          href="/tenant/administration/tenants/add"
-          startIcon={
-            <SvgIcon fontSize="small">
-              <AddBusinessOutlined />
-            </SvgIcon>
-          }
-        >
-          Add Tenant
-        </Button>
-      }
     />
   );
 };
