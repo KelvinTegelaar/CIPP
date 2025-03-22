@@ -32,7 +32,7 @@ This script can be run in Azure Cloud Shell. Click the link to be taken to the A
 $RGName = Read-Host -Prompt "Resource Group Name"
 Connect-AzAccount
 $Functions = Get-AzResource -ResourceGroupName $RGName -ResourceType 'Microsoft.Web/sites' | Where-Object { $_.Name -match 'cipp' -and $_.Name -notmatch '-' }
-$FunctionApp = Get-AzWebApp -ResourceGroupName $Function.ResourceGroupName -Name $Function.Name
+$FunctionApp = Get-AzWebApp -ResourceGroupName $Functions.ResourceGroupName -Name $Functions.Name
 $Identity = $FunctionApp.Identity.PrincipalId
 New-AzRoleAssignment -ObjectId $Identity -RoleDefinitionName 'Contributor' -Scope $FunctionApp.Id
 ```
