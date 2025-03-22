@@ -427,7 +427,7 @@ const AlertWizard = () => {
                                 >
                                   <CippFormComponent
                                     type="autoComplete"
-                                    multiple={false}
+                                    multiple={propertyWatcher?.[event.id]?.Property?.multi ?? false}
                                     name={`conditions.${event.id}.Input`}
                                     formControl={formControl}
                                     label="Input"
