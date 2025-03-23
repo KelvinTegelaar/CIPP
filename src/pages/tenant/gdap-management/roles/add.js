@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Button, SvgIcon, Typography, Grid, Tooltip } from "@mui/material";
+import { Alert, Button, SvgIcon, Typography, Grid, Tooltip, Link } from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
@@ -128,6 +128,13 @@ const Page = () => {
                 role.
               </Typography>
             </Alert>
+            <Alert severity="warning">
+              <b>Certain roles may not be compatible with GDAP</b>. See the{" "}
+              <Link href="https://learn.microsoft.com/en-us/partner-center/customers/gdap-least-privileged-roles-by-task">
+                Microsoft Documentation
+              </Link>{" "}
+              on GDAP Role Guidance.
+            </Alert>
             <Box>
               <CippFormComponent
                 formControl={formControl}
@@ -225,6 +232,13 @@ const Page = () => {
                 <li>
                   <b>Only one role can be mapped per group</b>. If your current configuration maps
                   more than one, use the Reset Role Mapping action on the Relationship.
+                </li>
+                <li>
+                  <b>Certain roles may not be compatible with GDAP</b>. See the{" "}
+                  <Link href="https://learn.microsoft.com/en-us/partner-center/customers/gdap-least-privileged-roles-by-task">
+                    Microsoft Documentation
+                  </Link>{" "}
+                  on GDAP Role Guidance.
                 </li>
               </ul>
             </Alert>
