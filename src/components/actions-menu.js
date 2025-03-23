@@ -57,7 +57,7 @@ export const ActionsMenu = (props) => {
         }}
       >
         {actions
-          ?.filter((action) => !action.link)
+          ?.filter((action) => !action.link || action.showInActionsMenu)
           .map((action, index) => (
             <MenuItem
               disabled={handleActionDisabled(data, action)}
