@@ -154,7 +154,9 @@ const Page = () => {
               label="Select GDAP Roles"
               type="autoComplete"
               options={GDAPRoles.filter(
-                (role) => role.ObjectId !== "7495fdc4-34c4-4d15-a289-98788ce399fd" && role.ObjectId !== "aaf43236-0c0d-4d5f-883a-6955382ac081"
+                (role) =>
+                  role.ObjectId !== "7495fdc4-34c4-4d15-a289-98788ce399fd" &&
+                  role.ObjectId !== "aaf43236-0c0d-4d5f-883a-6955382ac081"
               ).map((role) => ({ label: role.Name, value: role.ObjectId }))}
               multiple={true}
               creatable={false}
@@ -209,10 +211,22 @@ const Page = () => {
               <Typography variant="subtitle">
                 In Advanced Mode, you can manually map existing groups to GDAP roles. This
                 functionality is designed to help map existing groups to GDAP roles that do not
-                match the default naming convention. Certain groups are unavailable for mapping such
-                as All Users, AdminAgents, HelpdeskAgents and SalesAgents. Use extreme caution when
-                mapping roles in this mode.
+                match the default naming convention. Use extreme caution when mapping roles in this
+                mode.
               </Typography>
+              <Typography variant="h6" sx={{ mt: 2 }}>
+                Limitations
+              </Typography>
+              <ul style={{ paddingLeft: "15px" }}>
+                <li>
+                  <b>Reserved groups and roles are unavailable for mapping</b>, this is to prevent
+                  misconfigurations due to permission overlap.
+                </li>
+                <li>
+                  <b>Only one role can be mapped per group</b>. If your current configuration maps
+                  more than one, use the Reset Role Mapping action on the Relationship.
+                </li>
+              </ul>
             </Alert>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={5}>
@@ -247,7 +261,7 @@ const Page = () => {
                   options={GDAPRoles.filter(
                     (role) =>
                       role.ObjectId !== "62e90394-69f5-4237-9190-012177145e10" && // Partner Tier 1
-                      role.ObjectId !== "17315797-102d-40b4-93e0-432062caca18"   // Partner Tier 2
+                      role.ObjectId !== "17315797-102d-40b4-93e0-432062caca18" // Partner Tier 2
                   ).map((role) => ({ label: role.Name, value: role.ObjectId }))}
                   multiple={false}
                   required={true}

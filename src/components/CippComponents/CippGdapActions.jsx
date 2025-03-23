@@ -49,7 +49,7 @@ export const CippGdapActions = () => [
     icon: <AdminPanelSettings />,
   },
   {
-    label: "Reset Group Mappings",
+    label: "Reset Role Mapping",
     type: "POST",
     url: "/api/ExecGDAPAccessAssignment",
     icon: <LockReset />,
@@ -82,10 +82,10 @@ export const CippGdapActions = () => [
     confirmText: (
       <>
         <Typography variant="body1">
-          Are you sure you want to reset the group mappings for this relationship?
+          Are you sure you want to reset the role mappings for this relationship?
         </Typography>
         <Alert severity="warning">
-          Resetting GDAP group mappings will perform the following actions:
+          Resetting GDAP role mappings will perform the following actions:
           <ul style={{ paddingLeft: "15px" }}>
             <li>Remove groups assignments that are not part of the Role Template</li>
             <li>Update existing group assignments to match the Role Template</li>
