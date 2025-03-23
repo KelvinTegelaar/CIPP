@@ -40,6 +40,7 @@ const Page = () => {
       actions={actions}
       tenantInTitle={false}
       queryKey="ListGDAPInvite"
+      maxHeightOffset="460px"
     />
   );
 };

@@ -43,6 +43,7 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      maxHeightOffset="460px"
     />
   );
 };
