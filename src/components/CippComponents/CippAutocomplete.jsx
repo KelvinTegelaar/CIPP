@@ -267,7 +267,9 @@ export const CippAutoComplete = (props) => {
       }}
       size="small"
       defaultValue={
-        typeof defaultValue === "object" && multiple
+        Array.isArray(defaultValue)
+          ? defaultValue
+          : typeof defaultValue === "object" && multiple
           ? [defaultValue]
           : typeof defaultValue === "string"
           ? { label: defaultValue, value: defaultValue }
