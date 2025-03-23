@@ -19,6 +19,30 @@ const simpleColumns = [
   "accessDetails.unifiedRoles",
 ];
 
+const filters = [
+  {
+    filterName: "Active",
+    value: [{ id: "status", value: "active" }],
+    type: "column",
+  },
+  {
+    filterName: "Approval Pending",
+    value: [{ id: "status", value: "approvalPending" }],
+    type: "column",
+  },
+  {
+    filterName: "Terminating",
+    value: [{ id: "status", value: "terminating" }],
+    type: "column",
+  },
+  {
+    filterName: "Terminated",
+    value: [{ id: "status", value: "terminated" }],
+    type: "column",
+  },
+];
+
+
 const offCanvas = {
   actions: actions,
   extendedInfoFields: simpleColumns,
@@ -44,6 +68,7 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       maxHeightOffset="460px"
+      filters={filters}
     />
   );
 };
