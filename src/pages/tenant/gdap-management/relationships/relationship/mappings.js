@@ -67,6 +67,7 @@ const Page = () => {
             queryKey: `AccessAssignments-${id}`,
           }}
           simpleColumns={["group.displayName", "status", "createdDateTime", "roles", "members"]}
+          maxHeightOffset="550px"
         />
       )}
     </HeaderedTabbedLayout>

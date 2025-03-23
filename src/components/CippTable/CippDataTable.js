@@ -53,6 +53,7 @@ export const CippDataTable = (props) => {
     incorrectDataMessage = "Data not in correct format",
     onChange,
     filters,
+    maxHeightOffset = "380px",
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
@@ -156,7 +157,15 @@ export const CippDataTable = (props) => {
 
   // Apply the modeInfo directly
   const [modeInfo] = useState(
-    utilTableMode(columnVisibility, simple, actions, configuredSimpleColumns, offCanvas, onChange)
+    utilTableMode(
+      columnVisibility,
+      simple,
+      actions,
+      configuredSimpleColumns,
+      offCanvas,
+      onChange,
+      maxHeightOffset
+    )
   );
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
