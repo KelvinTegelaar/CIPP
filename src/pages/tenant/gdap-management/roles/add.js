@@ -35,7 +35,7 @@ const Page = () => {
   const [advancedMappings, setAdvancedMappings] = useState([]);
 
   const handleDefaults = () => {
-    formControl.setValue("gdapRoles", cippDefaults);
+    formControl.setValue("gdapRoles", cippDefaults, { shouldDirty: true });
     formControl.trigger();
   };
 
@@ -176,6 +176,7 @@ const Page = () => {
                   return true;
                 },
               }}
+              sortOptions={true}
             />
             <CippFormCondition
               formControl={formControl}
@@ -257,6 +258,7 @@ const Page = () => {
                   multiple={false}
                   required={true}
                   creatable={false}
+                  sortOptions={true}
                 />
               </Grid>
               <Grid item>
@@ -280,6 +282,7 @@ const Page = () => {
                   multiple={false}
                   required={true}
                   creatable={false}
+                  sortOptions={true}
                 />
               </Grid>
               <Grid item xs={12} md={1}>
