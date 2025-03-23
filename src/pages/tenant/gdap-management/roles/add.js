@@ -153,7 +153,9 @@ const Page = () => {
               name="gdapRoles"
               label="Select GDAP Roles"
               type="autoComplete"
-              options={GDAPRoles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+              options={GDAPRoles.filter(
+                (role) => role.ObjectId !== "7495fdc4-34c4-4d15-a289-98788ce399fd" && role.ObjectId !== "aaf43236-0c0d-4d5f-883a-6955382ac081"
+              ).map((role) => ({ label: role.Name, value: role.ObjectId }))}
               multiple={true}
               creatable={false}
               required={true}
@@ -242,7 +244,11 @@ const Page = () => {
                   name="selectedRole"
                   label="Select GDAP Role"
                   type="autoComplete"
-                  options={GDAPRoles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
+                  options={GDAPRoles.filter(
+                    (role) =>
+                      role.ObjectId !== "62e90394-69f5-4237-9190-012177145e10" && // Partner Tier 1
+                      role.ObjectId !== "17315797-102d-40b4-93e0-432062caca18"   // Partner Tier 2
+                  ).map((role) => ({ label: role.Name, value: role.ObjectId }))}
                   multiple={false}
                   required={true}
                   creatable={false}
@@ -260,7 +266,7 @@ const Page = () => {
             </Grid>
             <CippDataTable
               title="Role Mappings"
-              data={advancedMappings}
+              data={advancedMappings ?? []}
               simpleColumns={["groupName", "roleName"]}
               cardProps={{ variant: "outlined" }}
               actions={[
