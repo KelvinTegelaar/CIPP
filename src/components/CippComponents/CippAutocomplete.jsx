@@ -253,18 +253,23 @@ export const CippAutoComplete = (props) => {
             (option) => params.inputValue === option.value || params.inputValue === option.label
           );
         if (params.inputValue !== "" && creatable && !isExisting) {
-          filtered.push({
+          const newOption = {
             label: `Add option: "${params.inputValue}"`,
             value: params.inputValue,
             manual: true,
-          });
+          };
+          if (!filtered.some((option) => option.value === newOption.value)) {
+            filtered.push(newOption);
+          }
         }
 
         return filtered;
       }}
       size="small"
       defaultValue={
-        typeof defaultValue === "string"
+        typeof defaultValue === "object" && multiple
+          ? [defaultValue]
+          : typeof defaultValue === "string"
           ? { label: defaultValue, value: defaultValue }
           : defaultValue
       }
