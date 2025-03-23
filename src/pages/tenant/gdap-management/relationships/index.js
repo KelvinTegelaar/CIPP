@@ -42,7 +42,6 @@ const filters = [
   },
 ];
 
-
 const offCanvas = {
   actions: actions,
   extendedInfoFields: simpleColumns,
@@ -69,6 +68,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       maxHeightOffset="460px"
       filters={filters}
+      defaultSorting={[{ id: "customer.displayName", desc: false }]}
     />
   );
 };

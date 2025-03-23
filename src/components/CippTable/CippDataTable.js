@@ -54,6 +54,7 @@ export const CippDataTable = (props) => {
     onChange,
     filters,
     maxHeightOffset = "380px",
+    defaultSorting = [],
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
@@ -63,6 +64,7 @@ export const CippDataTable = (props) => {
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [graphFilterData, setGraphFilterData] = useState({});
+  const [sorting, setSorting] = useState([]);
   const waitingBool = api?.url ? true : false;
 
   const settings = useSettings();
@@ -149,6 +151,9 @@ export const CippDataTable = (props) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
     }
+    if (defaultSorting?.length > 0) {
+      setSorting(defaultSorting);
+    }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
   }, [columns.length, usedData.length, queryKey]);
@@ -187,11 +192,15 @@ export const CippDataTable = (props) => {
     data: memoizedData,
     state: {
       columnVisibility,
+      sorting,
       showSkeletons: getRequestData.isFetchingNextPage
         ? false
         : getRequestData.isFetching
         ? getRequestData.isFetching
         : isFetching,
+    },
+    onSortingChange: (newSorting) => {
+      setSorting(newSorting ?? []);
     },
     renderEmptyRowsFallback: ({ table }) =>
       getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
