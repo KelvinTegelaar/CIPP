@@ -77,7 +77,8 @@ export const CippGdapActions = () => [
         </Typography>
         <Alert severity="warning">
           This action will remove all existing group mappings and apply the selected role template
-          to the relationship.
+          to the relationship. Use this to fix incorrect group mappings or permission overlap issues
+          (e.g removing AdminAgents or HelpdeskAgents).
         </Alert>
       </>
     ),
