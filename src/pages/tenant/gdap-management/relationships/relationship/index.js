@@ -139,6 +139,7 @@ const Page = () => {
       isFetching={relationshipRequest.isLoading}
       actions={CippGdapActions()}
       actionsData={relationshipData}
+      backUrl="/tenant/gdap-management/relationships"
     >
       {relationshipRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
       {relationshipRequest.isSuccess && (

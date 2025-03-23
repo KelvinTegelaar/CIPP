@@ -47,6 +47,7 @@ const Page = () => {
       title={title}
       subtitle={subtitle}
       isFetching={relationshipRequest.isLoading}
+      backUrl="/tenant/gdap-management/relationships"
     >
       {id && (
         <CippDataTable

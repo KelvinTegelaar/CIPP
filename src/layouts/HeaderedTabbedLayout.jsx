@@ -18,7 +18,16 @@ import {
 import { ActionsMenu } from "/src/components/actions-menu";
 
 export const HeaderedTabbedLayout = (props) => {
-  const { children, tabOptions, title, subtitle, actions, actionsData, isFetching = false } = props;
+  const {
+    children,
+    tabOptions,
+    title,
+    subtitle,
+    actions,
+    actionsData,
+    isFetching = false,
+    backUrl,
+  } = props;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -53,7 +62,7 @@ export const HeaderedTabbedLayout = (props) => {
             <div>
               <Button
                 color="inherit"
-                onClick={() => router.back()}
+                onClick={() => (backUrl ? router.push(backUrl) : router.back())}
                 startIcon={
                   <SvgIcon fontSize="small">
                     <ArrowLeftIcon />
