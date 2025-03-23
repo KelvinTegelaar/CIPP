@@ -16,7 +16,7 @@ To easily add users to these groups, you can do the following
 * Add the created group to the individual GDAP security groups that CIPP created for you. Ex. M365 GDAP Exchange Administrator
 {% endhint %}
 
-If multiple invites are generated, but not used, the unused ones can either be found on the [GDAP Relationships](../relationships.md) page or on the [Invite list](./) page. Here onboarding of the tenant can be started again. The invite needs to be accepted by a Global Administrator in the customer tenant.
+If multiple invites are generated, but not used, the unused ones can either be found on the [GDAP Relationships](../relationships/) page or on the [Invite list](./) page. Here onboarding of the tenant can be started again. The invite needs to be accepted by a Global Administrator in the customer tenant.
 
 All mapped [GDAP roles](../roles/) can be selected from the list, or you can the "Use CIPP recommended roles and settings" option to go with the recommended roles.
 
