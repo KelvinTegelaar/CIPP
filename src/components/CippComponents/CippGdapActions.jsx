@@ -68,6 +68,15 @@ export const CippGdapActions = () => [
           labelField: "TemplateId",
           showRefresh: true,
         },
+        required: true,
+        validators: {
+          validate: (value) => {
+            if (!value) {
+              return "Role Template is required";
+            }
+            return true;
+          },
+        },
       },
     ],
     confirmText: (
