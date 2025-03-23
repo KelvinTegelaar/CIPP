@@ -333,7 +333,7 @@ export const CippApiDialog = (props) => {
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <Stack spacing={3}>{confirmText}</Stack>
+          <Stack spacing={2}>{confirmText}</Stack>
         </DialogContent>
         <DialogContent>
           <Grid container spacing={2}>
