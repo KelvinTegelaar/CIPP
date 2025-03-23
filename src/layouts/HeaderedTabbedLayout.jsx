@@ -108,7 +108,15 @@ export const HeaderedTabbedLayout = (props) => {
               <Divider />
             </div>
           </Stack>
-          {children}
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflow: "auto",
+              height: "calc(100vh - 400px)",
+            }}
+          >
+            {children}
+          </Box>
         </Stack>
       </Container>
     </Box>
