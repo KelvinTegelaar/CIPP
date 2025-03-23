@@ -88,8 +88,8 @@ Beginning with v7, CIPP relies on the tenant's name at the time a GDAP relations
 
 To have the new tenant name show up in CIPP:
 
-1. After renaming the tenant, create a new GDAP relationship. You can use the [GDAP Management](../../user-documentation/tenant/gdap/) page to expedite this process.
-2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the [GDAP Relationships](../../user-documentation/tenant/gdap/relationships.md) page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
+1. After renaming the tenant, create a new GDAP relationship. You can use the [GDAP Management](../../user-documentation/tenant/gdap-management/) page to expedite this process.
+2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the [GDAP Relationships](../../user-documentation/tenant/gdap-management/relationships/) page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
 3. Cleare your tenant cache from [CIPP Application Settings](../../user-documentation/cipp/settings/).
 
 </details>
