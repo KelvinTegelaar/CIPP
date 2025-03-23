@@ -226,6 +226,7 @@ const Page = () => {
                   isFetching={groupList.isFetching}
                   multiple={false}
                   required={true}
+                  creatable={false}
                 />
               </Grid>
               <Grid item>
@@ -244,6 +245,7 @@ const Page = () => {
                   options={GDAPRoles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
                   multiple={false}
                   required={true}
+                  creatable={false}
                 />
               </Grid>
               <Grid item xs={12} md={1}>
