@@ -126,7 +126,7 @@ const Page = () => {
 
             allStandards.push({
               standardId,
-              standardName: standardInfo?.label || standardKey,
+              standardName: standardId || standardKey,
               currentTenantValue:
                 directStandardValue !== undefined
                   ? directStandardValue
@@ -174,22 +174,6 @@ const Page = () => {
             }
           >
             Back to Templates
-          </Button>
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="flex-end"
-          alignItems="center"
-          spacing={4}
-          sx={{ mb: 3 }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<PlayArrow />}
-            onClick={runReportDialog.handleOpen}
-          >
-            Run Report Once
           </Button>
         </Stack>
 
@@ -265,10 +249,6 @@ const Page = () => {
             ))}
           </>
         )}
-
-        <Typography variant="h6" sx={{ mb: 3, px: 1 }}>
-          Comparison Results
-        </Typography>
 
         {comparisonApi.isError && (
           <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
