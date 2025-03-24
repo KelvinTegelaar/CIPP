@@ -301,9 +301,9 @@ export const CippFormComponent = (props) => {
                   <RichTextEditor
                     {...other}
                     ref={field.ref}
-                    key={field.value || ''}
+                    key={field.value ? "edit" : ""}
                     extensions={[StarterKit]}
-                    content={field.value || ''}
+                    content={field.value || ""}
                     onUpdate={({ editor }) => {
                       field.onChange(editor.getHTML());
                     }}
