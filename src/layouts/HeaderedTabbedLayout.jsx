@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ActionsMenu } from "/src/components/actions-menu";
+import { useMediaQuery } from "@mui/material";
 
 export const HeaderedTabbedLayout = (props) => {
   const {
@@ -29,6 +30,7 @@ export const HeaderedTabbedLayout = (props) => {
     backUrl,
   } = props;
 
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const router = useRouter();
   const pathname = usePathname();
   const queryParams = router.query;
@@ -85,7 +87,7 @@ export const HeaderedTabbedLayout = (props) => {
                   spacing={1}
                   justifyContent="space-between"
                 >
-                  <Typography variant="h4">{title}</Typography>
+                  <Typography variant={mdDown ? "h6" : "h4"}>{title}</Typography>
                 </Stack>
                 {isFetching ? (
                   <Skeleton variant="text" width={200} />
@@ -118,11 +120,13 @@ export const HeaderedTabbedLayout = (props) => {
             </div>
           </Stack>
           <Box
-            sx={{
-              flexGrow: 1,
-              overflow: "auto",
-              height: "calc(100vh - 400px)",
-            }}
+            sx={
+              !mdDown && {
+                flexGrow: 1,
+                overflow: "auto",
+                height: "calc(100vh - 400px)",
+              }
+            }
           >
             {children}
           </Box>
