@@ -407,11 +407,27 @@ const Page = () => {
                               ))
                             ) : (
                               <Typography variant="body2">
-                                {standard.standardValue !== undefined
-                                  ? typeof standard.standardValue === "object"
-                                    ? "No settings configured"
-                                    : String(standard.standardValue)
-                                  : "Not configured"}
+                                {standard.standardValue === true
+                                  ? (
+                                      <Alert severity="success" sx={{ mt: 1 }}>
+                                        This setting is configured correctly
+                                      </Alert>
+                                    )
+                                  : standard.standardValue === false
+                                    ? (
+                                        <Alert severity="warning" sx={{ mt: 1 }}>
+                                          This setting is not configured correctly
+                                        </Alert>
+                                      )
+                                    : standard.standardValue !== undefined
+                                    ? typeof standard.standardValue === "object"
+                                      ? "No settings configured"
+                                      : String(standard.standardValue)
+                                    : (
+                                       <Alert severity="info" sx={{ mt: 1 }}>
+                                         This setting is not configured, or data has not been collected. If you are getting this after data collection, the tenant might not be licensed for this feature
+                                       </Alert>
+                                     )}
                               </Typography>
                             )}
                           </Box>
@@ -569,10 +585,24 @@ const Page = () => {
                         }}
                       >
                         {standard.complianceStatus === "Compliant" && standard.currentTenantValue === true
-                          ? "Compliant"
+                          ? (
+                              <Alert severity="success" sx={{ mt: 1 }}>
+                                This setting is configured correctly
+                              </Alert>
+                            )
+                          : standard.currentTenantValue === false
+                          ? (
+                              <Alert severity="warning" sx={{ mt: 1 }}>
+                                This setting is not configured correctly
+                              </Alert>
+                            )
                           : (standard.currentTenantValue !== undefined
-                              ? String(standard.currentTenantValue)
-                              : "Not configured")}
+                               ? String(standard.currentTenantValue)
+                               : (
+                                  <Alert severity="info" sx={{ mt: 1 }}>
+                                    This setting is not configured, or data has not been collected. If you are getting this after data collection, the tenant might not be licensed for this feature
+                                  </Alert>
+                                ))}
                       </Typography>
                     )}
                   </Box>
