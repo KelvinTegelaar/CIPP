@@ -17,6 +17,8 @@ const CippAddEditUser = (props) => {
   const integrationSettings = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "ListExtensionsConfig",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   const watcher = useWatch({ control: formControl.control });
