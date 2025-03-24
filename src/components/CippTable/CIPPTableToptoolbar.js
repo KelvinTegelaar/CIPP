@@ -12,7 +12,11 @@ import {
   Typography,
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
-import { MRT_GlobalFilterTextField, MRT_ToggleFiltersButton } from "material-react-table";
+import {
+  MRT_GlobalFilterTextField,
+  MRT_ToggleFiltersButton,
+  MRT_ToggleFullScreenButton,
+} from "material-react-table";
 import { PDFExportButton } from "../pdfExportButton";
 import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { usePopover } from "../../hooks/use-popover";
@@ -280,7 +284,15 @@ export const CIPPTableToptoolbar = ({
           justifyContent: "space-between",
         })}
       >
-        <Box sx={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: "0.5rem",
+            alignItems: "center",
+            width: "100%",
+            flexWrap: "wrap",
+          }}
+        >
           <>
             <Tooltip
               title={
@@ -334,101 +346,112 @@ export const CIPPTableToptoolbar = ({
                 </IconButton>
               </div>
             </Tooltip>
-
             <MRT_GlobalFilterTextField table={table} />
-            {mdDown ? (
-              <>
-                <Tooltip title="Actions">
-                  <IconButton onClick={handleActionMenuOpen}>
-                    <MoreVert />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  anchorEl={actionMenuAnchor}
-                  open={Boolean(actionMenuAnchor)}
-                  onClose={handleActionMenuClose}
+            <Tooltip title="Preset Filters">
+              <IconButton onClick={filterPopover.handleOpen} ref={filterPopover.anchorRef}>
+                <SvgIcon>
+                  <Tune />
+                </SvgIcon>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={filterPopover.anchorRef.current}
+              open={filterPopover.open}
+              onClose={filterPopover.handleClose}
+              MenuListProps={{ dense: true }}
+            >
+              <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+                <ListItemText primary="Reset all filters" />
+              </MenuItem>
+              {api?.url === "/api/ListGraphRequest" && (
+                <MenuItem
+                  onClick={() => {
+                    filterPopover.handleClose();
+                    setFilterCanvasVisible(true);
+                  }}
                 >
-                  <MenuItem onClick={filterPopover.handleOpen}>
-                    <SvgIcon>
-                      <Tune />
-                    </SvgIcon>
-                    <ListItemText primary="Preset Filters" />
+                  <ListItemText primary="Edit filters" />
+                </MenuItem>
+              )}
+              <Divider />
+              {filterList?.map((filter) => (
+                <MenuItem
+                  key={filter.id}
+                  onClick={() => {
+                    filterPopover.handleClose();
+                    setTableFilter(filter.value, filter.type, filter.filterName);
+                  }}
+                >
+                  <ListItemText primary={filter.filterName} />
+                </MenuItem>
+              ))}
+            </Menu>
+            <MRT_ToggleFiltersButton table={table} />
+            <Tooltip title="Toggle Column Visibility">
+              <IconButton onClick={columnPopover.handleOpen} ref={columnPopover.anchorRef}>
+                <ViewColumn />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={columnPopover.anchorRef.current}
+              open={columnPopover.open}
+              onClose={columnPopover.handleClose}
+              MenuListProps={{ dense: true }}
+            >
+              <MenuItem onClick={resetToPreferedVisibility}>
+                <ListItemText primary="Reset to preferred columns" />
+              </MenuItem>
+              <MenuItem onClick={saveAsPreferedColumns}>
+                <ListItemText primary="Save as preferred columns" />
+              </MenuItem>
+              <MenuItem onClick={resetToDefaultVisibility}>
+                <ListItemText primary="Delete preferred columns" />
+              </MenuItem>
+              {table
+                .getAllColumns()
+                .filter((column) => !column.id.startsWith("mrt-"))
+                .map((column) => (
+                  <MenuItem
+                    key={column.id}
+                    onClick={() =>
+                      setColumnVisibility({
+                        ...columnVisibility,
+                        [column.id]: !column.getIsVisible(),
+                      })
+                    }
+                  >
+                    <Checkbox checked={column.getIsVisible()} />
+                    <ListItemText primary={getCippTranslation(column.id)} />
                   </MenuItem>
-                  <MenuItem onClick={columnPopover.handleOpen}>
-                    <SvgIcon>
-                      <ViewColumn />
-                    </SvgIcon>
-                    <ListItemText primary="Toggle Column Visibility" />
-                  </MenuItem>
-                  {exportEnabled && (
-                    <>
-                      <MenuItem>
-                        <PDFExportButton
-                          rows={table.getFilteredRowModel().rows}
-                          columns={usedColumns}
-                          reportName={title}
-                          columnVisibility={columnVisibility}
-                          sx={{ pl: 0 }}
-                        />
-                        <ListItemText primary="Export PDF" />
-                      </MenuItem>
-                      <MenuItem>
-                        <CSVExportButton
-                          reportName={title}
-                          columnVisibility={columnVisibility}
-                          rows={table.getFilteredRowModel().rows}
-                          columns={usedColumns}
-                          sx={{ pl: 0 }}
-                        />{" "}
-                        <ListItemText primary="Export CSV" />
-                      </MenuItem>
-                    </>
-                  )}
-                  <MenuItem onClick={() => setOffcanvasVisible(true)}>
-                    <SvgIcon>
-                      <DeveloperMode />
-                    </SvgIcon>
-                    <ListItemText primary="View API Response" />
-                  </MenuItem>
-                </Menu>
-              </>
-            ) : (
-              <>
-                <Tooltip title="Preset Filters">
-                  <IconButton onClick={filterPopover.handleOpen} ref={filterPopover.anchorRef}>
-                    <SvgIcon>
-                      <Tune />
-                    </SvgIcon>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Toggle Column Visibility">
-                  <IconButton onClick={columnPopover.handleOpen} ref={columnPopover.anchorRef}>
-                    <ViewColumn />
-                  </IconButton>
-                </Tooltip>
-                {exportEnabled && (
-                  <>
-                    <PDFExportButton
-                      rows={table.getFilteredRowModel().rows}
-                      columns={usedColumns}
-                      reportName={title}
-                      columnVisibility={columnVisibility}
-                    />
-                    <CSVExportButton
-                      reportName={title}
-                      columnVisibility={columnVisibility}
-                      rows={table.getFilteredRowModel().rows}
-                      columns={usedColumns}
-                    />
-                  </>
-                )}
-                <Tooltip title="View API Response">
-                  <IconButton onClick={() => setOffcanvasVisible(true)}>
-                    <DeveloperMode />
-                  </IconButton>
-                </Tooltip>
-              </>
-            )}
+                ))}
+            </Menu>
+
+            <>
+              {exportEnabled && (
+                <>
+                  <PDFExportButton
+                    rows={table.getFilteredRowModel().rows}
+                    columns={usedColumns}
+                    reportName={title}
+                    columnVisibility={columnVisibility}
+                  />
+                  <CSVExportButton
+                    reportName={title}
+                    columnVisibility={columnVisibility}
+                    rows={table.getFilteredRowModel().rows}
+                    columns={usedColumns}
+                  />
+                </>
+              )}
+              <Tooltip title="View API Response">
+                <IconButton onClick={() => setOffcanvasVisible(true)}>
+                  <DeveloperMode />
+                </IconButton>
+              </Tooltip>
+              {mdDown && (
+                <MRT_ToggleFullScreenButton table={table} />
+              )}
+            </>
             {
               //add a little icon with how many rows are selected
               (table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
