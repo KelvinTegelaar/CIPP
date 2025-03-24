@@ -377,6 +377,7 @@ const Page = () => {
                         },
                       }}
                       multiple={false}
+                      creatable={false}
                     />
                   </>
                 )}
