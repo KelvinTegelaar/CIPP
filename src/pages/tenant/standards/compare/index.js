@@ -101,58 +101,123 @@ const Page = () => {
         const allStandards = [];
         if (selectedTemplate.standards) {
           Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
-            const standardId = `standards.${standardKey}`;
-            const standardInfo = standards.find((s) => s.name === standardId);
-            const standardSettings = standardConfig.standards?.[standardKey] || {};
+            // Special handling for IntuneTemplate which is an array of items
+            if (standardKey === "IntuneTemplate" && Array.isArray(standardConfig)) {
+              // Process each IntuneTemplate item separately
+              standardConfig.forEach((templateItem, index) => {
+                const templateId = templateItem.TemplateList?.value;
+                if (templateId) {
+                  const standardId = `standards.IntuneTemplate.${templateId}`;
+                  const standardInfo = standards.find((s) => s.name === `standards.IntuneTemplate`);
 
-            // Find the tenant's value for this standard
-            const currentTenantStandard = currentTenantData.find(
-              (s) => s.standardId === standardId
-            );
+                  // Find the tenant's value for this specific template
+                  const currentTenantStandard = currentTenantData.find(
+                    (s) => s.standardId === standardId
+                  );
 
-            // Determine compliance status
-            let isCompliant = false;
+                  // Get the direct standard value from the tenant object
+                  const directStandardValue = currentTenantObj?.[standardId];
 
-            // Check if the standard is directly in the tenant object (like "standards.AuditLog": true)
-            const standardIdWithoutPrefix = standardId.replace("standards.", "");
-            const directStandardValue = currentTenantObj?.[standardId];
+                  // Determine compliance status
+                  let isCompliant = false;
 
-            // Special case for boolean standards that are true in the tenant
-            if (directStandardValue === true) {
-              // If the standard is directly in the tenant and is true, it's compliant
-              isCompliant = true;
-            } else if (directStandardValue !== undefined) {
-              // For non-boolean values, use strict equality
-              isCompliant =
-                JSON.stringify(directStandardValue) === JSON.stringify(standardSettings);
-            } else if (currentTenantStandard) {
-              // Fall back to the previous logic if the standard is not directly in the tenant object
-              if (typeof standardSettings === "boolean" && standardSettings === true) {
-                isCompliant = currentTenantStandard.value === true;
-              } else {
+                  // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                  if (directStandardValue === true) {
+                    isCompliant = true;
+                  } else if (
+                    directStandardValue !== undefined &&
+                    typeof directStandardValue !== "object"
+                  ) {
+                    isCompliant = true;
+                  } else if (currentTenantStandard) {
+                    isCompliant = currentTenantStandard.value === true;
+                  }
+
+                  // Create a standardValue object that contains the template settings
+                  const templateSettings = {
+                    templateId,
+                    Template: templateItem.TemplateList?.label || "Unknown Template",
+                    "Assign to": templateItem.AssignTo || "On",
+                    "Excluded Group": templateItem.excludeGroup || "",
+                    "Included Group": templateItem.customGroup || "",
+                  };
+
+                  allStandards.push({
+                    standardId,
+                    standardName: `IntuneTemplate: ${
+                      templateItem.TemplateList?.label || templateId
+                    }`,
+                    currentTenantValue:
+                      directStandardValue !== undefined
+                        ? directStandardValue
+                        : currentTenantStandard?.value,
+                    standardValue: templateSettings, // Use the template settings object instead of true
+                    complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                    complianceDetails:
+                      standardInfo?.docsDescription || standardInfo?.helpText || "",
+                    standardDescription: standardInfo?.helpText || "",
+                    standardImpact: standardInfo?.impact || "Medium Impact",
+                    standardImpactColour: standardInfo?.impactColour || "warning",
+                    templateName: selectedTemplate?.templateName || "Standard Template",
+                    templateActions: templateItem.action || [],
+                  });
+                }
+              });
+            } else {
+              // Regular handling for other standards
+              const standardId = `standards.${standardKey}`;
+              const standardInfo = standards.find((s) => s.name === standardId);
+              const standardSettings = standardConfig.standards?.[standardKey] || {};
+
+              // Find the tenant's value for this standard
+              const currentTenantStandard = currentTenantData.find(
+                (s) => s.standardId === standardId
+              );
+
+              // Determine compliance status
+              let isCompliant = false;
+
+              // Check if the standard is directly in the tenant object (like "standards.AuditLog": true)
+              const standardIdWithoutPrefix = standardId.replace("standards.", "");
+              const directStandardValue = currentTenantObj?.[standardId];
+
+              // Special case for boolean standards that are true in the tenant
+              if (directStandardValue === true) {
+                // If the standard is directly in the tenant and is true, it's compliant
+                isCompliant = true;
+              } else if (directStandardValue !== undefined) {
+                // For non-boolean values, use strict equality
                 isCompliant =
-                  JSON.stringify(currentTenantStandard.value) === JSON.stringify(standardSettings);
+                  JSON.stringify(directStandardValue) === JSON.stringify(standardSettings);
+              } else if (currentTenantStandard) {
+                // Fall back to the previous logic if the standard is not directly in the tenant object
+                if (typeof standardSettings === "boolean" && standardSettings === true) {
+                  isCompliant = currentTenantStandard.value === true;
+                } else {
+                  isCompliant =
+                    JSON.stringify(currentTenantStandard.value) ===
+                    JSON.stringify(standardSettings);
+                }
               }
+
+              // Use the direct standard value from the tenant object if it exists
+              allStandards.push({
+                standardId,
+                standardName: standardId || standardKey,
+                currentTenantValue:
+                  directStandardValue !== undefined
+                    ? directStandardValue
+                    : currentTenantStandard?.value,
+                standardValue: standardSettings,
+                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
+                standardDescription: standardInfo?.helpText || "",
+                standardImpact: standardInfo?.impact || "Medium Impact",
+                standardImpactColour: standardInfo?.impactColour || "warning",
+                templateName: selectedTemplate.templateName || "Standard Template",
+                templateActions: standardConfig.action || [],
+              });
             }
-
-            // Use the direct standard value from the tenant object if it exists
-
-            allStandards.push({
-              standardId,
-              standardName: standardId || standardKey,
-              currentTenantValue:
-                directStandardValue !== undefined
-                  ? directStandardValue
-                  : currentTenantStandard?.value,
-              standardValue: standardSettings,
-              complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
-              complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
-              standardDescription: standardInfo?.helpText || "",
-              standardImpact: standardInfo?.impact || "Medium Impact",
-              standardImpactColour: standardInfo?.impactColour || "warning",
-              templateName: selectedTemplate.templateName || "Standard Template",
-              templateActions: standardConfig.action || [],
-            });
           });
         }
 
@@ -193,8 +258,8 @@ const Page = () => {
           <Stack direction="row" alignItems="space-between" spacing={2}>
             <Typography variant="h4" width={"100%"}>
               {
-                templateDetails?.data?.filter((template) => template.GUID === templateId)[0]
-                  .templateName
+                templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
+                  ?.templateName
               }
             </Typography>
             <Tooltip title="Refresh Data">
@@ -220,8 +285,8 @@ const Page = () => {
               </Stack>
             )}
           </Stack>
-          {templateDetails?.data?.filter((template) => template.GUID === templateId)[0]
-            .description && (
+          {templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
+            ?.description && (
             <Box
               sx={{
                 "& a": {
