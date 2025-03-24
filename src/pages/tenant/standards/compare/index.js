@@ -80,11 +80,11 @@ const Page = () => {
 
       if (selectedTemplate && comparisonApi.isSuccess && comparisonApi.data) {
         const tenantData = comparisonApi.data;
-        
+
         // Find the current tenant's data by matching tenantFilter with currentTenant
-        const currentTenantObj = tenantData.find(t => t.tenantFilter === currentTenant);
+        const currentTenantObj = tenantData.find((t) => t.tenantFilter === currentTenant);
         const currentTenantData = currentTenantObj ? currentTenantObj.standardsResults || [] : [];
-        
+
         const allStandards = [];
         if (selectedTemplate.standards) {
           Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
@@ -99,33 +99,38 @@ const Page = () => {
 
             // Determine compliance status
             let isCompliant = false;
-            
+
             // Check if the standard is directly in the tenant object (like "standards.AuditLog": true)
-            const standardIdWithoutPrefix = standardId.replace('standards.', '');
+            const standardIdWithoutPrefix = standardId.replace("standards.", "");
             const directStandardValue = currentTenantObj?.[standardId];
-            
+
             // Special case for boolean standards that are true in the tenant
             if (directStandardValue === true) {
               // If the standard is directly in the tenant and is true, it's compliant
               isCompliant = true;
             } else if (directStandardValue !== undefined) {
               // For non-boolean values, use strict equality
-              isCompliant = JSON.stringify(directStandardValue) === JSON.stringify(standardSettings);
+              isCompliant =
+                JSON.stringify(directStandardValue) === JSON.stringify(standardSettings);
             } else if (currentTenantStandard) {
               // Fall back to the previous logic if the standard is not directly in the tenant object
-              if (typeof standardSettings === 'boolean' && standardSettings === true) {
+              if (typeof standardSettings === "boolean" && standardSettings === true) {
                 isCompliant = currentTenantStandard.value === true;
               } else {
-                isCompliant = JSON.stringify(currentTenantStandard.value) === JSON.stringify(standardSettings);
+                isCompliant =
+                  JSON.stringify(currentTenantStandard.value) === JSON.stringify(standardSettings);
               }
             }
 
             // Use the direct standard value from the tenant object if it exists
-            
+
             allStandards.push({
               standardId,
               standardName: standardInfo?.label || standardKey,
-              currentTenantValue: directStandardValue !== undefined ? directStandardValue : currentTenantStandard?.value,
+              currentTenantValue:
+                directStandardValue !== undefined
+                  ? directStandardValue
+                  : currentTenantStandard?.value,
               standardValue: standardSettings,
               complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
               complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
@@ -396,7 +401,7 @@ const Page = () => {
                                   </Typography>
                                   <Typography variant="body2">
                                     {typeof value === "object" && value !== null
-                                      ? (value.label || JSON.stringify(value))
+                                      ? value.label || JSON.stringify(value)
                                       : value === true
                                       ? "Enabled"
                                       : value === false
@@ -407,27 +412,27 @@ const Page = () => {
                               ))
                             ) : (
                               <Typography variant="body2">
-                                {standard.standardValue === true
-                                  ? (
-                                      <Alert severity="success" sx={{ mt: 1 }}>
-                                        This setting is configured correctly
-                                      </Alert>
-                                    )
-                                  : standard.standardValue === false
-                                    ? (
-                                        <Alert severity="warning" sx={{ mt: 1 }}>
-                                          This setting is not configured correctly
-                                        </Alert>
-                                      )
-                                    : standard.standardValue !== undefined
-                                    ? typeof standard.standardValue === "object"
-                                      ? "No settings configured"
-                                      : String(standard.standardValue)
-                                    : (
-                                       <Alert severity="info" sx={{ mt: 1 }}>
-                                         This setting is not configured, or data has not been collected. If you are getting this after data collection, the tenant might not be licensed for this feature
-                                       </Alert>
-                                     )}
+                                {standard.standardValue === true ? (
+                                  <Alert severity="success" sx={{ mt: 1 }}>
+                                    This setting is configured correctly
+                                  </Alert>
+                                ) : standard.standardValue === false ? (
+                                  <Alert severity="warning" sx={{ mt: 1 }}>
+                                    This setting is not configured correctly
+                                  </Alert>
+                                ) : standard.standardValue !== undefined ? (
+                                  typeof standard.standardValue === "object" ? (
+                                    "No settings configured"
+                                  ) : (
+                                    String(standard.standardValue)
+                                  )
+                                ) : (
+                                  <Alert severity="info" sx={{ mt: 1 }}>
+                                    This setting is not configured, or data has not been collected.
+                                    If you are getting this after data collection, the tenant might
+                                    not be licensed for this feature
+                                  </Alert>
+                                )}
                               </Typography>
                             )}
                           </Box>
@@ -547,23 +552,27 @@ const Page = () => {
                               <Typography
                                 variant="body2"
                                 sx={{
-                                  color: standard.complianceStatus === "Compliant"
-                                    ? "success.main"
-                                    : (isDifferent ? "error.main" : "inherit"),
-                                  fontWeight: standard.complianceStatus !== "Compliant" && isDifferent
-                                    ? "medium"
-                                    : "inherit",
+                                  color:
+                                    standard.complianceStatus === "Compliant"
+                                      ? "success.main"
+                                      : isDifferent
+                                      ? "error.main"
+                                      : "inherit",
+                                  fontWeight:
+                                    standard.complianceStatus !== "Compliant" && isDifferent
+                                      ? "medium"
+                                      : "inherit",
                                 }}
                               >
                                 {standard.complianceStatus === "Compliant" && value === true
                                   ? "Compliant"
-                                  : (typeof value === "object" && value !== null
-                                      ? (value.label || JSON.stringify(value))
-                                      : value === true
-                                      ? "Enabled"
-                                      : value === false
-                                      ? "Disabled"
-                                      : String(value))}
+                                  : typeof value === "object" && value !== null
+                                  ? value.label || JSON.stringify(value)
+                                  : value === true
+                                  ? "Enabled"
+                                  : value === false
+                                  ? "Disabled"
+                                  : String(value)}
                               </Typography>
                             </Box>
                           );
@@ -579,30 +588,27 @@ const Page = () => {
                               ? "success.main"
                               : "error.main",
                           fontWeight:
-                            standard.complianceStatus !== "Compliant"
-                              ? "medium"
-                              : "inherit",
+                            standard.complianceStatus !== "Compliant" ? "medium" : "inherit",
                         }}
                       >
-                        {standard.complianceStatus === "Compliant" && standard.currentTenantValue === true
-                          ? (
-                              <Alert severity="success" sx={{ mt: 1 }}>
-                                This setting is configured correctly
-                              </Alert>
-                            )
-                          : standard.currentTenantValue === false
-                          ? (
-                              <Alert severity="warning" sx={{ mt: 1 }}>
-                                This setting is not configured correctly
-                              </Alert>
-                            )
-                          : (standard.currentTenantValue !== undefined
-                               ? String(standard.currentTenantValue)
-                               : (
-                                  <Alert severity="info" sx={{ mt: 1 }}>
-                                    This setting is not configured, or data has not been collected. If you are getting this after data collection, the tenant might not be licensed for this feature
-                                  </Alert>
-                                ))}
+                        {standard.complianceStatus === "Compliant" &&
+                        standard.currentTenantValue === true ? (
+                          <Alert severity="success" sx={{ mt: 1 }}>
+                            This setting is configured correctly
+                          </Alert>
+                        ) : standard.currentTenantValue === false ? (
+                          <Alert severity="warning" sx={{ mt: 1 }}>
+                            This setting is not configured correctly
+                          </Alert>
+                        ) : standard.currentTenantValue !== undefined ? (
+                          String(standard.currentTenantValue)
+                        ) : (
+                          <Alert severity="info" sx={{ mt: 1 }}>
+                            This setting is not configured, or data has not been collected. If you
+                            are getting this after data collection, the tenant might not be licensed
+                            for this feature
+                          </Alert>
+                        )}
                       </Typography>
                     )}
                   </Box>
