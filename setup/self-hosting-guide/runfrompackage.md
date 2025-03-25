@@ -59,7 +59,7 @@ Under **Source**, select **GitHub**, then log in if prompted.
 {% endstep %}
 
 {% step %}
-**Choose** your Organization, Repository, and Branch (where your CIPP-API code lives).
+**Choose** your Organization, Repository, and Branch (where your CIPP - $${\color{red}API}$$ code lives).
 {% endstep %}
 
 {% step %}
