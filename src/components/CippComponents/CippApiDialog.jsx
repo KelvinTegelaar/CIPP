@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
+import { useMediaQuery } from "@mui/material";
 
 export const CippApiDialog = (props) => {
   const {
@@ -24,6 +25,12 @@ export const CippApiDialog = (props) => {
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
+
+  if (mdDown) {
+    other.fullScreen = true;
+  }
 
   useEffect(() => {
     if (createDialog.open) {
@@ -97,7 +104,7 @@ export const CippApiDialog = (props) => {
           } else {
             newData[key] = value;
           }
-        } else if (typeof value === 'boolean') {
+        } else if (typeof value === "boolean") {
           newData[key] = value;
         } else if (typeof value === "object" && value !== null) {
           const processedValue = processActionData(value, row, replacementBehaviour);
@@ -329,11 +336,11 @@ export const CippApiDialog = (props) => {
   }
 
   return (
-    <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={createDialog.open}>
+    <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={createDialog.open} {...other}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <Stack spacing={3}>{confirmText}</Stack>
+          <Stack spacing={2}>{confirmText}</Stack>
         </DialogContent>
         <DialogContent>
           <Grid container spacing={2}>
