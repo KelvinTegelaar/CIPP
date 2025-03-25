@@ -9,7 +9,7 @@ const csvConfig = mkConfig({
 });
 
 export const CSVExportButton = (props) => {
-  const { rows, columns, reportName, columnVisibility } = props;
+  const { rows, columns, reportName, columnVisibility, ...other } = props;
 
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
@@ -37,7 +37,7 @@ export const CSVExportButton = (props) => {
   return (
     <Tooltip title="Export to CSV">
       <span>
-        <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)}>
+        <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)} {...other}>
           <BackupTableTwoTone />
         </IconButton>
       </span>

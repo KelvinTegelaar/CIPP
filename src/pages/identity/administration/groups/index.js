@@ -11,7 +11,7 @@ const Page = () => {
     {
       //tested
       label: "Edit Group",
-      link: "/identity/administration/groups/edit?groupId=[id]",
+      link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
       multiPost: false,
       icon: <Edit />,
       color: "success",
