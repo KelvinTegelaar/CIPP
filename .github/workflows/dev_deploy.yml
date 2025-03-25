@@ -3,7 +3,7 @@ name: CIPP Development Frontend CI/CD
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   build_and_deploy_job:
