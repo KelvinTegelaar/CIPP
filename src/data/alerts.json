@@ -72,6 +72,11 @@
     "recommendedRunInterval": "4h"
   },
   {
+    "name": "DefenderIncidents",
+    "label": "Alert on new Defender Incidents found",
+    "recommendedRunInterval": "4h"
+  },
+  {
     "name": "UnusedLicenses",
     "label": "Alert on unused licenses",
     "recommendedRunInterval": "1d"

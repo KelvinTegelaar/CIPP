@@ -16,7 +16,7 @@ export const CippWizardOffboarding = (props) => {
   const disableForwarding = useWatch({ control: formControl.control, name: "disableForwarding" });
 
   useEffect(() => {
-    if (selectedUsers.length >= 4) {
+    if (selectedUsers.length >= 3) {
       setShowAlert(true);
       formControl.setValue("Scheduled.enabled", true);
     }
