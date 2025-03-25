@@ -14,6 +14,7 @@ const config = {
   async redirects() {
     return [];
   },
+  output: "export",
 };
 
 module.exports = config;

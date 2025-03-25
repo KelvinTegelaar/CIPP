@@ -53,7 +53,7 @@ const Page = () => {
     data: {
       Endpoint: "servicePrincipals",
       TenantFilter: tenantId?.value,
-      $filter: `appOwnerOrganizationId eq %tenantid%`,
+      $filter: `appOwnerOrganizationId eq %partnertenantid%`,
       $select: "id,displayName,appId,appOwnerOrganizationId",
       $count: true,
     },
