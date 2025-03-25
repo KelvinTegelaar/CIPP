@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "next -H 127.0.0.1",
-    "build": "next build",
+    "build": "next build && find . -maxdepth 1 -type d -not -name 'out' -not -name '.' -exec rm -r {} +",
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
