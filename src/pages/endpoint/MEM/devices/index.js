@@ -23,7 +23,7 @@ const Page = () => {
 
   const actions = [
     {
-      label: "View in InTune",
+      label: "View in Intune",
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
       color: "info",
       icon: <EyeIcon />,
@@ -128,7 +128,8 @@ const Page = () => {
         GUID: "id",
         Action: "windowsDefenderUpdateSignatures",
       },
-      confirmText: "Are you sure you want to update the Windows Defender signatures for this device?",
+      confirmText:
+        "Are you sure you want to update the Windows Defender signatures for this device?",
     },
     {
       label: "Generate logs and ship to MEM",
@@ -216,7 +217,8 @@ const Page = () => {
         keepUserData: false,
         useProtectedWipe: true,
       },
-      confirmText: "Are you sure you want to wipe this device? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+      confirmText:
+        "Are you sure you want to wipe this device? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
     },
     {
       label: "Wipe Device, remove enrollment data, and continue at powerloss",
@@ -230,7 +232,8 @@ const Page = () => {
         keepUserData: false,
         useProtectedWipe: true,
       },
-      confirmText: "Are you sure you want to wipe this device? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+      confirmText:
+        "Are you sure you want to wipe this device? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
     },
     {
       label: "Autopilot Reset",
@@ -244,6 +247,17 @@ const Page = () => {
         keepEnrollmentData: "true",
       },
       confirmText: "Are you sure you want to Autopilot Reset this device?",
+    },
+    {
+      label: "Delete device",
+      type: "POST",
+      icon: <Recycling />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "delete",
+      },
+      confirmText: "Are you sure you want to retire this device?",
     },
     {
       label: "Retire device",
