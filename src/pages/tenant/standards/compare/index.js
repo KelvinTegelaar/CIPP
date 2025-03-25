@@ -144,7 +144,7 @@ const Page = () => {
 
                   allStandards.push({
                     standardId,
-                    standardName: `IntuneTemplate: ${
+                    standardName: `Intune Template: ${
                       templateItem.TemplateList?.label || templateId
                     }`,
                     currentTenantValue:
@@ -168,7 +168,7 @@ const Page = () => {
               const standardId = `standards.${standardKey}`;
               const standardInfo = standards.find((s) => s.name === standardId);
               const standardSettings = standardConfig.standards?.[standardKey] || {};
-
+              console.log(standardInfo);
               // Find the tenant's value for this standard
               const currentTenantStandard = currentTenantData.find(
                 (s) => s.standardId === standardId
@@ -203,7 +203,7 @@ const Page = () => {
               // Use the direct standard value from the tenant object if it exists
               allStandards.push({
                 standardId,
-                standardName: standardId || standardKey,
+                standardName: standardInfo.label || standardKey,
                 currentTenantValue:
                   directStandardValue !== undefined
                     ? directStandardValue
