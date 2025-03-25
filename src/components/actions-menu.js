@@ -11,7 +11,16 @@ export const ActionsMenu = (props) => {
   const popover = usePopover();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const createDialog = useDialog();
-
+  const handleActionDisabled = (row, action) => {
+    //add nullsaftey for row. It can sometimes be undefined(still loading) or null(no data)
+    if (!row) {
+      return true;
+    }
+    if (action?.condition) {
+      return !action?.condition(row);
+    }
+    return false;
+  };
   return (
     <>
       <Button
@@ -48,9 +57,10 @@ export const ActionsMenu = (props) => {
         }}
       >
         {actions
-          ?.filter((action) => !action.link)
+          ?.filter((action) => !action.link || action.showInActionsMenu)
           .map((action, index) => (
             <MenuItem
+              disabled={handleActionDisabled(data, action)}
               key={index}
               onClick={() => {
                 setActionData({
