@@ -52,7 +52,14 @@ const Page = () => {
         </Button>
       }
       actions={actions}
-      simpleColumns={["Tenants", "EventType", "Conditions", "RepeatsEvery", "Actions"]}
+      simpleColumns={[
+        "Tenants",
+        "EventType",
+        "Conditions",
+        "RepeatsEvery",
+        "Actions",
+        "excludedTenants",
+      ]}
       queryKey="ListAlertsQueue"
     />
   );

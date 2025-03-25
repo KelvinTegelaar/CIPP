@@ -61,7 +61,7 @@ const Page = () => {
     if (logRequest.isSuccess) {
       var data = logRequest?.data?.Results?.[0];
 
-      if (data && data?.Data.ActionUrl.includes("identity/administration/ViewBec")) {
+      if (data && data?.Data?.ActionUrl?.includes("identity/administration/ViewBec")) {
         data.Data.ActionUrl = data.Data.ActionUrl.replace(
           "identity/administration/ViewBec",
           "identity/administration/users/user/bec"
