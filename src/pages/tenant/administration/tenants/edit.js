@@ -4,14 +4,7 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import {
-  Stack,
-  Box,
-  Tab,
-  Tabs,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Stack, Box, Tab, Tabs, Grid, Typography } from "@mui/material";
 import { CippCardTabPanel } from "/src/components/CippComponents/CippCardTabPanel";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
@@ -128,6 +121,7 @@ const Page = () => {
                     disabled={tenantDetails.isFetching}
                   />
                   <CippFormComponent
+                    creatable={false}
                     type="autoComplete"
                     name="Groups"
                     label="Tenant Groups"
