@@ -1,10 +1,12 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { ApiGetCall } from "../../../../api/ApiCall";
-import { useEffect } from "react";
+import { Button, SvgIcon } from "@mui/material";
+import { AddBusinessOutlined, Edit } from "@mui/icons-material";
+import tabOptions from "./tabOptions";
+import NextLink from "next/link";
 
 const Page = () => {
-  //this page is special and requires us to craft the columns and DashboardLayout
   const pageTitle = "Tenants";
 
   const simpleColumns = [
@@ -19,6 +21,15 @@ const Page = () => {
     "portal_security",
     "portal_compliance",
   ];
+
+  const actions = [
+    {
+      label: "Edit Tenant",
+      link: "/tenant/administration/tenants/edit?id=[customerId]",
+      icon: <Edit />,
+    },
+  ];
+
   return (
     <CippTablePage
       title={pageTitle}
@@ -30,11 +41,15 @@ const Page = () => {
         Mode: "TenantList",
         tenantFilter: null,
       }}
+      actions={actions}
     />
   );
 };
 
-// Adding the layout for Dashboard
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;
