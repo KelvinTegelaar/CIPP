@@ -94,7 +94,7 @@ const Page = () => {
               variant: "outlined",
             }}
             title="Registered Functions Apps"
-            data={execOffloadFunctions.data?.Version}
+            data={execOffloadFunctions.data?.Version ?? []}
             simpleColumns={["Name", "Version", "Default"]}
             refreshFunction={execOffloadFunctions.refetch}
             isFetching={execOffloadFunctions.isFetching}
