@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Grid, InputAdornment } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
@@ -35,6 +35,9 @@ const CippAddGroupForm = (props) => {
           name="username"
           formControl={formControl}
           fullWidth
+          InputProps={{
+            endAdornment: <InputAdornment position="end">@</InputAdornment>,
+          }}
         />
       </Grid>
       <Grid item xs={12} md={6}>

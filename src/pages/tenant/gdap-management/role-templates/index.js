@@ -106,6 +106,7 @@ const Page = () => {
           </Button>
         }
         queryKey="ListGDAPRoleTemplates"
+        maxHeightOffset="460px"
       />
     </Stack>
   );

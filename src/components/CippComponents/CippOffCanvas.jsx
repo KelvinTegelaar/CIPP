@@ -1,7 +1,9 @@
-import { Drawer, Box, Grid } from "@mui/material";
+import { Drawer, Box, Grid, IconButton } from "@mui/material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import { useMediaQuery } from "@mui/system";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const CippOffCanvas = (props) => {
   const {
@@ -16,6 +18,7 @@ export const CippOffCanvas = (props) => {
     size = "sm",
   } = props;
 
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const extendedInfo = extendedInfoFields.map((field) => {
     const value = field.split(".").reduce((acc, part) => acc && acc[part], extendedData);
     if (value === undefined || value === null) {
@@ -43,20 +46,24 @@ export const CippOffCanvas = (props) => {
     }
   });
 
-  var drawerWidth = 400;
-  switch (size) {
-    case "sm":
-      drawerWidth = 400;
-      break;
-    case "md":
-      drawerWidth = 600;
-      break;
-    case "lg":
-      drawerWidth = 800;
-      break;
-    case "xl":
-      drawerWidth = 1000;
-      break;
+  if (mdDown) {
+    drawerWidth = "100%";
+  } else {
+    var drawerWidth = 400;
+    switch (size) {
+      case "sm":
+        drawerWidth = 400;
+        break;
+      case "md":
+        drawerWidth = 600;
+        break;
+      case "lg":
+        drawerWidth = 800;
+        break;
+      case "xl":
+        drawerWidth = 1000;
+        break;
+    }
   }
 
   return (
@@ -72,6 +79,17 @@ export const CippOffCanvas = (props) => {
         open={visible}
         onClose={onClose}
       >
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 8,
+            zIndex: 1,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         {/* Force vertical stacking in a column layout */}
         <Box
           sx={{ overflowY: "auto", maxHeight: "100%", display: "flex", flexDirection: "column" }}

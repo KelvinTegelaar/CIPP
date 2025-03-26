@@ -11,6 +11,7 @@ const CippPageCard = (props) => {
     cardSize = "xl",
     hideTitleText = false,
     hideBackButton = false,
+    noTenantInHead = false,
     infoBar,
   } = props;
   const router = useRouter();
@@ -21,7 +22,7 @@ const CippPageCard = (props) => {
 
   return (
     <>
-      <CippHead title={title} />
+      <CippHead title={title} noTenant={noTenantInHead} />
       <Box
         sx={{
           flexGrow: 1,
