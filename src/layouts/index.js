@@ -15,6 +15,7 @@ import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboarding";
 import { useDialog } from "../hooks/use-dialog";
 import { nativeMenuItems } from "/src/layouts/config";
+import { keepPreviousData } from "@tanstack/react-query";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -131,6 +132,9 @@ export const Layout = (props) => {
   const userSettingsAPI = ApiGetCall({
     url: "/api/ListUserSettings",
     queryKey: "userSettings",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   useEffect(() => {
@@ -171,6 +175,9 @@ export const Layout = (props) => {
     url: `/api/GetCippAlerts?localversion=${version?.data?.version}`,
     queryKey: "alertsDashboard",
     waiting: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   useEffect(() => {
