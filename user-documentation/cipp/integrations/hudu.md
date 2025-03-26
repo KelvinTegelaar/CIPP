@@ -21,6 +21,11 @@ For User and Device information a Rich Text field called "Microsoft 365" is used
 5. Click **Create New Key**.
 6. Copy the API key to a secure place.
 
+
+{% hint style="warning" %}
+In order for CIPP to access your Hudu asset layouts, a **global** API key must be created. The Company Scope field should be left blank.
+{% endhint %}
+
 #### Step 2 - CIPP Settings
 
 You should now be ready to configure settings inside CIPP
