@@ -15,6 +15,7 @@ const config = {
     return [];
   },
   output: "export",
+  distDir: "./out",
 };
 
 module.exports = config;
