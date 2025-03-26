@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "next -H 127.0.0.1",
-    "build": "next build",
+    "build": "next build && rm -rf package.json yarn.lock",
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
