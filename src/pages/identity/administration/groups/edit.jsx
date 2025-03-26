@@ -13,16 +13,20 @@ import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 
 const EditGroup = () => {
   const router = useRouter();
-  const { groupId } = router.query;
+  const { groupId, groupType } = router.query;
+  const [groupIdReady, setGroupIdReady] = useState(false);
   const tenantFilter = useSettings().currentTenant;
+
   const groupInfo = ApiGetCall({
-    url: `/api/ListGroups?groupID=${groupId}&tenantFilter=${tenantFilter}&members=true&owners=true`,
+    url: `/api/ListGroups?groupID=${groupId}&tenantFilter=${tenantFilter}&members=true&owners=true&groupType=${groupType}`,
     queryKey: `ListGroups-${groupId}`,
-    waiting: false,
+    waiting: groupIdReady,
   });
   const [combinedData, setCombinedData] = useState([]);
+
   useEffect(() => {
     if (groupId) {
+      setGroupIdReady(true);
       groupInfo.refetch();
     }
   }, [router.query, groupId, tenantFilter]);
@@ -30,10 +34,9 @@ const EditGroup = () => {
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
-      tenantId: tenantFilter,
+      tenantFilter: tenantFilter,
     },
   });
-  const groupType = useWatch({ control: formControl.control, name: "groupType" });
 
   useEffect(() => {
     if (groupInfo.isSuccess) {
@@ -46,18 +49,18 @@ const EditGroup = () => {
             displayName: o.displayName,
           })) || []),
           ...(groupInfo.data?.members?.map((m) => ({
-            type: "Member",
-            userPrincipalName: m.userPrincipalName,
+            type: m?.["@odata.type"] === "#microsoft.graph.orgContact" ? "Contact" : "Member",
+            userPrincipalName: m.userPrincipalName ?? m.mail,
             displayName: m.displayName,
           })) || []),
         ];
         setCombinedData(combinedData);
 
         formControl.reset({
-          tenantId: tenantFilter,
+          tenantFilter: tenantFilter,
           mail: group.mail,
-          allowExternal: group.allowExternal,
-          sendCopies: group.sendCopies,
+          allowExternal: groupInfo?.data?.allowExternal,
+          sendCopies: groupInfo?.data?.sendCopies,
           groupName: group.displayName,
           groupId: group.id,
           groupType: (() => {
@@ -90,8 +93,8 @@ const EditGroup = () => {
       <Grid item xs={12} md={6}>
         <CippFormPage
           formControl={formControl}
-          queryKey={`ListGroups-${groupId}`}
-          title={`Group: ${groupInfo.data?.groupInfo?.displayName || ''}`}
+          queryKey={[`ListGroups-${groupId}`]}
+          title={`Group: ${groupInfo.data?.groupInfo?.displayName || ""}`}
           formPageType="Edit"
           backButtonTitle="Group Overview"
           postUrl="/api/EditGroup"
@@ -105,6 +108,11 @@ const EditGroup = () => {
                 label="Add Member"
                 multiple={true}
                 valueField="userPrincipalName"
+                addedField={{
+                  id: "id",
+                  displayName: "displayName",
+                }}
+                removeOptions={groupInfo.data?.members?.map((m) => m.userPrincipalName)}
               />
             </Grid>
 
@@ -117,6 +125,11 @@ const EditGroup = () => {
                 multiple={true}
                 labelField={(option) => `${option.displayName} (${option.userPrincipalName})`}
                 valueField="userPrincipalName"
+                addedField={{
+                  id: "id",
+                  displayName: "displayName",
+                }}
+                removeOptions={groupInfo.data?.owners?.map((o) => o.userPrincipalName)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -125,6 +138,15 @@ const EditGroup = () => {
                 name="AddContact"
                 label="Add Contact"
                 multiple={true}
+                valueField="mail"
+                addedField={{
+                  id: "id",
+                  displayName: "displayName",
+                  mail: "mail",
+                }}
+                removeOptions={groupInfo.data?.members
+                  ?.filter((m) => m?.["@odata.type"] === "#microsoft.graph.orgContact")
+                  .map((m) => m.mail)}
               />
             </Grid>
             <Divider sx={{ my: 2, width: "100%" }} />
@@ -136,10 +158,16 @@ const EditGroup = () => {
                 formControl={formControl}
                 isFetching={groupInfo.isFetching}
                 disabled={groupInfo.isFetching}
-                options={groupInfo.data?.members?.map((m) => ({
-                  label: `${m.displayName} (${m.userPrincipalName})`,
-                  value: m.userPrincipalName,
-                }))}
+                options={groupInfo.data?.members
+                  ?.filter((m) => m?.["@odata.type"] !== "#microsoft.graph.orgContact")
+                  ?.map((m) => ({
+                    label: `${m.displayName} (${m.userPrincipalName})`,
+                    value: m.userPrincipalName,
+                    addedFields: {
+                      id: m.id,
+                      displayName: m.displayName,
+                    },
+                  }))}
                 name="RemoveMember"
                 label="Remove Member"
                 multiple={true}
@@ -155,6 +183,10 @@ const EditGroup = () => {
                 options={groupInfo.data?.owners?.map((o) => ({
                   label: `${o.displayName} (${o.userPrincipalName})`,
                   value: o.userPrincipalName,
+                  addedFields: {
+                    id: o.id,
+                    displayName: o.displayName,
+                  },
                 }))}
                 formControl={formControl}
                 name="RemoveOwner"
@@ -163,7 +195,21 @@ const EditGroup = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <CippFormContactSelector
+              <CippFormComponent
+                type="autoComplete"
+                isFetching={groupInfo.isFetching}
+                disabled={groupInfo.isFetching}
+                options={groupInfo.data?.members
+                  ?.filter((m) => m?.["@odata.type"] === "#microsoft.graph.orgContact")
+                  .map((m) => ({
+                    label: `${m.displayName} (${m.mail})`,
+                    value: m.mail,
+                    addedFields: {
+                      id: m.id,
+                      displayName: m.displayName,
+                      mail: m.mail,
+                    },
+                  }))}
                 formControl={formControl}
                 name="RemoveContact"
                 label="Remove Contact"
@@ -203,6 +249,7 @@ const EditGroup = () => {
           data={combinedData}
           isFetching={groupInfo.isFetching}
           simpleColumns={["type", "userPrincipalName", "displayName"]}
+          refreshFunction={groupInfo.refetch}
         />
       </Grid>
     </Grid>
