@@ -290,8 +290,10 @@ export const CippApiDialog = (props) => {
       });
 
       if (!linkWithRowData.startsWith("/")) {
-        window.open(linkWithRowData, api.target || "_blank");
         createDialog.handleClose();
+        setTimeout(() => {
+          window.open(linkWithRowData, api.target || "_blank");
+        }, 100);
       }
     }
   }, [api.link, createDialog.open]);
