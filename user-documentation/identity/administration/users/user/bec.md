@@ -23,11 +23,11 @@ Note: This page is intended to surface information about potential information t
 
 ### Actions
 
-| Action          | Description                                                                                                                                |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Refresh Data    | This will refresh the analysis for the user and update the Indicators of Compromise checks.                                                |
-| Remediate User  | This action will block user sign-in, reset the user's password, disconnect all current sessions, and disable all inbox rules for the user. |
-| Download Report | This will download a JSON file for the checks completed in the analysis.                                                                   |
+| Action          | Description                                                                                                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Refresh Data    | This will refresh the analysis for the user and update the Indicators of Compromise checks.                                                                                     |
+| Remediate User  | This action will block user sign-in, reset the user's password, disconnect all current sessions, remove all MFA methods for the user, and disable all inbox rules for the user. |
+| Download Report | This will download a JSON file for the checks completed in the analysis.                                                                                                        |
 
 ***
 

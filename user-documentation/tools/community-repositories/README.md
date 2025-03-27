@@ -10,8 +10,6 @@ Extending the functionality of selecting a tenant as a template library, CIPP is
 This page is powered by the GitHub integration. CIPP will be able to populate some of this information, even if you don't set up your own Personal Access Token on the integration page. See the GitHub integration page for more.
 {% endhint %}
 
-
-
 ### Actions
 
 | Action            | Description                                                                                                                                                                                    |
@@ -46,8 +44,7 @@ This page is powered by the GitHub integration. CIPP will be able to populate so
 | View Templates    | Opens a new page where you can see the templates contained in the repo                                                                          |
 | Delete            | Deletes the repo from your list of available community repositories. NOTE: Does not delete the repo in GitHub if this is a private repo you own |
 | Set Upload Branch | For repositories that you own, this will set the branch that you upload templates to                                                            |
-| More Info         | Opens the Extended Info flyout                                                                                                                  |
 
 ***
 
-{% include "../../.gitbook/includes/feature-request.md" %}
+{% include "../../../.gitbook/includes/feature-request.md" %}
