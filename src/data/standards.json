@@ -2019,6 +2019,44 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.PhishingSimulations",
+    "cat": "Defender Standards",
+    "tag": [],
+    "helpText": "This creates a phishing simulation policy that enables phishing simulations for the entire tenant.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": true,
+        "label": "Phishing Simulation Domains",
+        "name": "standards.PhishingSimulations.Domains"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": true,
+        "label": "Phishing Simulation Sender IP Ranges",
+        "name": "standards.PhishingSimulations.SenderIpRanges"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "label": "Phishing Simulation Urls",
+        "name": "standards.PhishingSimulations.PhishingSimUrls"
+      }
+    ],
+    "label": "Phishing Simulation Configuration",
+    "impact": "Medium Impact",
+    "impactColour": "info",
+    "addedDate": "2025-03-27",
+    "powershellEquivalent": "New-TenantAllowBlockListItems, New-PhishSimOverridePolicy and New-ExoPhishSimOverrideRule",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
     "tag": ["CIS", "mdo_zapspam", "mdo_zapphish", "mdo_zapmalware"],
