@@ -26,13 +26,14 @@ This page is a reference to the features of the Standards Templates page in CIPP
 
 ## **Per-Row Actions**
 
-| Action                                            | Description                                                                            |
-| ------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Edit Template                                     | Opens the template configuration page                                                  |
-| Clone & Edit Template                             | Copies the existing template and lets you make changes before saving as a new template |
-| Run Template Now (Currently Selected Tenant only) | Runs the template on the tenant selected in the top menu bar                           |
-| Run Template Now (All Tenants in Template)        | Runs the template for all configured tenants                                           |
-| Delete Template                                   | Deletes the template                                                                   |
+| Action                                            | Description                                                                                                                                             |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [View Tenant Report](../compare.md)               | This will open a CIPP created report that compares the standards template to the settings discovered for the tenant currently selected in the drop down |
+| [Edit Template](../template.md)                   | Opens the template configuration page                                                                                                                   |
+| Clone & Edit Template                             | Copies the existing template and lets you make changes before saving as a new template                                                                  |
+| Run Template Now (Currently Selected Tenant only) | Runs the template on the tenant selected in the top menu bar                                                                                            |
+| Run Template Now (All Tenants in Template)        | Runs the template for all configured tenants                                                                                                            |
+| Delete Template                                   | Deletes the template                                                                                                                                    |
 
 ***
 

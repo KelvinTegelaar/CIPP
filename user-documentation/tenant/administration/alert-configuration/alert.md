@@ -45,6 +45,7 @@ Within CIPP, there are two types of alerts:
 * Alert on Security Defaults automatic enablement
 * Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)
 * Alert on Defender Malware found (Tenant must be on-boarded in Lighthouse)
+* Alert on new Defender Incidents found
 * Alert on unused licenses
 * Alert on overused licenses
 * Alert on Entra ID P1/P2 license over-utilization
@@ -94,7 +95,9 @@ Create an Audit log alert
 {% step %}
 In the tenant selector, select All Tenants
 
-
+{% hint style="info" %}
+Selecting All Tenants will allow you to optionally exclude tenants from the alert
+{% endhint %}
 {% endstep %}
 
 {% step %}

@@ -21,6 +21,12 @@ Tenants are cached for 24 hours. By using the Clear Tenant Cache button in setti
 
 The page also features several columns which contain links to the different Microsoft 365 administration centers for the tenant.
 
+### Per-Row Actions
+
+|             |                                                                           |
+| ----------- | ------------------------------------------------------------------------- |
+| Edit Tenant | Opens a page to edit the tenant alias and manage tenant group membership. |
+
 ***
 
 ### Feature Requests / Ideas

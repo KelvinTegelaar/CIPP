@@ -8,7 +8,7 @@ Configure notifications from CIPP.
 
 CIPP provides alert notifications for Tenants and CIPP actions, sent as one combined table in an email or webhook body.
 
-* [Tenant Alerts](https://github.com/KelvinTegelaar/CIPP/blob/website/docs/user/tenantadministration/alerts/README.md) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
+* [Tenant Alerts](../../security/incidents/list-incidents-1.md) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
 * CIPP Alerts relate to changes initiated via the CIPP platform.
 
 ### Available CIPP Alerts
