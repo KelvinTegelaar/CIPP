@@ -24,7 +24,7 @@ const Page = () => {
     },
     {
       label: "Delete Alert",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveQueuedAlert",
       data: {
         ID: "RowKey",
@@ -52,7 +52,14 @@ const Page = () => {
         </Button>
       }
       actions={actions}
-      simpleColumns={["Tenants", "EventType", "Conditions", "RepeatsEvery", "Actions"]}
+      simpleColumns={[
+        "Tenants",
+        "EventType",
+        "Conditions",
+        "RepeatsEvery",
+        "Actions",
+        "excludedTenants",
+      ]}
       queryKey="ListAlertsQueue"
     />
   );

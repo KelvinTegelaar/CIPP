@@ -43,6 +43,8 @@ const Page = () => {
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   const [testQuery, setTestQuery] = useState({ url: "", waiting: false, queryKey: "" });
@@ -200,13 +202,32 @@ const Page = () => {
             <CippApiResults apiObject={actionTestResults} />
             <CippApiResults apiObject={actionSyncResults} />
           </CardContent>
-
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider", px: "24px", m: "auto" }}>
               <Tabs value={value} onChange={handleTabChange} aria-label="Integration settings">
                 <Tab label="Settings" {...tabProps(0)} />
-                {extension?.mappingRequired && <Tab label="Tenant Mapping" {...tabProps(1)} />}
-                {extension?.fieldMapping && <Tab label="Field Mapping" {...tabProps(2)} />}
+                {extension?.mappingRequired && (
+                  <Tab
+                    label="Tenant Mapping"
+                    {...tabProps(1)}
+                    disabled={
+                      extension?.SettingOptions?.find(
+                        (setting) => setting?.name === `${extension.id}.Enabled`
+                      ) && integrations?.data?.[extension.id]?.Enabled !== true
+                    }
+                  />
+                )}
+                {extension?.fieldMapping && (
+                  <Tab
+                    label="Field Mapping"
+                    {...tabProps(2)}
+                    disabled={
+                      extension?.SettingOptions?.find(
+                        (setting) => setting.name === `${extension.id}.Enabled`
+                      ) && integrations?.data?.[extension.id]?.Enabled !== true
+                    }
+                  />
+                )}
               </Tabs>
             </Box>
             <CippCardTabPanel value={value} index={0}>

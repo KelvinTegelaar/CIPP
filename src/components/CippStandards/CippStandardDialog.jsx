@@ -1,3 +1,4 @@
+import { differenceInDays } from 'date-fns';
 import {
   Dialog,
   DialogActions,
@@ -47,6 +48,12 @@ const CippStandardDialog = ({
     []
   );
 
+  const isNewStandard = (dateAdded) => {
+    const currentDate = new Date();
+    const addedDate = new Date(dateAdded);
+    return differenceInDays(currentDate, addedDate) <= 30;
+  };
+
   return (
     <Dialog
       open={dialogOpen}
@@ -86,8 +93,17 @@ const CippStandardDialog = ({
                       display: "flex",
                       flexDirection: "column",
                       height: "100%",
+                      position: "relative",
                     }}
                   >
+                    {isNewStandard(standard.addedDate) && (
+                      <Chip
+                        label="New"
+                        size="small"
+                        color="success"
+                        sx={{ position: "absolute"}}
+                      />
+                    )}
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography variant="h6" gutterBottom>
                         {standard.label}
@@ -149,6 +165,18 @@ const CippStandardDialog = ({
                           <Typography variant="body2" color="textSecondary" paragraph>
                             {standard.recommendedBy.join(", ")}
                           </Typography>
+                        </>
+                      )}
+                      {standard.addedDate?.length > 0 && (
+                        <>
+                          <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                            Date Added:
+                          </Typography>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Typography variant="body2" color="textSecondary">
+                              {standard.addedDate}
+                            </Typography>
+                          </Box>
                         </>
                       )}
                     </CardContent>

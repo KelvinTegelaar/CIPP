@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
+import { useMediaQuery } from "@mui/material";
 
 export const CippApiDialog = (props) => {
   const {
@@ -24,6 +25,12 @@ export const CippApiDialog = (props) => {
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
+
+  if (mdDown) {
+    other.fullScreen = true;
+  }
 
   useEffect(() => {
     if (createDialog.open) {
@@ -97,6 +104,8 @@ export const CippApiDialog = (props) => {
           } else {
             newData[key] = value;
           }
+        } else if (typeof value === "boolean") {
+          newData[key] = value;
         } else if (typeof value === "object" && value !== null) {
           const processedValue = processActionData(value, row, replacementBehaviour);
           if (replacementBehaviour !== "removeNulls" || Object.keys(processedValue).length > 0) {
@@ -273,20 +282,32 @@ export const CippApiDialog = (props) => {
       .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
   };
 
-  // Handling link navigation
-  if (api.link) {
+  // Handling external link navigation
+  useEffect(() => {
+    if (api.link && createDialog.open) {
+      const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
+        return getNestedValue(row, key) || `[${key}]`;
+      });
+
+      if (!linkWithRowData.startsWith("/")) {
+        window.open(linkWithRowData, api.target || "_blank");
+        createDialog.handleClose();
+      }
+    }
+  }, [api.link, createDialog.open]);
+
+  // Handling internal link navigation
+  if (api.link && createDialog.open) {
     const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
       return getNestedValue(row, key) || `[${key}]`;
     });
 
     if (linkWithRowData.startsWith("/")) {
       router.push(linkWithRowData, undefined, { shallow: true });
-    } else {
-      window.open(linkWithRowData, api.target || "_blank");
+      createDialog.handleClose();
     }
-
-    return null;
   }
+
   useEffect(() => {
     if (api.noConfirm) {
       formHook.handleSubmit(onSubmit)(); // Submits the form on mount
@@ -315,11 +336,11 @@ export const CippApiDialog = (props) => {
   }
 
   return (
-    <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={createDialog.open}>
+    <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={createDialog.open} {...other}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <Stack spacing={3}>{confirmText}</Stack>
+          <Stack spacing={2}>{confirmText}</Stack>
         </DialogContent>
         <DialogContent>
           <Grid container spacing={2}>

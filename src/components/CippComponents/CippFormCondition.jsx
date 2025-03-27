@@ -1,9 +1,18 @@
 import { useWatch } from "react-hook-form";
 import isEqual from "lodash/isEqual"; // lodash for deep comparison
+import React from "react";
 
 export const CippFormCondition = (props) => {
-  let { field, compareType = "is", compareValue, children, formControl } = props;
-
+  let {
+    field,
+    compareType = "is",
+    compareValue,
+    propertyName = "value",
+    action = "hide",
+    children,
+    formControl,
+    disabled = false,
+  } = props;
   if (
     field === undefined ||
     compareValue === undefined ||
@@ -14,12 +23,44 @@ export const CippFormCondition = (props) => {
   }
 
   let watcher = useWatch({ control: formControl.control, name: field });
-  if (watcher?.value !== undefined) {
-    watcher = watcher.value;
+
+  if (propertyName.includes(".")) {
+    propertyName.split(".").forEach((prop) => {
+      if (watcher?.[prop] !== undefined) {
+        watcher = watcher?.[prop];
+      }
+      if (compareValue?.[prop] !== undefined) {
+        compareValue = compareValue?.[prop];
+      }
+    });
+  } else {
+    if (watcher?.[propertyName] !== undefined) {
+      watcher = watcher?.[propertyName];
+    }
+
+    if (compareValue?.[propertyName] !== undefined) {
+      compareValue = compareValue?.[propertyName];
+    }
   }
 
-  if (compareValue?.value !== undefined) {
-    compareValue = compareValue.value;
+  const disableChildren = (children) => {
+    return React.Children.map(children, (child) => {
+      if (React.isValidElement(child)) {
+        if (child.props?.children) {
+          return React.cloneElement(child, {
+            children: disableChildren(child.props.children),
+            disabled: true,
+          });
+        } else {
+          return React.cloneElement(child, { disabled: true });
+        }
+      }
+      return child;
+    });
+  };
+
+  if (disabled) {
+    return disableChildren(children);
   }
 
   switch (compareType) {
@@ -27,11 +68,17 @@ export const CippFormCondition = (props) => {
       if (watcher?.match(new RegExp(compareValue))) {
         return children;
       }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
     case "is":
       // Deep comparison for objects and arrays
       if (isEqual(watcher, compareValue)) {
         return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
       }
       return null;
 
@@ -39,6 +86,9 @@ export const CippFormCondition = (props) => {
       // Deep comparison for objects and arrays (negation)
       if (!isEqual(watcher, compareValue)) {
         return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
       }
       return null;
 
@@ -54,6 +104,9 @@ export const CippFormCondition = (props) => {
       } else if (typeof watcher === "object" && watcher !== null && compareValue in watcher) {
         // Check if object contains the key
         return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
       }
       return null;
 
@@ -73,6 +126,9 @@ export const CippFormCondition = (props) => {
         // Check if object does not contain the key
         return children;
       }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
 
     case "greaterThan":
@@ -82,6 +138,9 @@ export const CippFormCondition = (props) => {
         watcher > compareValue
       ) {
         return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
       }
       return null;
 
@@ -93,6 +152,9 @@ export const CippFormCondition = (props) => {
       ) {
         return children;
       }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
 
     case "arrayLength":
@@ -103,11 +165,17 @@ export const CippFormCondition = (props) => {
       ) {
         return children;
       }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
 
     case "hasValue":
       if (watcher !== undefined && watcher !== null && watcher !== "") {
         return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
       }
       return null;
 
@@ -119,6 +187,9 @@ export const CippFormCondition = (props) => {
       if (Array.isArray(watcher) && watcher.some((item) => item?.label === compareValue)) {
         return children;
       }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
 
     case "labelContains":
@@ -129,12 +200,28 @@ export const CippFormCondition = (props) => {
       ) {
         return children;
       }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
 
     case "valueEq":
       // Checks if any object in array has .value exactly equal to compareValue
       if (Array.isArray(watcher) && watcher.some((item) => item?.value === compareValue)) {
         return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
+      return null;
+
+    case "valueNotEq":
+      // Checks if any object in array has .value exactly equal to compareValue
+      if (Array.isArray(watcher) && watcher.some((item) => item?.value !== compareValue)) {
+        return children;
+      }
+      if (action === "disable") {
+        return disableChildren(children);
       }
       return null;
 
@@ -146,9 +233,15 @@ export const CippFormCondition = (props) => {
       ) {
         return children;
       }
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
 
     default:
+      if (action === "disable") {
+        return disableChildren(children);
+      }
       return null;
   }
 };

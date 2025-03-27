@@ -20,10 +20,11 @@ const Page = () => {
     },
     {
       label: "Remove Contact",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveContact",
       data: {
         GUID: "id",
+        mail: "mail",
       },
       confirmText:
         "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
