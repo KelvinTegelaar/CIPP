@@ -572,13 +572,15 @@ const Page = () => {
                         </Box>
                         <Stack>
                           <Typography variant="h6">{standard?.standardName}</Typography>
-                          <Chip
-                            label="Standard"
-                            size="small"
-                            color="info"
-                            variant="outlined"
-                            sx={{ mt: 1 }}
-                          />
+                          <Box>
+                            <Chip
+                              label="Standard"
+                              size="small"
+                              color="info"
+                              variant="outlined"
+                              sx={{ mt: 1, px: 2 }}
+                            />
+                          </Box>
                         </Stack>
                       </Stack>
                     </Stack>
@@ -699,13 +701,15 @@ const Page = () => {
                         </Box>
                         <Stack>
                           <Typography variant="h6">{currentTenant}</Typography>
-                          <Chip
-                            label="Current Tenant"
-                            size="small"
-                            color="primary"
-                            variant="outlined"
-                            sx={{ mt: 1 }}
-                          />
+                          <Box>
+                            <Chip
+                              label="Current Tenant"
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                              sx={{ mt: 1, px: 2 }}
+                            />
+                          </Box>
                         </Stack>
                       </Stack>
                       <Box
