@@ -324,75 +324,6 @@ const Page = () => {
               }}
             />
           )}
-          <Divider sx={{ my: 2 }} />
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-            sx={{
-              mt: 2,
-              alignItems: { xs: "flex-start", sm: "center" },
-              displayPrint: "none", // Hide filters in print view
-            }}
-          >
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
-              <TextField
-                size="small"
-                variant="filled"
-                fullWidth={{ xs: true, sm: false }}
-                sx={{ width: { xs: "100%", sm: 350 } }}
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start" sx={{ margin: "0 !important" }}>
-                        <Search />
-                      </InputAdornment>
-                    ),
-                    endAdornment: searchQuery && (
-                      <InputAdornment position="end">
-                        <Tooltip title="Clear search">
-                          <IconButton
-                            size="small"
-                            onClick={() => setSearchQuery("")}
-                            aria-label="Clear search"
-                          >
-                            <Close />
-                          </IconButton>
-                        </Tooltip>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-            </Stack>
-            <ButtonGroup variant="outlined" color="primary" size="small">
-              <Button disabled={true} color="primary">
-                <SvgIcon fontSize="small">
-                  <FilterAlt />
-                </SvgIcon>
-              </Button>
-              <Button
-                variant={filter === "all" ? "contained" : "outlined"}
-                onClick={() => setFilter("all")}
-              >
-                All
-              </Button>
-              <Button
-                variant={filter === "compliant" ? "contained" : "outlined"}
-                onClick={() => setFilter("compliant")}
-              >
-                Compliant
-              </Button>
-              <Button
-                variant={filter === "nonCompliant" ? "contained" : "outlined"}
-                onClick={() => setFilter("nonCompliant")}
-              >
-                Non-Compliant
-              </Button>
-            </ButtonGroup>
-          </Stack>
         </Box>
         {comparisonApi.isFetching && (
           <>
@@ -471,6 +402,75 @@ const Page = () => {
           </>
         )}
 
+        <Divider sx={{ my: 2 }} />
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          sx={{
+            mt: 2,
+            alignItems: { xs: "flex-start", sm: "center" },
+            displayPrint: "none", // Hide filters in print view
+          }}
+        >
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
+            <TextField
+              size="small"
+              variant="filled"
+              fullWidth={{ xs: true, sm: false }}
+              sx={{ width: { xs: "100%", sm: 350 } }}
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start" sx={{ margin: "0 !important" }}>
+                      <Search />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchQuery && (
+                    <InputAdornment position="end">
+                      <Tooltip title="Clear search">
+                        <IconButton
+                          size="small"
+                          onClick={() => setSearchQuery("")}
+                          aria-label="Clear search"
+                        >
+                          <Close />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          </Stack>
+          <ButtonGroup variant="outlined" color="primary" size="small">
+            <Button disabled={true} color="primary">
+              <SvgIcon fontSize="small">
+                <FilterAlt />
+              </SvgIcon>
+            </Button>
+            <Button
+              variant={filter === "all" ? "contained" : "outlined"}
+              onClick={() => setFilter("all")}
+            >
+              All
+            </Button>
+            <Button
+              variant={filter === "compliant" ? "contained" : "outlined"}
+              onClick={() => setFilter("compliant")}
+            >
+              Compliant
+            </Button>
+            <Button
+              variant={filter === "nonCompliant" ? "contained" : "outlined"}
+              onClick={() => setFilter("nonCompliant")}
+            >
+              Non-Compliant
+            </Button>
+          </ButtonGroup>
+        </Stack>
         {comparisonApi.isError && (
           <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
             <Alert severity="error" sx={{ mb: 2 }}>
