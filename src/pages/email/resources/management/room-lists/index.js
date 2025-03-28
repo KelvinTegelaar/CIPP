@@ -1,15 +1,17 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Visibility } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Room Lists";
-  const apiUrl = "/api/ListRoomLists"
+  const apiUrl = "/api/ListRoomLists";
 
   const actions = [
     {
       label: "View included Rooms",
       link: `/email/resources/management/room-lists/list/view?roomAddress=[emailAddress]`,
       color: "info",
+      icon: <Visibility />,
     },
   ];
 
@@ -40,6 +42,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       actions={actions}
+      apiDataKey="ListRoomListsResults"
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
     />

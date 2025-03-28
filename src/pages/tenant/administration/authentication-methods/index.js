@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Check, Block } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Auth Methods";
@@ -12,16 +13,18 @@ const Page = () => {
     {
       label: "Enable Policy",
       type: "POST",
+      icon: <Check />,
       url: "/api/SetAuthMethod",
-      data: { state: "enabled", id: "id" },
+      data: { state: "!enabled", id: "id" },
       confirmText: "Are you sure you want to enable this policy?",
       multiPost: false,
     },
     {
       label: "Disable Policy",
       type: "POST",
+      icon: <Block />,
       url: "/api/SetAuthMethod",
-      data: { state: "disabled", id: "id" },
+      data: { state: "!disabled", id: "id" },
       confirmText: "Are you sure you want to disable this policy?",
       multiPost: false,
     },

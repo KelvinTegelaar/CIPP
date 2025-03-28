@@ -3,7 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete } from "@mui/icons-material";
+import { CopyAll, Delete, NotificationAdd } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Alerts";
@@ -24,7 +24,7 @@ const Page = () => {
     },
     {
       label: "Delete Alert",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveQueuedAlert",
       data: {
         ID: "RowKey",
@@ -43,12 +43,23 @@ const Page = () => {
       apiUrl="/api/ListAlertsQueue"
       tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="/tenant/administration/alert-configuration/alert">
+        <Button
+          component={Link}
+          href="/tenant/administration/alert-configuration/alert"
+          startIcon={<NotificationAdd />}
+        >
           Add Alert
         </Button>
       }
       actions={actions}
-      simpleColumns={["Tenants", "EventType", "Conditions", "RepeatsEvery", "Actions"]}
+      simpleColumns={[
+        "Tenants",
+        "EventType",
+        "Conditions",
+        "RepeatsEvery",
+        "Actions",
+        "excludedTenants",
+      ]}
       queryKey="ListAlertsQueue"
     />
   );

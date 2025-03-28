@@ -9,11 +9,13 @@ import { useEffect } from "react";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { getCippLicenseTranslation } from "/src/utils/get-cipp-license-translation";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Mail } from "@mui/icons-material";
+import { Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
+import { Button } from "@mui/material";
+import { Box } from "@mui/system";
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
@@ -25,7 +27,7 @@ const Page = () => {
   });
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
     },
@@ -34,8 +36,16 @@ const Page = () => {
   useEffect(() => {
     if (userRequest.isSuccess) {
       const user = userRequest.data?.[0];
+      //if we have userSettingsDefaults.userAttributes set, grab the .label from each userSsettingsDefaults, then set defaultAttributes.${label}.value to user.${label}
+      let defaultAttributes = {};
+      if (userSettingsDefaults.userAttributes) {
+        userSettingsDefaults.userAttributes.forEach((attribute) => {
+          defaultAttributes[attribute.label] = { Value: user?.[attribute.label] };
+        });
+      }
       formControl.reset({
         ...user,
+        defaultAttributes: defaultAttributes,
         tenantFilter: userSettingsDefaults.currentTenant,
         licenses: user.assignedLicenses.map((license) => ({
           label: getCippLicenseTranslation([license]),
@@ -56,11 +66,30 @@ const Page = () => {
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
         },
         {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
+        },
+        {
           icon: <CalendarIcon />,
           text: (
             <>
-              Created <CippTimeAgo data={userRequest.data?.[0]?.createdDateTime} />
+              Created: <CippTimeAgo data={userRequest.data?.[0]?.createdDateTime} />
             </>
+          ),
+        },
+        {
+          icon: <Launch style={{ color: "#667085" }} />,
+          text: (
+            <Button
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -84,11 +113,13 @@ const Page = () => {
       >
         {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 3]} />}
         {userRequest.isSuccess && (
-          <CippAddEditUser
-            formControl={formControl}
-            userSettingsDefaults={userSettingsDefaults}
-            formType="edit"
-          />
+          <Box sx={{ my: 2 }}>
+            <CippAddEditUser
+              formControl={formControl}
+              userSettingsDefaults={userSettingsDefaults}
+              formType="edit"
+            />
+          </Box>
         )}
       </CippFormPage>
     </HeaderedTabbedLayout>

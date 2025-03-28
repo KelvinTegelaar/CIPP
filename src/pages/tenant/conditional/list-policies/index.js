@@ -5,6 +5,7 @@ import {
   Check as CheckIcon,
   Delete as DeleteIcon,
   MenuBook as MenuBookIcon,
+  AddModerator as AddModeratorIcon,
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
@@ -31,40 +32,46 @@ const Page = () => {
     },
     {
       label: "Enable policy",
-      type: "GET",
-      url: "/api/EditCAPolicy?State=Enabled",
+      type: "POST",
+      url: "/api/EditCAPolicy",
       data: {
         GUID: "id",
+        State: "!Enabled",
       },
       confirmText: "Are you sure you want to enable this policy?",
+      condition: (row) => row.state !== "enabled",
       icon: <CheckIcon />,
       color: "info",
     },
     {
       label: "Disable policy",
-      type: "GET",
-      url: "/api/EditCAPolicy?State=Disabled",
+      type: "POST",
+      url: "/api/EditCAPolicy",
       data: {
         GUID: "id",
+        State: "!Disabled",
       },
       confirmText: "Are you sure you want to disable this policy?",
+      condition: (row) => row.state !== "disabled",
       icon: <BlockIcon />,
       color: "info",
     },
     {
       label: "Set policy to report only",
-      type: "GET",
-      url: "/api/EditCAPolicy?State=enabledForReportingButNotEnforced",
+      type: "POST",
+      url: "/api/EditCAPolicy",
       data: {
         GUID: "id",
+        State: "!enabledForReportingButNotEnforced",
       },
       confirmText: "Are you sure you want to set this policy to report only?",
+      condition: (row) => row.state !== "enabledForReportingButNotEnforced",
       icon: <VisibilityIcon />,
       color: "info",
     },
     {
       label: "Delete policy",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveCAPolicy",
       data: {
         GUID: "id",
@@ -105,7 +112,11 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <Button component={Link} href="/tenant/conditional/list-policies/deploy">
+          <Button
+            component={Link}
+            href="/tenant/conditional/list-policies/deploy"
+            startIcon={<AddModeratorIcon />}
+          >
             Deploy Conditional Access Policy
           </Button>
         </>

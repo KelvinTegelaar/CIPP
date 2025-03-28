@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { CheckCircle, Download, Mail } from "@mui/icons-material";
+import { CheckCircle, Download, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
@@ -111,7 +111,7 @@ const Page = () => {
   const getUserMessage = () => {
     if (!becPollingCall.data) return null;
     if (becPollingCall.data.NewUsers && becPollingCall.data.NewUsers.length > 0) {
-      return "Suspicious new users have been found in the last 14 days. Please review the list below and take action as needed.";
+      return "New users have been found in the last 14 days. Please review the list below and take action as needed.";
     }
     return "No new users found.";
   };
@@ -126,7 +126,7 @@ const Page = () => {
       if (hasPotentialBreach) {
         return "Potential Breach found.";
       }
-      return "Suspicious new applications have been found. Please review the list below and take action as needed.";
+      return "New applications have been found. Please review the list below and take action as needed.";
     }
     return "No new applications found.";
   };
@@ -137,39 +137,52 @@ const Page = () => {
       becPollingCall.data.MailboxPermissionChanges &&
       becPollingCall.data.MailboxPermissionChanges.length > 0
     ) {
-      return "Suspicious mailbox permission changes have been found.";
+      return "Mailbox permission changes have been found.";
     }
     return "No mailbox permission changes found.";
   };
+
+  const subtitle = userRequest.isSuccess
+    ? [
+        {
+          icon: <Mail />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
+        },
+        {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
+        },
+        {
+          icon: <CalendarIcon />,
+          text: (
+            <>
+              Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
+            </>
+          ),
+        },
+        {
+          icon: <Launch style={{ color: "#667085" }} />,
+          text: (
+            <Button
+                color="muted"
+                style={{ paddingLeft: 0 }}
+                size="small"
+                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View in Entra
+              </Button>
+          ),
+        },
+      ]
+    : [];
 
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={userRequest.isSuccess ? userRequest.data?.[0]?.displayName : ""}
-      subtitle={
-        userRequest.isSuccess
-          ? [
-              {
-                icon: <Mail />,
-                text: (
-                  <CippCopyToClipBoard
-                    type="chip"
-                    text={userRequest.data?.[0]?.userPrincipalName}
-                  />
-                ),
-              },
-              {
-                icon: <CalendarIcon />,
-                text: (
-                  <>
-                    Created:{" "}
-                    <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
-                  </>
-                ),
-              },
-            ]
-          : []
-      }
+      subtitle={subtitle}
       isFetching={userRequest.isFetching}
     >
       {/* Loading State: Show only Remediation Card and Check 1 with Loading Skeleton */}

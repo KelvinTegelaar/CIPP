@@ -120,6 +120,7 @@ const Page = () => {
       title={pageTitle}
       hideBackButton={true}
       hidePageType={true}
+      allowResubmit={true}
       formControl={formControl}
       resetForm={false}
       postUrl="/api/ExecPartnerWebhook?Action=CreateSubscription"

@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Grid, InputAdornment } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
@@ -35,6 +35,9 @@ const CippAddGroupForm = (props) => {
           name="username"
           formControl={formControl}
           fullWidth
+          InputProps={{
+            endAdornment: <InputAdornment position="end">@</InputAdornment>,
+          }}
         />
       </Grid>
       <Grid item xs={12} md={6}>
@@ -51,7 +54,7 @@ const CippAddGroupForm = (props) => {
           formControl={formControl}
           name="owners"
           label="Owners"
-          multiple={false}
+          multiple={true}
           select={"id,userPrincipalName,displayName"}
         />
       </Grid>
@@ -62,7 +65,7 @@ const CippAddGroupForm = (props) => {
           formControl={formControl}
           name="members"
           label="Members"
-          multiple={false}
+          multiple={true}
           select={"id,userPrincipalName,displayName"}
         />
       </Grid>
@@ -76,7 +79,7 @@ const CippAddGroupForm = (props) => {
             { label: "Security Group", value: "generic" },
             { label: "Microsoft 365 Group", value: "m365" },
             { label: "Dynamic Group", value: "dynamic" },
-            { label: "Dynamic Distribution Group", value: "dynamicdistribution" },
+            { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
             { label: "Distribution List", value: "distribution" },
             { label: "Mail Enabled Security Group", value: "security" },
           ]}

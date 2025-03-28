@@ -1,30 +1,36 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Edit } from "@mui/icons-material";
+import { Edit, PersonAdd } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 
 const Page = () => {
   const pageTitle = "Contacts";
 
   const actions = [
     {
+      label: "Edit Contact",
+      link: "/email/administration/contacts/edit?id=[id]",
+      multiPost: false,
+      postEntireRow: true,
+      icon: <Edit />,
+      color: "warning",
+      condition: (row) => !row.onPremisesSyncEnabled,
+    },
+    {
       label: "Remove Contact",
       type: "POST",
       url: "/api/RemoveContact",
       data: {
-        TenantFilter: "Tenant",
         GUID: "id",
+        mail: "mail",
       },
-      confirmText: "Are you sure you want to delete this contact?",
+      confirmText:
+        "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
       color: "danger",
-    },
-    {
-      label: "Edit Contact",
-      link: "/email/administration/edit-contact/[id]",
-      multiPost: false,
-      icon: <Edit />,
-      color: "warning",
+      icon: <TrashIcon />,
+      condition: (row) => !row.onPremisesSyncEnabled,
     },
   ];
 
@@ -38,7 +44,11 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/email/administration/contacts/add">
+          <Button
+            component={Link}
+            href="/email/administration/contacts/add"
+            startIcon={<PersonAdd />}
+          >
             Add contact
           </Button>
         </>

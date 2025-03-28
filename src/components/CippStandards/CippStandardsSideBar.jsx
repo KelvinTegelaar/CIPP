@@ -1,14 +1,5 @@
 import PropTypes from "prop-types";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  formControlLabelClasses,
-  Stack,
-  SvgIcon,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, CardHeader, Divider, Stack, SvgIcon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   Timeline,
@@ -91,8 +82,8 @@ const CippStandardsSideBar = ({
         watchForm.standards &&
         Object.keys(selectedStandards).length > 0 &&
         Object.keys(selectedStandards).every((standardName) => {
-          const standardValues = _.get(watchForm, `${standardName}`, {});
-          return standardValues.action;
+          const standardValues = _.get(watchForm, `${standardName}`, {}) ?? {};
+          return standardValues?.action;
         }),
     };
 
@@ -109,7 +100,7 @@ const CippStandardsSideBar = ({
       Object.keys(selectedStandards).length > 0 &&
       Object.keys(selectedStandards).every((standardName) => {
         const standardValues = _.get(watchForm, `${standardName}`, {});
-        return standardValues.action;
+        return standardValues?.action;
       }),
   };
   return (
@@ -127,11 +118,21 @@ const CippStandardsSideBar = ({
             fullWidth
           />
           <Divider />
+          <CippFormComponent
+            type="richText"
+            name="description"
+            label="Description"
+            formControl={formControl}
+            placeholder="Enter a description for the template"
+            fullWidth
+          />
+          <Divider />
           <CippFormTenantSelector
             allTenants={true}
             label="Included Tenants"
             formControl={formControl}
             required={true}
+            includeGroups={true}
           />
           {watchForm.tenantFilter?.some((tenant) => tenant.value === "AllTenants") && (
             <>
@@ -225,6 +226,7 @@ const CippStandardsSideBar = ({
           data: {
             tenantFilter: "tenantFilter",
             excludedTenants: "excludedTenants",
+            description: "description",
             templateName: "templateName",
             standards: "standards",
             ...(edit ? { GUID: "GUID" } : {}),

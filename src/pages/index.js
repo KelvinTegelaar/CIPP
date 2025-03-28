@@ -80,7 +80,12 @@ const Page = () => {
       name: "Default Domain",
       data: (
         <>
-          <CippCopyToClipBoard text={organization.data?.verifiedDomains?.[0]?.name} type="chip" />
+          <CippCopyToClipBoard
+            text={
+              organization.data?.verifiedDomains?.find((domain) => domain.isDefault === true)?.name
+            }
+            type="chip"
+          />
         </>
       ),
     },
@@ -167,6 +172,7 @@ const Page = () => {
         label: portal.label,
         target: "_blank",
         link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+        icon: portal.icon,
       }));
       setPortalMenuItems(menuItems);
     }

@@ -34,6 +34,29 @@ const Page = () => {
     },
   ];
 
+  const filterList = [
+    {
+      filterName: "Running",
+      value: [{ id: "TaskState", value: "Running" }],
+      type: "column",
+    },
+    {
+      filterName: "Planned",
+      value: [{ id: "TaskState", value: "Planned" }],
+      type: "column",
+    },
+    {
+      filterName: "Failed",
+      value: [{ id: "TaskState", value: "Failed" }],
+      type: "column",
+    },
+    {
+      filterName: "Completed",
+      value: [{ id: "TaskState", value: "Completed" }],
+      type: "column",
+    },
+  ];
+
   const offCanvas = {
     children: (extendedData) => (
       <>
@@ -59,22 +82,24 @@ const Page = () => {
       tenantInTitle={false}
       title="Scheduled Tasks"
       apiUrl={
-        showHiddenJobs ? "/api/ListScheduledItems?ListHidden=True" : "/api/ListScheduledItems"
+        showHiddenJobs ? "/api/ListScheduledItems?ShowHidden=true" : "/api/ListScheduledItems"
       }
       queryKey={showHiddenJobs ? `ListScheduledItems-hidden` : `ListScheduledItems`}
       simpleColumns={[
-        "Name",
-        "Tenant",
+        "ExecutedTime",
         "TaskState",
+        "Tenant",
+        "Name",
+        "ScheduledTime",
         "Command",
         "Parameters",
         "PostExecution",
         "Recurrence",
-        "ExecutedTime",
-        "ScheduledTime",
+        "Results",
       ]}
       actions={actions}
       offCanvas={offCanvas}
+      filters={filterList}
     />
   );
 };

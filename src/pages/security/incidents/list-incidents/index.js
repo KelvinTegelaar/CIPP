@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { PersonAdd, PlayArrow, Assignment, Done } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Incidents List";
@@ -9,47 +10,46 @@ const Page = () => {
     {
       label: "Assign to self",
       type: "POST",
+      icon: <PersonAdd />,
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
-        GUID: "id",
-        Assigned: "currentUserId",
+        GUID: "Id",
       },
       confirmText: "Are you sure you want to assign this incident to yourself?",
     },
     {
       label: "Set status to active",
       type: "POST",
+      icon: <PlayArrow />,
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
-        GUID: "id",
-        Status: "active",
-        Assigned: "currentAssignedUser",
+        GUID: "Id",
+        Status: "!active",
+        Assigned: "AssignedTo",
       },
       confirmText: "Are you sure you want to set the status to active?",
     },
     {
       label: "Set status to in progress",
       type: "POST",
+      icon: <Assignment />,
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
-        GUID: "id",
-        Status: "inProgress",
-        Assigned: "currentAssignedUser",
+        GUID: "Id",
+        Status: "!inProgress",
+        Assigned: "AssignedTo",
       },
       confirmText: "Are you sure you want to set the status to in progress?",
     },
     {
       label: "Set status to resolved",
       type: "POST",
+      icon: <Done />,
       url: "/api/ExecSetSecurityIncident",
       data: {
-        TenantFilter: "Tenant",
-        GUID: "id",
-        Status: "resolved",
-        Assigned: "currentAssignedUser",
+        GUID: "Id",
+        Status: "!resolved",
+        Assigned: "AssignedTo",
       },
       confirmText: "Are you sure you want to set the status to resolved?",
     },
@@ -76,13 +76,22 @@ const Page = () => {
   };
 
   // Simplified columns for the table
-  const simpleColumns = ["Created", "Tenant", "Id", "DisplayName", "Status", "Severity", "Tags"];
+  const simpleColumns = [
+    "Created",
+    "Tenant",
+    "Id",
+    "DisplayName",
+    "Status",
+    "Severity",
+    "Tags",
+    "IncidentUrl",
+  ];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ExecIncidentsList"
-      dataKey="Results"
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
