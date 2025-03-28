@@ -319,6 +319,7 @@ const Page = () => {
                       <ClockIcon />
                     </SvgIcon>
                   }
+                  size="small"
                   label={`Updated on ${new Date(
                     comparisonApi.data.find(
                       (comparison) => comparison.RowKey === currentTenant
