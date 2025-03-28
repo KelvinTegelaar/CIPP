@@ -2100,6 +2100,28 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.PhishSimSpoofIntelligence",
+    "cat": "Defender Standards",
+    "tag": [],
+    "helpText": "This adds allowed domains to the Spoof Intelligence Allow/Block List.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "label": "Allowed Domains",
+        "name": "standards.PhishSimSpoofIntelligence.AllowedDomains"
+      }
+    ],
+    "label": "Add allowed domains to Spoof Intelligence",
+    "impact": "Medium Impact",
+    "impactColour": "info",
+    "addedDate": "2025-03-28",
+    "powershellEquivalent": "New-TenantAllowBlockListSpoofItems",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SpamFilterPolicy",
     "cat": "Defender Standards",
     "tag": [],
