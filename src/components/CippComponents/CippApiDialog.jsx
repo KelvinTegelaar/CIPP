@@ -282,40 +282,36 @@ export const CippApiDialog = (props) => {
       .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
   };
 
-  // Handling external link navigation
   const [linkClicked, setLinkClicked] = useState(false);
 
   useEffect(() => {
-    if (api.link && !linkClicked) {
-      const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
-        return getNestedValue(row, key) || `[${key}]`;
-      });
+    if (api.link && !linkClicked && row && Object.keys(row).length > 0) {
+      const timeoutId = setTimeout(() => {
+        const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
+          return getNestedValue(row, key) || `[${key}]`;
+        });
 
-      if (!linkWithRowData.startsWith("/")) {
-        setLinkClicked(true);
-        window.open(linkWithRowData, api.target || "_blank");
-      }
+        if (linkWithRowData.startsWith("/")) {
+          // Internal link navigation
+          setLinkClicked(true);
+          router.push(linkWithRowData, undefined, { shallow: true });
+        } else {
+          // External link navigation
+          setLinkClicked(true);
+          window.open(linkWithRowData, api.target || "_blank");
+        }
+      }, 0); // Delay execution to the next event loop cycle
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [api.link, linkClicked]);
-
-  // Handling internal link navigation
-  if (api.link && !linkClicked) {
-    const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
-      return getNestedValue(row, key) || `[${key}]`;
-    });
-
-    if (linkWithRowData.startsWith("/")) {
-      router.push(linkWithRowData, undefined, { shallow: true });
-      setLinkClicked(true);
-    }
-  }
+  }, [api.link, linkClicked, row, router]);
 
   useEffect(() => {
-    if (api.noConfirm) {
+    if (api.noConfirm && !api.link) {
       formHook.handleSubmit(onSubmit)(); // Submits the form on mount
       createDialog.handleClose(); // Closes the dialog after submitting
     }
-  }, [api.noConfirm]); // Run effect only when api.noConfirm changes
+  }, [api.noConfirm, api.link]); // Run effect when noConfirm or link changes
 
   const handleClose = () => {
     createDialog.handleClose();
