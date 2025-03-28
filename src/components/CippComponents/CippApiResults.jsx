@@ -38,7 +38,7 @@ const extractAllResults = (data) => {
 
     if (item && typeof item === "object") {
       const text = item.resultText || "";
-      const copyField = item.copyField || text;
+      const copyField = item.copyField || "";
       const severity =
         typeof item.state === "string" ? item.state : getSeverity(item) ? "error" : "success";
 
@@ -47,6 +47,7 @@ const extractAllResults = (data) => {
           text,
           copyField,
           severity,
+          ...item,
         };
       }
     }
@@ -172,6 +173,7 @@ export const CippApiResults = (props) => {
             copyField: res.copyField,
             severity: res.severity,
             visible: true,
+            ...res,
           }))
         );
       } else {
