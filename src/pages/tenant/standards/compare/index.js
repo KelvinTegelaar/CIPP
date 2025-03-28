@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Button,
   Card,
-  CardContent,
   Stack,
   Typography,
   Box,
@@ -12,22 +11,22 @@ import {
   Alert,
   IconButton,
   Tooltip,
+  ButtonGroup,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import {
-  PlayArrow,
   CheckCircle,
   Cancel,
   Info,
-  Public,
   Microsoft,
-  Description,
   Sync,
+  FilterAlt,
+  Close,
 } from "@mui/icons-material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import standards from "/src/data/standards.json";
-import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { SvgIcon } from "@mui/material";
 import { useForm } from "react-hook-form";
@@ -37,7 +36,10 @@ import { useRouter } from "next/router";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import {
+  ClockIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
 const Page = () => {
   const router = useRouter();
@@ -52,6 +54,8 @@ const Page = () => {
     },
   });
   const runReportDialog = useDialog();
+  const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const templateDetails = ApiGetCall({
     url: `/api/listStandardTemplates`,
@@ -238,6 +242,20 @@ const Page = () => {
   ]);
   const comparisonModeOptions = [{ label: "Compare Tenant to Standard", value: "standard" }];
 
+  const filteredData = comparisonData?.filter((standard) => {
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "compliant" && standard.complianceStatus === "Compliant") ||
+      (filter === "nonCompliant" && standard.complianceStatus === "Non-Compliant");
+
+    const matchesSearch =
+      !searchQuery ||
+      standard.standardName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      standard.standardDescription.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesFilter && matchesSearch;
+  });
+
   return (
     <Box sx={{ flexGrow: 1, py: 4 }}>
       <Stack spacing={4} sx={{ px: 4 }}>
@@ -308,6 +326,72 @@ const Page = () => {
               }}
             />
           )}
+          <Divider sx={{ my: 2 }} />
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{
+              mt: 2,
+              alignItems: { xs: "flex-start", sm: "center" },
+              displayPrint: "none", // Hide filters in print view
+            }}
+          >
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
+              <SvgIcon fontSize="small">
+                <MagnifyingGlassIcon />
+              </SvgIcon>
+              <TextField
+                size="small"
+                variant="filled"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth={{ xs: true, sm: false }}
+                sx={{ width: { xs: "100%", sm: 300 } }}
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                  endAdornment: searchQuery && (
+                    <InputAdornment position="end">
+                      <IconButton
+                        size="small"
+                        onClick={() => setSearchQuery("")}
+                        aria-label="Clear search"
+                      >
+                        <Close />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Stack>
+            <ButtonGroup variant="outlined" color="primary" size="small">
+              <Button disabled={true} color="primary">
+                <SvgIcon fontSize="small">
+                  <FilterAlt />
+                </SvgIcon>
+              </Button>
+              <Button
+                variant={filter === "all" ? "contained" : "outlined"}
+                onClick={() => setFilter("all")}
+              >
+                All
+              </Button>
+              <Button
+                variant={filter === "compliant" ? "contained" : "outlined"}
+                onClick={() => setFilter("compliant")}
+              >
+                Compliant
+              </Button>
+              <Button
+                variant={filter === "nonCompliant" ? "contained" : "outlined"}
+                onClick={() => setFilter("nonCompliant")}
+              >
+                Non-Compliant
+              </Button>
+            </ButtonGroup>
+          </Stack>
         </Box>
         {comparisonApi.isFetching && (
           <>
@@ -320,7 +404,7 @@ const Page = () => {
                     alignItems="center"
                     sx={{ mb: 2, px: 1 }}
                   >
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    <Stack direction={{ xs: "column", sm: "row" }} alignItems="center" spacing={2}>
                       <Skeleton variant="circular" width={40} height={40} />
                       <Skeleton variant="text" width={200} height={32} />
                     </Stack>
@@ -328,7 +412,7 @@ const Page = () => {
                   </Stack>
                 </Grid>
 
-                <Grid item size={6}>
+                <Grid item size={{ xs: 12, md: 6 }}>
                   <Card sx={{ height: "100%" }}>
                     <Stack
                       direction="row"
@@ -336,7 +420,11 @@ const Page = () => {
                       alignItems="center"
                       sx={{ p: 3 }}
                     >
-                      <Stack direction="row" alignItems="center" spacing={3}>
+                      <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        alignItems="center"
+                        spacing={3}
+                      >
                         <Skeleton variant="circular" width={40} height={40} />
                         <Stack>
                           <Skeleton variant="text" width={150} height={32} />
@@ -353,7 +441,7 @@ const Page = () => {
                   </Card>
                 </Grid>
 
-                <Grid item size={6}>
+                <Grid item size={{ xs: 12, md: 6 }}>
                   <Card sx={{ height: "100%" }}>
                     <Stack
                       direction="row"
@@ -432,11 +520,21 @@ const Page = () => {
           </Card>
         )}
 
-        {comparisonData &&
-          comparisonData.length > 0 &&
-          comparisonData.map((standard, index) => (
+        {filteredData && filteredData.length === 0 && (
+          <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+            <Alert severity="info" sx={{ mb: 2 }}>
+              No standards match the selected filter criteria or search query.
+            </Alert>
+            <Typography variant="body2">
+              Try selecting a different filter or modifying the search query.
+            </Typography>
+          </Card>
+        )}
+        {filteredData &&
+          filteredData.length > 0 &&
+          filteredData.map((standard, index) => (
             <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
-              <Grid item size={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                   <Stack
                     direction="row"
@@ -570,7 +668,7 @@ const Page = () => {
                 </Card>
               </Grid>
 
-              <Grid item size={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                   <Stack
                     direction="row"
