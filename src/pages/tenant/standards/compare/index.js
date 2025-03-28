@@ -24,6 +24,7 @@ import {
   Sync,
   FilterAlt,
   Close,
+  Search,
 } from "@mui/icons-material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import standards from "/src/data/standards.json";
@@ -36,10 +37,7 @@ import { useRouter } from "next/router";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
-import {
-  ClockIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+import { ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const router = useRouter();
@@ -337,32 +335,35 @@ const Page = () => {
             }}
           >
             <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
-              <SvgIcon fontSize="small">
-                <MagnifyingGlassIcon />
-              </SvgIcon>
               <TextField
                 size="small"
                 variant="filled"
-                InputLabelProps={{
-                  shrink: true,
-                }}
                 fullWidth={{ xs: true, sm: false }}
-                sx={{ width: { xs: "100%", sm: 300 } }}
+                sx={{ width: { xs: "100%", sm: 350 } }}
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                InputProps={{
-                  endAdornment: searchQuery && (
-                    <InputAdornment position="end">
-                      <IconButton
-                        size="small"
-                        onClick={() => setSearchQuery("")}
-                        aria-label="Clear search"
-                      >
-                        <Close />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start" sx={{ margin: "0 !important" }}>
+                        <Search />
+                      </InputAdornment>
+                    ),
+                    endAdornment: searchQuery && (
+                      <InputAdornment position="end">
+                        <Tooltip title="Clear search">
+                          <IconButton
+                            size="small"
+                            onClick={() => setSearchQuery("")}
+                            aria-label="Clear search"
+                          >
+                            <Close />
+                          </IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  },
                 }}
               />
             </Stack>
