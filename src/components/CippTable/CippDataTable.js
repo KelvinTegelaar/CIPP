@@ -24,6 +24,7 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
 import { Box } from "@mui/system";
 import { useSettings } from "../../hooks/use-settings";
+import { isEqual } from "lodash"; // Import lodash for deep comparison
 
 export const CippDataTable = (props) => {
   const {
@@ -79,9 +80,11 @@ export const CippDataTable = (props) => {
 
   useEffect(() => {
     if (Array.isArray(data) && !api?.url) {
-      setUsedData(data);
+      if (!isEqual(data, usedData)) {
+        setUsedData(data);
+      }
     }
-  }, [data, api?.url]);
+  }, [data, api?.url, usedData]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
@@ -127,7 +130,13 @@ export const CippDataTable = (props) => {
     queryKey,
   ]);
   useEffect(() => {
-    if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
+    if (
+      !Array.isArray(usedData) ||
+      usedData.length === 0 ||
+      typeof usedData[0] !== "object" ||
+      usedData === null ||
+      usedData === undefined
+    ) {
       return;
     }
     const apiColumns = utilColumnsFromAPI(usedData);
@@ -156,7 +165,7 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData.length, queryKey]);
+  }, [columns.length, usedData, queryKey]);
 
   const createDialog = useDialog();
 
@@ -195,7 +204,7 @@ export const CippDataTable = (props) => {
       },
     }),
     columns: memoizedColumns,
-    data: memoizedData,
+    data: memoizedData ?? [],
     state: {
       columnVisibility,
       sorting,
@@ -294,8 +303,8 @@ export const CippDataTable = (props) => {
               data={data}
               columnVisibility={columnVisibility}
               getRequestData={getRequestData}
-              usedColumns={usedColumns}
-              usedData={usedData}
+              usedColumns={memoizedColumns}
+              usedData={memoizedData ?? []}
               title={title}
               actions={actions}
               exportEnabled={exportEnabled}
