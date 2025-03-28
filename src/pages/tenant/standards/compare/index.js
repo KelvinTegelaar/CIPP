@@ -254,6 +254,10 @@ const Page = () => {
     return matchesFilter && matchesSearch;
   });
 
+  const allCount = comparisonData?.length || 0;
+  const compliantCount = comparisonData?.filter((standard) => standard.complianceStatus === "Compliant").length || 0;
+  const nonCompliantCount = comparisonData?.filter((standard) => standard.complianceStatus === "Non-Compliant").length || 0;
+
   return (
     <Box sx={{ flexGrow: 1, py: 4 }}>
       <Stack spacing={4} sx={{ px: 4 }}>
@@ -455,19 +459,19 @@ const Page = () => {
               variant={filter === "all" ? "contained" : "outlined"}
               onClick={() => setFilter("all")}
             >
-              All
+              All ({allCount})
             </Button>
             <Button
               variant={filter === "compliant" ? "contained" : "outlined"}
               onClick={() => setFilter("compliant")}
             >
-              Compliant
+              Compliant ({compliantCount})
             </Button>
             <Button
               variant={filter === "nonCompliant" ? "contained" : "outlined"}
               onClick={() => setFilter("nonCompliant")}
             >
-              Non-Compliant
+              Non-Compliant ({nonCompliantCount})
             </Button>
           </ButtonGroup>
         </Stack>
