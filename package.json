@@ -8,7 +8,7 @@
   },
   "license": "AGPL-3.0",
   "engines": {
-    "node": "^20.18.3"
+    "node": "^22.13.0"
   },
   "repository": {
     "type": "git",
@@ -71,6 +71,7 @@
     "nprogress": "0.2.0",
     "numeral": "2.0.6",
     "prop-types": "15.8.1",
+    "punycode": "^2.3.1",
     "react": "19.0.0",
     "react-apexcharts": "1.7.0",
     "react-beautiful-dnd": "13.1.1",
