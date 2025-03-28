@@ -38,8 +38,7 @@ import { useRouter } from "next/router";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
-import { ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Clock } from "@mui/x-date-pickers/TimeClock/Clock";
+import { ClockIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const router = useRouter();
