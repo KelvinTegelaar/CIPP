@@ -25,6 +25,7 @@ import {
   FilterAlt,
   Close,
   Search,
+  FactCheck,
 } from "@mui/icons-material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import standards from "/src/data/standards.json";
@@ -38,6 +39,7 @@ import { useDialog } from "../../../../hooks/use-dialog";
 import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
 import { ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Clock } from "@mui/x-date-pickers/TimeClock/Clock";
 
 const Page = () => {
   const router = useRouter();
@@ -255,8 +257,11 @@ const Page = () => {
   });
 
   const allCount = comparisonData?.length || 0;
-  const compliantCount = comparisonData?.filter((standard) => standard.complianceStatus === "Compliant").length || 0;
-  const nonCompliantCount = comparisonData?.filter((standard) => standard.complianceStatus === "Non-Compliant").length || 0;
+  const compliantCount =
+    comparisonData?.filter((standard) => standard.complianceStatus === "Compliant").length || 0;
+  const nonCompliantCount =
+    comparisonData?.filter((standard) => standard.complianceStatus === "Non-Compliant").length || 0;
+  const compliancePercentage = allCount > 0 ? Math.round((compliantCount / allCount) * 100) : 0;
 
   return (
     <Box sx={{ flexGrow: 1, py: 4 }}>
@@ -291,17 +296,36 @@ const Page = () => {
           <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
             {comparisonApi.data?.find((comparison) => comparison.RowKey === currentTenant) && (
               <Stack alignItems="center" direction="row" spacing={1}>
-                <SvgIcon color="text.secondary" fontSize="small">
-                  <ClockIcon />
-                </SvgIcon>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Updated on{" "}
-                  {new Date(
+                <Chip
+                  icon={
+                    <SvgIcon fontSize="small">
+                      <FactCheck />
+                    </SvgIcon>
+                  }
+                  label={`${compliancePercentage}% Compliant`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    compliancePercentage === 100
+                      ? "success"
+                      : compliancePercentage >= 50
+                      ? "warning"
+                      : "error"
+                  }
+                  sx={{ ml: 2 }}
+                />
+                <Chip
+                  icon={
+                    <SvgIcon fontSize="small">
+                      <ClockIcon />
+                    </SvgIcon>
+                  }
+                  label={`Updated on ${new Date(
                     comparisonApi.data.find(
                       (comparison) => comparison.RowKey === currentTenant
                     ).LastRefresh
-                  ).toLocaleString()}
-                </Typography>
+                  ).toLocaleString()}`}
+                />
               </Stack>
             )}
           </Stack>
