@@ -27472,6 +27472,310 @@
     "Service_Plans_Included_Friendly_Names": "Power Platform Connectors in Microsoft 365 Copilot"
   },
   {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "COPILOT_STUDIO_IN_COPILOT_FOR_M365",
+    "Service_Plan_Id": "fe6c28b3-d468-44ea-bbd0-a10a5167435c",
+    "Service_Plans_Included_Friendly_Names": "Copilot Studio in Copilot for M365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_COPILOT",
+    "Service_Plan_Id": "82d30987-df9b-4486-b146-198b21d164c7",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors in Microsoft 365 Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_INTELLIGENT_SEARCH",
+    "Service_Plan_Id": "931e4a88-a67f-48b5-814f-16a5f1e6028d",
+    "Service_Plans_Included_Friendly_Names": "Intelligent Search"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_SHAREPOINT",
+    "Service_Plan_Id": "0aedf20c-091d-420b-aadf-30c042609612",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot for SharePoint"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_TEAMS",
+    "Service_Plan_Id": "b95945de-b3bd-46db-8437-f2beb6ea2347",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Microsoft Teams"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_APPS",
+    "Service_Plan_Id": "a62f8878-de10-42f3-b68f-6149a25ceb97",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Productivity Apps"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "Microsoft_Copilot_for_Sales",
+    "Service_Plan_Id": "a2194428-ead1-4fc1-bb81-ab8675125f42",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot for Sales"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "Microsoft_Copilot_for_Sales_PowerAutomate",
+    "Service_Plan_Id": "0c1c2af2-6c51-43c7-9c55-fa487ac147ff",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot for Sales with Power Automate"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_BUSINESS_CHAT",
+    "Service_Plan_Id": "3f30311c-6b1e-48a4-ab79-725b469da960",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot with Graph-grounded chat"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_USER",
+    "Service_Plan_Id": "b622badb-1b45-48d5-920f-4b27a2c0996c",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_BACKEND",
+    "Service_Plan_Id": "ff7b261f-d98b-415b-827c-42a3fdf015af",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights Backend"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_CONNECTORS",
+    "Service_Plan_Id": "89f1c4c8-0878-40f7-804d-869c9128ab5d",
+    "Service_Plans_Included_Friendly_Names": "Power Platform Connectors in Microsoft 365 Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio",
+    "String_Id": "Power_Virtual_Agents",
+    "GUID": "75564b9c-51e8-431c-b8fe-d472d5a545c8",
+    "Service_Plan_Name": "CDS_VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "5dd1819f-0de7-487f-985b-c450a4c9cc1d",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Microsoft Copilot Studio"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio",
+    "String_Id": "Power_Virtual_Agents",
+    "GUID": "75564b9c-51e8-431c-b8fe-d472d5a545c8",
+    "Service_Plan_Name": "VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "7b0640f1-63cc-4f83-b8c6-0a4d78b8b988",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot Studio – Messages"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio",
+    "String_Id": "Power_Virtual_Agents",
+    "GUID": "75564b9c-51e8-431c-b8fe-d472d5a545c8",
+    "Service_Plan_Name": "FLOW_VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "4b9ec373-ed29-4192-8a47-c9ab9048b079",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Microsoft Copilot Studio"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio for GCC",
+    "String_Id": "Power_Virtual_Agents_for_GCC_GCC",
+    "GUID": "d7974fa0-ddd7-4899-9589-1ea04273aa26",
+    "Service_Plan_Name": "CDS_VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "5dd1819f-0de7-487f-985b-c450a4c9cc1d",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Microsoft Copilot Studio"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio for GCC",
+    "String_Id": "Power_Virtual_Agents_for_GCC_GCC",
+    "GUID": "d7974fa0-ddd7-4899-9589-1ea04273aa26",
+    "Service_Plan_Name": "VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "7b0640f1-63cc-4f83-b8c6-0a4d78b8b988",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot Studio – Messages"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio for GCC",
+    "String_Id": "Power_Virtual_Agents_for_GCC_GCC",
+    "GUID": "d7974fa0-ddd7-4899-9589-1ea04273aa26",
+    "Service_Plan_Name": "FLOW_VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "4b9ec373-ed29-4192-8a47-c9ab9048b079",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Microsoft Copilot Studio"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio_USGOV_GCCHIGH",
+    "String_Id": "Power_Virtual_Agents_USGOV_GCCHIGH",
+    "GUID": "84ed7c30-3738-43a0-aa03-cf6c577d8dbb",
+    "Service_Plan_Name": "CDS_VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "5dd1819f-0de7-487f-985b-c450a4c9cc1d",
+    "Service_Plans_Included_Friendly_Names": "CDS_VIRTUAL_AGENT_BASE_MESSAGES"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio_USGOV_GCCHIGH",
+    "String_Id": "Power_Virtual_Agents_USGOV_GCCHIGH",
+    "GUID": "84ed7c30-3738-43a0-aa03-cf6c577d8dbb",
+    "Service_Plan_Name": "VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "7b0640f1-63cc-4f83-b8c6-0a4d78b8b988",
+    "Service_Plans_Included_Friendly_Names": "VIRTUAL_AGENT_BASE_MESSAGES"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio_USGOV_GCCHIGH",
+    "String_Id": "Power_Virtual_Agents_USGOV_GCCHIGH",
+    "GUID": "84ed7c30-3738-43a0-aa03-cf6c577d8dbb",
+    "Service_Plan_Name": "FLOW_VIRTUAL_AGENT_BASE_MESSAGES",
+    "Service_Plan_Id": "4b9ec373-ed29-4192-8a47-c9ab9048b079",
+    "Service_Plans_Included_Friendly_Names": "FLOW_VIRTUAL_AGENT_BASE_MESSAGES"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License",
+    "String_Id": "VIRTUAL_AGENT_USL",
+    "GUID": "4b74a65c-8b4a-4fc8-9f6b-5177ed11ddfa",
+    "Service_Plan_Name": "CDS_VIRTUAL_AGENT_USL",
+    "Service_Plan_Id": "cb867b3c-7f38-4d0d-99ce-e29cd69812c8",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License",
+    "String_Id": "VIRTUAL_AGENT_USL",
+    "GUID": "4b74a65c-8b4a-4fc8-9f6b-5177ed11ddfa",
+    "Service_Plan_Name": "FLOW_VIRTUAL_AGENT_USL",
+    "Service_Plan_Id": "82f141c9-2e87-4f43-8cb2-12d2701dc6b3",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Virtual Agent"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License",
+    "String_Id": "VIRTUAL_AGENT_USL",
+    "GUID": "4b74a65c-8b4a-4fc8-9f6b-5177ed11ddfa",
+    "Service_Plan_Name": "VIRTUAL_AGENT_USL",
+    "Service_Plan_Id": "1263586c-59a4-4ad0-85e1-d50bc7149501",
+    "Service_Plans_Included_Friendly_Names": "Virtual Agent"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC",
+    "String_Id": "VIRTUAL_AGENT_USL_GCC",
+    "GUID": "f1de227b-f1bd-4959-bd80-b80547095e6d",
+    "Service_Plan_Name": "CDS_Virtual_Agent_Usl_Gov",
+    "Service_Plan_Id": "bcc0702e-ba97-48d9-ae04-fa8689c53bba",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Virtual Agent USL for GCC"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC",
+    "String_Id": "VIRTUAL_AGENT_USL_GCC",
+    "GUID": "f1de227b-f1bd-4959-bd80-b80547095e6d",
+    "Service_Plan_Name": "Virtual_Agent_Usl_Gov",
+    "Service_Plan_Id": "00b6f978-853b-4041-9de0-a233d18669aa",
+    "Service_Plans_Included_Friendly_Names": "Virtual Agent for GCC"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC",
+    "String_Id": "VIRTUAL_AGENT_USL_GCC",
+    "GUID": "f1de227b-f1bd-4959-bd80-b80547095e6d",
+    "Service_Plan_Name": "CDS_Virtual_Agent_Usl_GCC",
+    "Service_Plan_Id": "95df1203-fee7-4726-b7e1-8037a8e899eb",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Virtual Agent USL for GCC"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC",
+    "String_Id": "VIRTUAL_AGENT_USL_GCC",
+    "GUID": "f1de227b-f1bd-4959-bd80-b80547095e6d",
+    "Service_Plan_Name": "Flow_Virtual_Agent_Usl_Gov",
+    "Service_Plan_Id": "0b939472-1861-45f1-ab6d-208f359c05cd",
+    "Service_Plans_Included_Friendly_Names": "Flow for Virtual Agent for GCC"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC",
+    "String_Id": "VIRTUAL_AGENT_USL_GCC",
+    "GUID": "f1de227b-f1bd-4959-bd80-b80547095e6d",
+    "Service_Plan_Name": "FLOW_Virtual_Agent_Base_Gov",
+    "Service_Plan_Id": "f9f6db16-ace6-4838-b11c-892ee75e810a",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Virtual Agent for GCC"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC",
+    "String_Id": "VIRTUAL_AGENT_USL_GCC",
+    "GUID": "f1de227b-f1bd-4959-bd80-b80547095e6d",
+    "Service_Plan_Name": "Power_Virtual_Agent_Usl_GCC",
+    "Service_Plan_Id": "0bdd5466-65c3-470a-9fa6-f679b48286b0",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agent USL for GCC"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC High_USGOV_GCCHIGH",
+    "String_Id": "VIRTUAL_AGENT_USL_AR_USGOV_GCCHIGH",
+    "GUID": "470845c0-6884-47e1-89d0-9d6244a77b44",
+    "Service_Plan_Name": "Virtual_Agent_Usl_Gov_High",
+    "Service_Plan_Id": "7ffee552-ebe8-4725-8678-5c1775c05847",
+    "Service_Plans_Included_Friendly_Names": "Virtual Agent for GCC High"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC High_USGOV_GCCHIGH",
+    "String_Id": "VIRTUAL_AGENT_USL_AR_USGOV_GCCHIGH",
+    "GUID": "470845c0-6884-47e1-89d0-9d6244a77b44",
+    "Service_Plan_Name": "CDS_VIRTUAL_AGENT_USL",
+    "Service_Plan_Id": "cb867b3c-7f38-4d0d-99ce-e29cd69812c8",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC High_USGOV_GCCHIGH",
+    "String_Id": "VIRTUAL_AGENT_USL_AR_USGOV_GCCHIGH",
+    "GUID": "470845c0-6884-47e1-89d0-9d6244a77b44",
+    "Service_Plan_Name": "FLOW_Virtual_Agent_Base_Gov_High",
+    "Service_Plan_Id": "225e52e5-7bbf-4793-8fb1-4307a7a1ae8e",
+    "Service_Plans_Included_Friendly_Names": "Flow for Virtual Agent for GCC High"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC High_USGOV_GCCHIGH",
+    "String_Id": "VIRTUAL_AGENT_USL_AR_USGOV_GCCHIGH",
+    "GUID": "470845c0-6884-47e1-89d0-9d6244a77b44",
+    "Service_Plan_Name": "Flow_Virtual_Agent_Usl_Gov_High",
+    "Service_Plan_Id": "aaae1744-dc7a-4811-9dd0-2bf926ff9d80",
+    "Service_Plans_Included_Friendly_Names": "Flow for Virtual Agent for GCC High"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio User License for GCC High_USGOV_GCCHIGH",
+    "String_Id": "VIRTUAL_AGENT_USL_AR_USGOV_GCCHIGH",
+    "GUID": "470845c0-6884-47e1-89d0-9d6244a77b44",
+    "Service_Plan_Name": "Power_Virtual_Agent_Usl_GCC_High",
+    "Service_Plan_Id": "3fbe8cdf-c735-44bf-bbfa-646724af4bb4",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agent USL for GCC High"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio Viral Trial",
+    "String_Id": "CCIBOTS_PRIVPREV_VIRAL",
+    "GUID": "606b54a9-78d8-4298-ad8b-df6ef4481c80",
+    "Service_Plan_Name": "DYN365_CDS_CCI_BOTS",
+    "Service_Plan_Id": "cf7034ed-348f-42eb-8bbd-dddeea43ee81",
+    "Service_Plans_Included_Friendly_Names": "DYN365_CDS_CCI_BOTS"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio Viral Trial",
+    "String_Id": "CCIBOTS_PRIVPREV_VIRAL",
+    "GUID": "606b54a9-78d8-4298-ad8b-df6ef4481c80",
+    "Service_Plan_Name": "CCIBOTS_PRIVPREV_VIRAL",
+    "Service_Plan_Id": "ce312d15-8fdf-44c0-9974-a25a177125ee",
+    "Service_Plans_Included_Friendly_Names": "CCIBOTS_PRIVPREV_VIRAL"
+  },
+  {
+    "Product_Display_Name": "Microsoft Copilot Studio Viral Trial",
+    "String_Id": "CCIBOTS_PRIVPREV_VIRAL",
+    "GUID": "606b54a9-78d8-4298-ad8b-df6ef4481c80",
+    "Service_Plan_Name": "FLOW_CCI_BOTS",
+    "Service_Plan_Id": "5d798708-6473-48ad-9776-3acc301c40af",
+    "Service_Plans_Included_Friendly_Names": "FLOW_CCI_BOTS"
+  },
+  {
     "Product_Display_Name": "Microsoft Cloud App Security",
     "String_Id": "ADALLOM_STANDALONE",
     "GUID": "df845ce7-05f9-4894-b5f2-11bbfbcfd2b6",
