@@ -92,8 +92,8 @@ const CippCustomVariables = ({ id }) => {
     <CardContent>
       <Alert severity="info" sx={{ mb: 2 }}>
         {id === "AllTenants"
-          ? "Global variables are key-value pairs that can be used to store additional information for All Tenants. These are applied to templates in standards using the format %VariableName%. If a tenant has a custom variable with the same name, the tenant's variable will take precedence."
-          : "Custom variables are key-value pairs that can be used to store additional information about a tenant. These are applied to templates in standards using the format %VariableName%."}
+          ? "Global variables are key-value pairs that can be used to store additional information for All Tenants. These are applied to templates in standards using the format %variablename%. If a tenant has a custom variable with the same name, the tenant's variable will take precedence."
+          : "Custom variables are key-value pairs that can be used to store additional information about a tenant. These are applied to templates in standards using the format %variablename%."}
       </Alert>
       <CippDataTable
         queryKey={`CustomVariables_${id}`}
