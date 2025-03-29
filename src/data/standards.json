@@ -1155,6 +1155,7 @@
         "type": "autoComplete",
         "multiple": true,
         "creatable": true,
+        "required": false,
         "label": "Enter allowed senders(domain.com, *.domain.com or test@domain.com)",
         "name": "standards.SpoofWarn.AllowListAdd"
       }
