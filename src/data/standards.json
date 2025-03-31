@@ -2546,6 +2546,80 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.DefaultPlatformRestrictions",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Sets the default platform restrictions for enrolling devices into Intune. Note: Do not block personally owned if platform is blocked.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformAndroidForWorkBlocked",
+        "label": "Block platform Android Enterprise (work profile)",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalAndroidForWorkBlocked",
+        "label": "Block personally owned Android Enterprise (work profile)",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformAndroidBlocked",
+        "label": "Block platform Android",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalAndroidBlocked",
+        "label": "Block personally owned Android",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformiOSBlocked",
+        "label": "Block platform iOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personaliOSBlocked",
+        "label": "Block personally owned iOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformMacOSBlocked",
+        "label": "Block platform macOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalMacOSBlocked",
+        "label": "Block personally owned macOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformWindowsBlocked",
+        "label": "Block platform Windows",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalWindowsBlocked",
+        "label": "Block personally owned Windows",
+        "default": false
+      }
+    ],
+    "label": "Device enrollment restrictions",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-04-01",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": [],
