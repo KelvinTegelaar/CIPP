@@ -285,6 +285,10 @@ export const CippApiDialog = (props) => {
   const [linkClicked, setLinkClicked] = useState(false);
 
   useEffect(() => {
+    setLinkClicked(false);
+  }, [api.link]);
+
+  useEffect(() => {
     if (api.link && !linkClicked && row && Object.keys(row).length > 0) {
       const timeoutId = setTimeout(() => {
         const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
