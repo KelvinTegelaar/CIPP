@@ -1,6 +1,6 @@
 # Custom Reports
 
-CIPP's custom reporting functionality empowers advanced users to create tailored reports for any best practice scenarios you can imagine. While CIPP includes multiple default reports that are rapidly expanding, custom reports let you take control of exactly what data is presented. By defining your own JSON templates, you can specify APIs, commands, and display styles to meet unique organizational needs.
+CIPP's custom reporting functionality empowers advanced users to create tailored reports for any best practice scenarios you can imagine. While CIPP includes multiple default reports that are rapidly expanding, custom reports let you take control of exactly what data is presented. By defining your own templates, you can specify APIs, commands, and display styles to meet unique organizational needs.
 
 ***
 
@@ -33,96 +33,51 @@ Once configured, force a data refresh to validate your report. This step ensures
 
 ### **Step-by-Step Guide to Creating a Custom Report**
 
-**1. Setting the Foundation**
+{% stepper %}
+{% step %}
+**Setting the Foundation**
 
-Every report begins with a title and presentation style.\
-For example, to create a table-based report:
+Every report begins with a title and presentation style. Enter the Report Name and select your preferred Layout Mode.
+{% endstep %}
 
-```json
-{
-    "name": "Company IT Overview",
-    "style": "Table"
-}
-```
+{% step %}
+**Adding Fields**
 
-Alternatively, for a tenant-based overview, set the style to `"Tenant"`.
+Define the data points to fetch from an API, specifying the endpoint, parameters, and how the data should be presented
 
-***
+For Exchange, define commands instead of API URLs, e.g. `Get-Mailbox`
 
-**2. Adding Fields**
+{% hint style="info" %}
+Click the "+ Add Field" button to display additional fields for configuration.
+{% endhint %}
+{% endstep %}
 
-Define the data points to fetch from an API, specifying the endpoint, parameters, and how the data should be presented:
+{% step %}
+### Save
 
-```json
-{
-    "name": "Company IT Overview",
-    "style": "Table",
-    "fields": [
-        {
-            "name": "SharepointSettings",
-            "API": "Graph",
-            "URL": "https://graph.microsoft.com/beta/admin/sharepoint/settings",
-            "Parameters": {"asApp": "True"},
-            "ExtractFields": ["sharingCapability", "isMacSyncAppEnabled"],
-            "StoreAs": "JSON",
-            "FrontendFields": [
-                {
-                    "name": "Sharing Capability",
-                    "value": "SharepointSettings.sharingCapability",
-                    "formatter": "string"
-                },
-                {
-                    "name": "Mac Sync Enabled",
-                    "value": "SharepointSettings.isMacSyncAppEnabled",
-                    "formatter": "warnBool"
-                }
-            ]
-        }
-    ]
-}
-```
+Click the "Save Report" button to write your template to your BPA reports.
+{% endstep %}
+{% endstepper %}
 
-This example fetches SharePoint settings, extracting sharing capabilities and Mac sync status.
+### Report Layouts
+
+1. Table: Report will be displayed with your selected data appear in columns
+2. Block: Report will be displayed with your selected data appear in a block (or card) fashion
+
+### Field Options
+
+Regardless of the type of report layout you choose, the fields will have the following options which will present you with different fields to populate to generate the field's output.
+
+1. "Use information CIPP has previously gathered in another report" toggle: Toggle this to on to present you with options to populate the database name and card content from information from another report.
+2. Data Source:&#x20;
+   1. Graph: Use to enter a Graph Endpoint and PowerShell sytnax filter
+   2. Exchange Online PowerShell: Use to enter the Exchange Command, PowerShell syntax Where object, and the data from the response that should be stored
+   3. CIPP Function: Use of any CIPP Get- command to populate data for the report
+3. Store this data as
+   1. String: used when extracting a single string value from the data source
+   2. JSON: used for storing more complex objects
+   3. Boolean: used for true/false reporting
 
 ***
 
-**3. Fetching Exchange Data**
-
-For Exchange, define commands instead of API URLs:
-
-```json
-{
-    "name": "MailboxOverview",
-    "API": "Exchange",
-    "command": "Get-Mailbox",
-    "Parameters": {"DetailLevel": "Full"},
-    "ExtractFields": ["UserPrincipalName", "AccountDisabled"],
-    "StoreAs": "JSON",
-    "FrontendFields": [
-        {
-            "name": "Mailbox Size",
-            "value": "MailboxOverview.MailboxSize",
-            "formatter": "number"
-        },
-        {
-            "name": "Last Login Date",
-            "value": "MailboxOverview.LastLoginDate",
-            "formatter": "string"
-        }
-    ]
-}
-```
-
-This configuration retrieves mailbox details, including size and last login date.
-
-***
-
-**4. The End Result**
-
-By following the steps above, you've crafted a detailed JSON structure for the "Company IT Overview" report. This report fetches data from SharePoint, Exchange, and presents insights in a tabular format. You can modify this structure to fetch different data or adjust the presentation as needed.
-
-***
-
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../../.gitbook/includes/feature-request.md" %}

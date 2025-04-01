@@ -36,7 +36,7 @@ At its core, the BPA is built to:
 1. **Pre-Built Reports**
    * Use templates like **CIPP Best Practices Table View** for baseline compliance checks.
 2. **Custom Reports (Advanced)**
-   * Define custom reports using JSON to specify data sources, fields and display formats.&#x20;
+   * Define custom reports to specify data sources, fields, and display formats.&#x20;
    * For further details, check out the community guidance added to the [builder](builder/ "mention") page
 
 ### **Interpreting BPA Results**
@@ -58,7 +58,7 @@ The BPA uses a traffic-light system for quick, visual feedback:
    * Make sure permissions are correct. Navigate to:\
      `CIPP Settings > Configuration Settings > Run Permission Check`.
 3. **API Compatibility (Self-Hosted Only):**
-   * Ensure both **CIPP-API** and **CIPP platform** are up-to-date. The system logs (via the CIPP-API Function App) are your best friend for debugging.
+   * Ensure both **CIPP-API** and **CIPP platform** are up to date. The system logs (via the CIPP-API Function App) are your best friend for debugging.
 
 ***
 
@@ -67,21 +67,9 @@ The BPA uses a traffic-light system for quick, visual feedback:
 
 **Understand Execution Times:** Forcing a refresh runs across your entire environment and may take some time. Use sparingly. Reports are refreshed nightly by default.
 
-**Permissions:** Validate required permissions with `Run Permission Check`, and troubleshoot invalid refresh tokens with `Tenant Access Check`.
+**Permissions:** Validate required permissions with `Run Permission Check` and troubleshoot invalid refresh tokens with `Tenant Access Check`.
 {% endhint %}
 
 ***
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../../.gitbook/assets/openapicipp.json" path="/BestPracticeAnalyser_List" method="get" %}
-[openapicipp.json](../../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-***
-
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

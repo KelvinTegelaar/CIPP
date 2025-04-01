@@ -1,5 +1,6 @@
 ---
 description: Components of a Best Practice Analyzer Report Template
+hidden: true
 ---
 
 # Custom Report Components
