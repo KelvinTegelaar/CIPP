@@ -467,6 +467,11 @@ export const nativeMenuItems = [
       { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
       { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
       {
+        title: "Custom Data",
+        path: "/cipp/custom-data/directory-extensions",
+        roles: ["admin", "superadmin"]
+      },
+      {
         title: "Advanced",
         roles: ["superadmin"],
         items: [

@@ -151,7 +151,7 @@ export const CippExchangeActions = () => {
       label: "Copy Sent Items to Shared Mailbox",
       type: "POST",
       url: "/api/ExecCopyForSent",
-      data: { ID: "UPN" },
+      data: { ID: "UPN", MessageCopyForSentAsEnabled: true },
       confirmText: "Are you sure you want to enable Copy Sent Items to Shared Mailbox?",
       icon: <MailOutline />,
       condition: (row) =>
