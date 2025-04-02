@@ -15,13 +15,18 @@ const flattenObject = (obj, parentKey = "") => {
     if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
       Object.assign(flattened, flattenObject(obj[key], fullKey));
     } else if (Array.isArray(obj[key])) {
-      obj[key].forEach((item, index) => {
-        if (typeof item === "object" && item !== null) {
-          Object.assign(flattened, flattenObject(item, `${fullKey}[${index}]`));
-        } else {
-          flattened[`${fullKey}[${index}]`] = item;
-        }
-      });
+      // Handle arrays of objects by applying the formatter on each property
+      flattened[fullKey] = obj[key]
+        .map((item) =>
+          typeof item === "object"
+            ? JSON.stringify(
+                Object.fromEntries(
+                  Object.entries(flattenObject(item)).map(([k, v]) => [k, getCippFormatting(v, k, "text", false)])
+                )
+              )
+            : getCippFormatting(item, fullKey, "text", false)
+        )
+        .join(", ");
     } else {
       flattened[fullKey] = obj[key];
     }
@@ -52,6 +57,7 @@ export const CSVExportButton = (props) => {
       const formattedRow = {};
       columnKeys.forEach((key) => {
         const value = row[key];
+        // Pass flattened data to the formatter for CSV export
         formattedRow[key] = getCippFormatting(value, key, "text", false);
       });
       return formattedRow;
