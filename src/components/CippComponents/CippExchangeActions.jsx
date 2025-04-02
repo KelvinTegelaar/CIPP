@@ -15,8 +15,8 @@ import {
   Key,
   PostAdd,
   Add,
+  Gavel,
 } from "@mui/icons-material";
-import { useSettings } from "/src/hooks/use-settings.js";
 
 export const CippExchangeActions = () => {
   // const tenant = useSettings().currentTenant;
@@ -166,6 +166,27 @@ export const CippExchangeActions = () => {
       icon: <MailOutline />,
       condition: (row) =>
         row.MessageCopyForSentAsEnabled === true && row.recipientTypeDetails === "SharedMailbox",
+    },
+    {
+      label: "Set Litigation Hold",
+      type: "POST",
+      url: "/api/ExecSetLitigationHold",
+      data: { UPN: "UPN", Id: "Id" },
+      confirmText: "Are you sure you want to set litigation hold?",
+      icon: <Gavel />,
+      fields: [
+        {
+          type: "switch",
+          name: "disable",
+          label: "Disable Litigation Hold",
+        },
+        {
+          type: "number",
+          name: "days",
+          label: "Hold Duration (Days)",
+          placeholder: "e.g. 30. 0 for indefinite",
+        },
+      ],
     },
     {
       label: "Set mailbox locale",
