@@ -171,9 +171,10 @@ export const CippExchangeActions = () => {
       label: "Set Litigation Hold",
       type: "POST",
       url: "/api/ExecSetLitigationHold",
-      data: { UPN: "UPN", Id: "Id" },
+      data: { UPN: "UPN", Identity: "Id" },
       confirmText: "Are you sure you want to set litigation hold?",
       icon: <Gavel />,
+      condition: (row) => row.LicensedForLitigationHold === true,
       fields: [
         {
           type: "switch",
@@ -184,7 +185,7 @@ export const CippExchangeActions = () => {
           type: "number",
           name: "days",
           label: "Hold Duration (Days)",
-          placeholder: "e.g. 30. 0 for indefinite",
+          placeholder: "Blank or 0 for indefinite",
         },
       ],
     },
