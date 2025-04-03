@@ -172,7 +172,7 @@ export const CippExchangeActions = () => {
       type: "POST",
       url: "/api/ExecSetLitigationHold",
       data: { UPN: "UPN", Identity: "Id" },
-      confirmText: "Are you sure you want to set litigation hold?",
+      confirmText: "What do you want to set the Litigation Hold to?",
       icon: <Gavel />,
       condition: (row) => row.LicensedForLitigationHold === true,
       fields: [
