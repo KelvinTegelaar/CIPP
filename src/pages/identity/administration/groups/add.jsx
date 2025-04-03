@@ -3,6 +3,7 @@ import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
+import { useEffect } from "react";
 
 import CippAddGroupForm from "../../../../components/CippFormPages/CippAddGroupForm";
 const Page = () => {
@@ -10,10 +11,14 @@ const Page = () => {
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: {
-      tenantFilter: userSettingsDefaults.currentTenant,
-    },
   });
+
+  useEffect(() => {
+    formControl.setValue(
+      "tenantFilter",
+      userSettingsDefaults?.currentTenant || ""
+    );
+  }, [userSettingsDefaults, formControl]);
 
   return (
     <>

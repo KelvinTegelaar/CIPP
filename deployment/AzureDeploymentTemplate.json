@@ -241,6 +241,19 @@
         "functionAppResourceId": "[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]",
         "functionAppRegion": "[resourceGroup().location]"
       }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, variables('funcAppName'), 'Contributor')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]",
+        "scope": "[resourceGroup().id]"
+      }
     }
   ],
   "outputs": {}

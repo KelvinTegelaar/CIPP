@@ -107,6 +107,14 @@ export const CippIntunePolicy = (props) => {
                   <CippFormComponent
                     key={`${tenant.value}-${placeholder}-${idx}`}
                     type="textField"
+                    defaultValue={
+                      //if the placeholder is tenantid then replace it with tenant.addedFields.customerId, if the placeholder is tenantdomain then replace it with tenant.addedFields.defaultDomainName.
+                      placeholder === "tenantid"
+                        ? tenant?.addedFields?.customerId
+                        : placeholder === "tenantdomain"
+                        ? tenant?.addedFields?.defaultDomainName
+                        : ""
+                    }
                     name={`replacemap.${tenant.value}.%${placeholder}%`}
                     label={`Value for '${placeholder}' in Tenant '${tenant.addedFields.defaultDomainName}'`}
                     formControl={formControl}

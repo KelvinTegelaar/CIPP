@@ -250,6 +250,7 @@ export const nativeMenuItems = [
           { title: "Protection Policies", path: "/endpoint/MEM/list-appprotection-policies" },
           { title: "Apply Policy", path: "/endpoint/MEM/add-policy" },
           { title: "Policy Templates", path: "/endpoint/MEM/list-templates" },
+          { title: "Scripts", path: "/endpoint/MEM/list-scripts" },
         ],
       },
       {
@@ -441,6 +442,11 @@ export const nativeMenuItems = [
         roles: ["editor", "admin", "superadmin"],
       },
       {
+        title: "Community Repositories",
+        path: "/tools/community-repos",
+        roles: ["editor", "admin", "superadmin"],
+      },
+      {
         title: "Scheduler",
         path: "/cipp/scheduler",
         roles: ["editor", "admin", "superadmin"],
@@ -457,9 +463,14 @@ export const nativeMenuItems = [
     ),
     items: [
       { title: "Application Settings", path: "/cipp/settings", roles: ["admin", "superadmin"] },
-      { title: "Logbook", path: "/cipp/logs", roles: ["admin", "superadmin"] },
+      { title: "Logbook", path: "/cipp/logs", roles: ["editor", "admin", "superadmin"] },
       { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
       { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
+      {
+        title: "Custom Data",
+        path: "/cipp/custom-data/directory-extensions",
+        roles: ["admin", "superadmin"]
+      },
       {
         title: "Advanced",
         roles: ["superadmin"],
