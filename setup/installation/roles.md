@@ -13,7 +13,7 @@ CIPP features a role management system which utilises the [Roles feature of Azur
 | Role Name  | Description                                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | readonly   | Only allowed to read and list items and send push messages to users.                                                                                                                                          |
-| editor     | Allowed to perform everything, except editing tenants, exclusions, and standards.                                                                                                                             |
+| editor     | Allowed to perform everything, except change system settings.                                                                                                                                                 |
 | admin      | Allowed to perform everything.                                                                                                                                                                                |
 | superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. This role must be combined with 'admin' |
 
