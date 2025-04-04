@@ -13,7 +13,9 @@ This page will display a table of the scheduled integration syncs for the integr
 | Repeats Every  | The task recurrence for the sync.                                                      |
 | Results        | The results of the last sync.                                                          |
 
-
+{% hint style="info" %}
+Scheduled tasks run on the quarter hour (:00, :15, :30, :45). Tasks that are due or past due will be picked up at that time. The Scheduled Time can help you know which quarter hour the task will be picked up at.
+{% endhint %}
 
 ***
 
