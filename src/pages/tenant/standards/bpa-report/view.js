@@ -113,7 +113,7 @@ const Page = () => {
         }
       }
     }
-  }, [bpaTemplateList.isSuccess, bpaData.isSuccess, currentTenant, router]);
+  }, [bpaTemplateList.isSuccess, bpaData.isSuccess, bpaData.data, currentTenant, router]);
 
   const pageTitle = `BPA Report Viewer - ${currentTenant}`;
   return (
@@ -221,6 +221,8 @@ const Page = () => {
                           noCard={true}
                           incorrectDataMessage={"No data has been found for this report."}
                           simpleColumns={block?.simpleColumns}
+                          isFetching={bpaData.isFetching}
+                          refreshFunction={() => bpaData.refetch()}
                         />
                       ) : (
                         <Typography variant="h6" color="textPrimary">

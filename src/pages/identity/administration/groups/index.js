@@ -3,7 +3,15 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import Link from "next/link";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { Visibility, VisibilityOff, GroupAdd, Edit, LockOpen, Lock } from "@mui/icons-material";
+import {
+  Visibility,
+  VisibilityOff,
+  GroupAdd,
+  Edit,
+  LockOpen,
+  Lock,
+  GroupSharp,
+} from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Groups";
@@ -11,7 +19,7 @@ const Page = () => {
     {
       //tested
       label: "Edit Group",
-      link: "/identity/administration/groups/edit?groupId=[id]",
+      link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
       multiPost: false,
       icon: <Edit />,
       color: "success",
@@ -70,6 +78,22 @@ const Page = () => {
       },
       confirmText:
         "Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.",
+      multiPost: false,
+    },
+    {
+      label: "Create template based on group",
+      type: "POST",
+      url: "/api/AddGroupTemplate",
+      icon: <GroupSharp />,
+      data: {
+        Displayname: "displayname",
+        Description: "description",
+        GroupType: "calculatedGroupType",
+        MembershipRules: "membershipRule",
+        allowExternal: "allowExternal",
+        username: "mailNickname",
+      },
+      confirmText: "Are you sure you want to create a template based on this group?",
       multiPost: false,
     },
     {
