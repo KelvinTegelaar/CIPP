@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
 import { Button } from "@mui/material";
-import { PersonAdd, Delete, Sync, Add } from "@mui/icons-material";
+import { PersonAdd, Delete, Sync, Add, Edit } from "@mui/icons-material";
 import { useDialog } from "../../../../hooks/use-dialog";
 import Link from "next/link";
 import { useState } from "react";
@@ -50,6 +50,44 @@ const Page = () => {
       data: { ID: "id" },
       confirmText: "Are you sure you want to delete this device?",
       color: "danger",
+    },
+    {
+      label: "Rename Device",
+      icon: <Edit />,
+      type: "POST",
+      url: "/api/ExecRenameAPDevice",
+      data: {
+        deviceId: "id",
+        serialNumber: "serialNumber",
+      },
+      confirmText: "Enter the new display name for the device.",
+      fields: [
+        {
+          type: "textField",
+          name: "displayName",
+          label: "New Display Name",
+          required: true,
+          validate: (value) => {
+            if (!value) {
+              return "Display name is required.";
+            }
+            if (value.length > 15) {
+              return "Display name must be 15 characters or less.";
+            }
+            if (/\s/.test(value)) {
+              return "Display name cannot contain spaces.";
+            }
+            if (!/^[a-zA-Z0-9-]+$/.test(value)) {
+              return "Display name can only contain letters, numbers, and hyphens.";
+            }
+            if (/^[0-9]+$/.test(value)) {
+              return "Display name cannot contain only numbers.";
+            }
+            return true; // Indicates validation passed
+          },
+        },
+      ],
+      color: "secondary",
     },
   ];
 
