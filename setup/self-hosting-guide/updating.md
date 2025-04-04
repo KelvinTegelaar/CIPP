@@ -49,7 +49,7 @@ For **typical** updates (e.g., moving from any v7+ patch releases):
 {% step %}
 **Wait for Deployment**
 
-* If you’ve connected your Azure Function App to **GitHub Actions** (Run From Package mode), the updates should roll out automatically within about 30 minutes.
+* If you’ve connected your Azure Function App to **GitHub Actions** ([Run From Package mode](runfrompackage.md)), the updates should roll out automatically within about 30 minutes.
 * Check your **Azure Logs** or **GitHub Actions** to confirm a successful deployment
 {% endstep %}
 
