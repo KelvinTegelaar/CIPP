@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
 import { Button } from "@mui/material";
-import { PersonAdd, Delete, Sync, Add, Edit } from "@mui/icons-material";
+import { PersonAdd, Delete, Sync, Add, Edit, Sell } from "@mui/icons-material";
 import { useDialog } from "../../../../hooks/use-dialog";
 import Link from "next/link";
 import { useState } from "react";
@@ -75,6 +75,31 @@ const Page = () => {
               return "Display name cannot contain only numbers.";
             }
             return true; // Indicates validation passed
+          },
+        },
+      ],
+      color: "secondary",
+    },
+    {
+      label: "Edit Group Tag",
+      icon: <Sell />,
+      type: "POST",
+      url: "/api/ExecSetAPDeviceGroupTag",
+      data: {
+        deviceId: "id",
+        serialNumber: "serialNumber",
+      },
+      confirmText: "Enter the new group tag for the device.",
+      fields: [
+        {
+          type: "textField",
+          name: "groupTag",
+          label: "Group Tag",
+          validate: (value) => {
+            if (value && value.length > 128) {
+              return "Group tag cannot exceed 128 characters.";
+            }
+            return true; // Validation passed
           },
         },
       ],
