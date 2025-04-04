@@ -43,15 +43,6 @@ const Page = () => {
       color: "info",
     },
     {
-      label: "Delete Device",
-      icon: <Delete />,
-      type: "POST",
-      url: "/api/RemoveAPDevice",
-      data: { ID: "id" },
-      confirmText: "Are you sure you want to delete this device?",
-      color: "danger",
-    },
-    {
       label: "Rename Device",
       icon: <Edit />,
       type: "POST",
@@ -88,6 +79,15 @@ const Page = () => {
         },
       ],
       color: "secondary",
+    },
+    {
+      label: "Delete Device",
+      icon: <Delete />,
+      type: "POST",
+      url: "/api/RemoveAPDevice",
+      data: { ID: "id" },
+      confirmText: "Are you sure you want to delete this device?",
+      color: "danger",
     },
   ];
 
