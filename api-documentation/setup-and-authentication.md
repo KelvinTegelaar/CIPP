@@ -75,6 +75,11 @@ Custom Roles will limit which API endpoints each API Client can access. This can
 2. Find the API client in the table and click on the 3 dots in the Actions column > Reset Application Secret.
 3. Copy the new Secret to a secure location.
 
+**Troubleshooting**
+
+* If you are getting permission errors when creating an API Client, check the CIPP-SAM application to ensure the permissions listed in the error are added and consented by an admin.
+* If you have multiple CIPP-SAM apps, use the [permission check](../user-documentation/cipp/settings/permissions.md) to figure out which one you're using.
+
 ***
 
 ## Authentication
