@@ -52,7 +52,7 @@ New-AzRoleAssignment -ObjectId $Identity -RoleDefinitionName 'Contributor' -Scop
    3. Ensure that you Enable the client in order to save it to the Function App authentication settings.
    4. Optionally set the [Custom Role](../user-documentation/cipp/advanced/super-admin/custom-roles.md) and Allowed IP Ranges for additional security.
    5. Submit the form to create the client. Remember to copy the Application secret to a secure location.
-3. Once you have the API Client(s) configured, click Actions > Save Azure Configuration, this updates the Function App authentication settings with the new Client IDs.&#x20;
+3. Once you have the API Client(s) configured, click Actions > Save Azure Configuration, this updates the Function App authentication settings with the new Client IDs.
 
 {% hint style="info" %}
 The IP Range list supports both IPv4 and IPv6 addresses as standalone IP addresses or in CIDR Notation (e.g. 12.34.56.78/24 or 1.1.1.1).
@@ -110,7 +110,9 @@ The API actions have a maximum timeout of 10 minutes. There are no active rate l
 
 ## Endpoint documentation
 
-Each page in the user documentation has a list of the endpoints used to load or create data on that specific page
+{% content-ref url="endpoints.md" %}
+[endpoints.md](endpoints.md)
+{% endcontent-ref %}
 
 ## CIPP API Powershell Module
 
