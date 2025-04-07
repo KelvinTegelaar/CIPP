@@ -68,7 +68,9 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 
 9. Select your GDAP groups
 
-If you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`, For the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
+_**If**_ you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP.`If you have migrated, but not using CIPP check the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
+
+If you have not migrated or used GDAP at all, **or** are planning to onboard your GDAP tenants using CIPP, continue on.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FohuBSMhxAWuhe35TnuLP9o_doc.png?alt=media\&token=fcdc99db-ea70-46bb-8276-1a21d659948e\&time=Fri%20Jul%2026%202024%2021:58:00%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
