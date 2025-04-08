@@ -25,6 +25,13 @@ Setting this same standard to "Alert" allows you to receive an alert inside of y
 
 Setting this same standard to "Remediate" changes the clients configuration, and in this case would enable the audit log for the client.
 
+### **Precedence of Standards**
+
+Standards are merged based on their specificity and creation date:
+
+* **Specificity:** Standards applied to a specific tenant always override more general standards (like those set for 'All Tenants'). For instance, if an 'All Tenants' standard enables TOTP but you need it disabled for one tenant, creating and applying a tenant-specific standard will disable TOTP for that tenant.
+* **Creation Date:** When two standards conflict at the same specificity level (e.g., both tenant-specific), the standard created most recently takes precedence. For example, if you create a tenant-specific standard enabling TOTP and later create another tenant-specific standard disabling TOTP, the more recently created standard (disabling TOTP) will be applied.
+
 {% hint style="warning" %}
 **Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects, detailed in the video and walkthrough on[ this page](../../../setup/implementation-guide/).
 {% endhint %}
