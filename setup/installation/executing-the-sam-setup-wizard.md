@@ -6,9 +6,11 @@
 
 ## Walkthrough Video for Running the SAM Setup Wizard
 
-***
+{% hint style="info" %}
+Video removed temporarily as it referenced the v6 UI and process.
+{% endhint %}
 
-{% embed url="https://app.guidde.com/share/playbooks/cHS8iUw2JCAGwiJxSnp7sp?origin=IEPB08VSavefFaCa9OSp3Y87aGu1" %}
+***
 
 {% hint style="danger" %}
 **When using the SAM Wizard to create your CIPP-SAM application, it's important to remember the following:**
@@ -19,32 +21,17 @@
 
 This guide walks you through the process from the video of executing the SAM Wizard inside CIPP for the first time, and has 3 options based on what you're looking to accomplish. In this example, we use the first-time setup option, but more details on additional options can be found in the sections below.
 
-<table><thead><tr><th width="357">SAM Wizard Option</th><th>When to use</th></tr></thead><tbody><tr><td>I would like CIPP to create an application for me.</td><td>This will guide you through all the necessary steps for connecting to your tenants for the first time. Click the Start Setup Wizard button to start the process. </td></tr><tr><td>I would like to refresh my token or replace the user for previous token.</td><td>Select this option if you have used the incorrect account to setup the SAM wizard, need to renew tokens due to an expired password, or when you are instructed to do so by the Helpdesk.</td></tr><tr><td>I have an existing application and would like to manually enter or update my token.</td><td>This option is for advanced users and those following the migration manual in <a href="migrating-to-hosted-cipp.md">Migrating to a hosted instance of CIPP</a>.</td></tr></tbody></table>
+<table><thead><tr><th width="357">SAM Wizard Option</th><th>When to use</th></tr></thead><tbody><tr><td>Create application for me and connect to my tenants</td><td>This will guide you through all the necessary steps for connecting to your tenants for the first time. Click the Next Step button to start the process. </td></tr><tr><td>Refresh Tokens for existing application</td><td>Select this option if you have used the incorrect account to setup the SAM wizard, need to renew tokens due to an expired password, or when you are instructed to do so by the Helpdesk.</td></tr><tr><td>Manually enter credentials</td><td>This option is for advanced users and those following the migration manual in <a href="migrating-to-hosted-cipp.md">Migrating to a hosted instance of CIPP</a>.</td></tr></tbody></table>
 
 ## Walkthrough Steps for Running the SAM Setup Wizard
 
 ***
 
 1. Once you've logged into your CIPP instance, navigate to `Settings` -> `SAM Setup Wizard`
-
-![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FjN3yvLBGqe4e12772J9oZi_doc.png?alt=media\&token=88d39647-fa7c-4be5-b7a7-3341dc0dff96\&time=Tue%20Aug%2006%202024%2014:39:39%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
-2. For the purposes of this walkthrough, we'll act as if this is your first time running through this process, and you'd like to follow CIPP's recommended settings by clicking `I would like CIPP to create an application for me`.&#x20;
-
-![See the table above the walkthough for details on the other options you can choose](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2F3qrR2UFC94DwTZqUeAnfRn_doc.png?alt=media\&token=7b1f55c9-db17-4f05-b341-d6ace0a924b2\&time=Tue%20Aug%2006%202024%2014:39:39%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
-3. On the next page, click on the `Start Setup Wizard` button.
-
-![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FdiM5PqXfPZj1iSiMti8PPB_doc.png?alt=media\&token=28620037-8a95-44c0-9b9d-49b59545fdb7\&time=Tue%20Aug%2006%202024%2014:39:39%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
+2. For the purposes of this walkthrough, we'll act as if this is your first time running through this process, and you'd like to follow CIPP's recommended settings by clicking `Create application for me and connect to my tenants`.&#x20;
+3. Click on the `Next Step` button.
 4. Copy the code from the returned step to your clipboard.
-
-![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FhsfCwahyun5FmQsAJcnchb_doc.png?alt=media\&token=f6a160de-4939-4e9c-9c61-8279bd08d885\&time=Tue%20Aug%2006%202024%2014:39:39%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
-5. Then click on the "HERE" link beside the code.
-
-![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2Fhg6Xor9YMkG3jniQ6cFAPc_doc.png?alt=media\&token=489c2701-5ff8-4ca9-b7b0-cd288ab746b4\&time=Tue%20Aug%2006%202024%2014:39:39%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
+5. Then click on the `Login to Microsoft` button.
 6. Enter the code we've copied in the previous step & click Next.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2Fp5ME1UvQhFjvs1vekExqyr_doc.png?alt=media\&token=c897b30d-a6d1-4719-9b19-81b876758d31\&time=Tue%20Aug%2006%202024%2014:39:39%20GMT-0400%20\(Eastern%20Daylight%20Time\))
@@ -61,10 +48,7 @@ This guide walks you through the process from the video of executing the SAM Wiz
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FqwRYUepEHwjkEzRPHkM28r_doc.png?alt=media\&token=5c05596a-2095-4550-80ed-bde6caf508ea\&time=Tue%20Aug%2006%202024%2014:39:40%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
-10. Back in CIPP, click on the link that now appears when you see we've arrived at step number 2.
-
-![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FuWMoBJDLtE5U6CUP6o43Li_doc.png?alt=media\&token=c475131e-d940-4e8d-a143-ccfe83309ec5\&time=Tue%20Aug%2006%202024%2014:39:40%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
+10. Back in CIPP, click on the `Open Approval Linl` button that now appears when you see we've arrived at step number 2.
 11. Login with the CIPP Service Account again.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FwtsU7NgDxSzEnQUh7PPK8M_doc.png?alt=media\&token=4aa50ce1-5905-4f88-b047-b615af42a76f\&time=Tue%20Aug%2006%202024%2014:39:40%20GMT-0400%20\(Eastern%20Daylight%20Time\))
@@ -73,12 +57,13 @@ This guide walks you through the process from the video of executing the SAM Wiz
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2F14VtsFExYq3qBYps5WZ8hY_doc.png?alt=media\&token=08f3e5c9-e41d-4dd4-acb9-be9fb0f40f85\&time=Tue%20Aug%2006%202024%2014:39:43%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
-13. Back in CIPP, you should see it says "Setup Completed". You can now click on the "Application Settings" button.
+13. Back in CIPP, you should see it says "Setup Completed".&#x20;
+14. You should now navigate to Application Settings > Permissions.
+15. &#x20;From there, you'll want to review the Permissions Check section. This check should show a successful result when all steps have been performed. If you need to run an updated check, click the Refresh button. If there are any errors, you can click the Details button and further information on the errors will be displayed, including the ability to repair any missing permissions.
 
-![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FrqUCQomo5WWjsPgYghRAdm_doc.png?alt=media\&token=4c15d798-f706-40ff-a091-760b58f49861\&time=Tue%20Aug%2006%202024%2014:39:42%20GMT-0400%20\(Eastern%20Daylight%20Time\))
+### Next Steps
 
-14. &#x20;From there, you'll want to click on the "Run Permissions Check" button. This check should show a successful result when all steps have been performed.
+Your next step will depend on if you have existing GDAP relationships to add or if you need to do a fresh GDAP onboarding.
 
-![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2FcHS8iUw2JCAGwiJxSnp7sp%2FaoJqpzioF48aq66e4Xw39d_doc.png?alt=media\&token=98e3b4c0-1a48-4c4f-90cd-8c5a944ca784\&time=Tue%20Aug%2006%202024%2020:33:11%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
-And that's it! Now you're ready to move on to [adding your tenants and consenting the application.](adding-tenants-and-consenting-the-cipp-sam-application.md)
+1. If you have existing GDAP relationships move on to [Adding Tenants & Consenting the CIPP-SAM Application](adding-tenants-and-consenting-the-cipp-sam-application.md).
+2. If you need to do a fresh GDAP onboarding move on to [Tenant Onboarding](gdap-invite-wizard.md).

@@ -72,6 +72,10 @@ _**If**_ you have already migrated to GDAP you select your GDAP groups at this s
 
 If you have not migrated or used GDAP at all, **or** are planning to onboard your GDAP tenants using CIPP, continue on.
 
+{% hint style="info" %}
+If this is a fresh setup of GDAP or you want to move to using CIPP and Microsoft's best practice recommendation of mapping one role to one security group, you can skip this step for now. You will create the groups when you first setup adding your client tenants in [Adding Tenants](../installation/adding-tenants-and-consenting-the-cipp-sam-application.md).
+{% endhint %}
+
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FohuBSMhxAWuhe35TnuLP9o_doc.png?alt=media\&token=fcdc99db-ea70-46bb-8276-1a21d659948e\&time=Fri%20Jul%2026%202024%2021:58:00%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
 10. Click "Add role"

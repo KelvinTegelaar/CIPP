@@ -26,7 +26,7 @@
   * [Conditional Access best practices](setup/installation/conditionalaccess.md)
   * [Adding users to CIPP](setup/installation/addingusers.md)
   * [Executing the SAM Setup Wizard](setup/installation/executing-the-sam-setup-wizard.md)
-  * [Tenant onboarding](setup/installation/gdap-invite-wizard.md)
+  * [Tenant Onboarding](setup/installation/gdap-invite-wizard.md)
   * [Adding Tenants & Consenting the CIPP-SAM Application](setup/installation/adding-tenants-and-consenting-the-cipp-sam-application.md)
   * [User Roles in CIPP](setup/installation/roles.md)
   * [Adding a custom domain name](setup/installation/customdomain.md)
