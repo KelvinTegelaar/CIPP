@@ -27,6 +27,10 @@ At its core, the BPA is built to:
 * **Navigate to:** `Tenant Administration > Standards > Best Practice Analyzer`.
 * **Run Initial Data Refresh:** Select **“Force Refresh All Data”** if this is your first time displaying it.
 
+{% hint style="info" %}
+The "Force Refresh All Data" button has been temporarily removed with the introduction of the v7 UI. You can expect to see the button return in a future update.
+{% endhint %}
+
 {% hint style="warning" %}
 **Note:** Larger environments (e.g., 100+ tenants) may take \~15 minutes per run.
 {% endhint %}
