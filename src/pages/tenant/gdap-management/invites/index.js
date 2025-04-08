@@ -5,10 +5,26 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Button } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Link from "next/link";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 const pageTitle = "GDAP Invites";
 const simpleColumns = ["Timestamp", "RowKey", "InviteUrl", "OnboardingUrl", "RoleMappings"];
 const apiUrl = "/api/ListGDAPInvite";
+
+const actions = [
+  {
+    label: "Delete Invite",
+    url: "/api/ExecGDAPInvite",
+    type: "POST",
+    icon: <TrashIcon />,
+    confirmText:
+      "Are you sure you want to delete this invite? This only removes the entry from the database, GDAP relationships cannot be terminated once they are in approval pending status.",
+    data: {
+      Action: "Delete",
+      InviteId: "RowKey",
+    },
+  },
+];
 
 const Page = () => {
   return (
@@ -21,8 +37,10 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
+      actions={actions}
       tenantInTitle={false}
       queryKey="ListGDAPInvite"
+      maxHeightOffset="460px"
     />
   );
 };

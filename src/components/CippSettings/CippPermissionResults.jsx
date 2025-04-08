@@ -91,13 +91,13 @@ export const CippPermissionResults = (props) => {
     <>
       {propertyItems.length > 0 && (
         <CippPropertyList
-          isFetching={executeCheck.isFetching}
+          isFetching={!importReport && executeCheck.isFetching}
           propertyItems={propertyItems}
           layout="double"
           showDivider={false}
         />
       )}
-      {executeCheck.isFetching ? (
+      {!importReport && executeCheck.isFetching ? (
         <Skeleton variant="rectangular" height={100} sx={{ borderRadius: 1, ml: 3, mr: 1 }} />
       ) : (
         <>
@@ -168,7 +168,7 @@ export const CippPermissionResults = (props) => {
               <>
                 <CippDataTable
                   title="Missing Permissions"
-                  isFetching={executeCheck.isFetching}
+                  isFetching={!importReport && executeCheck.isFetching}
                   refreshFunction={executeCheck}
                   cardButton={
                     <Button
@@ -209,7 +209,7 @@ export const CippPermissionResults = (props) => {
                     Refresh CPV
                   </Button>
                 }
-                isFetching={executeCheck.isFetching}
+                isFetching={!importReport && executeCheck.isFetching}
                 refreshFunction={executeCheck}
                 data={results?.Results?.CPVRefreshList}
                 simpleColumns={["DisplayName", "DefaultDomainName", "LastRefresh"]}
@@ -220,7 +220,7 @@ export const CippPermissionResults = (props) => {
               <>
                 <CippDataTable
                   title="Current Delegated Scopes"
-                  isFetching={executeCheck.isFetching}
+                  isFetching={!importReport && executeCheck.isFetching}
                   refreshFunction={executeCheck}
                   data={results?.Results?.AccessTokenDetails?.Scope.map((scope) => {
                     return {
@@ -235,7 +235,7 @@ export const CippPermissionResults = (props) => {
               <>
                 <CippDataTable
                   title="Current Application Roles"
-                  isFetching={executeCheck.isFetching}
+                  isFetching={!importReport && executeCheck.isFetching}
                   refreshFunction={executeCheck}
                   data={results?.Results?.ApplicationTokenDetails?.Roles.map((role) => {
                     return {

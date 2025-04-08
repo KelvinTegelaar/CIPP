@@ -18,6 +18,8 @@ const CippIntegrationSettings = ({ children }) => {
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   const formControl = useForm({

@@ -26,5 +26,9 @@
   {
     "label": "Licenses",
     "path": "/cipp/settings/licenses"
+  },
+  {
+    "label": "Global Variables",
+    "path": "/cipp/settings/global-variables"
   }
 ]

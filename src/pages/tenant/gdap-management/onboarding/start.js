@@ -305,11 +305,9 @@ const Page = () => {
                   api={{
                     url: "/api/ListGraphRequest",
                     data: {
-                      TenantFilter: "",
                       Endpoint: "tenantRelationships/delegatedAdminRelationships",
-                      $filter:
-                        "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
                     },
+                    excludeTenantFilter: true,
                     queryKey: "GDAPRelationships",
                     dataKey: "Results",
                     labelField: (option) =>
@@ -321,11 +319,20 @@ const Page = () => {
                     addedField: {
                       customer: "customer",
                       id: "id",
+                      displayName: "displayName",
                       createdDateTime: "createdDateTime",
                       accessDetails: "accessDetails",
                       status: "status",
                       autoExtendDuration: "autoExtendDuration",
                       lastModifiedDateTime: "lastModifiedDateTime",
+                    },
+                    dataFilter: (data) => {
+                      return data?.filter(
+                        (relationship) =>
+                          (relationship?.addedFields?.status === "active" ||
+                            relationship?.addedFields?.status === "approvalPending") &&
+                          !relationship?.addedFields?.displayName?.startsWith("MLT_")
+                      );
                     },
                   }}
                   multiple={false}
@@ -370,6 +377,7 @@ const Page = () => {
                         },
                       }}
                       multiple={false}
+                      creatable={false}
                     />
                   </>
                 )}

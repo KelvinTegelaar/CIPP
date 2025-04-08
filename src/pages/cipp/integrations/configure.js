@@ -43,6 +43,8 @@ const Page = () => {
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   const [testQuery, setTestQuery] = useState({ url: "", waiting: false, queryKey: "" });

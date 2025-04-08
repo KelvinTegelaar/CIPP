@@ -6,6 +6,10 @@ import {
   MailOutline,
   Shield,
   Description,
+  Group,
+  MeetingRoom,
+  GroupWork,
+  GroupOutlined,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
 import { Box } from "@mui/system";
@@ -17,8 +21,15 @@ import { CippLocationDialog } from "../components/CippComponents/CippLocationDia
 import { isoDuration, en } from "@musement/iso-duration";
 import { CippTimeAgo } from "../components/CippComponents/CippTimeAgo";
 import { getCippRoleTranslation } from "./get-cipp-role-translation";
-import { CogIcon, ServerIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
+import {
+  BuildingOfficeIcon,
+  CogIcon,
+  ServerIcon,
+  UserIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
 import { getCippTranslation } from "./get-cipp-translation";
+import DOMPurify from "dompurify";
 import { getSignInErrorCodeTranslation } from "./get-cipp-signin-errorcode-translation";
 
 export const getCippFormatting = (data, cellName, type, canReceive) => {
@@ -207,6 +218,17 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
             <CippCopyToClipBoard
               key={`${item?.label}`}
               text={item?.label ? item?.label : item}
+              icon={
+                item?.type === "Group" ? (
+                  <SvgIcon sx={{ ml: 0.25 }}>
+                    <GroupOutlined />
+                  </SvgIcon>
+                ) : item?.type === "Tenant" ? (
+                  <SvgIcon sx={{ ml: 0.25 }}>
+                    <BuildingOfficeIcon />
+                  </SvgIcon>
+                ) : null
+              }
               type="chip"
             />
           ));
@@ -299,6 +321,20 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
         tableTitle={getCippTranslation(cellName)}
       />
     );
+  }
+
+  if (cellName === 'AccessRights') {
+    // Handle data as an array or string
+    const accessRights = Array.isArray(data)
+      ? data.flatMap((item) => (typeof item === "string" ? item.split(", ") : []))
+      : typeof data === "string"
+      ? data.split(", ")
+      : [];
+    return isText
+      ? accessRights.join(", ")
+      : accessRights.map((accessRight) => (
+          <CippCopyToClipBoard key={accessRight} text={accessRight} type="chip" />
+        ));
   }
 
   // Handle null or undefined data
@@ -432,6 +468,20 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
+  // handle htmlDescription
+  if (cellName === "htmlDescription") {
+    return isText ? (
+      data
+    ) : (
+      <Box
+        component="span"
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(data),
+        }}
+      />
+    );
+  }
+
   const durationArray = ["autoExtendDuration"];
   if (durationArray.includes(cellName)) {
     isoDuration.setLocales(
@@ -483,6 +533,18 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
 
   // Handle arrays of strings
   if (Array.isArray(data) && data.every((item) => typeof item === "string")) {
+    // if string matches json format, parse it
+    if (data.every((item) => item.startsWith("{") || item.startsWith("["))) {
+      return isText ? (
+        JSON.stringify(data)
+      ) : (
+        <CippDataTableButton
+          data={data.map((item) => JSON.parse(item))}
+          tableTitle={getCippTranslation(cellName)}
+        />
+      );
+    }
+
     //if the array is empty, return "No data"
     return isText
       ? data.join(", ")

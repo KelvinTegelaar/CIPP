@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  Skeleton,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -130,7 +131,7 @@ const Page = () => {
         <CippDataTable
           title={pageTitle}
           simpleColumns={simpleColumns}
-          data={searchResults?.Results}
+          data={searchResults?.Results ?? []}
           isFetching={exchangeCmdlets.isPending}
           refreshFunction={onSubmit}
           actions={actions}
@@ -148,13 +149,17 @@ const Page = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <CippDataTable
-            noCard={true}
-            title="Permitted Roles"
-            simpleColumns={roleColumns}
-            data={roleDetails?.Results ?? []}
-            isFetching={managementRole.isPending}
-          />
+          {roleDetails.isPending ? (
+            <Skeleton variant="rectangular" height={200} />
+          ) : (
+            <CippDataTable
+              noCard={true}
+              title="Permitted Roles"
+              simpleColumns={roleColumns}
+              data={roleDetails?.data?.Results ?? []}
+              isFetching={managementRole.isPending}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </Container>

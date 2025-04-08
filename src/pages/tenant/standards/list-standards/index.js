@@ -12,9 +12,18 @@ const Page = () => {
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
   const pageTitle = "Standard Templates";
   const actions = [
+    {
+      label: "View Tenant Report",
+      link: "/tenant/standards/compare?templateId=[GUID]",
+      icon: <PlayArrow />,
+      color: "info",
+      target: "_self",
+    },
     {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.

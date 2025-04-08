@@ -41,6 +41,8 @@ export const CippFormUserSelector = ({
           $top: 999,
         },
       }}
+      creatable={false}
+      {...other}
     />
   );
 };

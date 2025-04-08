@@ -301,9 +301,12 @@ export const CippFormComponent = (props) => {
                   <RichTextEditor
                     {...other}
                     ref={field.ref}
+                    key={field.value ? "edit" : ""}
                     extensions={[StarterKit]}
-                    content={field.value}
-                    onUpdate={({ editor }) => field.onChange(editor.getHTML())} // Update react-hook-form on change
+                    content={field.value || ""}
+                    onUpdate={({ editor }) => {
+                      field.onChange(editor.getHTML());
+                    }}
                     label={label}
                     renderControls={() => (
                       <MenuControlsContainer>

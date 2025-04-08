@@ -16,7 +16,7 @@ import { useMediaPredicate } from "react-media-hook";
 import Error500 from "./500";
 import { ErrorBoundary } from "react-error-boundary";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import CippSpeedDial from "../components/CippComponents/CippSpeedDial";
@@ -134,7 +134,11 @@ const App = (props) => {
                           <CippSpeedDial
                             actions={speedDialActions}
                             icon={<HelpIcon />}
-                            position={{ bottom: 16, right: 16 }}
+                            position={{
+                              bottom: 12,
+                              right:
+                                settings.isInitialized && settings?.showDevtools === true ? 60 : 12,
+                            }}
                           />
                         </RTL>
                       </ThemeProvider>

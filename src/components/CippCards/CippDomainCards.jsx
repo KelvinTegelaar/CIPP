@@ -28,6 +28,7 @@ import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippPropertyListCard } from "./CippPropertyListCard";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import punycode from "punycode";
 
 const ResultList = ({ passes = [], warns = [], fails = [] }) => (
   <Stack direction="column" sx={{ mt: 1 }}>
@@ -395,7 +396,8 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
   }, [propDomain, setValue]);
 
   const onSubmit = (values) => {
-    setDomain(values.domain);
+    const punycodedDomain = punycode.toASCII(values.domain);
+    setDomain(punycodedDomain);
     setSelector(values.dkimSelector);
     setSpfRecord(values.spfRecord);
     setSubdomains(values.subdomains);

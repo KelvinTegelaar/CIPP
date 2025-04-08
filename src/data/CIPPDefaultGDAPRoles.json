@@ -4,20 +4,8 @@
     "value": "9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3"
   },
   {
-    "label": "User Administrator",
-    "value": "fe930be7-5e62-47db-91af-98c3a49a38b1"
-  },
-  {
-    "label": "Intune Administrator",
-    "value": "3a2c62db-5318-420d-8d74-23affee5d9d5"
-  },
-  {
-    "label": "Exchange Administrator",
-    "value": "29232cdf-9323-42fd-ade2-1d097af3e4de"
-  },
-  {
-    "label": "Security Administrator",
-    "value": "194ae4cb-b126-40b2-bd5b-6091b380977d"
+    "label": "Authentication Policy Administrator",
+    "value": "0526716b-113d-4c15-b2c8-68e3c22b9f80"
   },
   {
     "label": "Cloud App Security Administrator",
@@ -28,23 +16,35 @@
     "value": "7698a772-787b-4ac8-901f-60d6b08affd2"
   },
   {
-    "label": "Teams Administrator",
-    "value": "69091246-20e8-4a56-aa4d-066075b2a7a8"
+    "label": "Exchange Administrator",
+    "value": "29232cdf-9323-42fd-ade2-1d097af3e4de"
   },
   {
-    "label": "SharePoint Administrator",
-    "value": "f28a1f50-f6e7-4571-818b-6a12f2af6b6c"
+    "label": "Intune Administrator",
+    "value": "3a2c62db-5318-420d-8d74-23affee5d9d5"
   },
   {
-    "label": "Authentication Policy Administrator",
-    "value": "0526716b-113d-4c15-b2c8-68e3c22b9f80"
+    "label": "Privileged Authentication Administrator",
+    "value": "7be44c8a-adaf-4e2a-84d6-ab2649e08a13"
   },
   {
     "label": "Privileged Role Administrator",
     "value": "e8611ab8-c189-46e8-94e1-60213ab1f814"
   },
   {
-    "label": "Privileged Authentication Administrator",
-    "value": "7be44c8a-adaf-4e2a-84d6-ab2649e08a13"
+    "label": "Security Administrator",
+    "value": "194ae4cb-b126-40b2-bd5b-6091b380977d"
+  },
+  {
+    "label": "SharePoint Administrator",
+    "value": "f28a1f50-f6e7-4571-818b-6a12f2af6b6c"
+  },
+  {
+    "label": "Teams Administrator",
+    "value": "69091246-20e8-4a56-aa4d-066075b2a7a8"
+  },
+  {
+    "label": "User Administrator",
+    "value": "fe930be7-5e62-47db-91af-98c3a49a38b1"
   }
 ]

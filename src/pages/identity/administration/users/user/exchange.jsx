@@ -306,7 +306,12 @@ const Page = () => {
             ) && (
               <>
                 <Grid item size={4}>
-                  <CippExchangeInfoCard exchangeData={data} isFetching={userRequest.isLoading} />
+                  <CippExchangeInfoCard
+                    exchangeData={data}
+                    isLoading={userRequest.isLoading}
+                    isFetching={userRequest.isFetching}
+                    handleRefresh={() => userRequest.refetch()}
+                  />
                 </Grid>
                 <Grid item size={8}>
                   <Stack spacing={3}>

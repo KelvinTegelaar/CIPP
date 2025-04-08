@@ -16,10 +16,21 @@ import {
   Typography,
 } from "@mui/material";
 import { ActionsMenu } from "/src/components/actions-menu";
+import { useMediaQuery } from "@mui/material";
 
 export const HeaderedTabbedLayout = (props) => {
-  const { children, tabOptions, title, subtitle, actions, actionsData, isFetching = false } = props;
+  const {
+    children,
+    tabOptions,
+    title,
+    subtitle,
+    actions,
+    actionsData,
+    isFetching = false,
+    backUrl,
+  } = props;
 
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const router = useRouter();
   const pathname = usePathname();
   const queryParams = router.query;
@@ -53,7 +64,7 @@ export const HeaderedTabbedLayout = (props) => {
             <div>
               <Button
                 color="inherit"
-                onClick={() => router.back()}
+                onClick={() => (backUrl ? router.push(backUrl) : router.back())}
                 startIcon={
                   <SvgIcon fontSize="small">
                     <ArrowLeftIcon />
@@ -76,7 +87,7 @@ export const HeaderedTabbedLayout = (props) => {
                   spacing={1}
                   justifyContent="space-between"
                 >
-                  <Typography variant="h4">{title}</Typography>
+                  <Typography variant={mdDown ? "h6" : "h4"}>{title}</Typography>
                 </Stack>
                 {isFetching ? (
                   <Skeleton variant="text" width={200} />
@@ -108,7 +119,17 @@ export const HeaderedTabbedLayout = (props) => {
               <Divider />
             </div>
           </Stack>
-          {children}
+          <Box
+            sx={
+              !mdDown && {
+                flexGrow: 1,
+                overflow: "auto",
+                height: "calc(100vh - 400px)",
+              }
+            }
+          >
+            {children}
+          </Box>
         </Stack>
       </Container>
     </Box>
