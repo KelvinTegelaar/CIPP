@@ -1,0 +1,25 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+      "CIPP",
+      "CIPP-API",
+      "Entra",
+      "Intune",
+      "GDAP",
+      "Yubikey",
+      "Sherweb",
+      "Autotask",
+      "Datto",
+      "Syncro",
+      "ImmyBot",
+      "Choco",
+    ],
+    "ignoreWords": [
+      "CIPPAPI",
+      "locationcipp",
+    ],
+    "import": []
+}
