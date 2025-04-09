@@ -58,7 +58,11 @@ const Page = () => {
 
   // Fetch BEC Check result using GUID
   const becPollingCall = ApiGetCall({
-    url: `/api/execBECCheck?GUID=${becInitialCall.data?.GUID}`,
+    url: `/api/execBECCheck`,
+    data: {
+      GUID: becInitialCall.data?.GUID,
+      tenantFilter: userSettingsDefaults.currentTenant,
+    },
     queryKey: `execBECCheck-polling-${becInitialCall.data?.GUID}`,
     waiting: false,
   });
