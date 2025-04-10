@@ -1,5 +1,7 @@
 # Add Standards Template
 
+When creating a standard it is recommend to think about how you want your standards to be setup first. CyberDrain recommends splitting out standards per category, or service level. This prevents standards from becoming so large they become impossible to manage as too many items are in one standard. You can also split out categories such as "Intune Templates", "Entra Settings", "Managed Devices" etc.
+
 {% stepper %}
 {% step %}
 ### Set a Name for the Template
