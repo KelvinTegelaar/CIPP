@@ -28,7 +28,7 @@ At its core, the BPA is built to:
 * **Run Initial Data Refresh:** Select **“Force Refresh All Data”** if this is your first time displaying it.
 
 {% hint style="info" %}
-The "Force Refresh All Data" button has been temporarily removed with the introduction of the v7 UI. You can expect to see the button return in a future update.
+To replicate the functionality of the "Force Refresh All Data" button, you can use the `/api/ExecBPA`API endpoint.
 {% endhint %}
 
 {% hint style="warning" %}
