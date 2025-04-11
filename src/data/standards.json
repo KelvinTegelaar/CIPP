@@ -1688,6 +1688,41 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.SharePointMassDeletionAlert",
+    "cat": "Defender Standards",
+    "tag": [],
+    "helpText": "Sets a e-mail address to alert when a User deletes more than 20 SharePoint files within 60 minutes. NB: Requires a Office 365 E5 subscription, Office 365 E3 with Threat Intelligence or Office 365 EquivioAnalytics add-on.",
+    "docsDescription": "Sets a e-mail address to alert when a User deletes more than 20 SharePoint files within 60 minutes. This is useful for monitoring and ensuring that the correct SharePoint files are deleted. NB: Requires a Office 365 E5 subscription, Office 365 E3 with Threat Intelligence or Office 365 EquivioAnalytics add-on.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.SharePointMassDeletionAlert.Threshold",
+        "label": "Max files to delete within the time frame",
+        "defaultValue": 20
+      },
+      {
+        "type": "number",
+        "name": "standards.SharePointMassDeletionAlert.TimeWindow",
+        "label": "Time frame in minutes",
+        "defaultValue": 60
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": true,
+        "name": "standards.SharePointMassDeletionAlert.NotifyUser",
+        "label": "E-mail to receive the alert"
+      }
+    ],
+    "label": "SharePoint Mass Deletion Alert",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-04-07",
+    "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
     "tag": ["CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
