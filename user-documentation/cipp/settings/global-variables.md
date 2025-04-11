@@ -6,6 +6,25 @@ Global variables are key-value pairs that can be used to store additional inform
 Given the differences in how various systems treat the variable name, we recommend using all lowercase when naming variables, e.g. variablename
 {% endhint %}
 
+### Automatically Replaced Variables
+
+The following variables will be automatically replaced by CIPP:
+
+* `%tenantid%`
+* `%tenantfilter%`
+* `%tenantname%`
+
+### Reserved Variables
+
+The following variables are reserved and will not be used:
+
+* `%serial%`
+* `%systemroot%`
+* `%systemdrive%`
+* `%temp%`
+* `%partnertenantid%`
+* `%samappid%`
+
 ***
 
 {% include "../../../.gitbook/includes/feature-request.md" %}
