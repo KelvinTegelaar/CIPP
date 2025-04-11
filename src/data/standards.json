@@ -772,7 +772,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "",
+    "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
   {
@@ -2606,7 +2606,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "",
+    "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
   {
