@@ -217,7 +217,7 @@
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
     "tag": [],
-    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants. ",
+    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants.",
     "docsDescription": "Disables SMTP basic authentication for the tenant and all users with it explicitly enabled.",
     "addedComponent": [],
     "label": "Disable SMTP Basic Authentication",
@@ -546,7 +546,7 @@
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS"],
-    "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles. ",
+    "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles.",
     "docsDescription": "Users by default are allowed to create M365 tenants. This disables that so only admins can create new M365 tenants.",
     "addedComponent": [],
     "label": "Disable M365 Tenant creation by users",
@@ -785,7 +785,7 @@
       {
         "type": "number",
         "name": "standards.StaleEntraDevices.deviceAgeThreshold",
-        "label": "Days before stale(Dont set below 30)"
+        "label": "Days before stale(Do not set below 30)"
       }
     ],
     "disabledFeatures": {
@@ -1726,7 +1726,7 @@
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
     "tag": ["CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
-    "helpText": "This creates a safelink policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
+    "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
         "type": "switch",
@@ -1752,7 +1752,7 @@
         "label": "Do not rewrite the following URLs in email"
       }
     ],
-    "label": "Default SafeLinks Policy",
+    "label": "Default Safe Links Policy",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-03-25",
@@ -1772,7 +1772,7 @@
       "mdo_antiphishingpolicies",
       "mdo_phishthresholdlevel"
     ],
-    "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
+    "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mail tips.",
     "addedComponent": [
       {
         "type": "number",
@@ -1965,7 +1965,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-03-25",
-    "powershellEquivalent": "Set-AntiphishPolicy or New-AntiphishPolicy",
+    "powershellEquivalent": "Set-AntiPhishPolicy or New-AntiPhishPolicy",
     "recommendedBy": ["CIS"]
   },
   {
@@ -2739,7 +2739,7 @@
     "cat": "Intune Standards",
     "tag": [],
     "helpText": "Requires MFA for all users to register devices with Intune. This is useful when not using Conditional Access.",
-    "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra",
+    "label": "Require Multi-factor Authentication to register or join devices with Microsoft Entra",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2023-10-23",
@@ -2847,7 +2847,7 @@
     "impactColour": "info",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -EnableAzureADB2BIntegration $true",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.SPDisallowInfectedFiles",
@@ -2905,7 +2905,7 @@
     "impactColour": "warning",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.SPEmailAttestation",
@@ -3047,7 +3047,7 @@
     "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "docsDescription": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [],
-    "label": "Disable Resharing by External Users",
+    "label": "Disable Re-sharing by External Users",
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2022-06-15",
@@ -3223,7 +3223,7 @@
     "impactColour": "info",
     "addedDate": "2024-11-12",
     "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.TeamsEmailIntegration",
@@ -3243,7 +3243,7 @@
     "impactColour": "info",
     "addedDate": "2024-07-30",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.TeamsExternalFileSharing",
@@ -3282,7 +3282,7 @@
     "impactColour": "info",
     "addedDate": "2024-07-28",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.TeamsEnrollUser",
