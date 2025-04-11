@@ -9,6 +9,9 @@
       "Entra",
       "Intune",
       "GDAP",
+      "OBEE",
+      "AITM",
+      "Passwordless",
       "Yubikey",
       "Sherweb",
       "Autotask",
@@ -20,6 +23,9 @@
     "ignoreWords": [
       "CIPPAPI",
       "locationcipp",
+      "TNEF",
+      "winmail",
+      "PSTN",
     ],
     "import": []
 }
