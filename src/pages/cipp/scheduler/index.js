@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CalendarDaysIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { CopyAll, Edit, PlayArrow } from "@mui/icons-material";
-import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
+import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 
 const Page = () => {
   const actions = [
@@ -66,12 +66,8 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (extendedData) => (
-      <>
-        <Typography variant="h6">Job Results</Typography>
-        <CippCodeBlock type="editor" code={extendedData.Results} />
-      </>
-    ),
+    children: (extendedData) => <ScheduledTaskDetails data={extendedData} />,
+    size: "xl",
     actions: actions,
   };
   const [showHiddenJobs, setShowHiddenJobs] = useState(false);
