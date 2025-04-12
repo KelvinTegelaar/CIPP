@@ -2,23 +2,20 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Stack,
   Chip,
-  Button,
+  TextField,
+  InputAdornment,
+  Tooltip,
+  Stack,
 } from "@mui/material";
-import { CippCodeBlock } from "./CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
-import { Close, ExpandMore, Sync } from "@mui/icons-material";
-import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
+import { ExpandMore, Sync, Search, Close } from "@mui/icons-material";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
@@ -28,6 +25,7 @@ const ScheduledTaskDetails = ({ data }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedResult, setSelectedResult] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -54,44 +52,50 @@ const ScheduledTaskDetails = ({ data }) => {
   useEffect(() => {
     if (taskDetailResults.isSuccess && taskDetailResults?.data) {
       setTaskDetails(taskDetailResults.data);
+
+      // Auto-expand the only result if there's just one
+      if (taskDetailResults.data.Details?.length === 1) {
+        setExpanded(`execution-results-0`);
+      }
     }
   }, [data.RowKey, taskDetailResults.isSuccess, taskDetailResults.data]);
 
-  const handleViewResult = (result) => {
-    setSelectedResult(result);
-    setDialogOpen(true);
-  };
+  const filteredDetails = taskDetails?.Details?.filter((result) => {
+    if (!searchQuery) return true;
+
+    const searchLower = searchQuery.toLowerCase();
+    const tenantMatches = (result.TenantName || result.Tenant || "")
+      .toLowerCase()
+      .includes(searchLower);
+
+    let resultsMatches = false;
+    if (typeof result.Results === "object" && result.Results !== null) {
+      const resultsStr = JSON.stringify(result.Results).toLowerCase();
+      resultsMatches = resultsStr.includes(searchLower);
+    }
+
+    return tenantMatches || resultsMatches;
+  });
 
   return (
     <>
-      <Dialog fullWidth maxWidth="xl" open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle sx={{ py: 2 }}>
-          Task Result Details
-          <IconButton
-            aria-label="close"
-            onClick={() => setDialogOpen(false)}
-            sx={{ position: "absolute", right: 8, top: 8 }}
-          >
-            <Close />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <CippCodeBlock
-            open={dialogOpen}
-            onClose={() => setDialogOpen(false)}
-            code={selectedResult?.Results}
-          />
-        </DialogContent>
-      </Dialog>
-
       <Box>
-        <Typography variant="h6">Task Details</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+            mr: 4,
+            mt: -1,
+          }}
+        >
+          <Typography variant="h6">Task Details</Typography>
+          <IconButton onClick={() => taskDetailResults.refetch()}>
+            <Sync />
+          </IconButton>
+        </Box>
         <CippPropertyListCard
-          title={
-            <Button onClick={() => taskDetailResults.refetch()} startIcon={<Sync />}>
-              Refresh
-            </Button>
-          }
           layout="dual"
           showDivider={false}
           propertyItems={taskProperties
@@ -133,64 +137,119 @@ const ScheduledTaskDetails = ({ data }) => {
 
         {taskDetails?.Details?.length > 0 && (
           <>
-            <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-              Execution Results
-            </Typography>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ mt: 4, mb: 2 }}
+            >
+              <Typography variant="h6">
+                Execution Results{" "}
+                {filteredDetails && (
+                  <Typography component="span" variant="body2" color="text.secondary">
+                    ({filteredDetails.length} of {taskDetails.Details.length})
+                  </Typography>
+                )}
+              </Typography>
+              <TextField
+                size="small"
+                variant="outlined"
+                sx={{ width: 250 }}
+                placeholder="Search results..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchQuery && (
+                    <InputAdornment position="end">
+                      <Tooltip title="Clear search">
+                        <IconButton
+                          size="small"
+                          onClick={() => setSearchQuery("")}
+                          aria-label="Clear search"
+                        >
+                          <Close />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Stack>
             <Stack>
-              {taskDetails.Details.map((result, index) => (
-                <Accordion
-                  key={`result-${index}`}
-                  variant="outlined"
-                  expanded={expanded === `execution-results-${index}`}
-                  onChange={handleChange(`execution-results-${index}`)}
-                  sx={{ mb: 2 }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    sx={{
-                      "& .MuiAccordionSummary-content": {
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        width: "100%",
-                      },
-                    }}
+              {filteredDetails &&
+                filteredDetails.map((result, index) => (
+                  <Accordion
+                    key={`result-${index}`}
+                    variant="outlined"
+                    expanded={expanded === `execution-results-${index}`}
+                    onChange={handleChange(`execution-results-${index}`)}
+                    sx={{ mb: 2 }}
                   >
-                    <Typography>{result.TenantName || result.Tenant}</Typography>
-                    <Chip
-                      size="small"
-                      color="info"
-                      variant="outlined"
-                      label={<CippTimeAgo data={result.Timestamp} />}
-                      sx={{ mx: 1 }}
-                    />
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {result.Results === "null" ? (
-                      <Typography color="text.secondary">No data available</Typography>
-                    ) : Array.isArray(result.Results) ? (
-                      <CippDataTable
-                        noCard
-                        data={result.Results}
-                        disablePagination={result.Results.length <= 10}
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      sx={{
+                        "& .MuiAccordionSummary-content": {
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          width: "100%",
+                        },
+                      }}
+                    >
+                      <Typography>{result.TenantName || result.Tenant}</Typography>
+                      <Chip
+                        size="small"
+                        color="info"
+                        variant="outlined"
+                        label={<CippTimeAgo data={result.Timestamp} />}
+                        sx={{ mx: 1 }}
                       />
-                    ) : typeof result.Results === "object" ? (
-                      <CippPropertyListCard
-                        propertyItems={Object.entries(result.Results).map(([key, value]) => ({
-                          label: key,
-                          value: typeof value === "object" ? JSON.stringify(value) : value,
-                        }))}
-                      />
-                    ) : (
-                      <Box sx={{ p: 2, bgcolor: "background.paper", borderRadius: 1 }}>
-                        <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                          {result.Results}
-                        </pre>
-                      </Box>
-                    )}
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {result.Results === "null" ? (
+                        <Typography color="text.secondary">No data available</Typography>
+                      ) : Array.isArray(result.Results) ? (
+                        <CippDataTable
+                          noCard
+                          data={result.Results}
+                          disablePagination={result.Results.length <= 10}
+                        />
+                      ) : typeof result.Results === "object" ? (
+                        <CippPropertyListCard
+                          propertyItems={Object.entries(result.Results).map(([key, value]) => ({
+                            label: key,
+                            value: typeof value === "object" ? JSON.stringify(value) : value,
+                          }))}
+                        />
+                      ) : (
+                        <Box sx={{ p: 2, bgcolor: "background.paper", borderRadius: 1 }}>
+                          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                            {result.Results}
+                          </pre>
+                        </Box>
+                      )}
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              {filteredDetails && filteredDetails.length === 0 && (
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: "background.paper",
+                    borderRadius: 1,
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography color="text.secondary">
+                    No results match your search criteria
+                  </Typography>
+                </Box>
+              )}
             </Stack>
           </>
         )}
