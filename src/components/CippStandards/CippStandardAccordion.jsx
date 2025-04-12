@@ -157,14 +157,21 @@ const CippStandardAccordion = ({
     }
 
     const result = {};
+    const searchLower = searchQuery.toLowerCase();
 
     Object.keys(groupedStandards).forEach((category) => {
+      const categoryMatchesSearch = !searchQuery || category.toLowerCase().includes(searchLower);
+
       const filteredStandards = groupedStandards[category].filter(({ standardName, standard }) => {
         const matchesSearch =
           !searchQuery ||
-          standard.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (standard.helpText &&
-            standard.helpText.toLowerCase().includes(searchQuery.toLowerCase()));
+          categoryMatchesSearch ||
+          standard.label.toLowerCase().includes(searchLower) ||
+          (standard.helpText && standard.helpText.toLowerCase().includes(searchLower)) ||
+          (standard.cat && standard.cat.toLowerCase().includes(searchLower)) ||
+          (standard.tag &&
+            Array.isArray(standard.tag) &&
+            standard.tag.some((tag) => tag.toLowerCase().includes(searchLower)));
 
         const isConfigured = configuredState[standardName];
         const matchesFilter =
