@@ -172,6 +172,13 @@ const Page = () => {
               const standardInfo = standards.find((s) => s.name === standardId);
               const standardSettings = standardConfig.standards?.[standardKey] || {};
               console.log(standardInfo);
+
+              // Check if reporting is enabled for this standard by checking the action property
+              // The standard should be reportable if there's an action with value === 'Report'
+              const actions = standardConfig.action || [];
+              const reportingEnabled =
+                actions.filter((action) => action.value === "Report").length > 0;
+
               // Find the tenant's value for this standard
               const currentTenantStandard = currentTenantData.find(
                 (s) => s.standardId === standardId
@@ -179,6 +186,7 @@ const Page = () => {
 
               // Determine compliance status
               let isCompliant = false;
+              let reportingDisabled = !reportingEnabled;
 
               // Check if the standard is directly in the tenant object (like "standards.AuditLog": true)
               const standardIdWithoutPrefix = standardId.replace("standards.", "");
@@ -203,6 +211,13 @@ const Page = () => {
                 }
               }
 
+              // Determine compliance status text based on reporting flag
+              const complianceStatus = reportingDisabled
+                ? "Reporting Disabled"
+                : isCompliant
+                ? "Compliant"
+                : "Non-Compliant";
+
               // Use the direct standard value from the tenant object if it exists
               allStandards.push({
                 standardId,
@@ -212,7 +227,8 @@ const Page = () => {
                     ? directStandardValue
                     : currentTenantStandard?.value,
                 standardValue: standardSettings,
-                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                complianceStatus,
+                reportingDisabled,
                 complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
                 standardDescription: standardInfo?.helpText || "",
                 standardImpact: standardInfo?.impact || "Medium Impact",
@@ -260,7 +276,13 @@ const Page = () => {
     comparisonData?.filter((standard) => standard.complianceStatus === "Compliant").length || 0;
   const nonCompliantCount =
     comparisonData?.filter((standard) => standard.complianceStatus === "Non-Compliant").length || 0;
-  const compliancePercentage = allCount > 0 ? Math.round((compliantCount / allCount) * 100) : 0;
+  const reportingDisabledCount =
+    comparisonData?.filter((standard) => standard.complianceStatus === "Reporting Disabled")
+      .length || 0;
+  const compliancePercentage =
+    allCount > 0
+      ? Math.round((compliantCount / (allCount - reportingDisabledCount || 1)) * 100)
+      : 0;
 
   return (
     <Box sx={{ flexGrow: 1, py: 4 }}>
@@ -589,11 +611,15 @@ const Page = () => {
                             bgcolor:
                               standard.complianceStatus === "Compliant"
                                 ? "success.main"
+                                : standard.complianceStatus === "Reporting Disabled"
+                                ? "grey.500"
                                 : "error.main",
                           }}
                         >
                           {standard.complianceStatus === "Compliant" ? (
                             <CheckCircle sx={{ color: "white" }} />
+                          ) : standard.complianceStatus === "Reporting Disabled" ? (
+                            <Info sx={{ color: "white" }} />
                           ) : (
                             <Cancel sx={{ color: "white" }} />
                           )}
@@ -751,6 +777,8 @@ const Page = () => {
                             backgroundColor:
                               standard.complianceStatus === "Compliant"
                                 ? "success.main"
+                                : standard.complianceStatus === "Reporting Disabled"
+                                ? "grey.500"
                                 : "error.main",
                             borderRadius: "50%",
                             width: 8,
@@ -777,49 +805,55 @@ const Page = () => {
                           borderColor: "divider",
                         }}
                       >
-                        {Object.entries(standard.currentTenantValue).map(([key, value]) => {
-                          const standardValueForKey =
-                            standard.standardValue && typeof standard.standardValue === "object"
-                              ? standard.standardValue[key]
-                              : undefined;
+                        {standard.complianceStatus === "Reporting Disabled" ? (
+                          <Alert severity="info" sx={{ mt: 1 }}>
+                            Reporting is disabled for this standard in the template configuration.
+                          </Alert>
+                        ) : (
+                          Object.entries(standard.currentTenantValue).map(([key, value]) => {
+                            const standardValueForKey =
+                              standard.standardValue && typeof standard.standardValue === "object"
+                                ? standard.standardValue[key]
+                                : undefined;
 
-                          const isDifferent =
-                            standardValueForKey !== undefined &&
-                            JSON.stringify(value) !== JSON.stringify(standardValueForKey);
+                            const isDifferent =
+                              standardValueForKey !== undefined &&
+                              JSON.stringify(value) !== JSON.stringify(standardValueForKey);
 
-                          return (
-                            <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
-                              <Typography variant="body2" sx={{ fontWeight: "medium", mr: 1 }}>
-                                {key}:
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  color:
-                                    standard.complianceStatus === "Compliant"
-                                      ? "success.main"
-                                      : isDifferent
-                                      ? "error.main"
-                                      : "inherit",
-                                  fontWeight:
-                                    standard.complianceStatus !== "Compliant" && isDifferent
-                                      ? "medium"
-                                      : "inherit",
-                                }}
-                              >
-                                {standard.complianceStatus === "Compliant" && value === true
-                                  ? "Compliant"
-                                  : typeof value === "object" && value !== null
-                                  ? value.label || JSON.stringify(value)
-                                  : value === true
-                                  ? "Enabled"
-                                  : value === false
-                                  ? "Disabled"
-                                  : String(value)}
-                              </Typography>
-                            </Box>
-                          );
-                        })}
+                            return (
+                              <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                <Typography variant="body2" sx={{ fontWeight: "medium", mr: 1 }}>
+                                  {key}:
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    color:
+                                      standard.complianceStatus === "Compliant"
+                                        ? "success.main"
+                                        : isDifferent
+                                        ? "error.main"
+                                        : "inherit",
+                                    fontWeight:
+                                      standard.complianceStatus === "Non-Compliant" && isDifferent
+                                        ? "medium"
+                                        : "inherit",
+                                  }}
+                                >
+                                  {standard.complianceStatus === "Compliant" && value === true
+                                    ? "Compliant"
+                                    : typeof value === "object" && value !== null
+                                    ? value.label || JSON.stringify(value)
+                                    : value === true
+                                    ? "Enabled"
+                                    : value === false
+                                    ? "Disabled"
+                                    : String(value)}
+                                </Typography>
+                              </Box>
+                            );
+                          })
+                        )}
                       </Box>
                     ) : (
                       <Typography
@@ -829,13 +863,19 @@ const Page = () => {
                           color:
                             standard.complianceStatus === "Compliant"
                               ? "success.main"
+                              : standard.complianceStatus === "Reporting Disabled"
+                              ? "text.secondary"
                               : "error.main",
                           fontWeight:
-                            standard.complianceStatus !== "Compliant" ? "medium" : "inherit",
+                            standard.complianceStatus === "Non-Compliant" ? "medium" : "inherit",
                         }}
                       >
-                        {standard.complianceStatus === "Compliant" &&
-                        standard.currentTenantValue === true ? (
+                        {standard.complianceStatus === "Reporting Disabled" ? (
+                          <Alert severity="info" sx={{ mt: 1 }}>
+                            Reporting is disabled for this standard in the template configuration.
+                          </Alert>
+                        ) : standard.complianceStatus === "Compliant" &&
+                          standard.currentTenantValue === true ? (
                           <Alert severity="success" sx={{ mt: 1 }}>
                             This setting is configured correctly
                           </Alert>
