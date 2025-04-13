@@ -36,6 +36,7 @@ import Defender from "../../icons/iconly/bulk/defender";
 import Intune from "../../icons/iconly/bulk/intune";
 import GDAPRoles from "/src/data/GDAPRoles";
 import timezoneList from "/src/data/timezoneList";
+import standards from "/src/data/standards.json";
 
 const getAvailableActions = (disabledFeatures) => {
   const allActions = [
@@ -81,7 +82,7 @@ const CippAddedComponent = React.memo(({ standardName, component, formControl })
 CippAddedComponent.displayName = "CippAddedComponent";
 
 const CippStandardAccordion = ({
-  standards,
+  standards: providedStandards,
   selectedStandards,
   expanded,
   handleAccordionToggle,
@@ -101,7 +102,7 @@ const CippStandardAccordion = ({
     const newConfiguredState = { ...configuredState };
 
     Object.keys(selectedStandards).forEach((standardName) => {
-      const standard = standards.find((s) => s.name === standardName.split("[")[0]);
+      const standard = providedStandards.find((s) => s.name === standardName.split("[")[0]);
       if (standard) {
         const actionFilled = !!_.get(watchedValues, `${standardName}.action`, false);
 
@@ -123,16 +124,18 @@ const CippStandardAccordion = ({
     if (!_.isEqual(newConfiguredState, configuredState)) {
       setConfiguredState(newConfiguredState);
     }
-  }, [watchedValues, standards, selectedStandards]);
+  }, [watchedValues, providedStandards, selectedStandards]);
 
   const groupedStandards = useMemo(() => {
     const result = {};
 
     Object.keys(selectedStandards).forEach((standardName) => {
-      const standard = standards.find((s) => s.name === standardName.split("[")[0]);
+      const baseStandardName = standardName.split("[")[0];
+      const standard = providedStandards.find((s) => s.name === baseStandardName);
       if (!standard) return;
 
-      const category = standard.cat || "Other Standards";
+      const standardInfo = standards.find((s) => s.name === baseStandardName);
+      const category = standardInfo?.cat || "Other Standards";
 
       if (!result[category]) {
         result[category] = [];
@@ -149,7 +152,7 @@ const CippStandardAccordion = ({
     });
 
     return result;
-  }, [selectedStandards, standards]);
+  }, [selectedStandards, providedStandards]);
 
   const filteredGroupedStandards = useMemo(() => {
     if (!searchQuery && filter === "all") {
