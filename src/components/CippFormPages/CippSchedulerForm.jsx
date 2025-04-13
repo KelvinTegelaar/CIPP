@@ -51,7 +51,7 @@ const CippSchedulerForm = (props) => {
   };
 
   const recurrenceOptions = [
-    { value: "0", label: "Only once" },
+    { value: "0", label: "Once" },
     { value: "1d", label: "Every 1 day" },
     { value: "7d", label: "Every 7 days" },
     { value: "30d", label: "Every 30 days" },
@@ -69,8 +69,8 @@ const CippSchedulerForm = (props) => {
   });
 
   const tenantList = ApiGetCall({
-    url: "/api/ListTenants",
-    queryKey: "ListTenants",
+    url: "/api/ListTenants?AllTenantSelector=true",
+    queryKey: "ListTenants-AllTenants",
   });
   useEffect(() => {
     if (scheduledTaskList.isSuccess && router.query.id) {
@@ -86,16 +86,27 @@ const CippSchedulerForm = (props) => {
         );
         if (commands.isSuccess) {
           const command = commands.data.find((command) => command.Function === task.Command);
+          var recurrence = recurrenceOptions.find(
+            (option) => option.value === task.Recurrence || option.label === task.Recurrence
+          );
+
+          // if scheduledtime type is a date, convert to unixtime
+          if (typeof task.ScheduledTime === "date") {
+            task.ScheduledTime = Math.floor(task.ScheduledTime.getTime() / 1000);
+          } else if (typeof task.ScheduledTime === "string") {
+            task.ScheduledTime = Math.floor(new Date(task.ScheduledTime).getTime() / 1000);
+          }
+
           const ResetParams = {
             tenantFilter: {
               value: tenantFilter?.defaultDomainName,
-              label: tenantFilter?.defaultDomainName,
+              label: `${tenantFilter?.displayName} (${tenantFilter?.defaultDomainName})`,
             },
             RowKey: router.query.Clone ? null : task.RowKey,
             Name: router.query.Clone ? `${task.Name} (Clone)` : task?.Name,
             command: { label: task.Command, value: task.Command, addedFields: command },
             ScheduledTime: task.ScheduledTime,
-            Recurrence: task.Recurrence,
+            Recurrence: recurrence,
             parameters: task.Parameters,
             postExecution: postExecution,
             advancedParameters: task.RawJsonParameters ? true : false,
