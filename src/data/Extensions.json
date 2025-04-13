@@ -176,9 +176,9 @@
       },
       {
         "type": "password",
-        "name": "Sherweb.paxclientId",
-        "label": "Pax8 Client Id",
-        "placeholder": "Enter your Pax  Client Id",
+        "name": "Pax8.clientId",
+        "label": "Pax8 Client ID",
+        "placeholder": "Enter your Pax8 Client ID",
         "required": true,
         "condition": {
           "field": "Sherweb.migrateFrom",
@@ -188,7 +188,7 @@
       },
       {
         "type": "password",
-        "name": "Sherweb.paxclientSecret",
+        "name": "Pax8.APIKey",
         "label": "Pax8 Client Secret",
         "placeholder": "Enter your Pax Client Secret",
         "required": true,
