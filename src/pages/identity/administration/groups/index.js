@@ -86,7 +86,7 @@ const Page = () => {
       url: "/api/AddGroupTemplate",
       icon: <GroupSharp />,
       data: {
-        Displayname: "displayname",
+        Displayname: "displayName",
         Description: "description",
         GroupType: "calculatedGroupType",
         MembershipRules: "membershipRule",
