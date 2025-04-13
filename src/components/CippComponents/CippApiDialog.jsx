@@ -339,11 +339,14 @@ export const CippApiDialog = (props) => {
     // Handle JSX/Component confirmText
     const replaceTextInElement = (element) => {
       if (!element) return element;
-      if (typeof element === 'string') {
+      if (typeof element === "string") {
         if (Array.isArray(row) && row.length > 1) {
           return element.replace(/\[([^\]]+)\]/g, "the selected rows");
         } else if (Array.isArray(row) && row.length === 1) {
-          return element.replace(/\[([^\]]+)\]/g, (_, key) => getNestedValue(row[0], key) || `[${key}]`);
+          return element.replace(
+            /\[([^\]]+)\]/g,
+            (_, key) => getNestedValue(row[0], key) || `[${key}]`
+          );
         }
         return element.replace(/\[([^\]]+)\]/g, (_, key) => getNestedValue(row, key) || `[${key}]`);
       }

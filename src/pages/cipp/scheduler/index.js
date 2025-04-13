@@ -16,6 +16,7 @@ const Page = () => {
       data: { RowKey: "RowKey", RunNow: true },
       icon: <PlayArrow />,
       confirmText: "Are you sure you want to run [Name]?",
+      allowResubmit: true,
     },
     {
       label: "Edit Job",
