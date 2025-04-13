@@ -3,7 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from 
 import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
@@ -285,6 +285,10 @@ export const CippApiDialog = (props) => {
   const [linkClicked, setLinkClicked] = useState(false);
 
   useEffect(() => {
+    setLinkClicked(false);
+  }, [api.link]);
+
+  useEffect(() => {
     if (api.link && !linkClicked && row && Object.keys(row).length > 0) {
       const timeoutId = setTimeout(() => {
         const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
@@ -319,18 +323,40 @@ export const CippApiDialog = (props) => {
   };
 
   var confirmText;
-  if (typeof api?.confirmText === "string" && !Array.isArray(row)) {
-    confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
-      return getNestedValue(row, key) || `[${key}]`;
-    });
-  } else if (Array.isArray(row) && row.length > 1) {
-    confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, "the selected rows");
-  } else if (Array.isArray(row) && row.length === 1) {
-    confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
-      return getNestedValue(row[0], key) || `[${key}]`;
-    });
+  if (typeof api?.confirmText === "string") {
+    if (!Array.isArray(row)) {
+      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
+        return getNestedValue(row, key) || `[${key}]`;
+      });
+    } else if (row.length > 1) {
+      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, "the selected rows");
+    } else if (row.length === 1) {
+      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, (_, key) => {
+        return getNestedValue(row[0], key) || `[${key}]`;
+      });
+    }
   } else {
-    confirmText = api.confirmText;
+    // Handle JSX/Component confirmText
+    const replaceTextInElement = (element) => {
+      if (!element) return element;
+      if (typeof element === "string") {
+        if (Array.isArray(row) && row.length > 1) {
+          return element.replace(/\[([^\]]+)\]/g, "the selected rows");
+        } else if (Array.isArray(row) && row.length === 1) {
+          return element.replace(
+            /\[([^\]]+)\]/g,
+            (_, key) => getNestedValue(row[0], key) || `[${key}]`
+          );
+        }
+        return element.replace(/\[([^\]]+)\]/g, (_, key) => getNestedValue(row, key) || `[${key}]`);
+      }
+      if (React.isValidElement(element)) {
+        const newChildren = React.Children.map(element.props.children, replaceTextInElement);
+        return React.cloneElement(element, {}, newChildren);
+      }
+      return element;
+    };
+    confirmText = replaceTextInElement(api?.confirmText);
   }
 
   return (
