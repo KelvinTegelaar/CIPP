@@ -82,7 +82,7 @@ export const CippGdapActions = () => [
     confirmText: (
       <>
         <Typography variant="body1">
-          Are you sure you want to reset the role mappings for this relationship?
+          Are you sure you want to reset the role mappings for [customer.displayName]?
         </Typography>
         <Alert severity="warning">
           Resetting GDAP role mappings will perform the following actions:

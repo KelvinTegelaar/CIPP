@@ -95,6 +95,108 @@
           "compareValue": true,
           "action": "disable"
         }
+      },
+      {
+        "type": "switch",
+        "name": "Sherweb.AutoMigrations",
+        "label": "Enable automated migration to Sherweb",
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.migrationMethods",
+        "label": "Select how you'd like automated migrations to be handled",
+        "options": [
+          {
+            "label": "Notify only - This will notify you when a subscription is in its cancellation window for non Sherweb subscriptions",
+            "value": "notifyOnly"
+          },
+          {
+            "label": "Buy and notify - This will automatically buy the subscription and notify you when a subscription is in its cancellation window for non Sherweb subscriptions",
+            "value": "buyAndNotify"
+          },
+          {
+            "label": "Buy and cancel - This will automatically buy the subscription and cancel the old subscription when a subscription is in its cancellation window for non Sherweb subscriptions",
+            "value": "buyAndCancel"
+          }
+        ],
+        "multiple": false,
+        "condition": {
+          "field": "Sherweb.AutoMigrations",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.migrateFrom",
+        "label": "Select the vendor to automatically migrate from",
+        "options": [
+          {
+            "label": "Pax8",
+            "value": "Pax8"
+          }
+        ],
+        "multiple": false,
+        "condition": {
+          "field": "Sherweb.migrationMethods",
+          "compareType": "is",
+          "compareValue": "buyAndCancel"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.migrateToLicense",
+        "label": "Select the type of license to automatically migrate to",
+        "options": [
+          {
+            "label": "Yearly",
+            "value": "Y1Y"
+          },
+          {
+            "label": "Annual paid monthly",
+            "value": "M1Y"
+          },
+          {
+            "label": "Monthly",
+            "value": "M2M"
+          }
+        ],
+        "multiple": false,
+        "condition": {
+          "field": "Sherweb.migrationMethods",
+          "compareType": "contains",
+          "compareValue": "buy"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Pax8.clientId",
+        "label": "Pax8 Client ID",
+        "placeholder": "Enter your Pax8 Client ID",
+        "required": true,
+        "condition": {
+          "field": "Sherweb.migrateFrom",
+          "compareType": "is",
+          "compareValue": "Pax8"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Pax8.APIKey",
+        "label": "Pax8 Client Secret",
+        "placeholder": "Enter your Pax Client Secret",
+        "required": true,
+        "condition": {
+          "field": "Sherweb.migrateFrom",
+          "compareType": "is",
+          "compareValue": "Pax8"
+        }
       }
     ]
   },
