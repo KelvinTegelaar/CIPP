@@ -2,13 +2,18 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { CalendarDaysIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { CopyAll, Edit, PlayArrow } from "@mui/icons-material";
 import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 
 const Page = () => {
   const actions = [
+    {
+      label: "View Task Details",
+      link: "/cipp/scheduler/task?id=[RowKey]",
+      icon: <EyeIcon />,
+    },
     {
       label: "Run Now",
       type: "POST",
