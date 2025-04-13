@@ -81,22 +81,43 @@ const AlertWizard = () => {
       const alert = existingAlert?.data?.find((alert) => alert.RowKey === router.query.id);
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
-        formControl.setValue("tenantFilter", {
-          value: alert.RawAlert.Tenant,
-          label: alert.RawAlert.Tenant,
-        });
+
+        console.log(alert);
+
+        // Create formatted excluded tenants array if it exists
+        const excludedTenantsFormatted = Array.isArray(alert.excludedTenants)
+          ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
+          : [];
+
+        // Format the command object
         const usedCommand = alertList?.find(
           (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
         );
-        formControl.setValue("command", { value: usedCommand, label: usedCommand.label });
-        formControl.setValue(
-          "recurrence",
-          recurrenceOptions?.find((opt) => opt.value === alert.RawAlert.Recurrence)
+
+        // Format recurrence option
+        const recurrenceOption = recurrenceOptions?.find(
+          (opt) => opt.value === alert.RawAlert.Recurrence
         );
+
+        // Format post execution values
         const postExecutionValue = postExecutionOptions.filter((opt) =>
           alert.RawAlert.PostExecution.split(",").includes(opt.value)
         );
-        formControl.setValue("postExecution", postExecutionValue);
+
+        // Reset the form with all values at once
+        formControl.reset(
+          {
+            tenantFilter: {
+              value: alert.RawAlert.Tenant,
+              label: alert.RawAlert.Tenant,
+            },
+            excludedTenants: excludedTenantsFormatted,
+            command: { value: usedCommand, label: usedCommand.label },
+            recurrence: recurrenceOption,
+            postExecution: postExecutionValue,
+          },
+          { keepDirty: false }
+        );
       }
       if (alert?.PartitionKey === "Webhookv2") {
         setAlertType("audit");
@@ -113,6 +134,7 @@ const AlertWizard = () => {
         formControl.reset({
           RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
           tenantFilter: alert.RawAlert.Tenants,
+          excludedTenants: alert.RawAlert.excludedTenants,
           Actions: alert.RawAlert.Actions,
           conditions: alert.RawAlert.Conditions,
           logbook: foundLogbook,

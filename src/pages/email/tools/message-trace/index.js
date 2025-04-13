@@ -83,6 +83,12 @@ const Page = () => {
       },
       icon: <DocumentTextIcon />,
     },
+    {
+      label: "View in Explorer",
+      noConfirm: true,
+      link: `https://security.microsoft.com/realtimereportsv3?tid=${tenantFilter}&dltarget=Explorer&dlstorage=Url&viewid=allemail&query-NetworkMessageId=[MessageTraceId]`,
+      icon: <DocumentTextIcon />,
+    },
   ];
 
   const onSubmit = () => {

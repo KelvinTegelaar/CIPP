@@ -264,12 +264,20 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
   }
 
   if (cellName === "excludedTenants") {
+    // Handle null or undefined data
+    if (data === null || data === undefined) {
+      return isText ? "No data" : <Box component="span"><Chip variant="outlined" label="No data" size="small" color="info" /></Box>;
+    }
     //check if data is an array.
     if (Array.isArray(data)) {
       return isText
-        ? data.join(", ")
+        ? data.map(item => (typeof item === 'object' && item?.label) ? item.label : item).join(", ")
         : data.map((item) => (
-            <CippCopyToClipBoard key={item.value} text={item.label} type="chip" />
+            item && <CippCopyToClipBoard
+              key={typeof item === 'object' ? item?.value || item?.label : item}
+              text={typeof item === 'object' && item?.label ? item.label : item}
+              type="chip"
+            />
           ));
     }
   }
