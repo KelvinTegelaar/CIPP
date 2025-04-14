@@ -221,7 +221,7 @@ const Page = () => {
               // Use the direct standard value from the tenant object if it exists
               allStandards.push({
                 standardId,
-                standardName: standardInfo.label || standardKey,
+                standardName: standardInf?.label || standardKey,
                 currentTenantValue:
                   directStandardValue !== undefined
                     ? directStandardValue
@@ -726,7 +726,7 @@ const Page = () => {
                                     </Typography>
                                     <Typography variant="body2">
                                       {typeof value === "object" && value !== null
-                                        ? value.label || JSON.stringify(value)
+                                        ? value?.label || JSON.stringify(value)
                                         : value === true
                                         ? "Enabled"
                                         : value === false
@@ -902,7 +902,7 @@ const Page = () => {
                                     {standard.complianceStatus === "Compliant" && value === true
                                       ? "Compliant"
                                       : typeof value === "object" && value !== null
-                                      ? value.label || JSON.stringify(value)
+                                      ? value?.label || JSON.stringify(value)
                                       : value === true
                                       ? "Enabled"
                                       : value === false
