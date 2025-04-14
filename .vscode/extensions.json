@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "recommendations": [
     "github.vscode-codeql",
     "dbaeumer.vscode-eslint",
@@ -7,4 +8,10 @@
     "stylelint.vscode-stylelint",
     "editorconfig.editorconfig"
   ]
+=======
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "streetsidesoftware.code-spell-checker",
+    ]
+>>>>>>> 3c868ca85976d685e1d9b3cfa252505b21eeb13d
 }

@@ -104,6 +104,7 @@ const Page = () => {
       label: "Release",
       type: "POST",
       url: "/api/ExecQuarantineManagement",
+      multiPost: true,
       data: {
         Identity: "Identity",
         Type: "!Release",

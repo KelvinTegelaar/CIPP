@@ -429,6 +429,7 @@ export const CippDataTable = (props) => {
             api={actionData.action}
             row={actionData.data}
             relatedQueryKeys={queryKey ? queryKey : title}
+            {...actionData.action}
           />
         );
       }, [actionData.ready, createDialog, actionData.action, actionData.data, queryKey, title])}
