@@ -171,7 +171,7 @@ const Page = () => {
               const standardId = `standards.${standardKey}`;
               const standardInfo = standards.find((s) => s.name === standardId);
               const standardSettings = standardConfig.standards?.[standardKey] || {};
-              console.log(standardInfo);
+              //console.log(standardInfo);
 
               // Check if reporting is enabled for this standard by checking the action property
               // The standard should be reportable if there's an action with value === 'Report'
