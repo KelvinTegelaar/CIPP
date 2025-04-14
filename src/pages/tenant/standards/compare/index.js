@@ -175,9 +175,9 @@ const Page = () => {
 
               // Check if reporting is enabled for this standard by checking the action property
               // The standard should be reportable if there's an action with value === 'Report'
-              const actions = standardConfig.action || [];
+              const actions = standardConfig?.action ?? [];
               const reportingEnabled =
-                actions.filter((action) => action.value === "Report").length > 0;
+                actions.filter((action) => action?.value === "Report").length > 0;
 
               // Find the tenant's value for this standard
               const currentTenantStandard = currentTenantData.find(
