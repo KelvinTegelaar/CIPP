@@ -253,7 +253,7 @@ const CippApiClientManagement = () => {
           showDivider={false}
           isFetching={azureConfig.isFetching}
         />
-        {azureConfig.isSuccess && azureConfig.data?.Results?.ClientIDs && (
+        {azureConfig.isSuccess && (
           <>
             {!isEqual(
               apiClients.data?.pages?.[0]?.Results?.filter((c) => c.Enabled)
