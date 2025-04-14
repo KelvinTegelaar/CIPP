@@ -14,7 +14,7 @@ jobs:
       - name: Label Issues
         uses: andymckay/labeler@5c59dabdfd4dd5bd9c6e6d255b01b9d764af4414
         with:
-          add-labels: 'unconfirmed-by-user'
+          add-labels: 'not-assigned'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
   label_issues_frs:
     if: github.repository_owner == 'KelvinTegelaar' && contains(github.event.issue.title, 'Feature')
@@ -25,5 +25,5 @@ jobs:
       - name: Label Issues
         uses: andymckay/labeler@5c59dabdfd4dd5bd9c6e6d255b01b9d764af4414
         with:
-          add-labels: 'enhancement, no-priority'
+          add-labels: 'enhancement, not-assigned'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
