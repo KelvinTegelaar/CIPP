@@ -13,11 +13,11 @@ Standards in CIPP ensure consistent configurations across your Microsoft 365 ten
 
 CIPP allows you to set standards in three different settings. Some standards can only be set to specific items, such as Intune standards which can only be "Remediated".
 
-| Action    | Description                                                                                         |
-| --------- | --------------------------------------------------------------------------------------------------- |
-| Report    | Logs the current configuration and stores this inside of the CIPP database for custom reports.      |
-| Alert     | Sends you a notification via the configured method in CIPP -> Application Settings -> Notifications |
-| Remediate | Changes the configuration of the tenant.                                                            |
+| Action    | Description                                                                                                           |
+| --------- | --------------------------------------------------------------------------------------------------------------------- |
+| Report    | Logs the current configuration and stores this inside of the CIPP database for your standards reports or BPA reports. |
+| Alert     | Sends you a notification via the configured method in CIPP -> Application Settings -> Notifications                   |
+| Remediate | Changes the configuration of the tenant.                                                                              |
 
 For example, when you wish to create a report for Audit log state across all your tenants, you can create an "All Tenants" standard that has the Audit Log standard set to "Report" - This fills the CIPP database with the current setting without editing the clients settings.
 
