@@ -221,7 +221,7 @@ const Page = () => {
               // Use the direct standard value from the tenant object if it exists
               allStandards.push({
                 standardId,
-                standardName: standardInf?.label || standardKey,
+                standardName: standardInfo?.label || standardKey,
                 currentTenantValue:
                   directStandardValue !== undefined
                     ? directStandardValue
