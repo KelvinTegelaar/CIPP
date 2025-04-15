@@ -188,7 +188,6 @@ const Page = () => {
                 The following groups will be created in your partner tenant if they do not already
                 exist:
               </Alert>
-              {console.log(selectedGdapRoles)}
               <CippPropertyList
                 propertyItems={selectedGdapRoles?.map((role) => ({
                   label: `M365 GDAP ${role.label}${customSuffix ? ` - ${customSuffix}` : ""}`,
