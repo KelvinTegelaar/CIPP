@@ -171,13 +171,13 @@ const Page = () => {
               const standardId = `standards.${standardKey}`;
               const standardInfo = standards.find((s) => s.name === standardId);
               const standardSettings = standardConfig.standards?.[standardKey] || {};
-              console.log(standardInfo);
+              //console.log(standardInfo);
 
               // Check if reporting is enabled for this standard by checking the action property
               // The standard should be reportable if there's an action with value === 'Report'
-              const actions = standardConfig.action || [];
+              const actions = standardConfig?.action ?? [];
               const reportingEnabled =
-                actions.filter((action) => action.value === "Report").length > 0;
+                actions.filter((action) => action?.value === "Report").length > 0;
 
               // Find the tenant's value for this standard
               const currentTenantStandard = currentTenantData.find(
@@ -221,7 +221,7 @@ const Page = () => {
               // Use the direct standard value from the tenant object if it exists
               allStandards.push({
                 standardId,
-                standardName: standardInfo.label || standardKey,
+                standardName: standardInfo?.label || standardKey,
                 currentTenantValue:
                   directStandardValue !== undefined
                     ? directStandardValue
@@ -265,7 +265,7 @@ const Page = () => {
 
     comparisonData.forEach((standard) => {
       // Find the standard info in the standards.json data
-      const standardInfo = standards.find((s) => s.name === standard.standardId);
+      const standardInfo = standards.find((s) => standard.standardId.includes(s.name));
 
       // Use the category from standards.json, or default to "Other Standards"
       const category = standardInfo?.cat || "Other Standards";
@@ -726,7 +726,7 @@ const Page = () => {
                                     </Typography>
                                     <Typography variant="body2">
                                       {typeof value === "object" && value !== null
-                                        ? value.label || JSON.stringify(value)
+                                        ? value?.label || JSON.stringify(value)
                                         : value === true
                                         ? "Enabled"
                                         : value === false
@@ -902,7 +902,7 @@ const Page = () => {
                                     {standard.complianceStatus === "Compliant" && value === true
                                       ? "Compliant"
                                       : typeof value === "object" && value !== null
-                                      ? value.label || JSON.stringify(value)
+                                      ? value?.label || JSON.stringify(value)
                                       : value === true
                                       ? "Enabled"
                                       : value === false
