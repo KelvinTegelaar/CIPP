@@ -32,6 +32,14 @@ export const getCippFilterVariant = (providedColumnKeys) => {
     case "assignedLicenses":
       return {
         filterVariant: "multi-select",
+        sortingFn: "alphanumeric",
+        filterFn: "arrIncludesSome",
+      };
+    case "Tenant":
+      return {
+        filterVariant: "multi-select",
+        sortingFn: "alphanumeric",
+        filterFn: "arrIncludesSome",
       };
     case "accountEnabled":
       return {
