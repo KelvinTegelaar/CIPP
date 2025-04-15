@@ -82,7 +82,7 @@ const AlertWizard = () => {
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
 
-        console.log(alert);
+        //console.log(alert);
 
         // Create formatted excluded tenants array if it exists
         const excludedTenantsFormatted = Array.isArray(alert.excludedTenants)
