@@ -103,7 +103,6 @@ const Page = () => {
             </Grid>
             {selectedSku?.value && (
               <Grid size={{ xs: 12 }}>
-                {console.log(selectedSku)}
                 <CippPropertyListCard
                   title="Selected SKU Details"
                   variant="outlined"
