@@ -265,7 +265,7 @@ const Page = () => {
 
     comparisonData.forEach((standard) => {
       // Find the standard info in the standards.json data
-      const standardInfo = standards.find((s) => s.name === standard.standardId);
+      const standardInfo = standards.find((s) => standard.standardId.includes(s.name));
 
       // Use the category from standards.json, or default to "Other Standards"
       const category = standardInfo?.cat || "Other Standards";
