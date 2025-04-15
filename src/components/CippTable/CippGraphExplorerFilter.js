@@ -451,7 +451,7 @@ const CippGraphExplorerFilter = ({
     setCardExpanded(false);
   };
 
-  console.log(cardExpanded);
+  //console.log(cardExpanded);
   const deletePreset = (id) => {
     savePresetApi.mutate({
       url: "/api/ExecGraphExplorerPreset",
