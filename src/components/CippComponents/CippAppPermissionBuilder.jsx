@@ -427,7 +427,7 @@ const CippAppPermissionBuilder = ({
       waiting: true,
     });
 
-    console.log(spInfo);
+    //console.log(spInfo);
 
     const currentAppPermission = useWatch({
       control: formControl.control,
