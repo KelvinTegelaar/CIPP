@@ -39,6 +39,7 @@ const Page = () => {
   const [traceDetails, setTraceDetails] = useState([]);
   const [traceMessageId, setTraceMessageId] = useState(null);
   const [messageSubject, setMessageSubject] = useState(null);
+  const [messageContentsWaiting, setMessageContentsWaiting] = useState(false);
 
   const getMessageContents = ApiGetCall({
     url: "/api/ListMailQuarantineMessage",
@@ -46,7 +47,7 @@ const Page = () => {
       tenantFilter: tenantFilter,
       Identity: messageId,
     },
-    waiting: false,
+    waiting: messageContentsWaiting,
     queryKey: `ListMailQuarantineMessage-${messageId}`,
   });
 
@@ -61,7 +62,9 @@ const Page = () => {
   const viewMessage = (row) => {
     const id = row.Identity;
     setMessageId(id);
-    getMessageContents.waiting = true;
+    if (!messageContentsWaiting) {
+      setMessageContentsWaiting(true);
+    }
     getMessageContents.refetch();
     setDialogOpen(true);
   };
@@ -85,7 +88,7 @@ const Page = () => {
     } else {
       setDialogContent(<Skeleton variant="rectangular" height={400} />);
     }
-  }, [getMessageContents.isSuccess]);
+  }, [getMessageContents.isSuccess, getMessageContents.data]);
 
   const actions = [
     {

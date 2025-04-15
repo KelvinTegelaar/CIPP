@@ -63,7 +63,6 @@ export const CippInfoBar = ({ data, isFetching }) => {
             </Grid>
             {item.offcanvas && (
               <>
-                {console.log("item.offcanvas", item.offcanvas)}
                 <CippOffCanvas
                   title={item?.offcanvas?.title || "Details"}
                   size="md"
