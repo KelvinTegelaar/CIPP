@@ -10,6 +10,8 @@ const Page = () => {
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
   const actions = [
     {
@@ -58,7 +60,7 @@ const Page = () => {
     },
     {
       label: "Delete Template",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveCATemplate",
       icon: <Delete />,
       data: { ID: "GUID" },

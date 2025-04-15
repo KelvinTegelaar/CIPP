@@ -18,10 +18,11 @@ import CippExchangeSettingsForm from "../../../../../components/CippFormPages/Ci
 import { useForm } from "react-hook-form";
 import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { Block, PlayArrow, DeleteForever } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
+import CippExchangeActions from "../../../../../components/CippComponents/CippExchangeActions";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -117,15 +118,15 @@ const Page = () => {
           icon: <Launch style={{ color: "#667085" }} />,
           text: (
             <Button
-                color="muted"
-                style={{ paddingLeft: 0 }}
-                size="small"
-                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View in Entra
-              </Button>
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -188,9 +189,39 @@ const Page = () => {
 
   const mailboxRuleActions = [
     {
+      label: "Enable Mailbox Rule",
+      type: "POST",
+      icon: <PlayArrow />,
+      url: "/api/ExecSetMailboxRule",
+      data: {
+        ruleId: "Identity",
+        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+        ruleName: "Name",
+        Enable: true,
+      },
+      condition: (row) => !row.Enabled,
+      confirmText: "Are you sure you want to enable this mailbox rule?",
+      multiPost: false,
+    },
+    {
+      label: "Disable Mailbox Rule",
+      type: "POST",
+      icon: <Block />,
+      url: "/api/ExecSetMailboxRule",
+      data: {
+        ruleId: "Identity",
+        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+        ruleName: "Name",
+        Disable: true,
+      },
+      condition: (row) => row.Enabled,
+      confirmText: "Are you sure you want to disable this mailbox rule?",
+      multiPost: false,
+    },
+    {
       label: "Remove Mailbox Rule",
-      type: "GET",
-      icon: <TrashIcon />,
+      type: "POST",
+      icon: <DeleteForever />,
       url: "/api/ExecRemoveMailboxRule",
       data: {
         ruleId: "Identity",
@@ -261,6 +292,8 @@ const Page = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
+      actions={CippExchangeActions()}
+      actionsData={userRequest.data?.[0]?.MailboxActionsData}
       isFetching={graphUserRequest.isLoading}
     >
       <CippApiResults apiObject={userRequest} errorsOnly={true} />
@@ -303,7 +336,12 @@ const Page = () => {
             ) && (
               <>
                 <Grid item size={4}>
-                  <CippExchangeInfoCard exchangeData={data} isFetching={userRequest.isLoading} />
+                  <CippExchangeInfoCard
+                    exchangeData={data}
+                    isLoading={userRequest.isLoading}
+                    isFetching={userRequest.isFetching}
+                    handleRefresh={() => userRequest.refetch()}
+                  />
                 </Grid>
                 <Grid item size={8}>
                   <Stack spacing={3}>

@@ -5,7 +5,7 @@ import autoTable from "jspdf-autotable";
 import { getCippFormatting } from "../utils/get-cipp-formatting";
 
 export const PDFExportButton = (props) => {
-  const { rows, columns, reportName, columnVisibility } = props;
+  const { rows, columns, reportName, columnVisibility, ...other } = props;
 
   const handleExportRows = (rows) => {
     const unit = "pt";
@@ -41,7 +41,7 @@ export const PDFExportButton = (props) => {
   return (
     <Tooltip title="Export to PDF">
       <span>
-        <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)}>
+        <IconButton disabled={rows.length === 0} onClick={() => handleExportRows(rows)} {...other}>
           <PictureAsPdf />
         </IconButton>
       </span>

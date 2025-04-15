@@ -105,7 +105,8 @@
     "params": {
       "endpoint": "/reports/authenticationMethods/userRegistrationDetails",
       "$filter": "",
-      "$select": ""
+      "$select": "",
+      "AsApp": true
     },
     "isBuiltin": true
   },
@@ -125,7 +126,8 @@
     "params": {
       "endpoint": "/reports/authenticationMethods/userRegistrationDetails",
       "$filter": "IsAdmin eq true",
-      "$select": ""
+      "$select": "",
+      "AsApp": true
     },
     "isBuiltin": true
   },

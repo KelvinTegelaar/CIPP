@@ -6,15 +6,25 @@ import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub } from "@mui/icons-mat
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
   const pageTitle = "Standard Templates";
   const actions = [
+    {
+      label: "View Tenant Report",
+      link: "/tenant/standards/compare?templateId=[GUID]",
+      icon: <EyeIcon />,
+      color: "info",
+      target: "_self",
+    },
     {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
