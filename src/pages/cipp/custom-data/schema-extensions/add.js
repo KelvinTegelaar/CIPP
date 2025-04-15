@@ -48,7 +48,7 @@ const Page = () => {
   });
 
   const handleAddSchema = (data) => {
-    console.log(data);
+    //console.log(data);
     if (!data.properties || data.properties.length === 0) {
       formControl.setError("properties", {
         type: "manual",
