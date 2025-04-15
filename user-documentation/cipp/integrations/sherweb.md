@@ -1,12 +1,7 @@
 # Sherweb
 
 {% hint style="info" %}
-**Current Status: General Availability**
-
-* Available to all CIPP users
-* Best suited for existing Sherweb partners
-* Requires CIPP version 7.0 or higher
-* New to Sherweb? Visit [SherWeb Cloud Services for MSPs](https://www.sherweb.com/partners/)
+New to Sherweb? Visit [SherWeb Cloud Services for MSPs](https://www.sherweb.com/partners/)
 {% endhint %}
 
 ## **Overview**
@@ -22,17 +17,6 @@ The Sherweb integration enables you to manage your Microsoft 365 licenses and su
 * Automatic license handling during user creation and removal
 * Monitor license usage through CIPP's reporting
 * Perform bulk license changes across multiple users
-
-### Coming Soon (Q1 2025)
-
-1. **Automated CSP Migration**
-   * Seamlessly move from your old CSP to SherWeb
-   * Automatic license transfer handling
-   * No service interruption for your users
-2. **Scheduled License Management**
-   * Set up temporary license increases or decreases
-   * Perfect for seasonal staff or short-term projects
-   * Automatic reversal of changes on schedule
 
 ## Setting Up the Integration
 
@@ -89,6 +73,77 @@ Always review the matches before saving to ensure accuracy.
 3. Click the + button to add the mapping
 4. Repeat for additional tenants
 5. Click **Save Mappings** to finalize
+
+### Automated Migrations
+
+The **Automated Migrations** feature allows MSPs to identify, plan, and optionally execute license migrations from legacy CSPs to Sherweb through a scripted automation pipeline. This functionality is built around a flexible migration strategy, giving MSPs control over whether to just **notify**, **purchase**, or **cancel** legacy subscriptions — all based on real-time license matching.
+
+#### What It Does
+
+The migration function analyzes licenses that are:
+
+* Within a **transferable window** (<= 7 days remaining),
+* Active under a non-Sherweb CSP,
+* And compares them with the licenses currently available at Sherweb.
+
+Depending on the configured method, the script will either:
+
+* **Notify** the MSP of required license migrations via email, PSA, and webhook alerts,
+* **Automatically purchase** matching licenses from Sherweb,
+* Or **cancel** the old subscriptions entirely.\\
+
+Matching is currently done based on subscription and SKUIds, these will be improved in the future when Sherweb supplies more information about SKUs. If any part of the process fails you will automatically receive an email with the latest status.
+
+#### Automated migration setup
+
+1. **Toggle “Enable automated migration to Sherweb”**
+   * This activates the automated migration system
+   * Additional options will appear based on your selections
+2. **Choose a Migration Strategy**
+   * Under **“Select how you'd like automated migrations to be handled”**, pick one:
+     * &#x20;**Notify only** — Get alerts when subscriptions are eligible for migration (but take no action)
+     * **Buy and notify** — Automatically purchase the matching license from Sherweb, and notify
+     * **Buy and cancel** — Automatically purchase Sherweb licenses _and_ cancel the old CSP license
+3. **(Optional) Select Vendor to Migrate From**
+   * This option appears if you chose **Buy and cancel**
+   * Currently supports:
+     * Pax8
+4. **(Optional) Set License Type to Migrate To**
+   * If you selected any method containing **Buy**, select:
+     * `Yearly` (`Y1Y`)
+     * `Annual paid monthly` (`M1Y`)
+     * `Monthly` (`M2M`)
+5. **(If migrating from Pax8)** Enter Pax8 API Credentials:
+   * Pax8 Client ID
+   * Pax8 Client Secret
+
+{% hint style="danger" %}
+We recommend to only enable automated migrations after extensive testing - please set your automated migration strategy to "Notify" for atleast one month before executing automated buys. Neither Sherweb nor CyberDrain is responsible for purchaces made through the API.
+{% endhint %}
+
+***
+
+#### 🔔 What Happens Next?
+
+Once enabled:
+
+* CIPP will monitor tenants for licenses nearing their transfer window.
+* Based on your migration strategy:
+  * You’ll receive alerts via email, PSA, or webhook
+  * Licenses may be automatically purchased
+  * Legacy subscriptions may be canceled via Pax8's API (if configured)
+
+
+
+### Scheduled license removal/additions
+
+Using the task scheduler you can add/remove licenses now, this allows you to easily add/decrease the amount of licenses assigned to a tenant. To create a scheduled task for this do the following:
+
+* Go to Tools -> Scheduler.
+* In the scheduler click on Add Job
+* Select the option "Set-CIPPSherwebLicense"
+* Choose the options you'd like to use, such as adding a license, removing, or changing the quantity.
+* Choose the dates, and click on "Add Schedule"
 
 ***
 

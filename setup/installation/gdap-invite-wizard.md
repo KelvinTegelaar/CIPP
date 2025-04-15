@@ -1,4 +1,4 @@
-# Tenant onboarding
+# Tenant Onboarding
 
 ## Overview
 
@@ -14,10 +14,10 @@ To get started, we click the "Add Tenant" button. The overview page shows you yo
 
 ### **Step 2: Generate CIPP Default Template**
 
-If you have never used the GDAP wizard before, you will have the option to generate the CIPP Defaults Template. This template allows you to create the optimal role configuration for CIPP.
+If you have never used the CIPP before, you will have the option to generate the CIPP Defaults Template. This template allows you to create the optimal role configuration for CIPP. If you do not create this template, you will need to create your own.
 
 {% hint style="info" %}
-**This option will create 12 new groups in your Azure AD if they do not exist and add the CIPP user to them.** For more information on which roles will have groups created for them, you can check out the [Recommended Roles](../gdap/recommended-roles.md) page.
+**This option will create 12 new groups in your Azure AD if they do not exist and add the CIPP user to them.** These groups will be mapped to the GDAP role referenced. For more information on which roles will have groups created for them, you can check out the [Recommended Roles](../gdap/recommended-roles.md) page.
 {% endhint %}
 
 ### **Step 3: Select GDAP Role Template and generate invites**

@@ -13,17 +13,24 @@ Standards in CIPP ensure consistent configurations across your Microsoft 365 ten
 
 CIPP allows you to set standards in three different settings. Some standards can only be set to specific items, such as Intune standards which can only be "Remediated".
 
-| Action    | Description                                                                                                        |
-| --------- | ------------------------------------------------------------------------------------------------------------------ |
-| Report    | Logs the current configuration and stores this inside of the CIPP database for custom reports.                     |
-| Alert     | Sends you a notification email to the configured email addresses in CIPP -> Application Settings -> Notifications. |
-| Remediate | Changes the configuration of the tenant.                                                                           |
+| Action    | Description                                                                                                           |
+| --------- | --------------------------------------------------------------------------------------------------------------------- |
+| Report    | Logs the current configuration and stores this inside of the CIPP database for your standards reports or BPA reports. |
+| Alert     | Sends you a notification via the configured method in CIPP -> Application Settings -> Notifications                   |
+| Remediate | Changes the configuration of the tenant.                                                                              |
 
 For example, when you wish to create a report for Audit log state across all your tenants, you can create an "All Tenants" standard that has the Audit Log standard set to "Report" - This fills the CIPP database with the current setting without editing the clients settings.
 
 Setting this same standard to "Alert" allows you to receive an alert inside of your e-mail or ticketing system.
 
 Setting this same standard to "Remediate" changes the clients configuration, and in this case would enable the audit log for the client.
+
+### **Precedence of Standards**
+
+Standards are merged based on their specificity and creation date:
+
+* **Specificity:** Standards applied to a specific tenant always override more general standards (like those set for 'All Tenants'). For instance, if an 'All Tenants' standard enables TOTP but you need it disabled for one tenant, creating and applying a tenant-specific standard will disable TOTP for that tenant.
+* **Creation Date:** When two standards conflict at the same specificity level (e.g., both tenant-specific), the standard created most recently takes precedence. For example, if you create a tenant-specific standard enabling TOTP and later create another tenant-specific standard disabling TOTP, the more recently created standard (disabling TOTP) will be applied.
 
 {% hint style="warning" %}
 **Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects, detailed in the video and walkthrough on[ this page](../../../setup/implementation-guide/).

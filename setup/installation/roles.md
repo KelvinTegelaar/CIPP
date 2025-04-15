@@ -13,7 +13,7 @@ CIPP features a role management system which utilises the [Roles feature of Azur
 | Role Name  | Description                                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | readonly   | Only allowed to read and list items and send push messages to users.                                                                                                                                          |
-| editor     | Allowed to perform everything, except editing tenants, exclusions, and standards.                                                                                                                             |
+| editor     | Allowed to perform everything, except change system settings.                                                                                                                                                 |
 | admin      | Allowed to perform everything.                                                                                                                                                                                |
 | superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. This role must be combined with 'admin' |
 
@@ -34,7 +34,13 @@ To assign a role to a user you would follow these steps:
 
 ## Custom Roles
 
-While CIPP only supplies the above roles by default, you can create your own Custom Roles and apply them to your users with 'editor' or 'readonly' rights, admin users are unaffected by custom roles. Set up Custom Roles by following these steps:
+While CIPP only supplies the above roles by default, you can create your own Custom Roles and apply them to your users with `editor`or `readonly`rights, admin users are unaffected by custom roles.&#x20;
+
+{% hint style="info" %}
+Custom role permissions can only grant the highest level of the base permission. You cannot grant edit permissions to the `readonly`role. Assigning the `editor`role and then using a custom role to remove permissions will provide you with the functionality you're looking for there.
+{% endhint %}
+
+Set up Custom Roles by following these steps:
 
 * Go to CIPP -> Advanced > Super Admin > Custom Roles.
 * Select a Custom Role from the list or start typing to create a new one if you do not yet have any.
