@@ -34,6 +34,10 @@ export const CippExchangeInfoCard = (props) => {
     { name: "Compliance Tag Hold", enabled: exchangeData?.ComplianceTagHold },
     { name: "Retention Hold", enabled: exchangeData?.RetentionHold },
     { name: "Litigation Hold", enabled: exchangeData?.LitigationHold },
+    { name: "In-Place Hold", enabled: exchangeData?.InPlaceHold },
+    { name: "eDiscovery Hold", enabled: exchangeData?.EDiscoveryHold },
+    { name: "Purview Retention Hold", enabled: exchangeData?.PurviewRetentionHold },
+    { name: "Excluded from Org-Wide Hold", enabled: exchangeData?.ExcludedFromOrgWideHold },
   ];
 
   return (
@@ -168,17 +172,6 @@ export const CippExchangeInfoCard = (props) => {
               exchangeData.TotalArchiveItemCount
             ) : (
               "N/A"
-            )
-          }
-        />
-        <PropertyListItem
-          divider
-          label="Litigation Hold"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={60} />
-            ) : (
-              getCippFormatting(exchangeData?.LitigationHold, "LitigationHold")
             )
           }
         />
