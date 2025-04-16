@@ -29,6 +29,13 @@ export const CippExchangeInfoCard = (props) => {
     { name: "ActiveSync", enabled: exchangeData?.MailboxActiveSyncEnabled },
   ];
 
+  // Define mailbox hold types array
+  const holds = [
+    { name: "Compliance Tag Hold", enabled: exchangeData?.ComplianceTagHold },
+    { name: "Retention Hold", enabled: exchangeData?.RetentionHold },
+    { name: "Litigation Hold", enabled: exchangeData?.LitigationHold },
+  ];
+
   return (
     <Card {...other}>
       <CardHeader
@@ -172,6 +179,30 @@ export const CippExchangeInfoCard = (props) => {
               <Skeleton variant="text" width={60} />
             ) : (
               getCippFormatting(exchangeData?.LitigationHold, "LitigationHold")
+            )
+          }
+        />
+        {/* Combine all mailbox hold types into a single PropertyListItem */}
+        <PropertyListItem
+          divider
+          label="Mailbox Holds"
+          value={
+            isLoading ? (
+              <Skeleton variant="text" width={200} />
+            ) : (
+              <div>
+                {holds.map((hold) => (
+                  <Chip
+                    key={hold.name}
+                    label={hold.name}
+                    icon={hold.enabled ? <CheckIcon /> : <CloseIcon />}
+                    color={hold.enabled ? "success" : "default"}
+                    variant="outlined"
+                    size="small"
+                    sx={{ mr: 1, mb: 1 }}
+                  />
+                ))}
+              </div>
             )
           }
         />
