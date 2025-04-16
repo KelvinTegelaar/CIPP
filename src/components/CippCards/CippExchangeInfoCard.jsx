@@ -171,17 +171,6 @@ export const CippExchangeInfoCard = (props) => {
             )
           }
         />
-        <PropertyListItem
-          divider
-          label="Litigation Hold"
-          value={
-            isLoading ? (
-              <Skeleton variant="text" width={60} />
-            ) : (
-              getCippFormatting(exchangeData?.LitigationHold, "LitigationHold")
-            )
-          }
-        />
         {/* Combine all mailbox hold types into a single PropertyListItem */}
         <PropertyListItem
           divider
