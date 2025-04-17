@@ -49,9 +49,16 @@ For each standard:
 {% step %}
 ### Save Template
 
-Once all other steps are completed and all tenants show configured, click the "Save Template" button at the bottom of the left column that shouldn ow be enabled.
+Once all other steps are completed and all tenants show configured, click the "Save Template" button at the bottom of the left column that should now be enabled.
 {% endstep %}
 {% endstepper %}
+
+### Standards Filtering
+
+On both the add and edit standards template page, you will see options for how to filter the standards list added to the template. This is helpful for those templates that contain a lot of standards.
+
+* Search: A search box at the top will allow you to do keyword searches for standards
+* Filter toggles: You can toggle between "All", "Configured", and "Unconfigured" standards for your display view.
 
 ***
 

@@ -20,6 +20,10 @@ Fields are as follows:
 
 Click `Set Vacation Mode` to finalize the schedule.
 
+### Cancel Scheduled Vacation Mode
+
+Sometimes you may need to cancel a scheduled vacation mode entry. To do this, click the Actions three dots menu and select `Cancel Vacation Mode` for the row you no longer need. Confirming will remove this scheduled entry from the task schedule.
+
 ***
 
 ### Feature Requests / Ideas

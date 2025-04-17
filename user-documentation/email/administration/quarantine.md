@@ -1,14 +1,26 @@
 # Quarantine
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page will display all messages quarantined by Microsoft Defender.
 
-### **Looking for documentation contributors**
+### Table Columns
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+| Column         | Description                                                     |
+| -------------- | --------------------------------------------------------------- |
+| Received Time  | The relative time since the message was received                |
+| Release Status | The status of the message of either "RELEASED" or "NOTRELEASED" |
+| Subject        | The message's subject                                           |
+| Sender Address | The e-mail address of the sender                                |
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+### Actions
+
+|                        |                                                                                                      | Bulk Action Available |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- | --------------------- |
+| View Message           | Opens modal to display the message contents                                                          | X                     |
+| View Message Trace     | Opens a modal with a table of the message's trace history                                            | X                     |
+| Release                | Opens modal to confirm you want to release the message                                               | X                     |
+| Deny                   | Opens modal to confirm you want to deny release of the message                                       | X                     |
+| Release & Allow Sender | Opens modal to confirm you want to release the message and add the sender to the allowed sender list | X                     |
+| More Info              | Opens Extended Info flyout                                                                           |                       |
 
 ***
 
