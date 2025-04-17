@@ -4,7 +4,14 @@
 
 This page lists all devices registered for Autopilot.
 
-#### Details <a href="#listdevices-details" id="listdevices-details"></a>
+### Actions
+
+| Action                | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| Add Autopilot Devices | Opens [Add Autopilot Device](add-device.md)                                             |
+| Sync Devices          | Kicks off a sync of all autopilot devices to pull down up todate configuration profiles |
+
+### Details <a href="#listdevices-details" id="listdevices-details"></a>
 
 | Fields       | Description                                     |
 | ------------ | ----------------------------------------------- |
@@ -17,7 +24,13 @@ This page lists all devices registered for Autopilot.
 
 ### Actions
 
-* Delete Device - _This deletes the autopilot enrollment for the device._
+| Action         | Description                                                     |
+| -------------- | --------------------------------------------------------------- |
+| Assign Device  | Opens a modal to select the user to assign the device to        |
+| Rename Device  | Opens a modal to set a new display name for the device          |
+| Edit Group Tag | Opens a modal to enter a new Autopilot group tag for the device |
+| Delete Device  | Opens a modal to confirm deletion of the device from Autopilot  |
+| More Info      | Opens the extended information flyout                           |
 
 ***
 

@@ -6,33 +6,24 @@ description: View information on all mailboxes in your Microsoft 365 tenants.
 
 This page provides information on Exchange mailboxes, with the ability to view detailed information, edit the mailbox, view connected mobile devices and, access more information / actions.
 
-### Details
-
-| Fields                 | Description                                                           |
-| ---------------------- | --------------------------------------------------------------------- |
-| User Principal Name    | The User Principal Name (UPN) of the selected user.                   |
-| Display Name           | The display name of the selected user.                                |
-| Primary E-Mail Address | The primary e-mail address of the selected user.                      |
-| Recipient Type         | The Mailbox type, typically `UserMailbox`.                            |
-| Recipient Type Details | The detailed mailbox type typically `UserMailbox` or `SharedMailbox`. |
-
 ### Actions
 
-* View Mailbox
-* Edit Mailbox:
-  * _Edit and view the permissions assigned to the mailbox._
-  * _Edit and view the calendar permissions assigned to the calendar._
-  * _Edit and view mailbox forwarding settings._
-* Edit Calendar permissions _Check Calendar permissions._
-* View Mobile Devices _View a list of all mobile devices which have connected to the mailbox with detailed information on each device._
-* Research Compromised Account
-* Send Multi-Factor Authentication Push
-* Convert to Shared Mailbox
-* Convert to User Mailbox
-* Hide from Global Address List
-* Unhide from Global Address List
+[addshared.md](addshared.md "mention")
 
+### Details
 
+| Fields                     | Description                                                           |
+| -------------------------- | --------------------------------------------------------------------- |
+| Display Name               | The display name of the selected user.                                |
+| Recipient Type Details     | The detailed mailbox type typically `UserMailbox` or `SharedMailbox`. |
+| UPN                        | The User Principal Name (UPN) of the selected user.                   |
+| Primary Smtp Address       | The primary e-mail address of the selected user.                      |
+| Recipient Type             | The Mailbox type, typically `UserMailbox`.                            |
+| Additional Email Addresses | Comma separated list of alternate e-mail addresses                    |
+
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Enabled</th></tr></thead><tbody><tr><td>Edit Permissions</td><td>Opens the <a href="../../../identity/administration/users/user/exchange.md">Exchange Settings</a> to allow you to edit the mailbox's permissions</td><td>false</td></tr><tr><td>Research Compromised Account</td><td><p></p><p>Analyzes Indicators of Compromise (IoC):</p><ul><li>Sign-in patterns</li><li>Mail rules</li><li>Suspicious activities</li></ul></td><td>false</td></tr><tr><td>Send MFA Push</td><td>Sends test MFA prompt to user's devices</td><td>true</td></tr><tr><td>Convert to User Mailbox</td><td>Transforms shared mailbox to user type</td><td>true</td></tr><tr><td>Convert to Shared Mailbox</td><td>Transforms user mailbox to shared type</td><td>true</td></tr><tr><td>Convert to Room Mailbox</td><td>Transforms user mailbox to room type</td><td>true</td></tr><tr><td>Enable Online Archive</td><td>Enables the online archive for the mailbox</td><td>true</td></tr><tr><td>Enable Auto-Expanding Archive</td><td>If online archive is enabled, this will enable the auto-expanding archive</td><td>true</td></tr><tr><td>Hide from Global Address List</td><td>Hides visible user from GAL</td><td>true</td></tr><tr><td>Unhide from Global Address List</td><td>Unhides hidden user from GAL</td><td>true</td></tr><tr><td>Start Managed Folder Assistant</td><td>Prompts to start the managed folder assistant to apply message retention settings</td><td>true</td></tr><tr><td>Delete Mailbox</td><td>Deletes mailbox</td><td>true</td></tr><tr><td>Copy Sent Items to Shared Mailbox</td><td>For shared mailboxes, this will set all sent items to copy to the shared mailbox inbox</td><td>true</td></tr><tr><td>Disable Copy Sent Items to Shared Mailbox</td><td>For shared mailboxes, this will disable sent items from being copied to the shared mailbox inbox</td><td>true</td></tr><tr><td>Set Litigation Hold</td><td>Opens modal to set up a litigation hold on the mailbox</td><td>true</td></tr><tr><td>Set Mailbox Locale</td><td>Allows you to set the locale for the mailbox</td><td>true</td></tr><tr><td>Set Send Quota</td><td>Set the quota for message sending</td><td>true</td></tr><tr><td>Set Send and Receive Quota</td><td>Set the quota for message sneding and receiving</td><td>true</td></tr><tr><td>Set Quota Warning Level</td><td>Set the warning level for the message quota</td><td>true</td></tr><tr><td>More Info</td><td>Opens extended info flyout</td><td>false</td></tr></tbody></table>
 
 {% hint style="warning" %}
 On the mailbox edit page, and within the mailbox overview we currently cannot show if a mailbox is enabled for receiving external email. this is due to the Microsoft Graph API not returning the correct properties for this.
