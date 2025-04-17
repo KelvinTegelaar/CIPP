@@ -91,116 +91,164 @@ const CippExchangeSettingsForm = (props) => {
   const sections = [
     {
       id: "mailboxPermissions",
-      cardLabelBox: "-", // This can be an icon or text label
+      cardLabelBox: "-",
       text: "Mailbox Permissions",
       subtext: "Manage mailbox permissions for users",
       formContent: (
-        <Stack spacing={2}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Remove Full Access"
-            name="permissions.RemoveFullAccess"
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.filter((user) =>
-                currentSettings?.Permissions?.some(
-                  (perm) =>
-                    perm.AccessRights === "FullAccess" && perm.User === user.userPrincipalName
-                )
-              ).map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="autoComplete"
-            label="Add Full Access - Automapping Enabled"
-            name="permissions.AddFullAccess"
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="autoComplete"
-            label="Add Full Access - Automapping Disabled"
-            name="permissions.AddFullAccessNoAutoMap"
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="autoComplete"
-            label="Add Send-as Permissions"
-            name="permissions.AddSendAs"
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="autoComplete"
-            label="Remove Send-as Permissions"
-            name="permissions.RemoveSendAs"
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.filter((user) =>
-                currentSettings?.Permissions?.some(
-                  (perm) => perm.AccessRights === "SendAs" && perm.User === user.userPrincipalName
-                )
-              ).map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="autoComplete"
-            label="Add Send On Behalf Permissions"
-            name="permissions.AddSendOnBehalf"
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="autoComplete"
-            label="Remove Send On Behalf Permissions"
-            name="permissions.RemoveSendOnBehalf"
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.filter((user) =>
-                currentSettings?.Permissions?.some(
-                  (perm) =>
-                    perm.AccessRights === "SendOnBehalf" && perm.User === user.userPrincipalName
-                )
-              ).map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
+        <Stack spacing={1.5}>
+          {/* Full Access Section */}
+          <Box sx={{ 
+            p: 2, 
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 1,
+            backgroundColor: 'background.paper'
+          }}>
+            <Typography variant="subtitle2" gutterBottom>Full Access</Typography>
+            <Typography variant="caption" color="text.secondary" gutterBottom>
+              Manage who has full access to this mailbox
+            </Typography>
+            <Stack spacing={2} sx={{ mt: 2 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Remove Full Access"
+                name="permissions.RemoveFullAccess"
+                isFetching={isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.filter((user) =>
+                    currentSettings?.Permissions?.some(
+                      (perm) =>
+                        perm.AccessRights === "FullAccess" && perm.User === user.userPrincipalName
+                    )
+                  ).map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="autoComplete"
+                label="Add Full Access - Automapping Enabled"
+                name="permissions.AddFullAccess"
+                isFetching={isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="autoComplete"
+                label="Add Full Access - Automapping Disabled"
+                name="permissions.AddFullAccessNoAutoMap"
+                isFetching={isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+            </Stack>
+          </Box>
+
+          {/* Send As Section */}
+          <Box sx={{ 
+            p: 2, 
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 1,
+            backgroundColor: 'background.paper'
+          }}>
+            <Typography variant="subtitle2" gutterBottom>Send As</Typography>
+            <Typography variant="caption" color="text.secondary" gutterBottom>
+              Manage who can send emails as this user
+            </Typography>
+            <Stack spacing={2} sx={{ mt: 2 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Remove Send-as Permissions"
+                name="permissions.RemoveSendAs"
+                isFetching={isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.filter((user) =>
+                    currentSettings?.Permissions?.some(
+                      (perm) => perm.AccessRights === "SendAs" && perm.User === user.userPrincipalName
+                    )
+                  ).map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="autoComplete"
+                label="Add Send-as Permissions"
+                name="permissions.AddSendAs"
+                isFetching={isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+            </Stack>
+          </Box>
+
+          {/* Send On Behalf Section */}
+          <Box sx={{ 
+            p: 2, 
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 1,
+            backgroundColor: 'background.paper'
+          }}>
+            <Typography variant="subtitle2" gutterBottom>Send On Behalf</Typography>
+            <Typography variant="caption" color="text.secondary" gutterBottom>
+              Manage who can send emails on behalf of this user
+            </Typography>
+            <Stack spacing={2} sx={{ mt: 2 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Remove Send On Behalf Permissions"
+                name="permissions.RemoveSendOnBehalf"
+                isFetching={isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.filter((user) =>
+                    currentSettings?.Permissions?.some(
+                      (perm) =>
+                        perm.AccessRights === "SendOnBehalf" && perm.User === user.userPrincipalName
+                    )
+                  ).map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="autoComplete"
+                label="Add Send On Behalf Permissions"
+                name="permissions.AddSendOnBehalf"
+                isFetching={isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+            </Stack>
+          </Box>
+
           <Grid item size={12}>
             <CippApiResults apiObject={postRequest} />
           </Grid>
