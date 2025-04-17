@@ -14,7 +14,7 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecAssignApp",
       data: {
-        AssignTo: "AllUsers",
+        AssignTo: "!AllUsers",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users?",
@@ -26,7 +26,7 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecAssignApp",
       data: {
-        AssignTo: "AllDevices",
+        AssignTo: "!AllDevices",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all devices?",
@@ -38,7 +38,7 @@ const Page = () => {
       type: "POST",
       url: "/api/ExecAssignApp",
       data: {
-        AssignTo: "Both",
+        AssignTo: "!Both",
         ID: "id",
       },
       confirmText: "Are you sure you want to assign this app to all users and devices?",
