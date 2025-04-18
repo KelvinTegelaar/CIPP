@@ -14,10 +14,11 @@ It's recommended that you have the following installed on the computer you're us
   * [Stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
 * [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4) `winget install --exact Microsoft.PowerShell`
 * [git](https://git-scm.com/download/win) `winget install --exact Git.Git`
-* [node.js V20.X LTS](https://nodejs.org/en/download/releases) `winget install --exact OpenJS.NodeJS.LTS --version 22.13.0;winget pin add OpenJS.NodeJS.LTS --version 22.13.* --force`&#x20;
-* [.NET Core 3.1](https://dotnet.microsoft.com/en-us/download/dotnet/3.1)
+* [node.js V22.X LTS](https://nodejs.org/en/download/releases) `winget install --exact OpenJS.NodeJS.LTS --version 22.13.0;winget pin add OpenJS.NodeJS.LTS --version 22.13.* --force`&#x20;
+* [.NET Core 3.1](https://dotnet.microsoft.com/en-us/download/dotnet/3.1) `winget install --exact Microsoft.DotNet.SDK.3_1`
 * [.NET SDK 5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0) `winget install --exact Microsoft.DotNet.SDK.5`
 * [.NET SDK 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) `winget install --exact Microsoft.DotNet.SDK.6`
+* [.NET SDK 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) `winget install --exact Microsoft.DotNet.SDK.8`
 
 {% hint style="info" %}
 This page guides you through getting setup to develop for CIPP using the command line to perform operations with `git` and `npm`. There are graphical user interfaces for these tools but they won't be covered in this documentation. The commands below are broadly OS agnostic.
@@ -39,6 +40,14 @@ npm install --global azure-functions-core-tools@4 --unsafe-perms true
 
 ```bash
 npm install --global azurite
+```
+
+```bash
+npm install --global yarn
+```
+
+```bash
+npm install --global next
 ```
 
 Now we need to get the files downloaded for CIPP. In order to properly test as you develop the CIPP frontend we need a copy of your CIPP and CIPP-API repositories.
