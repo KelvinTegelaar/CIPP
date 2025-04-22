@@ -29,6 +29,44 @@ Please note it is your responsibility to ensure you are keeping an eye on costs 
 
 <details>
 
+<summary>How do we get new integrations?</summary>
+
+We know, you love CIPP. You want everything to integrate with CIPP. Unfortunately, CIPP's business model doesn't allow us to take on the development, documentation, and help desk training to support every integration out there. In order for a vendor to integrate with CIPP, we need them to sponsor CIPP at the integration level.
+
+Vendor sponsorship pays for that development, training, and support. If you have a vendor that you want to see integrated with CIPP, please reach out to your Account Manager at the vendor and let them know that you are interested.
+
+Here's a couple of options for emails that you can send to licensing provider vendors. Modify these as you see fit for other vendors.
+
+### Email 1: You love CIPP and would switch distributors based on who we integrate with:
+
+{% code overflow="wrap" %}
+```
+Hi,
+
+I hope you're doing well! I'm reaching out to you today as I'm a user of a tool called CIPP(https://cipp.app). It has greatly enhanced my Microsoft 365 experience and is now our core tool when it comes to performing M365 management. 
+We understand you might be having discussions with their team already, but we just want to amplify that our choice of distributor is dependant on which one integrates with CIPP
+
+Regards,
+```
+{% endcode %}
+
+### Email 2: You love CIPP and would like your distributor to integrate
+
+{% code overflow="wrap" %}
+```
+Hi,
+
+I hope you're doing well! I'm reaching out to you today as I'm a user of a tool called CIPP(https://cipp.app). It has greatly enhanced my Microsoft 365 experience and is now our core tool when it comes to performing M365 management. 
+We understand you might be having discussions with their team already, but we just want to amplify that our preference is to use CIPP to transact licenses.
+
+Regards,
+```
+{% endcode %}
+
+</details>
+
+<details>
+
 <summary>What should I do if I'm experiencing performance issues in CIPP?</summary>
 
 Performance issues in CIPP are not expected. If your performance appears impacted, you can follow these steps to diagnose and resolve the issue:
