@@ -9,7 +9,7 @@ const Page = () => {
   const actions = [
     {
       label: "Create template based on policy",
-      type: "GET",
+      type: "POST",
       url: "/api/AddIntuneTemplate",
       data: {
         ID: "id",
@@ -60,7 +60,7 @@ const Page = () => {
     },
     {
       label: "Delete Policy",
-      type: "GET",
+      type: "POST",
       url: "/api/RemovePolicy",
       data: {
         ID: "id",

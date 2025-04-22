@@ -15,6 +15,7 @@ import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboarding";
 import { useDialog } from "../hooks/use-dialog";
 import { nativeMenuItems } from "/src/layouts/config";
+import { keepPreviousData } from "@tanstack/react-query";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -83,12 +84,17 @@ export const Layout = (props) => {
   const currentRole = ApiGetCall({
     url: "/.auth/me",
     queryKey: "authmecipp",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
   });
+  const [hideSidebar, setHideSidebar] = useState(false);
 
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
       if (!userRoles) {
+        setMenuItems([]);
+        setHideSidebar(true);
         return;
       }
       const filterItemsByRole = (items) => {
@@ -126,18 +132,30 @@ export const Layout = (props) => {
   const userSettingsAPI = ApiGetCall({
     url: "/api/ListUserSettings",
     queryKey: "userSettings",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   useEffect(() => {
     if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
-      //if usersettingsAPI.data contains offboardingDefaults.user, delete that specific key.
+      //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
       if (userSettingsAPI.data.offboardingDefaults?.user) {
         delete userSettingsAPI.data.offboardingDefaults.user;
       }
       if (userSettingsAPI?.data?.currentTheme) {
         delete userSettingsAPI.data.currentTheme;
       }
-      settings.handleUpdate(userSettingsAPI.data);
+      // get current devtools settings
+      var showDevtools = settings.showDevtools;
+      // get current bookmarks
+      var bookmarks = settings.bookmarks;
+
+      settings.handleUpdate({
+        ...userSettingsAPI.data,
+        bookmarks,
+        showDevtools,
+      });
       setUserSettingsComplete(true);
     }
   }, [
@@ -157,6 +175,9 @@ export const Layout = (props) => {
     url: `/api/GetCippAlerts?localversion=${version?.data?.version}`,
     queryKey: "alertsDashboard",
     waiting: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   useEffect(() => {
@@ -200,20 +221,24 @@ export const Layout = (props) => {
 
   return (
     <>
-      <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
-      {mdDown && (
-        <MobileNav items={menuItems} onClose={mobileNav.handleClose} open={mobileNav.open} />
+      {hideSidebar === false && (
+        <>
+          <TopNav onNavOpen={mobileNav.handleOpen} openNav={mobileNav.open} />
+          {mdDown && (
+            <MobileNav items={menuItems} onClose={mobileNav.handleClose} open={mobileNav.open} />
+          )}
+          {!mdDown && <SideNav items={menuItems} onPin={handleNavPin} pinned={!!settings.pinNav} />}
+        </>
       )}
-      {!mdDown && <SideNav items={menuItems} onPin={handleNavPin} pinned={!!settings.pinNav} />}
       <LayoutRoot
         sx={{
           pl: {
-            md: offset + "px",
+            md: (hideSidebar ? "0" : offset) + "px",
           },
         }}
       >
         <LayoutContainer>
-          {currentTenant === "AllTenants" && !allTenantsSupport ? (
+          {(currentTenant === "AllTenants" || !currentTenant) && !allTenantsSupport ? (
             <Box sx={{ flexGrow: 1, py: 4 }}>
               <Container maxWidth={false}>
                 <Grid container spacing={3}>

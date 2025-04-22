@@ -176,7 +176,6 @@ const ApplicationDeploymentForm = () => {
             </Grid>
             {selectedTenants?.map((tenant, index) => (
               <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
-                {console.log(tenant)}
                 <CippFormComponent
                   type="textField"
                   label={`Datto ID for ${tenant.label}`}

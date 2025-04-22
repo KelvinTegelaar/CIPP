@@ -12,6 +12,7 @@ import {
   SvgIcon,
   IconButton,
   Skeleton,
+  Divider,
 } from "@mui/material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
@@ -80,22 +81,43 @@ const AlertWizard = () => {
       const alert = existingAlert?.data?.find((alert) => alert.RowKey === router.query.id);
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
-        formControl.setValue("tenantFilter", {
-          value: alert.RawAlert.Tenant,
-          label: alert.RawAlert.Tenant,
-        });
+
+        //console.log(alert);
+
+        // Create formatted excluded tenants array if it exists
+        const excludedTenantsFormatted = Array.isArray(alert.excludedTenants)
+          ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
+          : [];
+
+        // Format the command object
         const usedCommand = alertList?.find(
           (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
         );
-        formControl.setValue("command", { value: usedCommand, label: usedCommand.label });
-        formControl.setValue(
-          "recurrence",
-          recurrenceOptions?.find((opt) => opt.value === alert.RawAlert.Recurrence)
+
+        // Format recurrence option
+        const recurrenceOption = recurrenceOptions?.find(
+          (opt) => opt.value === alert.RawAlert.Recurrence
         );
+
+        // Format post execution values
         const postExecutionValue = postExecutionOptions.filter((opt) =>
           alert.RawAlert.PostExecution.split(",").includes(opt.value)
         );
-        formControl.setValue("postExecution", postExecutionValue);
+
+        // Reset the form with all values at once
+        formControl.reset(
+          {
+            tenantFilter: {
+              value: alert.RawAlert.Tenant,
+              label: alert.RawAlert.Tenant,
+            },
+            excludedTenants: excludedTenantsFormatted,
+            command: { value: usedCommand, label: usedCommand.label },
+            recurrence: recurrenceOption,
+            postExecution: postExecutionValue,
+          },
+          { keepDirty: false }
+        );
       }
       if (alert?.PartitionKey === "Webhookv2") {
         setAlertType("audit");
@@ -112,6 +134,7 @@ const AlertWizard = () => {
         formControl.reset({
           RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
           tenantFilter: alert.RawAlert.Tenants,
+          excludedTenants: alert.RawAlert.excludedTenants,
           Actions: alert.RawAlert.Actions,
           conditions: alert.RawAlert.Conditions,
           logbook: foundLogbook,
@@ -218,6 +241,7 @@ const AlertWizard = () => {
     const postObject = {
       RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
       tenantFilter: values.tenantFilter?.value,
+      excludedTenants: values.excludedTenants,
       Name: `${values.tenantFilter.value}: ${values.command.label}`,
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
       Parameters: getInputParams(),
@@ -297,14 +321,32 @@ const AlertWizard = () => {
                     <Grid container spacing={4} justifyContent="space-around">
                       <Grid item xs={12} md={12}>
                         <CippButtonCard title="Tenant Selector" sx={{ mb: 3 }}>
-                          <Typography>
-                            Select the tenants you want to include in this Alert.
-                          </Typography>
-                          <CippFormTenantSelector
-                            multiple={true}
-                            formControl={formControl}
-                            allTenants={true}
-                          />
+                          <Grid container spacing={3}>
+                            <Grid item xs={12}>
+                              <CippFormTenantSelector
+                                multiple={true}
+                                formControl={formControl}
+                                allTenants={true}
+                                label="Included Tenants for alert"
+                              />
+                            </Grid>
+                            <CippFormCondition
+                              field="tenantFilter"
+                              formControl={formControl}
+                              compareType="valueContains"
+                              compareValue="AllTenants"
+                            >
+                              <Grid item xs={12}>
+                                <CippFormTenantSelector
+                                  multiple={true}
+                                  label="Excluded Tenants for alert"
+                                  formControl={formControl}
+                                  allTenants={false}
+                                  name="excludedTenants"
+                                />
+                              </Grid>
+                            </CippFormCondition>
+                          </Grid>
                         </CippButtonCard>
                       </Grid>
 
@@ -407,7 +449,7 @@ const AlertWizard = () => {
                                 >
                                   <CippFormComponent
                                     type="autoComplete"
-                                    multiple={false}
+                                    multiple={propertyWatcher?.[event.id]?.Property?.multi ?? false}
                                     name={`conditions.${event.id}.Input`}
                                     formControl={formControl}
                                     label="Input"
@@ -469,14 +511,32 @@ const AlertWizard = () => {
                     <Grid container spacing={3}>
                       <Grid item xs={12} md={12}>
                         <CippButtonCard title="Tenant Selector">
-                          <Typography>
-                            Select the tenants you want to include in this Alert.
-                          </Typography>
-                          <CippFormTenantSelector
-                            allTenants={true}
-                            multiple={false}
-                            formControl={formControl}
-                          />
+                          <Grid container spacing={3}>
+                            <Grid item xs={12}>
+                              <CippFormTenantSelector
+                                allTenants={true}
+                                multiple={false}
+                                formControl={formControl}
+                                label="Included Tenants for alert"
+                              />
+                            </Grid>
+                            <CippFormCondition
+                              field="tenantFilter"
+                              formControl={formControl}
+                              compareType="is"
+                              compareValue="AllTenants"
+                            >
+                              <Grid item xs={12}>
+                                <CippFormTenantSelector
+                                  multiple={true}
+                                  label="Excluded Tenants for alert"
+                                  formControl={formControl}
+                                  allTenants={false}
+                                  name="excludedTenants"
+                                />
+                              </Grid>
+                            </CippFormCondition>
+                          </Grid>
                         </CippButtonCard>
                       </Grid>
 

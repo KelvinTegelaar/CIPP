@@ -6,7 +6,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   Tooltip,
-  Grid,
   Alert,
   Skeleton,
   IconButton,
@@ -17,17 +16,19 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
-
+import { Grid } from "@mui/system";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { PlusIcon, ShieldCheckIcon, WrenchIcon } from "@heroicons/react/24/outline";
 import CippFormComponent from "./CippFormComponent";
 import {
+  Apps,
   Delete,
   Download,
   Error,
   ExpandMore,
   Save,
+  Sync,
   TaskAlt,
   Undo,
   Upload,
@@ -75,6 +76,7 @@ const CippAppPermissionBuilder = ({
     isSuccess: spSuccess,
     isFetching: spFetching,
     isLoading: spLoading,
+    refetch: refetchServicePrincipals,
   } = ApiGetCall({
     url: "/api/ExecServicePrincipals",
     queryKey: "execServicePrincipals",
@@ -351,39 +353,44 @@ const CippAppPermissionBuilder = ({
         initialAppIds = [];
       }
 
-      if (selectedApp.length == 0 && initialAppIds.length == 0) {
+      if (selectedApp.length === 0 && initialAppIds.length === 0) {
         var microsoftGraph = servicePrincipals?.Results?.find(
           (sp) => sp?.appId === "00000003-0000-0000-c000-000000000000"
         );
-        setSelectedApp([microsoftGraph]);
-        setNewPermissions({
-          Permissions: {
-            "00000003-0000-0000-c000-000000000000": {
-              applicationPermissions: [],
-              delegatedPermissions: [],
+        if (microsoftGraph) {
+          setSelectedApp([microsoftGraph]); // Ensure this does not trigger a loop
+          setNewPermissions({
+            Permissions: {
+              "00000003-0000-0000-c000-000000000000": {
+                applicationPermissions: [],
+                delegatedPermissions: [],
+              },
             },
-          },
-        });
-      } else if (currentPermissions !== initialPermissions) {
-        setSelectedApp([]);
+          });
+          setExpanded("00000003-0000-0000-c000-000000000000"); // Automatically expand Microsoft Graph
+        }
+      } else if (!_.isEqual(currentPermissions, initialPermissions)) {
+        setSelectedApp([]); // Avoid redundant updates
         setNewPermissions(currentPermissions);
         setInitialPermissions(currentPermissions);
         setPermissionsImported(false);
-      } else if (initialAppIds.length > 0 && permissionsImported == false) {
+      } else if (initialAppIds.length > 0 && !permissionsImported) {
         const newApps = servicePrincipals?.Results?.filter((sp) =>
           initialAppIds.includes(sp.appId)
         )?.sort((a, b) => a.displayName.localeCompare(b.displayName));
 
-        setSelectedApp((prevApps) => {
-          if (JSON.stringify(prevApps) !== JSON.stringify(newApps)) {
-            return newApps;
-          }
-          return prevApps;
-        });
+        if (!_.isEqual(selectedApp, newApps)) {
+          setSelectedApp(newApps); // Prevent unnecessary updates
+        }
 
         setNewPermissions(currentPermissions);
         setInitialPermissions(currentPermissions);
         setPermissionsImported(true);
+
+        // Automatically expand if only one service principal exists
+        if (newApps.length === 1) {
+          setExpanded(newApps[0].appId);
+        }
       }
     }
   }, [
@@ -400,18 +407,7 @@ const CippAppPermissionBuilder = ({
     var delegatedPermissions = newPermissions?.Permissions[appId]?.delegatedPermissions;
 
     var counts = `${appRoles?.length ?? 0}/${delegatedPermissions?.length ?? 0}`;
-    return (
-      <Stack
-        direction="row"
-        sx={{ alignItems: "center", justifyContent: "flex-start" }}
-        spacing={2}
-      >
-        <SvgIcon fontSize="small" sx={{ mr: 1 }}>
-          <ShieldCheckIcon />
-        </SvgIcon>
-        {counts}
-      </Stack>
-    );
+    return counts;
   };
 
   const ApiPermissionRow = ({ servicePrincipal = null, spPermissions, formControl }) => {
@@ -431,6 +427,8 @@ const CippAppPermissionBuilder = ({
       waiting: true,
     });
 
+    //console.log(spInfo);
+
     const currentAppPermission = useWatch({
       control: formControl.control,
       name: `Permissions.${servicePrincipal.appId}.applicationPermissions`,
@@ -442,7 +440,7 @@ const CippAppPermissionBuilder = ({
 
     useEffect(() => {
       if (spInfoSuccess && !spInitialized) {
-        if (appTable.length === 0) {
+        if (appTable !== undefined && appTable?.length === 0) {
           setAppTable(
             spPermissions?.applicationPermissions
               ?.sort((a, b) => a.value.localeCompare(b.value))
@@ -454,7 +452,7 @@ const CippAppPermissionBuilder = ({
               }))
           );
         }
-        if (delegatedTable.length === 0) {
+        if (delegatedTable !== undefined && delegatedTable.length === 0) {
           setDelegatedTable(
             spPermissions?.delegatedPermissions
               ?.sort((a, b) => a.value.localeCompare(b.value))
@@ -469,10 +467,10 @@ const CippAppPermissionBuilder = ({
         }
         setSpInitialized(true);
       }
-    }, [spInitialized, spInfoSuccess, appTable?.length, delegatedTable?.length]);
+    }, [spInitialized, spInfoSuccess, appTable, delegatedTable]);
 
     useEffect(() => {
-      if (spInfoSuccess) {
+      if (spInfoSuccess && appTable !== undefined && delegatedTable !== undefined) {
         var appRoles = appTable?.map((perm) => perm.id).sort();
         var delegatedPermissions = delegatedTable?.map((perm) => perm.id).sort();
         var originalAppRoles = spPermissions?.applicationPermissions.map((perm) => perm.id).sort();
@@ -528,8 +526,8 @@ const CippAppPermissionBuilder = ({
     const handleSavePermissions = () => {
       savePermissionChanges(
         servicePrincipal.appId,
-        appTable.map((perm) => ({ id: perm.id, value: perm.value })),
-        delegatedTable.map((perm) => ({ id: perm.id, value: perm.value }))
+        appTable?.map((perm) => ({ id: perm.id, value: perm.value })) ?? [],
+        delegatedTable?.map((perm) => ({ id: perm.id, value: perm.value })) ?? []
       );
     };
 
@@ -546,6 +544,7 @@ const CippAppPermissionBuilder = ({
 
     return (
       <>
+        {spInfoFetching && <Skeleton variant="rectangle" height={250} />}
         {servicePrincipal && spInfoSuccess && (
           <>
             <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
@@ -568,14 +567,14 @@ const CippAppPermissionBuilder = ({
                   <>
                     <Stack spacing={2}>
                       <Grid container sx={{ display: "flex", alignItems: "center" }} spacing={2}>
-                        <Grid item xl={8} xs={12}>
+                        <Grid item size={{ xl: 8, xs: 12 }}>
                           <CippFormComponent
                             type="autoComplete"
                             label="Application Permissions"
                             name={`Permissions.${servicePrincipal.appId}.applicationPermissions`}
                             isFetching={spInfoFetching}
-                            options={spInfo?.Results?.appRoles
-                              ?.filter((role) => !appTable.find((perm) => perm.id === role.id))
+                            options={(spInfo?.Results?.appRoles || [])
+                              .filter((role) => !appTable?.find((perm) => perm.id === role.id))
                               .map((role) => ({
                                 label: role.value,
                                 value: role.id,
@@ -603,7 +602,7 @@ const CippAppPermissionBuilder = ({
                       <CippDataTable
                         title={`${servicePrincipal.displayName} Application Permissions`}
                         noCard={true}
-                        data={appTable}
+                        data={appTable ?? []}
                         simpleColumns={["value", "description"]}
                         actions={[
                           {
@@ -630,14 +629,14 @@ const CippAppPermissionBuilder = ({
                     </Alert>
                   )}
                   <Grid container sx={{ display: "flex", alignItems: "center" }} spacing={2}>
-                    <Grid item xl={8} xs={12}>
+                    <Grid item size={{ xl: 8, xs: 12 }}>
                       <CippFormComponent
                         type="autoComplete"
                         label="Delegated Permissions"
                         name={`Permissions.${servicePrincipal.appId}.delegatedPermissions`}
                         isFetching={spInfoFetching}
-                        options={spInfo?.Results?.publishedPermissionScopes
-                          ?.filter((scope) => !delegatedTable.find((perm) => perm.id === scope.id))
+                        options={(spInfo?.Results?.publishedPermissionScopes || [])
+                          .filter((scope) => !delegatedTable?.find((perm) => perm.id === scope.id))
                           .map((scope) => ({
                             label: scope.value,
                             value: scope.id,
@@ -667,7 +666,7 @@ const CippAppPermissionBuilder = ({
                     noCard={true}
                     sx={{ width: "100%" }}
                     title={`${servicePrincipal.displayName} Delegated Permissions`}
-                    data={delegatedTable}
+                    data={delegatedTable ?? []}
                     simpleColumns={["value", "description"]}
                     actions={[
                       {
@@ -698,34 +697,44 @@ const CippAppPermissionBuilder = ({
 
   return (
     <>
-      {spLoading && <Skeleton height={300} />}
+      {spLoading && <Skeleton variant="rectangle" height={300} />}
       {spSuccess && (
         <>
           <Grid container>
-            <Grid item xl={12} md={12} sx={{ mb: 3 }}>
+            <Grid size={{ xl: 12, md: 12 }} sx={{ mb: 3 }}>
               <Grid
                 container
                 spacing={2}
                 sx={{ display: "flex", alignItems: "center" }}
                 justifyContent="space-between"
               >
-                <Grid item xs={12} xl={8}>
-                  {servicePrincipals?.Metadata?.Success && (
-                    <CippFormComponent
-                      type="autoComplete"
-                      fullWidth
-                      label="Select a Service Principal or enter an AppId if not listed"
-                      name="servicePrincipal"
-                      createOption={true}
-                      onCreateOption={onCreateServicePrincipal}
-                      isFetching={spFetching}
-                      options={servicePrincipals?.Results.map((sp) => {
-                        return { label: `${sp.displayName} (${sp.appId})`, value: sp.appId };
-                      })}
-                      formControl={formControl}
-                      multiple={false}
-                    />
-                  )}
+                <Grid size={{ xl: 8, xs: 12 }}>
+                  <Stack direction="row" spacing={1}>
+                    {servicePrincipals?.Metadata?.Success && (
+                      <Box width="100%">
+                        <CippFormComponent
+                          type="autoComplete"
+                          fullWidth
+                          label="Select a Service Principal or enter an AppId if not listed"
+                          name="servicePrincipal"
+                          createOption={true}
+                          onCreateOption={onCreateServicePrincipal}
+                          isFetching={spFetching}
+                          options={servicePrincipals?.Results.map((sp) => {
+                            return { label: `${sp.displayName} (${sp.appId})`, value: sp.appId };
+                          })}
+                          formControl={formControl}
+                          multiple={false}
+                        />
+                      </Box>
+                    )}
+                    <IconButton
+                      onClick={() => refetchServicePrincipals()}
+                      disabled={servicePrincipals.isFetching}
+                    >
+                      <Sync />
+                    </IconButton>
+                  </Stack>
                 </Grid>
                 <Grid item>
                   <Stack direction="row" spacing={1}>
@@ -795,7 +804,7 @@ const CippAppPermissionBuilder = ({
               </Grid>
               <Grid
                 item
-                xs={12}
+                size={12}
                 sx={{
                   mt: createServicePrincipal.isSuccess || createServicePrincipal.isPending ? 3 : 0,
                 }}
@@ -810,7 +819,7 @@ const CippAppPermissionBuilder = ({
                 }}
               >
                 <Grid container>
-                  <Grid item xl={12}>
+                  <Grid item size={12}>
                     <Typography variant="h4" sx={{ mb: 2 }}>
                       Import Permission Manifest
                     </Typography>
@@ -822,7 +831,7 @@ const CippAppPermissionBuilder = ({
                   </Grid>
                 </Grid>
                 <Grid container>
-                  <Grid item xl={12}>
+                  <Grid item size={12}>
                     <FileDropzone
                       onDrop={onManifestImport}
                       accept={{
@@ -842,12 +851,12 @@ const CippAppPermissionBuilder = ({
                 {importedManifest && (
                   <>
                     <Grid container sx={{ mt: 2 }} spacing={2}>
-                      <Grid item xl={12}>
+                      <Grid item size={12}>
                         <Alert color="success" icon={<TaskAlt />}>
                           Manifest is valid. Click Import to apply the permissions.
                         </Alert>
                       </Grid>
-                      <Grid item xl={12}>
+                      <Grid item size={12}>
                         <Button
                           variant="contained"
                           onClick={() => importManifest()}
@@ -862,7 +871,7 @@ const CippAppPermissionBuilder = ({
                       </Grid>
                     </Grid>
                     <Grid container className="mt-3">
-                      <Grid item xl={12}>
+                      <Grid item size={12}>
                         <h4>Preview</h4>
                         <CippCodeBlock
                           code={JSON.stringify(importedManifest, null, 2)}
@@ -876,7 +885,7 @@ const CippAppPermissionBuilder = ({
               </CippOffCanvas>
               {calloutMessage && (
                 <Grid container sx={{ my: 3 }}>
-                  <Grid item xs={12} xl={8}>
+                  <Grid size={{ xl: 8, xs: 12 }}>
                     <Alert variant="outlined" color="info" onClose={() => setCalloutMessage(null)}>
                       {calloutMessage}
                     </Alert>
@@ -888,7 +897,7 @@ const CippAppPermissionBuilder = ({
                 newPermissions?.Type === "Table" &&
                 Object.keys(newPermissions?.MissingPermissions).length > 0 && (
                   <Grid container sx={{ width: "100%", mt: 3 }}>
-                    <Grid item xs={12} xl={8}>
+                    <Grid size={{ xl: 8, xs: 12 }}>
                       <Alert
                         color="warning"
                         icon={<WarningAmberOutlined />}
@@ -978,13 +987,37 @@ const CippAppPermissionBuilder = ({
                           sx={{ width: "100%", mr: 1 }}
                         >
                           <Typography variant="h6">{sp.displayName}</Typography>
-                          <Stack direction="row" spacing={2}>
+                          <Stack direction="row" spacing={2} alignItems="center">
+                            <Tooltip title="Copy Application ID to clipboard">
+                              <Chip
+                                label={sp.appId}
+                                variant="outlined"
+                                size="small"
+                                color="info"
+                                sx={{ mr: "0.25rem", fontFamily: "monospace" }}
+                                icon={
+                                  <SvgIcon>
+                                    <Apps />
+                                  </SvgIcon>
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigator.clipboard.writeText(sp.appId);
+                                }}
+                              />
+                            </Tooltip>
                             <Tooltip title="Application/Delegated">
                               <Chip
                                 color="info"
                                 variant="outlined"
+                                size="small"
                                 label={getPermissionCounts(sp.appId)}
                                 sx={{ width: "100px" }}
+                                icon={
+                                  <SvgIcon fontSize="small">
+                                    <ShieldCheckIcon />
+                                  </SvgIcon>
+                                }
                               />
                             </Tooltip>
                             <Tooltip
@@ -1025,10 +1058,13 @@ const CippAppPermissionBuilder = ({
                   ))}
               </Box>
             </Grid>
+            <Grid size={{ xl: 12, xs: 12 }}>
+              <CippApiResults apiObject={updatePermissions} />
+            </Grid>
           </Grid>
 
           <Grid container sx={{ display: "flex", alignItems: "center" }}>
-            <Grid item xl={1} xs={12}>
+            <Grid item size={{ xl: 1, xs: 12 }}>
               <Button
                 variant="contained"
                 startIcon={
@@ -1045,9 +1081,6 @@ const CippAppPermissionBuilder = ({
               >
                 Save
               </Button>
-            </Grid>
-            <Grid item xl={11} xs={12}>
-              <CippApiResults apiObject={updatePermissions} />
             </Grid>
           </Grid>
         </>

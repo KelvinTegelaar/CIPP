@@ -25,6 +25,8 @@ const Page = () => {
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return (
@@ -56,11 +58,11 @@ const Page = () => {
           }
 
           var integrationConfig = integrations?.data?.[extension.id];
-          var isEnabled = integrationConfig?.Enabled;
+          var isEnabled = integrationConfig?.Enabled || extension.id === "cippapi";
           var status = "Unconfigured";
           if (integrationConfig && !isEnabled) {
             status = "Disabled";
-          } else if (integrationConfig && isEnabled) {
+          } else if ((integrationConfig && isEnabled) || extension.id === "cippapi") {
             status = "Enabled";
           }
 

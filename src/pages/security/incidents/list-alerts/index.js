@@ -13,10 +13,10 @@ const Page = () => {
       icon: <Assignment />,
       url: "/api/ExecSetSecurityAlert",
       data: {
-        GUID: "id",
-        Status: "inProgress",
-        Vendor: "vendorInformation.vendor",
-        Provider: "vendorInformation.provider",
+        GUID: "Id",
+        Status: "!inProgress",
+        Vendor: "RawResult.vendorInformation.vendor",
+        Provider: "RawResult.vendorInformation.provider",
       },
       confirmText: "Are you sure you want to set the status to in progress?",
     },
@@ -26,10 +26,10 @@ const Page = () => {
       icon: <Done />,
       url: "/api/ExecSetSecurityAlert",
       data: {
-        GUID: "id",
-        Status: "resolved",
-        Vendor: "vendorInformation.vendor",
-        Provider: "vendorInformation.provider",
+        GUID: "Id",
+        Status: "!resolved",
+        Vendor: "RawResult.vendorInformation.vendor",
+        Provider: "RawResult.vendorInformation.provider",
       },
       confirmText: "Are you sure you want to set the status to resolved?",
     },
@@ -38,9 +38,9 @@ const Page = () => {
   // Define off-canvas details
   const offCanvas = {
     extendedInfoFields: [
-      "eventDateTime", // Created on
-      "title", // Title
-      "category", // Category
+      "EventDateTime", // Created on
+      "Title", // Title
+      "Category", // Category
       "Status", // Status
       "Severity", // Severity
       "Tenant", // Tenant
@@ -51,17 +51,19 @@ const Page = () => {
 
   // Simplified columns for the table
   const simpleColumns = [
-    "eventDateTime", // Created Date (Local)
-    "Tenant", // Tenant
-    "title", // Title
-    "Severity", // Severity
+    "EventDateTime", // Created Date (Local)
     "Status", // Status
+    "Title", // Title
+    "Severity", // Severity
+    "Category", // Category
+    "Tenant", // Tenant
   ];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ExecAlertsList"
+      apiDataKey="Results.MSResults"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}

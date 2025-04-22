@@ -16,6 +16,7 @@ import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect } from "react";
 import { useFormState } from "react-hook-form";
+import { CippHead } from "../CippComponents/CippHead";
 
 const CippFormPage = (props) => {
   const {
@@ -32,6 +33,7 @@ const CippFormPage = (props) => {
     hidePageType = false,
     hideTitle = false,
     hideSubmit = false,
+    allowResubmit = false,
     addedButtons,
     ...other
   } = props;
@@ -42,7 +44,7 @@ const CippFormPage = (props) => {
     relatedQueryKeys: queryKey,
   });
 
-  const { isValid } = useFormState({ control: formControl.control });
+  const { isValid, isDirty } = useFormState({ control: formControl.control });
 
   useEffect(() => {
     delete router.query.tenantFilter;
@@ -85,9 +87,7 @@ const CippFormPage = (props) => {
   };
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
+      <CippHead title={title} />
       <Box
         sx={{
           flexGrow: 1,
@@ -133,7 +133,7 @@ const CippFormPage = (props) => {
                   <Stack spacing={2} direction="row">
                     {addedButtons && addedButtons}
                     <Button
-                      disabled={postCall.isPending || !isValid}
+                      disabled={postCall.isPending || !isValid || (!allowResubmit && !isDirty)}
                       onClick={formControl.handleSubmit(handleSubmit)}
                       type="submit"
                       variant="contained"

@@ -122,15 +122,25 @@ export const CippPropertyListCard = (props) => {
                 )}
               </PropertyList>
               <PropertyList>
-                {secondHalf.map((item, index) => (
+                {isFetching ? (
                   <PropertyListItem
+                    key={"loading-bar"}
                     align={align}
                     divider={showDivider}
-                    copyItems={copyItems}
-                    key={`${index}-index-PropertyListOffCanvas`}
-                    {...item}
+                    label="Loading"
+                    value={<Skeleton width={280} />}
                   />
-                ))}
+                ) : (
+                  secondHalf.map((item, index) => (
+                    <PropertyListItem
+                      align={align}
+                      divider={showDivider}
+                      copyItems={copyItems}
+                      key={`${index}-index-PropertyListOffCanvas`}
+                      {...item}
+                    />
+                  ))
+                )}
               </PropertyList>
             </Stack>
           )}
@@ -142,22 +152,18 @@ export const CippPropertyListCard = (props) => {
                 key={`${item.label}-${index}-ActionList-OffCanvas`}
                 icon={<SvgIcon fontSize="small">{item.icon}</SvgIcon>}
                 label={item.label}
-                onClick={
-                  item.link
-                    ? () => window.open(item.link, "_blank")
-                    : () => {
-                        setActionData({
-                          data: data,
-                          action: item,
-                          ready: true,
-                        });
-                        if (item?.noConfirm) {
-                          item.customFunction(item, data, {});
-                        } else {
-                          createDialog.handleOpen();
-                        }
-                      }
-                }
+                onClick={() => {
+                  setActionData({
+                    data: data,
+                    action: item,
+                    ready: true,
+                  });
+                  if (item?.noConfirm) {
+                    item.customFunction(item, data, {});
+                  } else {
+                    createDialog.handleOpen();
+                  }
+                }}
                 disabled={handleActionDisabled(data, item)}
               />
             ))}

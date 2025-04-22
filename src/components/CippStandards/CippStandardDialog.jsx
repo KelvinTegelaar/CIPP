@@ -1,3 +1,4 @@
+import { differenceInDays } from 'date-fns';
 import {
   Dialog,
   DialogActions,
@@ -47,22 +48,32 @@ const CippStandardDialog = ({
     []
   );
 
+  const isNewStandard = (dateAdded) => {
+    const currentDate = new Date();
+    const addedDate = new Date(dateAdded);
+    return differenceInDays(currentDate, addedDate) <= 30;
+  };
+
   return (
-    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl"
-      PaperProps={{ 
+    <Dialog
+      open={dialogOpen}
+      onClose={handleCloseDialog}
+      maxWidth="xxl"
+      PaperProps={{
         sx: {
           minWidth: "720px",
         },
-      }}>
+      }}
+    >
       <DialogTitle>Select a Standard to Add</DialogTitle>
       <DialogContent sx={{ backgroundColor: "background.default" }}>
         <TextField
           label="Filter Standards"
           fullWidth
-          sx={{ mb: 3, mt: 3 }}
+          sx={{ mt: 3 }}
           onChange={(e) => handleSearchQueryChange(e.target.value.toLowerCase())}
         />
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ overflowY: "auto", maxHeight: "60vh", mt: 2 }}>
           {Object.keys(categories).every(
             (category) => filterStandards(categories[category]).length === 0
           ) ? (
@@ -82,8 +93,17 @@ const CippStandardDialog = ({
                       display: "flex",
                       flexDirection: "column",
                       height: "100%",
+                      position: "relative",
                     }}
                   >
+                    {isNewStandard(standard.addedDate) && (
+                      <Chip
+                        label="New"
+                        size="small"
+                        color="success"
+                        sx={{ position: "absolute"}}
+                      />
+                    )}
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography variant="h6" gutterBottom>
                         {standard.label}
@@ -101,12 +121,7 @@ const CippStandardDialog = ({
                       <Typography variant="subtitle2" sx={{ mt: 2 }}>
                         Category:
                       </Typography>
-                      <Chip
-                        label={category}
-                        size="small"
-                        color="primary"
-                        sx={{ mt: 1, mb: 2 }}
-                      />
+                      <Chip label={category} size="small" color="primary" sx={{ mt: 1, mb: 2 }} />
                       {standard.tag?.filter((tag) => !tag.toLowerCase().includes("impact")).length >
                         0 && (
                         <>
@@ -147,13 +162,21 @@ const CippStandardDialog = ({
                           <Typography variant="subtitle2" sx={{ mt: 2 }}>
                             Recommended By:
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            paragraph
-                          >
+                          <Typography variant="body2" color="textSecondary" paragraph>
                             {standard.recommendedBy.join(", ")}
                           </Typography>
+                        </>
+                      )}
+                      {standard.addedDate?.length > 0 && (
+                        <>
+                          <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                            Date Added:
+                          </Typography>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Typography variant="body2" color="textSecondary">
+                              {standard.addedDate}
+                            </Typography>
+                          </Box>
                         </>
                       )}
                     </CardContent>
@@ -172,9 +195,7 @@ const CippStandardDialog = ({
                           control={
                             <Switch
                               checked={!!selectedStandards[standard.name]}
-                              onChange={() =>
-                                handleToggleSingleStandard(standard.name)
-                              }
+                              onChange={() => handleToggleSingleStandard(standard.name)}
                             />
                           }
                           label="Add this standard to the template"
