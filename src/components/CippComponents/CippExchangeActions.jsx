@@ -14,7 +14,7 @@ import {
   Outbox,
   NotificationImportant,
   DataUsage,
-  MailLockIcon,
+  MailLock,
 } from "@mui/icons-material";
 
 export const CippExchangeActions = () => {
@@ -194,7 +194,7 @@ export const CippExchangeActions = () => {
       url: "/api/ExecSetRetentionHold",
       data: { UPN: "UPN", Identity: "Id" },
       confirmText: "What do you want to set Retention Hold to?",
-      icon: <MailLockIcon />,
+      icon: <MailLock />,
       fields: [
         {
           type: "switch",
