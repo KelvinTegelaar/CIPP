@@ -32,7 +32,7 @@ import { getCippTranslation } from "./get-cipp-translation";
 import DOMPurify from "dompurify";
 import { getSignInErrorCodeTranslation } from "./get-cipp-signin-errorcode-translation";
 
-export const getCippFormatting = (data, cellName, type, canReceive) => {
+export const getCippFormatting = (data, cellName, type, canReceive, flatten = true) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
   // if data is a data object, return a fFormatted date
@@ -264,13 +264,32 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
   }
 
   if (cellName === "excludedTenants") {
+    // Handle null or undefined data
+    if (data === null || data === undefined) {
+      return isText ? (
+        "No data"
+      ) : (
+        <Box component="span">
+          <Chip variant="outlined" label="No data" size="small" color="info" />
+        </Box>
+      );
+    }
     //check if data is an array.
     if (Array.isArray(data)) {
       return isText
-        ? data.join(", ")
-        : data.map((item) => (
-            <CippCopyToClipBoard key={item.value} text={item.label} type="chip" />
-          ));
+        ? data
+            .map((item) => (typeof item === "object" && item?.label ? item.label : item))
+            .join(", ")
+        : data.map(
+            (item) =>
+              item && (
+                <CippCopyToClipBoard
+                  key={typeof item === "object" ? item?.value || item?.label : item}
+                  text={typeof item === "object" && item?.label ? item.label : item}
+                  type="chip"
+                />
+              )
+          );
     }
   }
   if (cellName === "bulkUser") {
@@ -323,7 +342,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
     );
   }
 
-  if (cellName === 'AccessRights') {
+  if (cellName === "AccessRights") {
     // Handle data as an array or string
     const accessRights = Array.isArray(data)
       ? data.flatMap((item) => (typeof item === "string" ? item.split(", ") : []))
@@ -372,6 +391,9 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
 
   // Handle proxyAddresses
   if (cellName === "proxyAddresses") {
+    if (!Array.isArray(data)) {
+      data = [data];
+    }
     const emails = data.map((email) => email.replace(/smtp:/i, ""));
     return isText
       ? emails.join(", ")
@@ -380,7 +402,21 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
 
   // Handle assigned licenses
   if (cellName === "assignedLicenses") {
-    return isText ? getCippLicenseTranslation(data) : getCippLicenseTranslation(data);
+    var translatedLicenses = getCippLicenseTranslation(data);
+    return isText
+      ? Array.isArray(translatedLicenses)
+        ? translatedLicenses.join(", ")
+        : translatedLicenses
+      : translatedLicenses.map((license) => (
+          <CippCopyToClipBoard key={license} text={license} type="chip" />
+        ));
+  }
+
+  if (cellName === "unifiedRoles") {
+    if (Array.isArray(data)) {
+      const roles = data.map((role) => getCippRoleTranslation(role.roleDefinitionId));
+      return isText ? roles.join(", ") : roles;
+    }
   }
 
   // Handle roleDefinitionId
@@ -532,7 +568,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
   }
 
   // Handle arrays of strings
-  if (Array.isArray(data) && data.every((item) => typeof item === "string")) {
+  if (Array.isArray(data) && data.every((item) => typeof item === "string") && flatten) {
     // if string matches json format, parse it
     if (data.every((item) => item.startsWith("{") || item.startsWith("["))) {
       return isText ? (
@@ -552,7 +588,7 @@ export const getCippFormatting = (data, cellName, type, canReceive) => {
   }
 
   // Handle objects
-  if (typeof data === "object" && data !== null) {
+  if (typeof data === "object" && data !== null && flatten) {
     return isText ? (
       JSON.stringify(data)
     ) : (
