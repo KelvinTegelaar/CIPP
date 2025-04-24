@@ -3588,8 +3588,8 @@
     "cat": "Device Management Standards",
     "tag": [],
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "helpText": "Assign the appropriate Autopilot profile to streamline device deployment.",
@@ -3614,6 +3614,7 @@
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
+        "required": false,
         "name": "standards.AutopilotProfile.Languages",
         "label": "Languages",
         "api": {
