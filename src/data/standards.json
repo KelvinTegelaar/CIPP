@@ -3515,8 +3515,8 @@
     "cat": "Device Management Standards",
     "tag": [],
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "helpText": "Deploy the Autopilot Status Page, which shows progress during device setup through Autopilot.",
