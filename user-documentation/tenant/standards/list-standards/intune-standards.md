@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Intune Standards
 
 ### Low Impact

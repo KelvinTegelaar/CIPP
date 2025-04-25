@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Defender Standards
 
 ### Low Impact

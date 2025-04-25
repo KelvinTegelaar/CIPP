@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Entra (AAD) Standards
 
 ### Low Impact

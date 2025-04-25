@@ -6,13 +6,23 @@
 This page is a reference to the features of the Standards Templates page in CIPP. To better understand standards, please see the main page for [Standards](../).
 {% endhint %}
 
-## **Actions**
+## Available Standards
+
+Explore CIPP's standards in an easy to digest format using [https://standards.cipp.app](https://standards.cipp.app/). (embedded below for your convenience). You can sort by various features, including when a standard was added to CIPP.
+
+{% @cipp-external-webpage-block/cyberdrain url="https://standards.cipp.app/" fullWidth="true" %}
+
+***
+
+## Page Layout
+
+### **Actions**
 
 {% content-ref url="../template.md" %}
 [template.md](../template.md)
 {% endcontent-ref %}
 
-## **Table Columns**
+### **Table Columns**
 
 | Column           | Description                                                                                                                                                                                                   |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -24,7 +34,7 @@ This page is a reference to the features of the Standards Templates page in CIPP
 | Updated At       | Relative time since the template was updated                                                                                                                                                                  |
 | GUID             | The GUID for the template                                                                                                                                                                                     |
 
-## **Per-Row Actions**
+### **Per-Row Actions**
 
 | Action                                            | Description                                                                                                                                             |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -37,6 +47,4 @@ This page is a reference to the features of the Standards Templates page in CIPP
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}
