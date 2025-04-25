@@ -1,4 +1,5 @@
 ---
+hidden: true
 layout:
   title:
     visible: true

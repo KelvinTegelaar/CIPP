@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Global Standards
 
 ### Low Impact
