@@ -8,16 +8,18 @@ import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormD
 import { CippInfoCard } from "/src/components/CippCards/CippInfoCard";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
-export const SafeLinksRuleForm = ({ formControl, policyName, formType = "add" }) => {
+export const SafeLinksRuleForm = ({ formControl, PolicyName, formType = "add" }) => {
   // Set the policy-related values whenever the policy name changes
   useEffect(() => {
-    if (policyName) {
+    if (PolicyName) {
       // Always set SafeLinksPolicy to match the policy name
-      formControl.setValue('SafeLinksPolicy', policyName);
+      formControl.setValue('SafeLinksPolicy', PolicyName);
       
-      // Always set Name to be policy name + "_Rule"
-      const ruleName = `${policyName}_Rule`;
-      formControl.setValue('Name', ruleName);
+      // Only auto-generate the rule name for new policies
+      if (formType === "add") {
+        const ruleName = `${PolicyName}_Rule`;
+        formControl.setValue('RuleName', ruleName);
+      }
     }
     
     // Set default enabled state and priority for new rules
@@ -30,7 +32,7 @@ export const SafeLinksRuleForm = ({ formControl, policyName, formType = "add" })
         formControl.setValue('Priority', 0);
       }
     }
-  }, [policyName, formType, formControl]);
+  }, [PolicyName, formType, formControl]);
 
   return (
     <Grid container spacing={2}>
@@ -39,7 +41,7 @@ export const SafeLinksRuleForm = ({ formControl, policyName, formType = "add" })
           <CippInfoCard 
             icon={<InformationCircleIcon />}
             label="Rule Association"
-            value={`This rule will be automatically associated with policy "${policyName || ''}" with name "${policyName ? `${policyName}_Rule` : ''}"`}
+            value={`This rule will be automatically associated with policy "${PolicyName || ''}" with name "${PolicyName ? `${PolicyName}_Rule` : ''}"`}
             isFetching={false}
           />
         </Grid>
@@ -54,9 +56,9 @@ export const SafeLinksRuleForm = ({ formControl, policyName, formType = "add" })
           fullWidth
           disabled={true}
           label="Rule Name (Auto-generated)"
-          name="Name"
+          name="RuleName"
           formControl={formControl}
-          helperText="Rule name is automatically generated from policy name"
+          helperText={formType === "add" ? "Rule name is automatically generated from policy name" : "Rule name cannot be changed"}
         />
       </Grid>
       <Grid item xs={12} md={6}>

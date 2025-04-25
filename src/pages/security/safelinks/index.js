@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Block, Check, LowPriority, Edit, DeleteForever, Policy } from "@mui/icons-material";
+import { Block, Check, LowPriority, Edit, DeleteForever, Policy, Book } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
@@ -83,6 +83,14 @@ const Page = () => {
             },
           },
         ],
+      },
+      {
+        label: "Create template based on policy",
+        type: "POST",
+        url: "/api/AddSafeLinksPolicyTemplate",
+        postEntireRow: true,
+        confirmText: "Are you sure you want to create a template based on this policy?",
+        icon: <Book />,
       },
       {
         label: "Delete Rule",

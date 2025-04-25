@@ -218,6 +218,10 @@ export const nativeMenuItems = [
             title: "Safe Links Policies",
             path: "/security/safelinks",
           },
+          {
+            title: "Safe Links Templates",
+            path: "/security/safelinks-template",
+          },
         ],
       },
     ],

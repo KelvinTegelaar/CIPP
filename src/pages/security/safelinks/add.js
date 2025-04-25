@@ -34,7 +34,7 @@ const Page = () => {
   });
 
   // Watch policy name to pass to rule form
-  const watchPolicyName = useWatch({ control: formControl.control, name: "Name" });
+  const watchPolicyName = useWatch({ control: formControl.control, name: "PolicyName" });
   
   // Custom data formatter to combine both forms' data
   const customDataFormatter = (values) => {
@@ -84,7 +84,7 @@ const Page = () => {
     // Combined data object
     return {
       // Common fields
-      Name: values.Name,
+      PolicyName: values.PolicyName,
       tenantFilter: values.tenantFilter,
       
       // Policy fields
@@ -103,7 +103,7 @@ const Page = () => {
       EnableOrganizationBranding: values.EnableOrganizationBranding,
       
       // Rule fields
-      RuleName: ruleValues.Name, // Include the auto-generated rule name
+      RuleName: ruleValues.RuleName, // Changed from Name to RuleName
       Priority: ruleValues.Priority,
       Comments: ruleValues.Comments,
       Enabled: ruleValues.Enabled,

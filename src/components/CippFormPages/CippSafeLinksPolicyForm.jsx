@@ -18,7 +18,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           type="textField"
           fullWidth
           label="Policy Name"
-          name="Name"
+          name="PolicyName"
           required={true}
           formControl={formControl}
           disabled={formType === "edit"}

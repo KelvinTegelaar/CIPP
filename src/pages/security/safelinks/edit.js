@@ -11,9 +11,7 @@ import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
   const router = useRouter();
-  const { PolicyName } = router.query;
-  const { RuleName } = router.query;
-  const [policyDataReady, setPolicyDataReady] = useState(false);
+  const { PolicyName, RuleName } = router.query;
   const userSettingsDefaults = useSettings();
   
   // Main form for policy configuration
@@ -21,7 +19,7 @@ const Page = () => {
     mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
-      Name: PolicyName,
+      PolicyName: PolicyName,
     },
   });
 
@@ -30,13 +28,13 @@ const Page = () => {
     mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
-      Name: RuleName || `${PolicyName}_Rule`,
+      RuleName: RuleName,
       SafeLinksPolicy: PolicyName,
     },
   });
 
   // Watch policy name for rule synchronization
-  const watchPolicyName = useWatch({ control: formControl.control, name: "Name" });
+  const watchPolicyName = useWatch({ control: formControl.control, name: "PolicyName" });
   
   // Get existing policy and rule data
   const policyData = ApiGetCall({
@@ -45,16 +43,9 @@ const Page = () => {
     enabled: !!PolicyName,
   });
 
-  // Enable API call when policy name is available
-  useEffect(() => {
-    if (PolicyName) {
-      setPolicyDataReady(true);
-    }
-  }, [PolicyName]);
-  
   // Populate forms with existing data when available
   useEffect(() => {
-    if (policyData.isSuccess && policyData.data && policyData.data.Results) {
+    if (policyData.isSuccess && policyData.data?.Results) {
       const results = policyData.data.Results;
       const policy = results.Policy || {};
       const rule = results.Rule || {};
@@ -62,7 +53,7 @@ const Page = () => {
       // Reset policy form with existing data
       formControl.reset({
         tenantFilter: userSettingsDefaults.currentTenant,
-        Name: policy.Name || PolicyName,
+        PolicyName: policy.PolicyName || PolicyName,
         EnableSafeLinksForEmail: policy.EnableSafeLinksForEmail,
         EnableSafeLinksForTeams: policy.EnableSafeLinksForTeams,
         EnableSafeLinksForOffice: policy.EnableSafeLinksForOffice,
@@ -78,11 +69,11 @@ const Page = () => {
         EnableOrganizationBranding: policy.EnableOrganizationBranding,
       });
       
-      // Reset rule form with existing data but use auto-generated name
+      // Reset rule form with existing data
       ruleFormControl.reset({
         tenantFilter: userSettingsDefaults.currentTenant,
-        Name: rule.Name || `${policy.Name || PolicyName}_Rule`,
-        SafeLinksPolicy: policy.Name || PolicyName,
+        RuleName: rule.RuleName || RuleName,
+        SafeLinksPolicy: policy.PolicyName || PolicyName,
         Priority: rule.Priority,
         Comments: rule.Comments,
         Enabled: rule.State === "Enabled",
@@ -94,7 +85,7 @@ const Page = () => {
         ExceptIfRecipientDomainIs: rule.ExceptIfRecipientDomainIs,
       });
     }
-  }, [policyData.isSuccess, policyData.data, PolicyName]);
+  }, [policyData.isSuccess, policyData.data, PolicyName, RuleName, formControl, ruleFormControl, userSettingsDefaults.currentTenant]);
 
   // Custom data formatter to combine both forms' data
   const customDataFormatter = (values) => {
@@ -104,9 +95,7 @@ const Page = () => {
     // Return combined data from both forms
     return {
       // Common fields
-      OriginalPolicyName: PolicyName,
-      OriginalRuleName: RuleName,
-      Name: values.Name,
+      PolicyName: values.PolicyName,
       tenantFilter: values.tenantFilter,
       
       // Policy fields
@@ -125,7 +114,7 @@ const Page = () => {
       EnableOrganizationBranding: values.EnableOrganizationBranding,
       
       // Rule fields
-      RuleName: ruleValues.Name, // The auto-generated rule name
+      RuleName: ruleValues.RuleName,
       Priority: ruleValues.Priority,
       Comments: ruleValues.Comments,
       Enabled: ruleValues.Enabled,

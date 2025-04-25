@@ -71,6 +71,7 @@ const pages = [
   { title: "Vulnerabilities", path: "/security/defender/list-defender-tvm" },
   { title: "Device Compliance", path: "/security/reports/list-device-compliance" },
   { title: "Safe Links", path: "/security/safelinks" },
+  { title: "Safe Links Templates", path: "/security/safelinks-template" },
   { title: "Applications", path: "/endpoint/applications/list" },
   { title: "Application Queue", path: "/endpoint/applications/queue" },
   { title: "Add Choco App", path: "/endpoint/applications/add-choco-app" },
