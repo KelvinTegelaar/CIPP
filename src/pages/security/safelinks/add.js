@@ -3,7 +3,6 @@ import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import { useSettings } from "/src/hooks/use-settings";
-import { useEffect } from "react";
 import { SafeLinksPolicyForm } from "/src/components/CippFormPages/CippSafeLinksPolicyForm";
 import { SafeLinksRuleForm } from "/src/components/CippFormPages/CippSafeLinksRuleForm";
 
@@ -34,26 +33,12 @@ const Page = () => {
     },
   });
 
-  // Watch policy name to sync with rule form
+  // Watch policy name to pass to rule form
   const watchPolicyName = useWatch({ control: formControl.control, name: "Name" });
   
-  useEffect(() => {
-    if (watchPolicyName) {
-      ruleFormControl.setValue("SafeLinksPolicy", watchPolicyName);
-    }
-  }, [watchPolicyName, ruleFormControl]);
-
-  /// Custom data formatter to combine both forms' data
+  // Custom data formatter to combine both forms' data
   const customDataFormatter = (values) => {
-    // Format DoNotRewriteUrls if provided
-    if (values.DoNotRewriteUrls && typeof values.DoNotRewriteUrls === 'string') {
-      values.DoNotRewriteUrls = values.DoNotRewriteUrls
-        .split(',')
-        .map(url => url.trim())
-        .filter(url => url !== '');
-    }
-
-    // Get rule values and validate
+    // Get rule values
     const ruleValues = ruleFormControl.getValues();
     
     // Process arrays for string inputs
@@ -118,19 +103,16 @@ const Page = () => {
       EnableOrganizationBranding: values.EnableOrganizationBranding,
       
       // Rule fields
+      RuleName: ruleValues.Name, // Include the auto-generated rule name
       Priority: ruleValues.Priority,
       Comments: ruleValues.Comments,
       Enabled: ruleValues.Enabled,
       
-      // These fields from the user selector will already have the correct userPrincipalName values
+      // Process user, group and domain fields
       SentTo: ruleValues.SentTo,
       ExceptIfSentTo: ruleValues.ExceptIfSentTo,
-      
-      // Process group fields to ensure we have the correct format
       SentToMemberOf: processGroupField(ruleValues.SentToMemberOf),
       ExceptIfSentToMemberOf: processGroupField(ruleValues.ExceptIfSentToMemberOf),
-      
-      // Then use this function when processing domains
       RecipientDomainIs: processDomainField(ruleValues.RecipientDomainIs),
       ExceptIfRecipientDomainIs: processDomainField(ruleValues.ExceptIfRecipientDomainIs),
     };
@@ -157,7 +139,7 @@ const Page = () => {
           <Box>
             <SafeLinksRuleForm 
               formControl={ruleFormControl}
-              policyName={watchPolicyName} 
+              PolicyName={watchPolicyName} 
               formType="add" 
             />
           </Box>

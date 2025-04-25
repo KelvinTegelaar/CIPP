@@ -24,7 +24,7 @@ const Page = () => {
   const actions = [
       {
         label: "Edit Safe Links Policy",
-        link: "/security/safelinks/edit?policyName=[PolicyName]&tenantFilter=[tenantFilter]",
+        link: "/security/safelinks/edit?PolicyName=[PolicyName]&RuleName=[RuleName]&tenantFilter=[tenantFilter]",
         icon: <Edit />,
         color: "success",
         target: "_self",
@@ -110,6 +110,7 @@ const Page = () => {
     "ExceptIfSentTo",
     "ExceptIfSentToMemberOf",
     "ExceptIfRecipientDomainIs",
+    "DoNotRewriteUrls",
     "EnableSafeLinksForEmail",
     "EnableSafeLinksForTeams",
     "EnableSafeLinksForOffice",

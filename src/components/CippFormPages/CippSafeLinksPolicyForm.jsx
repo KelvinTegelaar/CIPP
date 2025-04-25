@@ -3,10 +3,11 @@ import Grid from "@mui/material/Grid";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { Typography } from "@mui/material";
 import { CippInfoCard } from "/src/components/CippCards/CippInfoCard";
-import { CippFormInputArray } from "/src/components/CippComponents/CippFormInputArray";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import CippUrlChipInput from "/src/components/CippComponents/CippUrlChipInput";
 
 export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
+  const wildcardAndUrlPattern = /^(\*\.)?([\da-z]([a-z\d-]*[a-z\d])?\.)+([\da-z]{2,})(\/\*|\/[\w.-]*\*?)?$|^(https?:\/\/)?([\da-z]([a-z\d-]*[a-z\d])?\.)+([\da-z]{2,})(\/[\w.-]*)*\/?$/i;
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -139,15 +140,32 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
         />
       </Grid>
       <Grid item xs={12}>
-        <CippFormInputArray
+        <CippUrlChipInput
           formControl={formControl}
           name="DoNotRewriteUrls"
           label="Do Not Rewrite URLs"
+          placeholder="Enter domain patterns (one per line for multiple entries)"
+          tooltip="You can use wildcard patterns (*.example.com/*) or standard URLs (https://example.com)"
+          helperText="Paste multiple entries or add them one by one"
           validators={{ 
-            pattern: {
-              value: /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/,
-              message: "Please enter a valid domain"
+            validate: {
+              validEntries: (value) => {
+                if (!value || value.length === 0) return true;
+                return value.every(url => wildcardAndUrlPattern.test(url)) || 
+                  "Please enter valid domain patterns or URLs";
+              }
             }
+          }}
+          options={{
+            enableValidation: true,
+            validationPattern: wildcardAndUrlPattern,
+            validationErrorMessage: "Please enter a valid domain pattern or URL",
+            addHttps: false,
+            preventDuplicates: true,
+            allowBatchInput: true,
+            chipColor: "primary",
+            chipVariant: "outlined",
+            chipSize: "medium"
           }}
         />
       </Grid>
