@@ -24,7 +24,7 @@ const Page = () => {
   const actions = [
       {
         label: "Edit Safe Links Policy",
-        link: "/security/safelinks/safelinkspolicy/edit?RuleName=[RuleName]&PolicyName=[PolicyName]&tenantFilter=[tenantFilter]",
+        link: "/security/safelinks/edit?policyName=[PolicyName]&tenantFilter=[tenantFilter]",
         icon: <Edit />,
         color: "success",
         target: "_self",
@@ -33,10 +33,11 @@ const Page = () => {
         label: "Enable Rule",
         type: "POST",
         icon: <Check />,
-        url: "/api/EditSafeLinksPolicyState",
+        url: "/api/EditSafeLinksPolicy",
         data: {
-          State: "Enable",
-          RuleName: "RuleName",
+          OriginalPolicyName: "PolicyName",
+          Name: "PolicyName",
+          Enabled: true
         },
         confirmText: "Are you sure you want to enable this rule?",
         color: "info",
@@ -46,10 +47,11 @@ const Page = () => {
         label: "Disable Rule",
         type: "POST",
         icon: <Block />,
-        url: "/api/EditSafeLinksPolicyState",
+        url: "/api/EditSafeLinksPolicy",
         data: {
-          State: "Disable",
-          RuleName: "RuleName",
+          OriginalPolicyName: "PolicyName",
+          Name: "PolicyName",
+          Enabled: false
         },
         confirmText: "Are you sure you want to disable this rule?",
         color: "info",
@@ -59,13 +61,13 @@ const Page = () => {
         label: "Set Priority",
         type: "POST",
         icon: <LowPriority />,
-        url: "/api/EditSafeLinksPolicyPriority",
+        url: "/api/EditSafeLinksPolicy",
         data: {
-          RuleName: "RuleName",
+          OriginalPolicyName: "PolicyName",
+          Name: "PolicyName"
         },
         confirmText: "What would you like to set the priority to?",
         color: "info",
-        condition: (row) => row.State === "Enabled",
         fields: [
           {
             type: "number",

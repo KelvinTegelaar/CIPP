@@ -122,7 +122,6 @@ const pages = [
   { title: "Message Trace", path: "/email/reports/message-trace" },
   { title: "Anti-Phishing Filters", path: "/email/reports/antiphishing-filters" },
   { title: "Malware Filters", path: "/email/reports/malware-filters" },
-  { title: "Safe Links Filters", path: "/email/reports/safelinks-filters" },
   { title: "Safe Attachments Filters", path: "/email/reports/safeattachments-filters" },
   {
     title: "Shared Mailbox with Enabled Account",

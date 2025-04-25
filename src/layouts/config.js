@@ -379,10 +379,6 @@ export const nativeMenuItems = [
           },
           { title: "Malware Filters", path: "/email/reports/malware-filters" },
           {
-            title: "Safe Links Filters",
-            path: "/email/reports/safelinks-filters",
-          },
-          {
             title: "Safe Attachments Filters",
             path: "/email/reports/safeattachments-filters",
           },

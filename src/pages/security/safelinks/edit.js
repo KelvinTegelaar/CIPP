@@ -1,35 +1,28 @@
-import React from "react";
 import { Box } from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import { useSettings } from "/src/hooks/use-settings";
-import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { useEffect } from "react";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { Policy, CalendarToday } from "@mui/icons-material";
-import { CippCopyToClipBoard } from "/src/components/CippComponents/CippCopyToClipboard";
-import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
+import { useEffect, useState } from "react";
 import { SafeLinksPolicyForm } from "/src/components/CippFormPages/CippSafeLinksPolicyForm";
 import { SafeLinksRuleForm } from "/src/components/CippFormPages/CippSafeLinksRuleForm";
+import { useRouter } from "next/router";
+import { ApiGetCall } from "/src/api/ApiCall";
 
+// In Page component
 const Page = () => {
-  const userSettingsDefaults = useSettings();
   const router = useRouter();
-  const { RuleName } = router.query;
   const { PolicyName } = router.query;
-
-  const policyRequest = ApiGetCall({
-    url: `/api/ListSafeLinksPolicyDetails?RuleName=${RuleName}&PolicyName=${PolicyName}&tenantFilter=${userSettingsDefaults.currentTenant}`,
-    queryKey: `ListSafeLinksPolicyDetails-${RuleName}-${PolicyName}`,
-  });
-
+  const { RuleName } = router.query;
+  const [policyDataReady, setPolicyDataReady] = useState(false);
+  const userSettingsDefaults = useSettings();
+  
   // Main form for policy configuration
   const formControl = useForm({
     mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
+      Name: PolicyName,
     },
   });
 
@@ -38,99 +31,91 @@ const Page = () => {
     mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
+      Name: PolicyName,
+      SafeLinksPolicy: PolicyName,
     },
   });
 
   // Watch policy name to sync with rule form
   const watchPolicyName = useWatch({ control: formControl.control, name: "Name" });
   
+  // Get existing policy and rule data
+  const policyData = ApiGetCall({
+    url: `/api/ListSafeLinksPolicyDetails?PolicyName=${PolicyName}&RuleName=${RuleName}&tenantFilter=${userSettingsDefaults.currentTenant}`,
+    queryKey: `SafeLinksPolicy-${PolicyName}`,
+    enabled: !!PolicyName, // Only run when PolicyName is available
+  });
+
+  // Enable API call when policy name is available
+  useEffect(() => {
+    if (PolicyName) {
+      setPolicyDataReady(true);
+    }
+  }, [PolicyName]);
+  
+  // Populate forms with existing data when available
+  useEffect(() => {
+    if (policyData.isSuccess && policyData.data && policyData.data.Results) {
+      // Access the data through Results property
+      const results = policyData.data.Results;
+      const policy = results.Policy || {};
+      const rule = results.Rule || {};
+      
+      // Reset policy form with existing data
+      formControl.reset({
+        tenantFilter: userSettingsDefaults.currentTenant,
+        Name: policy.Name || PolicyName,
+        EnableSafeLinksForEmail: policy.EnableSafeLinksForEmail,
+        EnableSafeLinksForTeams: policy.EnableSafeLinksForTeams,
+        EnableSafeLinksForOffice: policy.EnableSafeLinksForOffice,
+        TrackClicks: policy.TrackClicks,
+        AllowClickThrough: policy.AllowClickThrough,
+        ScanUrls: policy.ScanUrls,
+        EnableForInternalSenders: policy.EnableForInternalSenders,
+        DeliverMessageAfterScan: policy.DeliverMessageAfterScan,
+        DisableUrlRewrite: policy.DisableUrlRewrite,
+        DoNotRewriteUrls: policy.DoNotRewriteUrls,
+        AdminDisplayName: policy.AdminDisplayName,
+        CustomNotificationText: policy.CustomNotificationText,
+        EnableOrganizationBranding: policy.EnableOrganizationBranding,
+      });
+      
+      // Reset rule form with existing data
+      ruleFormControl.reset({
+        tenantFilter: userSettingsDefaults.currentTenant,
+        Name: rule.Name || PolicyName,
+        SafeLinksPolicy: PolicyName,
+        Priority: rule.Priority,
+        Comments: rule.Comments,
+        Enabled: rule.State === "Enabled",
+        SentTo: rule.SentTo,
+        ExceptIfSentTo: rule.ExceptIfSentTo,
+        SentToMemberOf: rule.SentToMemberOf,
+        ExceptIfSentToMemberOf: rule.ExceptIfSentToMemberOf,
+        RecipientDomainIs: rule.RecipientDomainIs,
+        ExceptIfRecipientDomainIs: rule.ExceptIfRecipientDomainIs,
+      });
+    }
+  }, [policyData.isSuccess, policyData.data, PolicyName]);
+
+  // Sync rule form with policy name
   useEffect(() => {
     if (watchPolicyName) {
       ruleFormControl.setValue("SafeLinksPolicy", watchPolicyName);
     }
   }, [watchPolicyName, ruleFormControl]);
 
-  useEffect(() => {
-    if (policyRequest.isSuccess) {
-      const policyData = policyRequest.data?.Results;
-      
-      if (policyData && policyData.Policy && policyData.Rule) {
-        // Set policy form values
-        const policyFormValues = {
-          ...policyData.Policy,
-          Name: policyData.PolicyName,
-          tenantFilter: userSettingsDefaults.currentTenant,
-          // Format DoNotRewriteUrls properly
-          DoNotRewriteUrls: Array.isArray(policyData.Policy.DoNotRewriteUrls) 
-            ? policyData.Policy.DoNotRewriteUrls.join(',') 
-            : policyData.Policy.DoNotRewriteUrls
-        };
-        
-        // Set rule form values
-        const ruleFormValues = {
-          ...policyData.Rule,
-          Name: policyData.RuleName,
-          SafeLinksPolicy: policyData.PolicyName,
-          tenantFilter: userSettingsDefaults.currentTenant,
-          // Format any arrays properly
-          RecipientDomainIs: Array.isArray(policyData.Rule.RecipientDomainIs)
-            ? policyData.Rule.RecipientDomainIs
-            : [],
-          ExceptIfRecipientDomainIs: Array.isArray(policyData.Rule.ExceptIfRecipientDomainIs)
-            ? policyData.Rule.ExceptIfRecipientDomainIs
-            : [],
-          SentTo: policyData.Rule.SentTo || [],
-          ExceptIfSentTo: policyData.Rule.ExceptIfSentTo || [],
-          SentToMemberOf: policyData.Rule.SentToMemberOf || [],
-          ExceptIfSentToMemberOf: policyData.Rule.ExceptIfSentToMemberOf || []
-        };
-        
-        formControl.reset(policyFormValues);
-        ruleFormControl.reset(ruleFormValues);
-      }
-    }
-  }, [policyRequest.isSuccess, policyRequest.data, policyRequest.isLoading]);
-
   // Custom data formatter to combine both forms' data
   const customDataFormatter = (values) => {
-    // Format DoNotRewriteUrls if provided
-    if (values.DoNotRewriteUrls && typeof values.DoNotRewriteUrls === 'string') {
-      values.DoNotRewriteUrls = values.DoNotRewriteUrls
-        .split(',')
-        .map(url => url.trim())
-        .filter(url => url !== '');
-    }
-  
-    // Get rule values and validate
+    // Get rule values from the second form
     const ruleValues = ruleFormControl.getValues();
     
-    // Process arrays for string inputs
-    const formatStringToArray = (value) => {
-      if (!value || value === '') return [];
-      if (typeof value === 'string') {
-        return value.split(',').map(item => item.trim()).filter(item => item !== '');
-      }
-      return value;
-    };
-  
-    // Process domain fields
-    if (ruleValues.RecipientDomainIs) {
-      ruleValues.RecipientDomainIs = formatStringToArray(ruleValues.RecipientDomainIs);
-    }
-    
-    if (ruleValues.ExceptIfRecipientDomainIs) {
-      ruleValues.ExceptIfRecipientDomainIs = formatStringToArray(ruleValues.ExceptIfRecipientDomainIs);
-    }
-  
-    // Combined data object
+    // Return combined data from both forms
     return {
       // Common fields
+      OriginalPolicyName: PolicyName,  // Add original name for updating
       Name: values.Name,
       tenantFilter: values.tenantFilter,
-      
-      // Original rule and policy names for reference
-      PolicyName: PolicyName,
-      RuleName: RuleName,
       
       // Policy fields
       EnableSafeLinksForEmail: values.EnableSafeLinksForEmail,
@@ -142,7 +127,7 @@ const Page = () => {
       EnableForInternalSenders: values.EnableForInternalSenders,
       DeliverMessageAfterScan: values.DeliverMessageAfterScan,
       DisableUrlRewrite: values.DisableUrlRewrite,
-      DoNotRewriteUrls: Array.isArray(values.DoNotRewriteUrls) ? values.DoNotRewriteUrls : [],
+      DoNotRewriteUrls: values.DoNotRewriteUrls,
       AdminDisplayName: values.AdminDisplayName,
       CustomNotificationText: values.CustomNotificationText,
       EnableOrganizationBranding: values.EnableOrganizationBranding,
@@ -151,76 +136,44 @@ const Page = () => {
       Priority: ruleValues.Priority,
       Comments: ruleValues.Comments,
       Enabled: ruleValues.Enabled,
-      
-      // These fields from the user selector will already have the correct userPrincipalName values
       SentTo: ruleValues.SentTo,
       ExceptIfSentTo: ruleValues.ExceptIfSentTo,
-      
-      // These fields require specific handling based on the component
       SentToMemberOf: ruleValues.SentToMemberOf,
       ExceptIfSentToMemberOf: ruleValues.ExceptIfSentToMemberOf,
-      
-      // Domain fields are now properly formatted
       RecipientDomainIs: ruleValues.RecipientDomainIs,
-      ExceptIfRecipientDomainIs: ruleValues.ExceptIfRecipientDomainIs
+      ExceptIfRecipientDomainIs: ruleValues.ExceptIfRecipientDomainIs,
     };
   };
 
-  // Set the title for the page
-  const title = policyRequest.isSuccess 
-    ? `Edit Safe Links Policy: ${policyRequest.data?.Results?.PolicyName}` 
-    : "Edit Safe Links Policy";
-
-  // Generate subtitle content
-  const getSubtitle = () => {
-    if (!policyRequest.isSuccess) return null;
-    
-    return (
-      <>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-          <Policy fontSize="small" style={{ marginRight: '0.5rem' }} />
-          <span>Rule Name:</span> 
-          <CippCopyToClipBoard type="chip" text={policyRequest.data?.Results?.RuleName} />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <CalendarToday fontSize="small" style={{ marginRight: '0.5rem' }} />
-          <span>Last Modified:</span> 
-          <CippTimeAgo data={policyRequest.data?.Results?.Policy?.WhenChanged || policyRequest.data?.Results?.Rule?.WhenChanged} />
-        </div>
-      </>
-    );
-  };
-
   return (
-    <CippFormPage
-      queryKey={[`ListSafeLinksPolicyDetails-${RuleName}-${PolicyName}`]}
-      formControl={formControl}
-      title={title}
-      subtitle={getSubtitle()}
-      isFetching={policyRequest.isLoading}
-      formPageType="Edit"
-      postUrl="/api/EditSafeLinksPolicy"
-      customDataformatter={customDataFormatter}
-    >
-      {policyRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 3]} />}
-      {policyRequest.isSuccess && (
+    <>
+      <CippFormPage
+        title={`Edit Safe Links Policy: ${PolicyName}`}
+        backButtonTitle="Safe Links Overview"
+        formPageType="Edit"
+        formControl={formControl}
+        customDataformatter={customDataFormatter}
+        postUrl="/api/ExecEditSafeLinkspolicy"
+        queryKey={`SafeLinks-${userSettingsDefaults.currentTenant}-${PolicyName}`}
+        isLoading={policyData.isFetching}
+      >
         <Box sx={{ my: 2 }}>
           <Box sx={{ mb: 4 }}>
             <SafeLinksPolicyForm
               formControl={formControl}
-              formType="edit"
+              formType="edit" 
             />
           </Box>
           <Box>
             <SafeLinksRuleForm 
               formControl={ruleFormControl}
-              policyName={watchPolicyName} 
-              formType="edit" 
+              PolicyName={watchPolicyName} 
+              formType="edit"
             />
           </Box>
         </Box>
-      )}
-    </CippFormPage>
+      </CippFormPage>
+    </>
   );
 };
 
