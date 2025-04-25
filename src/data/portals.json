@@ -11,7 +11,7 @@
   {
     "label": "Exchange Portal",
     "name": "Exchange_Portal",
-    "url": "https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=defaultDomainName#",
+    "url": "https://admin.cloud.microsoft/exchange?landingpage=homepage&form=mac_sidebar&delegatedOrg=defaultDomainName#",
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
