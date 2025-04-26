@@ -571,14 +571,25 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   if (Array.isArray(data) && data.every((item) => typeof item === "string") && flatten) {
     // if string matches json format, parse it
     if (data.every((item) => item.startsWith("{") || item.startsWith("["))) {
-      return isText ? (
-        JSON.stringify(data)
-      ) : (
-        <CippDataTableButton
-          data={data.map((item) => JSON.parse(item))}
-          tableTitle={getCippTranslation(cellName)}
-        />
-      );
+      try {
+        const parsedData = data.map(item => JSON.parse(item));
+        // Check if parsedData contains simple strings
+        if (parsedData.every(item => typeof item === 'string')) {
+          return isText
+            ? parsedData.join(", ")
+            : parsedData.map((item) => <CippCopyToClipBoard key={item} text={item} type="chip" />);
+        }
+        return isText ? (
+          JSON.stringify(data)
+        ) : (
+          <CippDataTableButton
+            data={parsedData}
+            tableTitle={getCippTranslation(cellName)}
+          />
+        );
+      } catch (e) {
+        return isText ? JSON.stringify(data) : data.join(", ");
+      }
     }
 
     //if the array is empty, return "No data"
