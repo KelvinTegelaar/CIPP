@@ -70,7 +70,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         {items.map((item, index) => {
           // Avoid JSON.stringify which can cause circular reference errors
           let key = index;
-          if (typeof item === "string" || typeof item === "number") {
+          if (typeof item === "string" || typeof item === "number" || typeof item === "boolean") {
             key = item;
           } else if (typeof item === "object" && item?.label) {
             key = `item-${item.label}-${index}`;
@@ -505,10 +505,39 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   if (typeof data === "string" && (data.startsWith("{") || data.startsWith("["))) {
     try {
       const parsedData = JSON.parse(data);
+
+      // parsedData is an array and only contains one element
+      if (
+        Array.isArray(parsedData) &&
+        parsedData.length === 1 &&
+        typeof parsedData[0] !== "object"
+      ) {
+        // Handle boolean values
+        if (typeof parsedData[0] === "boolean") {
+          return isText ? (
+            parsedData[0] ? (
+              "Yes"
+            ) : (
+              "No"
+            )
+          ) : parsedData[0] ? (
+            <Check fontSize="10" />
+          ) : (
+            <Cancel fontSize="10" />
+          );
+        }
+
+        return isText ? (
+          JSON.stringify(parsedData[0])
+        ) : (
+          <CippCopyToClipBoard text={parsedData[0]} type="chip" />
+        );
+      }
+
       // Check if parsed data is a simple array of strings
       if (
         Array.isArray(parsedData) &&
-        parsedData.every((item) => typeof item === "string") &&
+        parsedData.every((item) => typeof item === "string" || typeof item === "number") &&
         flatten
       ) {
         return isText ? parsedData.join(", ") : renderChipList(parsedData);
