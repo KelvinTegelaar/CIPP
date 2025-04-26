@@ -31,6 +31,7 @@ import {
 import { getCippTranslation } from "./get-cipp-translation";
 import DOMPurify from "dompurify";
 import { getSignInErrorCodeTranslation } from "./get-cipp-signin-errorcode-translation";
+import { CollapsibleChipList } from "../components/CippComponents/CollapsibleChipList";
 
 export const getCippFormatting = (data, cellName, type, canReceive, flatten = true) => {
   const isText = type === "text";
@@ -56,6 +57,25 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     portal_security: Shield,
     portal_compliance: CompassCalibration,
     portal_sharepoint: Description,
+  };
+
+  // Create a helper function to render chips with CollapsibleChipList
+  const renderChipList = (items, maxItems = 4) => {
+    if (!Array.isArray(items) || items.length === 0) {
+      return <Chip variant="outlined" label="No data" size="small" color="info" />;
+    }
+
+    return (
+      <CollapsibleChipList maxItems={maxItems}>
+        {items.map((item, index) => (
+          <CippCopyToClipBoard
+            key={typeof item === "object" ? JSON.stringify(item) : item || index}
+            text={typeof item === "object" && item?.label ? item.label : item}
+            type="chip"
+          />
+        ))}
+      </CollapsibleChipList>
+    );
   };
 
   //if the cellName starts with portal_, return text, or a link with an icon
@@ -214,11 +234,10 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     if (Array.isArray(data)) {
       return isText
         ? data.join(", ")
-        : data.map((item) => (
-            <CippCopyToClipBoard
-              key={`${item?.label}`}
-              text={item?.label ? item?.label : item}
-              icon={
+        : renderChipList(
+            data.map((item) => ({
+              text: item?.label ? item.label : item,
+              icon:
                 item?.type === "Group" ? (
                   <SvgIcon sx={{ ml: 0.25 }}>
                     <GroupOutlined />
@@ -227,11 +246,9 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
                   <SvgIcon sx={{ ml: 0.25 }}>
                     <BuildingOfficeIcon />
                   </SvgIcon>
-                ) : null
-              }
-              type="chip"
-            />
-          ));
+                ) : null,
+            }))
+          );
     } else {
       return isText ? (
         data
@@ -280,15 +297,10 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         ? data
             .map((item) => (typeof item === "object" && item?.label ? item.label : item))
             .join(", ")
-        : data.map(
-            (item) =>
-              item && (
-                <CippCopyToClipBoard
-                  key={typeof item === "object" ? item?.value || item?.label : item}
-                  text={typeof item === "object" && item?.label ? item.label : item}
-                  type="chip"
-                />
-              )
+        : renderChipList(
+            data
+              .filter((item) => item)
+              .map((item) => (typeof item === "object" && item?.label ? item.label : item))
           );
     }
   }
@@ -349,11 +361,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       : typeof data === "string"
       ? data.split(", ")
       : [];
-    return isText
-      ? accessRights.join(", ")
-      : accessRights.map((accessRight) => (
-          <CippCopyToClipBoard key={accessRight} text={accessRight} type="chip" />
-        ));
+    return isText ? accessRights.join(", ") : renderChipList(accessRights);
   }
 
   // Handle null or undefined data
@@ -379,13 +387,11 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   if (cellName === "From") {
     // if data is array
     if (Array.isArray(data)) {
-      return isText ? data.join(", ") : data.join(", ");
+      return isText ? data.join(", ") : renderChipList(data);
     } else {
       // split on ; , and create chips per email
       const emails = data.split(/;|,/);
-      return isText
-        ? emails.join(", ")
-        : emails.map((email) => <CippCopyToClipBoard key={email} text={email} type="chip" />);
+      return isText ? emails.join(", ") : renderChipList(emails);
     }
   }
 
@@ -394,10 +400,33 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     if (!Array.isArray(data)) {
       data = [data];
     }
+
+    if (data.length === 0) {
+      return isText ? "No data" : <Chip variant="outlined" label="No data" size="small" color="info" />;
+    }
+
+    const primaryEmail = data.find((email) => email.startsWith("SMTP:"));
     const emails = data.map((email) => email.replace(/smtp:/i, ""));
-    return isText
-      ? emails.join(", ")
-      : emails.map((email) => <CippCopyToClipBoard key={email} text={email} type="chip" />);
+    return isText ? (
+      emails.join(", ")
+    ) : (
+      <CippDataTableButton
+        tableTitle={getCippTranslation(cellName)}
+        data={emails.map((email) => {
+          if (primaryEmail.includes(email)) {
+            return {
+              email: email,
+              primary: true,
+            };
+          } else {
+            return {
+              email: email,
+              primary: false,
+            };
+          }
+        })}
+      />
+    );
   }
 
   // Handle assigned licenses
@@ -407,16 +436,21 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       ? Array.isArray(translatedLicenses)
         ? translatedLicenses.join(", ")
         : translatedLicenses
-      : translatedLicenses.map((license) => (
-          <CippCopyToClipBoard key={license} text={license} type="chip" />
-        ));
+      : Array.isArray(translatedLicenses)
+      ? renderChipList(translatedLicenses)
+      : translatedLicenses;
   }
 
   if (cellName === "unifiedRoles") {
     if (Array.isArray(data)) {
       const roles = data.map((role) => getCippRoleTranslation(role.roleDefinitionId));
-      return isText ? roles.join(", ") : roles;
+      return isText ? roles.join(", ") : renderChipList(roles, 12);
     }
+    return isText ? (
+      "No roles"
+    ) : (
+      <Chip variant="outlined" label="No roles" size="small" color="info" />
+    );
   }
 
   // Handle roleDefinitionId
@@ -444,12 +478,24 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   // if data is a json string, parse it and return a table
   if (typeof data === "string" && (data.startsWith("{") || data.startsWith("["))) {
     try {
+      const parsedData = JSON.parse(data);
+      // Check if parsed data is a simple array of strings
+      if (
+        Array.isArray(parsedData) &&
+        parsedData.every((item) => typeof item === "string") &&
+        flatten
+      ) {
+        return isText ? parsedData.join(", ") : renderChipList(parsedData);
+      }
       return isText ? (
         data
       ) : (
-        <CippDataTableButton data={JSON.parse(data)} tableTitle={getCippTranslation(cellName)} />
+        <CippDataTableButton data={parsedData} tableTitle={getCippTranslation(cellName)} />
       );
-    } catch (e) {}
+    } catch (e) {
+      // If parsing fails, return the original string
+      return isText ? data : <span>{data}</span>;
+    }
   }
 
   if (cellName === "key") {
@@ -572,20 +618,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     // if string matches json format, parse it
     if (data.every((item) => item.startsWith("{") || item.startsWith("["))) {
       try {
-        const parsedData = data.map(item => JSON.parse(item));
+        const parsedData = data.map((item) => JSON.parse(item));
         // Check if parsedData contains simple strings
-        if (parsedData.every(item => typeof item === 'string')) {
-          return isText
-            ? parsedData.join(", ")
-            : parsedData.map((item) => <CippCopyToClipBoard key={item} text={item} type="chip" />);
+        if (parsedData.every((item) => typeof item === "string")) {
+          return isText ? parsedData.join(", ") : renderChipList(parsedData);
         }
         return isText ? (
           JSON.stringify(data)
         ) : (
-          <CippDataTableButton
-            data={parsedData}
-            tableTitle={getCippTranslation(cellName)}
-          />
+          <CippDataTableButton data={parsedData} tableTitle={getCippTranslation(cellName)} />
         );
       } catch (e) {
         return isText ? JSON.stringify(data) : data.join(", ");
@@ -593,9 +634,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     }
 
     //if the array is empty, return "No data"
-    return isText
-      ? data.join(", ")
-      : data.map((item) => <CippCopyToClipBoard key={item} text={item} type="chip" />);
+    return isText ? data.join(", ") : renderChipList(data);
   }
 
   // Handle objects
