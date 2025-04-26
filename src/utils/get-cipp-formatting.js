@@ -67,13 +67,24 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
 
     return (
       <CollapsibleChipList maxItems={maxItems}>
-        {items.map((item, index) => (
-          <CippCopyToClipBoard
-            key={typeof item === "object" ? JSON.stringify(item) : item || index}
-            text={typeof item === "object" && item?.label ? item.label : item}
-            type="chip"
-          />
-        ))}
+        {items.map((item, index) => {
+          // Avoid JSON.stringify which can cause circular reference errors
+          let key = index;
+          if (typeof item === "string" || typeof item === "number") {
+            key = item;
+          } else if (typeof item === "object" && item?.label) {
+            key = `item-${item.label}-${index}`;
+          }
+
+          return (
+            <CippCopyToClipBoard
+              key={key}
+              text={typeof item === "object" && item?.label ? item.label : item}
+              type="chip"
+              icon={item?.icon ? item.icon : null}
+            />
+          );
+        })}
       </CollapsibleChipList>
     );
   };
@@ -235,19 +246,30 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       return isText
         ? data.join(", ")
         : renderChipList(
-            data.map((item) => ({
-              text: item?.label ? item.label : item,
-              icon:
-                item?.type === "Group" ? (
+            data.map((item, key) => {
+              const itemText = item?.label ? item.label : item;
+              let icon = null;
+
+              if (item?.type === "Group") {
+                icon = (
                   <SvgIcon sx={{ ml: 0.25 }}>
                     <GroupOutlined />
                   </SvgIcon>
-                ) : item?.type === "Tenant" ? (
+                );
+              } else {
+                icon = (
                   <SvgIcon sx={{ ml: 0.25 }}>
                     <BuildingOfficeIcon />
                   </SvgIcon>
-                ) : null,
-            }))
+                );
+              }
+
+              return {
+                label: itemText,
+                icon: icon,
+                key: key,
+              };
+            })
           );
     } else {
       return isText ? (
@@ -402,7 +424,11 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     }
 
     if (data.length === 0) {
-      return isText ? "No data" : <Chip variant="outlined" label="No data" size="small" color="info" />;
+      return isText ? (
+        "No data"
+      ) : (
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      );
     }
 
     const primaryEmail = data.find((email) => email.startsWith("SMTP:"));
