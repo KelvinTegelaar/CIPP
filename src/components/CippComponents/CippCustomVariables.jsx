@@ -64,7 +64,7 @@ const CippCustomVariables = ({ id }) => {
       url: "/api/ExecCippReplacemap",
       data: {
         Action: "!AddEdit",
-        customerId: id,
+        tenantId: id,
       },
       relatedQueryKeys: [`CustomVariables_${id}`],
     },
@@ -77,7 +77,7 @@ const CippCustomVariables = ({ id }) => {
       data: {
         Action: "Delete",
         RowKey: "RowKey",
-        customerId: id,
+        tenantId: id,
       },
       relatedQueryKeys: [`CustomVariables_${id}`],
       multiPost: false,
@@ -100,7 +100,7 @@ const CippCustomVariables = ({ id }) => {
         title={id === "AllTenants" ? "Global Variables" : "Custom Variables"}
         actions={actions}
         api={{
-          url: `/api/ExecCippReplacemap?Action=List&customerId=${id}`,
+          url: `/api/ExecCippReplacemap?Action=List&tenantId=${id}`,
           dataKey: "Results",
         }}
         simpleColumns={["RowKey", "Value"]}
@@ -147,7 +147,7 @@ const CippCustomVariables = ({ id }) => {
         api={{
           type: "POST",
           url: "/api/ExecCippReplacemap",
-          data: { Action: "AddEdit", customerId: id },
+          data: { Action: "AddEdit", tenantId: id },
           relatedQueryKeys: [`CustomVariables_${id}`],
         }}
       />
