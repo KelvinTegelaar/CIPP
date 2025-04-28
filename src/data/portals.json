@@ -2,8 +2,8 @@
   {
     "label": "M365 Portal",
     "name": "M365_Portal",
-    "url": "https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=customerId&CSDEST=o365admincenter",
-    "variable": "customerId",
+    "url": "https://admin.cloud.microsoft/?delegatedOrg=initialDomainName",
+    "variable": "initialDomainName",
     "target": "_blank",
     "external": true,
     "icon": "GlobeAltIcon"
@@ -11,8 +11,8 @@
   {
     "label": "Exchange Portal",
     "name": "Exchange_Portal",
-    "url": "https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=defaultDomainName#",
-    "variable": "defaultDomainName",
+    "url": "https://admin.cloud.microsoft/exchange?landingpage=homepage&form=mac_sidebar&delegatedOrg=initialDomainName#",
+    "variable": "initialDomainName",
     "target": "_blank",
     "external": true,
     "icon": "Mail"
@@ -29,8 +29,8 @@
   {
     "label": "Teams Portal",
     "name": "Teams_Portal",
-    "url": "https://admin.teams.microsoft.com/?delegatedOrg=defaultDomainName",
-    "variable": "defaultDomainName",
+    "url": "https://admin.teams.microsoft.com/?delegatedOrg=initialDomainName",
+    "variable": "initialDomainName",
     "target": "_blank",
     "external": true,
     "icon": "FilePresent"
@@ -56,8 +56,8 @@
   {
     "label": "SharePoint Admin",
     "name": "SharePoint_Admin",
-    "url": "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=customerId&CSDEST=SharePoint",
-    "variable": "customerId",
+    "url": "/api/ListSharePointAdminUrl?tenantFilter=defaultDomainName",
+    "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
     "icon": "Share"
