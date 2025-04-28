@@ -463,9 +463,14 @@ export const nativeMenuItems = [
     ),
     items: [
       { title: "Application Settings", path: "/cipp/settings", roles: ["admin", "superadmin"] },
-      { title: "Logbook", path: "/cipp/logs", roles: ["admin", "superadmin"] },
+      { title: "Logbook", path: "/cipp/logs", roles: ["editor", "admin", "superadmin"] },
       { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
       { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
+      {
+        title: "Custom Data",
+        path: "/cipp/custom-data/directory-extensions",
+        roles: ["admin", "superadmin"]
+      },
       {
         title: "Advanced",
         roles: ["superadmin"],

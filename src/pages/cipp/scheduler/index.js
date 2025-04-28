@@ -1,14 +1,28 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import Link from "next/link";
 import { CalendarDaysIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { CopyAll, Edit } from "@mui/icons-material";
-import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
+import { CopyAll, Edit, PlayArrow } from "@mui/icons-material";
+import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 
 const Page = () => {
   const actions = [
+    {
+      label: "View Task Details",
+      link: "/cipp/scheduler/task?id=[RowKey]",
+      icon: <EyeIcon />,
+    },
+    {
+      label: "Run Now",
+      type: "POST",
+      url: "/api/AddScheduledItem",
+      data: { RowKey: "RowKey", RunNow: true },
+      icon: <PlayArrow />,
+      confirmText: "Are you sure you want to run [Name]?",
+      allowResubmit: true,
+    },
     {
       label: "Edit Job",
       link: "/cipp/scheduler/job?id=[RowKey]",
@@ -58,12 +72,8 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (extendedData) => (
-      <>
-        <Typography variant="h6">Job Results</Typography>
-        <CippCodeBlock type="editor" code={extendedData.Results} />
-      </>
-    ),
+    children: (extendedData) => <ScheduledTaskDetails data={extendedData} />,
+    size: "xl",
     actions: actions,
   };
   const [showHiddenJobs, setShowHiddenJobs] = useState(false);
@@ -82,19 +92,20 @@ const Page = () => {
       tenantInTitle={false}
       title="Scheduled Tasks"
       apiUrl={
-        showHiddenJobs ? "/api/ListScheduledItems?ListHidden=True" : "/api/ListScheduledItems"
+        showHiddenJobs ? "/api/ListScheduledItems?ShowHidden=true" : "/api/ListScheduledItems"
       }
       queryKey={showHiddenJobs ? `ListScheduledItems-hidden` : `ListScheduledItems`}
       simpleColumns={[
-        "Name",
-        "Tenant",
+        "ExecutedTime",
         "TaskState",
+        "Tenant",
+        "Name",
+        "ScheduledTime",
         "Command",
         "Parameters",
         "PostExecution",
         "Recurrence",
-        "ExecutedTime",
-        "ScheduledTime",
+        "Results",
       ]}
       actions={actions}
       offCanvas={offCanvas}

@@ -3,15 +3,22 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CopyAll, Delete, Edit, AddBox, GitHub } from "@mui/icons-material";
+import { CopyAll, Delete, Edit, AddBox, GitHub, Sync } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";
+import { Stack } from "@mui/system";
+import { BPASyncDialog } from "/src/components/CippComponents/BPASyncDialog";
+import { useDialog } from "/src/hooks/use-dialog";
 
 const Page = () => {
   const pageTitle = "Best Practice Reports";
+  const bpaDialog = useDialog();
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
+
   const actions = [
     {
       label: "View Report",
@@ -81,7 +88,7 @@ const Page = () => {
     },
     {
       label: "Delete Template",
-      type: "GET",
+      type: "POST",
       url: "/api/RemoveBPATemplate",
       data: {
         TemplateName: "Name",
@@ -93,18 +100,26 @@ const Page = () => {
   ];
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/listBPATemplates"
-      cardButton={
-        <Button component={Link} href="bpa-report/builder" startIcon={<AddBox />}>
-          Add Template
-        </Button>
-      }
-      actions={actions}
-      simpleColumns={["Name", "Style"]}
-      queryKey="ListBPATemplates"
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl="/api/listBPATemplates"
+        cardButton={
+          <Stack direction="row" spacing={1}>
+            <Button component={Link} href="bpa-report/builder" startIcon={<AddBox />}>
+              Add Template
+            </Button>
+            <Button onClick={bpaDialog.handleOpen} startIcon={<Sync />}>
+              Force Sync
+            </Button>
+          </Stack>
+        }
+        actions={actions}
+        simpleColumns={["Name", "Style"]}
+        queryKey="ListBPATemplates"
+      />
+      <BPASyncDialog createDialog={bpaDialog} />
+    </>
   );
 };
 

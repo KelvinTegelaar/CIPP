@@ -4,19 +4,14 @@ import {
   Container,
   Typography,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
   IconButton,
   Stack,
   SvgIcon,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import Head from "next/head";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
@@ -24,6 +19,8 @@ import { useRouter } from "next/router";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import { CippHead } from "../../../../components/CippComponents/CippHead";
+import { Add, Save } from "@mui/icons-material";
 
 const Page = () => {
   const router = useRouter();
@@ -54,18 +51,28 @@ const Page = () => {
           template.name = `${template.name} (Clone)`;
         }
         setLayoutMode(template.style);
-        //if the template style is tenant, create enough cards to hold the frontend fields
-        if (template.style === "Tenant") {
-          setBlockCards(
-            template.Fields.map((field, index) => {
-              return {
-                id: `block-${index}`,
-              };
-            })
-          );
-        }
+        setBlockCards(
+          template.Fields.map((field, index) => {
+            return {
+              id: `block-${index}`,
+            };
+          })
+        );
 
-        formControl.reset(template);
+        const convertedTemplate = {
+          ...template,
+          Fields: template.Fields.map((field) => ({
+            ...field,
+            ExtractFields: field.ExtractFields
+              ? field.ExtractFields.map((ef) => ({
+                  label: ef,
+                  value: ef,
+                }))
+              : [],
+          })),
+        };
+
+        formControl.reset(convertedTemplate);
       }
     }
   }, [bpaTemplateList.isSuccess]);
@@ -151,10 +158,9 @@ const Page = () => {
     addBPATemplate.mutate({ url: "/api/AddBPATemplate", data: cleanedData });
   };
 
-  const handleLayoutModeChange = (event) => {
-    const newMode = event.target.value;
+  const handleLayoutModeChange = (newMode) => {
     setLayoutMode(newMode);
-    formControl.setValue("style", newMode);
+    //formControl.setValue("style", newMode);
 
     // Reset cards based on the layout mode
     if (newMode === "Table") {
@@ -174,12 +180,18 @@ const Page = () => {
     }
   };
 
+  const style = useWatch({ control: formControl.control, name: "style" });
+
+  useEffect(() => {
+    if (style && style !== layoutMode) {
+      handleLayoutModeChange(style);
+    }
+  }, [style]);
+
   const onSubmit = (data) => {};
   return (
     <>
-      <Head>
-        <title>{pageTitle}</title>
-      </Head>
+      <CippHead title={pageTitle} />
       <Box
         sx={{
           flexGrow: 1,
@@ -210,55 +222,43 @@ const Page = () => {
           <CippButtonCard
             CardButton={
               <>
-                <Button variant="contained" onClick={saveConfig} sx={{ ml: 2 }}>
+                <Button variant="contained" onClick={saveConfig} startIcon={<Save />}>
                   Save Report
                 </Button>
               </>
             }
             title="Report Settings"
           >
-            <Grid container spacing={4}>
+            <Grid container spacing={2}>
               {/* First item for Report Name and Layout Mode */}
               <Grid item xs={12} sm={12} md={12}>
                 <CippFormComponent label="Report Name" name={`name`} formControl={formControl} />
               </Grid>
 
               <Grid item xs={12} sm={12} md={12}>
-                <FormControl fullWidth>
-                  <InputLabel id="layout-mode-label">Layout Mode</InputLabel>
-                  <Select
-                    labelId="layout-mode-label"
-                    id="layout-mode"
-                    value={layoutMode}
-                    onChange={handleLayoutModeChange}
-                    fullWidth
-                  >
-                    <MenuItem value="Tenant">Block</MenuItem>
-                    <MenuItem value="Table">Table</MenuItem>
-                  </Select>
-                </FormControl>
+                <CippFormComponent
+                  label="Layout Mode"
+                  name="style"
+                  type="select"
+                  options={[
+                    { label: "Block", value: "Tenant" },
+                    { label: "Table", value: "Table" }
+                  ]}
+                  formControl={formControl}
+                />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <CippApiResults apiObject={addBPATemplate} />
               </Grid>
-
-              {/* Third item for Buttons */}
-              {layoutMode === "Tenant" && (
-                <Grid item xs={12} sm={12} md={12}>
-                  <Box sx={{ mt: 2 }}>
-                    <Button variant="contained" onClick={handleAddBlock}>
-                      Add Frontend Card
-                    </Button>
-                  </Box>
-                </Grid>
-              )}
             </Grid>
           </CippButtonCard>
 
-          {/* Canvas Area */}
-          <Typography variant="h6" gutterBottom>
-            Canvas
-          </Typography>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ my: 3 }}>
+            <Typography variant="h5">Fields</Typography>
+            <Button variant="outlined" size="small" onClick={handleAddBlock} startIcon={<Add />}>
+              Add Field
+            </Button>
+          </Stack>
 
           <Grid container spacing={2}>
             {blockCards.map((block, index) => (
@@ -270,16 +270,16 @@ const Page = () => {
                 key={block.id}
               >
                 <CippButtonCard
-                  title={block.id === "table-card" ? `Default Table Card` : `BPA Report`}
+                  title={`${layoutMode === "Table" ? "Table Column" : "Block"} - ${
+                    watch(`Fields.${index}.FrontendFields.0.name`) || "New Field"
+                  }`}
                   cardActions={
-                    layoutMode === "Tenant" && (
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => handleRemoveBlock(block.id)} // Remove block on click
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    )
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => handleRemoveBlock(block.id)} // Remove block on click
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   }
                 >
                   {/* Form inside each card */}
@@ -311,7 +311,8 @@ const Page = () => {
                       </Grid>
                       <CippFormCondition
                         field={`Fields.${index}.UseExistingInfo`} // Corrected condition field
-                        compareValue={false}
+                        compareType="isNot"
+                        compareValue={true}
                         formControl={formControl}
                       >
                         <Grid item xs={12}>
@@ -351,7 +352,7 @@ const Page = () => {
                           <Grid item xs={12}>
                             <CippFormComponent
                               label="Use Application Permissions"
-                              name={`Fields.${index}.parameters.asApp`} // Corrected index
+                              name={`Fields.${index}.Parameters.asApp`} // Corrected index
                               formControl={formControl}
                               type="switch"
                             />
@@ -478,13 +479,17 @@ const Page = () => {
                             type="autoComplete"
                             formControl={formControl}
                             multiple={false}
-                            api={{
-                              queryKey: `ListBPA`,
-                              url: "/api/ListBPA",
-                              dataKey: "Keys",
-                              labelField: (option) => `${option}`,
-                              valueField: (option) => `${option}`,
-                            }}
+                            options={
+                              bpaTemplateList.data
+                                ?.flatMap(
+                                  (template) => template.Fields?.map((field) => field.name) ?? []
+                                )
+                                .filter(
+                                  (value, index, self) => value && self.indexOf(value) === index
+                                )
+                                .map((field) => ({ label: field, value: field }))
+                                .sort((a, b) => a.label.localeCompare(b.label)) ?? []
+                            }
                           />
                         </Grid>
                       </CippFormCondition>

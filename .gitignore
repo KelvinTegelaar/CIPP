@@ -24,11 +24,7 @@ out
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-HEAD
-__*
-.next/*
-=======
 
 # vscode debug logs
 debug.log
-6135d24769e18e3dc604f8fed68041e9dc39d27b
+app.log

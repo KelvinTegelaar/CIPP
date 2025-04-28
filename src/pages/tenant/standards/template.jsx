@@ -1,4 +1,5 @@
-import { Box, Button, Container, Stack, Typography, SvgIcon, Grid, Skeleton } from "@mui/material";
+import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from "@mui/material";
+import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -34,8 +35,17 @@ const Page = () => {
     }
 
     if (existingTemplate.isSuccess) {
-      formControl.reset(existingTemplate.data?.[0]);
+      //formControl.reset(existingTemplate.data?.[0]);
       const apiData = existingTemplate.data?.[0];
+
+      Object.keys(apiData.standards).forEach((key) => {
+        if (Array.isArray(apiData.standards[key])) {
+          apiData.standards[key] = apiData.standards[key].filter(
+            (value) => value !== null && value !== undefined
+          );
+        }
+      });
+
       formControl.reset(apiData);
       if (router.query.clone) {
         formControl.setValue("templateName", `${apiData.templateName} (Clone)`);
@@ -105,7 +115,6 @@ const Page = () => {
     setSelectedStandards((prev) => {
       const existingInstances = Object.keys(prev).filter((name) => name.startsWith(standardName));
       const newIndex = existingInstances.length;
-
       return {
         ...prev,
         [`${standardName}[${newIndex}]`]: true,
@@ -192,7 +201,7 @@ const Page = () => {
 
           <Grid container spacing={3}>
             {/* Left Column for Accordions */}
-            <Grid item xs={12} lg={4}>
+            <Grid size={{ xs: 12, lg: 4 }}>
               <CippStandardsSideBar
                 title="Standard Template Setup"
                 subtitle="Follow the steps to configure the Standard"
@@ -205,19 +214,22 @@ const Page = () => {
                 updatedAt={updatedAt}
               />
             </Grid>
-            <Grid item xs={12} lg={8}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
-                {existingTemplate.isLoading && <Skeleton />}
                 {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
-                <CippStandardAccordion
-                  standards={standards}
-                  selectedStandards={selectedStandards} // Render only the relevant standards
-                  expanded={expanded}
-                  handleAccordionToggle={handleAccordionToggle}
-                  handleRemoveStandard={handleRemoveStandard}
-                  handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
-                  formControl={formControl}
-                />
+                {existingTemplate.isLoading ? (
+                  <Skeleton variant="rectangular" height="700px" />
+                ) : (
+                  <CippStandardAccordion
+                    standards={standards}
+                    selectedStandards={selectedStandards} // Render only the relevant standards
+                    expanded={expanded}
+                    handleAccordionToggle={handleAccordionToggle}
+                    handleRemoveStandard={handleRemoveStandard}
+                    handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
+                    formControl={formControl}
+                  />
+                )}
               </Stack>
             </Grid>
           </Grid>

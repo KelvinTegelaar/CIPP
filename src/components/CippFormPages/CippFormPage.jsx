@@ -16,6 +16,7 @@ import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect } from "react";
 import { useFormState } from "react-hook-form";
+import { CippHead } from "../CippComponents/CippHead";
 
 const CippFormPage = (props) => {
   const {
@@ -86,9 +87,7 @@ const CippFormPage = (props) => {
   };
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
+      <CippHead title={title} />
       <Box
         sx={{
           flexGrow: 1,

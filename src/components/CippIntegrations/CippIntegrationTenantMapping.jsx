@@ -89,6 +89,7 @@ const CippIntegrationSettings = ({ children }) => {
       Tenant: selectedTenant.label,
       IntegrationName: selectedCompany.label,
       IntegrationId: selectedCompany.value,
+      TenantDomain: selectedTenant.addedFields.defaultDomainName,
     };
 
     setTableData([...tableData, newRowData]);
@@ -109,6 +110,7 @@ const CippIntegrationSettings = ({ children }) => {
         newTableData.push({
           TenantId: tenant.customerId,
           Tenant: tenant.displayName,
+          TenantDomain: tenant.defaultDomainName,
           IntegrationName: matchingCompany.name,
           IntegrationId: matchingCompany.value,
         });
@@ -195,6 +197,7 @@ const CippIntegrationSettings = ({ children }) => {
                   creatable={false}
                   multiple={false}
                   isFetching={mappings.isFetching}
+                  sortOptions={true}
                 />
               </Grid>
               <Grid item>
@@ -237,7 +240,7 @@ const CippIntegrationSettings = ({ children }) => {
                 reportTitle={`${extension.id}-tenant-map`}
                 data={tableData}
                 simple={false}
-                simpleColumns={["Tenant", "IntegrationName"]}
+                simpleColumns={["IntegrationName", "Tenant", "TenantDomain"]}
                 isFetching={mappings.isFetching}
                 refreshFunction={() => mappings.refetch()}
               />
