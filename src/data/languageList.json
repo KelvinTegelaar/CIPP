@@ -238,5 +238,11 @@
     "Geographic area": "Vietnam",
     "tag": "vi-VN",
     "LCID": "1066"
+  },
+  {
+    "language": "Welsh",
+    "Geographic area": "Wales",
+    "tag": "cy-GB",
+    "LCID": "1106"
   }
 ]
