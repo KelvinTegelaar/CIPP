@@ -9,6 +9,7 @@ export const CippFormDomainSelector = ({
   label,
   allTenants = false,
   type = "multiple",
+  multiple = false,
   ...other
 }) => {
   const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
@@ -19,7 +20,7 @@ export const CippFormDomainSelector = ({
       label={label}
       type="autoComplete"
       formControl={formControl}
-      multiple={false}
+      multiple={multiple}
       api={{
         autoSelectFirstItem: true,
         tenantFilter: currentTenant ? currentTenant.value : selectedTenant,

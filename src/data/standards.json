@@ -3832,5 +3832,34 @@
         }
       }
     ]
+  },
+  {
+    "name": "standards.SafeLinksTemplatePolicy",
+    "label": "SafeLinks Policy Template",
+    "cat": "Templates",
+    "multiple": false,
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "impact": "Medium Impact",
+    "addedDate": "2025-04-29",
+    "helpText": "Deploy and manage SafeLinks policy templates to protect against malicious URLs in emails and Office documents.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "name": "standards.SafeLinksTemplatePolicy.TemplateIds",
+        "label": "Select SafeLinks Policy Templates",
+        "api": {
+          "url": "/api/ListSafeLinksPolicyTemplates",
+          "labelField": "name",
+          "valueField": "GUID",
+          "queryKey": "ListSafeLinksPolicyTemplates"
+        }
+      }
+    ]
   }
 ]
