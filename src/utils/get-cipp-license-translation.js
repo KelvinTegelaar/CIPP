@@ -7,6 +7,10 @@ export const getCippLicenseTranslation = (licenseArray) => {
     licenseArray = [licenseArray];
   }
 
+  if (!licenseArray || licenseArray.length === 0) {
+    return ["No Licenses Assigned"];
+  }
+
   licenseArray?.forEach((licenseAssignment) => {
     let found = false;
     for (let x = 0; x < M365Licenses.length; x++) {
