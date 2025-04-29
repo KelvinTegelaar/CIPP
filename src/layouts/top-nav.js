@@ -44,6 +44,7 @@ export const TopNav = (props) => {
     const themeName = settings.currentTheme?.value === "light" ? "dark" : "light";
     settings.handleUpdate({
       currentTheme: { value: themeName, label: themeName },
+      paletteMode: themeName,
     });
   }, [settings]);
 
