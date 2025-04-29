@@ -779,8 +779,8 @@
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS"],
-    "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days.",
-    "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
+    "helpText": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
+    "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "addedComponent": [
       {
         "type": "number",
@@ -3405,6 +3405,27 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.TeamsMeetingRecordingExpiration",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Sets the default number of days after which Teams meeting recordings automatically expire. Valid values are -1 (Never Expire) or between 1 and 99999. The default value is 120 days.",
+    "docsDescription": "Allows administrators to configure a default expiration period (in days) for Teams meeting recordings. Recordings older than this period will be automatically moved to the recycle bin. This setting helps manage storage consumption and enforce data retention policies.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.TeamsMeetingRecordingExpiration.ExpirationDays",
+        "label": "Recording Expiration Days (e.g., 365)",
+        "required": true
+      }
+    ],
+    "label": "Set Teams Meeting Recording Expiration",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-04-17",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -Identity Global -MeetingRecordingExpirationDays <days>",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.TeamsMessagingPolicy",
     "cat": "Teams Standards",
     "tag": [],
@@ -3494,8 +3515,8 @@
     "cat": "Device Management Standards",
     "tag": [],
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "helpText": "Deploy the Autopilot Status Page, which shows progress during device setup through Autopilot.",
@@ -3567,8 +3588,8 @@
     "cat": "Device Management Standards",
     "tag": [],
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "helpText": "Assign the appropriate Autopilot profile to streamline device deployment.",
@@ -3593,6 +3614,7 @@
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
+        "required": false,
         "name": "standards.AutopilotProfile.Languages",
         "label": "Languages",
         "api": {
