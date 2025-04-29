@@ -496,7 +496,7 @@ const Page = () => {
                               value: getCippFormatting(
                                 currentInvite
                                   ? currentInvite.RoleMappings
-                                  : currentRelationship?.addedFields?.accessDetails.unifiedRoles,
+                                  : currentRelationship?.addedFields?.accessDetails?.unifiedRoles,
                                 "unifiedRoles",
                                 "object"
                               ),
