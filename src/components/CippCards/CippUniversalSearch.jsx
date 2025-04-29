@@ -163,7 +163,7 @@ const ResultsRow = ({ match, searchValue }) => {
               href={`identity/administration/users/user?tenantFilter=${
                 currentTenantInfo.data?.find((tenant) => tenant.customerId === match._tenantId)
                   ?.defaultDomainName || match._tenantId
-              }&userId=${match.userPrincipalName}`}
+              }&userId=${match.id}`}
               variant="outlined"
               color="primary"
               size="small"
