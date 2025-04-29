@@ -336,7 +336,103 @@ export const CippDataTable = (props) => {
         return aVal > bVal ? 1 : -1;
       },
     },
+    filterFns: {
+      notContains: (row, columnId, value) => {
+        const rowValue = row.getValue(columnId);
+        if (rowValue === null || rowValue === undefined) {
+          return false;
+        }
+
+        const stringValue = String(rowValue);
+        if (
+          stringValue.includes("[object Object]") ||
+          !stringValue.toLowerCase().includes(value.toLowerCase())
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      regex: (row, columnId, value) => {
+        try {
+          const regex = new RegExp(value, "i");
+          const rowValue = row.getValue(columnId);
+          if (typeof rowValue === "string" && !rowValue.includes("[object Object]")) {
+            return regex.test(rowValue);
+          }
+          return false;
+        } catch (error) {
+          // If regex is invalid, don't filter
+          return true;
+        }
+      },
+    },
     enableGlobalFilterModes: true,
+    renderGlobalFilterModeMenuItems: ({ internalFilterOptions, onSelectFilterMode }) => {
+      // add custom filter options
+      const customFilterOptions = [
+        {
+          option: "regex",
+          label: "Regex",
+          symbol: "(.*)",
+        },
+      ];
+
+      // add to the internalFilterOptions if not already present
+      customFilterOptions.forEach((filterOption) => {
+        if (!internalFilterOptions.some((option) => option.option === filterOption.option)) {
+          internalFilterOptions.push(filterOption);
+        }
+      });
+
+      internalFilterOptions.map((filterOption) => (
+        <MenuItem
+          key={filterOption.option}
+          onClick={() => onSelectFilterMode(filterOption.option)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <span style={{ width: "20px", textAlign: "center" }}>{filterOption.symbol}</span>
+          <ListItemText>{filterOption.label}</ListItemText>
+        </MenuItem>
+      ));
+    },
+    renderColumnFilterModeMenuItems: ({ internalFilterOptions, onSelectFilterMode }) => {
+      // add custom filter options
+      const customFilterOptions = [
+        {
+          option: "notContains",
+          label: "Not Contains",
+          symbol: "!*",
+        },
+        {
+          option: "regex",
+          label: "Regex",
+          symbol: "(.*)",
+        },
+      ];
+
+      // combine default and custom filter options
+      const combinedFilterOptions = [...internalFilterOptions, ...customFilterOptions];
+
+      return combinedFilterOptions.map((filterOption) => (
+        <MenuItem
+          key={filterOption.option}
+          onClick={() => onSelectFilterMode(filterOption.option)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <span style={{ width: "20px", textAlign: "center" }}>{filterOption.symbol}</span>
+          <ListItemText>{filterOption.label}</ListItemText>
+        </MenuItem>
+      ));
+    },
   });
 
   useEffect(() => {

@@ -115,7 +115,7 @@ const Page = () => {
       data: {
         ID: "GUID",
       },
-      confirmText: "Are you sure you want to delete this template?",
+      confirmText: "Are you sure you want to delete [templateName]?",
       multiPost: false,
     },
   ];
