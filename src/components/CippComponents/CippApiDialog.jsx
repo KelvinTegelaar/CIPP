@@ -295,7 +295,7 @@ export const CippApiDialog = (props) => {
           return getNestedValue(row, key) || `[${key}]`;
         });
 
-        if (linkWithRowData.startsWith("/")) {
+        if (linkWithRowData.startsWith("/") && !api?.external) {
           // Internal link navigation
           setLinkClicked(true);
           router.push(linkWithRowData, undefined, { shallow: true });
