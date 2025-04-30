@@ -217,7 +217,7 @@
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
     "tag": [],
-    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants. ",
+    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants.",
     "docsDescription": "Disables SMTP basic authentication for the tenant and all users with it explicitly enabled.",
     "addedComponent": [],
     "label": "Disable SMTP Basic Authentication",
@@ -546,7 +546,7 @@
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS"],
-    "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles. ",
+    "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles.",
     "docsDescription": "Users by default are allowed to create M365 tenants. This disables that so only admins can create new M365 tenants.",
     "addedComponent": [],
     "label": "Disable M365 Tenant creation by users",
@@ -772,20 +772,20 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "",
+    "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
   {
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS"],
-    "helpText": "Cleans up Entra devices that have not connected/signed in for the specified number of days.",
-    "docsDescription": "Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
+    "helpText": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
+    "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.StaleEntraDevices.deviceAgeThreshold",
-        "label": "Days before stale(Dont set below 30)"
+        "label": "Days before stale(Do not set below 30)"
       }
     ],
     "disabledFeatures": {
@@ -1688,10 +1688,45 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.SharePointMassDeletionAlert",
+    "cat": "Defender Standards",
+    "tag": [],
+    "helpText": "Sets a e-mail address to alert when a User deletes more than 20 SharePoint files within 60 minutes. NB: Requires a Office 365 E5 subscription, Office 365 E3 with Threat Intelligence or Office 365 EquivioAnalytics add-on.",
+    "docsDescription": "Sets a e-mail address to alert when a User deletes more than 20 SharePoint files within 60 minutes. This is useful for monitoring and ensuring that the correct SharePoint files are deleted. NB: Requires a Office 365 E5 subscription, Office 365 E3 with Threat Intelligence or Office 365 EquivioAnalytics add-on.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.SharePointMassDeletionAlert.Threshold",
+        "label": "Max files to delete within the time frame",
+        "defaultValue": 20
+      },
+      {
+        "type": "number",
+        "name": "standards.SharePointMassDeletionAlert.TimeWindow",
+        "label": "Time frame in minutes",
+        "defaultValue": 60
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": true,
+        "name": "standards.SharePointMassDeletionAlert.NotifyUser",
+        "label": "E-mail to receive the alert"
+      }
+    ],
+    "label": "SharePoint Mass Deletion Alert",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-04-07",
+    "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
     "tag": ["CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
-    "helpText": "This creates a safelink policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
+    "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
         "type": "switch",
@@ -1717,7 +1752,7 @@
         "label": "Do not rewrite the following URLs in email"
       }
     ],
-    "label": "Default SafeLinks Policy",
+    "label": "Default Safe Links Policy",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-03-25",
@@ -1737,7 +1772,7 @@
       "mdo_antiphishingpolicies",
       "mdo_phishthresholdlevel"
     ],
-    "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
+    "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mail tips.",
     "addedComponent": [
       {
         "type": "number",
@@ -1930,7 +1965,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-03-25",
-    "powershellEquivalent": "Set-AntiphishPolicy or New-AntiphishPolicy",
+    "powershellEquivalent": "Set-AntiPhishPolicy or New-AntiPhishPolicy",
     "recommendedBy": ["CIS"]
   },
   {
@@ -2020,6 +2055,44 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.PhishingSimulations",
+    "cat": "Defender Standards",
+    "tag": [],
+    "helpText": "This creates a phishing simulation policy that enables phishing simulations for the entire tenant.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": true,
+        "label": "Phishing Simulation Domains",
+        "name": "standards.PhishingSimulations.Domains"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": true,
+        "label": "Phishing Simulation Sender IP Ranges",
+        "name": "standards.PhishingSimulations.SenderIpRanges"
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "label": "Phishing Simulation Urls",
+        "name": "standards.PhishingSimulations.PhishingSimUrls"
+      }
+    ],
+    "label": "Phishing Simulation Configuration",
+    "impact": "Medium Impact",
+    "impactColour": "info",
+    "addedDate": "2025-03-27",
+    "powershellEquivalent": "New-TenantAllowBlockListItems, New-PhishSimOverridePolicy and New-ExoPhishSimOverrideRule",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
     "tag": ["CIS", "mdo_zapspam", "mdo_zapphish", "mdo_zapmalware"],
@@ -2098,6 +2171,28 @@
     "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-MalwareFilterPolicy or New-MalwareFilterPolicy",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.PhishSimSpoofIntelligence",
+    "cat": "Defender Standards",
+    "tag": [],
+    "helpText": "This adds allowed domains to the Spoof Intelligence Allow/Block List.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "label": "Allowed Domains",
+        "name": "standards.PhishSimSpoofIntelligence.AllowedDomains"
+      }
+    ],
+    "label": "Add allowed domains to Spoof Intelligence",
+    "impact": "Medium Impact",
+    "impactColour": "info",
+    "addedDate": "2025-03-28",
+    "powershellEquivalent": "New-TenantAllowBlockListSpoofItems",
+    "recommendedBy": []
   },
   {
     "name": "standards.SpamFilterPolicy",
@@ -2511,7 +2606,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "",
+    "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
   {
@@ -2546,6 +2641,80 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.DefaultPlatformRestrictions",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Sets the default platform restrictions for enrolling devices into Intune. Note: Do not block personally owned if platform is blocked.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformAndroidForWorkBlocked",
+        "label": "Block platform Android Enterprise (work profile)",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalAndroidForWorkBlocked",
+        "label": "Block personally owned Android Enterprise (work profile)",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformAndroidBlocked",
+        "label": "Block platform Android",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalAndroidBlocked",
+        "label": "Block personally owned Android",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformiOSBlocked",
+        "label": "Block platform iOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personaliOSBlocked",
+        "label": "Block personally owned iOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformMacOSBlocked",
+        "label": "Block platform macOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalMacOSBlocked",
+        "label": "Block personally owned macOS",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.platformWindowsBlocked",
+        "label": "Block platform Windows",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.DefaultPlatformRestrictions.personalWindowsBlocked",
+        "label": "Block personally owned Windows",
+        "default": false
+      }
+    ],
+    "label": "Device enrollment restrictions",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-04-01",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": [],
@@ -2570,7 +2739,7 @@
     "cat": "Intune Standards",
     "tag": [],
     "helpText": "Requires MFA for all users to register devices with Intune. This is useful when not using Conditional Access.",
-    "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra",
+    "label": "Require Multi-factor Authentication to register or join devices with Microsoft Entra",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2023-10-23",
@@ -2678,7 +2847,7 @@
     "impactColour": "info",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -EnableAzureADB2BIntegration $true",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.SPDisallowInfectedFiles",
@@ -2736,7 +2905,7 @@
     "impactColour": "warning",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.SPEmailAttestation",
@@ -2878,7 +3047,7 @@
     "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "docsDescription": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [],
-    "label": "Disable Resharing by External Users",
+    "label": "Disable Re-sharing by External Users",
     "impact": "High Impact",
     "impactColour": "danger",
     "addedDate": "2022-06-15",
@@ -3054,7 +3223,7 @@
     "impactColour": "info",
     "addedDate": "2024-11-12",
     "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.TeamsEmailIntegration",
@@ -3074,7 +3243,7 @@
     "impactColour": "info",
     "addedDate": "2024-07-30",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.TeamsExternalFileSharing",
@@ -3113,7 +3282,7 @@
     "impactColour": "info",
     "addedDate": "2024-07-28",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
-    "recommendedBy": ["CIS 3.0"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.TeamsEnrollUser",
@@ -3236,6 +3405,27 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.TeamsMeetingRecordingExpiration",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Sets the default number of days after which Teams meeting recordings automatically expire. Valid values are -1 (Never Expire) or between 1 and 99999. The default value is 120 days.",
+    "docsDescription": "Allows administrators to configure a default expiration period (in days) for Teams meeting recordings. Recordings older than this period will be automatically moved to the recycle bin. This setting helps manage storage consumption and enforce data retention policies.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.TeamsMeetingRecordingExpiration.ExpirationDays",
+        "label": "Recording Expiration Days (e.g., 365)",
+        "required": true
+      }
+    ],
+    "label": "Set Teams Meeting Recording Expiration",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-04-17",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -Identity Global -MeetingRecordingExpirationDays <days>",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.TeamsMessagingPolicy",
     "cat": "Teams Standards",
     "tag": [],
@@ -3325,8 +3515,8 @@
     "cat": "Device Management Standards",
     "tag": [],
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "helpText": "Deploy the Autopilot Status Page, which shows progress during device setup through Autopilot.",
@@ -3398,8 +3588,8 @@
     "cat": "Device Management Standards",
     "tag": [],
     "disabledFeatures": {
-      "report": true,
-      "warn": true,
+      "report": false,
+      "warn": false,
       "remediate": false
     },
     "helpText": "Assign the appropriate Autopilot profile to streamline device deployment.",
@@ -3424,6 +3614,7 @@
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
+        "required": false,
         "name": "standards.AutopilotProfile.Languages",
         "label": "Languages",
         "api": {
