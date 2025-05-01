@@ -142,6 +142,7 @@ const CippStandardsSideBar = ({
                 name="excludedTenants"
                 allTenants={false}
                 formControl={formControl}
+                includeGroups={true}
               />
             </>
           )}
