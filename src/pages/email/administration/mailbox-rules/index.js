@@ -70,6 +70,7 @@ const Page = () => {
           title="Rule Details"
           propertyItems={properties}
           actionItems={actions}
+          data={data}
         />
       );
     },

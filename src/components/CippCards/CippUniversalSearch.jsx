@@ -67,15 +67,60 @@ export const CippUniversalSearch = React.forwardRef(
 
 CippUniversalSearch.displayName = "CippUniversalSearch";
 
-const Results = ({ items = [], searchValue }) => (
-  <Grid container spacing={2} mt={2}>
-    {items.slice(0, 9).map((item, key) => (
-      <Grid item xs={12} sm={6} md={4} key={key}>
-        <ResultsRow match={item} searchValue={searchValue} />
+const Results = ({ items = [], searchValue }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const resultsPerPage = 9; // Number of results per page
+  const totalResults = items.length; // Total number of results
+  const totalPages = Math.ceil(totalResults / resultsPerPage); // Total pages
+
+  // Calculate the results to display for the current page
+  const startIndex = (currentPage - 1) * resultsPerPage;
+  const endIndex = startIndex + resultsPerPage;
+  const displayedResults = items.slice(startIndex, endIndex);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  return (
+    <>
+      <Typography variant="body2" color="textSecondary" mt={2}>
+        {totalResults} results (Page {currentPage} of {totalPages})
+      </Typography>
+      <Grid container spacing={2} mt={2}>
+        {displayedResults.map((item, key) => (
+          <Grid item xs={12} sm={6} md={4} key={key}>
+            <ResultsRow match={item} searchValue={searchValue} />
+          </Grid>
+        ))}
       </Grid>
-    ))}
-  </Grid>
-);
+      <Box display="flex" justifyContent="space-between" mt={2}>
+        <Button
+          variant="outlined"
+          disabled={currentPage === 1}
+          onClick={handlePreviousPage}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outlined"
+          disabled={currentPage === totalPages}
+          onClick={handleNextPage}
+        >
+          Next
+        </Button>
+      </Box>
+    </>
+  );
+};
 
 const ResultsRow = ({ match, searchValue }) => {
   const highlightMatch = (text) => {
@@ -118,7 +163,7 @@ const ResultsRow = ({ match, searchValue }) => {
               href={`identity/administration/users/user?tenantFilter=${
                 currentTenantInfo.data?.find((tenant) => tenant.customerId === match._tenantId)
                   ?.defaultDomainName || match._tenantId
-              }&userId=${match.userPrincipalName}`}
+              }&userId=${match.id}`}
               variant="outlined"
               color="primary"
               size="small"
