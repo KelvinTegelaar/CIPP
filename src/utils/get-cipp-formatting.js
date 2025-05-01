@@ -439,7 +439,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       <CippDataTableButton
         tableTitle={getCippTranslation(cellName)}
         data={emails.map((email) => {
-          if (primaryEmail.includes(email)) {
+          if (primaryEmail && primaryEmail.includes(email)) {
             return {
               email: email,
               primary: true,
