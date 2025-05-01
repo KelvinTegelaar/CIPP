@@ -25,13 +25,21 @@ const Page = () => {
           multiple: false,
           creatable: false,
           api: {
-            url: "/api/listUsers",
-            labelField: (onedriveAccessUser) =>
-              `${onedriveAccessUser.displayName} (${onedriveAccessUser.userPrincipalName})`,
+            url: "/api/ListGraphRequest",
+            data: {
+              Endpoint: "users",
+              $select: "id,displayName,userPrincipalName",
+              $top: 999,
+              $count: true,
+            },
+            queryKey: "ListUsersAutoComplete",
+            dataKey: "Results",
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
             valueField: "userPrincipalName",
             addedField: {
-              displayName: "displayName",
+              id: "id",
             },
+            showRefresh: true,
           },
         },
       ],
