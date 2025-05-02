@@ -139,7 +139,6 @@ const ApplicationDeploymentForm = () => {
               options={[
                 { value: "datto", label: "Datto RMM" },
                 { value: "syncro", label: "Syncro RMM" },
-                { value: "immy", label: "ImmyBot" },
                 { value: "huntress", label: "Huntress" },
                 { value: "automate", label: "CW Automate" },
                 { value: "cwcommand", label: "CW Command" },
@@ -208,26 +207,6 @@ const ApplicationDeploymentForm = () => {
           </CippFormCondition>
 
           {/* Similar blocks for other rmmname values */}
-          {/* For "immy" */}
-          <CippFormCondition
-            formControl={formControl}
-            field="rmmname.value"
-            compareType="is"
-            compareValue="immy"
-          >
-            {selectedTenants?.map((tenant, index) => (
-              <Grid item xs={12} md={6} key={tenant.addedFields.customerId || index}>
-                <CippFormComponent
-                  type="textField"
-                  label={`Client URL for ${tenant.label}`}
-                  name={`params.ClientURL.${tenant.addedFields.customerId}`}
-                  formControl={formControl}
-                  validators={{ required: `Client URL for ${tenant.label} is required` }}
-                />
-              </Grid>
-            ))}
-          </CippFormCondition>
-
           {/* For "huntress" */}
           <CippFormCondition
             formControl={formControl}
@@ -381,10 +360,14 @@ const ApplicationDeploymentForm = () => {
               type="autoComplete"
               label="Select Package"
               name="packageSearch"
-              options={winGetSearchResults.data?.data?.map((item) => ({
-                value: item,
-                label: `${item.applicationName} - ${item.packagename}`,
-              }))}
+              options={
+                winGetSearchResults.data?.data
+                  ? winGetSearchResults.data?.data?.map((item) => ({
+                      value: item,
+                      label: `${item.applicationName} - ${item.packagename}`,
+                    }))
+                  : []
+              }
               multiple={false}
               formControl={formControl}
               isFetching={winGetSearchResults.isLoading}
@@ -492,11 +475,12 @@ const ApplicationDeploymentForm = () => {
               label="Select Package"
               name="packageSearch"
               options={
-                ChocosearchResults.isSuccess &&
-                ChocosearchResults.data?.data?.Results?.map((item) => ({
-                  value: item,
-                  label: `${item.applicationName} - ${item.packagename}`,
-                }))
+                ChocosearchResults.isSuccess && ChocosearchResults.data?.data
+                  ? ChocosearchResults.data?.data?.Results?.map((item) => ({
+                      value: item,
+                      label: `${item.applicationName} - ${item.packagename}`,
+                    }))
+                  : []
               }
               multiple={false}
               formControl={formControl}
