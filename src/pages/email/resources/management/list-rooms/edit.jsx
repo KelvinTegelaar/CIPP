@@ -165,7 +165,7 @@ Line Islands Standard Time      (UTC+14:00) Kiritimati Island`;
   }).filter(Boolean);
 };
 
-// Work days options - just using the actual days
+// Work days options
 const workDaysOptions = [
   { value: "Sunday", label: "Sunday" },
   { value: "Monday", label: "Monday" },
@@ -173,7 +173,10 @@ const workDaysOptions = [
   { value: "Wednesday", label: "Wednesday" },
   { value: "Thursday", label: "Thursday" },
   { value: "Friday", label: "Friday" },
-  { value: "Saturday", label: "Saturday" }
+  { value: "Saturday", label: "Saturday" },
+  { value: "WeekDay", label: "Weekdays (Monday-Friday)" },
+  { value: "WeekendDay", label: "Weekend (Saturday-Sunday)" },
+  { value: "AllDays", label: "All Days" }
 ];
 
 // Automation Processing Options
