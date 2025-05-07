@@ -258,6 +258,7 @@ export const nativeMenuItems = [
         path: "/endpoint/reports",
         items: [
           { title: "Analytics Device Score", path: "/endpoint/reports/analyticsdevicescore" },
+          { title: "Work from anywhere", path: "/endpoint/reports/workfromanywhere" },
         ],
       },
     ],
