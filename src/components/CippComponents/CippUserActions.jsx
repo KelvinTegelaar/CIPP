@@ -154,7 +154,10 @@ export const CippUserActions = () => {
       type: "POST",
       icon: <NoMeetingRoom />,
       url: "/api/ExecSetOoO",
-      data: { user: "userPrincipalName", AutoReplyState: "Disabled" },
+      data: {
+        userId: "userPrincipalName",
+        AutoReplyState: { value: "Disabled" }
+      },
       confirmText: "Are you sure you want to disable the out of office?",
       multiPost: false,
     },
