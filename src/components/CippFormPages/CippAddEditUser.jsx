@@ -230,6 +230,24 @@ const CippAddEditUser = (props) => {
         <CippFormComponent
           type="textField"
           fullWidth
+          label="Country"
+          name="country"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
+          label="City"
+          name="city"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
           label="Company Name"
           name="companyName"
           formControl={formControl}
