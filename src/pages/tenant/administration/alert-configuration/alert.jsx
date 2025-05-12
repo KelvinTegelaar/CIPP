@@ -120,10 +120,11 @@ const AlertWizard = () => {
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
           try {
             // Check if Parameters is a string that needs parsing
-            const params = typeof alert.RawAlert.Parameters === 'string' 
-              ? JSON.parse(alert.RawAlert.Parameters) 
-              : alert.RawAlert.Parameters;
-            
+            const params =
+              typeof alert.RawAlert.Parameters === "string"
+                ? JSON.parse(alert.RawAlert.Parameters)
+                : alert.RawAlert.Parameters;
+
             // Set the input value if it exists
             if (params.InputValue) {
               resetObject[usedCommand.inputName] = params.InputValue;
@@ -345,6 +346,7 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 allTenants={true}
                                 label="Included Tenants for alert"
+                                includeGroups={true}
                               />
                             </Grid>
                             <CippFormCondition
