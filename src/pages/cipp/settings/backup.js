@@ -55,7 +55,7 @@ const Page = () => {
   });
 
   const NextBackupRun = (props) => {
-    const date = new Date(props.date * 1000);
+    const date = new Date(props.date);
     if (isNaN(date)) {
       return "Not Scheduled";
     } else {
