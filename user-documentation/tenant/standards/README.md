@@ -46,16 +46,16 @@ If you are upgrading to v7 from a prior version of CIPP, you'll need to complete
 
 ### **Standards Categories**
 
-For ease of reference, standards are grouped into pages within the following categories. These categories match the Category label on the standard selection page.
+For ease of reference, standards are grouped within the following categories. These categories match the Category label on the standard selection page.
 
-| Category                                                       | Description                                                                       |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [Global Standards](list-standards/global-standards.md)         | Applied across all tenants to manage organization-wide configurations.            |
-| [Exchange Standards](list-standards/exchange-standards.md)     | Email-related settings such as spam protection and message handling.              |
-| [Defender Standards](list-standards/defender-standards.md)     | Security measures to protect against phishing, malware, and other threats.        |
-| [Intune Standards](list-standards/intune-standards.md)         | Device and application management policies for a secure Intune environment.       |
-| [SharePoint Standards](list-standards/sharepoint-standards.md) | SharePoint and OneDrive configuration incl. sharing and retention policies.       |
-| [Teams Standards](list-standards/teams-standards.md)           | Collaboration-related settings, i.e.: meeting policies and external file sharing. |
+| Category             | Description                                                                       |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Global Standards     | Applied across all tenants to manage organization-wide configurations.            |
+| Exchange Standards   | Email-related settings such as spam protection and message handling.              |
+| Defender Standards   | Security measures to protect against phishing, malware, and other threats.        |
+| Intune Standards     | Device and application management policies for a secure Intune environment.       |
+| SharePoint Standards | SharePoint and OneDrive configuration incl. sharing and retention policies.       |
+| Teams Standards      | Collaboration-related settings, i.e.: meeting policies and external file sharing. |
 
 ### **Table Columns**
 
