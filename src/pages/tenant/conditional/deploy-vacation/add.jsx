@@ -56,6 +56,7 @@ const Page = () => {
                 formControl={formControl}
                 name="UserId"
                 multiple={false}
+                validators={{ required: "Picking a user is required" }}
               />
             </Grid>
 
@@ -73,6 +74,7 @@ const Page = () => {
                 }}
                 multiple={false}
                 formControl={formControl}
+                validators={{ required: "Picking a policy is required" }}
               />
             </Grid>
 
@@ -95,6 +97,7 @@ const Page = () => {
                 name="endDate"
                 dateTimeType="dateTime"
                 formControl={formControl}
+                validators={{ required: "Picking an end date is required" }}
               />
             </Grid>
           </Grid>
