@@ -38,6 +38,7 @@ With the launch of CIPP v7, there are now new, more powerful tables at your disp
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | Fuzzy                    | Will return all results where the value is similar to what is input                                                        |
 | Contains                 | Will return all results where the value contains the input                                                                 |
+| Not Contains             | Will return all results where the value does not contain the input                                                         |
 | Starts With              | Will return all results where the value starts with the input                                                              |
 | Ends With                | Will return all results where the value ends with the input                                                                |
 | Equals                   | Will return all results where the value exactly matches the input                                                          |
