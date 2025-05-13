@@ -218,7 +218,7 @@ export function ApiGetCallWithPagination({
       }
       return lastPage?.Metadata?.nextLink ? { nextLink: lastPage.Metadata.nextLink } : undefined;
     },
-    staleTime: 30000,
+    staleTime: 300000,
     refetchOnWindowFocus: false,
     retry: retryFn,
   });

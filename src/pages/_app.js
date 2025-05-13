@@ -56,6 +56,7 @@ const App = (props) => {
         queryClient,
         persister: localStoragePersister,
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        staleTime: 1000 * 60 * 5, // optional: 5 minutes
         buster: "v1",
       });
     }
