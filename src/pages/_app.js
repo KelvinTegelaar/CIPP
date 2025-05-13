@@ -29,16 +29,12 @@ import {
 } from "@mui/icons-material";
 import { SvgIcon } from "@mui/material";
 import discordIcon from "../../public/discord-mark-blue.svg";
-import React from "react";
+import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
+import { persistQueryClient } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 TimeAgo.addDefaultLocale(en);
-
-const ReactQueryDevtoolsProduction = React.lazy(() =>
-  import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
-    default: d.ReactQueryDevtools,
-  }))
-);
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -48,6 +44,22 @@ const App = (props) => {
   const preferredTheme = useMediaPredicate("(prefers-color-scheme: dark)") ? "dark" : "light";
   const pathname = usePathname();
   const route = useRouter();
+
+  // 👇 Persist TanStack Query cache to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const localStoragePersister = createSyncStoragePersister({
+        storage: window.localStorage,
+      });
+
+      persistQueryClient({
+        queryClient,
+        persister: localStoragePersister,
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        buster: "v1",
+      });
+    }
+  }, []);
 
   const speedDialActions = [
     {
@@ -97,6 +109,12 @@ const App = (props) => {
       onClick: () => window.open(`https://docs.cipp.app/user-documentation/${pathname}`, "_blank"),
     },
   ];
+
+  const ReactQueryDevtoolsProduction = React.lazy(() =>
+    import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
+      default: d.ReactQueryDevtools,
+    }))
+  );
 
   return (
     <CacheProvider value={emotionCache}>
