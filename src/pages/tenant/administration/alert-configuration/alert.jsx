@@ -104,20 +104,38 @@ const AlertWizard = () => {
           alert.RawAlert.PostExecution.split(",").includes(opt.value)
         );
 
-        // Reset the form with all values at once
-        formControl.reset(
-          {
-            tenantFilter: {
-              value: alert.RawAlert.Tenant,
-              label: alert.RawAlert.Tenant,
-            },
-            excludedTenants: excludedTenantsFormatted,
-            command: { value: usedCommand, label: usedCommand.label },
-            recurrence: recurrenceOption,
-            postExecution: postExecutionValue,
+        // Create the reset object with all the form values
+        const resetObject = {
+          tenantFilter: {
+            value: alert.RawAlert.Tenant,
+            label: alert.RawAlert.Tenant,
           },
-          { keepDirty: false }
-        );
+          excludedTenants: excludedTenantsFormatted,
+          command: { value: usedCommand, label: usedCommand.label },
+          recurrence: recurrenceOption,
+          postExecution: postExecutionValue,
+        };
+
+        // Parse Parameters field if it exists and is a string
+        if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
+          try {
+            // Check if Parameters is a string that needs parsing
+            const params =
+              typeof alert.RawAlert.Parameters === "string"
+                ? JSON.parse(alert.RawAlert.Parameters)
+                : alert.RawAlert.Parameters;
+
+            // Set the input value if it exists
+            if (params.InputValue) {
+              resetObject[usedCommand.inputName] = params.InputValue;
+            }
+          } catch (error) {
+            console.error("Error parsing parameters:", error);
+          }
+        }
+
+        // Reset the form with all values at once
+        formControl.reset(resetObject, { keepDirty: false });
       }
       if (alert?.PartitionKey === "Webhookv2") {
         setAlertType("audit");
@@ -328,6 +346,7 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 allTenants={true}
                                 label="Included Tenants for alert"
+                                includeGroups={true}
                               />
                             </Grid>
                             <CippFormCondition
