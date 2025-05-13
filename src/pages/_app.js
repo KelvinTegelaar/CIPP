@@ -35,6 +35,7 @@ import { useRouter } from "next/router";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 TimeAgo.addDefaultLocale(en);
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -111,12 +112,6 @@ const App = (props) => {
     },
   ];
 
-  const ReactQueryDevtoolsProduction = React.lazy(() =>
-    import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
-      default: d.ReactQueryDevtools,
-    }))
-  );
-
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -163,7 +158,7 @@ const App = (props) => {
                       </ThemeProvider>
                       {settings.isInitialized && settings?.showDevtools === true ? (
                         <React.Suspense fallback={null}>
-                          <ReactQueryDevtoolsProduction />
+                          <ReactQueryDevtools />
                         </React.Suspense>
                       ) : null}
                     </>
