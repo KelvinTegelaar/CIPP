@@ -17,7 +17,7 @@ In the "Template Name" field, enter the name for this template
 In the "Included Tenants" dropdown, select the tenant or tenants that you want this template to apply to.&#x20;
 
 {% hint style="info" %}
-If you select "AllTenants", you will be shown an additional dropdown for "Excluded Tenants" to indicate any tenants that you don't want this standard to apply to.
+If you select "AllTenants", you will be shown an additional dropdown for "Excluded Tenants" to indicate any tenants or tenant groups that you don't want this standard to apply to.
 {% endhint %}
 
 {% hint style="warning" %}
