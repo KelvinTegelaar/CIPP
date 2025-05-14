@@ -27,7 +27,7 @@ This guide walks you through the process from the video of executing the SAM Wiz
 
 ***
 
-1. Once you've logged into your CIPP instance, navigate to `Settings` -> `SAM Setup Wizard`
+1. Once you've logged into your CIPP instance, navigate to `CIPP` -> `SAM Setup Wizard`
 2. For the purposes of this walkthrough, we'll act as if this is your first time running through this process, and you'd like to follow CIPP's recommended settings by clicking `Create application for me and connect to my tenants`.&#x20;
 3. Click on the `Next Step` button.
 4. Copy the code from the returned step to your clipboard.
