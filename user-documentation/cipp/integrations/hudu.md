@@ -21,7 +21,6 @@ For User and Device information a Rich Text field called "Microsoft 365" is used
 5. Click **Create New Key**.
 6. Copy the API key to a secure place.
 
-
 {% hint style="warning" %}
 In order for CIPP to access your Hudu asset layouts, a **global** API key must be created. The Company Scope field should be left blank.
 {% endhint %}
@@ -106,6 +105,12 @@ In some cases the information provided in the M365 Rich Text Field is cut off or
 
 .nasa__block {
    height:auto;
+}
+
+.nasa__block td {
+   white-space: normal;
+   word-wrap: break-word;
+   word-break: break-word;
 }
 ```
 
