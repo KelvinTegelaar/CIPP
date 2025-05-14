@@ -1372,6 +1372,54 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.EXOOutboundSpamLimits",
+    "cat": "Exchange Standards",
+    "tag": ["CIS"],
+    "helpText": "Configures the outbound spam recipient limits (external per hour, internal per hour, per day) and the action to take when a limit is reached. The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one. ",
+    "docsDescription": "Configures the Exchange Online outbound spam recipient limits for external per hour, internal per hour, and per day, along with the action to take (e.g., BlockUser, Alert) when these limits are exceeded. This helps prevent abuse and manage email flow. Microsoft's recommendations can be found [here.](https://learn.microsoft.com/en-us/defender-office-365/recommended-settings-for-eop-and-office365#eop-outbound-spam-policy-settings) The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.EXOOutboundSpamLimits.RecipientLimitExternalPerHour",
+        "label": "External Recipient Limit Per Hour",
+        "defaultValue": 400
+      },
+      {
+        "type": "number",
+        "name": "standards.EXOOutboundSpamLimits.RecipientLimitInternalPerHour",
+        "label": "Internal Recipient Limit Per Hour",
+        "defaultValue": 800
+      },
+      {
+        "type": "number",
+        "name": "standards.EXOOutboundSpamLimits.RecipientLimitPerDay",
+        "label": "Daily Recipient Limit",
+        "defaultValue": 800
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.EXOOutboundSpamLimits.ActionWhenThresholdReached",
+        "label": "Action When Threshold Reached",
+        "options": [
+          { "label": "Alert", "value": "Alert" },
+          { "label": "Block User", "value": "BlockUser" },
+          {
+            "label": "Block user from sending mail for the rest of the day",
+            "value": "BlockUserForToday"
+          }
+        ]
+      }
+    ],
+    "label": "Set Exchange Outbound Spam Limits",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-13",
+    "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy",
+    "recommendedBy": ["CIPP", "CIS"]
+  },
+  {
     "name": "standards.DisableExternalCalendarSharing",
     "cat": "Exchange Standards",
     "tag": ["CIS", "exo_individualsharing"],
