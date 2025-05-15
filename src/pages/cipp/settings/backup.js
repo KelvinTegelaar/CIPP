@@ -135,6 +135,7 @@ const Page = () => {
       confirmText: "Are you sure you want to restore this backup?",
       relatedQueryKeys: ["BackupList"],
       multiPost: false,
+      hideBulk: true,
     },
     {
       label: "Download Backup",
