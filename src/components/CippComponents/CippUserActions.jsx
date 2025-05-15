@@ -156,7 +156,7 @@ export const CippUserActions = () => {
       url: "/api/ExecSetOoO",
       data: {
         userId: "userPrincipalName",
-        AutoReplyState: { value: "Disabled" }
+        AutoReplyState: { value: "Disabled" },
       },
       confirmText: "Are you sure you want to disable the out of office?",
       multiPost: false,
@@ -311,7 +311,7 @@ export const CippUserActions = () => {
       type: "POST",
       icon: <TrashIcon />,
       url: "/api/RemoveUser",
-      data: { ID: "id" },
+      data: { ID: "id", userPrincipalName: "userPrincipalName" },
       confirmText: "Are you sure you want to delete this user?",
       multiPost: false,
     },
