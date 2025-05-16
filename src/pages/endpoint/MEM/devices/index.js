@@ -15,6 +15,7 @@ import {
   Archive,
   AutoMode,
   Recycling,
+  ManageAccounts,
 } from "@mui/icons-material";
 
 const Page = () => {
@@ -30,6 +31,43 @@ const Page = () => {
       target: "_blank",
       multiPost: false,
       external: true,
+    },
+    {
+      label: "Change Primary User",
+      type: "POST",
+      icon: <ManageAccounts />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "!users",
+      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "user",
+          label: "Select User",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/ListGraphRequest",
+            data: {
+              Endpoint: "users",
+              $select: "id,displayName,userPrincipalName",
+              $top: 999,
+              $count: true,
+            },
+            queryKey: "ListUsersAutoComplete",
+            dataKey: "Results",
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+            valueField: "id",
+            addedField: {
+              userPrincipalName: "userPrincipalName",
+            },
+            showRefresh: true,
+          },
+        },
+      ],
+      confirmText: "Select the User to set as the primary user for this device",
     },
     {
       label: "Sync Device",
