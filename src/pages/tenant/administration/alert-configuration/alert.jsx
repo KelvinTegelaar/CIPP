@@ -399,6 +399,7 @@ const AlertWizard = () => {
                                 type="autoComplete"
                                 name="logbook"
                                 multiple={false}
+                                creatable={false}
                                 formControl={formControl}
                                 validators={{
                                   required: { value: true, message: "This field is required" },
@@ -503,7 +504,8 @@ const AlertWizard = () => {
                                 required: { value: true, message: "This field is required" },
                               }}
                               formControl={formControl}
-                              multiple
+                              multiple={true}
+                              creatable={false}
                               options={actionstoTake}
                             />
                           </Grid>
@@ -574,6 +576,7 @@ const AlertWizard = () => {
                                 type="autoComplete"
                                 validators={{ required: true }}
                                 multiple={false}
+                                creatable={false}
                                 name="command"
                                 formControl={formControl}
                                 label="What alerting script should run"
@@ -588,6 +591,7 @@ const AlertWizard = () => {
                               <CippFormComponent
                                 type="autoComplete"
                                 multiple={false}
+                                creatable={false}
                                 name="recurrence"
                                 validators={{
                                   required: { value: true, message: "This field is required" },
@@ -616,7 +620,8 @@ const AlertWizard = () => {
                                   required: { value: true, message: "This field is required" },
                                 }}
                                 formControl={formControl}
-                                multiple
+                                multiple={true}
+                                creatable={false}
                                 options={postExecutionOptions}
                               />
                             </Grid>
