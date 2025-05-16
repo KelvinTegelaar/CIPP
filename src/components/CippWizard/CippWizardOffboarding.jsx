@@ -277,7 +277,7 @@ export const CippWizardOffboarding = (props) => {
 
       {showAlert && (
         <Alert severity="warning">
-          You have selected more than 3 users. This offboarding must be scheduled.
+          You have selected more than 2 users. This offboarding must be scheduled.
         </Alert>
       )}
 
