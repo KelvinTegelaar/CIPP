@@ -59,6 +59,7 @@ const CippStandardDialog = ({
       open={dialogOpen}
       onClose={handleCloseDialog}
       maxWidth="xxl"
+      fullWidth
       PaperProps={{
         sx: {
           minWidth: "720px",
