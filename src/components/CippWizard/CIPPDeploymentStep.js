@@ -16,10 +16,11 @@ import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { ApiGetCall } from "../../api/ApiCall";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
-import { CheckCircle, OpenInNew, Sync } from "@mui/icons-material";
+import { CheckCircle } from "@mui/icons-material";
 import CippPermissionCheck from "../CippSettings/CippPermissionCheck";
 import { useQueryClient } from "@tanstack/react-query";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import { CIPPDeploymentUpdateTokens } from "./CIPPDeploymentUpdateTokens";
 
 export const CippDeploymentStep = (props) => {
   const queryClient = useQueryClient();
@@ -39,11 +40,6 @@ export const CippDeploymentStep = (props) => {
     url: `/api/ExecSAMSetup?CheckSetupProcess=true&step=${pollingStep}`,
     queryKey: `checkSetupStep${pollingStep}`,
     waiting: !pollingStep,
-  });
-  const appId = ApiGetCall({
-    url: `/api/ExecListAppId`,
-    queryKey: `ExecListAppId`,
-    waiting: true,
   });
   useEffect(() => {
     if (
@@ -237,66 +233,7 @@ export const CippDeploymentStep = (props) => {
         )}
 
         {values.selectedOption === "UpdateTokens" && (
-          <CippButtonCard
-            variant="outlined"
-            title={
-              <Stack direction="row" justifyContent={"space-between"}>
-                <Box>Update Tokens</Box>
-                <Stack direction="row" spacing={2}>
-                  {appId.isLoading ? (
-                    <CircularProgress size="1rem" />
-                  ) : (
-                    <SvgIcon>
-                      <CheckCircle />
-                    </SvgIcon>
-                  )}
-                </Stack>
-              </Stack>
-            }
-            CardButton={
-              <>
-                <Button
-                  variant="contained"
-                  disabled={
-                    appId.isLoading ||
-                    !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-                      appId?.data?.applicationId
-                    )
-                  }
-                  onClick={() => openPopup(appId?.data?.refreshUrl)}
-                  color="primary"
-                  startIcon={
-                    <OpenInNew />
-                  }
-                >
-                  Refresh Graph Token
-                </Button>
-                <Button
-                  onClick={() => appId.refetch()}
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<Sync />}
-                  disabled={appId.isFetching}
-                >
-                  Check Application ID
-                </Button>
-                {!/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-                  appId?.data?.applicationId
-                ) && (
-                  <Alert severity="warning">
-                    The Application ID is not valid. Please return to the first page of the SAM
-                    wizard and use the Manual .
-                  </Alert>
-                )}
-              </>
-            }
-          >
-            <Typography variant="body2" gutterBottom>
-              Click the button below to refresh your token.
-            </Typography>
-            {formControl.setValue("noSubmitButton", true)}
-            <CippApiResults apiObject={appId} errorsOnly />
-          </CippButtonCard>
+          <CIPPDeploymentUpdateTokens formControl={formControl} />
         )}
 
         {values.selectedOption === "Manual" && (
