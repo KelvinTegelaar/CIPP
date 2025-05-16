@@ -3379,11 +3379,6 @@
       },
       {
         "type": "switch",
-        "name": "standards.TeamsExternalAccessPolicy.EnablePublicCloudAccess",
-        "label": "Allow user to communicate with Skype users"
-      },
-      {
-        "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
         "label": "Allow communication with unmanaged Teams accounts"
       }
@@ -3406,11 +3401,6 @@
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
         "label": "Allow users to communicate with other organizations"
-      },
-      {
-        "type": "switch",
-        "name": "standards.TeamsFederationConfiguration.AllowPublicUsers",
-        "label": "Allow users to communicate with Skype Users"
       },
       {
         "type": "autoComplete",
