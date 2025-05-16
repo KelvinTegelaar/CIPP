@@ -1871,6 +1871,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Quarantine policy for Spoof",
         "name": "standards.AntiPhishPolicy.SpoofQuarantineTag",
         "options": [
@@ -1911,6 +1912,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Quarantine policy for user impersonation",
         "name": "standards.AntiPhishPolicy.TargetedUserQuarantineTag",
         "options": [
@@ -1951,6 +1953,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Quarantine policy for domain impersonation",
         "name": "standards.AntiPhishPolicy.TargetedDomainQuarantineTag",
         "options": [
@@ -1991,6 +1994,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Apply quarantine policy",
         "name": "standards.AntiPhishPolicy.MailboxIntelligenceQuarantineTag",
         "options": [
@@ -2045,6 +2049,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "QuarantineTag",
         "name": "standards.SafeAttachmentPolicy.QuarantineTag",
         "options": [
@@ -2171,6 +2176,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "QuarantineTag",
         "name": "standards.MalwareFilterPolicy.QuarantineTag",
         "options": [
@@ -2276,7 +2282,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.SpamQuarantineTag",
         "options": [
@@ -2316,7 +2322,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "High Confidence Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
         "options": [
@@ -2356,7 +2362,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "Bulk Quarantine Tag",
         "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
         "options": [
@@ -2396,7 +2402,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.PhishQuarantineTag",
         "options": [
@@ -2418,7 +2424,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "High Confidence Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidencePhishQuarantineTag",
         "options": [
@@ -2526,6 +2532,92 @@
     "impactColour": "warning",
     "addedDate": "2024-07-15",
     "powershellEquivalent": "New-HostedContentFilterPolicy or Set-HostedContentFilterPolicy",
+    "recommendedBy": []
+  },
+    {
+    "name": "standards.QuarantineTemplate",
+    "cat": "Defender Standards",
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "tag": [],
+    "helpText": "This standard creates a Custom Quarantine Policies that can be used in Anti-Spam and all MDO365 policies. Quarantine Policies can be used to specify recipients permissions, enable end-user spam notifications, and specify the release action preference",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": true,
+        "name": "displayName",
+        "label": "Quarantine Display Name",
+        "required": true
+      },
+      {
+        "type": "switch",
+        "label": "Enable end-user spam notifications",
+        "name": "ESNEnabled",
+        "defaultValue": true,
+        "required": false
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "label": "Select release action preference",
+        "name": "ReleaseAction",
+        "options": [
+          {
+            "label": "Allow recipients to request a message to be released from quarantine",
+            "value": "PermissionToRequestRelease"
+          },
+          {
+            "label": "Allow recipients to release a message from quarantine",
+            "value": "PermissionToRelease"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "label": "Include Messages From Blocked Sender Address",
+        "name": "IncludeMessagesFromBlockedSenderAddress",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to delete message",
+        "name": "PermissionToDelete",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to preview message",
+        "name": "PermissionToPreview",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to block Sender Address",
+        "name": "PermissionToBlockSender",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to whitelist Sender Address",
+        "name": "PermissionToAllowSender",
+        "defaultValue": false,
+        "required": false
+      }
+    ],
+    "label": "Custom Quarantine Policy",
+    "multiple": true,
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-16",
+    "powershellEquivalent": "Set-QuarantinePolicy or New-QuarantinePolicy",
     "recommendedBy": []
   },
   {
@@ -3379,11 +3471,6 @@
       },
       {
         "type": "switch",
-        "name": "standards.TeamsExternalAccessPolicy.EnablePublicCloudAccess",
-        "label": "Allow user to communicate with Skype users"
-      },
-      {
-        "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
         "label": "Allow communication with unmanaged Teams accounts"
       }
@@ -3406,11 +3493,6 @@
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
         "label": "Allow users to communicate with other organizations"
-      },
-      {
-        "type": "switch",
-        "name": "standards.TeamsFederationConfiguration.AllowPublicUsers",
-        "label": "Allow users to communicate with Skype Users"
       },
       {
         "type": "autoComplete",
