@@ -1,19 +1,82 @@
-import React from "react";
-import Grid from "@mui/material/Grid";
+import { useEffect, useState } from "react";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { Typography } from "@mui/material";
 import { CippInfoCard } from "/src/components/CippCards/CippInfoCard";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import CippUrlChipInput from "/src/components/CippComponents/CippUrlChipInput";
+import { getCippValidator } from "/src/utils/get-cipp-validator";
 
 export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
-  const wildcardAndUrlPattern = /^(\*\.)?([\da-z]([a-z\d-]*[a-z\d])?\.)+([\da-z]{2,})(\/\*|\/[\w.-]*\*?)?$|^(https?:\/\/)?([\da-z]([a-z\d-]*[a-z\d])?\.)+([\da-z]{2,})(\/[\w.-]*)*\/?$/i;
+  const { watch, setError, clearErrors } = formControl;
+  const doNotRewriteUrls = watch("DoNotRewriteUrls");
+  const [isUrlsValid, setIsUrlsValid] = useState(true);
+  
+  // Helper function to validate a URL/domain entry
+  const validateDoNotRewriteUrl = (entry) => {
+    if (!entry) return true;
+    
+    // For entries with wildcards, use wildcard validators
+    if (entry.includes('*') || entry.includes('~')) {
+      const wildcardUrlResult = getCippValidator(entry, "wildcardUrl");
+      const wildcardDomainResult = getCippValidator(entry, "wildcardDomain");
+      
+      if (wildcardUrlResult !== true && wildcardDomainResult !== true) {
+        return false;
+      }
+      return true;
+    }
+    
+    // For standard entries, check normal validators
+    const hostnameResult = getCippValidator(entry, "hostname");
+    const urlResult = getCippValidator(entry, "url");
+    const domainResult = getCippValidator(entry, "domain");
+    
+    if (hostnameResult !== true && urlResult !== true && domainResult !== true) {
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Validate URLs in useEffect and update the validation state
+  useEffect(() => {
+    if (!doNotRewriteUrls || doNotRewriteUrls.length === 0) {
+      clearErrors("DoNotRewriteUrls");
+      setIsUrlsValid(true);
+      return;
+    }
+    
+    let hasInvalidEntry = false;
+    
+    for (const item of doNotRewriteUrls) {
+      const entry = typeof item === 'string' ? item : (item?.value || item?.label || '');
+      if (!entry) continue;
+      
+      const isValid = validateDoNotRewriteUrl(entry);
+      if (!isValid) {
+        hasInvalidEntry = true;
+        break;
+      }
+    }
+    
+    if (hasInvalidEntry) {
+      setError("DoNotRewriteUrls", { 
+        type: "validate", 
+        message: "Not a valid URL, domain, or pattern" 
+      });
+      setIsUrlsValid(false);
+    } else {
+      clearErrors("DoNotRewriteUrls");
+      setIsUrlsValid(true);
+    }
+  }, [doNotRewriteUrls, setError, clearErrors]);
+
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <Typography variant="h6">Policy Settings</Typography>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -25,7 +88,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           validators={{ required: "Policy name is required" }}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -34,7 +97,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormComponent
           type="textField" 
           fullWidth
@@ -46,10 +109,10 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <Typography variant="h6">Safe Links Features</Typography>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Enable Safe Links For Email"
@@ -58,7 +121,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={true}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Enable Safe Links For Teams"
@@ -67,7 +130,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={false}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Enable Safe Links For Office"
@@ -76,7 +139,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={false}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Track Clicks"
@@ -85,7 +148,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={true}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Scan URLs"
@@ -94,7 +157,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={true}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Enable For Internal Senders"
@@ -103,7 +166,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={false}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Deliver Message After Scan"
@@ -112,7 +175,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={false}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Allow Click Through"
@@ -121,7 +184,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={false}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Disable URL Rewrite"
@@ -130,7 +193,7 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={false}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ xs: 12, md: 6 }}>
         <CippFormComponent
           type="switch"
           label="Enable Organization Branding"
@@ -139,39 +202,25 @@ export const SafeLinksPolicyForm = ({ formControl, formType = "add" }) => {
           defaultValue={false}
         />
       </Grid>
-      <Grid item xs={12}>
-        <CippUrlChipInput
+      <Grid item size={{ xs: 12 }}>
+        <CippFormComponent
+          type="autoComplete"
+          createable={true}
           formControl={formControl}
           name="DoNotRewriteUrls"
           label="Do Not Rewrite URLs"
           placeholder="Enter domain patterns (one per line for multiple entries)"
-          tooltip="You can use wildcard patterns (*.example.com/*) or standard URLs (https://example.com)"
-          helperText="Paste multiple entries or add them one by one"
+          helperText="Enter URLs, domains, or wildcard patterns (e.g., *.example.com, https://example.com)"
           validators={{ 
             validate: {
-              validEntries: (value) => {
-                if (!value || value.length === 0) return true;
-                return value.every(url => wildcardAndUrlPattern.test(url)) || 
-                  "Please enter valid domain patterns or URLs";
-              }
+              format: () => isUrlsValid || "Not a valid URL, domain, or pattern"
             }
-          }}
-          options={{
-            enableValidation: true,
-            validationPattern: wildcardAndUrlPattern,
-            validationErrorMessage: "Please enter a valid domain pattern or URL",
-            addHttps: false,
-            preventDuplicates: true,
-            allowBatchInput: true,
-            chipColor: "primary",
-            chipVariant: "outlined",
-            chipSize: "medium"
           }}
         />
       </Grid>
 
       {formType === "edit" && (
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippInfoCard 
             icon={<InformationCircleIcon />}
             label="Propagation Time"

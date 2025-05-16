@@ -51,6 +51,7 @@ const DeploySafeLinksPolicyTemplate = () => {
             name="TemplateList"
             formControl={formControl}
             multiple={false}
+            creatable={false} 
             api={{
               queryKey: `TemplateListSafeLinks`,
               labelField: "name",
