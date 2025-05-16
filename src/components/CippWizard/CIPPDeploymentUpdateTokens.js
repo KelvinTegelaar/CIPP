@@ -24,33 +24,71 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
   };
 
   return (
-    <CippButtonCard
-      variant="outlined"
-      title={
-        <Stack direction="row" justifyContent={"space-between"}>
-          <Box>Update Tokens (MSAL Style)</Box>
-          <Stack direction="row" spacing={2}>
-            {appId.isLoading ? (
-              <CircularProgress size="1rem" />
-            ) : (
-              <SvgIcon color="primary">
-                <CheckCircle />
-              </SvgIcon>
-            )}
+    <Stack spacing={2}>
+      <CippButtonCard
+        variant="outlined"
+        title={
+          <Stack direction="row" justifyContent={"space-between"}>
+            <Box>Update Tokens (MSAL Style)</Box>
+            <Stack direction="row" spacing={2}>
+              {appId.isLoading ? (
+                <CircularProgress size="1rem" />
+              ) : (
+                <SvgIcon color="primary">
+                  <CheckCircle />
+                </SvgIcon>
+              )}
+            </Stack>
           </Stack>
-        </Stack>
-      }
-      CardButton={
-        <CIPPM365OAuthButton onAuthSuccess={handleAuthSuccess} buttonText="Refresh Graph Token" />
-      }
-    >
-      <Typography variant="body2" gutterBottom>
-        Click the button to refresh the Graph token for your tenants. We should write some text here
-        for replacing token for partner tenant vs client tenant.
-      </Typography>
-      {formControl.setValue("noSubmitButton", true)}
-      <CippApiResults apiObject={appId} errorsOnly />
-    </CippButtonCard>
+        }
+        CardButton={
+          <CIPPM365OAuthButton
+            onAuthSuccess={handleAuthSuccess}
+            buttonText="Refresh Graph Token (Popup)"
+          />
+        }
+      >
+        <Typography variant="body2" gutterBottom>
+          Click the button to refresh the Graph token for your tenants using popup authentication.
+          This method opens a popup window where you can sign in to your Microsoft account.
+        </Typography>
+        {formControl.setValue("noSubmitButton", true)}
+        <CippApiResults apiObject={appId} errorsOnly />
+      </CippButtonCard>
+
+      <CippButtonCard
+        variant="outlined"
+        title={
+          <Stack direction="row" justifyContent={"space-between"}>
+            <Box>Update Tokens (Device Code Flow)</Box>
+            <Stack direction="row" spacing={2}>
+              {appId.isLoading ? (
+                <CircularProgress size="1rem" />
+              ) : (
+                <SvgIcon color="primary">
+                  <CheckCircle />
+                </SvgIcon>
+              )}
+            </Stack>
+          </Stack>
+        }
+        CardButton={
+          <CIPPM365OAuthButton
+            onAuthSuccess={handleAuthSuccess}
+            buttonText="Refresh Graph Token (Device Code)"
+            useDeviceCode={true}
+            applicationId="1950a258-227b-4e31-a9cf-717495945fc2"
+          />
+        }
+      >
+        <Typography variant="body2" gutterBottom>
+          Click the button to refresh the Graph token using Device Code Flow. This will open a popup
+          to microsoft.com/devicelogin where you can enter the provided code to authenticate. This
+          method is useful when regular popup authentication fails or when you need to authenticate
+          from a different device than the one running CIPP.
+        </Typography>
+      </CippButtonCard>
+    </Stack>
   );
 };
 
