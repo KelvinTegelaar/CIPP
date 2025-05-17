@@ -73,7 +73,7 @@ const extractAllResults = (data) => {
         results.push(processed);
       }
     } else {
-      const ignoreKeys = ["metadata", "Metadata"];
+      const ignoreKeys = ["metadata", "Metadata", "severity"];
 
       if (typeof obj === "object") {
         Object.keys(obj).forEach((key) => {
@@ -296,7 +296,9 @@ export const CippApiResults = (props) => {
           ))}
         </>
       )}
-      {(apiObject.isSuccess || apiObject.isError) && finalResults?.length > 0 ? (
+      {(apiObject.isSuccess || apiObject.isError) &&
+      finalResults?.length > 0 &&
+      hasVisibleResults ? (
         <Box display="flex" flexDirection="row">
           <Tooltip title="View Results">
             <IconButton onClick={() => tableDialog.handleOpen()}>

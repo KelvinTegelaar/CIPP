@@ -3,6 +3,7 @@ import { CippWizardConfirmation } from "../components/CippWizard/CippWizardConfi
 import { CippDeploymentStep } from "../components/CippWizard/CIPPDeploymentStep.js";
 import CippWizardPage from "../components/CippWizard/CippWizardPage.jsx";
 import { CippWizardOptionsList } from "../components/CippWizard/CippWizardOptionsList.jsx";
+import { CippSAMDeploy } from "../components/CippWizard/CippSAMDeploy.js";
 import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
@@ -56,37 +57,50 @@ const Page = () => {
     {
       title: "Step 2",
       description: "Application",
-      component: CippDeploymentStep,
+      component: CippSAMDeploy,
+      componentProps: {
+        title: "SAM Application Setup",
+        subtext: "This step will create or update the SAM application in your tenant.",
+      },
     },
     {
       title: "Step 3",
       description: "Tenants",
       component: CippDeploymentStep,
+      //set the tenant mode to "GDAP", "perTenant" or "mixed".
+      //if the tenant mode is set to GDAP, show MSAL button to update token. Send to /api/ExecUpdateRefreshToken with body { "tenantId": tenantId, "refreshToken": refreshToken, "tenantMode": "GDAP" }
+      //if the tenant mode is set to perTenant, show MSAL button to get token. Send to /api/ExecUpdateRefreshToken with body { "tenantId": tenantId, "refreshToken": refreshToken, "tenantMode": "perTenant" }. List each tenant that has authenticated and been added.
+      //if the tenant mode is set to mixed, show first MSAL button to update GDAP access, then show second MSAL button to update perTenant access. Send to /api/ExecUpdateRefreshToken with body { "tenantId": tenantId, "refreshToken": refreshToken, "tenantMode": "mixed" }
     },
     {
       title: "Step 4",
       description: "Baselines",
       component: CippDeploymentStep,
+      //give choice to download baselines from repos.
     },
     {
       title: "Step 5",
       description: "Integrations",
       component: CippDeploymentStep,
+      //give the choice to configure integrations.
     },
     {
       title: "Step 6",
       description: "Notifications",
       component: CippDeploymentStep,
+      //explain notifications, test if email is setup,etc.
     },
     {
       title: "Step 7",
       description: "Alerts",
       component: CippDeploymentStep,
+      //show template alerts, allow user to configure them.
     },
     {
       title: "Step 8",
       description: "Confirmation",
       component: CippWizardConfirmation,
+      //confirm and finish button, perform tasks, launch checks etc.
     },
   ];
 

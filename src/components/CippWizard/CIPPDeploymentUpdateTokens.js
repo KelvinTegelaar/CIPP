@@ -82,10 +82,7 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
         }
       >
         <Typography variant="body2" gutterBottom>
-          Click the button to refresh the Graph token using Device Code Flow. This will open a popup
-          to microsoft.com/devicelogin where you can enter the provided code to authenticate. This
-          method is useful when regular popup authentication fails or when you need to authenticate
-          from a different device than the one running CIPP.
+          Device code flow test
         </Typography>
       </CippButtonCard>
     </Stack>
