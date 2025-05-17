@@ -78,6 +78,7 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
             buttonText="Refresh Graph Token (Device Code)"
             useDeviceCode={true}
             applicationId="1950a258-227b-4e31-a9cf-717495945fc2"
+            autoStartDeviceLogon={true}
           />
         }
       >

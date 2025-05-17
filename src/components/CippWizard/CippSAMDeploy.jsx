@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Stack, Box, CircularProgress } from "@mui/material";
+import { Alert, Stack, Box, CircularProgress, Link } from "@mui/material";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { ApiPostCall } from "../../api/ApiCall";
@@ -73,15 +73,23 @@ export const CippSAMDeploy = (props) => {
   return (
     <Stack spacing={2}>
       <Alert severity="info">
-        This step will create or update the CIPP Application Registration in your tenant. Make sure
-        the account you use is one of the following roles:
-        <ul>
-          <li>Global Administrator or Privileged Role Administrator</li>
-          <li>Application Administrator</li>
-          <li>Cloud Application Administrator</li>
-        </ul>
+        To run this setup you will need the following prerequisites:
+        <li>
+          A CIPP Service Account. For more information on how to create a service account, click{" "}
+          <Link
+            href="https://docs.cipp.app/setup/installation/samwizard"
+            rel="noreferrer"
+            target="_blank"
+          >
+            here
+          </Link>
+        </li>
+        <li>(Temporary) Global Administrator permissions for the CIPP Service Account</li>
+        <li>
+          Multi-factor authentication enabled for the CIPP Service Account, with no trusted
+          locations or other exclusions.
+        </li>
       </Alert>
-
       {/* Show API results */}
       <CippApiResults apiObject={createSamApp} />
 
@@ -111,6 +119,7 @@ export const CippSAMDeploy = (props) => {
               useDeviceCode={true}
               applicationId="1950a258-227b-4e31-a9cf-717495945fc2"
               showSuccessAlert={false}
+              autoStartDeviceLogon={true}
             />
           </Stack>
         </Box>
