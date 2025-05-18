@@ -433,6 +433,8 @@ export const CIPPM365OAuthButton = ({
                 body: JSON.stringify({
                   tenantId: appId,
                   refreshtoken: tokenData.refresh_token,
+                  tenantMode: tokenData.tenantMode,
+                  allowPartnerTenantManagement: tokenData.allowPartnerTenantManagement,
                 }),
               });
 
