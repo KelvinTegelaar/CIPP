@@ -46,6 +46,8 @@ const App = (props) => {
   const pathname = usePathname();
   const route = useRouter();
 
+  const excludeQueryKeys = ["authmeswa"];
+
   // 👇 Persist TanStack Query cache to localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -59,6 +61,19 @@ const App = (props) => {
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
         staleTime: 1000 * 60 * 5, // optional: 5 minutes
         buster: "v1",
+        dehydrateOptions: {
+          shouldDehydrateQuery: (query) => {
+            const queryIsReadyForPersistance = query.state.status === "success";
+            if (queryIsReadyForPersistance) {
+              const { queryKey } = query;
+              const excludeFromPersisting = excludeQueryKeys.some((key) =>
+                queryKey[0].toString().includes(key)
+              );
+              return !excludeFromPersisting;
+            }
+            return queryIsReadyForPersistance;
+          },
+        },
       });
     }
   }, []);
