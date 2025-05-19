@@ -228,7 +228,7 @@ export const CippFormComponent = (props) => {
                     <FormControlLabel
                       key={`${option.value}-${idx}`}
                       value={option.value}
-                      control={<Radio />}
+                      control={<Radio disabled={other?.disabled || option?.disabled} />}
                       label={option.label}
                     />
                   ))}
