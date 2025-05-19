@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import {
-  Alert,
   Stack,
   Box,
   Typography,
-  CircularProgress,
   Divider,
   List,
   ListItem,
@@ -18,6 +16,7 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
+import { getCippError } from "../../utils/get-cipp-error";
 
 export const CippTenantModeDeploy = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
@@ -87,10 +86,48 @@ export const CippTenantModeDeploy = (props) => {
 
   // Handle GDAP authentication success
   const handleGdapAuthSuccess = (tokenData) => {
+    // Set loading state
     setGdapAuthStatus({
       success: true,
-      loading: false,
+      loading: true,
     });
+
+    // Log the token data for debugging
+    console.log("GDAP Auth Success - Token Data:", {
+      tenantId: tokenData.tenantId,
+      refreshToken: tokenData.refreshToken ? "present" : "missing",
+      tenantMode: tokenData.tenantMode,
+      allowPartnerTenantManagement: tokenData.allowPartnerTenantManagement,
+    });
+
+    // Explicitly call the updateRefreshToken API
+    updateRefreshToken.mutate(
+      {
+        url: "/api/ExecUpdateRefreshToken",
+        data: {
+          tenantId: tokenData.tenantId,
+          refreshtoken: tokenData.refreshToken,
+          tenantMode: tokenData.tenantMode,
+          allowPartnerTenantManagement: tokenData.allowPartnerTenantManagement,
+        },
+      },
+      {
+        onSuccess: (data) => {
+          console.log("Update Refresh Token Success:", data);
+          setGdapAuthStatus({
+            success: true,
+            loading: false,
+          });
+        },
+        onError: (error) => {
+          console.error("Update Refresh Token Error:", error);
+          setGdapAuthStatus({
+            success: false,
+            loading: false,
+          });
+        },
+      }
+    );
 
     // Allow user to proceed to next step for GDAP mode
     if (tenantMode === "GDAP") {
@@ -103,19 +140,50 @@ export const CippTenantModeDeploy = (props) => {
 
   // Handle perTenant authentication success
   const handlePerTenantAuthSuccess = (tokenData) => {
+    // Set loading state
     setPerTenantAuthStatus({
       success: true,
-      loading: false,
+      loading: true,
+    });
+
+    // Log the token data for debugging
+    console.log("Per-Tenant Auth Success - Token Data:", {
+      tenantId: tokenData.tenantId,
+      tenantMode: tokenData.tenantMode,
     });
 
     // For perTenant mode or mixed mode with perTenant auth, add the tenant to the cache
     if (tenantMode === "perTenant" || tenantMode === "mixed") {
       // Call the AddTenant API to add the tenant to the cache with directTenant status
-      addTenant.mutate({
-        url: "/api/ExecAddTenant",
-        data: {
-          tenantId: tokenData.tenantId,
+      addTenant.mutate(
+        {
+          url: "/api/ExecAddTenant",
+          data: {
+            tenantId: tokenData.tenantId,
+          },
         },
+        {
+          onSuccess: (data) => {
+            console.log("Add Tenant Success:", data);
+            setPerTenantAuthStatus({
+              success: true,
+              loading: false,
+            });
+          },
+          onError: (error) => {
+            console.error("Add Tenant Error:", error);
+            setPerTenantAuthStatus({
+              success: false,
+              loading: false,
+            });
+          },
+        }
+      );
+    } else {
+      // If not adding tenant, still update state
+      setPerTenantAuthStatus({
+        success: true,
+        loading: false,
       });
     }
 
@@ -138,31 +206,47 @@ export const CippTenantModeDeploy = (props) => {
     }
   }, [addTenant.isError]);
 
-  // Handle AddTenant API response
+  // Debug logging for API states
   useEffect(() => {
-    if (addTenant.isSuccess) {
-      console.log("Tenant added to cache successfully:", addTenant.data);
-    } else if (addTenant.isError) {
-      console.error("Failed to add tenant to cache:", addTenant.error);
+    if (
+      updateRefreshToken.isLoading ||
+      updateRefreshToken.isSuccess ||
+      updateRefreshToken.isError
+    ) {
+      console.log("updateRefreshToken state:", {
+        isLoading: updateRefreshToken.isLoading,
+        isSuccess: updateRefreshToken.isSuccess,
+        isError: updateRefreshToken.isError,
+        data: updateRefreshToken.data,
+        error: updateRefreshToken.error ? getCippError(updateRefreshToken.error) : null,
+      });
     }
-  }, [addTenant.isSuccess, addTenant.isError]);
+  }, [
+    updateRefreshToken.isLoading,
+    updateRefreshToken.isSuccess,
+    updateRefreshToken.isError,
+    updateRefreshToken.data,
+    updateRefreshToken.error,
+  ]);
 
   return (
     <Stack spacing={2}>
-      <Alert severity="info">
-        Select how you want to connect to your tenants. You have three options:
-        <ul>
-          <li>
-            <strong>GDAP:</strong> Use delegated administration (recommended)
-          </li>
-          <li>
-            <strong>Per Tenant:</strong> Authenticate to each tenant individually
-          </li>
-          <li>
-            <strong>Mixed:</strong> Use both GDAP and per-tenant authentication
-          </li>
-        </ul>
-      </Alert>
+      <Box>
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          Select how you want to connect to your tenants. You have three options:
+          <ul>
+            <li>
+              <strong>GDAP:</strong> Use delegated administration (recommended)
+            </li>
+            <li>
+              <strong>Per Tenant:</strong> Authenticate to each tenant individually
+            </li>
+            <li>
+              <strong>Mixed:</strong> Use both GDAP and per-tenant authentication
+            </li>
+          </ul>
+        </Typography>
+      </Box>
 
       {/* Tenant mode selection */}
       <Box>
@@ -181,18 +265,9 @@ export const CippTenantModeDeploy = (props) => {
 
       <Divider />
 
-      {/* Show API results */}
+      {/* Show API results at top level for visibility across all modes */}
+      <CippApiResults apiObject={updateRefreshToken} />
       <CippApiResults apiObject={addTenant} />
-      {addTenant.isSuccess && (
-        <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
-          Tenant successfully added to the cache.
-        </Alert>
-      )}
-      {addTenant.isError && (
-        <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
-          Failed to add tenant to the cache: {addTenant.error?.message || "Unknown error"}
-        </Alert>
-      )}
 
       {/* GDAP Authentication Section */}
       {(tenantMode === "GDAP" || tenantMode === "mixed") && (
@@ -200,8 +275,6 @@ export const CippTenantModeDeploy = (props) => {
           <Typography variant="h6" gutterBottom>
             Partner Tenant
           </Typography>
-
-          <CippApiResults apiObject={updateRefreshToken} /> 
 
           {/* GDAP Partner Tenant Management Switch */}
           <FormControlLabel
@@ -215,28 +288,26 @@ export const CippTenantModeDeploy = (props) => {
             label="Allow management of the partner tenant."
           />
 
-          {/* Show authenticate button only if not successful yet */}
-          {(!gdapAuthStatus.success || gdapAuthStatus.loading) && (
-            <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <CIPPM365OAuthButton
-                  onAuthSuccess={(tokenData) => {
-                    // Add the tenantMode and allowPartnerTenantManagement parameters to the tokenData
-                    const updatedTokenData = {
-                      ...tokenData,
-                      tenantMode: tenantMode === "mixed" ? "GDAP" : tenantMode,
-                      allowPartnerTenantManagement: allowPartnerTenantManagement,
-                    };
-                    handleGdapAuthSuccess(updatedTokenData);
-                  }}
-                  buttonText={
-                    tenantMode === "mixed" ? "Connect to GDAP" : "Authenticate with Microsoft GDAP"
-                  }
-                  showSuccessAlert={false}
-                />
-              </Stack>
-            </Box>
-          )}
+          {/* Always show authenticate button */}
+          <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <CIPPM365OAuthButton
+                onAuthSuccess={(tokenData) => {
+                  // Add the tenantMode and allowPartnerTenantManagement parameters to the tokenData
+                  const updatedTokenData = {
+                    ...tokenData,
+                    tenantMode: tenantMode === "mixed" ? "GDAP" : tenantMode,
+                    allowPartnerTenantManagement: allowPartnerTenantManagement,
+                  };
+                  handleGdapAuthSuccess(updatedTokenData);
+                }}
+                buttonText={
+                  tenantMode === "mixed" ? "Connect to GDAP" : "Authenticate with Microsoft GDAP"
+                }
+                showSuccessAlert={false}
+              />
+            </Stack>
+          </Box>
         </Box>
       )}
 
@@ -247,20 +318,12 @@ export const CippTenantModeDeploy = (props) => {
             Per-Tenant Authentication
           </Typography>
 
-          {/* Show success message when authentication is successful */}
-          {perTenantAuthStatus.success && (
-            <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
-              {tenantMode === "mixed"
-                ? "Tenant authentication successful. You can add another tenant or proceed to the next step."
-                : "Per-tenant authentication successful. You can add another tenant or proceed to the next step."}
-            </Alert>
-          )}
-
-          <Alert severity="info" sx={{ mt: 2, mb: 2 }}>
+          <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
             {tenantMode === "mixed"
               ? "Click the button below to connect to individual tenants. You can authenticate to multiple tenants one by one."
               : "You can click the button below to authenticate to a tenant. Perform this authentication for every tenant you wish to manage using CIPP."}
-          </Alert>
+          </Typography>
+
           {/* Show authenticate button */}
           <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
             <Stack direction="row" spacing={2} alignItems="center">

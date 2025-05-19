@@ -102,7 +102,7 @@ const Page = () => {
       <CippWizardPage
         backButton={false}
         steps={steps}
-        wizardTitle="SAM Setup"
+        wizardTitle="Setup Wizard"
         postUrl={"/api/ExecSAMSetup"}
       />
     </>
