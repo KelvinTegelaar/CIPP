@@ -147,7 +147,6 @@ export const CippTenantModeDeploy = (props) => {
     }
   }, [addTenant.isSuccess, addTenant.isError]);
 
-
   return (
     <Stack spacing={2}>
       <Alert severity="info">
@@ -202,14 +201,7 @@ export const CippTenantModeDeploy = (props) => {
             Partner Tenant
           </Typography>
 
-          {/* Show success message when authentication is successful */}
-          {gdapAuthStatus.success && (
-            <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
-              {tenantMode === "mixed"
-                ? "GDAP authentication successful. You can now proceed to the next step or connect to separate tenants below."
-                : "GDAP authentication successful. You can now proceed to the next step."}
-            </Alert>
-          )}
+          <CippApiResults apiObject={updateRefreshToken} /> 
 
           {/* GDAP Partner Tenant Management Switch */}
           <FormControlLabel
