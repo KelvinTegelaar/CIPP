@@ -35,6 +35,9 @@ export const PrivateRoute = ({ children, routeType }) => {
   if (
     session?.isSuccess &&
     isSuccess &&
+    undefined !== profile &&
+    session?.data?.clientPrincipal?.userDetails &&
+    profile?.userDetails &&
     session?.data?.clientPrincipal?.userDetails !== profile?.userDetails
   ) {
     // refetch the profile if the user details are different
