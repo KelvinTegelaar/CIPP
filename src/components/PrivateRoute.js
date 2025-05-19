@@ -12,7 +12,6 @@ export const PrivateRoute = ({ children, routeType }) => {
   } = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
-    refetchOnWindowFocus: true,
   });
 
   const session = ApiGetCall({

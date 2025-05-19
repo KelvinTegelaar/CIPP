@@ -9,6 +9,7 @@ import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import {
   Avatar,
   Box,
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
@@ -88,18 +89,22 @@ export const AccountPopover = (props) => {
             <>
               <Box sx={{ minWidth: 100 }}>
                 <Typography color="neutral.400" variant="caption">
-                  {orgData?.isFetching ? "Loading..." : orgData.data?.clientPrincipal?.userDetails?.split('@')[1]}
+                  {orgData.data?.clientPrincipal?.userDetails?.split("@")?.[1]}
                 </Typography>
                 <Typography color="inherit" variant="subtitle2">
-                  {orgData?.isFetching
-                    ? <Skeleton />
-                    : orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
+                  {orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
                 </Typography>
               </Box>
               {orgData.data?.clientPrincipal?.userDetails && (
-                <SvgIcon color="action" fontSize="small">
-                  <ChevronDownIcon />
-                </SvgIcon>
+                <>
+                  {orgData?.isFetching ? (
+                    <CircularProgress size={20} color="textPrimary" />
+                  ) : (
+                    <SvgIcon color="action" fontSize="small">
+                      <ChevronDownIcon />
+                    </SvgIcon>
+                  )}
+                </>
               )}
             </>
           )}
