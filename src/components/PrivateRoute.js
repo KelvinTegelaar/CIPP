@@ -21,13 +21,14 @@ export const PrivateRoute = ({ children, routeType }) => {
     staleTime: 120000, // 2 minutes
   });
 
+  // Check if the session is still loading before determining authentication status
+  if (session.isLoading || isLoading) {
+    return <LoadingPage />;
+  }
+
   // if not logged into swa
   if (null === session?.data?.clientPrincipal || session?.data === undefined) {
     return <UnauthenticatedPage />;
-  }
-
-  if (isLoading) {
-    return <LoadingPage />;
   }
 
   let roles = null;
