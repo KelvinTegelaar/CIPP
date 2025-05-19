@@ -25,7 +25,6 @@ export const CippTablePage = (props) => {
     tableFilter,
     tenantInTitle = true,
     filters,
-    defaultSorting = [],
     sx = { flexGrow: 1, py: 4 },
     ...other
   } = props;
@@ -66,7 +65,6 @@ export const CippTablePage = (props) => {
                 columnsFromApi={columnsFromApi}
                 offCanvas={offCanvas}
                 filters={tableFilters}
-                defaultSorting={defaultSorting}
                 initialState={{
                   columnFilters: filters ? filters.map(filter => ({
                     id: filter.id || filter.columnId,

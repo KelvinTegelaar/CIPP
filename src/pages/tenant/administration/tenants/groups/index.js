@@ -38,7 +38,6 @@ const Page = () => {
       queryKey="TenantGroupListPage"
       apiDataKey="Results"
       actions={actions}
-      defaultSorting={[{ id: "Name", desc: false }]}
       cardButton={
         <Button
           variant="contained"
