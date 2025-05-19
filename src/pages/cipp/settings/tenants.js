@@ -41,6 +41,7 @@ const Page = () => {
       data: { tenantFilter: "customerId" },
       confirmText: "Are you sure you want to refresh the CPV permissions for these tenants?",
       multiPost: false,
+      condition: (row) => row.delegatedPrivilegeStatus !== "directTenant",
     },
     {
       label: "Reset CPV Permissions",
@@ -51,7 +52,8 @@ const Page = () => {
       confirmText:
         "Are you sure you want to reset the CPV permissions for these tenants? (This will delete the Service Principal and re-add it.)",
       multiPost: false,
-      condition: (row) => row.displayName !== "*Partner Tenant",
+      condition: (row) =>
+        row.displayName !== "*Partner Tenant" && row.delegatedPrivilegeStatus !== "directTenant",
     },
     {
       label: "Remove Tenant",
