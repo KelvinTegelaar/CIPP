@@ -1,7 +1,9 @@
 // this page is going to need some love for accounting for filters: https://github.com/KelvinTegelaar/CIPP/blob/main/src/views/tenant/administration/ListEnterpriseApps.jsx#L83
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Launch } from "@mui/icons-material";
+import tabOptions from "./tabOptions";
 
 const Page = () => {
   const pageTitle = "Enterprise Applications";
@@ -71,6 +73,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;
