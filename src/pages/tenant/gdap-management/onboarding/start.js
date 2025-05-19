@@ -334,6 +334,7 @@ const Page = () => {
                           !relationship?.addedFields?.displayName?.startsWith("MLT_")
                       );
                     },
+                    showRefresh: true,
                   }}
                   multiple={false}
                   creatable={true}
