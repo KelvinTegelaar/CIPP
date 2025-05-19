@@ -15,6 +15,7 @@ import {
   ListItemIcon,
   ListItemText,
   Popover,
+  Skeleton,
   Stack,
   SvgIcon,
   Typography,
@@ -87,10 +88,12 @@ export const AccountPopover = (props) => {
             <>
               <Box sx={{ minWidth: 100 }}>
                 <Typography color="neutral.400" variant="caption">
-                  {orgData.data?.Org?.Domain}
+                  {orgData?.isFetching ? "Loading..." : orgData.data?.clientPrincipal?.userDetails?.split('@')[1]}
                 </Typography>
                 <Typography color="inherit" variant="subtitle2">
-                  {orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
+                  {orgData?.isFetching
+                    ? <Skeleton />
+                    : orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
                 </Typography>
               </Box>
               {orgData.data?.clientPrincipal?.userDetails && (
