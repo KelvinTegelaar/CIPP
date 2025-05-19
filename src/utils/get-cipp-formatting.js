@@ -6,9 +6,6 @@ import {
   MailOutline,
   Shield,
   Description,
-  Group,
-  MeetingRoom,
-  GroupWork,
   GroupOutlined,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
@@ -237,6 +234,10 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       data = "Unknown";
     }
     return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "delegatedPrivilegeStatus") {
+    return data === "directTenant" ? "Direct Tenant" : "GDAP Tenant";
   }
 
   //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.
