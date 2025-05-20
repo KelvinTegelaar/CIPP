@@ -5,12 +5,12 @@ import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
 import { CardContent } from "@mui/material";
 import { useEffect, useState } from "react";
-import AppDeploymentTemplateForm from "/src/components/CippComponents/AppDeploymentTemplateForm";
+import AppApprovalTemplateForm from "/src/components/CippComponents/AppApprovalTemplateForm";
 
 const Page = () => {
   const router = useRouter();
   const { template, copy, name } = router.query;
-  const pageTitle = copy ? "Copy App Deployment Template" : "Add App Deployment Template";
+  const pageTitle = copy ? "Copy App Approval Template" : "Add App Approval Template";
 
   // Add refetch key for refreshing data after save
   const [refetchKey, setRefetchKey] = useState(0);
@@ -21,22 +21,22 @@ const Page = () => {
 
   // Get the specified template if template ID is provided
   const { data: templateData, isLoading: templateLoading } = ApiGetCall({
-    url: template ? `/api/ExecAppDeploymentTemplate?Action=Get&TemplateId=${template}` : null,
-    queryKey: template ? ["ExecAppDeploymentTemplate", template, refetchKey] : null,
+    url: template ? `/api/ExecAppApprovalTemplate?Action=Get&TemplateId=${template}` : null,
+    queryKey: template ? ["ExecAppApprovalTemplate", template, refetchKey] : null,
     enabled: !!template,
   });
 
   const updatePermissions = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListAppDeploymentTemplates", "ExecAppDeploymentTemplate"],
+    relatedQueryKeys: ["ListAppApprovalTemplates", "ExecAppApprovalTemplate"],
   });
 
   const handleSubmit = (payload) => {
     updatePermissions.mutate(
       {
-        url: "/api/ExecAppDeploymentTemplate?Action=Save",
+        url: "/api/ExecAppApprovalTemplate?Action=Save",
         data: payload,
-        queryKey: "ExecAppDeploymentTemplate",
+        queryKey: "ExecAppApprovalTemplate",
       },
       {
         onSuccess: (data) => {
@@ -75,7 +75,7 @@ const Page = () => {
   return (
     <CippPageCard hideBackButton={false} title={pageTitle}>
       <CardContent>
-        <AppDeploymentTemplateForm
+        <AppApprovalTemplateForm
           formControl={formControl}
           templateData={templateData}
           templateLoading={templateLoading}

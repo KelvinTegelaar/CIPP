@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Templates";
-  const apiUrl = "/api/ListAppDeploymentTemplates";
+  const apiUrl = "/api/ListAppApprovalTemplates";
 
   const actions = [
     {
@@ -27,7 +27,7 @@ const Page = () => {
       icon: <Delete />,
       label: "Delete Template",
       color: "danger",
-      url: "/api/ExecAppDeploymentTemplate",
+      url: "/api/ExecAppApprovalTemplate",
       data: {
         Action: "Delete",
         TemplateId: "TemplateId",
@@ -62,7 +62,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
-      queryKey="ListAppDeploymentTemplates"
+      queryKey="ListAppApprovalTemplates"
       simpleColumns={simpleColumns}
       tableProps={{ keyField: "TemplateId" }}
       actions={actions}

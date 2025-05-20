@@ -6,7 +6,7 @@ import CippPageCard from "/src/components/CippCards/CippPageCard";
 import { Alert, Button, CardContent } from "@mui/material";
 import { useState } from "react";
 import Link from "next/link";
-import AppDeploymentTemplateForm from "/src/components/CippComponents/AppDeploymentTemplateForm";
+import AppApprovalTemplateForm from "/src/components/CippComponents/AppApprovalTemplateForm";
 
 const Page = () => {
   const router = useRouter();
@@ -20,14 +20,14 @@ const Page = () => {
   });
 
   const { data: templateData, isLoading } = ApiGetCall({
-    url: template ? `/api/ExecAppDeploymentTemplate?Action=Get&TemplateId=${template}` : null,
-    queryKey: template ? ["ExecAppDeploymentTemplate", template, refetchKey] : null,
+    url: template ? `/api/ExecAppApprovalTemplate?Action=Get&TemplateId=${template}` : null,
+    queryKey: template ? ["ExecAppApprovalTemplate", template, refetchKey] : null,
     enabled: !!template,
   });
 
   const updatePermissions = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListAppDeploymentTemplates", "ExecAppDeploymentTemplate"],
+    relatedQueryKeys: ["ListAppApprovalTemplates", "ExecAppApprovalTemplate"],
   });
 
   const handleSubmit = (payload) => {
@@ -40,9 +40,9 @@ const Page = () => {
 
     updatePermissions.mutate(
       {
-        url: "/api/ExecAppDeploymentTemplate?Action=Save",
+        url: "/api/ExecAppApprovalTemplate?Action=Save",
         data: updatedPayload,
-        queryKey: "ExecAppDeploymentTemplate",
+        queryKey: "ExecAppApprovalTemplate",
       },
       {
         onSuccess: (data) => {
@@ -62,8 +62,8 @@ const Page = () => {
       <CippPageCard hideBackButton={false} title="Template Not Found">
         <CardContent>
           <Alert severity="error" sx={{ mb: 2 }}>
-            The requested app deployment template does not exist or was not specified. Please select
-            a valid template from the list.
+            The requested app approval template does not exist or was not specified. Please select a
+            valid template from the list.
           </Alert>
           <Button
             variant="contained"
@@ -80,10 +80,10 @@ const Page = () => {
   return (
     <CippPageCard
       hideBackButton={false}
-      title={`Edit App Deployment Template: ${templateData?.[0]?.TemplateName || name || ""}`}
+      title={`Edit App Approval Template: ${templateData?.[0]?.TemplateName || name || ""}`}
     >
       <CardContent>
-        <AppDeploymentTemplateForm
+        <AppApprovalTemplateForm
           formControl={formControl}
           templateData={templateData}
           templateLoading={isLoading}
