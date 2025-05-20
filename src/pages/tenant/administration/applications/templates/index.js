@@ -73,7 +73,7 @@ const Page = () => {
           href="/tenant/administration/applications/templates/add"
           startIcon={<Add />}
         >
-          Add App Deployment Template
+          Add App Approval Template
         </Button>
       }
     />
