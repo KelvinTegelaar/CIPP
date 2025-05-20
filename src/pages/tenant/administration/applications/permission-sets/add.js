@@ -1,7 +1,5 @@
 import { useRouter } from "next/router";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import tabOptions from "../tabOptions";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
 import CippAppPermissionBuilder from "/src/components/CippComponents/CippAppPermissionBuilder";
@@ -26,7 +24,7 @@ const Page = () => {
   });
 
   // Get the specified template if template ID is provided
-  const { data: templateData, isLoading: templateLoading } = ApiGetCall({
+  const { data: templateData, isFetching: templateFetching } = ApiGetCall({
     url: template ? `/api/ExecAppPermissionTemplate?TemplateId=${template}` : null,
     queryKey: template ? ["execAppPermissionTemplate", template, refetchKey] : null,
     enabled: !!template,
@@ -106,8 +104,10 @@ const Page = () => {
         onSuccess: (data) => {
           // Instead of navigating away, stay on the page and refresh
           if (copy || !template) {
+            console.log("Copying or creating new template, redirecting to edit page");
+            console.log("New template data:", data);
             // If we're copying or creating new, update the URL to edit mode with the new template ID
-            const newTemplateId = data[0].TemplateId;
+            const newTemplateId = data.data[0].Metadata.TemplateId;
             router.push(
               {
                 pathname: "/tenant/administration/applications/permission-sets/edit",
@@ -146,8 +146,7 @@ const Page = () => {
     <CippPageCard hideBackButton={false} title={pageTitle}>
       <CardContent>
         <Stack spacing={2}>
-          {templateLoading && <Skeleton variant="rectangular" height={300} />}
-          {(!templateLoading || !template) && (
+          {(!templateFetching || !template) && (
             <>
               <Typography variant="body2">
                 {copy
@@ -166,6 +165,7 @@ const Page = () => {
                 name="templateName"
                 label="Permission Set Name"
                 type="textField"
+                required={true}
                 validators={{ required: "Permission set name is required" }}
               />
 
@@ -175,7 +175,8 @@ const Page = () => {
                     <CippFormComponent
                       formControl={formControl}
                       name="importTemplate"
-                      label="Import from Existing"
+                      label="Import from Existing (optional)"
+                      placeholder="Select a template to import"
                       type="autoComplete"
                       options={availableTemplates.map((template) => ({
                         label: template.TemplateName,
@@ -197,15 +198,23 @@ const Page = () => {
               )}
 
               {initialPermissions && (
-                <CippAppPermissionBuilder
-                  formControl={formControl}
-                  currentPermissions={initialPermissions}
-                  onSubmit={handleUpdatePermissions}
-                  updatePermissions={updatePermissions}
-                  removePermissionConfirm={true}
-                  appDisplayName={formControl.watch("templateName") || "New Permission Set"}
-                  key={refetchKey}
-                />
+                <>
+                  <Alert severity="info">
+                    Choose the permissions you want to assign to this permission set. Microsoft
+                    Graph is the default Service Principal added and you can choose to add
+                    additional Service Principals as needed. Note that some Service Principals do
+                    not have any published permissions to choose from.
+                  </Alert>
+                  <CippAppPermissionBuilder
+                    formControl={formControl}
+                    currentPermissions={initialPermissions}
+                    onSubmit={handleUpdatePermissions}
+                    updatePermissions={updatePermissions}
+                    removePermissionConfirm={true}
+                    appDisplayName={formControl.watch("templateName") || "New Permission Set"}
+                    key={refetchKey}
+                  />
+                </>
               )}
             </>
           )}
@@ -215,10 +224,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;

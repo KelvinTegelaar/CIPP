@@ -545,7 +545,7 @@ const CippAppPermissionBuilder = ({
     return (
       <>
         {spInfoFetching && <Skeleton variant="rectangle" height={250} />}
-        {servicePrincipal && spInfoSuccess && (
+        {servicePrincipal && spInfoSuccess && !spInfoFetching && (
           <>
             <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
               Manage the permissions for the {servicePrincipal.displayName}.
@@ -715,7 +715,8 @@ const CippAppPermissionBuilder = ({
                         <CippFormComponent
                           type="autoComplete"
                           fullWidth
-                          label="Select a Service Principal or enter an AppId if not listed"
+                          label="Add a Service Principal (optional)"
+                          placeholder="Select a Service Principal or enter an AppId if not listed (admin required to add new SP)"
                           name="servicePrincipal"
                           createOption={true}
                           onCreateOption={onCreateServicePrincipal}

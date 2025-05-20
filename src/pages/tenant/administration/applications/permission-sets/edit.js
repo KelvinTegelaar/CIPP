@@ -109,8 +109,10 @@ const Page = () => {
     >
       <CardContent>
         <Stack spacing={2}>
-          {isLoading && <Skeleton variant="rectangular" height={300} />}
-          {!isLoading && initialPermissions && (
+          {isFetching && (
+            <Skeleton variant="rectangular" width="100%" height={200} animation="wave" />
+          )}
+          {!isFetching && initialPermissions && (
             <>
               <Typography variant="body2">
                 Modify the permissions in this permission set. Any changes will affect all
@@ -126,8 +128,16 @@ const Page = () => {
                 name="templateName"
                 label="Permission Set Name"
                 type="textField"
+                required={true}
                 validators={{ required: "Permission set name is required" }}
               />
+
+              <Alert severity="info">
+                Choose the permissions you want to assign to this permission set. Microsoft Graph is
+                the default Service Principal added and you can choose to add additional Service
+                Principals as needed. Note that some Service Principals do not have any published
+                permissions to choose from.
+              </Alert>
 
               <CippAppPermissionBuilder
                 formControl={formControl}
