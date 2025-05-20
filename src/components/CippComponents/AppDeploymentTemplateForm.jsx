@@ -124,15 +124,15 @@ const AppDeploymentTemplateForm = ({
         <>
           <Typography variant="body2">
             {isCopy
-              ? "Create a copy of an existing app deployment template with your own modifications."
+              ? "Create a copy of an existing app approval template with your own modifications."
               : isEditing
-              ? "Edit this app deployment template."
-              : "Create a new app deployment template to define application deployment settings."}
+              ? "Edit this app approval template."
+              : "Create a new app approval template to define application permissions to consent."}
           </Typography>
           <Alert severity="info">
-            App deployment templates allow you to define an application with its permissions that
-            can be deployed to multiple tenants. Select an application and permission set to create
-            a template.
+            App approval templates allow you to define an application with its permissions that can
+            be deployed to multiple tenants. Select an application and permission set to create a
+            template.
           </Alert>
 
           <CippFormComponent

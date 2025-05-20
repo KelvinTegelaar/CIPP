@@ -12,7 +12,7 @@
     "path": "/tenant/administration/applications/permission-sets"
   },
   {
-    "label": "Deployment Templates",
+    "label": "Templates",
     "path": "/tenant/administration/applications/templates"
   }
 ]

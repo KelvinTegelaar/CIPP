@@ -7,7 +7,7 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 
 const Page = () => {
-  const pageTitle = "Deployment Templates";
+  const pageTitle = "Templates";
   const apiUrl = "/api/ListAppDeploymentTemplates";
 
   const actions = [
