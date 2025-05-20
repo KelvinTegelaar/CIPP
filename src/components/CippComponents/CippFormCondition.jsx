@@ -171,7 +171,10 @@ export const CippFormCondition = (props) => {
       return null;
 
     case "hasValue":
-      if (watcher !== undefined && watcher !== null && watcher !== "") {
+      if (
+        (watcher !== undefined && watcher !== null && watcher !== "") ||
+        (watcher?.value !== undefined && watcher?.value !== null && watcher?.value !== "")
+      ) {
         return children;
       }
       if (action === "disable") {

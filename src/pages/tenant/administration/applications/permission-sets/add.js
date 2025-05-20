@@ -104,8 +104,6 @@ const Page = () => {
         onSuccess: (data) => {
           // Instead of navigating away, stay on the page and refresh
           if (copy || !template) {
-            console.log("Copying or creating new template, redirecting to edit page");
-            console.log("New template data:", data);
             // If we're copying or creating new, update the URL to edit mode with the new template ID
             const newTemplateId = data.data[0].Metadata.TemplateId;
             router.push(

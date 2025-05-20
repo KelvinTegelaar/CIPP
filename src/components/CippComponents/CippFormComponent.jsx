@@ -221,6 +221,7 @@ export const CippFormComponent = (props) => {
             <Controller
               name={convertedName}
               control={formControl.control}
+              defaultValue={defaultValue} // Make sure this is used
               rules={validators}
               render={({ field }) => (
                 <RadioGroup {...field} {...other}>

@@ -716,7 +716,7 @@ const CippAppPermissionBuilder = ({
                           type="autoComplete"
                           fullWidth
                           label="Add a Service Principal (optional)"
-                          placeholder="Select a Service Principal or enter an AppId if not listed (admin required to add new SP)"
+                          placeholder="Select a Service Principal or enter an AppId if not listed"
                           name="servicePrincipal"
                           createOption={true}
                           onCreateOption={onCreateServicePrincipal}
