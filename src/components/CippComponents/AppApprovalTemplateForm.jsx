@@ -148,7 +148,6 @@ const AppApprovalTemplateForm = ({
   } = ApiGetCallWithPagination({
     url: "/api/ExecServicePrincipals",
     queryKey: "execServicePrincipals",
-    enabled: permissionsLoaded || (isEditing && !templateLoading),
   });
 
   // Refetch service principals when permissions are loaded
@@ -157,24 +156,6 @@ const AppApprovalTemplateForm = ({
       refetchServicePrincipals();
     }
   }, [permissionsLoaded, selectedPermissionSet, refetchServicePrincipals]);
-
-  // Fetch additional details about the application if needed
-  const {
-    data: appDetails,
-    isLoading: appDetailsLoading,
-    isSuccess: appDetailsSuccess,
-  } = ApiGetCall({
-    url:
-      permissionsLoaded && selectedPermissionSet?.addedFields?.Permissions && selectedApp?.value
-        ? `/api/ExecServicePrincipals?Id=${selectedApp.value}`
-        : null,
-    queryKey:
-      permissionsLoaded && selectedPermissionSet ? `app-details-${selectedApp?.value}` : null,
-    enabled:
-      permissionsLoaded &&
-      !!selectedPermissionSet?.addedFields?.Permissions &&
-      !!selectedApp?.value,
-  });
 
   const handlePermissionTabChange = (event, newValue) => {
     setSelectedPermissionTab(newValue);
@@ -231,10 +212,10 @@ const AppApprovalTemplateForm = ({
 
     Object.entries(permissions).forEach(([resourceName, perms]) => {
       if (perms.applicationPermissions) {
-        appCount += perms.applicationPermissions.length;
+        appCount += perms?.applicationPermissions?.length ?? 0;
       }
       if (perms.delegatedPermissions) {
-        delegatedCount += perms.delegatedPermissions.length;
+        delegatedCount += perms?.delegatedPermissions?.length ?? 0;
       }
     });
 
@@ -288,9 +269,9 @@ const AppApprovalTemplateForm = ({
             const resourceName = getResourceDisplayName(resourceId);
             const hasAppPermissions =
               resourcePerms.applicationPermissions &&
-              resourcePerms.applicationPermissions.length > 0;
+              resourcePerms?.applicationPermissions?.length > 0;
             const hasDelegatedPermissions =
-              resourcePerms.delegatedPermissions && resourcePerms.delegatedPermissions.length > 0;
+              resourcePerms.delegatedPermissions && resourcePerms?.delegatedPermissions?.length > 0;
 
             return (
               <Box key={resourceId} sx={{ mb: 3 }}>
@@ -332,7 +313,7 @@ const AppApprovalTemplateForm = ({
                           pb: 0.5,
                         }}
                       >
-                        Application Permissions ({resourcePerms.applicationPermissions.length})
+                        Application Permissions ({resourcePerms?.applicationPermissions?.length})
                       </Typography>
                       <List dense disablePadding>
                         {resourcePerms.applicationPermissions.map((perm, idx) => {
@@ -370,7 +351,7 @@ const AppApprovalTemplateForm = ({
                           pb: 0.5,
                         }}
                       >
-                        Delegated Permissions ({resourcePerms.delegatedPermissions.length})
+                        Delegated Permissions ({resourcePerms?.delegatedPermissions?.length})
                       </Typography>
                       <List dense disablePadding>
                         {resourcePerms.delegatedPermissions.map((perm, idx) => {

@@ -79,7 +79,7 @@ const CippAppPermissionBuilder = ({
     refetch: refetchServicePrincipals,
   } = ApiGetCall({
     url: "/api/ExecServicePrincipals",
-    queryKey: "execServicePrincipals",
+    queryKey: "execServicePrincipalList",
     waiting: true,
   });
 

@@ -21,7 +21,7 @@ const Page = () => {
 
   const { data: templateData, isLoading } = ApiGetCall({
     url: template ? `/api/ExecAppApprovalTemplate?Action=Get&TemplateId=${template}` : null,
-    queryKey: template ? ["ExecAppApprovalTemplate", template, refetchKey] : null,
+    queryKey: template ? ["ExecAppApprovalTemplateList", template, refetchKey] : null,
     enabled: !!template,
   });
 

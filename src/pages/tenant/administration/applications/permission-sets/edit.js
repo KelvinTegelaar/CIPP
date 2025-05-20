@@ -25,7 +25,7 @@ const Page = () => {
 
   const {
     data: templateData,
-    isLoading,
+    isFetching,
     refetch,
   } = ApiGetCall({
     url: template ? `/api/ExecAppPermissionTemplate?TemplateId=${template}` : null,

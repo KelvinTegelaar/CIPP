@@ -26,14 +26,14 @@ const Page = () => {
   // Get the specified template if template ID is provided
   const { data: templateData, isFetching: templateFetching } = ApiGetCall({
     url: template ? `/api/ExecAppPermissionTemplate?TemplateId=${template}` : null,
-    queryKey: template ? ["execAppPermissionTemplate", template, refetchKey] : null,
+    queryKey: template ? ["execAppPermissionTemplateDetails", template, refetchKey] : null,
     enabled: !!template,
   });
 
   // Get all available templates for importing
   const { data: allTemplates, isLoading: templatesLoading } = ApiGetCall({
     url: "/api/ExecAppPermissionTemplate",
-    queryKey: "execAppPermissionTemplate",
+    queryKey: "execAppPermissionTemplateList",
   });
 
   useEffect(() => {
