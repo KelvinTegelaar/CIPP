@@ -22,7 +22,7 @@ const Page = () => {
     {
       icon: <Launch />,
       label: "View API Permissions",
-      link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/ApiPermissions/appId/[appId]`,
+      link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/[appId]`,
       color: "info",
       target: "_blank",
       multiPost: false,
@@ -41,6 +41,8 @@ const Page = () => {
       "requiredResourceAccess",
       "web",
       "api",
+      "passwordCredentials",
+      "keyCredentials",
     ],
     actions: actions,
   };
@@ -52,12 +54,14 @@ const Page = () => {
     "signInAudience",
     "web.redirectUris",
     "publisherDomain",
+    "passwordCredentials",
+    "keyCredentials",
   ];
 
   const apiParams = {
     Endpoint: "applications",
     $select:
-      "id,appId,displayName,createdDateTime,signInAudience,web,api,requiredResourceAccess,publisherDomain,replyUrls",
+      "id,appId,displayName,createdDateTime,signInAudience,web,api,requiredResourceAccess,publisherDomain,replyUrls,passwordCredentials,keyCredentials",
     $count: true,
     $top: 999,
   };

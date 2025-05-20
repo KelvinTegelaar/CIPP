@@ -1073,10 +1073,7 @@ const CippAppPermissionBuilder = ({
                   </SvgIcon>
                 }
                 type="submit"
-                disabled={
-                  updatePermissions.isPending ||
-                  _.isEqual(currentPermissions.Permissions, newPermissions.Permissions)
-                }
+                disabled={updatePermissions.isPending}
                 onClick={handleSubmit}
               >
                 Save
