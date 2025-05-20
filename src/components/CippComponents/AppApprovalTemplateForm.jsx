@@ -128,16 +128,35 @@ const AppApprovalTemplateForm = ({
     }
   }, [selectedPermissionSetValue]);
 
+  // Handle initial data loading for editing and copying
+  useEffect(() => {
+    // When editing or copying, ensure permission data is properly loaded
+    if (isEditing || isCopy) {
+      if (templateData?.[0]?.Permissions) {
+        // Ensure permissions are immediately available for the preview
+        setPermissionsLoaded(true);
+      }
+    }
+  }, [isEditing, isCopy, templateData]);
+
   // Fetch all service principals to get display names
   const {
     data: servicePrincipals,
     isLoading: spLoading,
     isSuccess: spSuccess,
+    refetch: refetchServicePrincipals,
   } = ApiGetCallWithPagination({
     url: "/api/ExecServicePrincipals",
     queryKey: "execServicePrincipals",
-    enabled: permissionsLoaded && !!selectedPermissionSet?.addedFields?.Permissions,
+    enabled: permissionsLoaded || (isEditing && !templateLoading),
   });
+
+  // Refetch service principals when permissions are loaded
+  useEffect(() => {
+    if (permissionsLoaded && selectedPermissionSet?.addedFields?.Permissions) {
+      refetchServicePrincipals();
+    }
+  }, [permissionsLoaded, selectedPermissionSet, refetchServicePrincipals]);
 
   // Fetch additional details about the application if needed
   const {
@@ -256,117 +275,128 @@ const AppApprovalTemplateForm = ({
 
     return (
       <Box>
-        {Object.entries(permissions).map(([resourceId, resourcePerms]) => {
-          const hasAppPermissions =
-            resourcePerms.applicationPermissions && resourcePerms.applicationPermissions.length > 0;
-          const hasDelegatedPermissions =
-            resourcePerms.delegatedPermissions && resourcePerms.delegatedPermissions.length > 0;
+        {permissions &&
+          Object.entries(permissions).map(([resourceId, resourcePerms]) => {
+            // Skip resources with no permissions or invalid data
+            if (
+              !resourcePerms ||
+              (!resourcePerms.applicationPermissions && !resourcePerms.delegatedPermissions)
+            ) {
+              return null;
+            }
 
-          return (
-            <Box key={resourceId} sx={{ mb: 3 }}>
-              <Paper
-                variant="outlined"
-                sx={{
-                  p: 2,
-                  borderWidth: 1,
-                  borderRadius: 1,
-                  borderLeftWidth: 4,
-                  borderLeftColor:
-                    resourceId === "00000003-0000-0000-c000-000000000000"
-                      ? "primary.main"
-                      : "secondary.main",
-                }}
-              >
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-                  {getResourceDisplayName(resourceId)}
-                  <Typography
-                    component="span"
-                    variant="caption"
-                    sx={{ ml: 1, color: "text.secondary" }}
-                  >
-                    {resourceId}
+            const resourceName = getResourceDisplayName(resourceId);
+            const hasAppPermissions =
+              resourcePerms.applicationPermissions &&
+              resourcePerms.applicationPermissions.length > 0;
+            const hasDelegatedPermissions =
+              resourcePerms.delegatedPermissions && resourcePerms.delegatedPermissions.length > 0;
+
+            return (
+              <Box key={resourceId} sx={{ mb: 3 }}>
+                <Paper
+                  variant="outlined"
+                  sx={{
+                    p: 2,
+                    borderWidth: 1,
+                    borderRadius: 1,
+                    borderLeftWidth: 4,
+                    borderLeftColor:
+                      resourceId === "00000003-0000-0000-c000-000000000000"
+                        ? "primary.main"
+                        : "secondary.main",
+                  }}
+                >
+                  <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                    {resourceName}
+                    <Typography
+                      component="span"
+                      variant="caption"
+                      sx={{ ml: 1, color: "text.secondary" }}
+                    >
+                      {resourceId}
+                    </Typography>
                   </Typography>
-                </Typography>
 
-                {hasAppPermissions && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography
-                      variant="subtitle2"
-                      color="primary"
-                      sx={{
-                        mb: 0.5,
-                        display: "flex",
-                        alignItems: "center",
-                        borderBottom: "1px solid",
-                        borderColor: "divider",
-                        pb: 0.5,
-                      }}
-                    >
-                      Application Permissions ({resourcePerms.applicationPermissions.length})
-                    </Typography>
-                    <List dense disablePadding>
-                      {resourcePerms.applicationPermissions.map((perm, idx) => {
-                        const description =
-                          getPermissionDescription(resourceId, perm.id, "application") ||
-                          perm.description ||
-                          "No description available";
-                        return (
-                          <React.Fragment key={`app-${perm.id || idx}`}>
-                            {idx > 0 && <Divider component="li" variant="inset" />}
-                            <ListItem sx={{ py: 0.5 }}>
-                              <ListItemText
-                                primary={perm.value || perm.id}
-                                secondary={description}
-                              />
-                            </ListItem>
-                          </React.Fragment>
-                        );
-                      })}
-                    </List>
-                  </Box>
-                )}
+                  {hasAppPermissions && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography
+                        variant="subtitle2"
+                        color="primary"
+                        sx={{
+                          mb: 0.5,
+                          display: "flex",
+                          alignItems: "center",
+                          borderBottom: "1px solid",
+                          borderColor: "divider",
+                          pb: 0.5,
+                        }}
+                      >
+                        Application Permissions ({resourcePerms.applicationPermissions.length})
+                      </Typography>
+                      <List dense disablePadding>
+                        {resourcePerms.applicationPermissions.map((perm, idx) => {
+                          const description =
+                            getPermissionDescription(resourceId, perm.id, "application") ||
+                            perm.description ||
+                            "No description available";
+                          return (
+                            <React.Fragment key={`app-${perm.id || idx}`}>
+                              {idx > 0 && <Divider component="li" variant="inset" />}
+                              <ListItem sx={{ py: 0.5 }}>
+                                <ListItemText
+                                  primary={perm.value || perm.id}
+                                  secondary={description}
+                                />
+                              </ListItem>
+                            </React.Fragment>
+                          );
+                        })}
+                      </List>
+                    </Box>
+                  )}
 
-                {hasDelegatedPermissions && (
-                  <Box>
-                    <Typography
-                      variant="subtitle2"
-                      color="secondary"
-                      sx={{
-                        mb: 0.5,
-                        display: "flex",
-                        alignItems: "center",
-                        borderBottom: "1px solid",
-                        borderColor: "divider",
-                        pb: 0.5,
-                      }}
-                    >
-                      Delegated Permissions ({resourcePerms.delegatedPermissions.length})
-                    </Typography>
-                    <List dense disablePadding>
-                      {resourcePerms.delegatedPermissions.map((perm, idx) => {
-                        const description =
-                          getPermissionDescription(resourceId, perm.id, "delegated") ||
-                          perm.description ||
-                          "No description available";
-                        return (
-                          <React.Fragment key={`delegated-${perm.id || idx}`}>
-                            {idx > 0 && <Divider component="li" variant="inset" />}
-                            <ListItem sx={{ py: 0.5 }}>
-                              <ListItemText
-                                primary={perm.value || perm.id}
-                                secondary={description}
-                              />
-                            </ListItem>
-                          </React.Fragment>
-                        );
-                      })}
-                    </List>
-                  </Box>
-                )}
-              </Paper>
-            </Box>
-          );
-        })}
+                  {hasDelegatedPermissions && (
+                    <Box>
+                      <Typography
+                        variant="subtitle2"
+                        color="secondary"
+                        sx={{
+                          mb: 0.5,
+                          display: "flex",
+                          alignItems: "center",
+                          borderBottom: "1px solid",
+                          borderColor: "divider",
+                          pb: 0.5,
+                        }}
+                      >
+                        Delegated Permissions ({resourcePerms.delegatedPermissions.length})
+                      </Typography>
+                      <List dense disablePadding>
+                        {resourcePerms.delegatedPermissions.map((perm, idx) => {
+                          const description =
+                            getPermissionDescription(resourceId, perm.id, "delegated") ||
+                            perm.description ||
+                            "No description available";
+                          return (
+                            <React.Fragment key={`delegated-${perm.id || idx}`}>
+                              {idx > 0 && <Divider component="li" variant="inset" />}
+                              <ListItem sx={{ py: 0.5 }}>
+                                <ListItemText
+                                  primary={perm.value || perm.id}
+                                  secondary={description}
+                                />
+                              </ListItem>
+                            </React.Fragment>
+                          );
+                        })}
+                      </List>
+                    </Box>
+                  )}
+                </Paper>
+              </Box>
+            );
+          })}
       </Box>
     );
   };
@@ -459,7 +489,7 @@ const AppApprovalTemplateForm = ({
         <Stack spacing={2}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Typography variant="h6">Permission Preview</Typography>
-            {selectedPermissionSet && (
+            {selectedPermissionSet?.addedFields?.Permissions && (
               <Chip
                 color="info"
                 variant="outlined"
@@ -481,10 +511,12 @@ const AppApprovalTemplateForm = ({
 
           {templateLoading ? (
             <Skeleton variant="rectangular" height={300} />
-          ) : !selectedPermissionSet || !permissionsLoaded ? (
+          ) : !selectedPermissionSet?.addedFields?.Permissions || spLoading ? (
             <Alert severity="info">
-              {isEditing && templateLoading
+              {templateLoading
                 ? "Loading permission details..."
+                : spLoading
+                ? "Loading permission information..."
                 : "Select a permission set to see what permissions will be consented."}
             </Alert>
           ) : (
@@ -492,7 +524,8 @@ const AppApprovalTemplateForm = ({
               variant="outlined"
               sx={{ p: 2, height: "100%", overflow: "auto", maxHeight: 500 }}
             >
-              {!selectedPermissionSet.addedFields?.Permissions ? (
+              {!selectedPermissionSet.addedFields?.Permissions ||
+              Object.keys(selectedPermissionSet.addedFields.Permissions).length === 0 ? (
                 <Alert severity="warning">No permissions data available</Alert>
               ) : (
                 <>
@@ -516,130 +549,146 @@ const AppApprovalTemplateForm = ({
 
                   <CippCardTabPanel value={selectedPermissionTab} index={1}>
                     <Box>
-                      {Object.entries(selectedPermissionSet.addedFields.Permissions || {})
-                        .filter(
-                          ([_, perms]) =>
-                            perms.applicationPermissions && perms.applicationPermissions.length > 0
-                        )
-                        .map(([resourceId, resourcePerms]) => {
-                          const resourceName =
-                            spSuccess && servicePrincipals?.pages?.[0]?.Results
-                              ? servicePrincipals.pages[0].Results.find(
-                                  (sp) => sp.appId === resourceId
-                                )?.displayName || resourceId
-                              : resourceId;
+                      {selectedPermissionSet.addedFields.Permissions &&
+                        Object.entries(selectedPermissionSet.addedFields.Permissions)
+                          .filter(
+                            ([_, perms]) =>
+                              perms.applicationPermissions &&
+                              perms.applicationPermissions.length > 0
+                          )
+                          .map(([resourceId, resourcePerms]) => {
+                            const resourceName =
+                              spSuccess && servicePrincipals?.pages?.[0]?.Results
+                                ? servicePrincipals.pages[0].Results.find(
+                                    (sp) => sp.appId === resourceId
+                                  )?.displayName || resourceId
+                                : resourceId;
 
-                          return (
-                            <Box key={`app-${resourceId}`} sx={{ mb: 2 }}>
-                              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-                                {resourceName}
-                                <Typography
-                                  component="span"
-                                  variant="caption"
-                                  sx={{ ml: 1, color: "text.secondary" }}
-                                >
-                                  {resourceId}
+                            return (
+                              <Box key={`app-${resourceId}`} sx={{ mb: 2 }}>
+                                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                                  {resourceName}
+                                  <Typography
+                                    component="span"
+                                    variant="caption"
+                                    sx={{ ml: 1, color: "text.secondary" }}
+                                  >
+                                    {resourceId}
+                                  </Typography>
                                 </Typography>
-                              </Typography>
-                              <Paper variant="outlined" sx={{ p: 1 }}>
-                                <List dense disablePadding>
-                                  {resourcePerms.applicationPermissions.map((perm, idx) => {
-                                    // Get proper application permission description
-                                    const description =
-                                      spSuccess && servicePrincipals?.pages?.[0]?.Results
-                                        ? servicePrincipals.pages[0].Results.find(
-                                            (sp) => sp.appId === resourceId
-                                          )?.appRoles?.find((role) => role.id === perm.id)
-                                            ?.description ||
-                                          perm.description ||
-                                          "No description available"
-                                        : perm.description || "No description available";
+                                <Paper variant="outlined" sx={{ p: 1 }}>
+                                  <List dense disablePadding>
+                                    {resourcePerms.applicationPermissions.map((perm, idx) => {
+                                      // Get proper application permission description
+                                      const description =
+                                        spSuccess && servicePrincipals?.pages?.[0]?.Results
+                                          ? servicePrincipals.pages[0].Results.find(
+                                              (sp) => sp.appId === resourceId
+                                            )?.appRoles?.find((role) => role.id === perm.id)
+                                              ?.description ||
+                                            perm.description ||
+                                            "No description available"
+                                          : perm.description || "No description available";
 
-                                    return (
-                                      <React.Fragment key={`app-${perm.id || idx}`}>
-                                        {idx > 0 && <Divider component="li" variant="inset" />}
-                                        <ListItem sx={{ py: 0.5 }}>
-                                          <ListItemText
-                                            primary={perm.value || perm.id}
-                                            secondary={description}
-                                          />
-                                        </ListItem>
-                                      </React.Fragment>
-                                    );
-                                  })}
-                                </List>
-                              </Paper>
-                            </Box>
-                          );
-                        })}
+                                      return (
+                                        <React.Fragment key={`app-${perm.id || idx}`}>
+                                          {idx > 0 && <Divider component="li" variant="inset" />}
+                                          <ListItem sx={{ py: 0.5 }}>
+                                            <ListItemText
+                                              primary={perm.value || perm.id}
+                                              secondary={description}
+                                            />
+                                          </ListItem>
+                                        </React.Fragment>
+                                      );
+                                    })}
+                                  </List>
+                                </Paper>
+                              </Box>
+                            );
+                          })}
+                      {!Object.values(selectedPermissionSet.addedFields.Permissions || {}).some(
+                        (perms) =>
+                          perms.applicationPermissions && perms.applicationPermissions.length > 0
+                      ) && (
+                        <Alert severity="info">No application permissions in this template.</Alert>
+                      )}
                     </Box>
                   </CippCardTabPanel>
 
                   <CippCardTabPanel value={selectedPermissionTab} index={2}>
+                    {/* Similar checks for delegated permissions */}
                     <Box>
-                      {Object.entries(selectedPermissionSet.addedFields.Permissions || {})
-                        .filter(
-                          ([_, perms]) =>
-                            perms.delegatedPermissions && perms.delegatedPermissions.length > 0
-                        )
-                        .map(([resourceId, resourcePerms]) => {
-                          const resourceName =
-                            spSuccess && servicePrincipals?.pages?.[0]?.Results
-                              ? servicePrincipals.pages[0].Results.find(
-                                  (sp) => sp.appId === resourceId
-                                )?.displayName || resourceId
-                              : resourceId;
+                      {selectedPermissionSet.addedFields.Permissions &&
+                        Object.entries(selectedPermissionSet.addedFields.Permissions)
+                          .filter(
+                            ([_, perms]) =>
+                              perms.delegatedPermissions && perms.delegatedPermissions.length > 0
+                          )
+                          .map(([resourceId, resourcePerms]) => {
+                            const resourceName =
+                              spSuccess && servicePrincipals?.pages?.[0]?.Results
+                                ? servicePrincipals.pages[0].Results.find(
+                                    (sp) => sp.appId === resourceId
+                                  )?.displayName || resourceId
+                                : resourceId;
 
-                          return (
-                            <Box key={`delegated-${resourceId}`} sx={{ mb: 2 }}>
-                              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-                                {resourceName}
-                                <Typography
-                                  component="span"
-                                  variant="caption"
-                                  sx={{ ml: 1, color: "text.secondary" }}
-                                >
-                                  {resourceId}
+                            return (
+                              <Box key={`delegated-${resourceId}`} sx={{ mb: 2 }}>
+                                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                                  {resourceName}
+                                  <Typography
+                                    component="span"
+                                    variant="caption"
+                                    sx={{ ml: 1, color: "text.secondary" }}
+                                  >
+                                    {resourceId}
+                                  </Typography>
                                 </Typography>
-                              </Typography>
-                              <Paper variant="outlined" sx={{ p: 1 }}>
-                                <List dense disablePadding>
-                                  {resourcePerms.delegatedPermissions.map((perm, idx) => {
-                                    // Get proper delegated permission description - prefer userConsentDescription
-                                    const spData =
-                                      spSuccess && servicePrincipals?.pages?.[0]?.Results
-                                        ? servicePrincipals.pages[0].Results.find(
-                                            (sp) => sp.appId === resourceId
+                                <Paper variant="outlined" sx={{ p: 1 }}>
+                                  <List dense disablePadding>
+                                    {resourcePerms.delegatedPermissions.map((perm, idx) => {
+                                      // Get proper delegated permission description - prefer userConsentDescription
+                                      const spData =
+                                        spSuccess && servicePrincipals?.pages?.[0]?.Results
+                                          ? servicePrincipals.pages[0].Results.find(
+                                              (sp) => sp.appId === resourceId
+                                            )
+                                          : null;
+
+                                      const permScope = spData
+                                        ? spData.publishedPermissionScopes?.find(
+                                            (scope) => scope.id === perm.id
                                           )
                                         : null;
 
-                                    const permScope = spData
-                                      ? spData.publishedPermissionScopes?.find(
-                                          (scope) => scope.id === perm.id
-                                        )
-                                      : null;
+                                      const description = permScope
+                                        ? permScope.userConsentDescription || permScope.description
+                                        : perm.description || "No description available";
 
-                                    const description = permScope
-                                      ? permScope.userConsentDescription || permScope.description
-                                      : perm.description || "No description available";
-
-                                    return (
-                                      <React.Fragment key={`delegated-${perm.id || idx}`}>
-                                        {idx > 0 && <Divider component="li" variant="inset" />}
-                                        <ListItem sx={{ py: 0.5 }}>
-                                          <ListItemText
-                                            primary={perm.value || perm.id}
-                                            secondary={description}
-                                          />
-                                        </ListItem>
-                                      </React.Fragment>
-                                    );
-                                  })}
-                                </List>
-                              </Paper>
-                            </Box>
-                          );
-                        })}
+                                      return (
+                                        <React.Fragment key={`delegated-${perm.id || idx}`}>
+                                          {idx > 0 && <Divider component="li" variant="inset" />}
+                                          <ListItem sx={{ py: 0.5 }}>
+                                            <ListItemText
+                                              primary={perm.value || perm.id}
+                                              secondary={description}
+                                            />
+                                          </ListItem>
+                                        </React.Fragment>
+                                      );
+                                    })}
+                                  </List>
+                                </Paper>
+                              </Box>
+                            );
+                          })}
+                      {!Object.values(selectedPermissionSet.addedFields.Permissions || {}).some(
+                        (perms) =>
+                          perms.delegatedPermissions && perms.delegatedPermissions.length > 0
+                      ) && (
+                        <Alert severity="info">No delegated permissions in this template.</Alert>
+                      )}
                     </Box>
                   </CippCardTabPanel>
                 </>
