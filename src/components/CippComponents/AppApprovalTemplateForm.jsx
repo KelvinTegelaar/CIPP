@@ -386,16 +386,10 @@ const AppApprovalTemplateForm = ({
     <Grid container spacing={2} sx={{ mb: 2 }}>
       <Grid size={{ xs: 12, sm: 6 }}>
         <Stack spacing={2}>
+          <Typography variant="h6">App Approval Template Details</Typography>
           {templateLoading && <Skeleton variant="rectangular" height={300} />}
           {(!templateLoading || !isEditing) && (
             <>
-              <Typography variant="body2">
-                {isCopy
-                  ? "Create a copy of an existing app approval template with your own modifications."
-                  : isEditing
-                  ? "Edit this app approval template."
-                  : "Create a new app approval template to define application permissions to consent."}
-              </Typography>
               <Alert severity="info">
                 App approval templates allow you to define an application with its permissions that
                 can be deployed to multiple tenants. Select an application and permission set to
@@ -501,10 +495,7 @@ const AppApprovalTemplateForm = ({
                 : "Select a permission set to see what permissions will be consented."}
             </Alert>
           ) : (
-            <Paper
-              variant="outlined"
-              sx={{ p: 2, height: "100%", overflow: "auto", maxHeight: 500 }}
-            >
+            <Paper variant="outlined" sx={{ p: 2, height: "100%", overflow: "auto" }}>
               {!selectedPermissionSet.addedFields?.Permissions ||
               Object.keys(selectedPermissionSet.addedFields.Permissions).length === 0 ? (
                 <Alert severity="warning">No permissions data available</Alert>
