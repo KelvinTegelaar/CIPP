@@ -1,5 +1,6 @@
 import { useWatch } from "react-hook-form";
 import isEqual from "lodash/isEqual"; // lodash for deep comparison
+import get from "lodash/get"; // Add lodash get for safer property access
 import React from "react";
 
 export const CippFormCondition = (props) => {
@@ -13,33 +14,39 @@ export const CippFormCondition = (props) => {
     formControl,
     disabled = false,
   } = props;
+
   if (
     field === undefined ||
     compareValue === undefined ||
     children === undefined ||
     formControl === undefined
   ) {
+    console.warn("CippFormCondition: Missing required props", {
+      field,
+      compareValue,
+      children,
+      formControl,
+    });
     return null;
   }
 
-  let watcher = useWatch({ control: formControl.control, name: field });
+  // Watch the form field value
+  const watcher = useWatch({
+    control: formControl.control,
+    name: field,
+  });
 
-  if (propertyName.includes(".")) {
-    propertyName.split(".").forEach((prop) => {
-      if (watcher?.[prop] !== undefined) {
-        watcher = watcher?.[prop];
-      }
-      if (compareValue?.[prop] !== undefined) {
-        compareValue = compareValue?.[prop];
-      }
-    });
-  } else {
-    if (watcher?.[propertyName] !== undefined) {
-      watcher = watcher?.[propertyName];
-    }
+  // Safer property access
+  let watchedValue = watcher;
+  let compareTargetValue = compareValue;
 
-    if (compareValue?.[propertyName] !== undefined) {
-      compareValue = compareValue?.[propertyName];
+  if (propertyName && propertyName !== "value") {
+    if (propertyName.includes(".")) {
+      watchedValue = get(watcher, propertyName);
+      compareTargetValue = get(compareValue, propertyName);
+    } else {
+      watchedValue = watcher?.[propertyName];
+      compareTargetValue = compareValue?.[propertyName];
     }
   }
 
@@ -63,6 +70,19 @@ export const CippFormCondition = (props) => {
     return disableChildren(children);
   }
 
+  // Improved debugging with more context
+  /*console.log("CippFormCondition", {
+    field,
+    watchedValue,
+    watcher,
+    compareTargetValue,
+    compareValue,
+    compareType,
+    action,
+    propertyName,
+  });*/
+
+  // Evaluation logic
   switch (compareType) {
     case "regex":
       if (watcher?.match(new RegExp(compareValue))) {
@@ -74,7 +94,7 @@ export const CippFormCondition = (props) => {
       return null;
     case "is":
       // Deep comparison for objects and arrays
-      if (isEqual(watcher, compareValue)) {
+      if (isEqual(watchedValue, compareTargetValue)) {
         return children;
       }
       if (action === "disable") {
@@ -84,7 +104,7 @@ export const CippFormCondition = (props) => {
 
     case "isNot":
       // Deep comparison for objects and arrays (negation)
-      if (!isEqual(watcher, compareValue)) {
+      if (!isEqual(watchedValue, compareTargetValue)) {
         return children;
       }
       if (action === "disable") {
