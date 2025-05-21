@@ -111,6 +111,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl="/api/ListGroupTemplates"
       queryKey="GroupTemplatesList"
+      tenantInTitle={false}
       actions={actions}
       cardButton={
         <>
