@@ -10,15 +10,12 @@ export const CippNotificationsStep = (props) => {
       <Stack spacing={2}>
         <Typography variant="h6">Notification Settings</Typography>
         <Alert severity="info">
-          Configure your notification settings. These settings will determine how you receive alerts from CIPP.
-          You can test your configuration using the "Send Test Alert" button.
+          Configure your notification settings. These settings will determine how you receive alerts
+          from CIPP. You can test your configuration using the "Send Test Alert" button. Don't want
+          to setup notifications yet? You can skip this step and configure it later.
         </Alert>
-        
         {/* Use the reusable notification form component */}
-        <CippNotificationForm 
-          formControl={formControl} 
-          showTestButton={true}
-        />
+        <CippNotificationForm formControl={formControl} showTestButton={true} />
       </Stack>
 
       {/* Use the wizard step buttons for navigation */}

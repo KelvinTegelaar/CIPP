@@ -4,7 +4,6 @@ import CippFormComponent from "./CippFormComponent";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "./CippApiDialog";
-import { useWatch } from "react-hook-form";
 
 export const CippNotificationForm = ({
   formControl,
@@ -49,36 +48,32 @@ export const CippNotificationForm = ({
   // Load notification config data into form
   useEffect(() => {
     if (listNotificationConfig.isSuccess) {
-      var logsToInclude = [];
-      listNotificationConfig.data?.logsToInclude.map((log) => {
-        var logType = logTypes.find((logType) => logType.value === log);
-        if (logType) {
-          logsToInclude.push(logType);
-        }
-      });
+      const logsToInclude = listNotificationConfig.data?.logsToInclude
+        ?.map((log) => logTypes.find((logType) => logType.value === log))
+        .filter(Boolean);
+
+      const Severity = listNotificationConfig.data?.Severity?.map((sev) =>
+        severityTypes.find((stype) => stype.value === sev)
+      ).filter(Boolean);
 
       formControl.reset({
         ...formControl.getValues(),
         email: listNotificationConfig.data?.email,
         webhook: listNotificationConfig.data?.webhook,
-        logsToInclude: logsToInclude,
-        Severity: listNotificationConfig.data?.Severity.map((severity) => {
-          return severityTypes.find((severityType) => severityType.value === severity);
-        }),
+        logsToInclude,
+        Severity,
         onePerTenant: listNotificationConfig.data?.onePerTenant,
         sendtoIntegration: listNotificationConfig.data?.sendtoIntegration,
         includeTenantId: listNotificationConfig.data?.includeTenantId,
       });
     }
   }, [listNotificationConfig.isSuccess]);
-  const values = useWatch({
-    control: formControl.control,
-  });
+
   return (
     <>
       <Box sx={{ my: 2 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12}>
             <CippFormComponent
               disabled={listNotificationConfig.isFetching}
               type="textField"
@@ -88,7 +83,7 @@ export const CippNotificationForm = ({
               formControl={formControl}
             />
           </Grid>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12}>
             <CippFormComponent
               disabled={listNotificationConfig.isFetching}
               type="textField"
@@ -97,7 +92,7 @@ export const CippNotificationForm = ({
               formControl={formControl}
             />
           </Grid>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12}>
             <CippFormComponent
               disabled={listNotificationConfig.isFetching}
               type="autoComplete"
@@ -105,10 +100,10 @@ export const CippNotificationForm = ({
               name="logsToInclude"
               options={logTypes}
               formControl={formControl}
-              multiple={true}
+              multiple
             />
           </Grid>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12}>
             <CippFormComponent
               disabled={listNotificationConfig.isFetching}
               type="autoComplete"
@@ -117,10 +112,10 @@ export const CippNotificationForm = ({
               isFetching={listNotificationConfig.isFetching}
               options={severityTypes}
               formControl={formControl}
-              multiple={true}
+              multiple
             />
           </Grid>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12}>
             <CippFormComponent
               type="switch"
               disabled={listNotificationConfig.isFetching}
@@ -137,7 +132,7 @@ export const CippNotificationForm = ({
             />
           </Grid>
           {showTestButton && (
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12}>
               <Button variant="outlined" onClick={notificationDialog.handleOpen}>
                 Send Test Alert
               </Button>
@@ -145,12 +140,10 @@ export const CippNotificationForm = ({
           )}
         </Grid>
       </Box>
-
-      {/* Test Alert Dialog */}
       {showTestButton && (
         <CippApiDialog
-          row={{ values, ...{ writeLog: true } }}
-          useDefaultValues={true}
+          row={formControl.getValues()}
+          useDefaultValues
           title="Send Test Alert"
           createDialog={notificationDialog}
           fields={[
@@ -175,7 +168,10 @@ export const CippNotificationForm = ({
               "Are you sure you want to send a test alert to the email address(es) and webhook URL configured?",
             url: "/api/ExecAddAlert",
             type: "POST",
-            data: { text: "This is a test from Notification Settings" },
+            dataFunction: (row) => ({
+              ...row,
+              text: "This is a test from Notification Settings",
+            }),
           }}
         />
       )}
