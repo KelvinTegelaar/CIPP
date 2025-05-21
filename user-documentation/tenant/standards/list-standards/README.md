@@ -16,13 +16,13 @@ Explore CIPP's standards in an easy to digest format using [https://standards.ci
 
 ## Page Layout
 
-### **Actions**
+### **Action Buttons**
 
 {% content-ref url="../template.md" %}
 [template.md](../template.md)
 {% endcontent-ref %}
 
-### **Table Columns**
+### **Table Details**
 
 | Column           | Description                                                                                                                                                                                                   |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -34,16 +34,9 @@ Explore CIPP's standards in an easy to digest format using [https://standards.ci
 | Updated At       | Relative time since the template was updated                                                                                                                                                                  |
 | GUID             | The GUID for the template                                                                                                                                                                                     |
 
-### **Per-Row Actions**
+### **Table Actions**
 
-| Action                                            | Description                                                                                                                                             |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [View Tenant Report](../compare.md)               | This will open a CIPP created report that compares the standards template to the settings discovered for the tenant currently selected in the drop down |
-| [Edit Template](../template.md)                   | Opens the template configuration page                                                                                                                   |
-| Clone & Edit Template                             | Copies the existing template and lets you make changes before saving as a new template                                                                  |
-| Run Template Now (Currently Selected Tenant only) | Runs the template on the tenant selected in the top menu bar                                                                                            |
-| Run Template Now (All Tenants in Template)        | Runs the template for all configured tenants                                                                                                            |
-| Delete Template                                   | Deletes the template                                                                                                                                    |
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td><a href="../compare.md">View Tenant Report</a></td><td>This will open a CIPP created report that compares the standards template to the settings discovered for the tenant currently selected in the drop down</td><td>false</td></tr><tr><td><a href="../template.md">Edit Template</a></td><td>Opens the template configuration page</td><td>false</td></tr><tr><td>Clone &#x26; Edit Template</td><td>Copies the existing template and lets you make changes before saving as a new template</td><td>false</td></tr><tr><td>Run Template Now (Currently Selected Tenant only)</td><td>Runs the template on the tenant selected in the top menu bar</td><td>true</td></tr><tr><td>Run Template Now (All Tenants in Template)</td><td>Runs the template for all configured tenants</td><td>true</td></tr><tr><td>Save to GitHub</td><td>Saves the selected template(s) to your selected GitHub repository</td><td>true</td></tr><tr><td>Delete Template</td><td>Deletes the template</td><td>true</td></tr></tbody></table>
 
 ***
 

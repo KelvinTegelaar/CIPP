@@ -4,33 +4,20 @@
 
 This page lists all devices registered for Autopilot.
 
-### Actions
+### Action Buttons
 
 | Action                | Description                                                                             |
 | --------------------- | --------------------------------------------------------------------------------------- |
 | Add Autopilot Devices | Opens [Add Autopilot Device](add-device.md)                                             |
 | Sync Devices          | Kicks off a sync of all autopilot devices to pull down up todate configuration profiles |
 
-### Details <a href="#listdevices-details" id="listdevices-details"></a>
+### Table Details <a href="#listdevices-details" id="listdevices-details"></a>
 
-| Fields       | Description                                     |
-| ------------ | ----------------------------------------------- |
-| Display Name | The display name of the device.                 |
-| Serial       | The serial number of the device.                |
-| Model        | The model of the device.                        |
-| Manufacturer | The manufacturer of the device.                 |
-| Group Tag    | The autopilot group tag assigned to the device. |
-| Enrollment   | The enrollment status of the device.            |
+The properties returned are for the Graph resouce type windowsAutopilotDeviceIdentity. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-enrollment-windowsautopilotdeviceidentity?view=graph-rest-1.0#properties).
 
-### Actions
+### Table Actions
 
-| Action         | Description                                                     |
-| -------------- | --------------------------------------------------------------- |
-| Assign Device  | Opens a modal to select the user to assign the device to        |
-| Rename Device  | Opens a modal to set a new display name for the device          |
-| Edit Group Tag | Opens a modal to enter a new Autopilot group tag for the device |
-| Delete Device  | Opens a modal to confirm deletion of the device from Autopilot  |
-| More Info      | Opens the extended information flyout                           |
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Assign Device</td><td>Opens a modal to select the user to assign the device to</td><td>true</td></tr><tr><td>Rename Device</td><td>Opens a modal to set a new display name for the device</td><td>true</td></tr><tr><td>Edit Group Tag</td><td>Opens a modal to enter a new Autopilot group tag for the device</td><td>true</td></tr><tr><td>Delete Device</td><td>Opens a modal to confirm deletion of the device from Autopilot</td><td>true</td></tr><tr><td>More Info</td><td>Opens the extended information flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

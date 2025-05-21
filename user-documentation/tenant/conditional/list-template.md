@@ -1,14 +1,14 @@
 # CA Templates
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page lists available conditional access templates.
 
-### **Looking for documentation contributors**
+### Table Details
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+The table will list available condition access templates that can be deployed to additional tenants, added to standards, etc.
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Save to GitHub</td><td>Saves template to the selected GitHub repo</td><td>true</td></tr><tr><td>Delete Template</td><td>Opens a modal to confirm you want to delete the template</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

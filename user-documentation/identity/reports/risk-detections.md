@@ -2,16 +2,13 @@
 
 This page will display the risk detections for the selected tenant or AllTenants
 
-### Available Columns
+### Table Columns
 
 This table utilizes the column headings returned from Graph API. For reference on this, please see the Graph [documentation for riskDetection](https://learn.microsoft.com/en-us/graph/api/resources/riskdetection?view=graph-rest-beta).
 
-### Per-Detection Actions
+### Table Actions
 
-| Action                       | Description                                            |
-| ---------------------------- | ------------------------------------------------------ |
-| Research Compromised Account | Launches the CIPP user page to research the compromise |
-| More Info                    | Opens the Extended Info flyout                         |
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Research Compromised Account</td><td>Launches the CIPP user page to research the compromise</td><td>false</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

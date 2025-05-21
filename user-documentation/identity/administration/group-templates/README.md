@@ -2,7 +2,19 @@
 
 The Group Templates page allows administrators to define templates for creating groups. These templates can speed up the process of creating new groups by pre-defining certain group parameters. Once a template is created, it can be reused multiple times to create new groups with similar settings.
 
-| Fields         | Description                                                                                                                                                                                                                                               |
+### Action Buttons
+
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
+
+{% content-ref url="deploy.md" %}
+[deploy.md](deploy.md)
+{% endcontent-ref %}
+
+### Column Details
+
+| Column         | Description                                                                                                                                                                                                                                               |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Display Name   | This is the name that will be given to the group when a group is created using this template. It should be unique and descriptive.                                                                                                                        |
 | Description    | This field should contain a more detailed explanation of the group's purpose. This might include information about who should be added to the group, what resources the group provides access to, or any other information that helps describe the group. |
@@ -17,15 +29,9 @@ For some types of groups, additional fields become available when that type is s
 * **Allow External:** For Distribution Lists, a checkbox labeled "Let people outside the organization email the group" becomes available.
 * **Dynamic Group Parameters:** For Dynamic Groups, a text box for entering the dynamic group parameters syntax becomes available e.g.: `(user.userPrincipalName -notContains "#EXT#@") -and (user.userType -ne "Guest")`.
 
-### Actions
+### Table Actions
 
-{% content-ref url="add.md" %}
-[add.md](add.md)
-{% endcontent-ref %}
-
-{% content-ref url="deploy.md" %}
-[deploy.md](deploy.md)
-{% endcontent-ref %}
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Save to GitHub</td><td>Saves the template to your GitHub repository</td><td>true</td></tr><tr><td>Delete Template</td><td>Deleted the template</td><td>true</td></tr><tr><td>More Info</td><td>Opens the extended info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

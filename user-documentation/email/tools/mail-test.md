@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Mail Test
 
 The Mail Testing Tool is a powerful utility that allows you to read messages in an inbox and extract important information from the headers. It specifically focuses on processing DKIM, DMARC, and SPF results, providing you with valuable insights into the email authentication mechanisms used by the sender.

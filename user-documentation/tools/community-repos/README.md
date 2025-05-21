@@ -10,16 +10,16 @@ Extending the functionality of selecting a tenant as a template library, CIPP is
 This page is powered by the GitHub integration. CIPP will be able to populate some of this information, even if you don't set up your own Personal Access Token on the integration page. See the GitHub integration page for more.
 {% endhint %}
 
-### Actions
+### Action Buttons
 
 | Action            | Description                                                                                                                                                                                    |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Find a Repository | Opens a modal to allow you to locate additional community GitHub repositories to add to your list. You can search by GitHub user or organization or enter a repository in "owner/repo" format. |
 | Create Repository | Opens a modal to allow you to create a new GitHub repository. Requires you to use your own Personal Access Token on the GitHub integration.                                                    |
 
-### Table Rows
+### Table Details
 
-| Row                         | Description                                                                                           |
+| Column                      | Description                                                                                           |
 | --------------------------- | ----------------------------------------------------------------------------------------------------- |
 | Name                        | The name of the GitHub repo                                                                           |
 | Owner                       | The owner (user or org) of the GitHub repor                                                           |
@@ -37,13 +37,9 @@ This page is powered by the GitHub integration. CIPP will be able to populate so
 | Repo Permissions - Triage   | A Boolean field that indicates if the GitHub integration has been granted triage rights to the repo   |
 | Repo Permissions - Pull     | A Boolean field that indicates if the GitHub integration has been granted pull rights to the repo     |
 
-### Per-Row Actions
+### Table Actions
 
-| Action            | Description                                                                                                                                     |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| View Templates    | Opens a new page where you can see the templates contained in the repo                                                                          |
-| Delete            | Deletes the repo from your list of available community repositories. NOTE: Does not delete the repo in GitHub if this is a private repo you own |
-| Set Upload Branch | For repositories that you own, this will set the branch that you upload templates to                                                            |
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Templates</td><td>Opens a new page where you can see the templates contained in the repo</td><td>false</td></tr><tr><td>Delete</td><td>Deletes the repo from your list of available community repositories. NOTE: Does not delete the repo in GitHub if this is a private repo you own</td><td>true</td></tr><tr><td>Set Upload Branch</td><td>For repositories that you own, this will set the branch that you upload templates to</td><td>false</td></tr></tbody></table>
 
 ***
 

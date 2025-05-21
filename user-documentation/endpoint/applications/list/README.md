@@ -6,33 +6,19 @@ description: Interact with Microsoft Endpoint Manager applications.
 
 The List Applications page shows a list of line-of-business applications configured for deployment in Microsoft Endpoint Manager / Intune.
 
-You can assign the application to All Users / All Devices from the more button.
+### Action Buttons
+
+{% content-ref url="add-application/" %}
+[add-application](add-application/)
+{% endcontent-ref %}
 
 ### Details
 
-| Fields                     | Description                                                   |
-| -------------------------- | ------------------------------------------------------------- |
-| Name                       | The name of the application.                                  |
-| Published                  | The published status of the application.                      |
-| Install Command            | The command to install the application.                       |
-| Uninstall Command          | The command to uninstall the application.                     |
-| Install As                 | Whether the application should install as system or the user. |
-| Restart Behaviour          | Whether the app installation may trigger a restart.           |
-| Assigned to Groups         | Whether the app has active group assignments.                 |
-| Created At                 | The creation date and time of the application.                |
-| Modified At                | The last modified date and time for the application.          |
-| Featured App               | Whether the app is a featured app in the portal.              |
-| # of Dependent Apps        | How many dependent apps exist for the application.            |
-| Detection Type             | Detection rule, if one exists.                                |
-| Detection File/Folder Name | Detection Rule Folder Name Details.                           |
-| Detection File/Folder Path | Detection Rule Path details.                                  |
+The properties returned are for the Graph resouce type mobileApp. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-apps-mobileapp?view=graph-rest-1.0#properties).
 
-### Actions
+### Table Actions
 
-* Assign to All Users
-* Assign to All Devices
-* Assign Globally (All Users / All Devices)
-* Delete Application
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Assign to All Users</td><td>Assigns the application to all users in the tenant</td><td>true</td></tr><tr><td>Assign to All Devices</td><td>Assigns the application to all devices in the tenant</td><td>true</td></tr><tr><td>Assign Globally (All Users / All Devices)</td><td>Assigns to all user and all devices in the tenant</td><td>true</td></tr><tr><td>Delete Application</td><td>Opens a modal to confirm you want to delete the application from the tenant</td><td>true</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

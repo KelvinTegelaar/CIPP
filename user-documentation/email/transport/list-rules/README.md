@@ -1,14 +1,18 @@
-# Transport rules
+# Transport Rules
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+### **Action Buttons**
 
-### **Looking for documentation contributors**
+{% content-ref url="deploy-template.md" %}
+[deploy-template.md](deploy-template.md)
+{% endcontent-ref %}
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+### Table Details
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+The properties returned are for the Exchange PowerShell command `Get-TransportRule`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-transportrule?view=exchange-ps).&#x20;
+
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Create template based on rule</td><td>Creates a template based on the selected rule(s)</td><td>true</td></tr><tr><td>Enable Rule</td><td>Enables the selected rule(s)</td><td>true</td></tr><tr><td>Disable Rule</td><td>Disables the selected rule(s)</td><td>true</td></tr><tr><td>Delete Rule</td><td>Deletes the selected rule(s)</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

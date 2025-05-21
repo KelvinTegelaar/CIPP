@@ -2,21 +2,19 @@
 
 The List Teams page lists all the teams along with name, description and an overview of whether it's a public or private team.
 
-#### Columns <a href="#listteams-details" id="listteams-details"></a>
+### Action Buttons
 
-| Columns       | Description                            |
-| ------------- | -------------------------------------- |
-| ID            | The GUID for the team                  |
-| Display Name  | The name of the team.                  |
-| Description   | The description of the team.           |
-| Visibility    | Whether the team is public or private. |
-| Mail Nickname | The mail nickname for the team.        |
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
 
-### Actions
+### Table Details <a href="#listteams-details" id="listteams-details"></a>
 
-| Action     | Description                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| Edit Group | Opens the group in the [Edit Group](../../../identity/administration/groups/edit.md) page. |
+The properties returned are for the Graph resource type team. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/team?view=graph-rest-1.0#properties).
+
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Group</td><td>Opens the group in the <a href="../../../identity/administration/groups/edit.md">Edit Group</a> page.</td><td>false</td></tr></tbody></table>
 
 ***
 

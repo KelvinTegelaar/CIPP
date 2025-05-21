@@ -8,17 +8,13 @@ description: Explore and review members for M365 roles
 
 The Roles page provides a comprehensive list of all Microsoft 365 roles such as Billing Administrator, Global Administrator, etc. It offers the ability to view members associated with each role. This capability promotes efficiency and transparency in managing role assignments.
 
-### Details
+### Column Details
 
-The Roles page presents each role in a structured table, including the following details:
+The properties returned are for the Graph resource type directoryRole. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/directoryrole?view=graph-rest-1.0#properties). Additionally, CIPP will include a column outlining who is a member of each role.
 
-#### Fields
+### Table Actions
 
-<table><thead><tr><th width="209">Field</th><th>Description</th></tr></thead><tbody><tr><td>Display Name</td><td>The official name of the role.</td></tr><tr><td>Description</td><td>A brief summary of the role.</td></tr><tr><td>Members</td><td>A list of members assigned to the role.</td></tr></tbody></table>
-
-### Per-Role Actions
-
-<table><thead><tr><th width="206">Action / Feature</th><th>Description</th></tr></thead><tbody><tr><td>More Info</td><td>Displays the Extended Info flyout</td></tr></tbody></table>
+<table><thead><tr><th>Action / Feature</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>More Info</td><td>Displays the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ### Considerations
 

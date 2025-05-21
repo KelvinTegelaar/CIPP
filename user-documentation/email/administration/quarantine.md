@@ -2,7 +2,9 @@
 
 This page will display all messages quarantined by Microsoft Defender.
 
-### Table Columns
+### Table Details
+
+The properties returned are for the Exchange PowerShell command `Export-QuarantineMessage`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/export-quarantinemessage?view=exchange-ps).&#x20;
 
 | Column         | Description                                                     |
 | -------------- | --------------------------------------------------------------- |
@@ -11,16 +13,9 @@ This page will display all messages quarantined by Microsoft Defender.
 | Subject        | The message's subject                                           |
 | Sender Address | The e-mail address of the sender                                |
 
-### Actions
+### Table Actions
 
-|                        |                                                                                                      | Bulk Action Available |
-| ---------------------- | ---------------------------------------------------------------------------------------------------- | --------------------- |
-| View Message           | Opens modal to display the message contents                                                          | X                     |
-| View Message Trace     | Opens a modal with a table of the message's trace history                                            | X                     |
-| Release                | Opens modal to confirm you want to release the message                                               | X                     |
-| Deny                   | Opens modal to confirm you want to deny release of the message                                       | X                     |
-| Release & Allow Sender | Opens modal to confirm you want to release the message and add the sender to the allowed sender list | X                     |
-| More Info              | Opens Extended Info flyout                                                                           |                       |
+<table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Message</td><td>Opens modal to display the message contents</td><td>true</td></tr><tr><td>View Message Trace</td><td>Opens a modal with a table of the message's trace history</td><td>true</td></tr><tr><td>Release</td><td>Opens modal to confirm you want to release the message</td><td>true</td></tr><tr><td>Deny</td><td>Opens modal to confirm you want to deny release of the message</td><td>true</td></tr><tr><td>Release &#x26; Allow Sender</td><td>Opens modal to confirm you want to release the message and add the sender to the allowed sender list</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

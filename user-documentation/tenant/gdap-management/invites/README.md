@@ -6,7 +6,7 @@ description: Easily find all the valid unused GDAP invites in your partner organ
 
 This page provides a table of valid GDAP invites that have not been used.&#x20;
 
-### Actions
+### Action Buttons
 
 {% content-ref url="add.md" %}
 [add.md](add.md)
@@ -21,7 +21,7 @@ This page provides a table of valid GDAP invites that have not been used.&#x20;
 | Invite URL     | URL for the customer to accept the relationship                                                                                       |
 | Onboarding URL | Direct link to start the [CIPP tenant onboarding](../onboarding.md) process, allowing users to swiftly begin and complete onboarding. |
 
-### Per-Row Actions
+### Table Actions
 
 | Action        | Description                                                                               |
 | ------------- | ----------------------------------------------------------------------------------------- |
