@@ -49,11 +49,11 @@ const ApplicationDeploymentForm = () => {
   };
 
   const ChocosearchResults = ApiPostCall({
-    urlfromData: true,
+    urlFromData: true,
   });
 
   const winGetSearchResults = ApiPostCall({
-    urlfromData: true,
+    urlFromData: true,
   });
 
   const searchApp = (searchText, type) => {
