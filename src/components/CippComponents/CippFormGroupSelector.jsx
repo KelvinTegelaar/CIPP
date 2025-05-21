@@ -3,13 +3,16 @@ import { CippFormComponent } from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 
-export const CippFormDomainSelector = ({
+export const CippFormGroupSelector = ({
   formControl,
   name,
   label,
   allTenants = false,
-  type = "multiple",
   multiple = false,
+  type = "multiple",
+  select,
+  addedField,
+  valueField,
   ...other
 }) => {
   const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
@@ -22,20 +25,26 @@ export const CippFormDomainSelector = ({
       formControl={formControl}
       multiple={multiple}
       api={{
-        autoSelectFirstItem: true,
+        addedField: addedField,
         tenantFilter: currentTenant ? currentTenant.value : selectedTenant,
-        queryKey: `listDomains-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
         url: "/api/ListGraphRequest",
         dataKey: "Results",
-        labelField: (option) => `${option.id}`,
-        valueField: "id",
+        labelField: (option) => option.displayName,
+        valueField: valueField ? valueField : "id",
+        queryKey: `ListGroups-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
         data: {
-          Endpoint: "domains",
+          Endpoint: "groups",
           manualPagination: true,
+          $select: select ? select : "id,displayName,description",
           $count: true,
-          $top: 99,
+          $orderby: "displayName",
+          $top: 999,
         },
       }}
+      creatable={false}
+      {...other}
     />
   );
 };
+
+export default CippFormGroupSelector;

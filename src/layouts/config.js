@@ -210,6 +210,20 @@ export const nativeMenuItems = [
           },
         ],
       },
+      {
+        title: "Safe Links",
+        path: "/security/safelinks",
+        items: [
+          {
+            title: "Safe Links Policies",
+            path: "/security/safelinks",
+          },
+          {
+            title: "Safe Links Templates",
+            path: "/security/safelinks-template",
+          },
+        ],
+      },
     ],
   },
   {
@@ -369,10 +383,6 @@ export const nativeMenuItems = [
             path: "/email/reports/antiphishing-filters",
           },
           { title: "Malware Filters", path: "/email/reports/malware-filters" },
-          {
-            title: "Safe Links Filters",
-            path: "/email/reports/safelinks-filters",
-          },
           {
             title: "Safe Attachments Filters",
             path: "/email/reports/safeattachments-filters",
