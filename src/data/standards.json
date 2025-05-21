@@ -2346,6 +2346,13 @@
         "required": false,
         "label": "Phishing Simulation Urls",
         "name": "standards.PhishingSimulations.PhishingSimUrls"
+      },
+      {
+        "type": "switch",
+        "label": "Remove extra urls",
+        "name": "standards.PhishingSimulations.RemoveExtraUrls",
+        "defaultValue": false,
+        "required": false
       }
     ],
     "label": "Phishing Simulation Configuration",
@@ -2458,6 +2465,13 @@
     "tag": [],
     "helpText": "This adds allowed domains to the Spoof Intelligence Allow/Block List.",
     "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Remove extra domains from the allow list",
+        "name": "standards.PhishSimSpoofIntelligence.RemoveExtraDomains",
+        "defaultValue": false,
+        "required": false
+      },
       {
         "type": "autoComplete",
         "multiple": true,
