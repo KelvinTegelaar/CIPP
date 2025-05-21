@@ -87,7 +87,7 @@ const Page = () => {
   });
 
   const userBulkRequest = ApiPostCall({
-    urlfromdata: true,
+    urlFromData: true,
   });
 
   useEffect(() => {
