@@ -92,14 +92,6 @@ export const CippTenantModeDeploy = (props) => {
       loading: true,
     });
 
-    // Log the token data for debugging
-    console.log("GDAP Auth Success - Token Data:", {
-      tenantId: tokenData.tenantId,
-      refreshToken: tokenData.refreshToken ? "present" : "missing",
-      tenantMode: tokenData.tenantMode,
-      allowPartnerTenantManagement: tokenData.allowPartnerTenantManagement,
-    });
-
     // Explicitly call the updateRefreshToken API
     updateRefreshToken.mutate(
       {
@@ -146,39 +138,17 @@ export const CippTenantModeDeploy = (props) => {
       loading: true,
     });
 
-    // Log the token data for debugging
-    console.log("Per-Tenant Auth Success - Token Data:", {
-      tenantId: tokenData.tenantId,
-      tenantMode: tokenData.tenantMode,
-    });
-
     // For perTenant mode or mixed mode with perTenant auth, add the tenant to the cache
     if (tenantMode === "perTenant" || tenantMode === "mixed") {
       // Call the AddTenant API to add the tenant to the cache with directTenant status
-      addTenant.mutate(
-        {
-          url: "/api/ExecAddTenant",
-          data: {
-            tenantId: tokenData.tenantId,
-          },
+      console.log(tokenData);
+      addTenant.mutate({
+        url: "/api/ExecAddTenant",
+        data: {
+          tenantId: tokenData.tenantId,
+          access_token: tokenData.accessToken,
         },
-        {
-          onSuccess: (data) => {
-            console.log("Add Tenant Success:", data);
-            setPerTenantAuthStatus({
-              success: true,
-              loading: false,
-            });
-          },
-          onError: (error) => {
-            console.error("Add Tenant Error:", error);
-            setPerTenantAuthStatus({
-              success: false,
-              loading: false,
-            });
-          },
-        }
-      );
+      });
     } else {
       // If not adding tenant, still update state
       setPerTenantAuthStatus({
@@ -205,29 +175,6 @@ export const CippTenantModeDeploy = (props) => {
       });
     }
   }, [addTenant.isError]);
-
-  // Debug logging for API states
-  useEffect(() => {
-    if (
-      updateRefreshToken.isLoading ||
-      updateRefreshToken.isSuccess ||
-      updateRefreshToken.isError
-    ) {
-      console.log("updateRefreshToken state:", {
-        isLoading: updateRefreshToken.isLoading,
-        isSuccess: updateRefreshToken.isSuccess,
-        isError: updateRefreshToken.isError,
-        data: updateRefreshToken.data,
-        error: updateRefreshToken.error ? getCippError(updateRefreshToken.error) : null,
-      });
-    }
-  }, [
-    updateRefreshToken.isLoading,
-    updateRefreshToken.isSuccess,
-    updateRefreshToken.isError,
-    updateRefreshToken.data,
-    updateRefreshToken.error,
-  ]);
 
   return (
     <Stack spacing={2}>

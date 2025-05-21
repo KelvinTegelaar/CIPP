@@ -5,6 +5,7 @@ import CippWizardPage from "../components/CippWizard/CippWizardPage.jsx";
 import { CippWizardOptionsList } from "../components/CippWizard/CippWizardOptionsList.jsx";
 import { CippSAMDeploy } from "../components/CippWizard/CippSAMDeploy.jsx";
 import { CippTenantModeDeploy } from "../components/CippWizard/CippTenantModeDeploy.jsx";
+import { CippBaselinesStep } from "../components/CippWizard/CippBaselinesStep.jsx";
 import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
@@ -68,8 +69,7 @@ const Page = () => {
     {
       title: "Step 4",
       description: "Baselines",
-      component: CippDeploymentStep,
-      //give choice to download baselines from repos.
+      component: CippBaselinesStep,
     },
     {
       title: "Step 5",
