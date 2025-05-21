@@ -7,22 +7,6 @@ import { ApiGetCall } from "../../api/ApiCall";
 
 export const CippBaselinesStep = (props) => {
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;
-  const values = formControl.getValues();
-
-  // Fetch available baselines from API
-  const baselinesApi = ApiGetCall({
-    url: "/api/ListCommunityRepos",
-    queryKey: "CommunityRepos",
-  });
-
-  // Create baseline options from the API response
-  const baselineOptions = baselinesApi.isSuccess
-    ? baselinesApi.data?.Results?.map((repo) => ({
-        label: `${repo.Name} (${repo.Owner})`,
-        value: repo.Id,
-        description: repo.Description || "No description available",
-      })) || []
-    : [];
 
   return (
     <Stack spacing={3}>
@@ -87,21 +71,21 @@ export const CippBaselinesStep = (props) => {
             <Typography variant="subtitle1" gutterBottom>
               Select baselines to download:
             </Typography>
-            {baselinesApi.isLoading ? (
-              <Typography variant="body2">Loading available baselines...</Typography>
-            ) : baselinesApi.isError ? (
-              <Alert severity="error">Failed to load baselines. Please try again later.</Alert>
-            ) : (
-              <CippFormComponent
-                type="autoComplete"
-                name="selectedBaselines"
-                label="Select Baselines"
-                formControl={formControl}
-                options={baselineOptions}
-                multiple={true}
-                placeholder="Select one or more baselines"
-              />
-            )}
+            <CippFormComponent
+              type="autoComplete"
+              name="selectedBaselines"
+              label="Select Baselines"
+              formControl={formControl}
+              api={{
+                dataKey: "Results",
+                queryKey: `ListBaselines`,
+                url: "/api/ListCommunityRepos",
+                labelField: (option) => `${option.Name} (${option.Owner})`,
+                valueField: "Id",
+              }}
+              multiple={true}
+              placeholder="Select one or more baselines"
+            />
           </Box>
         </CippFormCondition>
       </Stack>
