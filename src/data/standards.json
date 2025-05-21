@@ -2275,7 +2275,12 @@
         "type": "textField",
         "name": "standards.SafeAttachmentPolicy.RedirectAddress",
         "label": "Redirect Address",
-        "required": false
+        "required": false,
+        "condition": {
+          "field": "standards.SafeAttachmentPolicy.Redirect",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "label": "Default Safe Attachment Policy",
@@ -2413,7 +2418,12 @@
         "type": "textField",
         "name": "standards.MalwareFilterPolicy.InternalSenderAdminAddress",
         "required": false,
-        "label": "Internal Sender Admin Address"
+        "label": "Internal Sender Admin Address",
+        "condition": {
+          "field": "standards.MalwareFilterPolicy.EnableInternalSenderAdminNotifications",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "switch",
@@ -2425,7 +2435,12 @@
         "type": "textField",
         "name": "standards.MalwareFilterPolicy.ExternalSenderAdminAddress",
         "required": false,
-        "label": "External Sender Admin Address"
+        "label": "External Sender Admin Address",
+        "condition": {
+          "field": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "label": "Default Malware Filter Policy",
@@ -2713,7 +2728,12 @@
         "creatable": true,
         "required": false,
         "name": "standards.SpamFilterPolicy.LanguageBlockList",
-        "label": "Languages to block (uppercase ISO 639-1 two-letter)"
+        "label": "Languages to block (uppercase ISO 639-1 two-letter)",
+        "condition": {
+          "field": "standards.SpamFilterPolicy.EnableLanguageBlockList",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "switch",
@@ -2727,7 +2747,12 @@
         "creatable": true,
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
-        "label": "Regions to block (uppercase ISO 3166-1 two-letter)"
+        "label": "Regions to block (uppercase ISO 3166-1 two-letter)",
+        "condition": {
+          "field": "standards.SpamFilterPolicy.EnableRegionBlockList",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "autoComplete",
