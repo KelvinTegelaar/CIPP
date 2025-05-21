@@ -27,7 +27,9 @@ import { CippDataTable } from "../CippTable/CippDataTable";
 import React from "react";
 
 // Helper function to convert bracket notation to dot notation
+// Improved to correctly handle nested bracket notations
 const convertBracketsToDots = (name) => {
+  if (!name) return "";
   return name.replace(/\[(\d+)\]/g, ".$1"); // Replace [0] with .0
 };
 

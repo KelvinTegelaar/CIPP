@@ -30,25 +30,34 @@ export const CippFormCondition = (props) => {
     return null;
   }
 
+  // Convert bracket notation to dot notation for array fields if needed
+  const normalizedField = field.replace(/\[(\d+)\]/g, ".$1");
+
   // Watch the form field value
   const watcher = useWatch({
     control: formControl.control,
-    name: field,
+    name: normalizedField,
   });
 
-  // Safer property access
+  // Safer property access with get for nested paths
   let watchedValue = watcher;
   let compareTargetValue = compareValue;
 
   if (propertyName && propertyName !== "value") {
-    if (propertyName.includes(".")) {
-      watchedValue = get(watcher, propertyName);
-      compareTargetValue = get(compareValue, propertyName);
-    } else {
-      watchedValue = watcher?.[propertyName];
-      compareTargetValue = compareValue?.[propertyName];
-    }
+    watchedValue = get(watcher, propertyName);
+    compareTargetValue = get(compareValue, propertyName);
   }
+
+  /*console.log("CippFormCondition: ", {
+    watcher,
+    watchedValue,
+    compareTargetValue,
+    compareType,
+    compareValue,
+    action,
+    field,
+    propertyName,
+  });*/
 
   // Function to recursively extract field names from child components
   const extractFieldNames = (children) => {
@@ -75,29 +84,47 @@ export const CippFormCondition = (props) => {
   const isConditionMet = () => {
     switch (compareType) {
       case "regex":
-        return watcher?.match(new RegExp(compareValue));
+        return watcher?.match?.(new RegExp(compareValue));
       case "is":
         return isEqual(watchedValue, compareTargetValue);
       case "isNot":
         return !isEqual(watchedValue, compareTargetValue);
       case "contains":
         if (Array.isArray(watcher)) {
-          return watcher.includes(compareValue);
+          return watcher.some((item) => isEqual(item, compareValue));
         } else if (typeof watcher === "string") {
           return watcher.includes(compareValue);
         } else if (typeof watcher === "object" && watcher !== null) {
-          return compareValue in watcher;
+          // Handle checking if object contains value or key
+          if (typeof compareValue === "string") {
+            // Check for "value" property containing the string
+            if (watcher.value && typeof watcher.value === "string") {
+              return watcher.value.includes(compareValue);
+            }
+            // Check for "label" property containing the string
+            if (watcher.label && typeof watcher.label === "string") {
+              return watcher.label.includes(compareValue);
+            }
+            // Check if object has the compareValue as a key
+            return compareValue in watcher;
+          } else {
+            return Object.values(watcher).some((val) => isEqual(val, compareValue));
+          }
         }
         return false;
       case "doesNotContain":
         if (watcher === undefined || watcher === null) {
           return true;
         } else if (Array.isArray(watcher)) {
-          return !watcher.includes(compareValue);
+          return !watcher.some((item) => isEqual(item, compareValue));
         } else if (typeof watcher === "string") {
           return !watcher.includes(compareValue);
         } else if (typeof watcher === "object") {
-          return !(compareValue in watcher);
+          if (typeof compareValue === "string") {
+            return !(compareValue in watcher);
+          } else {
+            return !Object.values(watcher).some((val) => isEqual(val, compareValue));
+          }
         }
         return true;
       case "greaterThan":
