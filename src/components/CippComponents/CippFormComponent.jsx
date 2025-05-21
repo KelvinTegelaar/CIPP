@@ -223,20 +223,26 @@ export const CippFormComponent = (props) => {
             <Controller
               name={convertedName}
               control={formControl.control}
-              defaultValue={defaultValue} // Make sure this is used
+              defaultValue={defaultValue}
               rules={validators}
-              render={({ field }) => (
-                <RadioGroup {...field} {...other}>
-                  {props.options.map((option, idx) => (
-                    <FormControlLabel
-                      key={`${option.value}-${idx}`}
-                      value={option.value}
-                      control={<Radio disabled={other?.disabled || option?.disabled} />}
-                      label={option.label}
-                    />
-                  ))}
-                </RadioGroup>
-              )}
+              render={({ field }) => {
+                return (
+                  <RadioGroup
+                    value={field.value || ""}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    {...other}
+                  >
+                    {props.options.map((option, idx) => (
+                      <FormControlLabel
+                        key={`${option.value}-${idx}`}
+                        value={option.value}
+                        control={<Radio disabled={other?.disabled || option?.disabled} />}
+                        label={option.label}
+                      />
+                    ))}
+                  </RadioGroup>
+                );
+              }}
             />
           </FormControl>
           <Typography variant="subtitle3" color="error">
