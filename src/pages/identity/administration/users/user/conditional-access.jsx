@@ -57,15 +57,15 @@ const Page = () => {
           icon: <Launch style={{ color: "#667085" }} />,
           text: (
             <Button
-                color="muted"
-                style={{ paddingLeft: 0 }}
-                size="small"
-                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View in Entra
-              </Button>
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -237,7 +237,7 @@ const Page = () => {
                       ]}
                       formControl={formControl}
                     />
-                    <CippApiResults apiObject={postRequest} />
+                    <CippApiResults apiObject={postRequest} errorsOnly={true} />
                   </Stack>
                 </form>
               </CippButtonCard>
