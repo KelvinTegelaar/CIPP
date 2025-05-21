@@ -9,7 +9,6 @@ import {
   SvgIcon,
   Collapse,
   Divider,
-  Grid,
   Tooltip,
   Chip,
   TextField,
@@ -26,6 +25,7 @@ import {
   Close,
   FilterAlt,
 } from "@mui/icons-material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useWatch } from "react-hook-form";
 import _ from "lodash";
@@ -69,7 +69,7 @@ const CippAddedComponent = React.memo(({ standardName, component, formControl })
   }
 
   return (
-    <Grid item xs={12}>
+    <Grid size={12}>
       <CippFormComponent
         type={updatedComponent.type}
         label={updatedComponent.label}
@@ -413,7 +413,7 @@ const CippStandardAccordion = ({
                           />
                         </Stack>
                       )}
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography variant="body2" color="textSecondary" sx={{ mr: 1 }}>
                         {standard.helpText}
                       </Typography>
                     </Stack>
@@ -437,9 +437,11 @@ const CippStandardAccordion = ({
                     <Typography variant="body2">
                       {isConfigured ? "Configured" : "Unconfigured"}
                     </Typography>
-                    <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
-                      <Delete />
-                    </IconButton>
+                    <Tooltip title="Remove Standard">
+                      <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
 
                     <IconButton onClick={() => handleAccordionToggle(standardName)}>
                       <SvgIcon
@@ -454,7 +456,7 @@ const CippStandardAccordion = ({
                   <Divider />
                   <Box sx={{ p: 3 }}>
                     <Grid container spacing={2}>
-                      <Grid item xs={4}>
+                      <Grid size={4}>
                         <CippFormComponent
                           type="autoComplete"
                           name={`${standardName}.action`}
@@ -466,7 +468,7 @@ const CippStandardAccordion = ({
                       </Grid>
 
                       {hasAddedComponents && (
-                        <Grid item xs={8}>
+                        <Grid size={8}>
                           <Grid container spacing={2}>
                             {standard.addedComponent?.map((component, idx) =>
                               component?.condition ? (
