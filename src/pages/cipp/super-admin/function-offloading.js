@@ -28,7 +28,7 @@ const Page = () => {
   });
 
   const deleteOffloadEntry = ApiPostCall({
-    urlfromdata: true,
+    urlFromData: true,
     relatedQueryKeys: ["execOffloadFunctions"],
   });
 
