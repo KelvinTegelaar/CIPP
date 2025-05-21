@@ -2341,6 +2341,13 @@
         "required": false,
         "label": "Phishing Simulation Urls",
         "name": "standards.PhishingSimulations.PhishingSimUrls"
+      },
+      {
+        "type": "switch",
+        "label": "Remove extra urls",
+        "name": "standards.PhishingSimulations.RemoveExtraUrls",
+        "defaultValue": false,
+        "required": false
       }
     ],
     "label": "Phishing Simulation Configuration",
