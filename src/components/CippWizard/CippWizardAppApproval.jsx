@@ -12,20 +12,6 @@ import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 export const CippWizardAppApproval = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
 
-  // Set default mode to Template
-  useEffect(() => {
-    // Proper initialization of the radio selection
-    const currentValue = formControl.getValues("configMode");
-
-    // If not set or undefined, set it to template
-    if (!currentValue) {
-      formControl.setValue("configMode", "template", {
-        shouldDirty: false,
-        shouldValidate: true,
-      });
-    }
-  }, [formControl]);
-
   // Watch for the selected template to access permissions
   const selectedTemplate = useWatch({
     control: formControl.control,

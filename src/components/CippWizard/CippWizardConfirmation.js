@@ -20,11 +20,18 @@ export const CippWizardConfirmation = (props) => {
     "addrow",
   ];
 
-  const tenantEntry = formEntries.find(([key]) => key === "tenantFilter" || key === "tenant");
-  const userEntry = formEntries.find(([key]) =>
+  // Filter out null values and undefined values which could be from hidden conditional fields
+  const filteredFormEntries = formEntries.filter(
+    ([_, value]) => value !== null && value !== undefined
+  );
+
+  const tenantEntry = filteredFormEntries.find(
+    ([key]) => key === "tenantFilter" || key === "tenant"
+  );
+  const userEntry = filteredFormEntries.find(([key]) =>
     ["user", "userPrincipalName", "username"].includes(key)
   );
-  const filteredEntries = formEntries.filter(
+  const filteredEntries = filteredFormEntries.filter(
     ([key]) =>
       !blacklist.includes(key) &&
       key !== "tenantFilter" &&
