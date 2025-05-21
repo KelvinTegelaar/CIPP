@@ -21,15 +21,9 @@ The report indicates whether inactive users have licenses assigned. It examines 
 | Last Sign In Date Time                 | Relative time since the last login                                                                                                                                                                                                                 |
 | Last Non Interactive Sign In Date Time | Relative time since the last non interactive sign in. For more information on what a non interactive sign in is, please see [Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-noninteractive-sign-ins). |
 
-### Per-User Actions
+### Table Actions
 
-|               |                                                                    |
-| ------------- | ------------------------------------------------------------------ |
-| View User     | Opens the CIPP user page for the selected user                     |
-| Edit User     | Opens the CIPP edit user page for the selected user                |
-| Block Sign In | Opens a modal to confirm if you want to block sign in for the user |
-| Delete User   | Opens a modal to confirm if you want to delete the user            |
-| More Info     | Opens Extended Info flyout                                         |
+<table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View User</td><td>Opens the CIPP user page for the selected user</td><td>false</td></tr><tr><td>Edit User</td><td>Opens the CIPP edit user page for the selected user</td><td>false</td></tr><tr><td>Block Sign In</td><td>Opens a modal to confirm if you want to block sign in for the user</td><td>true</td></tr><tr><td>Delete User</td><td>Opens a modal to confirm if you want to delete the user</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

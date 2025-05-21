@@ -2,27 +2,21 @@
 
 ### Overview
 
-The "Add Vacation Mode" feature enables administrators to schedule tasks that temporarily modify Conditional Access (CA) policies for users. This feature is particularly useful for managing user access during vacation periods, ensuring that CA exclusions are applied and removed automatically according to a defined schedule.
+The "Vacation Mode" feature enables administrators to schedule tasks that temporarily modify Conditional Access (CA) policies for users. This feature is particularly useful for managing user access during vacation periods, ensuring that CA exclusions are applied and removed automatically according to a defined schedule.
 
-## **Add Vacation Mode**
+### Action Buttons
 
-**Navigate** to **Tenant Administration** -> **Conditional Access** -> **CA Vacation Mode**.
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
 
-Schedule tasks to add and remove users from CA exclusions for a specific period. Select the appropriate CA policy and specify the date range for the exclusions.
+### **Table Details**
 
-Fields are as follows:
+This table will display relevant information for previously scheduled vacations.
 
-* **Tenant**: Select the tenant for which the CA exclusions apply. The selected tenant determines the users and policies available for modification.
-* **User**: Choose the user from the list of available users in the selected tenant. This specifies whose CA policies will be affected.
-* **CA Policy**: Select the Conditional Access policy to be modified. This policy defines the access conditions that will be temporarily adjusted.
-* **Scheduled Start Date**: Set the date and time for when the exclusion should begin. This is when the CA policy change will take effect.
-* **Scheduled End Date**: Set the date and time for when the exclusion should end. This determines when the original CA policy settings will be restored.
+### Table Actions
 
-Click `Set Vacation Mode` to finalize the schedule.
-
-### Cancel Scheduled Vacation Mode
-
-Sometimes you may need to cancel a scheduled vacation mode entry. To do this, click the Actions three dots menu and select `Cancel Vacation Mode` for the row you no longer need. Confirming will remove this scheduled entry from the task schedule.
+<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Cancel Vacation Mode</td><td>Opens a modal to cancel the reamining tasks on the schedule vacation</td><td>false</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

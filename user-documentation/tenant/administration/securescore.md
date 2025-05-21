@@ -1,7 +1,14 @@
 # Secure Score
 
-This page provides an overview of the Secure Score of the tenant.\
-It also provides a way to remediate the issues that are lowering the score, if CIPP already has a standard that can be applied to solve the issue.
+This page provides an overview of the Secure Score of the tenant. The default page view is with each secure score component displayed as a card.
+
+### Card Actions
+
+| Action        | Description                                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------ |
+| Change Status | Opens a modal that allows you to change the status of the score component                                    |
+| Remediate     | Will launch the appropriate Microsoft portal or recommended CIPP standard to remediate this score component. |
+| Updates       | Displays a chart of updates to the score since CIPP started tracking                                         |
 
 ***
 

@@ -1,14 +1,32 @@
 # SAM Setup Wizard
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+The SAM setup wizard is the keys to the engine that allows CIPP to manage your client tenants.
 
-### **Looking for documentation contributors**
+{% stepper %}
+{% step %}
+### **Onboarding**
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+Here you will be presented with options for how you want to run the wizard.
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+| Option                                              | Description                                                                                                                           |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Create application for me and connect to my tenants | Especially useful for first time setup, this option will create a new CIPP-SAM application in your partner tenant.                    |
+| Refresh Tokens for existing application             | This will be used to refresh the token or replace the account used to authenticate the application.                                   |
+| Manually enter credentials                          | This is for advanced use cases such as a migration from self-hosted to CyberDrain hosted or if you want to bring your own application |
+{% endstep %}
+
+{% step %}
+### Configuration
+
+This page will present you with the appropriate options for your selection in Step 1. Complete all actions before you can proceed.
+{% endstep %}
+
+{% step %}
+### Confirmation
+
+Once completed, you will see a completion message
+{% endstep %}
+{% endstepper %}
 
 ***
 

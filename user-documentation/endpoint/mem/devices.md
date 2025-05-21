@@ -6,23 +6,9 @@ description: Manage Intune devices across your Microsoft 365 tenants.
 
 The following page in CIPP gives you the ability to manage Intune devices:
 
-### Details <a href="#listdevices-details" id="listdevices-details"></a>
+### Table Details <a href="#listdevices-details" id="listdevices-details"></a>
 
-This is a small selection of the fields available as the properties returned with a Graph API call can be quite extensive. Full documentation for the object can be found [here](https://learn.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-beta).
-
-| Fields                    | Description                                   |
-| ------------------------- | --------------------------------------------- |
-| Device Name               | The display name of the device.               |
-| User Principal Name       | Displays the user of the machine.             |
-| Compliance State          | Displays the compliance status of the device. |
-| Manufacturer              | The manufacturer of the device.               |
-| Model                     | The model of the device.                      |
-| Operating System          | The OS of the device.                         |
-| OS Version                | The OS of the device.                         |
-| Enrolled Date Time        | Date the device was enrolled.                 |
-| Managed Device Owner Type | Ownership Status                              |
-| Device Enrollment Type    | The enrollment status of the device.          |
-| Join Type                 | Management Type                               |
+The properties returned are for the Graph resource type userExperienceAnalyticsDeviceScores. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0#properties).
 
 ### Actions <a href="#listdevices-actions" id="listdevices-actions"></a>
 

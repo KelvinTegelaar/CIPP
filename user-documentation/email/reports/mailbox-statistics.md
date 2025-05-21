@@ -2,7 +2,13 @@
 
 This report lists all mailboxes and pulls activity date, total space used, number of items in the mailbox and, the status of archiving.
 
-Mailboxes using 80% to 90% of their quota show with an orange highlight. Mailboxes using 90% to 100% of their quota show with a red highlight.
+### Table Details
+
+The information displayed comes from the prebuilt Graph report getMailboxUsageDetail. For addtional details please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/reportroot-getmailboxusagedetail?view=graph-rest-1.0\&tabs=http).
+
+{% hint style="info" %}
+The CIPP call to the Graph endpoint is hard coded to 7 days.
+{% endhint %}
 
 ***
 

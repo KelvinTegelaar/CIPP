@@ -1,14 +1,18 @@
 # Named Locations
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+### Action Buttons
 
-### **Looking for documentation contributors**
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+### Table Detail
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+The properties returned are for the Graph resource type namedLocation. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/namedlocation?view=graph-rest-1.0#properties).
+
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Add location to named location</td><td>Opens a modal to add a country code to the named location</td><td>true</td></tr><tr><td>Remove location from named location</td><td>Opens a modal to remove a country code from the named location</td><td>true</td></tr><tr><td>Add IP to named location</td><td>Opens a modal to add an IP address to the named location</td><td>true</td></tr><tr><td>Remove IP from named location</td><td>Opens a modal to remove an IP address from the named location</td><td>true</td></tr><tr><td>More info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

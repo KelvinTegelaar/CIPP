@@ -1,8 +1,6 @@
-# Deploy Template
+# Deploy Transport Rule Template
 
-
-
-{% include "../../../../.gitbook/includes/needs-content-incomplete-page.md" %}
+This wizard allows you to deploy a transport rule to the selected tenant(s) or All Tenants. Choose either a template or enter the raw JSON into the box and click `Submit`.
 
 ***
 

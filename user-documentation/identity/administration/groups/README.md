@@ -8,38 +8,17 @@ description: Interact with Microsoft 365 groups.
 
 The Groups page is equivalent to [Microsoft 365 admin center > Active teams and groups](https://admin.microsoft.com/#/groups). It offers an overview of all groups within the organization and allows users to manage group details and memberships.
 
-### Details
-
-This page presents each group in a structured table, including the following columns. You can select which columns are visible.
-
-| Column                        | Description                                                                                                  |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| ID                            | The GUID of the group                                                                                        |
-| Created Date Time             | The relative time since group creation                                                                       |
-| Display Name                  | The name that displays for the group                                                                         |
-| Mail Enabled                  | A Boolean field for if the group is mail enabled                                                             |
-| Mail Nickname                 |                                                                                                              |
-| Resource Provisioning Options |                                                                                                              |
-| Security Enabled              | A Boolean field for if the group is security enabled                                                         |
-| Organization Id               | The GUID for the organization                                                                                |
-| Group Types                   |                                                                                                              |
-| Members                       | Clicking the result in this column will pop open a modal that contains a table with the members of the group |
-| Prim Domain                   |                                                                                                              |
-| Members Csv                   | The membership of the group in a comma separated list                                                        |
-| Teams Enabled                 | A Boolean field for if the group has had Teams enabled                                                       |
-| Calculated Group Type         | This will display the type of group based on the properties returned by Graph                                |
-| Dynamic Group Bool            | A Boolean field for if the group is dynamic                                                                  |
-| Description                   |                                                                                                              |
-| Mail                          | The e-mail address for the group, if any                                                                     |
-| Visibility                    | Will display "Private" if the group is set to private                                                        |
-
-### Actions
+### Action Buttons
 
 {% content-ref url="add.md" %}
 [add.md](add.md)
 {% endcontent-ref %}
 
-### **Per-Group Actions**
+### Column Details
+
+The properties returned are for the Graph resource type group. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties).
+
+### **Table Actions**
 
 These actions and information are available in the fly-out menu when you click the ellipsis button in the "Actions" column:
 

@@ -448,3 +448,11 @@ If your CIPP-API isn't updating, start by checking the Actions tab in your repos
   Your repository may not be fully configured. Follow the instructions provided [here](https://docs.cipp.app/setup/self-hosting-guide/runfrompackage) to restore the action workflow.
 
 </details>
+
+<details>
+
+<summary>My GitHub personal access token expired and I'm not sure what to do?</summary>
+
+You don't need to do anything. The personal access token was only needed for initial deployment.
+
+</details>

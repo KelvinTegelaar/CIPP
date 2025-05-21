@@ -6,11 +6,7 @@ description: Interact with Microsoft 365 users.
 
 User management. Equal to and extending [Microsoft 365 admin center > Active Users](https://admin.microsoft.com/Adminportal/Home#/users).
 
-### Overview
-
-The main table provides an overview of information including display name, email address, licensing, enabled/disabled status, and if the account is AD synchronized. Behind the ellipsis menu user creation date, last sync date, and user GUID are also available.
-
-### Actions
+### Action Buttons
 
 {% content-ref url="bulk-add.md" %}
 [bulk-add.md](bulk-add.md)
@@ -24,73 +20,45 @@ The main table provides an overview of information including display name, email
 [add.md](add.md)
 {% endcontent-ref %}
 
+### Table Columns
 
+The properties returned are for the Graph resource type user. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties).
 
-### Per-User Actions:
+### Table Actions:
 
-### Account Management Actions
+#### Account Management Actions
 
-| Action       | Description                                                                                                                                    | Requirements/Implications                                                                                                                                         |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 👁 View User | Displays comprehensive user account details in the admin interface                                                                             | <p>- Read access to user objects<br>- Shows all available user information<br>- Display advanced user account details. [<a href="user/">More information</a>]</p> |
-| ✏️ Edit User | <p>Modifies user account details and settings:<br>- Basic information<br>- License assignments<br>- Group memberships<br>- Contact details</p> | <p>- Write access to user objects<br>- Can copy group memberships from another user<br>- Changes apply immediately</p>                                            |
-| Delete User  | Permanently removes user account                                                                                                               | <p>- Administrative privileges required<br>- Irreversible action<br>- Consider backup/archival first</p>                                                          |
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>👁 View User</td><td>Displays comprehensive user account details in the admin interface</td><td>- Read access to user objects<br>- Shows all available user information<br>- Display advanced user account details. [<a href="user/">More information</a>]</td><td>false</td></tr><tr><td>✏️ Edit User</td><td>Modifies user account details and settings:<br>- Basic information<br>- License assignments<br>- Group memberships<br>- Contact details</td><td>- Write access to user objects<br>- Can copy group memberships from another user<br>- Changes apply immediately</td><td>false</td></tr><tr><td>Delete User</td><td>Permanently removes user account</td><td>- Administrative privileges required<br>- Irreversible action<br>- Consider backup/archival first</td><td>false</td></tr></tbody></table>
 
-### Security Actions
+#### Security Actions
 
-| Action                           | Description                                                                                                      | Requirements/Implications                                                                                                                                                                                                                 |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Research Compromised Account     | <p>Analyzes Indicators of Compromise (IoC):<br>- Sign-in patterns<br>- Mail rules<br>- Suspicious activities</p> | <p>- Security admin rights<br>- Provides comprehensive security review<br>- Single pane of glass review of common indicators of compromise (IoC) [<a href="user/bec.md">More information</a>]</p>                                         |
-| Create Temporary Access Password | Creates temporary password for passwordless enrollment                                                           | <p>- Time-limited access<br>- Create a temporary password to allow full passwordless enrollment. [<a href="./#create-temporary-access-password">More information</a>]</p>                                                                 |
-| Re-require MFA registration      | <p>Forces new MFA setup by:<br>- Resetting MFA status to Enabled<br>- Requiring new registration</p>             | <p>- User must complete new MFA setup<br>- Affects all MFA methods<br>- Authentication Methods must be migrated from legacy<br>- You will need Security Defaults or a CA policy and registration campaign to force registration again</p> |
-| Send MFA Push                    | Sends test MFA prompt to user's devices                                                                          | <p>- Verifies MFA configuration<br>- Tests user's registered devices</p>                                                                                                                                                                  |
-| Set Per-User MFA                 | <p>Configures MFA state:<br>- Enforced<br>- Enabled<br>- Disabled</p>                                            | <p>- Overrides tenant-level settings<br>- Immediate effect on sign-ins</p>                                                                                                                                                                |
-| Block Sign In                    | Prevents account access                                                                                          | <p>- Immediate effect<br>- Doesn't affect existing sessions</p>                                                                                                                                                                           |
-| Unblock Sign In                  | Restores account access                                                                                          | <p>- Immediate effect<br>- User can sign in again</p>                                                                                                                                                                                     |
-| Revoke all user sessions         | Forces re-authentication on all devices                                                                          | <p>- Terminates all active sessions<br>- Requires new sign-in everywhere</p>                                                                                                                                                              |
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Research Compromised Account</td><td>Analyzes Indicators of Compromise (IoC):<br>- Sign-in patterns<br>- Mail rules<br>- Suspicious activities</td><td>- Security admin rights<br>- Provides comprehensive security review<br>- Single pane of glass review of common indicators of compromise (IoC) [<a href="user/bec.md">More information</a>]</td><td>false</td></tr><tr><td>Create Temporary Access Password</td><td>Creates temporary password for passwordless enrollment</td><td>- Time-limited access<br>- Create a temporary password to allow full passwordless enrollment. [<a href="./#create-temporary-access-password">More information</a>]</td><td>true</td></tr><tr><td>Re-require MFA registration</td><td>Forces new MFA setup by:<br>- Resetting MFA status to Enabled<br>- Requiring new registration</td><td>- User must complete new MFA setup<br>- Affects all MFA methods<br>- Authentication Methods must be migrated from legacy<br>- You will need Security Defaults or a CA policy and registration campaign to force registration again</td><td>true</td></tr><tr><td>Send MFA Push</td><td>Sends test MFA prompt to user's devices</td><td>- Verifies MFA configuration<br>- Tests user's registered devices</td><td>true</td></tr><tr><td>Set Per-User MFA</td><td>Configures MFA state:<br>- Enforced<br>- Enabled<br>- Disabled</td><td>- Overrides tenant-level settings<br>- Immediate effect on sign-ins</td><td>true</td></tr><tr><td>Block Sign In</td><td>Prevents account access</td><td>- Immediate effect<br>- Doesn't affect existing sessions</td><td>true</td></tr><tr><td>Unblock Sign In</td><td>Restores account access</td><td>- Immediate effect<br>- User can sign in again</td><td>true</td></tr><tr><td>Revoke all user sessions</td><td>Forces re-authentication on all devices</td><td>- Terminates all active sessions<br>- Requires new sign-in everywhere</td><td>true</td></tr></tbody></table>
 
-### Password Management
+#### Password Management
 
-| Action                       | Description                            | Requirements/Implications                                                              |
-| ---------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------- |
-| Reset Password (Must Change) | Sets random password and forces change | <p>- User must create new password at next login<br>- Example format: 2WcAu%VMy89P</p> |
-| Reset Password               | Sets new random password               | <p>- Password immediately active<br>- No change requirement</p>                        |
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Reset Password (Must Change)</td><td>Sets random password and forces change</td><td>- User must create new password at next login<br>- Example format: 2WcAu%VMy89P</td><td>true</td></tr><tr><td>Reset Password</td><td>Sets new random password</td><td>- Password immediately active<br>- No change requirement</td><td>true</td></tr></tbody></table>
 
-### Mail and Communication
+#### Mail and Communication
 
-| Action                    | Description                            | Requirements/Implications                                                                                                                                                               |
-| ------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Convert to Shared Mailbox | Transforms user mailbox to shared type | <p>- Requires Exchange Online license<br>- Maintains data and access</p>                                                                                                                |
-| Enable Online Archive     | Activates archival mailbox             | <p>- Requires appropriate license<br>- Additional storage space</p>                                                                                                                     |
-| Set Out of Office         | Configures automatic replies           | <p>- Single message for internal/external<br>- No HTML formatting<br><strong>Note:</strong> <em>Setting a different internal and external autoreply is currently not supported</em></p> |
-| Disable Out of Office     | Removes automatic replies              | <p>- Immediate effect<br>- Clears all auto-reply settings</p>                                                                                                                           |
-| Disable Email Forwarding  | Removes all email forwarding rules     | <p>- Clears ForwardingAddress<br>- Clears ForwardingSMTPAddress</p>                                                                                                                     |
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Convert to Shared Mailbox</td><td>Transforms user mailbox to shared type</td><td>- Requires Exchange Online license<br>- Maintains data and access</td><td>true</td></tr><tr><td>Convert to User Mailbox</td><td>Transforms user mailbox to user type</td><td></td><td>true</td></tr><tr><td>Enable Online Archive</td><td>Activates archival mailbox</td><td>- Requires appropriate license<br>- Additional storage space</td><td>true</td></tr><tr><td>Set Out of Office</td><td>Configures automatic replies</td><td>- Single message for internal/external<br>- No HTML formatting<br><strong>Note:</strong> <em>Setting a different internal and external autoreply is currently not supported</em></td><td>true</td></tr><tr><td>Disable Out of Office</td><td>Removes automatic replies</td><td>- Immediate effect<br>- Clears all auto-reply settings</td><td>true</td></tr><tr><td>Disable Email Forwarding</td><td>Removes all email forwarding rules</td><td>- Clears ForwardingAddress<br>- Clears ForwardingSMTPAddress</td><td>true</td></tr></tbody></table>
 
-### OneDrive Management
+#### OneDrive Management
 
-| Action                 | Description                      | Requirements/Implications                                      |
-| ---------------------- | -------------------------------- | -------------------------------------------------------------- |
-| Pre-provision OneDrive | Initializes OneDrive storage     | <p>- No user login required<br>- Speeds up first access</p>    |
-| Add OneDrive Shortcut  | Creates SharePoint site shortcut | <p>- Adds to OneDrive root<br>- Requires existing OneDrive</p> |
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Pre-provision OneDrive</td><td>Initializes OneDrive storage</td><td>- No user login required<br>- Speeds up first access</td><td>true</td></tr><tr><td>Add OneDrive Shortcut</td><td>Creates SharePoint site shortcut</td><td>- Adds to OneDrive root<br>- Requires existing OneDrive</td><td>true</td></tr></tbody></table>
 
-### Group and Directory Management
+#### Group and Directory Management
 
-| Action             | Description                        | Requirements/Implications                                                        |
-| ------------------ | ---------------------------------- | -------------------------------------------------------------------------------- |
-| Add to Group       | Assigns user to specified group(s) | <p>- Immediate membership<br>- Inherits group permissions</p>                    |
-| Clear Immutable ID | Breaks on-premises AD sync         | <p>- Sets onPremisesImmutableId to null<br>- Stops directory synchronization</p> |
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Add to Group</td><td>Assigns user to specified group(s)</td><td>- Immediate membership<br>- Inherits group permissions</td><td>true</td></tr><tr><td>Clear Immutable ID</td><td>Breaks on-premises AD sync</td><td>- Sets onPremisesImmutableId to null<br>- Stops directory synchronization</td><td>true</td></tr></tbody></table>
 
-### Information Access
+#### Information Access
 
-| Action    | Description                                                                                  | Requirements/Implications                                                     |
-| --------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| More info | <p>Opens Extended Info panel showing:<br>- Common profile fields<br>- Additional actions</p> | <p>- Quick access to key information<br>- Alternative action access point</p> |
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>More info</td><td>Opens Extended Info panel showing:<br>- Common profile fields<br>- Additional actions</td><td>- Quick access to key information<br>- Alternative action access point</td><td>false</td></tr></tbody></table>
 
 {% hint style="info" %}
 Note that clicking one of these actions will present a confirmation modal dialog.
 {% endhint %}
 
-#### Create Temporary Access Password
+#### More Information on "Create Temporary Access Password"
 
 Create a temporary access password for a user to enroll in [passwordless for Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-authentication-passwordless).
 
@@ -98,7 +66,7 @@ Create a temporary access password for a user to enroll in [passwordless for Azu
 Both passwordless authentication and the temporary access password function must be enabled on the tenant. See [AzureAD: Configure Temporary Access Pass in Azure AD to register Passwordless authentication methods](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-authentication-temporary-access-pass)
 {% endhint %}
 
-### Query String Support
+### Add User Query String Support
 
 The Add User has the ability to be form filled via URL query strings. This table shows all supported query strings. For example https://yourcipp.app/identity/administration/users/add?customerId=Mydomain.onmicrosoft.com\&city=Rotterdam would automatically fill in the city for a user.
 

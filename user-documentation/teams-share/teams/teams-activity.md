@@ -2,15 +2,9 @@
 
 Shows an overview of your users and their activity in Teams, allowing you to gain a broader understanding of usage and target certain users for Teams training. The information provided here covers the last 30 days.
 
-#### Details <a href="#teamsactivity-details" id="teamsactivity-details"></a>
+### Table Details <a href="#teamsactivity-details" id="teamsactivity-details"></a>
 
-| Field               | Description                                             |
-| ------------------- | ------------------------------------------------------- |
-| User Principal Name | The user principal name                                 |
-| Last Active         | The date and time of the user's last activity in Teams. |
-| Meeting Count       | The number of meetings the user has attended.           |
-| Call Count          | The number of calls the user has made.                  |
-| Teams Chat          | The number of chats the user has made.                  |
+The properties returned are for a canned Graph report. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/reportroot-getteamsuseractivityuserdetail?view=graph-rest-1.0\&tabs=http#response).
 
 ***
 

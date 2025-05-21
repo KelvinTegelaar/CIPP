@@ -2,7 +2,7 @@
 
 Ensure temporary admin accounts aren't left active. CIPP lets you create accounts with specific roles as needed and easily removes them automatically when no longer required. JIT Admin accounts will be displayed in the table.
 
-### Table Columns
+### Column Details
 
 | Column                   | Description                                             |
 | ------------------------ | ------------------------------------------------------- |

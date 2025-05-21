@@ -21,7 +21,7 @@ If this is your first ever run you may see an error initially because there is n
 
 ### Refreshing / Generating the Data
 
-At the top of the page there is button called **Force Refresh All Data**. You should only use this once.
+At the top of the page there is button called `Run Analysis Now`. You should only use this once.
 
 ### Interpreting Results
 

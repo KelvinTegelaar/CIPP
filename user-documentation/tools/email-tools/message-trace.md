@@ -21,7 +21,7 @@ Wildcard(\*) search is supported. Ex. "\*@contoso.com"
 | From IP                  | Enter an IP address you are wanting to filter the results to just messages sent from this IP address                             |
 | To IP                    | Enter an IP address you are wanting to filter the results to just messages received to this IP address                           |
 
-### Results Table
+### Table Details
 
 Below are the default columns displayed in the table. Additional columns may be available by selecting the "Toggle Column Visibility" button at the top of the table.
 
@@ -33,12 +33,9 @@ Below are the default columns displayed in the table. Additional columns may be 
 | Recipient Address | The e-mail address of the recipient              |
 | Subject           | The subject of the email                         |
 
-### Per-Row Actions
+### Table Actions
 
-| Action           | Details                                                                                          |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| View Details     | Opens a modal that displays a table with additional details regarding the message's routing.     |
-| View in Explorer | Opens the message in Microsoft Defender Explorer (Email & Collaboration -> Real-time detections) |
+<table><thead><tr><th>Action</th><th>Details</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Details</td><td>Opens a modal that displays a table with additional details regarding the message's routing.</td><td>true</td></tr><tr><td>View in Explorer</td><td>Opens the message in Microsoft Defender Explorer (Email &#x26; Collaboration -> Real-time detections)</td><td>false</td></tr></tbody></table>
 
 ***
 

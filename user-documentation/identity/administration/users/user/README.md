@@ -47,10 +47,12 @@ The actions dropdown carries forward the same [actions from the list users page]
 
 #### Address Information
 
-| Field       | Description            |
-| ----------- | ---------------------- |
-| Address     | Street address details |
-| Postal Code | ZIP/Postal code        |
+| Field       | Description             |
+| ----------- | ----------------------- |
+| Address     | Street address details  |
+| Postal Code | ZIP/Postal code         |
+| Country     | The country of the user |
+| City        | The city of the user    |
 
 #### Security & Access
 

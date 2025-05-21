@@ -1,14 +1,12 @@
 # Compliance Policies
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+### Table Details
 
-### **Looking for documentation contributors**
+The properties returned are for the Graph resource type deviceCompliancePolicy . For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-shared-devicecompliancepolicy?view=graph-rest-beta#properties).
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+### Table Actions
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Create template based on policy</td><td>Creates a policy template based on the selected policy(ies)</td><td>true</td></tr><tr><td>Assign to All Users</td><td>Assigns the policy(ies) to all users</td><td>true</td></tr><tr><td>Assign to All Devices</td><td>Assigns the policy(ies) to all devices</td><td>true</td></tr><tr><td>Assign Globally (All Users / All Devices)</td><td>Assigns the policy(ies) to all users and all devices</td><td>true</td></tr><tr><td>Delete Policy</td><td>Deletes the selected policy(ies)</td><td>true</td></tr><tr><td>More Info</td><td></td><td>false</td></tr></tbody></table>
 
 ***
 

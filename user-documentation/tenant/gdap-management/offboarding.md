@@ -1,10 +1,10 @@
-# Tenant Offboarding
+# Offboarding
 
 This page will help ensure that all necessary steps are taken when offboarding a tenant such as:
 
 * Removing vendor applications
 * Remove all guest users originating from the CSP tenant.
-* Remove all notification contacts originating from the CSP tenant (technical,security,marketing notifications).
+* Remove all notification contacts originating from the CSP tenant (technical, security, and marketing notifications).
 
 {% hint style="danger" %}
 The following actions will terminate all delegated access to the customer tenant!
@@ -12,7 +12,7 @@ The following actions will terminate all delegated access to the customer tenant
 
 * Remove all multitenant applications originating from CSP tenant (including CIPP-SAM).
 * Terminate all active GDAP relationships (will send email to tenant admins and contacts).
-* Terminate contract relationship (reseller, etc).
+* Terminate contract relationship (reseller, etc.).
 
 ***
 

@@ -12,7 +12,7 @@ The Tenant page provides the ability for you to jump to the specific tenant admi
 
 Tenants are cached for 24 hours. By using the Clear Tenant Cache button in settings, you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
 
-### Details
+### Table Details
 
 | Fields         | Description                  |
 | -------------- | ---------------------------- |
@@ -21,11 +21,9 @@ Tenants are cached for 24 hours. By using the Clear Tenant Cache button in setti
 
 The page also features several columns which contain links to the different Microsoft 365 administration centers for the tenant.
 
-### Per-Row Actions
+### Table Actions
 
-|             |                                                                           |
-| ----------- | ------------------------------------------------------------------------- |
-| Edit Tenant | Opens a page to edit the tenant alias and manage tenant group membership. |
+<table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Tenant</td><td>Opens a page to edit the tenant alias and manage tenant group membership.</td><td>false</td></tr></tbody></table>
 
 ***
 

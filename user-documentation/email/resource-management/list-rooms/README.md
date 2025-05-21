@@ -1,45 +1,24 @@
 # Rooms
 
-{% hint style="danger" %}
-**Please note:** Newly created, updated and converted rooms will not be shown in the list immediately, and can take up to 24 hours to be visible.
-{% endhint %}
-
 This page lists all the rooms that are available in the tenant.
 
-### Actions
+### Action Buttons
 
 {% content-ref url="add.md" %}
 [add.md](add.md)
 {% endcontent-ref %}
 
-### Table Rows
+### Table Details
 
-| Column                            | Description                                                                                                                    |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Display Name                      | The display name set for the room                                                                                              |
-| Mail                              | The e-mail address of the room                                                                                                 |
-| Building                          | The building the room is located in                                                                                            |
-| Capacity                          | The capacity for the room                                                                                                      |
-| City                              | The city the room is located in                                                                                                |
-| State                             | The state the room is located in                                                                                               |
-| Country or Region                 | The country or region the room is located in                                                                                   |
-| Hidden from Address Lists Enabled | A Boolean field indicating if the room has been hidden from address lists                                                      |
-| ID                                | The Entra ID ID of the room                                                                                                    |
-| Mail Nickname                     | The mail nickname of the room                                                                                                  |
-| Account Disabled                  | A Boolean field indicating if the room's user account object has been disabled                                                 |
-| Booking Type                      | The booking type for the room. "Standard" is able to be reserved. "Reserved" is available on a first-come, first-served basis. |
-| Resource Delegates                | Individuals who have been granted delegated rights to the room                                                                 |
-| Mtr Enabled                       | A Boolean indicating if the room is enabled for Microsoft Teams Room                                                           |
-| Is Wheelchair Accessible          | A Boolean field indicating if the room is wheelchair accessible                                                                |
+The properties returned are for the Exchange PowerShell command Get-`Get-Mailbox` with a filter for `RoomMailbox`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-mailbox?view=exchange-ps).&#x20;
 
-### Per-Row Actions
+{% hint style="danger" %}
+**Please note:** Because newly created, updated, and converted rooms will not be shown via Graph immediately and can take up to 24 hours to be visible a decision was made to switch to the slower method of polling Exchange PowerShell.
+{% endhint %}
 
-| Action          | Description                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------- |
-| Edit Room       | Opens the [Edit Room](edit.md) page with the selected row's room pre-populated              |
-| Block Sign In   | Blocks sign in for the room. Only available if the room is currently enabled for sign in    |
-| Unblock Sign In | Unblocks sign in for the room. Only available if the room is currently blocked from sign in |
-| Delete Room     | Opens a modal to confirm if you want to delete the room                                     |
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Room</td><td>Opens the <a href="edit.md">Edit Room</a> page with the selected row's room pre-populated</td><td>true</td></tr><tr><td>Edit Permissions</td><td>Opens the room's <a href="../../../identity/administration/users/user/edit.md">Edit User</a> page to allow you to adjust permissions</td><td>false</td></tr><tr><td>Block Sign In</td><td>Blocks sign in for the room. Only available if the room is currently enabled for sign in</td><td>true</td></tr><tr><td>Unblock Sign In</td><td>Unblocks sign in for the room. Only available if the room is currently blocked from sign in</td><td>true</td></tr><tr><td>Delete Room</td><td>Opens a modal to confirm if you want to delete the room</td><td>true</td></tr></tbody></table>
 
 ***
 

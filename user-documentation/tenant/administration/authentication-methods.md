@@ -2,15 +2,13 @@
 
 Shows the status of the authentication methods for the tenant.
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+### Table Details
 
-### **Looking for documentation contributors**
+The properties returned are for the Graph resource type authenticationMethodsPolicy. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/authenticationmethodspolicy?view=graph-rest-1.0#properties).
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+### Table Actions
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Enable Policy</td><td>Enables the sign-in method policy</td><td>true</td></tr><tr><td>Disable Policy</td><td>Disables the sign-in method policy</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

@@ -6,34 +6,23 @@ description: Review Sharepoint sites and usage
 
 This page lists SharePoint site usage. You can also see file count, activity, and general usage in addition to the resource allocations for the site.
 
-### Details
+### Action Buttons
 
-| Fields                     | Description                                                         |
-| -------------------------- | ------------------------------------------------------------------- |
-| Site Id                    | The GUID of the site                                                |
-| Web Id                     |                                                                     |
-| Created Date Time          | The relative time since the site was created.                       |
-| Display Name               | The name of the site.                                               |
-| Web Url                    | The URL that displays in the browser.                               |
-| Owner Display Name         | The display name of the user that own's the SharePoint site.        |
-| Owner Principal Name       | The User Principal Name of the user that own's the SharePoint site. |
-| Last Activity Date         | The date the site was last active.                                  |
-| File Count                 | The total number of files in the site document library.             |
-| Storage Used in Gigabytes  | The total size in GB in the site document library.                  |
-| Storage Used in Bytes      | The total size in B in the site document library.                   |
-| Storage Allocated in Bytes | The total space in B available in the site document library.        |
-| Root Web Template          | The root template used for the creation of the site.                |
-| Auto Map Url               | The URL needed for various Intune configuration policies.           |
+{% content-ref url="add-site.md" %}
+[add-site.md](add-site.md)
+{% endcontent-ref %}
 
-### Actions
+{% content-ref url="bulk-add-site.md" %}
+[bulk-add-site.md](bulk-add-site.md)
+{% endcontent-ref %}
 
-| Action            | Description                                  |
-| ----------------- | -------------------------------------------- |
-| Add Member        | Opens a modal to add a user to the site      |
-| Remove Member     | Opens a modal to remove a user from the site |
-| Add Site Admin    | Opens a modal to add a site admin            |
-| Remove Site Admin | Opens a modal to remove a site admin         |
-| More Info         | Opens Extended Info flyout                   |
+### Table Details
+
+The properties returned are for the Graph resource type site but filtered to only return non-personal sites. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/site?view=graph-rest-1.0#properties).
+
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Add Member</td><td>Opens a modal to add a user to the site</td><td>true</td></tr><tr><td>Remove Member</td><td>Opens a modal to remove a user from the site</td><td>true</td></tr><tr><td>Add Site Admin</td><td>Opens a modal to add a site admin</td><td>true</td></tr><tr><td>Remove Site Admin</td><td>Opens a modal to remove a site admin</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 
