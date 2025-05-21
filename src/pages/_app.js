@@ -66,8 +66,13 @@ const App = (props) => {
             const queryIsReadyForPersistance = query.state.status === "success";
             if (queryIsReadyForPersistance) {
               const { queryKey } = query;
+              // Check if queryKey exists and has elements before accessing index 0
+              if (!queryKey || !queryKey.length) {
+                return false;
+              }
+              const queryKeyString = String(queryKey[0] || '');
               const excludeFromPersisting = excludeQueryKeys.some((key) =>
-                queryKey[0].toString().includes(key)
+                queryKeyString.includes(key)
               );
               return !excludeFromPersisting;
             }
