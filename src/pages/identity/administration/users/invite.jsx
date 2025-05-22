@@ -19,7 +19,7 @@ const Page = () => {
       <CippFormPage
         queryKey={`Users-${userSettingsDefaults.currentTenant}`}
         formControl={formControl}
-        title="User"
+        title="Guest User"
         backButtonTitle="User Overview"
         postUrl="/api/AddGuest"
       >
