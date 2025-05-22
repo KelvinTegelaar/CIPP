@@ -112,6 +112,11 @@ In some cases the information provided in the M365 Rich Text Field is cut off or
    word-wrap: break-word;
    word-break: break-word;
 }
+
+.mce-content-body {
+    max-height: 600px !important;
+    overflow-y: scroll !important;
+}
 ```
 
 #### Special Thanks
