@@ -376,6 +376,7 @@ export const CippDataTable = (props) => {
         }
       },
     },
+    globalFilterFn: "contains",
     enableGlobalFilterModes: true,
     renderGlobalFilterModeMenuItems: ({ internalFilterOptions, onSelectFilterMode }) => {
       // add custom filter options
@@ -448,14 +449,14 @@ export const CippDataTable = (props) => {
     if (filters && Array.isArray(filters) && filters.length > 0 && memoizedColumns.length > 0) {
       // Make sure the table and columns are ready
       setTimeout(() => {
-        if (table && typeof table.setColumnFilters === 'function') {
-          const formattedFilters = filters.map(filter => ({
+        if (table && typeof table.setColumnFilters === "function") {
+          const formattedFilters = filters.map((filter) => ({
             id: filter.id || filter.columnId,
-            value: filter.value
+            value: filter.value,
           }));
           table.setColumnFilters(formattedFilters);
         }
-      },);
+      });
     }
   }, [filters, memoizedColumns, table]);
 
