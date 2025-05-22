@@ -46,6 +46,7 @@ export const CippFormComponent = (props) => {
     label,
     labelLocation = "behind", // Default location for switches
     defaultValue,
+    helperText,
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });
@@ -194,9 +195,9 @@ export const CippFormComponent = (props) => {
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}
           </Typography>
-          {other.helperText && (
+          {helperText && (
             <Typography variant="subtitle3" color="text.secondary">
-              {other.helperText}
+              {helperText}
             </Typography>
           )}
         </>
@@ -268,6 +269,7 @@ export const CippFormComponent = (props) => {
                   label={label}
                   multiple={false}
                   onChange={(value) => field.onChange(value?.value)}
+                  helperText={helperText}
                 />
               )}
             />
@@ -294,6 +296,7 @@ export const CippFormComponent = (props) => {
                   defaultValue={field.value}
                   label={label}
                   onChange={(value) => field.onChange(value)}
+                  helperText={helperText}
                 />
               )}
             />

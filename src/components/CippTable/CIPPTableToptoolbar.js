@@ -365,6 +365,7 @@ export const CIPPTableToptoolbar = ({
               </MenuItem>
               {api?.url === "/api/ListGraphRequest" && (
                 <MenuItem
+                  key="custom-filter"
                   onClick={() => {
                     filterPopover.handleClose();
                     setFilterCanvasVisible(true);
@@ -448,9 +449,7 @@ export const CIPPTableToptoolbar = ({
                   <DeveloperMode />
                 </IconButton>
               </Tooltip>
-              {mdDown && (
-                <MRT_ToggleFullScreenButton table={table} />
-              )}
+              {mdDown && <MRT_ToggleFullScreenButton table={table} />}
             </>
             {
               //add a little icon with how many rows are selected
