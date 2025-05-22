@@ -27,7 +27,9 @@ import { CippDataTable } from "../CippTable/CippDataTable";
 import React from "react";
 
 // Helper function to convert bracket notation to dot notation
+// Improved to correctly handle nested bracket notations
 const convertBracketsToDots = (name) => {
+  if (!name) return "";
   return name.replace(/\[(\d+)\]/g, ".$1"); // Replace [0] with .0
 };
 
@@ -44,6 +46,7 @@ export const CippFormComponent = (props) => {
     label,
     labelLocation = "behind", // Default location for switches
     defaultValue,
+    helperText,
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });
@@ -192,9 +195,9 @@ export const CippFormComponent = (props) => {
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}
           </Typography>
-          {other.helperText && (
+          {helperText && (
             <Typography variant="subtitle3" color="text.secondary">
-              {other.helperText}
+              {helperText}
             </Typography>
           )}
         </>
@@ -221,19 +224,26 @@ export const CippFormComponent = (props) => {
             <Controller
               name={convertedName}
               control={formControl.control}
+              defaultValue={defaultValue}
               rules={validators}
-              render={({ field }) => (
-                <RadioGroup {...field} {...other}>
-                  {props.options.map((option, idx) => (
-                    <FormControlLabel
-                      key={`${option.value}-${idx}`}
-                      value={option.value}
-                      control={<Radio />}
-                      label={option.label}
-                    />
-                  ))}
-                </RadioGroup>
-              )}
+              render={({ field }) => {
+                return (
+                  <RadioGroup
+                    value={field.value || ""}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    {...other}
+                  >
+                    {props.options.map((option, idx) => (
+                      <FormControlLabel
+                        key={`${option.value}-${idx}`}
+                        value={option.value}
+                        control={<Radio disabled={other?.disabled || option?.disabled} />}
+                        label={option.label}
+                      />
+                    ))}
+                  </RadioGroup>
+                );
+              }}
             />
           </FormControl>
           <Typography variant="subtitle3" color="error">
@@ -259,6 +269,7 @@ export const CippFormComponent = (props) => {
                   label={label}
                   multiple={false}
                   onChange={(value) => field.onChange(value?.value)}
+                  helperText={helperText}
                 />
               )}
             />
@@ -285,6 +296,7 @@ export const CippFormComponent = (props) => {
                   defaultValue={field.value}
                   label={label}
                   onChange={(value) => field.onChange(value)}
+                  helperText={helperText}
                 />
               )}
             />

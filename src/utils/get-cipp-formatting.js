@@ -668,6 +668,24 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? data : <CippCopyToClipBoard text={data} />;
   }
 
+  // handle autocomplete labels
+  if (data?.label && data?.value) {
+    return isText ? data.label : <CippCopyToClipBoard text={data.label} type="chip" />;
+  }
+
+  // handle array of autocomplete labels
+  if (Array.isArray(data) && data.length > 0 && data[0]?.label && data[0]?.value) {
+    return isText
+      ? data.map((item) => item.label).join(", ")
+      : renderChipList(
+          data.map((item) => {
+            return {
+              label: item.label,
+            };
+          })
+        );
+  }
+
   // Handle arrays of strings
   if (Array.isArray(data) && data.every((item) => typeof item === "string") && flatten) {
     // if string matches json format, parse it

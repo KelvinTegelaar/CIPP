@@ -87,8 +87,8 @@ export const nativeMenuItems = [
           },
           { title: "Audit Logs", path: "/tenant/administration/audit-logs" },
           {
-            title: "Enterprise Applications",
-            path: "/tenant/administration/enterprise-apps",
+            title: "Applications",
+            path: "/tenant/administration/applications/enterprise-apps",
           },
           { title: "Secure Score", path: "/tenant/administration/securescore" },
           {
@@ -470,7 +470,7 @@ export const nativeMenuItems = [
       {
         title: "Custom Data",
         path: "/cipp/custom-data/directory-extensions",
-        roles: ["admin", "superadmin"]
+        roles: ["admin", "superadmin"],
       },
       {
         title: "Advanced",

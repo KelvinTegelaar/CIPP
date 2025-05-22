@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
@@ -6,8 +6,19 @@ import { CippFormCondition } from "/src/components/CippComponents/CippFormCondit
 const CippAddGroupTemplateForm = (props) => {
   const { formControl } = props;
 
+  // Debug the current form values, especially groupType
+  useEffect(() => {
+    const subscription = formControl.watch((value, { name, type }) => {
+      console.log("Form value changed:", name, value);
+    });
+    return () => subscription.unsubscribe();
+  }, [formControl]);
+
   return (
     <Grid container spacing={2}>
+      {/* Hidden field to store the template GUID when editing */}
+      <CippFormComponent type="hidden" name="GUID" formControl={formControl} />
+
       <Grid item xs={12} md={6}>
         <CippFormComponent
           type="textField"
@@ -53,6 +64,8 @@ const CippAddGroupTemplateForm = (props) => {
             { label: "Mail Enabled Security Group", value: "security" },
           ]}
         />
+        {/* Debug output */}
+        <div style={{ display: "none" }}>Current groupType: {formControl.watch("groupType")}</div>
       </Grid>
       <CippFormCondition
         formControl={formControl}

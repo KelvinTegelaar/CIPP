@@ -100,7 +100,7 @@ const Page = () => {
           type: "column",
         },
       ]}
-      queryKey={`AppConsentRequests-${JSON.stringify(filterParams)}`}
+      queryKey={`AppConsentRequests-${JSON.stringify(filterParams)}-${tenantFilter}`}
       apiData={{
         ...filterParams,
       }}
