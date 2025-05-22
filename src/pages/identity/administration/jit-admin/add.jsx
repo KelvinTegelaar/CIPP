@@ -41,6 +41,7 @@ const Page = () => {
                   { label: "New User", value: "create" },
                   { label: "Existing User", value: "select" },
                 ]}
+                required={true}
               />
               <Divider sx={{ my: 2 }} />
             </Grid>
@@ -57,6 +58,7 @@ const Page = () => {
                   label="First Name"
                   name="firstName"
                   formControl={formControl}
+                  required={true}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -66,6 +68,7 @@ const Page = () => {
                   label="Last Name"
                   name="lastName"
                   formControl={formControl}
+                  required={true}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -75,6 +78,7 @@ const Page = () => {
                   label="Username"
                   name="userName"
                   formControl={formControl}
+                  required={true}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -82,6 +86,15 @@ const Page = () => {
                   formControl={formControl}
                   name="domain"
                   label="Domain Name"
+                  required={true}
+                  validators={{
+                    validate: (option) => {
+                      if (!option?.value) {
+                        return "Domain is required";
+                      }
+                      return true;
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={12}>
@@ -101,6 +114,7 @@ const Page = () => {
                     multiple={false}
                     name="existingUser"
                     label="User"
+                    required={true}
                   />
                 </Grid>
               </Grid>
@@ -112,6 +126,15 @@ const Page = () => {
                 label="Start Date"
                 name="startDate"
                 formControl={formControl}
+                required={true}
+                validators={{
+                  validate: (value) => {
+                    if (!value) {
+                      return "Start date is required";
+                    }
+                    return true;
+                  },
+                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -121,6 +144,19 @@ const Page = () => {
                 label="End Date"
                 name="endDate"
                 formControl={formControl}
+                required={true}
+                validators={{
+                  validate: (value) => {
+                    const startDate = formControl.getValues("startDate");
+                    if (!value) {
+                      return "End date is required";
+                    }
+                    if (new Date(value) < new Date(startDate)) {
+                      return "End date must be after start date";
+                    }
+                    return true;
+                  },
+                }}
               />
             </Grid>
             <Grid item xs={12} md={12}>
@@ -131,6 +167,15 @@ const Page = () => {
                 name="adminRoles"
                 options={gdaproles.map((role) => ({ label: role.Name, value: role.ObjectId }))}
                 formControl={formControl}
+                required={true}
+                validators={{
+                  validate: (options) => {
+                    if (!options?.length) {
+                      return "At least one role is required";
+                    }
+                    return true;
+                  },
+                }}
               />
             </Grid>
             <Grid item xs={12} md={12}>
@@ -154,6 +199,15 @@ const Page = () => {
                   { label: "Remove Roles", value: "RemoveRoles" },
                 ]}
                 formControl={formControl}
+                required={true}
+                validators={{
+                  validate: (option) => {
+                    if (!option?.value) {
+                      return "Expiration action is required";
+                    }
+                    return true;
+                  },
+                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
