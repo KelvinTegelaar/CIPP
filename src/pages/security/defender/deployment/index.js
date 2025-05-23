@@ -321,8 +321,8 @@ const DeployDefenderForm = () => {
               label=""
               name="ASR.Mode"
               options={[
-                { label: "Audit mode", value: "audit" },
                 { label: "Block mode", value: "block" },
+                { label: "Audit mode", value: "audit" },
                 { label: "Warn mode", value: "warn" },
               ]}
               formControl={formControl}
