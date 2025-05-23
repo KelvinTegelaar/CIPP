@@ -323,6 +323,7 @@ const DeployDefenderForm = () => {
               options={[
                 { label: "Audit mode", value: "audit" },
                 { label: "Block mode", value: "block" },
+                { label: "Warn mode", value: "warn" },
               ]}
               formControl={formControl}
               validators={{ required: "Mode must be selected" }}
