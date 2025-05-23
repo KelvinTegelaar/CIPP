@@ -8,6 +8,7 @@ import {
   Email,
   ForwardToInbox,
   GroupAdd,
+  LockClock,
   LockOpen,
   LockPerson,
   LockReset,
@@ -283,6 +284,29 @@ export const CippUserActions = () => {
         displayName: "displayName",
       },
       confirmText: "Are you sure you want to reset the password for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Set Password Never Expires",
+      type: "POST",
+      icon: <LockClock />,
+      url: "/api/ExecPasswordNeverExpires",
+      data: { userId: "id", userPrincipalName: "userPrincipalName" },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "PasswordPolicy",
+          label: "Password Policy",
+          options: [
+            { label: "Disable Password Expiration", value: "DisablePasswordExpiration" },
+            { label: "Enable Password Expiration", value: "None" },
+          ],
+          multiple: false,
+          creatable: false,
+        },
+      ],
+      confirmText:
+        "Set Password Never Expires state for this user. If the password of the user is older than the set expiration date of the organization, the user will be prompted to change their password at their next login.",
       multiPost: false,
     },
     {
