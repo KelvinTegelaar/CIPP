@@ -287,6 +287,7 @@ const DeployDefenderForm = () => {
                     { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
                   ]}
                   formControl={formControl}
+                  validators={{ required: "Assignment must be selected" }}
                   row
                 />
               </Grid>
@@ -315,11 +316,30 @@ const DeployDefenderForm = () => {
           <Grid item xs={12}>
             <Typography variant="h6">ASR Rules</Typography>
             <Typography variant="subtitle1">Set Attack Surface Reduction Rules</Typography>
+            <CippFormComponent
+              type="radio"
+              label=""
+              name="ASR.Mode"
+              options={[
+                { label: "Block mode", value: "block" },
+                { label: "Audit mode", value: "audit" },
+                { label: "Warn mode", value: "warn" },
+              ]}
+              formControl={formControl}
+              validators={{ required: "Mode must be selected" }}
+              row
+            />
           </Grid>
 
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
+                <CippFormComponent
+                  type="switch"
+                  label="Block execution of potentially obfuscated scripts"
+                  name="ASR.BlockObfuscatedScripts"
+                  formControl={formControl}
+                />
                 <CippFormComponent
                   type="switch"
                   label="Block Adobe Reader from creating child processes"
@@ -352,6 +372,12 @@ const DeployDefenderForm = () => {
                 />
                 <CippFormComponent
                   type="switch"
+                  label="Block use of copied or impersonated system tools"
+                  name="ASR.BlockSystemTools"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="switch"
                   label="Block Office applications from creating executable content"
                   name="ASR.BlockOfficeExes"
                   formControl={formControl}
@@ -360,6 +386,12 @@ const DeployDefenderForm = () => {
                   type="switch"
                   label="Block Office applications from injecting code into other processes"
                   name="ASR.BlockOfficeApps"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="switch"
+                  label="Block rebooting machine in Safe Mode"
+                  name="ASR.BlockSafeMode"
                   formControl={formControl}
                 />
               </Grid>
@@ -374,6 +406,12 @@ const DeployDefenderForm = () => {
                   type="switch"
                   label="Block JavaScript or VBScript from launching downloaded executable content"
                   name="ASR.blockJSVB"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="switch"
+                  label="Block Webshell creation for Servers"
+                  name="ASR.BlockWebshellForServers"
                   formControl={formControl}
                 />
                 <CippFormComponent
@@ -428,6 +466,7 @@ const DeployDefenderForm = () => {
                     { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
                   ]}
                   formControl={formControl}
+                  validators={{ required: "Assignment must be selected" }}
                   row
                 />
               </Grid>
