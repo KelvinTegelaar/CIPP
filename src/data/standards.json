@@ -4319,7 +4319,7 @@
         "label": "Select Group Template",
         "api": {
           "url": "/api/ListGroupTemplates",
-          "labelField": "Displayname",
+          "labelField": "displayName",
           "valueField": "GUID",
           "queryKey": "ListGroupTemplates"
         }
