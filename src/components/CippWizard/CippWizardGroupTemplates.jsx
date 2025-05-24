@@ -42,7 +42,7 @@ export const CippWizardGroupTemplates = (props) => {
               excludeTenantFilter: true,
               url: "/api/ListGroupTemplates",
               queryKey: "ListGroupTemplates",
-              labelField: (option) => `${option.Displayname} (${option.groupType})`,
+              labelField: (option) => `${option.displayName} (${option.groupType})`,
               valueField: "GUID",
               addedField: {
                 groupType: "groupType",
