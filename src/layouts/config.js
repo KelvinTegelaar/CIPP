@@ -342,6 +342,10 @@ export const nativeMenuItems = [
             title: "Connection filter templates",
             path: "/email/spamfilter/list-connectionfilter-templates",
           },
+          {
+            title: "Quarantine Policies",
+            path: "/email/spamfilter/list-quarantine-policies",
+          },
         ],
       },
       {
