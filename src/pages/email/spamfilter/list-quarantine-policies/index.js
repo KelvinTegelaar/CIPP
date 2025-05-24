@@ -19,7 +19,6 @@ import {
 import { useSettings } from "/src/hooks/use-settings";
 import { useDialog } from "/src/hooks/use-dialog";
 import { ApiGetCall } from "/src/api/ApiCall";
-import { useState, useRef } from "react";
 
 const Page = () => {
   const pageTitle = "Quarantine Policies";
