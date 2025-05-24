@@ -63,8 +63,8 @@ const App = (props) => {
         buster: "v1",
         dehydrateOptions: {
           shouldDehydrateQuery: (query) => {
-            const queryIsReadyForPersistance = query.state.status === "success";
-            if (queryIsReadyForPersistance) {
+            const queryIsReadyForPersistence = query.state.status === "success";
+            if (queryIsReadyForPersistence) {
               const { queryKey } = query;
               // Check if queryKey exists and has elements before accessing index 0
               if (!queryKey || !queryKey.length) {
@@ -76,7 +76,7 @@ const App = (props) => {
               );
               return !excludeFromPersisting;
             }
-            return queryIsReadyForPersistance;
+            return queryIsReadyForPersistence;
           },
         },
       });
