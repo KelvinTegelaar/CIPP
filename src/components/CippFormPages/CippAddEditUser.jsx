@@ -352,6 +352,28 @@ const CippAddEditUser = (props) => {
           />
         </Grid>
       )}
+      {formType === "edit" && (
+        // Unable to only list groups that the user is not already a member of, as only 20 members are returned by the API.
+        // This means that the user may be a member of a group that is not listed here, and will not be able to be removed from it. -Bobby
+        <Grid item xs={12}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Remove from Groups"
+            name="RemoveFromGroups"
+            multiple={true}
+            api={{
+              url: "/api/ListGroups",
+              queryKey: `ListGroups-${tenantDomain}`,
+              labelField: "displayName",
+              valueField: "id",
+              addedField: {
+                calculatedGroupType: "calculatedGroupType",
+              },
+            }}
+            formControl={formControl}
+          />
+        </Grid>
+      )}
       {/* Schedule User Creation */}
       {formType === "add" && (
         <Grid item xs={12}>
