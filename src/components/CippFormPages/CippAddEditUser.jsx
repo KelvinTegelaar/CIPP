@@ -9,17 +9,50 @@ import Grid from "@mui/material/Grid";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useWatch } from "react-hook-form";
-import { useEffect } from "react";
+import { use, useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
 
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = "add" } = props;
   const tenantDomain = useSettings().currentTenant;
+  const router = useRouter();
+  const { userId } = router.query;
   const integrationSettings = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "ListExtensionsConfig",
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
+
+  // Get all groups the is the user is a member of
+  const userGroups = ApiGetCall({
+    url: `/api/ListUserGroups?userId=${userId}&tenantFilter=${tenantDomain}`,
+    queryKey: `User-${userId}-Groups-${tenantDomain}`,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    waiting: !!userId,
+  });
+
+  // Get all groups for the tenant
+  const tenantGroups = ApiGetCall({
+    url: `/api/ListGroups?tenantFilter=${tenantDomain}`,
+    queryKey: `ListGroups-${tenantDomain}`,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    waiting: !!userId,
+  });
+
+  // Make new list of groups by removing userGroups from tenantGroups
+  const filteredTenantGroups = useMemo(() => {
+    if (tenantGroups.isSuccess && userGroups.isSuccess) {
+      const tenantGroupsList = tenantGroups?.data || [];
+
+      return tenantGroupsList.filter(
+        (tenantGroup) => !userGroups?.data?.some((userGroup) => userGroup.id === tenantGroup.id)
+      );
+    }
+    return [];
+  }, [tenantGroups.isSuccess, userGroups.isSuccess, tenantGroups.data, userGroups.data]);
 
   const watcher = useWatch({ control: formControl.control });
   useEffect(() => {
@@ -339,37 +372,31 @@ const CippAddEditUser = (props) => {
             label="Add to Groups"
             name="AddToGroups"
             multiple={true}
-            api={{
-              url: "/api/ListGroups",
-              queryKey: `ListGroups-${tenantDomain}`,
-              labelField: "displayName",
-              valueField: "id",
-              addedField: {
-                calculatedGroupType: "calculatedGroupType",
+            options={filteredTenantGroups?.map((tenantGroup) => ({
+              label: tenantGroup.displayName,
+              value: tenantGroup.id,
+              addedFields: {
+                calculatedGroupType: tenantGroup.calculatedGroupType,
               },
-            }}
+            }))}
             formControl={formControl}
           />
         </Grid>
       )}
       {formType === "edit" && (
-        // Unable to only list groups that the user is not already a member of, as only 20 members are returned by the API.
-        // This means that the user may be a member of a group that is not listed here, and will not be able to be removed from it. -Bobby
         <Grid item xs={12}>
           <CippFormComponent
             type="autoComplete"
             label="Remove from Groups"
             name="RemoveFromGroups"
             multiple={true}
-            api={{
-              url: "/api/ListGroups",
-              queryKey: `ListGroups-${tenantDomain}`,
-              labelField: "displayName",
-              valueField: "id",
-              addedField: {
-                calculatedGroupType: "calculatedGroupType",
+            options={userGroups?.data?.map((userGroups) => ({
+              label: userGroups.DisplayName,
+              value: userGroups.id,
+              addedFields: {
+                calculatedGroupType: userGroups.calculatedGroupType,
               },
-            }}
+            }))}
             formControl={formControl}
           />
         </Grid>
