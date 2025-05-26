@@ -28,6 +28,7 @@ const AddContact = () => {
       title="Add Contact"
       backButtonTitle="Contacts Overview"
       postUrl="/api/AddContact"
+      resetForm={true}
       customDataformatter={(values) => {
         // Add tenantDomain to the payload
         return {
