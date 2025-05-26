@@ -24,10 +24,9 @@ export const CippWizardStepButtons = (props) => {
     const newData = {};
     Object.keys(values).forEach((key) => {
       const value = values[key];
-      if (replacementBehaviour !== "removeNulls") {
+      // Only add non-null values if removeNulls is specified
+      if (replacementBehaviour !== "removeNulls" || value !== null) {
         newData[key] = value;
-      } else if (row[value] !== undefined) {
-        newData[key] = row[value];
       }
     });
     sendForm.mutate({ url: postUrl, data: newData });

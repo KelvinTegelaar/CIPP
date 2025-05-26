@@ -13,7 +13,6 @@ import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from "@heroicons/react/24/
 const Page = () => {
   const steps = [
     {
-      title: "Step 1",
       description: "Onboarding",
       component: CippWizardOptionsList,
       componentProps: {
@@ -59,32 +58,45 @@ const Page = () => {
       },
     },
     {
-      title: "Step 2",
       description: "Application",
       component: CippSAMDeploy,
+      showStepWhen: (values) =>
+        values?.selectedOption === "CreateApp" || values?.selectedOption === "FirstSetup",
     },
     {
-      title: "Step 3",
       description: "Tenants",
       component: CippTenantModeDeploy,
+      showStepWhen: (values) =>
+        values?.selectedOption === "CreateApp" ||
+        values?.selectedOption === "FirstSetup" ||
+        values?.selectedOption === "AddTenant",
     },
     {
-      title: "Step 4",
       description: "Baselines",
       component: CippBaselinesStep,
+      showStepWhen: (values) => values?.selectedOption === "FirstSetup",
     },
     {
-      title: "Step 5",
       description: "Notifications",
       component: CippNotificationsStep,
+      showStepWhen: (values) => values?.selectedOption === "FirstSetup",
     },
     {
-      title: "Step 6",
       description: "Next Steps",
       component: CippAlertsStep,
+      showStepWhen: (values) => values?.selectedOption === "FirstSetup",
     },
     {
-      title: "Step 7",
+      description: "Refresh Tokens",
+      component: CippDeploymentStep,
+      showStepWhen: (values) => values?.selectedOption === "UpdateTokens",
+    },
+    {
+      description: "Manually enter credentials",
+      component: CippDeploymentStep,
+      showStepWhen: (values) => values?.selectedOption === "Manual",
+    },
+    {
       description: "Confirmation",
       component: CippWizardConfirmation,
       //confirm and finish button, perform tasks, launch checks etc.

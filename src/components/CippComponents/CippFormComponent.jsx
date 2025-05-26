@@ -138,9 +138,13 @@ export const CippFormComponent = (props) => {
               type="password"
               variant="filled"
               fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
               {...other}
               {...formControl.register(convertedName, { ...validators })}
               label={label}
+              defaultValue={defaultValue}
             />
           </div>
           <Typography variant="subtitle3" color="error">

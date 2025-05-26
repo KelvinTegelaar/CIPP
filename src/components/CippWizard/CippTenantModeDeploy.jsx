@@ -73,14 +73,12 @@ export const CippTenantModeDeploy = (props) => {
       },
       {
         onSuccess: (data) => {
-          console.log("Update Refresh Token Success:", data);
           setGdapAuthStatus({
             success: true,
             loading: false,
           });
         },
         onError: (error) => {
-          console.error("Update Refresh Token Error:", error);
           setGdapAuthStatus({
             success: false,
             loading: false,
@@ -103,7 +101,6 @@ export const CippTenantModeDeploy = (props) => {
 
     // Add the tenant to the cache
     // Call the AddTenant API to add the tenant to the cache with directTenant status
-    console.log(tokenData);
     addTenant.mutate({
       url: "/api/ExecAddTenant",
       data: {
