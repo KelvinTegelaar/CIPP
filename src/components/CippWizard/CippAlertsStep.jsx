@@ -69,7 +69,13 @@ export const CippAlertsStep = (props) => {
           <ul>
             <li>
               Tenants can be grouped, and you can implement custom variables for your tenants under
-              WinGet, and RMM apps under &gt; Tenant Administrator &gt; Administration &gt; Tenants.
+              WinGet, and RMM apps under Tenant Administrator &gt; Administration &gt; Tenants.
+            </li>
+          </ul>
+          <ul>
+            <li>
+              Have an enterprise app you want to deploy? Check out our <strong> tools</strong>{" "}
+              section. This menu also contains useful things such as our geo-ip lookup, and more.
             </li>
           </ul>
         </Alert>

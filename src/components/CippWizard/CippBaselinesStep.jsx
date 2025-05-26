@@ -80,7 +80,10 @@ export const CippBaselinesStep = (props) => {
                 queryKey: `ListBaselines`,
                 url: "/api/ListCommunityRepos",
                 labelField: (option) => `${option.Name} (${option.Owner})`,
-                valueField: "Id",
+                valueField: "FullName",
+                addedFields: {
+                  templateRepoBranch: "main",
+                },
               }}
               multiple={true}
               placeholder="Select one or more baselines"

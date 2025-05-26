@@ -86,6 +86,22 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   };
 
+  if (cellName === "baselineOption") {
+    return "Download Baseline";
+  }
+
+  if (cellName === "Severity" || cellName === "logsToInclude") {
+    if (Array.isArray(data)) {
+      return isText ? data.join(", ") : renderChipList(data);
+    } else {
+      return isText ? (
+        data
+      ) : (
+        <Chip variant="outlined" label={data.label} size="small" color="info" />
+      );
+    }
+  }
+
   //if the cellName starts with portal_, return text, or a link with an icon
   if (cellName.startsWith("portal_")) {
     const IconComponent = portalIcons[cellName];

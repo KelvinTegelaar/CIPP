@@ -21,7 +21,7 @@ import { getCippError } from "../../utils/get-cipp-error";
 export const CippTenantModeDeploy = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
 
-  const [tenantMode, setTenantMode] = useState("GDAP");
+  const [tenantMode, setTenantMode] = useState("mixed");
   const [allowPartnerTenantManagement, setAllowPartnerTenantManagement] = useState(false);
   const [gdapAuthStatus, setGdapAuthStatus] = useState({
     success: false,
@@ -45,44 +45,12 @@ export const CippTenantModeDeploy = (props) => {
 
   // Update authenticated tenants list when tenantList changes
   useEffect(() => {
-    if (tenantList.data && (tenantMode === "perTenant" || tenantMode === "mixed")) {
+    if (tenantList.data) {
       setAuthenticatedTenants(tenantList.data);
     }
-  }, [tenantList.data, tenantMode]);
+  }, [tenantList.data]);
 
-  // Handle tenant mode change
-  const handleTenantModeChange = (selectedOption) => {
-    if (selectedOption) {
-      setTenantMode(selectedOption.value);
-      // Reset auth status when changing modes
-      setGdapAuthStatus({
-        success: false,
-        loading: false,
-      });
-      setPerTenantAuthStatus({
-        success: false,
-        loading: false,
-      });
-      // Reset partner tenant management option
-      setAllowPartnerTenantManagement(false);
-    }
-  };
-
-  // Tenant mode options
-  const tenantModeOptions = [
-    {
-      label: "GDAP - Uses your partner center to connect to tenants",
-      value: "GDAP",
-    },
-    {
-      label: "Per Tenant - Add each tenant individually",
-      value: "perTenant",
-    },
-    {
-      label: "Mixed - Use Partner Center and add tenants individually",
-      value: "mixed",
-    },
-  ];
+  // Tenant mode is always set to "mixed"
 
   // Handle GDAP authentication success
   const handleGdapAuthSuccess = (tokenData) => {
@@ -121,13 +89,8 @@ export const CippTenantModeDeploy = (props) => {
       }
     );
 
-    // Allow user to proceed to next step for GDAP mode
-    if (tenantMode === "GDAP") {
-      formControl.setValue("tenantModeSet", true);
-    } else if (tenantMode === "mixed") {
-      // For mixed mode, allow proceeding if either authentication is successful
-      formControl.setValue("tenantModeSet", true);
-    }
+    // Allow user to proceed to next step
+    formControl.setValue("tenantModeSet", true);
   };
 
   // Handle perTenant authentication success
@@ -138,32 +101,22 @@ export const CippTenantModeDeploy = (props) => {
       loading: true,
     });
 
-    // For perTenant mode or mixed mode with perTenant auth, add the tenant to the cache
-    if (tenantMode === "perTenant" || tenantMode === "mixed") {
-      // Call the AddTenant API to add the tenant to the cache with directTenant status
-      console.log(tokenData);
-      addTenant.mutate({
-        url: "/api/ExecAddTenant",
-        data: {
-          tenantId: tokenData.tenantId,
-          access_token: tokenData.accessToken,
-        },
-      });
-    } else {
-      // If not adding tenant, still update state
-      setPerTenantAuthStatus({
-        success: true,
-        loading: false,
-      });
-    }
+    // Add the tenant to the cache
+    // Call the AddTenant API to add the tenant to the cache with directTenant status
+    console.log(tokenData);
+    addTenant.mutate({
+      url: "/api/ExecAddTenant",
+      data: {
+        tenantId: tokenData.tenantId,
+        access_token: tokenData.accessToken,
+      },
+    });
 
     // Allow user to proceed to next step
     formControl.setValue("tenantModeSet", true);
 
-    // Refresh tenant list for perTenant and mixed modes
-    if (tenantMode === "perTenant" || tenantMode === "mixed") {
-      tenantList.refetch();
-    }
+    // Refresh tenant list
+    tenantList.refetch();
   };
 
   // Handle API error
@@ -180,34 +133,20 @@ export const CippTenantModeDeploy = (props) => {
     <Stack spacing={2}>
       <Box>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          Select how you want to connect to your tenants. You have three options:
+          CIPP can connect to your Microsoft 365 tenants in two ways:
           <ul>
             <li>
-              <strong>GDAP:</strong> Use delegated administration (recommended)
+              Use GDAP delegated administration through partner center. This option is best when you
+              are a Microsoft Partner managing multiple tenants, and want to add tenants to your
+              CIPP environment without needing to authenticate to each tenant separately.
             </li>
             <li>
-              <strong>Per Tenant:</strong> Authenticate to each tenant individually
-            </li>
-            <li>
-              <strong>Mixed:</strong> Use both GDAP and per-tenant authentication
+              Authenticate to individual tenants separately. This option is best when you are not a
+              Microsoft Partner, or when you have tenants that are not added to your GDAP
+              environment.
             </li>
           </ul>
         </Typography>
-      </Box>
-
-      {/* Tenant mode selection */}
-      <Box>
-        <Typography variant="h6" gutterBottom>
-          Tenant Connection Mode
-        </Typography>
-        <CippAutoComplete
-          label="Select Tenant Connection Mode"
-          options={tenantModeOptions}
-          value={tenantModeOptions.find((option) => option.value === tenantMode)}
-          onChange={handleTenantModeChange}
-          multiple={false}
-          required={true}
-        />
       </Box>
 
       <Divider />
@@ -217,105 +156,93 @@ export const CippTenantModeDeploy = (props) => {
       <CippApiResults apiObject={addTenant} />
 
       {/* GDAP Authentication Section */}
-      {(tenantMode === "GDAP" || tenantMode === "mixed") && (
-        <Box>
-          <Typography variant="h6" gutterBottom>
-            Partner Tenant
-          </Typography>
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          Partner Tenant
+        </Typography>
 
-          {/* GDAP Partner Tenant Management Switch */}
-          <FormControlLabel
-            control={
-              <Switch
-                checked={allowPartnerTenantManagement}
-                onChange={(e) => setAllowPartnerTenantManagement(e.target.checked)}
-                color="primary"
-              />
-            }
-            label="Allow management of the partner tenant."
-          />
+        {/* GDAP Partner Tenant Management Switch */}
+        <FormControlLabel
+          control={
+            <Switch
+              checked={allowPartnerTenantManagement}
+              onChange={(e) => setAllowPartnerTenantManagement(e.target.checked)}
+              color="primary"
+            />
+          }
+          label="Allow management of the partner tenant."
+        />
 
-          {/* Always show authenticate button */}
-          <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <CIPPM365OAuthButton
-                onAuthSuccess={(tokenData) => {
-                  // Add the tenantMode and allowPartnerTenantManagement parameters to the tokenData
-                  const updatedTokenData = {
-                    ...tokenData,
-                    tenantMode: tenantMode === "mixed" ? "GDAP" : tenantMode,
-                    allowPartnerTenantManagement: allowPartnerTenantManagement,
-                  };
-                  handleGdapAuthSuccess(updatedTokenData);
-                }}
-                buttonText={
-                  tenantMode === "mixed" ? "Connect to GDAP" : "Authenticate with Microsoft GDAP"
-                }
-                showSuccessAlert={false}
-              />
-            </Stack>
-          </Box>
+        {/* Always show authenticate button */}
+        <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <CIPPM365OAuthButton
+              onAuthSuccess={(tokenData) => {
+                // Add the tenantMode and allowPartnerTenantManagement parameters to the tokenData
+                const updatedTokenData = {
+                  ...tokenData,
+                  tenantMode: "GDAP",
+                  allowPartnerTenantManagement: allowPartnerTenantManagement,
+                };
+                handleGdapAuthSuccess(updatedTokenData);
+              }}
+              buttonText="Connect using GDAP (Recommended)"
+              showSuccessAlert={false}
+            />
+          </Stack>
         </Box>
-      )}
+      </Box>
 
       {/* Per Tenant Authentication Section */}
-      {(tenantMode === "perTenant" || tenantMode === "mixed") && (
-        <Box>
-          <Typography variant="h6" gutterBottom>
-            Per-Tenant Authentication
-          </Typography>
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          Per-Tenant Authentication
+        </Typography>
 
-          <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
-            {tenantMode === "mixed"
-              ? "Click the button below to connect to individual tenants. You can authenticate to multiple tenants one by one."
-              : "You can click the button below to authenticate to a tenant. Perform this authentication for every tenant you wish to manage using CIPP."}
-          </Typography>
+        <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
+          Click the button below to connect to individual tenants. You can authenticate to multiple
+          tenants by repeating this step for each tenant you want to add.
+        </Typography>
 
-          {/* Show authenticate button */}
-          <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <CIPPM365OAuthButton
-                onAuthSuccess={(tokenData) => {
-                  // Add the tenantMode parameter to the tokenData
-                  const updatedTokenData = {
-                    ...tokenData,
-                    tenantMode: tenantMode === "mixed" ? "perTenant" : tenantMode,
-                  };
-                  handlePerTenantAuthSuccess(updatedTokenData);
-                }}
-                buttonText={
-                  tenantMode === "mixed"
-                    ? "Connect to Separate Tenants"
-                    : "Authenticate with Microsoft"
-                }
-                showSuccessAlert={false}
-              />
-            </Stack>
-          </Box>
-
-          {/* List authenticated tenants for perTenant and mixed modes */}
-          {(tenantMode === "perTenant" || tenantMode === "mixed") &&
-            authenticatedTenants.length > 0 && (
-              <Box mt={2}>
-                <Typography variant="h6" gutterBottom>
-                  Authenticated Tenants
-                </Typography>
-                <Paper variant="outlined" sx={{ maxHeight: 300, overflow: "auto" }}>
-                  <List dense>
-                    {authenticatedTenants.map((tenant, index) => (
-                      <ListItem key={index}>
-                        <ListItemText
-                          primary={tenant.defaultDomainName || tenant.tenantId}
-                          secondary={tenant.displayName || "Unknown Tenant"}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Paper>
-              </Box>
-            )}
+        {/* Show authenticate button */}
+        <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <CIPPM365OAuthButton
+              onAuthSuccess={(tokenData) => {
+                // Add the tenantMode parameter to the tokenData
+                const updatedTokenData = {
+                  ...tokenData,
+                  tenantMode: "perTenant",
+                };
+                handlePerTenantAuthSuccess(updatedTokenData);
+              }}
+              buttonText="Connect to Separate Tenants"
+              showSuccessAlert={false}
+            />
+          </Stack>
         </Box>
-      )}
+
+        {/* List authenticated tenants */}
+        {authenticatedTenants.length > 0 && (
+          <Box mt={2}>
+            <Typography variant="h6" gutterBottom>
+              Authenticated Tenants
+            </Typography>
+            <Paper variant="outlined" sx={{ maxHeight: 300, overflow: "auto" }}>
+              <List dense>
+                {authenticatedTenants.map((tenant, index) => (
+                  <ListItem key={index}>
+                    <ListItemText
+                      primary={tenant.defaultDomainName || tenant.tenantId}
+                      secondary={tenant.displayName || "Unknown Tenant"}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          </Box>
+        )}
+      </Box>
 
       <CippWizardStepButtons
         currentStep={currentStep}

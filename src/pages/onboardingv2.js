@@ -97,7 +97,7 @@ const Page = () => {
         backButton={false}
         steps={steps}
         wizardTitle="Setup Wizard"
-        postUrl={"/api/ExecSAMSetup"}
+        postUrl={"/api/ExecCombinedSetup"}
       />
     </>
   );
