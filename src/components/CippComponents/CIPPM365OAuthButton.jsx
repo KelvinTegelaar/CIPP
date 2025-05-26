@@ -144,16 +144,6 @@ export const CIPPM365OAuthButton = ({
 
       const pollForToken = async () => {
         // Check if popup was closed
-        if (popup && popup.closed) {
-          clearInterval(checkPopupClosed);
-          setAuthError({
-            errorCode: "user_cancelled",
-            errorMessage: "Authentication was cancelled. Please try again.",
-            timestamp: new Date().toISOString(),
-          });
-          setAuthInProgress(false);
-          return;
-        }
 
         // Check if we've exceeded the expiration time
         if (Date.now() - startTime >= expiresIn * 1000) {
@@ -207,19 +197,6 @@ export const CIPPM365OAuthButton = ({
           setTimeout(pollForToken, pollInterval * 1000);
         }
       };
-
-      // Also monitor for popup closing as a fallback
-      const checkPopupClosed = setInterval(() => {
-        if (popup && popup.closed) {
-          clearInterval(checkPopupClosed);
-          setAuthInProgress(false);
-          setAuthError({
-            errorCode: "user_cancelled",
-            errorMessage: "Authentication was cancelled. Please try again.",
-            timestamp: new Date().toISOString(),
-          });
-        }
-      }, 1000);
 
       // Start polling
       setTimeout(pollForToken, pollInterval * 1000);
@@ -555,37 +532,6 @@ export const CIPPM365OAuthButton = ({
     }, 500);
 
     // Also monitor for popup closing as a fallback
-    const checkPopupClosed = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(checkPopupClosed);
-        clearInterval(checkPopupLocation);
-
-        // If authentication is still in progress when popup closes, it's an error
-        if (authInProgress) {
-          const errorMessage = "Authentication was cancelled. Please try again.";
-          const error = {
-            errorCode: "user_cancelled",
-            errorMessage: errorMessage,
-            timestamp: new Date().toISOString(),
-          };
-          setAuthError(error);
-          if (onAuthError) onAuthError(error);
-
-          // Ensure we're not showing any previous success state
-          setTokens({
-            accessToken: null,
-            refreshToken: null,
-            accessTokenExpiresOn: null,
-            refreshTokenExpiresOn: null,
-            username: null,
-            tenantId: null,
-            onmicrosoftDomain: null,
-          });
-        }
-
-        setAuthInProgress(false);
-      }
-    }, 1000);
   };
 
   // Auto-start device code retrieval if requested
