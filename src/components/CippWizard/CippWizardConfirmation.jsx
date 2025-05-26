@@ -1,7 +1,7 @@
-import { Card, Stack, Grid } from "@mui/material";
+import { Card, Stack, Grid, Typography } from "@mui/material";
 import { PropertyList } from "../property-list";
-import CippWizardStepButtons from "./CippWizardStepButtons";
 import { PropertyListItem } from "../property-list-item";
+import CippWizardStepButtons from "./CippWizardStepButtons";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
@@ -9,7 +9,7 @@ export const CippWizardConfirmation = (props) => {
   const { postUrl, lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const formValues = formControl.getValues();
   const formEntries = Object.entries(formValues);
-  //remove all entries in "blacklist" from showing on confirmation page
+
   const blacklist = [
     "selectedOption",
     "GUID",
@@ -31,7 +31,8 @@ export const CippWizardConfirmation = (props) => {
   const userEntry = filteredFormEntries.find(([key]) =>
     ["user", "userPrincipalName", "username"].includes(key)
   );
-  const filteredEntries = filteredFormEntries.filter(
+
+  const filteredEntries = formEntries.filter(
     ([key]) =>
       !blacklist.includes(key) &&
       key !== "tenantFilter" &&
@@ -53,28 +54,42 @@ export const CippWizardConfirmation = (props) => {
 
   return (
     <Stack spacing={3}>
-      <Card variant="outlined">
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <PropertyList>
-              {firstHalf.map(([key, value]) => {
-                const formattedValue = getCippFormatting(value, key);
-                const label = getCippTranslation(key);
-                return <PropertyListItem key={key} label={label} value={formattedValue} />;
-              })}
-            </PropertyList>
+      {firstHalf.length === 0 ? (
+        <Card variant="outlined">
+          <Stack p={3}>
+            <Typography variant="h6">
+              You've completed the steps in this wizard. Hit submit to save your changes.
+            </Typography>
+          </Stack>
+        </Card>
+      ) : (
+        <Card variant="outlined">
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <PropertyList>
+                {firstHalf.map(([key, value]) => (
+                  <PropertyListItem
+                    key={key}
+                    label={getCippTranslation(key)}
+                    value={getCippFormatting(value, key)}
+                  />
+                ))}
+              </PropertyList>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <PropertyList>
+                {secondHalf.map(([key, value]) => (
+                  <PropertyListItem
+                    key={key}
+                    label={getCippTranslation(key)}
+                    value={getCippFormatting(value, key)}
+                  />
+                ))}
+              </PropertyList>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <PropertyList>
-              {secondHalf.map(([key, value]) => {
-                const formattedValue = getCippFormatting(value, key);
-                const label = getCippTranslation(key);
-                return <PropertyListItem key={key} label={label} value={formattedValue} />;
-              })}
-            </PropertyList>
-          </Grid>
-        </Grid>
-      </Card>
+        </Card>
+      )}
 
       <CippWizardStepButtons
         postUrl={postUrl}
