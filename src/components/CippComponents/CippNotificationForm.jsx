@@ -162,6 +162,11 @@ export const CippNotificationForm = ({
               name: "sendWebhookNow",
               label: "Send Webhook Now",
             },
+            {
+              type: "switch",
+              name: "sendPsaNow",
+              label: "Send to PSA Now",
+            },
           ]}
           api={{
             confirmText:
