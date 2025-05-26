@@ -7,6 +7,7 @@ import { CippSAMDeploy } from "../components/CippWizard/CippSAMDeploy.jsx";
 import { CippTenantModeDeploy } from "../components/CippWizard/CippTenantModeDeploy.jsx";
 import { CippBaselinesStep } from "../components/CippWizard/CippBaselinesStep.jsx";
 import { CippNotificationsStep } from "../components/CippWizard/CippNotificationsStep.jsx";
+import { CippAlertsStep } from "../components/CippWizard/CippAlertsStep.jsx";
 import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
@@ -76,13 +77,11 @@ const Page = () => {
       title: "Step 5",
       description: "Notifications",
       component: CippNotificationsStep,
-      //Show the notification menu (cipp/settings/notifications) without the submit/save button, but with a test button.
     },
     {
       title: "Step 6",
-      description: "Alerts",
-      component: CippDeploymentStep,
-      //show template alerts, allow user to configure them.
+      description: "Next Steps",
+      component: CippAlertsStep,
     },
     {
       title: "Step 7",

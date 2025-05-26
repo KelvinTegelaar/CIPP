@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { Alert, Stack, Typography, FormControl, FormLabel, Box } from "@mui/material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
-import { ApiGetCall } from "../../api/ApiCall";
 
 export const CippBaselinesStep = (props) => {
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;
@@ -14,7 +12,8 @@ export const CippBaselinesStep = (props) => {
         <Alert severity="info">
           <Typography variant="body1" gutterBottom>
             Baselines are template configurations that can be used as examples for setting up your
-            environment.
+            environment. Don't want to configure these yet? No problem! You can find the templates
+            at Tools - Community Repositories
           </Typography>
           <Typography variant="body2">
             Downloading these baselines will create templates in your CIPP instance. These templates
