@@ -25,7 +25,7 @@ export const CippWizardBulkOptions = (props) => {
               formControl={formControl}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item size={{ xs: 12 }}>
             <CippFormLicenseSelector
               fullWidth
               label="Assign License - We will attempt to assign the license to the user if it is available"

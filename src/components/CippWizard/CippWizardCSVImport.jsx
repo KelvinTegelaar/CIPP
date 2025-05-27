@@ -116,7 +116,7 @@ export const CippWizardCSVImport = (props) => {
       {!manualFields && (
         <>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <Button size="small" onClick={() => setOpen(true)}>
                 Add Item
               </Button>
@@ -127,7 +127,7 @@ export const CippWizardCSVImport = (props) => {
             <DialogContent>
               <Grid container spacing={2} sx={{ py: 1 }}>
                 {fields.map((field) => (
-                  <Grid item xs={12} key={field}>
+                  <Grid item size={{ xs: 12 }} key={field}>
                     <CippFormComponent
                       name={`addrow.${field}`}
                       label={getCippTranslation(field)}

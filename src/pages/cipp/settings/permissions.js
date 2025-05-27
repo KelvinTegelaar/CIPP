@@ -12,7 +12,7 @@ const Page = () => {
   return (
     <Container sx={{ pt: 3 }} maxWidth="xl">
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippPermissionReport importReport={importReport} setImportReport={setImportReport} />
         </Grid>
         <Grid item size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>

@@ -49,7 +49,7 @@ const CippAddGroupTemplateForm = (props) => {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormComponent
           type="radio"
           name="groupType"
@@ -73,7 +73,7 @@ const CippAddGroupTemplateForm = (props) => {
         compareType="is"
         compareValue="distribution"
       >
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Let people outside the organization email the group"
@@ -88,7 +88,7 @@ const CippAddGroupTemplateForm = (props) => {
         compareType="contains"
         compareValue="dynamic"
       >
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Dynamic Group Parameters"

@@ -15,7 +15,7 @@ const Page = () => {
     <CippTablePage
       tableFilter={
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item size={{ xs: 12 }}>
             <CippGraphExplorerFilter onSubmitFilter={setApiFilter} onPresetChange={setPageTitle} />
           </Grid>
         </Grid>

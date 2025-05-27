@@ -49,7 +49,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -77,7 +77,7 @@ const CippAddEditUser = (props) => {
           label="Primary Domain name"
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -90,10 +90,10 @@ const CippAddEditUser = (props) => {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <Typography variant="h6">Settings</Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item size={{ xs: 6 }}>
         <CippFormComponent
           type="switch"
           label="Create password manually"
@@ -106,7 +106,7 @@ const CippAddEditUser = (props) => {
           compareType="is"
           compareValue={true}
         >
-          <Grid item xs={12}>
+          <Grid item size={{ xs: 12 }}>
             <CippFormComponent
               type="password"
               fullWidth
@@ -117,7 +117,7 @@ const CippAddEditUser = (props) => {
           </Grid>
         </CippFormCondition>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item size={{ xs: 6 }}>
         <CippFormComponent
           type="switch"
           label="Require password change at next logon"
@@ -125,7 +125,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormComponent
           type="autoComplete"
           label="Usage Location"
@@ -139,7 +139,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormLicenseSelector label="Licenses" name="licenses" formControl={formControl} />
       </Grid>
       {integrationSettings?.data?.Sherweb?.Enabled === true && (
@@ -151,7 +151,7 @@ const CippAddEditUser = (props) => {
             compareValue="(0 available)"
             labelCompare={true}
           >
-            <Grid item xs={6}>
+            <Grid item size={{ xs: 6 }}>
               <CippFormComponent
                 type="switch"
                 label="0 Licences available. Purchase new licence?"
@@ -165,14 +165,14 @@ const CippAddEditUser = (props) => {
               compareType="is"
               compareValue={true}
             >
-              <Grid item xs={12}>
+              <Grid item size={{ xs: 12 }}>
                 <Alert severity="info">
                   This will Purchase a new Sherweb License for the user, according to the terms and
                   conditions with Sherweb. When the license becomes available, CIPP will assign the
                   license to this user.
                 </Alert>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   api={{
@@ -191,7 +191,7 @@ const CippAddEditUser = (props) => {
           </CippFormCondition>
         </>
       )}
-      <Grid item xs={6}>
+      <Grid item size={{ xs: 6 }}>
         <CippFormComponent
           type="switch"
           label="Remove all licenses"
@@ -199,7 +199,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -292,7 +292,7 @@ const CippAddEditUser = (props) => {
       {userSettingsDefaults?.userAttributes
         ?.filter((attribute) => attribute.value !== "sponsor")
         .map((attribute, idx) => (
-          <Grid item xs={6} key={idx}>
+          <Grid item size={{ xs: 6 }} key={idx}>
             <CippFormComponent
               type="textField"
               fullWidth
@@ -304,7 +304,7 @@ const CippAddEditUser = (props) => {
         ))}
 
       {/* Set Manager */}
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormUserSelector
           formControl={formControl}
           name="setManager"
@@ -314,7 +314,7 @@ const CippAddEditUser = (props) => {
         />
       </Grid>
       {userSettingsDefaults?.userAttributes?.some((attribute) => attribute.value === "sponsor") && (
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormUserSelector
             formControl={formControl}
             name="setSponsor"
@@ -324,7 +324,7 @@ const CippAddEditUser = (props) => {
           />
         </Grid>
       )}
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         <CippFormUserSelector
           formControl={formControl}
           name="copyFrom"
@@ -333,7 +333,7 @@ const CippAddEditUser = (props) => {
         />
       </Grid>
       {formType === "edit" && (
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Add to Groups"
@@ -354,7 +354,7 @@ const CippAddEditUser = (props) => {
       )}
       {/* Schedule User Creation */}
       {formType === "add" && (
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Schedule user creation"
@@ -367,7 +367,7 @@ const CippAddEditUser = (props) => {
             compareType="is"
             compareValue={true}
           >
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <label>Scheduled creation Date</label>
               <CippFormComponent
                 type="datePicker"
@@ -375,7 +375,7 @@ const CippAddEditUser = (props) => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 label="Send results to Webhook"

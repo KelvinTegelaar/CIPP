@@ -58,7 +58,7 @@ export const CippIntunePolicy = (props) => {
         />
         <CippJsonView object={JSONData} type="intune" />
 
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="radio"
             name="AssignTo"
@@ -78,7 +78,7 @@ export const CippIntunePolicy = (props) => {
           compareType="is"
           compareValue="customGroup"
         >
-          <Grid item xs={12}>
+          <Grid item size={{ xs: 12 }}>
             <CippFormComponent
               type="textField"
               label="Custom Group Names separated by comma. Wildcards (*) are allowed"
@@ -102,7 +102,7 @@ export const CippIntunePolicy = (props) => {
               return null;
             }
             return uniquePlaceholders.map((placeholder) => (
-              <Grid key={placeholder} item xs={6}>
+              <Grid key={placeholder} item size={{ xs: 6 }}>
                 {selectedTenants.map((tenant, idx) => (
                   <CippFormComponent
                     key={`${tenant.value}-${placeholder}-${idx}`}

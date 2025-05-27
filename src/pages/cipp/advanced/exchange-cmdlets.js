@@ -121,7 +121,7 @@ const Page = () => {
               />
             </Grid>
             {/* Submit Button */}
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
                 Search
               </Button>

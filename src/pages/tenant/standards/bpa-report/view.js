@@ -168,9 +168,7 @@ const Page = () => {
                 {blockCards.map((block, index) => (
                   <Grid
                     item
-                    xs={10}
-                    sm={layoutMode === "Table" ? 12 : 6}
-                    md={layoutMode === "Table" ? 12 : 4}
+                    size={{ md: layoutMode === "Table" ? 12 : 4, sm: layoutMode === "Table" ? 12 : 6, xs: 10 }}
                     key={block.name}
                   >
                     <CippButtonCard

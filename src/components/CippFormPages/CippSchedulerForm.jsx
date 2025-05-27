@@ -236,8 +236,7 @@ const CippSchedulerForm = (props) => {
           >
             <Grid
               item
-              xs={12}
-              md={param.Type === "System.Collections.Hashtable" ? 12 : gridSize}
+              size={{ md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize, xs: 12 }}
               key={idx}
             >
               {param.Type === "System.Boolean" ||
@@ -326,7 +325,7 @@ const CippSchedulerForm = (props) => {
             ]}
           />
         </Grid>
-        <Grid item xs={12} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+        <Grid item size={{ xs: 12 }} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
           <Button
             onClick={() => {
               formControl.trigger();

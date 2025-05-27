@@ -322,7 +322,7 @@ const EditRoomMailbox = () => {
     >
       <Grid container spacing={2}>
         {/* Basic Information */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Basic Information</Typography>
         </Grid>
 
@@ -348,7 +348,7 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Booking Settings */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Booking Settings</Typography>
         </Grid>
 
@@ -458,7 +458,7 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Working Hours */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Working Hours</Typography>
         </Grid>
 
@@ -516,7 +516,7 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Room Facilities */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Room Facilities & Equipment</Typography>
         </Grid>
 
@@ -565,7 +565,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Tags"
@@ -579,7 +579,7 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Location Information */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Location Information</Typography>
         </Grid>
 

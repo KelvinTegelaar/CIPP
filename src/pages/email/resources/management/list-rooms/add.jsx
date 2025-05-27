@@ -78,7 +78,7 @@ const AddRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Resource Capacity (Optional) */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Resource Capacity (Optional)"

@@ -305,7 +305,7 @@ export const CippApiDialog = (props) => {
             <DialogContent>
               <Grid container spacing={2}>
                 {fields?.map((fieldProps, i) => (
-                  <Grid item xs={12} key={i}>
+                  <Grid item size={{ xs: 12 }} key={i}>
                     <CippFormComponent
                       formControl={formHook}
                       addedFieldData={addedFieldData}

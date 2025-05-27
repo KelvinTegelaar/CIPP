@@ -61,7 +61,7 @@ const TeamsAddTeamForm = () => {
         </Grid>
 
         <Divider sx={{ my: 2, width: "100%" }} />
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormUserSelector
             formControl={formControl}
             name="owner"
@@ -74,7 +74,7 @@ const TeamsAddTeamForm = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Visibility */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="radio"
             name="visibility"

@@ -33,7 +33,7 @@ const AddPolicy = () => {
       postUrl="/api/AddTransportRule"
     >
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
@@ -66,7 +66,7 @@ const AddPolicy = () => {
 
         <Divider sx={{ my: 2, width: "100%" }} />
 
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="New-TransportRule parameters (JSON)"

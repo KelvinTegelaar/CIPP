@@ -198,7 +198,7 @@ export const CippCustomRoles = () => {
       >
         <Typography variant="h6">{obj}</Typography>
 
-        <Stack direction="row" spacing={3} xl={8}>
+        <Stack direction="row" spacing={3} size={{ xl: 8 }}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
               <InformationCircleIcon />

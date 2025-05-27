@@ -152,7 +152,7 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       ? {
           children: (
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item size={{ xs: 12 }}>
                 {info}
               </Grid>
             </Grid>
@@ -362,7 +362,7 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       }
       isFetching={isFetching}
     >
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         {info}
       </Grid>
       <CippOffCanvas visible={visible} onClose={() => setVisible(false)} {...offCanvasData} />
@@ -484,7 +484,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
-        <Grid item xs={fullwidth ? 12 : 4}>
+        <Grid item size={{ xs: fullwidth ? 12 : 4 }}>
           <CippButtonCard
             title="Domain Check"
             cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
@@ -497,7 +497,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
             }
           >
             <Grid container spacing={2}>
-              <Grid item xs={8}>
+              <Grid item size={{ xs: 8 }}>
                 <Controller
                   name="domain"
                   control={control}
@@ -506,7 +506,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item size={{ xs: 4 }}>
                 <Button type="submit" variant="contained" startIcon={<SearchIcon />}>
                   Check
                 </Button>
