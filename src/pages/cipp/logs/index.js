@@ -9,6 +9,8 @@ import {
   Typography,
   SvgIcon,
   Stack,
+  Alert,
+  Box,
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -48,6 +50,33 @@ const Page = () => {
   const [endDate, setEndDate] = useState(null); // State for end date filter
   const [username, setUsername] = useState(null); // State for username filter
   const [severity, setSeverity] = useState(null); // State for severity filter
+
+  // Watch date fields to show warning for large date ranges
+  const watchStartDate = formControl.watch("startDate");
+  const watchEndDate = formControl.watch("endDate");
+
+  // Component to display warning for large date ranges
+  const DateRangeWarning = () => {
+    if (!watchStartDate || !watchEndDate) return null;
+
+    const startDateMs = new Date(watchStartDate * 1000);
+    const endDateMs = new Date(watchEndDate * 1000);
+    const daysDifference = (endDateMs - startDateMs) / (1000 * 60 * 60 * 24);
+
+    if (daysDifference > 10) {
+      return (
+        <Grid size={7}>
+          <Alert severity="warning">
+            You have selected a date range of {Math.ceil(daysDifference)} days. Large date ranges
+            may cause timeouts or errors due to the amount of data being processed. Consider
+            narrowing your date range if you encounter issues.
+          </Alert>
+        </Grid>
+      );
+    }
+
+    return null;
+  };
 
   const onSubmit = (data) => {
     // Check if any filter is applied
@@ -133,8 +162,7 @@ const Page = () => {
                     {username && (startDate || endDate) && " | "}
                     {username && <>User: {username}</>}
                     {severity && (username || startDate || endDate) && " | "}
-                    {severity && <>Severity: {severity.replace(/,/g, ", ")}</>}
-                    )
+                    {severity && <>Severity: {severity.replace(/,/g, ", ")}</>})
                   </span>
                 ) : (
                   <span style={{ fontSize: "0.8em", marginLeft: "10px", fontWeight: "normal" }}>
@@ -148,49 +176,57 @@ const Page = () => {
             <form onSubmit={formControl.handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 {/* Date Filter */}
-                <Grid item size={{ sm: 3.5, xs: 12 }}>
-                  <CippFormComponent
-                    type="datePicker"
-                    name="startDate"
-                    label="Select Start Date"
-                    dateTimeType="date"
-                    formControl={formControl}
-                  />
+                <Grid size={{ sm: 7, xs: 12 }}>
+                  <Alert severity="info">
+                    Use the filters below to narrow down your logbook results. You can filter by
+                    date range, username, and severity levels. By default, the logbook shows the
+                    current day based on UTC time. Your local time is {new Date().getTimezoneOffset() / -60} hours offset from UTC.
+                  </Alert>
                 </Grid>
-                <Grid item size={{ sm: 3.5, xs: 12 }}>
-                  <CippFormComponent
-                    type="datePicker"
-                    name="endDate"
-                    label="Select End Date"
-                    dateTimeType="date"
-                    formControl={formControl}
-                    validators={{
-                      validate: (value) => {
-                        const startDate = formControl.getValues("startDate");
-                        if (
-                          startDate &&
-                          value &&
-                          new Date(value * 1000) < new Date(startDate * 1000)
-                        ) {
-                          return "End date must be after start date";
-                        }
-                        if (
-                          value &&
-                          startDate &&
-                          (new Date(value * 1000) - new Date(startDate * 1000)) /
-                            (1000 * 60 * 60 * 24) >
-                            10
-                        ) {
-                          return "Date range cannot exceed 10 days";
-                        }
-                        return true;
-                      },
-                    }}
-                  />
+                <Grid size={{ sm: 7, xs: 12 }}>
+                  <Stack direction="row" spacing={2}>
+                    <Box flexGrow={1}>
+                      <CippFormComponent
+                        type="datePicker"
+                        name="startDate"
+                        label="Select Start Date"
+                        dateTimeType="date"
+                        formControl={formControl}
+                      />
+                    </Box>
+                    <Box flexGrow={1}>
+                      <CippFormComponent
+                        type="datePicker"
+                        name="endDate"
+                        label="Select End Date"
+                        dateTimeType="date"
+                        formControl={formControl}
+                        validators={{
+                          validate: (value) => {
+                            const startDate = formControl.getValues("startDate");
+                            if (value && !startDate) {
+                              return "Start date must be set when using an end date";
+                            }
+                            if (
+                              startDate &&
+                              value &&
+                              new Date(value * 1000) < new Date(startDate * 1000)
+                            ) {
+                              return "End date must be after start date";
+                            }
+                            return true;
+                          },
+                        }}
+                      />
+                    </Box>
+                  </Stack>
                 </Grid>
 
+                {/* Date Range Warning Alert */}
+                <DateRangeWarning />
+
                 {/* Username Filter */}
-                <Grid item size={{ sm: 7, xs: 12 }}>
+                <Grid size={{ sm: 7, xs: 12 }}>
                   <CippFormComponent
                     type="textField"
                     name="username"
@@ -202,7 +238,7 @@ const Page = () => {
                 </Grid>
 
                 {/* Severity Filter */}
-                <Grid item size={{ sm: 7, xs: 12 }}>
+                <Grid size={{ sm: 7, xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
                     name="severity"
@@ -222,7 +258,7 @@ const Page = () => {
                 </Grid>
 
                 {/* Action Buttons */}
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Stack direction="row" spacing={2}>
                     <Button
                       type="submit"
@@ -281,6 +317,8 @@ const Page = () => {
  - The User parameter is passed directly as a string for username filtering.
  - The Severity parameter is passed as a comma-separated list of severity levels.
  - The Filter toggle is passed as a boolean and is automatically enabled when any filter is set.
+ - A warning alert is displayed when the selected date range exceeds 10 days instead of enforcing
+   a strict limit. This helps users understand potential issues with large data sets.
 */
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
