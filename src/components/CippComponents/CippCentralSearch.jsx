@@ -6,13 +6,13 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  Grid,
   Card,
   CardContent,
   CardActionArea,
   Typography,
   Box,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useRouter } from "next/router";
 import { nativeMenuItems } from "/src/layouts/config";
 

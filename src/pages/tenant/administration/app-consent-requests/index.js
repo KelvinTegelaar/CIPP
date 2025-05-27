@@ -1,14 +1,8 @@
 import { useState, useEffect, use } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import {
-  Grid,
-  Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-} from "@mui/material";
+import { Button, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";

@@ -495,7 +495,7 @@ export const CippDataTable = (props) => {
         </Scrollbar>
       ) : (
         // Render the table inside a Card
-        <Card style={{ width: "100%" }} {...props.cardProps}>
+        (<Card style={{ width: "100%" }} {...props.cardProps}>
           {cardButton || !hideTitle ? (
             <>
               <CardHeader action={cardButton} title={hideTitle ? "" : title} />
@@ -527,7 +527,7 @@ export const CippDataTable = (props) => {
               )}
             </Scrollbar>
           </CardContent>
-        </Card>
+        </Card>)
       )}
       <CippOffCanvas
         isFetching={getRequestData.isFetching}

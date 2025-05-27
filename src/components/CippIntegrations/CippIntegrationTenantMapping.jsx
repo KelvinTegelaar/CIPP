@@ -3,13 +3,13 @@ import {
   Button,
   CardActions,
   CardContent,
-  Grid,
   Stack,
   Skeleton,
   SvgIcon,
   Tooltip,
   Typography,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Box, Container, Grid, Button } from "@mui/material";
+import { Box, Container, Button } from "@mui/material";
+import { Grid } from "@mui/system";
 import { CippInfoBar } from "../components/CippCards/CippInfoBar";
 import { CippChartCard } from "../components/CippCards/CippChartCard";
 import { CippPropertyListCard } from "../components/CippCards/CippPropertyListCard";

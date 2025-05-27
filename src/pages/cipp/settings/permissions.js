@@ -1,4 +1,5 @@
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
+import { Grid } from "@mui/system";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";

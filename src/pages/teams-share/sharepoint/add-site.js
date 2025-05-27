@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { Grid } from "@mui/material";
+import "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";

@@ -1,8 +1,8 @@
-import { Drawer, Box, Grid, IconButton } from "@mui/material";
+import { Drawer, Box, IconButton } from "@mui/material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import { useMediaQuery } from "@mui/system";
+import { useMediaQuery, Grid } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 
 export const CippOffCanvas = (props) => {

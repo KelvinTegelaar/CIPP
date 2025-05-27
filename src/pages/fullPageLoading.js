@@ -1,7 +1,7 @@
-import { Grid } from "@mui/material";
+import "@mui/material";
 import { Layout as DashboardLayout } from "../layouts/index.js";
 import Head from "next/head.js";
-import { Box, Container, Stack } from "@mui/system";
+import { Box, Container, Stack, Grid } from "@mui/system";
 const FullPageLoading = () => {
   return (
     <DashboardLayout>

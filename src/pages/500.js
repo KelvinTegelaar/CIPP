@@ -1,4 +1,5 @@
-import { Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import Head from "next/head";
 import { CippImageCard } from "../components/CippCards/CippImageCard.jsx";
 import { Layout as DashboardLayout } from "../layouts/index.js";

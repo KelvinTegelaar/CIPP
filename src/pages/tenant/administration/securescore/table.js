@@ -6,7 +6,8 @@ import { useSecureScore } from "../../../../hooks/use-securescore";
 import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
 import { CheckCircleIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 import { Map, Score } from "@mui/icons-material";
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
 const Page = () => {

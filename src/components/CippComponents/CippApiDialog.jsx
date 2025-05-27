@@ -1,14 +1,6 @@
 import { useRouter } from "next/router";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  useMediaQuery,
-} from "@mui/material";
-import { Stack } from "@mui/system";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
+import { Stack, Grid } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import React, { useEffect, useState } from "react";

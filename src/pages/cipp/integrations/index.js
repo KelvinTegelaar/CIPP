@@ -7,7 +7,6 @@ import {
   CardActions,
   CardContent,
   Container,
-  Grid,
   Skeleton,
   Stack,
   Typography,
@@ -17,6 +16,7 @@ import { Sync } from "@mui/icons-material";
 import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
 import Link from "next/link";
+import { Grid } from "@mui/system";
 
 const Page = () => {
   const settings = useSettings();

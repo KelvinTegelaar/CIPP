@@ -172,9 +172,9 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   const matchDateTime = /[dD]ate[tT]ime/;
   if (timeAgoArray.includes(cellName) || matchDateTime.test(cellName)) {
     return isText && canReceive === false ? (
-      new Date(data).toLocaleString() // This runs if canReceive is false and isText is true
+      (new Date(data).toLocaleString()) // This runs if canReceive is false and isText is true
     ) : isText && canReceive !== "both" ? (
-      new Date(data) // This runs if isText is true and canReceive is not "both" or false
+      (new Date(data)) // This runs if isText is true and canReceive is not "both" or false
     ) : (
       <CippTimeAgo data={data} type={type} />
     );

@@ -3,7 +3,6 @@ import {
   TextField,
   Box,
   Typography,
-  Grid,
   Card,
   CardContent,
   CardHeader,
@@ -11,6 +10,7 @@ import {
   Button,
   Link,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 
 export const CippUniversalSearch = React.forwardRef(

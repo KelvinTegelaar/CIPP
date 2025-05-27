@@ -1,5 +1,6 @@
 import React from "react";
-import { Grid, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { omit } from "lodash";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";

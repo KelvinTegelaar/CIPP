@@ -1,5 +1,6 @@
 import React from "react";
-import { Grid, InputAdornment } from "@mui/material";
+import { InputAdornment } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Button, Box, Grid } from "@mui/material";
+import { Button, Box } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "./CippFormComponent";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useDialog } from "../../hooks/use-dialog";

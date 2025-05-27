@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Grid,
   Button,
   Collapse,
   Switch,
@@ -13,6 +12,7 @@ import {
   Divider,
   FormControlLabel,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -182,12 +182,11 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       ? {
           children: (
             //4 headers, "Record" and then  <CippCodeBlock code={record?.Record} /> under it.
-            <>
+            (<>
               <Typography variant="h6" gutterBottom>
                 Record:
               </Typography>
               <CippCodeBlock code={data?.Record} />
-
               <CippPropertyListCard
                 title="Settings"
                 copyItems={true}
@@ -238,7 +237,7 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
                   value: email,
                 }))}
               />
-            </>
+            </>)
           ),
         }
       : type === "SPF"

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Grid } from "@mui/material";
+import "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 

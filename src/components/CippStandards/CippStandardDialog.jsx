@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -16,6 +15,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { Add } from "@mui/icons-material";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";

@@ -1,4 +1,6 @@
-import { Box, Grid, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
+
+import { Grid } from "@mui/system";
 
 const CippFormSkeleton = ({ layout }) => {
   return (

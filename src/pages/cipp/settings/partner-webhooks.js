@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   Chip,
-  Grid,
   Stack,
   Typography,
   Link,
@@ -17,6 +16,7 @@ import {
   IconButton,
   SvgIcon,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";

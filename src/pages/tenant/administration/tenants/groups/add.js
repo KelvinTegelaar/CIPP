@@ -2,12 +2,9 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { ApiPostCall } from "../../../../../api/ApiCall";
 import { useRouter } from "next/router";
-import {
-  Stack,
-  Box,
-  Typography,
-  Grid,
-} from "@mui/material";
+import { Stack, Box, Typography } from "@mui/material";
+
+import { Grid } from "@mui/system";
 
 import CippPageCard from "../../../../../components/CippCards/CippPageCard";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";

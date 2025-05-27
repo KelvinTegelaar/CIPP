@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Divider, Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";

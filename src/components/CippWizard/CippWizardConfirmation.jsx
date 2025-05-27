@@ -1,4 +1,5 @@
-import { Card, Stack, Grid, Typography } from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import { PropertyList } from "../property-list";
 import { PropertyListItem } from "../property-list-item";
 import CippWizardStepButtons from "./CippWizardStepButtons";

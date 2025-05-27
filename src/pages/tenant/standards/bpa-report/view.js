@@ -1,16 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  Grid,
-  Stack,
-  SvgIcon,
-  Skeleton,
-  Chip,
-  Alert,
-} from "@mui/material";
+import { Box, Container, Typography, Button, Stack, SvgIcon, Skeleton, Chip, Alert } from "@mui/material";
+import { Grid } from "@mui/system";
 import Head from "next/head";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
@@ -207,9 +197,9 @@ const Page = () => {
                         />
                       ) : block.formatter === "number" ? (
                         //really big number centered in the card.
-                        <Typography variant="h1" color="textPrimary">
+                        (<Typography variant="h1" color="textPrimary">
                           <center>{block.data}</center>
-                        </Typography>
+                        </Typography>)
                       ) : block.formatter === "Percentage" ? (
                         <>{block.data}</>
                       ) : block.formatter === "table" ? (

@@ -1,4 +1,5 @@
-import { Box, Divider, Grid } from "@mui/material";
+import { Box, Divider } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";

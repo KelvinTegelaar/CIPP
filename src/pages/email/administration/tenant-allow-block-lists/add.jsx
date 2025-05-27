@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Grid } from "@mui/material";
+import "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
