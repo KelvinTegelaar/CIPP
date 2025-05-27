@@ -47,7 +47,6 @@ export const CippTenantTable = ({
       data: { tenantFilter: "customerId" },
       confirmText: "Are you sure you want to refresh the CPV permissions for these tenants?",
       multiPost: false,
-      condition: (row) => row.delegatedPrivilegeStatus !== "directTenant",
     },
     {
       label: "Reset CPV Permissions",
