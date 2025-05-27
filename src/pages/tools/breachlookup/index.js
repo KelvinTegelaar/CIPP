@@ -1,4 +1,14 @@
-import { Box, Button, Container, Typography, Skeleton, Link, Chip, Avatar, Alert } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Typography,
+  Skeleton,
+  Link,
+  Chip,
+  Avatar,
+  Alert,
+} from "@mui/material";
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
@@ -11,7 +21,6 @@ import { getCippTranslation } from "/src/utils/get-cipp-translation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import CippCsvExportButton from "/src/components/CippComponents/CippCsvExportButton";
-import { getCippFormatting } from "../../../utils/get-cipp-formatting";
 import { CippCopyToClipBoard } from "../../../components/CippComponents/CippCopyToClipboard";
 
 const Page = () => {
@@ -44,7 +53,7 @@ const Page = () => {
       <Container maxWidth={false}>
         <Grid container spacing={3}>
           <Grid container item spacing={4}>
-            <Grid item spacing={4} size={{ xs: 4 }}>
+            <Grid item spacing={4} size={{ xs: 12 }}>
               <Alert severity="info">
                 <Typography variant="body1" color="textPrimary">
                   This page is in beta and may not always give expected results.
