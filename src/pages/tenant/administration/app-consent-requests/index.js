@@ -62,7 +62,7 @@ const Page = () => {
             <form onSubmit={formControl.handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 {/* Request Status Filter */}
-                <Grid item xs={12}>
+                <Grid item size={{ xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
                     name="requestStatus"
@@ -79,7 +79,7 @@ const Page = () => {
                 </Grid>
 
                 {/* Submit Button */}
-                <Grid item xs={12}>
+                <Grid item size={{ xs: 12 }}>
                   <Button type="submit" variant="contained" color="primary">
                     Apply Filters
                   </Button>

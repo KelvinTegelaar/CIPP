@@ -71,7 +71,7 @@ const Page = () => {
         </Box>
         <CippCardTabPanel value={value} index={0}>
           <Grid container spacing={2} sx={{ my: 2, px: 2 }}>
-            <Grid item xs={12} md={4}>
+            <Grid item size={{ md: 4, xs: 12 }}>
               <CippPropertyListCard
                 variant="outlined"
                 title="Tenant Details"
@@ -86,7 +86,7 @@ const Page = () => {
                 isFetching={tenantDetails.isFetching}
               />
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item size={{ md: 8, xs: 12 }}>
               <CippFormSection
                 relatedQueryKeys={[
                   `TenantProperties_${id}`,

@@ -104,7 +104,7 @@ const Page = () => {
     <Container sx={{ pt: 3 }} maxWidth="xl">
       <Grid container spacing={2}>
         {backendInfo.map((item) => (
-          <Grid item xs={12} sm={12} md={6} lg={4} key={item.id}>
+          <Grid item size={{ lg: 4, md: 6, sm: 12, xs: 12 }} key={item.id}>
             <CippBackendCard backendComponents={backendComponents} item={item} />
           </Grid>
         ))}

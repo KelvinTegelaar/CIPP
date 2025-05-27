@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Card, Stack, SvgIcon, Typography, Skeleton } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import { Grid } from "@mui/system";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippPropertyListCard } from "./CippPropertyListCard";
 
@@ -13,9 +13,7 @@ export const CippInfoBar = ({ data, isFetching }) => {
         {data.map((item, index) => (
           <>
             <Grid
-              xs={12}
-              sm={6}
-              md={3}
+              size={{ md: 3, sm: 6, xs: 12 }}
               key={item.name}
               onClick={item.offcanvas ? () => setVisibleIndex(index) : undefined}
               sx={{
@@ -78,7 +76,7 @@ export const CippInfoBar = ({ data, isFetching }) => {
                     }}
                   >
                     <Grid container spacing={1}>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         {item?.offcanvas?.propertyItems?.length > 0 && (
                           <CippPropertyListCard
                             isFetching={isFetching}

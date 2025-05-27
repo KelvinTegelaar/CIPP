@@ -62,7 +62,7 @@ const Page = () => {
             <form onSubmit={formControl.handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 {/* Date Filter */}
-                <Grid item xs={12} sm={4}>
+                <Grid item size={{ sm: 4, xs: 12 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="startDate"
@@ -73,7 +73,7 @@ const Page = () => {
                 </Grid>
 
                 {/* Toggle Switch */}
-                <Grid item xs={12}>
+                <Grid item size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
                     name="toggleSwitch"
@@ -83,7 +83,7 @@ const Page = () => {
                 </Grid>
 
                 {/* Submit Button */}
-                <Grid item xs={12}>
+                <Grid item size={{ xs: 12 }}>
                   <Button type="submit" variant="contained" color="primary">
                     Apply Filters
                   </Button>

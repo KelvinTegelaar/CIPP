@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { useMockedUser } from "../../../hooks/use-mocked-user";
 
 const companySizeOptions = ["1-10", "11-30", "31-50", "50+"];
@@ -59,10 +59,10 @@ export const AccountDetails = (props) => {
     <Card>
       <CardContent>
         <Grid container spacing={4}>
-          <Grid xs={12} md={5}>
+          <Grid size={{ md: 5, xs: 12 }}>
             <Typography variant="h6">Settings</Typography>
           </Grid>
-          <Grid xs={12} md={7}>
+          <Grid size={{ md: 7, xs: 12 }}>
             <Stack alignItems="center" direction="row" spacing={2} sx={{ mb: 3 }}>
               <Avatar
                 src={user.avatar}

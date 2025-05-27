@@ -28,6 +28,7 @@ const AddContact = () => {
       title="Add Contact"
       backButtonTitle="Contacts Overview"
       postUrl="/api/AddContact"
+      resetForm={true}
       customDataformatter={(values) => {
         // Add tenantDomain to the payload
         return {
@@ -42,7 +43,7 @@ const AddContact = () => {
     >
       <Grid container spacing={2}>
         {/* Display Name */}
-        <Grid item xs={12} md={10}>
+        <Grid item size={{ md: 10, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -53,7 +54,7 @@ const AddContact = () => {
         </Grid>
 
         {/* First Name and Last Name */}
-        <Grid item xs={12} md={5}>
+        <Grid item size={{ md: 5, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="First Name"
@@ -61,7 +62,7 @@ const AddContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={5}>
+        <Grid item size={{ md: 5, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Last Name"
@@ -73,7 +74,7 @@ const AddContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Email */}
-        <Grid item xs={12} md={8}>
+        <Grid item size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Email"
@@ -90,7 +91,7 @@ const AddContact = () => {
         </Grid>
 
         {/* Hide from GAL */}
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Hide from Global Address List"

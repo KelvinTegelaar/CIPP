@@ -146,7 +146,7 @@ const CippSchedulerForm = (props) => {
         {(scheduledTaskList.isFetching || tenantList.isLoading || commands.isLoading) && (
           <Skeleton width={"100%"} />
         )}
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormTenantSelector
             label="Select a Tenant"
             formControl={formControl}
@@ -155,7 +155,7 @@ const CippSchedulerForm = (props) => {
           />
         </Grid>
 
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="textField"
             name="Name"
@@ -164,7 +164,7 @@ const CippSchedulerForm = (props) => {
           />
         </Grid>
 
-        <Grid item xs={12} md={gridSize}>
+        <Grid item size={{ md: gridSize, xs: 12 }}>
           <CippFormComponent
             name="command"
             type="autoComplete"
@@ -193,7 +193,7 @@ const CippSchedulerForm = (props) => {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={gridSize}>
+        <Grid item size={{ md: gridSize, xs: 12 }}>
           <CippFormComponent
             type="datePicker"
             name="ScheduledTime"
@@ -205,7 +205,7 @@ const CippSchedulerForm = (props) => {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={gridSize}>
+        <Grid item size={{ md: gridSize, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             name="Recurrence"
@@ -217,7 +217,7 @@ const CippSchedulerForm = (props) => {
           />
         </Grid>
         {selectedCommand?.addedFields?.Synopsis && (
-          <Grid item xs={12} md={12}>
+          <Grid item size={{ md: 12, xs: 12 }}>
             <Box sx={{ my: 1 }}>
               <Typography variant="h6">PowerShell Command:</Typography>
               <Typography variant="body2" color={"text.secondary"}>
@@ -236,8 +236,7 @@ const CippSchedulerForm = (props) => {
           >
             <Grid
               item
-              xs={12}
-              md={param.Type === "System.Collections.Hashtable" ? 12 : gridSize}
+              size={{ md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize, xs: 12 }}
               key={idx}
             >
               {param.Type === "System.Boolean" ||
@@ -279,10 +278,10 @@ const CippSchedulerForm = (props) => {
             </Grid>
           </CippFormCondition>
         ))}
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <Divider />
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="switch"
             name="advancedParameters"
@@ -296,7 +295,7 @@ const CippSchedulerForm = (props) => {
           compareValue={true}
           formControl={formControl}
         >
-          <Grid item xs={12} md={12}>
+          <Grid item size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="textField"
               name="RawJsonParameters"
@@ -311,7 +310,7 @@ const CippSchedulerForm = (props) => {
             />
           </Grid>
         </CippFormCondition>
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             name="postExecution"
@@ -326,7 +325,7 @@ const CippSchedulerForm = (props) => {
             ]}
           />
         </Grid>
-        <Grid item xs={12} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+        <Grid item size={{ xs: 12 }} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
           <Button
             onClick={() => {
               formControl.trigger();

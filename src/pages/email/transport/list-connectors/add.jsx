@@ -33,7 +33,7 @@ const AddPolicy = () => {
       postUrl="/api/AddExConnector"
     >
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
@@ -47,7 +47,7 @@ const AddPolicy = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* TemplateList */}
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Select a template (optional)"
@@ -66,7 +66,7 @@ const AddPolicy = () => {
 
         <Divider sx={{ my: 2, width: "100%" }} />
 
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Parameters (JSON)"

@@ -42,7 +42,7 @@ const Page = () => {
   const tableFilter = (
     <CippButtonCard title="Filter Options" component="accordion">
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{ sm: 6, xs: 12 }}>
           <TextField
             label="Days"
             name="Days"
@@ -52,7 +52,7 @@ const Page = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{ sm: 6, xs: 12 }}>
           <TextField
             label="Custom Filter"
             name="filter"
@@ -61,7 +61,7 @@ const Page = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={{ sm: 6, xs: 12 }}>
           <FormControlLabel
             control={
               <Switch
@@ -74,7 +74,7 @@ const Page = () => {
           />
         </Grid>
         {filterValues.failedLogonsOnly && (
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{ sm: 6, xs: 12 }}>
             <TextField
               label="Failure Threshold"
               name="FailureThreshold"
@@ -85,7 +85,7 @@ const Page = () => {
             />
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Button variant="contained" color="primary" onClick={handleFilterSubmit}>
             Apply Filter
           </Button>
