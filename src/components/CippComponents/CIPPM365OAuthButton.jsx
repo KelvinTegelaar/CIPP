@@ -573,15 +573,19 @@ export const CIPPM365OAuthButton = ({
         <Box mb={2}>
           {deviceCodeInfo ? (
             <Alert severity="info">
-              <Typography variant="subtitle2">Device Code Authentication</Typography>
+              <Typography variant="subtitle2">Application Creation</Typography>
               <Typography variant="body2" gutterBottom>
                 {authInProgress ? (
                   <>
-                    A popup window has been opened to <strong>microsoft.com/devicelogin</strong>.
-                    Enter this code to authenticate:{" "}
+                    When asked to log onto an account, please use a{" "}
+                    <strong>CIPP Service Account</strong>. Enter this code to authenticate:{" "}
                   </>
                 ) : (
-                  <>Click the button below to authenticate. You will need to enter this code: </>
+                  <>
+                    Click the button below to authenticate. When asked to log onto an account,
+                    please use a <strong>CIPP Service Account</strong>. You will need to enter this
+                    code:{" "}
+                  </>
                 )}
                 <CippCopyToClipBoard text={deviceCodeInfo.user_code} type="chip" />
               </Typography>
