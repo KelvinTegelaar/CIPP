@@ -122,7 +122,7 @@ const Page = () => {
     </>
   ];
 
-  // Actions to perform (Delete Policy)
+  // Actions to perform (Edit,Delete Policy)
   const actions = [
     {
       label: "Edit Policy",
@@ -371,7 +371,7 @@ const Page = () => {
         <>
           <Button
             component={Link}
-            href="/email/reports/quarantine-policy/add"
+            href="/email/spamfilter/list-quarantine-policies/add"
             startIcon={<RocketLaunch />}
           >
             Deploy Custom Policy
