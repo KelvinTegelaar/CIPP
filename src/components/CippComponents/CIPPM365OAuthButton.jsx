@@ -143,7 +143,6 @@ export const CIPPM365OAuthButton = ({
       const startTime = Date.now();
 
       const pollForToken = async () => {
-        // Check if popup was closed
 
         // Check if we've exceeded the expiration time
         if (Date.now() - startTime >= expiresIn * 1000) {
