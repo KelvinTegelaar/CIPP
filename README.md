@@ -6,7 +6,7 @@ description: Welcome to the CyberDrain Improved Partner Portal (CIPP) User Docum
 
 ## Introduction
 
-Welcome to the CIPP User Documentation! CIPP (pronounced "sip") is the CyberDrain Improved Partner Portal, a powerful Microsoft 365 multitenant management system designed to help MSPs streamline their clients' Microsoft 365 administration tasks. Created by Kelvin Tegelaar in 2021, CIPP aims to fill the gaps left by existing multi-tenant management solutions, making it easy and efficient to manage multiple clients from one centralized portal experience.
+Welcome to the CIPP User Documentation! CIPP (pronounced "sip") is the CyberDrain Improved Partner Portal, a powerful Microsoft 365 multi-tenant management system designed to help MSPs streamline their clients' Microsoft 365 administration tasks. Created by Kelvin Tegelaar in 2021, CIPP aims to fill the gaps left by existing multi-tenant management solutions, making it easy and efficient to manage multiple clients from one centralized portal experience.
 
 CIPP consists of two main components: the CIPP UI and the CIPP API. The frontend is built using React and Core UI, while the API is built with PowerShell. The system leverages Azure Functions and Azure Static Web Apps to provide a fast, responsive, and maintainable solution.
 
