@@ -143,7 +143,6 @@ export const CIPPM365OAuthButton = ({
       const startTime = Date.now();
 
       const pollForToken = async () => {
-
         // Check if we've exceeded the expiration time
         if (Date.now() - startTime >= expiresIn * 1000) {
           if (popup && !popup.closed) {
@@ -400,6 +399,7 @@ export const CIPPM365OAuthButton = ({
           // If we have a refresh token, store it
           if (tokenData.refresh_token) {
             try {
+              console.log("Storing refresh token:", tokenData);
               // Store the refresh token
               const refreshResponse = await fetch(`/api/ExecUpdateRefreshToken`, {
                 method: "POST",
@@ -407,7 +407,7 @@ export const CIPPM365OAuthButton = ({
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  tenantId: appId,
+                  tenantId: tokenData.tid,
                   refreshtoken: tokenData.refresh_token,
                   tenantMode: tokenData.tenantMode,
                   allowPartnerTenantManagement: tokenData.allowPartnerTenantManagement,
