@@ -10,7 +10,7 @@ export const CippWizardBulkOptions = (props) => {
     <Stack spacing={3}>
       <>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={12}>
+          <Grid item size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="autoComplete"
               label="Usage Location"

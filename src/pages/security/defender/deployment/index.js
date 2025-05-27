@@ -61,7 +61,7 @@ const DeployDefenderForm = () => {
 
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Allow Microsoft Defender for Endpoint to enforce Endpoint Security Configurations (Compliance)"
@@ -93,7 +93,7 @@ const DeployDefenderForm = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Enable App Sync (sending application inventory) for iOS/iPadOS devices"
@@ -160,7 +160,7 @@ const DeployDefenderForm = () => {
 
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Allow Archive Scanning"
@@ -216,7 +216,7 @@ const DeployDefenderForm = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Allow scanning of downloaded files"
@@ -333,7 +333,7 @@ const DeployDefenderForm = () => {
 
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Block execution of potentially obfuscated scripts"
@@ -395,7 +395,7 @@ const DeployDefenderForm = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   label="Block executable files from running unless they meet a prevalence, age, or trusted list criterion"

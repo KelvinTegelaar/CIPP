@@ -231,11 +231,11 @@ const Page = () => {
           >
             <Grid container spacing={2}>
               {/* First item for Report Name and Layout Mode */}
-              <Grid item xs={12} sm={12} md={12}>
+              <Grid item size={{ md: 12, sm: 12, xs: 12 }}>
                 <CippFormComponent label="Report Name" name={`name`} formControl={formControl} />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={12}>
+              <Grid item size={{ md: 12, sm: 12, xs: 12 }}>
                 <CippFormComponent
                   label="Layout Mode"
                   name="style"
@@ -247,7 +247,7 @@ const Page = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={12}>
+              <Grid item size={{ md: 12, sm: 12, xs: 12 }}>
                 <CippApiResults apiObject={addBPATemplate} />
               </Grid>
             </Grid>

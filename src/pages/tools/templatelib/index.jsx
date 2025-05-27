@@ -88,7 +88,7 @@ const TemplateLibrary = () => {
             mx: 1,
           }}
         >
-          <Grid item xs={12} md={5}>
+          <Grid item size={{ md: 5, xs: 12 }}>
             <Box sx={{ my: "auto" }}>
               <CippFormTenantSelector
                 formControl={formControl}
@@ -97,12 +97,12 @@ const TemplateLibrary = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} md={0.7}>
+          <Grid item size={{ md: 0.7, xs: 12 }}>
             <Box sx={{ my: "auto" }}>
               <Chip label="OR" color="info" />
             </Box>
           </Grid>
-          <Grid item xs={12} md={5}>
+          <Grid item size={{ md: 5, xs: 12 }}>
             <Box sx={{ my: "auto" }}>
               <CippFormComponent
                 name="templateRepo"
@@ -126,7 +126,7 @@ const TemplateLibrary = () => {
         </Grid>
         <Divider sx={{ mt: 2, width: "100%" }} />
         {templateRepo?.value && (
-          <Grid item xs={12} md={5}>
+          <Grid item size={{ md: 5, xs: 12 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Repository Branch
             </Typography>

@@ -563,7 +563,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
 
         {domain && (
           <>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="Whois Results"
                 type="whois"
@@ -576,7 +576,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="NS Records"
                 data={nsData}
@@ -589,10 +589,10 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <MXResultsCard domain={domain} mxData={mxData} isFetching={mxLoading} />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="SPF Record"
                 type="SPF"
@@ -611,7 +611,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="DMARC Policy"
                 type="DMARC"
@@ -630,7 +630,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="DKIM Record"
                 data={dkimData}
@@ -649,7 +649,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="DNSSEC"
                 type={"DNSSEC"}
@@ -666,7 +666,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="MTA-STS"
                 type="MTA-STS"
@@ -686,7 +686,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
               />
             </Grid>
             {enableHttps && (
-              <Grid item xs={12} md={gridItemSize}>
+              <Grid item size={{ md: gridItemSize, xs: 12 }}>
                 <DomainResultCard
                   title="HTTPS Certificate"
                   type="HTTPS"

@@ -47,7 +47,7 @@ const AddPolicy = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* TemplateList */}
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Select a template (optional)"

@@ -10,7 +10,7 @@ const CippAddGroupForm = (props) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={12}>
+      <Grid item size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Display Name"
@@ -19,7 +19,7 @@ const CippAddGroupForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12} md={12}>
+      <Grid item size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Description"
@@ -28,7 +28,7 @@ const CippAddGroupForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Username"
@@ -40,7 +40,7 @@ const CippAddGroupForm = (props) => {
           }}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormDomainSelector
           formControl={formControl}
           name="primDomain"

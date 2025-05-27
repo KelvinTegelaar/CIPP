@@ -13,7 +13,7 @@ import {
   Skeleton,
 } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
@@ -391,7 +391,7 @@ export const CippCustomRoles = () => {
           )}
         </Box>
 
-        <Box xl={3} md={12} width="30%">
+        <Box size={{ md: 12, xl: 3 }} width="30%">
           {selectedRole && selectedTenant?.length > 0 && (
             <>
               <h5>Allowed Tenants</h5>

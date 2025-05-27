@@ -140,7 +140,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Identity */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Identity</Typography>
           <CippFormComponent
             type="switch"
@@ -152,7 +152,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Conditional Access */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Conditional Access</Typography>
           <CippFormComponent
             type="switch"
@@ -163,7 +163,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Intune */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Intune</Typography>
           <CippFormComponent
             type="switch"
@@ -186,7 +186,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Email Security */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Email Security</Typography>
           <CippFormComponent
             type="switch"
@@ -203,7 +203,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* CIPP */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">CIPP</Typography>
           <CippFormComponent
             type="switch"
@@ -249,7 +249,7 @@ const RestoreBackupForm = () => {
         <Grid item xs={12}>
           <Typography variant="subtitle1">Send Restore results to:</Typography>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Webhook"
@@ -257,10 +257,10 @@ const RestoreBackupForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="switch" label="E-mail" name="email" formControl={formControl} />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="switch" label="PSA" name="psa" formControl={formControl} />
         </Grid>
         <Grid item xs={12}>

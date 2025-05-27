@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Card, Stack, SvgIcon, Typography, Skeleton } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import { Grid } from "@mui/system";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippPropertyListCard } from "./CippPropertyListCard";
 

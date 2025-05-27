@@ -47,7 +47,7 @@ const Page = () => {
         <Divider sx={{ my: 2 }} />
 
         {/* Form Fields */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Timeout in minutes"

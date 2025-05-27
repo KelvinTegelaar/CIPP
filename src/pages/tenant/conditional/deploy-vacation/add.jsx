@@ -88,7 +88,7 @@ const Page = () => {
             </Grid>
 
             {/* Start Date Picker */}
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 label="Scheduled Start Date"
@@ -108,7 +108,7 @@ const Page = () => {
             </Grid>
 
             {/* End Date Picker */}
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 label="Scheduled End Date"

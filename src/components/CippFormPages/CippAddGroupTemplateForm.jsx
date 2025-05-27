@@ -19,7 +19,7 @@ const CippAddGroupTemplateForm = (props) => {
       {/* Hidden field to store the template GUID when editing */}
       <CippFormComponent type="hidden" name="GUID" formControl={formControl} />
 
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Display Name"
@@ -29,7 +29,7 @@ const CippAddGroupTemplateForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Description"
@@ -38,7 +38,7 @@ const CippAddGroupTemplateForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12} md={12}>
+      <Grid item size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Username (do not include domain)"

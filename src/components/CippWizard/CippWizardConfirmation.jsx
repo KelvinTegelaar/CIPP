@@ -65,7 +65,7 @@ export const CippWizardConfirmation = (props) => {
       ) : (
         <Card variant="outlined">
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ md: 6, xs: 12 }}>
               <PropertyList>
                 {firstHalf.map(([key, value]) => (
                   <PropertyListItem
@@ -76,7 +76,7 @@ export const CippWizardConfirmation = (props) => {
                 ))}
               </PropertyList>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ md: 6, xs: 12 }}>
               <PropertyList>
                 {secondHalf.map(([key, value]) => (
                   <PropertyListItem

@@ -62,7 +62,7 @@ const Page = () => {
             <form onSubmit={formControl.handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 {/* Date Filter */}
-                <Grid item xs={12} sm={4}>
+                <Grid item size={{ sm: 4, xs: 12 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="startDate"

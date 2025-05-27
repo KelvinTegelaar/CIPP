@@ -90,7 +90,7 @@ const EditGroup = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormPage
           formControl={formControl}
           queryKey={[`ListGroups-${groupId}`]}

@@ -5,7 +5,7 @@ import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormD
 import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
 import countryList from "/src/data/countryList.json";
 import { CippFormLicenseSelector } from "/src/components/CippComponents/CippFormLicenseSelector";
-import Grid from "@mui/material/Grid";
+import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useWatch } from "react-hook-form";
@@ -31,7 +31,7 @@ const CippAddEditUser = (props) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -40,7 +40,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -58,7 +58,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -70,7 +70,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormDomainSelector
           formControl={formControl}
           name="primDomain"
@@ -208,7 +208,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -217,7 +217,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -226,7 +226,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -235,7 +235,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -244,7 +244,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -253,7 +253,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -262,7 +262,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -271,7 +271,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -280,7 +280,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth

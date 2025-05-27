@@ -15,13 +15,13 @@ const Page = () => {
         <Grid item xs={12}>
           <CippPermissionReport importReport={importReport} setImportReport={setImportReport} />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={6}>
+        <Grid item size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
           <CippPermissionCheck type="Permissions" importReport={importReport} />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={6}>
+        <Grid item size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
           <CippPermissionCheck type="GDAP" importReport={importReport} />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
+        <Grid item size={{ lg: 12, md: 12, sm: 12, xs: 12 }}>
           <CippPermissionCheck type="Tenants" importReport={importReport} />
         </Grid>
       </Grid>
