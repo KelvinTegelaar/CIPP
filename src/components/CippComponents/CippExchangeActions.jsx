@@ -15,6 +15,7 @@ import {
   NotificationImportant,
   DataUsage,
   MailLock,
+  SettingsEthernet,
 } from "@mui/icons-material";
 
 export const CippExchangeActions = () => {
@@ -216,6 +217,28 @@ export const CippExchangeActions = () => {
           name: "locale",
           type: "textField",
           placeholder: "e.g. en-US",
+        },
+      ],
+    },
+    {
+      label: "Set Max Send/Receive Size",
+      type: "POST",
+      url: "/api/ExecSetMailboxEmailSize",
+      data: { UPN: "UPN", id: "ExternalDirectoryObjectId" },
+      confirmText: "Enter a size in from 1 to 150. Leave blank to not change.",
+      icon: <SettingsEthernet />,
+      fields: [
+        {
+          label: "Send Size(MB)",
+          name: "maxSendSize",
+          type: "number",
+          placeholder: "e.g. 35",
+        },
+        {
+          label: "Receive Size(MB)",
+          name: "maxReceiveSize",
+          type: "number",
+          placeholder: "e.g. 36",
         },
       ],
     },

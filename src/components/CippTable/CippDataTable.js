@@ -376,6 +376,7 @@ export const CippDataTable = (props) => {
         }
       },
     },
+    globalFilterFn: "contains",
     enableGlobalFilterModes: true,
     renderGlobalFilterModeMenuItems: ({ internalFilterOptions, onSelectFilterMode }) => {
       // add custom filter options
@@ -448,14 +449,14 @@ export const CippDataTable = (props) => {
     if (filters && Array.isArray(filters) && filters.length > 0 && memoizedColumns.length > 0) {
       // Make sure the table and columns are ready
       setTimeout(() => {
-        if (table && typeof table.setColumnFilters === 'function') {
-          const formattedFilters = filters.map(filter => ({
+        if (table && typeof table.setColumnFilters === "function") {
+          const formattedFilters = filters.map((filter) => ({
             id: filter.id || filter.columnId,
-            value: filter.value
+            value: filter.value,
           }));
           table.setColumnFilters(formattedFilters);
         }
-      },);
+      });
     }
   }, [filters, memoizedColumns, table]);
 
@@ -494,7 +495,7 @@ export const CippDataTable = (props) => {
         </Scrollbar>
       ) : (
         // Render the table inside a Card
-        <Card style={{ width: "100%" }} {...props.cardProps}>
+        (<Card style={{ width: "100%" }} {...props.cardProps}>
           {cardButton || !hideTitle ? (
             <>
               <CardHeader action={cardButton} title={hideTitle ? "" : title} />
@@ -526,7 +527,7 @@ export const CippDataTable = (props) => {
               )}
             </Scrollbar>
           </CardContent>
-        </Card>
+        </Card>)
       )}
       <CippOffCanvas
         isFetching={getRequestData.isFetching}

@@ -73,7 +73,7 @@ const extractAllResults = (data) => {
         results.push(processed);
       }
     } else {
-      const ignoreKeys = ["metadata", "Metadata"];
+      const ignoreKeys = ["metadata", "Metadata", "severity"];
 
       if (typeof obj === "object") {
         Object.keys(obj).forEach((key) => {
@@ -159,12 +159,12 @@ export const CippApiResults = (props) => {
   useEffect(() => {
     setErrorVisible(!!apiObject.isError);
 
+    if (apiObject.isFetching || (apiObject.isIdle === false && apiObject.isPending === true)) {
+      setFetchingVisible(true);
+    } else {
+      setFetchingVisible(false);
+    }
     if (!errorsOnly) {
-      if (apiObject.isFetching || (apiObject.isIdle === false && apiObject.isPending === true)) {
-        setFetchingVisible(true);
-      } else {
-        setFetchingVisible(false);
-      }
       if (allResults.length > 0) {
         setFinalResults(
           allResults.map((res, index) => ({
@@ -218,29 +218,28 @@ export const CippApiResults = (props) => {
   return (
     <Stack spacing={2}>
       {/* Loading alert */}
-      {!errorsOnly && (
-        <Collapse in={fetchingVisible} unmountOnExit>
-          <Alert
-            sx={alertSx}
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => setFetchingVisible(false)}
-              >
-                <Close fontSize="inherit" />
-              </IconButton>
-            }
-            variant="outlined"
-            severity="info"
-          >
-            <Typography variant="body2">
-              <CircularProgress size={20} /> Loading...
-            </Typography>
-          </Alert>
-        </Collapse>
-      )}
+
+      <Collapse in={fetchingVisible} unmountOnExit>
+        <Alert
+          sx={alertSx}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => setFetchingVisible(false)}
+            >
+              <Close fontSize="inherit" />
+            </IconButton>
+          }
+          variant="outlined"
+          severity="info"
+        >
+          <Typography variant="body2">
+            <CircularProgress size={20} /> Loading...
+          </Typography>
+        </Alert>
+      </Collapse>
 
       {/* Error alert */}
       <Collapse in={errorVisible} unmountOnExit>
@@ -296,7 +295,9 @@ export const CippApiResults = (props) => {
           ))}
         </>
       )}
-      {(apiObject.isSuccess || apiObject.isError) && finalResults?.length > 0 ? (
+      {(apiObject.isSuccess || apiObject.isError) &&
+      finalResults?.length > 0 &&
+      hasVisibleResults ? (
         <Box display="flex" flexDirection="row">
           <Tooltip title="View Results">
             <IconButton onClick={() => tableDialog.handleOpen()}>
