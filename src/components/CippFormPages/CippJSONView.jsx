@@ -241,8 +241,7 @@ function CippJsonView({
             {drilldownData?.map((data, index) => (
               <Grid
                 item
-                xs={12}
-                sm={type === "intune" ? 12 : 3}
+                size={{ sm: type === "intune" ? 12 : 3, xs: 12 }}
                 key={index}
                 sx={{
                   //give a top border if the item is > 4, and add spacing between the top and bottom items

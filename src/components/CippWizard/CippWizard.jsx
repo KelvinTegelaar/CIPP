@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { Card, CardContent, Container, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { WizardSteps } from "./wizard-steps";
 import { useForm, useWatch } from "react-hook-form";
 
@@ -57,7 +57,7 @@ export const CippWizard = (props) => {
       {orientation === "vertical" ? (
         <CardContent>
           <Grid container spacing={3}>
-            <Grid xs={12} md={4}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <WizardSteps
                 postUrl={postUrl}
                 activeStep={activeStep}
@@ -65,7 +65,7 @@ export const CippWizard = (props) => {
                 steps={stepsWithVisibility}
               />
             </Grid>
-            <Grid xs={12} md={8}>
+            <Grid size={{ md: 8, xs: 12 }}>
               {content}
             </Grid>
           </Grid>

@@ -24,7 +24,7 @@ const Page = () => {
         postUrl="/api/AddGuest"
       >
         <Box sx={{ my: 2 }}>
-          <Grid item xs={12}></Grid>
+          <Grid item size={{ xs: 12 }}></Grid>
           <CippInviteUser formControl={formControl} userSettingsDefaults={userSettingsDefaults} />
         </Box>
       </CippFormPage>

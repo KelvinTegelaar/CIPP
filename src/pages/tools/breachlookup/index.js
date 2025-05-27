@@ -54,7 +54,7 @@ const Page = () => {
       <Container maxWidth={false}>
         <Grid container spacing={3}>
           <Grid container item spacing={4}>
-            <Grid item spacing={4} xs={4}>
+            <Grid item spacing={4} size={{ xs: 4 }}>
               <Alert severity="info">
                 <Typography variant="body1" color="textPrimary">
                   This page is in beta and may not always give expected results.
@@ -63,7 +63,7 @@ const Page = () => {
 
               <CippButtonCard title="Breach lookup">
                 <Grid container spacing={2}>
-                  <Grid item xs={8}>
+                  <Grid item size={{ xs: 8 }}>
                     <CippFormComponent
                       formControl={formControl}
                       name="account"
@@ -72,7 +72,7 @@ const Page = () => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item size={{ xs: 4 }}>
                     <Button
                       type="submit"
                       onClick={() => getGeoIP.refetch()}
@@ -88,7 +88,7 @@ const Page = () => {
           </Grid>
           {/* Export Button */}
           {getGeoIP.data && getGeoIP.data.length > 0 && (
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <CippCsvExportButton
                 rawData={getGeoIP.data} // Pass raw breaches data
                 reportName="User_Breaches"
@@ -96,10 +96,10 @@ const Page = () => {
             </Grid>
           )}
           {getGeoIP.isFetching ? (
-            <Grid item xs={8}>
+            <Grid item size={{ xs: 8 }}>
               <CippButtonCard title="Fetching Results">
                 <Grid container spacing={2}>
-                  <Grid item xs={12} textAlign="center">
+                  <Grid item size={{ xs: 12 }} textAlign="center">
                     <Skeleton width={"100%"} />
                   </Grid>
                 </Grid>
@@ -108,10 +108,10 @@ const Page = () => {
           ) : getGeoIP.data ? (
             <>
               {getGeoIP.data.length === 0 && (
-                <Grid item xs={8}>
+                <Grid item size={{ xs: 8 }}>
                   <CippButtonCard title="No breaches detected">
                     <Grid container spacing={2}>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="body1" color="textPrimary">
                           No breaches have been detected for this account
                         </Typography>
@@ -121,7 +121,7 @@ const Page = () => {
                 </Grid>
               )}
               {getGeoIP.data?.map((breach) => (
-                <Grid spacing={2} item xs={3}>
+                <Grid spacing={2} item size={{ xs: 3 }}>
                   <CippButtonCard
                     cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
                     title={<>{breach.Title}</>}
@@ -134,7 +134,7 @@ const Page = () => {
                     }
                   >
                     <Grid container spacing={2}>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                           Partial Password Available
                         </Typography>
@@ -149,7 +149,7 @@ const Page = () => {
                           )}
                         </Typography>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                           Description
                         </Typography>
@@ -161,14 +161,14 @@ const Page = () => {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="body1" gutterBottom>
                           <Link href={breach.Domain} target="_blank">
                             {breach.Domain}
                           </Link>
                         </Typography>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                           Leaked Data classes
                         </Typography>
@@ -184,7 +184,7 @@ const Page = () => {
                           ))}
                         </Box>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>
                           Breach Information
                         </Typography>
@@ -215,10 +215,10 @@ const Page = () => {
           ) : (
             <>
               {getGeoIP.isSuccess && (
-                <Grid item xs={8}>
+                <Grid item size={{ xs: 8 }}>
                   <CippButtonCard title="No breaches detected">
                     <Grid container spacing={2}>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="body1" color="textPrimary">
                           No breaches have been detected for this account
                         </Typography>
@@ -228,10 +228,10 @@ const Page = () => {
                 </Grid>
               )}
               {getGeoIP.isError && (
-                <Grid item xs={8}>
+                <Grid item size={{ xs: 8 }}>
                   <CippButtonCard title="Error">
                     <Grid container spacing={2}>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <Typography variant="body1" color="textPrimary">
                           An error occurred while connecting to the HIBP API.
                         </Typography>

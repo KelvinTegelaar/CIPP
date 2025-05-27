@@ -51,7 +51,7 @@ const Page = () => {
                 alignItems="center" // Center vertically
                 sx={{ height: "100%" }} // Ensure the container takes full height
               >
-                <Grid item xs={12} md={6}>
+                <Grid item size={{ md: 6, xs: 12 }}>
                   <CippImageCard
                     isFetching={false}
                     imageUrl={loadingImage}

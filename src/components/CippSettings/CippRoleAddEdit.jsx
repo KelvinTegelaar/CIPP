@@ -13,7 +13,7 @@ import {
   Skeleton,
 } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
@@ -293,7 +293,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         width={"100%"}
       >
         <Typography variant="h6">{obj}</Typography>
-        <Stack direction="row" spacing={3} xl={8}>
+        <Stack direction="row" spacing={3} size={{ xl: 8 }}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
               <InformationCircleIcon />
@@ -505,7 +505,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           )}
         </Box>
 
-        <Box xl={3} md={12} width="30%">
+        <Box size={{ md: 12, xl: 3 }} width="30%">
           {selectedEntraGroup && (
             <Alert color="info">
               This role will be assigned to the Entra Group:{" "}
