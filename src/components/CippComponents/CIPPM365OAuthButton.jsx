@@ -399,8 +399,10 @@ export const CIPPM365OAuthButton = ({
           // If we have a refresh token, store it
           if (tokenData.refresh_token) {
             try {
-              console.log("Storing refresh token:", tokenData);
-              // Store the refresh token
+              // Extract tid from access_token jwt base64
+              const accessTokenParts = tokenData.access_token.split(".");
+              const accessTokenPayload = JSON.parse(atob(accessTokenParts[1] || ""));
+              tokenData.tid = accessTokenPayload.tid;
               const refreshResponse = await fetch(`/api/ExecUpdateRefreshToken`, {
                 method: "POST",
                 headers: {
