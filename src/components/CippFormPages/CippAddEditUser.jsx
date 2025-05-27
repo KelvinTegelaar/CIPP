@@ -384,7 +384,7 @@ const CippAddEditUser = (props) => {
         </Grid>
       )}
       {formType === "edit" && (
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Remove from Groups"
