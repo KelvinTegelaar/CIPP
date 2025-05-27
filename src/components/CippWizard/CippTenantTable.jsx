@@ -25,7 +25,7 @@ export const CippTenantTable = ({
       url: `/api/ExecExcludeTenant?AddExclusion=true`,
       icon: <Block />,
       data: { value: "customerId" },
-      confirmText: "Are you sure you want to exclude these tenants?",
+      confirmText: "Are you sure you want to exclude [displayName]?",
       multiPost: false,
       condition: (row) => row.displayName !== "*Partner Tenant",
     },
@@ -35,7 +35,7 @@ export const CippTenantTable = ({
       url: `/api/ExecExcludeTenant?RemoveExclusion=true`,
       icon: <Add />,
       data: { value: "customerId" },
-      confirmText: "Are you sure you want to include these tenants?",
+      confirmText: "Are you sure you want to include [displayName]?",
       multiPost: false,
       condition: (row) => row.displayName !== "*Partner Tenant",
     },
@@ -45,7 +45,7 @@ export const CippTenantTable = ({
       url: `/api/ExecCPVPermissions`,
       icon: <PlayArrow />,
       data: { tenantFilter: "customerId" },
-      confirmText: "Are you sure you want to refresh the CPV permissions for these tenants?",
+      confirmText: "Are you sure you want to refresh the CPV permissions for [displayName]?",
       multiPost: false,
     },
     {
@@ -55,7 +55,7 @@ export const CippTenantTable = ({
       icon: <RestartAlt />,
       data: { tenantFilter: "customerId" },
       confirmText:
-        "Are you sure you want to reset the CPV permissions for these tenants? (This will delete the Service Principal and re-add it.)",
+        "Are you sure you want to reset the CPV permissions for [displayName]? (This will delete the Service Principal and re-add it.)",
       multiPost: false,
       condition: (row) =>
         row.displayName !== "*Partner Tenant" && row.delegatedPrivilegeStatus !== "directTenant",
@@ -66,7 +66,8 @@ export const CippTenantTable = ({
       url: `/api/ExecRemoveTenant`,
       icon: <Delete />,
       data: { TenantID: "customerId" },
-      confirmText: "Are you sure you want to remove this tenant?",
+      confirmText:
+        "Are you sure you want to remove [displayName]? If this is a Direct Tenant, this will no longer be accessible until you add it via the Setup Wizard.",
       multiPost: false,
       condition: (row) => row.displayName !== "*Partner Tenant",
     },
