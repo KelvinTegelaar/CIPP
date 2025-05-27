@@ -1,27 +1,13 @@
 import { useState, useEffect } from "react";
-import {
-  Stack,
-  Box,
-  Typography,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Switch,
-  FormControlLabel,
-  Link,
-} from "@mui/material";
+import { Stack, Box, Typography, Link } from "@mui/material";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
-import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
+import { ApiPostCall } from "../../api/ApiCall";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
+import { CippTenantTable } from "./CippTenantTable";
 
 export const CippTenantModeDeploy = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
-
-  const [tenantMode, setTenantMode] = useState("mixed");
-  const [allowPartnerTenantManagement, setAllowPartnerTenantManagement] = useState(false);
   const [gdapAuthStatus, setGdapAuthStatus] = useState({
     success: false,
     loading: false,
@@ -30,26 +16,10 @@ export const CippTenantModeDeploy = (props) => {
     success: false,
     loading: false,
   });
-  const [authenticatedTenants, setAuthenticatedTenants] = useState([]);
 
   // API calls
   const updateRefreshToken = ApiPostCall({ urlfromdata: true });
   const addTenant = ApiPostCall({ urlfromdata: true });
-
-  // API call to get list of authenticated tenants (for perTenant mode)
-  const tenantList = ApiGetCall({
-    url: "/api/ListTenants",
-    queryKey: "ListTenants",
-  });
-
-  // Update authenticated tenants list when tenantList changes
-  useEffect(() => {
-    if (tenantList.data) {
-      setAuthenticatedTenants(tenantList.data);
-    }
-  }, [tenantList.data]);
-
-  // Tenant mode is always set to "mixed"
 
   // Handle GDAP authentication success
   const handleGdapAuthSuccess = (tokenData) => {
@@ -180,7 +150,8 @@ export const CippTenantModeDeploy = (props) => {
 
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
           Click the button below to connect to individual tenants. You can authenticate to multiple
-          tenants by repeating this step for each tenant you want to add.
+          tenants by repeating this step for each tenant you want to add, accidentally added the
+          wrong tenant? Use the table below to remove it.
         </Typography>
 
         {/* Show authenticate button */}
@@ -201,26 +172,16 @@ export const CippTenantModeDeploy = (props) => {
           </Stack>
         </Box>
 
-        {/* List authenticated tenants */}
-        {authenticatedTenants.length > 0 && (
-          <Box mt={2}>
-            <Typography variant="h6" gutterBottom>
-              Authenticated Tenants
-            </Typography>
-            <Paper variant="outlined" sx={{ maxHeight: 300, overflow: "auto" }}>
-              <List dense>
-                {authenticatedTenants.map((tenant, index) => (
-                  <ListItem key={index}>
-                    <ListItemText
-                      primary={tenant.defaultDomainName || tenant.tenantId}
-                      secondary={tenant.displayName || "Unknown Tenant"}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Paper>
-          </Box>
-        )}
+        {/* Display authenticated tenants using CippTenantTable */}
+        <CippTenantTable
+          title="Authenticated Tenants"
+          tenantInTitle={false}
+          customColumns={["displayName", "defaultDomainName", "delegatedPrivilegeStatus"]}
+          showExcludeButtons={false}
+          showCardButton={false}
+          showTenantSelector={false}
+          showAllTenantsSelector={false}
+        />
       </Box>
 
       <CippWizardStepButtons
