@@ -66,7 +66,7 @@ export const CippTenantSelector = (props) => {
   }, [currentTenant?.value]);
 
   useEffect(() => {
-    if (tenant && currentTenant?.value && currentTenant?.value !== 'AllTenants') {
+    if (tenant && currentTenant?.value && currentTenant?.value !== "AllTenants") {
       tenantDetails.refetch();
     }
   }, [tenant, offcanvasVisible]);
@@ -85,6 +85,7 @@ export const CippTenantSelector = (props) => {
                 defaultDomainName: matchingTenant.defaultDomainName,
                 displayName: matchingTenant.displayName,
                 customerId: matchingTenant.customerId,
+                initialDomainName: matchingTenant.initialDomainName,
               },
             }
           : {
@@ -192,12 +193,12 @@ export const CippTenantSelector = (props) => {
         actions={[
           {
             label: "M365 Admin Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.addedFields?.customerId}&CSDEST=o365admincenter`,
+            link: `https://admin.cloud.microsoft/?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
             icon: <GlobeAltIcon />,
           },
           {
             label: "Exchange Portal",
-            link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${currentTenant?.value}`,
+            link: `https://admin.cloud.microsoft/exchange?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
             icon: <Mail />,
           },
           {
@@ -207,7 +208,7 @@ export const CippTenantSelector = (props) => {
           },
           {
             label: "Teams Portal",
-            link: `https://admin.teams.microsoft.com/?delegatedOrg=${currentTenant?.value}`,
+            link: `https://admin.teams.microsoft.com/?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
             icon: <FilePresent />,
           },
           {
@@ -222,8 +223,9 @@ export const CippTenantSelector = (props) => {
           },
           {
             label: "SharePoint Portal",
-            link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${currentTenant?.addedFields?.customerId}&CSDEST=SharePoint`,
+            link: `/api/ListSharePointAdminUrl?tenantFilter=${currentTenant?.value}`,
             icon: <Share />,
+            external: true,
           },
           {
             label: "Security Portal",

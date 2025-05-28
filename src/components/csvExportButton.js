@@ -8,32 +8,81 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
+const flattenObject = (obj, parentKey = "") => {
+  const flattened = {};
+  Object.keys(obj).forEach((key) => {
+    const fullKey = parentKey ? `${parentKey}.${key}` : key;
+    if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+      Object.assign(flattened, flattenObject(obj[key], fullKey));
+    } else if (Array.isArray(obj[key]) && typeof obj[key][0] === "string") {
+      flattened[fullKey] = obj[key];
+    } else if (Array.isArray(obj[key])) {
+      let testFormatting = getCippFormatting(obj[key], key, "text", false, false);
+      if (typeof testFormatting === "string" && !testFormatting.includes("[object Object]")) {
+        flattened[fullKey] = testFormatting;
+      } else {
+        flattened[fullKey] = obj[key]
+          .map((item) =>
+            typeof item === "object"
+              ? JSON.stringify(
+                  Object.fromEntries(
+                    Object.entries(flattenObject(item)).map(([k, v]) => [
+                      k,
+                      getCippFormatting(v, k, "text", false),
+                    ])
+                  )
+                )
+              : getCippFormatting(item, fullKey, "text", false, false)
+          )
+          .join(", ");
+      }
+    } else {
+      flattened[fullKey] = obj[key];
+    }
+  });
+  return flattened;
+};
+
 export const CSVExportButton = (props) => {
   const { rows, columns, reportName, columnVisibility, ...other } = props;
 
   const handleExportRows = (rows) => {
-    const rowData = rows.map((row) => row.original);
+    const rowData = rows.map((row) => flattenObject(row.original));
     const columnKeys = columns.filter((c) => columnVisibility[c.id]).map((c) => c.id);
-    rowData.forEach((row) => {
-      Object.keys(row).forEach((key) => {
-        if (!columnKeys.includes(key)) {
-          delete row[key];
+
+    const filterRowData = (row, allowedKeys) => {
+      const filteredRow = {};
+      allowedKeys.forEach((key) => {
+        if (key in row) {
+          filteredRow[key] = row[key];
         }
       });
-    });
+      return filteredRow;
+    };
 
-    //for every existing row, get the valid formatting using getCippFormatting.
-    const formattedData = rowData.map((row) => {
+    const filteredData = rowData.map((row) => filterRowData(row, columnKeys));
+
+    const formattedData = filteredData.map((row) => {
       const formattedRow = {};
-      Object.keys(row).forEach((key) => {
-        formattedRow[key] = getCippFormatting(row[key], key, "text", false);
+      columnKeys.forEach((key) => {
+        const value = row[key];
+        // check for string and do not format
+        if (typeof value === "string") {
+          formattedRow[key] = value;
+          return;
+        }
+
+        // Pass flattened data to the formatter for CSV export
+        formattedRow[key] = getCippFormatting(value, key, "text", false);
       });
       return formattedRow;
     });
+
     const csv = generateCsv(csvConfig)(formattedData);
     csvConfig["filename"] = `${reportName}`;
     download(csvConfig)(csv);
   };
+
   return (
     <Tooltip title="Export to CSV">
       <span>

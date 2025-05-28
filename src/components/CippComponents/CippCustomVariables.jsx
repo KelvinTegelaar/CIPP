@@ -64,7 +64,7 @@ const CippCustomVariables = ({ id }) => {
       url: "/api/ExecCippReplacemap",
       data: {
         Action: "!AddEdit",
-        customerId: id,
+        tenantId: id,
       },
       relatedQueryKeys: [`CustomVariables_${id}`],
     },
@@ -77,7 +77,7 @@ const CippCustomVariables = ({ id }) => {
       data: {
         Action: "Delete",
         RowKey: "RowKey",
-        customerId: id,
+        tenantId: id,
       },
       relatedQueryKeys: [`CustomVariables_${id}`],
       multiPost: false,
@@ -92,15 +92,15 @@ const CippCustomVariables = ({ id }) => {
     <CardContent>
       <Alert severity="info" sx={{ mb: 2 }}>
         {id === "AllTenants"
-          ? "Global variables are key-value pairs that can be used to store additional information for All Tenants. These are applied to templates in standards using the format %VariableName%. If a tenant has a custom variable with the same name, the tenant's variable will take precedence."
-          : "Custom variables are key-value pairs that can be used to store additional information about a tenant. These are applied to templates in standards using the format %VariableName%."}
+          ? "Global variables are key-value pairs that can be used to store additional information for All Tenants. These are applied to templates in standards using the format %variablename%. If a tenant has a custom variable with the same name, the tenant's variable will take precedence."
+          : "Custom variables are key-value pairs that can be used to store additional information about a tenant. These are applied to templates in standards using the format %variablename%."}
       </Alert>
       <CippDataTable
         queryKey={`CustomVariables_${id}`}
         title={id === "AllTenants" ? "Global Variables" : "Custom Variables"}
         actions={actions}
         api={{
-          url: `/api/ExecCippReplacemap?Action=List&customerId=${id}`,
+          url: `/api/ExecCippReplacemap?Action=List&tenantId=${id}`,
           dataKey: "Results",
         }}
         simpleColumns={["RowKey", "Value"]}
@@ -147,7 +147,7 @@ const CippCustomVariables = ({ id }) => {
         api={{
           type: "POST",
           url: "/api/ExecCippReplacemap",
-          data: { Action: "AddEdit", customerId: id },
+          data: { Action: "AddEdit", tenantId: id },
           relatedQueryKeys: [`CustomVariables_${id}`],
         }}
       />

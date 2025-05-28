@@ -96,6 +96,12 @@ export const CippCentralSearch = ({ handleClose, open }) => {
             label="Search any menu item or page in CIPP"
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onFocus={(event) => {
+              // Select all text on focus if there's content
+              if (event.target.value) {
+                event.target.select();
+              }
+            }}
             value={searchValue}
             autoFocus
           />
@@ -106,10 +112,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
               <Grid container spacing={2} mt={2}>
                 {filteredItems.map((item, index) => (
                   <Grid item xs={12} sm={12} md={12} key={index}>
-                    <Card
-                      variant="outlined"
-                      sx={{ height: "100%" }}
-                    >
+                    <Card variant="outlined" sx={{ height: "100%" }}>
                       <CardActionArea
                         onClick={() => handleCardClick(item.path)}
                         aria-label={`Navigate to ${item.title}`}

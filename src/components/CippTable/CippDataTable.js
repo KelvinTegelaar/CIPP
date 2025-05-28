@@ -24,6 +24,7 @@ import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippError } from "../../utils/get-cipp-error";
 import { Box } from "@mui/system";
 import { useSettings } from "../../hooks/use-settings";
+import { isEqual } from "lodash"; // Import lodash for deep comparison
 
 export const CippDataTable = (props) => {
   const {
@@ -79,9 +80,11 @@ export const CippDataTable = (props) => {
 
   useEffect(() => {
     if (Array.isArray(data) && !api?.url) {
-      setUsedData(data);
+      if (!isEqual(data, usedData)) {
+        setUsedData(data);
+      }
     }
-  }, [data, api?.url]);
+  }, [data, api?.url, usedData]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
@@ -127,7 +130,13 @@ export const CippDataTable = (props) => {
     queryKey,
   ]);
   useEffect(() => {
-    if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
+    if (
+      !Array.isArray(usedData) ||
+      usedData.length === 0 ||
+      typeof usedData[0] !== "object" ||
+      usedData === null ||
+      usedData === undefined
+    ) {
       return;
     }
     const apiColumns = utilColumnsFromAPI(usedData);
@@ -156,7 +165,7 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData.length, queryKey]);
+  }, [columns.length, usedData, queryKey]);
 
   const createDialog = useDialog();
 
@@ -195,7 +204,7 @@ export const CippDataTable = (props) => {
       },
     }),
     columns: memoizedColumns,
-    data: memoizedData,
+    data: memoizedData ?? [],
     state: {
       columnVisibility,
       sorting,
@@ -294,8 +303,8 @@ export const CippDataTable = (props) => {
               data={data}
               columnVisibility={columnVisibility}
               getRequestData={getRequestData}
-              usedColumns={usedColumns}
-              usedData={usedData}
+              usedColumns={memoizedColumns}
+              usedData={memoizedData ?? []}
               title={title}
               actions={actions}
               exportEnabled={exportEnabled}
@@ -327,7 +336,103 @@ export const CippDataTable = (props) => {
         return aVal > bVal ? 1 : -1;
       },
     },
+    filterFns: {
+      notContains: (row, columnId, value) => {
+        const rowValue = row.getValue(columnId);
+        if (rowValue === null || rowValue === undefined) {
+          return false;
+        }
+
+        const stringValue = String(rowValue);
+        if (
+          stringValue.includes("[object Object]") ||
+          !stringValue.toLowerCase().includes(value.toLowerCase())
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      regex: (row, columnId, value) => {
+        try {
+          const regex = new RegExp(value, "i");
+          const rowValue = row.getValue(columnId);
+          if (typeof rowValue === "string" && !rowValue.includes("[object Object]")) {
+            return regex.test(rowValue);
+          }
+          return false;
+        } catch (error) {
+          // If regex is invalid, don't filter
+          return true;
+        }
+      },
+    },
     enableGlobalFilterModes: true,
+    renderGlobalFilterModeMenuItems: ({ internalFilterOptions, onSelectFilterMode }) => {
+      // add custom filter options
+      const customFilterOptions = [
+        {
+          option: "regex",
+          label: "Regex",
+          symbol: "(.*)",
+        },
+      ];
+
+      // add to the internalFilterOptions if not already present
+      customFilterOptions.forEach((filterOption) => {
+        if (!internalFilterOptions.some((option) => option.option === filterOption.option)) {
+          internalFilterOptions.push(filterOption);
+        }
+      });
+
+      internalFilterOptions.map((filterOption) => (
+        <MenuItem
+          key={filterOption.option}
+          onClick={() => onSelectFilterMode(filterOption.option)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <span style={{ width: "20px", textAlign: "center" }}>{filterOption.symbol}</span>
+          <ListItemText>{filterOption.label}</ListItemText>
+        </MenuItem>
+      ));
+    },
+    renderColumnFilterModeMenuItems: ({ internalFilterOptions, onSelectFilterMode }) => {
+      // add custom filter options
+      const customFilterOptions = [
+        {
+          option: "notContains",
+          label: "Not Contains",
+          symbol: "!*",
+        },
+        {
+          option: "regex",
+          label: "Regex",
+          symbol: "(.*)",
+        },
+      ];
+
+      // combine default and custom filter options
+      const combinedFilterOptions = [...internalFilterOptions, ...customFilterOptions];
+
+      return combinedFilterOptions.map((filterOption) => (
+        <MenuItem
+          key={filterOption.option}
+          onClick={() => onSelectFilterMode(filterOption.option)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <span style={{ width: "20px", textAlign: "center" }}>{filterOption.symbol}</span>
+          <ListItemText>{filterOption.label}</ListItemText>
+        </MenuItem>
+      ));
+    },
   });
 
   useEffect(() => {
@@ -420,6 +525,7 @@ export const CippDataTable = (props) => {
             api={actionData.action}
             row={actionData.data}
             relatedQueryKeys={queryKey ? queryKey : title}
+            {...actionData.action}
           />
         );
       }, [actionData.ready, createDialog, actionData.action, actionData.data, queryKey, title])}

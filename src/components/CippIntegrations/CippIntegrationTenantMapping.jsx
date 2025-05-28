@@ -197,6 +197,7 @@ const CippIntegrationSettings = ({ children }) => {
                   creatable={false}
                   multiple={false}
                   isFetching={mappings.isFetching}
+                  sortOptions={true}
                 />
               </Grid>
               <Grid item>
