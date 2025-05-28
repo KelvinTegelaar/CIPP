@@ -33,12 +33,12 @@ Once you have your initial `superadmin` user added, you are now able to set up a
 
 CIPP features a role management system which utilizes the [Roles feature of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
 
-| Role Name  | Description                                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                                                          |
-| editor     | Allowed to perform everything, except change system settings.                                                                                                                                                 |
-| admin      | Allowed to perform everything.                                                                                                                                                                                |
-| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. This role must be combined with 'admin' |
+| Role Name  | Description                                                                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                                                                          |
+| editor     | Allowed to perform everything, except change system settings.                                                                                                                                                                 |
+| admin      | Allowed to perform everything.                                                                                                                                                                                                |
+| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](../installation/owntenant.md "mention") settings. This role must be combined with 'admin' |
 
 You can assign these roles to users using the [CIPP Roles](../../user-documentation/cipp/advanced/super-admin/custom-roles.md) page.&#x20;
 

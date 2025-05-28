@@ -7,7 +7,7 @@ description: >-
 # Prerequisites
 
 {% hint style="warning" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to [addyourself.md](addyourself.md "mention") guide for further direction.
+If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to [Broken link](broken-reference "mention") guide for further direction.
 {% endhint %}
 
 To get started you must follow or have the following ready. Click on the links for instructions on how to perform some of these tasks, or for more information on the functionality in question.
