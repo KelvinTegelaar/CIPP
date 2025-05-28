@@ -39,6 +39,45 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.DeployMailContact",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Creates a new mail contact in Exchange Online across all selected tenants. The contact will be visible in the Global Address List.",
+    "docsDescription": "This standard creates a new mail contact in Exchange Online. Mail contacts are useful for adding external email addresses to your organization's address book. They can be used for distribution lists, shared mailboxes, and other collaboration scenarios.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.ExternalEmailAddress",
+        "label": "External Email Address",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.DisplayName",
+        "label": "Display Name",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.FirstName",
+        "label": "First Name",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.LastName",
+        "label": "Last Name",
+        "required": false
+      }
+    ],
+    "label": "Deploy Mail Contact",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2024-03-19",
+    "powershellEquivalent": "New-MailContact",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
     "tag": ["CIS", "mip_search_auditlog"],
