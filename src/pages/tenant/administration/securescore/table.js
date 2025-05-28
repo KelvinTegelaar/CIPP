@@ -6,7 +6,8 @@ import { useSecureScore } from "../../../../hooks/use-securescore";
 import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
 import { CheckCircleIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 import { Map, Score } from "@mui/icons-material";
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
 const Page = () => {
@@ -23,7 +24,7 @@ const Page = () => {
       >
         {currentTenant === "AllTenants" && (
           <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid item size={{ md: 4, xs: 12 }}>
               <CippImageCard
                 title="Not supported"
                 imageUrl="/assets/illustrations/undraw_website_ij0l.svg"

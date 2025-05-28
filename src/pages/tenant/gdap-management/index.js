@@ -2,7 +2,7 @@ import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import { Box, Container } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
 import { ApiPostCall, ApiGetCallWithPagination } from "../../../api/ApiCall";
 import {
