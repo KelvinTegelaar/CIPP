@@ -1,4 +1,5 @@
-import { Box, Container, Grid, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
+import { Grid } from "@mui/system";
 import Head from "next/head";
 import { CippImageCard } from "../components/CippCards/CippImageCard.jsx";
 import { Layout as DashboardLayout } from "../layouts/index.js";
@@ -25,7 +26,7 @@ const Page = () => (
               alignItems="center" // Center vertically
               sx={{ height: "100%" }} // Ensure the container takes full height
             >
-              <Grid item xs={12} md={6}>
+              <Grid item size={{ md: 6, xs: 12 }}>
                 <CippImageCard
                   isFetching={false}
                   imageUrl="/assets/illustrations/undraw_articles_wbpb.svg"

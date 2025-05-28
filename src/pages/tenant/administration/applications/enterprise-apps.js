@@ -1,7 +1,9 @@
 // this page is going to need some love for accounting for filters: https://github.com/KelvinTegelaar/CIPP/blob/main/src/views/tenant/administration/ListEnterpriseApps.jsx#L83
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Launch } from "@mui/icons-material";
+import tabOptions from "./tabOptions";
 
 const Page = () => {
   const pageTitle = "Enterprise Applications";
@@ -16,16 +18,6 @@ const Page = () => {
       target: "_blank",
       multiPost: false,
       external: true,
-    },
-    {
-      icon: <Launch />,
-      label: "View App Registration",
-      link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/[appId]`,
-      color: "info",
-      target: "_blank",
-      multiPost: false,
-      external: true,
-      condition: (row) => row.tags.includes("WindowsAzureActiveDirectoryIntegratedApp"),
     },
   ];
 
@@ -48,12 +40,14 @@ const Page = () => {
     "createdDateTime",
     "publisherName",
     "homepage",
+    "passwordCredentials",
+    "keyCredentials",
   ];
 
   const apiParams = {
     Endpoint: "servicePrincipals",
     $select:
-      "id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags",
+      "id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials",
     $count: true,
     $top: 999,
   };
@@ -71,6 +65,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;

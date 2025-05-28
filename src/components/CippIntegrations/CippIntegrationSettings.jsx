@@ -102,7 +102,7 @@ const CippIntegrationSettings = ({ children }) => {
           {integrations.isLoading && <Box>Loading...</Box>}
           {integrations.isSuccess && !extension && (
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item size={{ xs: 12 }}>
                 <Box sx={{ p: 3 }}>
                   <Box sx={{ textAlign: "center" }}>Extension not found</Box>
                 </Box>

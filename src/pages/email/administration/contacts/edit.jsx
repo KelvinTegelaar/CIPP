@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Grid, Divider } from "@mui/material";
+import { Divider } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
@@ -112,7 +113,7 @@ const EditContact = () => {
     >
       <Grid container spacing={2}>
         {/* Display Name */}
-        <Grid item xs={12} md={10}>
+        <Grid item size={{ md: 10, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -123,7 +124,7 @@ const EditContact = () => {
         </Grid>
 
         {/* First Name and Last Name */}
-        <Grid item xs={12} md={5}>
+        <Grid item size={{ md: 5, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="First Name"
@@ -131,7 +132,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={5}>
+        <Grid item size={{ md: 5, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Last Name"
@@ -143,7 +144,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Email */}
-        <Grid item xs={12} md={8}>
+        <Grid item size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Email"
@@ -160,7 +161,7 @@ const EditContact = () => {
         </Grid>
 
         {/* Hide from GAL */}
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Hidden from Global Address List"
@@ -172,7 +173,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Company Information */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Company Name"
@@ -180,7 +181,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Job Title"
@@ -192,7 +193,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Address Information */}
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Street Address"
@@ -200,10 +201,10 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="textField" label="City" name="city" formControl={formControl} />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Postal Code"
@@ -211,7 +212,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Country"
@@ -229,7 +230,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Phone Numbers */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Mobile Phone"
@@ -237,7 +238,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Business Phone"
