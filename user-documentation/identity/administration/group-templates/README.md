@@ -31,7 +31,7 @@ For some types of groups, additional fields become available when that type is s
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Save to GitHub</td><td>Saves the template to your GitHub repository</td><td>true</td></tr><tr><td>Delete Template</td><td>Deleted the template</td><td>true</td></tr><tr><td>More Info</td><td>Opens the extended info flyout</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Template</td><td>Opens the Edit Template page for the selected template</td><td>false</td></tr><tr><td>Save to GitHub</td><td>Saves the template to your GitHub repository</td><td>true</td></tr><tr><td>Delete Template</td><td>Deleted the template</td><td>true</td></tr><tr><td>More Info</td><td>Opens the extended info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

@@ -13,6 +13,8 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 
 ### Available CIPP Alerts
 
+Under the "Choose which logs you would like to receive alerts from" you will be able to select what you would like to receive alerts from CIPP actions. A sample of the alerts is listed below:f
+
 * New Accounts created via CIPP
 * Removed Accounts via CIPP
 * New Applications added via CIPP
@@ -47,6 +49,18 @@ Enter a webhook URL. Data is formatted based on the receiving server:
 {% hint style="info" %}
 Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler_CIPPNotifications).
 {% endhint %}
+
+### Notification Setting Options
+
+| Setting                                         | Description                                                                               |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant                            |
+| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured       |
+| Include Tenant ID in alerts                     | This will include the tenant's ID for additional easy of identifying who the alert is for |
+
+### Send Test Alert
+
+You are able to select to send a test alert. Select which options you want to include in your test before clicking `Confirm`.
 
 ***
 

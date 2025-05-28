@@ -1,4 +1,4 @@
-# SAM Setup Wizard
+# Setup Wizard
 
 The SAM setup wizard is the keys to the engine that allows CIPP to manage your client tenants.
 
@@ -8,11 +8,13 @@ The SAM setup wizard is the keys to the engine that allows CIPP to manage your c
 
 Here you will be presented with options for how you want to run the wizard.
 
-| Option                                              | Description                                                                                                                           |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Create application for me and connect to my tenants | Especially useful for first time setup, this option will create a new CIPP-SAM application in your partner tenant.                    |
-| Refresh Tokens for existing application             | This will be used to refresh the token or replace the account used to authenticate the application.                                   |
-| Manually enter credentials                          | This is for advanced use cases such as a migration from self-hosted to CyberDrain hosted or if you want to bring your own application |
+| Option                                                                 | Description                                                                                                                                                                                                                                                            |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First Setup                                                            | Choose this option if it is your first time setting up CIPP or if you'd like to redo the previous step. This option will walk you through the basic setup of some of the core functions of CIPP of connecting to your tenants, importing policy baselines, and alerts. |
+| Add a tenant                                                           | Allows you to directly add a tenant to your environment. No GDAP relationship is required.                                                                                                                                                                             |
+| Create a new application registration for me and connect to my tenants | Especially useful for first time setup, this option will create a new CIPP-SAM application in your partner tenant.                                                                                                                                                     |
+| Refresh Tokens for existing application                                | This will be used to refresh the token or replace the account used to authenticate the application.                                                                                                                                                                    |
+| Manually enter credentials                                             | This is for advanced use cases such as a migration from self-hosted to CyberDrain hosted or if you want to bring your own application                                                                                                                                  |
 {% endstep %}
 
 {% step %}
