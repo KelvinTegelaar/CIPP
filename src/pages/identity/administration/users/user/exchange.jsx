@@ -10,7 +10,7 @@ import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippExchangeInfoCard";
 import { useEffect, useState } from "react";

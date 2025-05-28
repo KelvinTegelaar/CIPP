@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { AddHomeWork, Edit, Block, LockOpen } from "@mui/icons-material";
+import { AddHomeWork, Edit, Block, LockOpen, Key } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
@@ -15,6 +15,12 @@ const Page = () => {
       icon: <Edit />,
       color: "info",
       condition: (row) => !row.isDirSynced,
+    },
+    {
+      label: "Edit permissions",
+      link: "/identity/administration/users/user/exchange?userId=[id]",
+      color: "info",
+      icon: <Key />,
     },
     {
       label: "Block Sign In",

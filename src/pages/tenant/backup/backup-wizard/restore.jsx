@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Divider, Grid, Typography } from "@mui/material";
+import { Alert, Divider, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
@@ -107,7 +108,7 @@ const RestoreBackupForm = () => {
       </Typography>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         {/* Backup Selector */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label={`Backups for ${tenantFilter}`}
@@ -135,12 +136,12 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Restore Settings */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="h6">Restore Settings</Typography>
         </Grid>
 
         {/* Identity */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Identity</Typography>
           <CippFormComponent
             type="switch"
@@ -152,7 +153,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Conditional Access */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Conditional Access</Typography>
           <CippFormComponent
             type="switch"
@@ -163,7 +164,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Intune */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Intune</Typography>
           <CippFormComponent
             type="switch"
@@ -186,7 +187,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Email Security */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">Email Security</Typography>
           <CippFormComponent
             type="switch"
@@ -203,7 +204,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* CIPP */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ md: 6, xs: 12 }}>
           <Typography variant="subtitle1">CIPP</Typography>
           <CippFormComponent
             type="switch"
@@ -220,7 +221,7 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Overwrite Existing Entries */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Overwrite existing entries"
@@ -233,7 +234,7 @@ const RestoreBackupForm = () => {
             compareType="is"
             compareValue={true}
           >
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <Alert severity="warning">
                 <strong>Warning:</strong> Overwriting existing entries will remove the current
                 settings and replace them with the backup settings. If you have selected to restore
@@ -246,10 +247,10 @@ const RestoreBackupForm = () => {
         </Grid>
 
         {/* Send Results To */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1">Send Restore results to:</Typography>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Webhook"
@@ -257,42 +258,42 @@ const RestoreBackupForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="switch" label="E-mail" name="email" formControl={formControl} />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="switch" label="PSA" name="psa" formControl={formControl} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Divider />
         </Grid>
         {/* Review and Confirm */}
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="h5">Review and Confirm</Typography>
           <Typography variant="body1" color="textSecondary">
             Please review the selected options before submitting.
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1">Selected Tenant:</Typography>
           <Typography variant="body2" color="textSecondary">
             {tenantFilter}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1">Selected Backup:</Typography>
           <Typography variant="body2" color="textSecondary">
             {formControl.watch("backup")?.label || "None selected"}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1">Overwrite Existing Configuration:</Typography>
           <Typography variant="body2" color="textSecondary">
             {formControl.watch("overwrite") ? "Yes" : "No"}
           </Typography>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1">Send Results To:</Typography>
           <Typography variant="body2" color="textSecondary">
             <Stack direction="row" spacing={1}>

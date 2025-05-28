@@ -158,7 +158,11 @@ export const CippAutoComplete = (props) => {
             label:
               typeof api?.labelField === "function"
                 ? api.labelField(option)
-                : option[api?.labelField],
+                : option[api?.labelField]
+                ? option[api?.labelField]
+                : option[api?.altLabelField] ||
+                  option[api?.valueField] ||
+                  "No label found - Are you missing a labelField?",
             value:
               typeof api?.valueField === "function"
                 ? api.valueField(option)
