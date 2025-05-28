@@ -1,7 +1,7 @@
 # Executing the Setup Wizard
 
 {% hint style="info" %}
-**Do not attempt to log in to CIPP with the CIPP Service Account you created.** Make sure you've gone through the steps of [inviting yourself into your CIPP instance](addingusers.md) either via Azure (self-hosted) or through the Management Portal (hosted).
+**Do not attempt to log in to CIPP with the CIPP Service Account you created.** Make sure you've gone through the steps of [inviting yourself into your CIPP instance](broken-reference) either via Azure (self-hosted) or through the Management Portal (hosted).
 {% endhint %}
 
 {% hint style="danger" %}

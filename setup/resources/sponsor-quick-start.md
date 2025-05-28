@@ -22,7 +22,7 @@ If you've started the sponsorship process and are ready to enhance your manageme
 
 ## Accessing CIPP & Executing SAM Wizard
 
-5. **Add Yourself to CIPP:** On the [User Management](https://management.cipp.app/invite-users) page in your management portal, ensure you've invited your work account as an `admin` into your newly deployed instance to avoid `403 Forbidden` errors during login. Further guidance, can be found on the [Adding Users to CIPP](../installation/addingusers.md#hosted-clients) page.
+5. **Add Yourself to CIPP:** On the [User Management](https://management.cipp.app/invite-users) page in your management portal, ensure you've invited your work account as an `admin` into your newly deployed instance to avoid `403 Forbidden` errors during login. Further guidance, can be found on the [Adding Users to CIPP](broken-reference) page.
 6. **Execute SAM Wizard:** Follow the instructions on the [Executing the SAM Setup Wizard](../installation/executing-the-sam-setup-wizard.md) page once logged into your CIPP instance using your newly invited account, **NOT** the service account. The service account is only used during specific configuration steps within the SAM Setup Wizard.
 
 ## **Managing Client Relationships**
