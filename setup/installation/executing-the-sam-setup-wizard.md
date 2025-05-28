@@ -1,16 +1,14 @@
+---
+hidden: true
+---
+
 # Executing the Setup Wizard
 
-{% hint style="info" %}
-**Do not attempt to log in to CIPP with the CIPP Service Account you created.** Make sure you've gone through the steps of [inviting yourself into your CIPP instance](broken-reference) either via Azure (self-hosted) or through the Management Portal (hosted).
-{% endhint %}
-
 {% hint style="danger" %}
-**When using the SAM Wizard to create your CIPP-SAM application, it's important to remember the following:**
-
-* When you're asked to authenticate during the SAM Setup Wizard, **remember to use to the CIPP service account credentials**. If you do not have a service account prepared you can do so now by going to the [Creating the CIPP Service Account](creating-the-cipp-service-account-gdap-ready.md) page and following the instructions there.
+* When you're asked to authenticate during the Setup Wizard, **remember to use to the CIPP service account credentials**. If you do not have a service account prepared you can do so now by going to the [Creating the CIPP Service Account](creating-the-cipp-service-account-gdap-ready.md) page and following the instructions there.
 {% endhint %}
 
-This guide walks you through the process from the video of executing the SAM Wizard inside CIPP for the first time, and has 3 options based on what you're looking to accomplish. In this example, we use the first-time setup option, but more details on additional options can be found in the sections below.
+This guide walks you through the process of executing the Setup Wizard inside CIPP for the first time, and has 3 options based on what you're looking to accomplish. In this example, we use the first-time setup option, but more details on additional options can be found in the sections below.
 
 <table><thead><tr><th width="357">SAM Wizard Option</th><th>When to use</th></tr></thead><tbody><tr><td>Create application for me and connect to my tenants</td><td>This will guide you through all the necessary steps for connecting to your tenants for the first time. Click the Next Step button to start the process. </td></tr><tr><td>Refresh Tokens for existing application</td><td>Select this option if you have used the incorrect account to setup the SAM wizard, need to renew tokens due to an expired password, or when you are instructed to do so by the Helpdesk.</td></tr><tr><td>Manually enter credentials</td><td>This option is for advanced users and those following the migration manual in <a href="migrating-to-hosted-cipp.md">Migrating to a hosted instance of CIPP</a>.</td></tr></tbody></table>
 
