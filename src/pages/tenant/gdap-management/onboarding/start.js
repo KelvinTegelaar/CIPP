@@ -13,7 +13,7 @@ import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import GDAPRoles from "/src/data/GDAPRoles";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "/src/api/ApiCall";
 import { useEffect, useState } from "react";
@@ -334,6 +334,7 @@ const Page = () => {
                           !relationship?.addedFields?.displayName?.startsWith("MLT_")
                       );
                     },
+                    showRefresh: true,
                   }}
                   multiple={false}
                   creatable={true}

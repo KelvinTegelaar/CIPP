@@ -32,9 +32,7 @@ export const ProductsStats = () => (
     <Grid container>
       {stats.map((item) => (
         <Grid
-          xs={12}
-          sm={6}
-          md={3}
+          size={{ md: 3, sm: 6, xs: 12 }}
           key={item.name}
           sx={{
             borderBottom: (theme) => ({
