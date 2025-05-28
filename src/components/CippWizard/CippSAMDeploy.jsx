@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Stack, Box, CircularProgress, Link } from "@mui/material";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -13,11 +13,21 @@ export const CippSAMDeploy = (props) => {
     loading: false,
   });
 
-  //TODO: Make sure to block next button until the app is created.
+  // Block next step until SAM app is created
+  formControl.register("SAMWizard", {
+    required: true,
+  });
 
-  // API call to create/update SAM app
+  // Set SAMWizard = true if auth is successful
+  useEffect(() => {
+    if (authStatus.success) {
+      formControl.setValue("SAMWizard", true);
+      formControl.trigger("SAMWizard");
+    }
+  }, [authStatus, formControl]);
+
   const createSamApp = ApiPostCall({ urlfromdata: true });
-  // Handle successful authentication
+
   const handleAuthSuccess = (tokenData) => {
     setAuthStatus({
       success: false,
@@ -25,14 +35,12 @@ export const CippSAMDeploy = (props) => {
       loading: true,
     });
 
-    // Send the access token to the API to create/update SAM app
     createSamApp.mutate({
       url: "/api/ExecCreateSamApp",
       data: { access_token: tokenData.accessToken },
     });
   };
 
-  // Handle authentication error
   const handleAuthError = (error) => {
     setAuthStatus({
       success: false,
@@ -41,34 +49,34 @@ export const CippSAMDeploy = (props) => {
     });
   };
 
-  // Update status when API call completes
-  if (createSamApp.isSuccess && authStatus.loading) {
-    const data = createSamApp.data;
-    if (data.severity === "error") {
+  useEffect(() => {
+    if (createSamApp.isSuccess && authStatus.loading && createSamApp.data) {
+      const data = createSamApp.data?.data;
+      if (data.severity === "error") {
+        setAuthStatus({
+          success: false,
+          error: data.message || "Failed to create SAM application",
+          loading: false,
+        });
+      } else if (data.severity === "success") {
+        setAuthStatus({
+          success: true,
+          error: null,
+          loading: false,
+        });
+      }
+    }
+  }, [createSamApp, authStatus]);
+
+  useEffect(() => {
+    if (createSamApp.isError && authStatus.loading) {
       setAuthStatus({
         success: false,
-        error: data.message || "Failed to create SAM application",
+        error: "An error occurred while creating the SAM application",
         loading: false,
       });
-    } else if (data.severity === "success") {
-      setAuthStatus({
-        success: true,
-        error: null,
-        loading: false,
-      });
-      // Allow user to proceed to next step
-      formControl.setValue("samAppCreated", true);
     }
-  }
-
-  // Handle API error
-  if (createSamApp.isError && authStatus.loading) {
-    setAuthStatus({
-      success: false,
-      error: "An error occurred while creating the SAM application",
-      loading: false,
-    });
-  }
+  }, [createSamApp, authStatus]);
 
   return (
     <Stack spacing={2}>
@@ -90,40 +98,26 @@ export const CippSAMDeploy = (props) => {
           locations or other exclusions.
         </li>
       </Alert>
-      {/* Show API results */}
-      <CippApiResults apiObject={createSamApp} />
 
-      {/* Show error message if any */}
       {authStatus.error && (
         <Alert severity="error" sx={{ mt: 2 }}>
           {authStatus.error}
         </Alert>
       )}
-
-      {/* Show success message when authentication is successful */}
-      {authStatus.success && !authStatus.loading && (
-        <Alert severity="success" sx={{ mt: 2 }}>
-          SAM application has been successfully created/updated. You can now proceed to the next
-          step.
-        </Alert>
-      )}
-
-      {/* Show authenticate button only if not successful yet */}
-      {(!authStatus.success || authStatus.loading) && (
-        <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <CIPPM365OAuthButton
-              onAuthSuccess={handleAuthSuccess}
-              onAuthError={handleAuthError}
-              buttonText="Authenticate with Microsoft"
-              useDeviceCode={true}
-              applicationId="1950a258-227b-4e31-a9cf-717495945fc2"
-              showSuccessAlert={false}
-              autoStartDeviceLogon={true}
-            />
-          </Stack>
-        </Box>
-      )}
+      <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <CIPPM365OAuthButton
+            onAuthSuccess={handleAuthSuccess}
+            onAuthError={handleAuthError}
+            buttonText="Authenticate with Microsoft"
+            useDeviceCode={true}
+            applicationId="1950a258-227b-4e31-a9cf-717495945fc2"
+            showSuccessAlert={false}
+            autoStartDeviceLogon={true}
+          />
+        </Stack>
+      </Box>
+      <CippApiResults apiObject={createSamApp} />
 
       <CippWizardStepButtons
         currentStep={currentStep}

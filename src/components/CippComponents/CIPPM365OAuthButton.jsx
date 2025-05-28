@@ -13,13 +13,13 @@ export const CIPPM365OAuthButton = ({
   useDeviceCode = false,
   applicationId = null,
   autoStartDeviceLogon = false,
-  validateServiceAccount = true, // Add prop to control service account validation
+  validateServiceAccount = true,
 }) => {
   const [authInProgress, setAuthInProgress] = useState(false);
   const [authError, setAuthError] = useState(null);
   const [deviceCodeInfo, setDeviceCodeInfo] = useState(null);
   const [codeRetrievalInProgress, setCodeRetrievalInProgress] = useState(false);
-  const [isServiceAccount, setIsServiceAccount] = useState(true); // Default to true to avoid showing warning initially
+  const [isServiceAccount, setIsServiceAccount] = useState(true);
   const [tokens, setTokens] = useState({
     accessToken: null,
     refreshToken: null,
@@ -30,24 +30,19 @@ export const CIPPM365OAuthButton = ({
     onmicrosoftDomain: null,
   });
 
-  // Get application ID information from API if not provided
   const appIdInfo = ApiGetCall({
     url: `/api/ExecListAppId`,
     waiting: true,
   });
 
-  // Ensure appId is refetched every time the component is mounted
   useEffect(() => {
-    // Refetch appId when component mounts
     appIdInfo.refetch();
-  }, []); // Empty dependency array ensures this runs only on mount
+  }, []);
 
-  // Handle closing the error
   const handleCloseError = () => {
     setAuthError(null);
   };
 
-  // Check if username is a service account (contains "service" or "cipp")
   const checkIsServiceAccount = (username) => {
     if (!username || !validateServiceAccount) return true; // If no username or validation disabled, don't show warning
 
@@ -224,7 +219,6 @@ export const CIPPM365OAuthButton = ({
       try {
         const idTokenPayload = JSON.parse(atob(tokenData.id_token.split(".")[1]));
 
-        // Extract username
         username =
           idTokenPayload.preferred_username ||
           idTokenPayload.email ||
@@ -232,22 +226,17 @@ export const CIPPM365OAuthButton = ({
           idTokenPayload.name ||
           "unknown user";
 
-        // Extract tenant ID if available in the token
         if (idTokenPayload.tid) {
           tenantId = idTokenPayload.tid;
         }
 
-        // Try to extract onmicrosoft domain from the username or issuer
         if (username && username.includes("@") && username.includes(".onmicrosoft.com")) {
           onmicrosoftDomain = username.split("@")[1];
         } else if (idTokenPayload.iss) {
           const issuerMatch = idTokenPayload.iss.match(/https:\/\/sts\.windows\.net\/([^/]+)\//);
           if (issuerMatch && issuerMatch[1]) {
-            // We have the tenant ID, but not the domain name
           }
         }
-
-        // Check if username is a service account
         setIsServiceAccount(checkIsServiceAccount(username));
       } catch (error) {}
     }
@@ -270,6 +259,7 @@ export const CIPPM365OAuthButton = ({
 
     // Update UI state
     setAuthInProgress(false);
+    setIsServiceAccount(checkIsServiceAccount(username));
   };
 
   // MSAL-like authentication function
