@@ -1,7 +1,7 @@
-import { Grid } from "@mui/material";
+import "@mui/material";
 import { Layout as DashboardLayout } from "../layouts/index.js";
 import Head from "next/head.js";
-import { Box, Container, Stack } from "@mui/system";
+import { Box, Container, Stack, Grid } from "@mui/system";
 const FullPageLoading = () => {
   return (
     <DashboardLayout>
@@ -17,7 +17,7 @@ const FullPageLoading = () => {
         <Container maxWidth={false}>
           <Stack spacing={6}>
             <Grid container spacing={3}>
-              <Grid item style={{ display: "flex" }} xs={12} md={6}></Grid>
+              <Grid item style={{ display: "flex" }} size={{ md: 6, xs: 12 }}></Grid>
               Loading... #Todo: Make pretty, make it obey user settings for theme.
             </Grid>
           </Stack>

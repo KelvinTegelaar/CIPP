@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { Box, Container, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
 import CippFormComponent from "../../components/CippComponents/CippFormComponent";
@@ -17,10 +17,8 @@ const Page = () => {
   const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
 
   const auth = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const addedAttributes = [
@@ -92,7 +90,6 @@ const Page = () => {
                           value: (
                             <CippFormComponent
                               type="autoComplete"
-
                               disableClearable={true}
                               defaultValue={{ value: "25", label: "25" }}
                               name="tablePageSize"
@@ -111,7 +108,6 @@ const Page = () => {
                             <CippFormComponent
                               type="autoComplete"
                               options={addedAttributes}
-
                               name="userAttributes"
                               formControl={formcontrol}
                               multiple={true}
