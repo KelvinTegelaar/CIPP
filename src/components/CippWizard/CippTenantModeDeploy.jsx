@@ -35,7 +35,8 @@ export const CippTenantModeDeploy = (props) => {
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
           Using GDAP is recommended for CIPP, however you can also authenticate to individual
           tenants. It is still highly recommended to connect to your partner tenant first, even if
-          you are not a Microsoft CSP.
+          you are not a Microsoft CSP. This allows CIPP to send notifications, perform permission
+          checks, and update permissions when required.
         </Typography>
         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
           Please remember to log onto a service account dedicated for CIPP. More info? Check out the{" "}
