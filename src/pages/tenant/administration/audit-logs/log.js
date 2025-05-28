@@ -186,7 +186,7 @@ const Page = () => {
                 </Card>
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <CippPropertyListCard
                 title="Audit Data"
                 propertyItems={rawDataItems}

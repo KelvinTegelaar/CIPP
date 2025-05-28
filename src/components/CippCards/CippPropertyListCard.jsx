@@ -87,7 +87,7 @@ export const CippPropertyListCard = (props) => {
             </PropertyList>
           ) : (
             // Two-column layout
-            <Stack
+            (<Stack
               direction={{
                 xs: "column",
                 md: "row",
@@ -142,7 +142,7 @@ export const CippPropertyListCard = (props) => {
                   ))
                 )}
               </PropertyList>
-            </Stack>
+            </Stack>)
           )}
         </CardContent>
         <ActionList>

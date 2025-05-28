@@ -66,7 +66,7 @@ export function useSecureScore() {
           complianceInformation: translation?.complianceInformation,
           actionUrl: remediation
             ? //this needs to be updated to be a direct url to apply this standard.
-              "/tenant/standards/list-applied-standards"
+              "/tenant/standards/list-standards"
             : translation?.actionUrl,
           remediation: remediation
             ? `1. Enable the CIPP Standard: ${remediation.label}`
