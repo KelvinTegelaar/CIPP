@@ -9,12 +9,14 @@ import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import {
   Avatar,
   Box,
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Popover,
+  Skeleton,
   Stack,
   SvgIcon,
   Typography,
@@ -38,10 +40,8 @@ export const AccountPopover = (props) => {
   const popover = usePopover();
 
   const orgData = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const handleLogout = useCallback(async () => {
@@ -89,16 +89,22 @@ export const AccountPopover = (props) => {
             <>
               <Box sx={{ minWidth: 100 }}>
                 <Typography color="neutral.400" variant="caption">
-                  {orgData.data?.Org?.Domain}
+                  {orgData.data?.clientPrincipal?.userDetails?.split("@")?.[1]}
                 </Typography>
                 <Typography color="inherit" variant="subtitle2">
                   {orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
                 </Typography>
               </Box>
               {orgData.data?.clientPrincipal?.userDetails && (
-                <SvgIcon color="action" fontSize="small">
-                  <ChevronDownIcon />
-                </SvgIcon>
+                <>
+                  {orgData?.isFetching ? (
+                    <CircularProgress size={20} color="textPrimary" />
+                  ) : (
+                    <SvgIcon color="action" fontSize="small">
+                      <ChevronDownIcon />
+                    </SvgIcon>
+                  )}
+                </>
               )}
             </>
           )}

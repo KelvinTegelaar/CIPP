@@ -29,6 +29,15 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "EntraConnectSyncStatus",
+    "label": "Alert if Entra Connect sync is enabled and has not run in the last X hours",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Hours(Default:72)",
+    "inputName": "EntraConnectSyncStatusHours",
+    "recommendedRunInterval": "1d"
+  },
+  {
     "name": "QuotaUsed",
     "label": "Alert on % mailbox quota used",
     "requiresInput": true,

@@ -1,8 +1,8 @@
-import { Drawer, Box, Grid, IconButton } from "@mui/material";
+import { Drawer, Box, IconButton } from "@mui/material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import { useMediaQuery } from "@mui/system";
+import { useMediaQuery, Grid } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 
 export const CippOffCanvas = (props) => {
@@ -95,7 +95,7 @@ export const CippOffCanvas = (props) => {
           sx={{ overflowY: "auto", maxHeight: "100%", display: "flex", flexDirection: "column" }}
         >
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               {extendedInfo.length > 0 && (
                 <CippPropertyListCard
                   isFetching={isFetching}
@@ -108,7 +108,7 @@ export const CippOffCanvas = (props) => {
                 />
               )}
             </Grid>
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <Box sx={{ m: 2 }}>
                 {typeof children === "function" ? children(extendedData) : children}
               </Box>
