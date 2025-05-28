@@ -1,0 +1,23 @@
+{
+  "readonly": {
+    "include": ["*.Read"],
+    "exclude": ["CIPP.SuperAdmin.*"]
+  },
+  "editor": {
+    "include": ["*.Read", "*.ReadWrite"],
+    "exclude": [
+      "CIPP.SuperAdmin.*",
+      "CIPP.Admin.*",
+      "CIPP.AppSettings.*",
+      "Tenant.Standards.ReadWrite"
+    ]
+  },
+  "admin": {
+    "include": ["*"],
+    "exclude": ["CIPP.SuperAdmin.*"]
+  },
+  "superadmin": {
+    "include": ["*"],
+    "exclude": []
+  }
+}

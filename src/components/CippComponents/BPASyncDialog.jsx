@@ -29,7 +29,7 @@ export const BPASyncDialog = ({ createDialog }) => {
 
   const [isSyncing, setIsSyncing] = useState(false);
   const bpaSyncResults = ApiPostCall({
-    urlfromdata: true,
+    urlFromData: true,
   });
 
   const handleForm = (values) => {

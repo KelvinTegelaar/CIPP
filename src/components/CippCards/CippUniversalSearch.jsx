@@ -3,7 +3,6 @@ import {
   TextField,
   Box,
   Typography,
-  Grid,
   Card,
   CardContent,
   CardHeader,
@@ -11,6 +10,7 @@ import {
   Button,
   Link,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 
 export const CippUniversalSearch = React.forwardRef(
@@ -97,7 +97,7 @@ const Results = ({ items = [], searchValue }) => {
       </Typography>
       <Grid container spacing={2} mt={2}>
         {displayedResults.map((item, key) => (
-          <Grid item xs={12} sm={6} md={4} key={key}>
+          <Grid item size={{ md: 4, sm: 6, xs: 12 }} key={key}>
             <ResultsRow match={item} searchValue={searchValue} />
           </Grid>
         ))}
