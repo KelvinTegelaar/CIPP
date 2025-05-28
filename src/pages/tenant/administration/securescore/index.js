@@ -17,6 +17,7 @@ import { useState } from "react";
 import { CippTableDialog } from "../../../../components/CippComponents/CippTableDialog";
 import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
 import { useSettings } from "../../../../hooks/use-settings";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant;
@@ -25,14 +26,14 @@ const Page = () => {
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [updatesData, setUpdatesData] = useState({ data: {}, ready: false });
   const cippTableDialog = useDialog();
-
+  const router = useRouter();
   const timeAgo = new TimeAgo("en-US");
 
   const openRemediation = (url) => {
     if (url.startsWith("https")) {
       window.open(url, "_blank");
     } else {
-      navigate(url);
+      router.push(url);
     }
   };
   return (
