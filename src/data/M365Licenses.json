@@ -13080,6 +13080,102 @@
     "Service_Plans_Included_Friendly_Names": "Power Platform Connectors in Microsoft 365 Copilot"
   },
   {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "COPILOT_STUDIO_IN_COPILOT_FOR_M365",
+    "Service_Plan_Id": "fe6c28b3-d468-44ea-bbd0-a10a5167435c",
+    "Service_Plans_Included_Friendly_Names": "Copilot Studio in Copilot for M365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_COPILOT",
+    "Service_Plan_Id": "82d30987-df9b-4486-b146-198b21d164c7",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors in Microsoft 365 Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_INTELLIGENT_SEARCH",
+    "Service_Plan_Id": "931e4a88-a67f-48b5-814f-16a5f1e6028d",
+    "Service_Plans_Included_Friendly_Names": "Intelligent Search"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_SHAREPOINT",
+    "Service_Plan_Id": "0aedf20c-091d-420b-aadf-30c042609612",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot for SharePoint"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_TEAMS",
+    "Service_Plan_Id": "b95945de-b3bd-46db-8437-f2beb6ea2347",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Microsoft Teams"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_APPS",
+    "Service_Plan_Id": "a62f8878-de10-42f3-b68f-6149a25ceb97",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Productivity Apps"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "Microsoft_Copilot_for_Sales",
+    "Service_Plan_Id": "a2194428-ead1-4fc1-bb81-ab8675125f42",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot for Sales"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "Microsoft_Copilot_for_Sales_PowerAutomate",
+    "Service_Plan_Id": "0c1c2af2-6c51-43c7-9c55-fa487ac147ff",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot for Sales with Power Automate"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_BUSINESS_CHAT",
+    "Service_Plan_Id": "3f30311c-6b1e-48a4-ab79-725b469da960",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot with Graph-grounded chat"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_USER",
+    "Service_Plan_Id": "b622badb-1b45-48d5-920f-4b27a2c0996c",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_BACKEND",
+    "Service_Plan_Id": "ff7b261f-d98b-415b-827c-42a3fdf015af",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights Backend"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_CONNECTORS",
+    "Service_Plan_Id": "89f1c4c8-0878-40f7-804d-869c9128ab5d",
+    "Service_Plans_Included_Friendly_Names": "Power Platform Connectors in Microsoft 365 Copilot"
+  },
+  {
     "Product_Display_Name": "Microsoft Copilot for Microsoft 365",
     "String_Id": "M365_Copilot",
     "GUID": "a809996b-059e-42e2-9866-db24b99a9782",
@@ -39109,7 +39205,7 @@
     "GUID": "0f13a262-dc6f-4800-8dc6-a62f72c95fad",
     "Service_Plan_Name": "CDSAICAPACITY_PERUSER",
     "Service_Plan_Id": "91f50f7b-2204-4803-acac-5cf5668b8b39",
-    "Service_Plans_Included_Friendly_Names": "DO NOT USE - AI Builder capacity Per User add-on"
+    "Service_Plans_Included_Friendly_Names": "AI Builder capacity Per User add-on"
   },
   {
     "Product_Display_Name": "PowerApps & Flow GCC Test - O365 & Dyn365 Plans",
