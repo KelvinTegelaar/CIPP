@@ -277,7 +277,7 @@ export const CippWizardOffboarding = (props) => {
 
       {showAlert && (
         <Alert severity="warning">
-          You have selected more than 3 users. This offboarding must be scheduled.
+          You have selected more than 2 users. This offboarding must be scheduled.
         </Alert>
       )}
 
@@ -286,7 +286,7 @@ export const CippWizardOffboarding = (props) => {
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12 }}>
               <CippFormComponent
                 name="Scheduled.enabled"
                 label="Schedule this offboarding"
@@ -301,7 +301,7 @@ export const CippWizardOffboarding = (props) => {
               compareType="is"
               compareValue={true}
             >
-              <Grid item xs={12} sm={6}>
+              <Grid item size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Scheduled Offboarding Date</Typography>
                 <CippFormComponent
                   name="Scheduled.date"
@@ -311,7 +311,7 @@ export const CippWizardOffboarding = (props) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Send results to:</Typography>
                 <CippFormComponent
                   name="postExecution.webhook"

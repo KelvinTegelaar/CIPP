@@ -6,9 +6,6 @@ import {
   MailOutline,
   Shield,
   Description,
-  Group,
-  MeetingRoom,
-  GroupWork,
   GroupOutlined,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
@@ -88,6 +85,22 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       </CollapsibleChipList>
     );
   };
+
+  if (cellName === "baselineOption") {
+    return "Download Baseline";
+  }
+
+  if (cellName === "Severity" || cellName === "logsToInclude") {
+    if (Array.isArray(data)) {
+      return isText ? data.join(", ") : renderChipList(data);
+    } else {
+      return isText ? (
+        data
+      ) : (
+        <Chip variant="outlined" label={data.label ?? data} size="small" color="info" />
+      );
+    }
+  }
 
   //if the cellName starts with portal_, return text, or a link with an icon
   if (cellName.startsWith("portal_")) {
@@ -237,6 +250,10 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       data = "Unknown";
     }
     return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+  }
+
+  if (cellName === "delegatedPrivilegeStatus") {
+    return data === "directTenant" ? "Direct Tenant" : "GDAP Tenant";
   }
 
   //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.
@@ -666,6 +683,24 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
 
   if (cellName === "AutoMapUrl") {
     return isText ? data : <CippCopyToClipBoard text={data} />;
+  }
+
+  // handle autocomplete labels
+  if (data?.label && data?.value) {
+    return isText ? data.label : <CippCopyToClipBoard text={data.label} type="chip" />;
+  }
+
+  // handle array of autocomplete labels
+  if (Array.isArray(data) && data.length > 0 && data[0]?.label && data[0]?.value) {
+    return isText
+      ? data.map((item) => item.label).join(", ")
+      : renderChipList(
+          data.map((item) => {
+            return {
+              label: item.label,
+            };
+          })
+        );
   }
 
   // Handle arrays of strings

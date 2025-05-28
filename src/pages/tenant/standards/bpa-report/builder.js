@@ -1,14 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  Grid,
-  IconButton,
-  Stack,
-  SvgIcon,
-} from "@mui/material";
+import { Box, Container, Typography, Button, IconButton, Stack, SvgIcon } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useForm, useWatch } from "react-hook-form";
@@ -231,11 +223,11 @@ const Page = () => {
           >
             <Grid container spacing={2}>
               {/* First item for Report Name and Layout Mode */}
-              <Grid item xs={12} sm={12} md={12}>
+              <Grid item size={{ md: 12, sm: 12, xs: 12 }}>
                 <CippFormComponent label="Report Name" name={`name`} formControl={formControl} />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={12}>
+              <Grid item size={{ md: 12, sm: 12, xs: 12 }}>
                 <CippFormComponent
                   label="Layout Mode"
                   name="style"
@@ -247,7 +239,7 @@ const Page = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={12}>
+              <Grid item size={{ md: 12, sm: 12, xs: 12 }}>
                 <CippApiResults apiObject={addBPATemplate} />
               </Grid>
             </Grid>
@@ -264,9 +256,7 @@ const Page = () => {
             {blockCards.map((block, index) => (
               <Grid
                 item
-                xs={10}
-                sm={layoutMode === "Table" ? 12 : 6}
-                md={layoutMode === "Table" ? 12 : 4}
+                size={{ md: layoutMode === "Table" ? 12 : 4, sm: layoutMode === "Table" ? 12 : 6, xs: 10 }}
                 key={block.id}
               >
                 <CippButtonCard
@@ -286,14 +276,14 @@ const Page = () => {
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
                       {/* Report Style - Full Width */}
-                      <Grid item xs={6}>
+                      <Grid item size={{ xs: 6 }}>
                         <CippFormComponent
                           label="Card Name"
                           name={`Fields.${index}.FrontendFields.0.name`} // Corrected index
                           formControl={formControl}
                         />
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid item size={{ xs: 6 }}>
                         <CippFormComponent
                           label="Card Description"
                           name={`Fields.${index}.FrontendFields.0.desc`} // Corrected index
@@ -301,7 +291,7 @@ const Page = () => {
                           type="textField"
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <CippFormComponent
                           label="Use information CIPP has previously gathered in another report"
                           name={`Fields.${index}.UseExistingInfo`} // Use correct index for the card
@@ -315,7 +305,7 @@ const Page = () => {
                         compareValue={true}
                         formControl={formControl}
                       >
-                        <Grid item xs={12}>
+                        <Grid item size={{ xs: 12 }}>
                           <CippFormComponent
                             label="Data source"
                             name={`Fields.${index}.API`} // Corrected index
@@ -335,21 +325,21 @@ const Page = () => {
                           compareValue={"Graph"}
                           formControl={formControl}
                         >
-                          <Grid item xs={12}>
+                          <Grid item size={{ xs: 12 }}>
                             <CippFormComponent
                               label="Graph URL"
                               name={`Fields.${index}.URL`} // Corrected index
                               formControl={formControl}
                             />
                           </Grid>
-                          <Grid item xs={12}>
+                          <Grid item size={{ xs: 12 }}>
                             <CippFormComponent
                               label="Where Object (PowerShell Syntax, optional)"
                               name={`Fields.${index}.where`} // Corrected index
                               formControl={formControl}
                             />
                           </Grid>
-                          <Grid item xs={12}>
+                          <Grid item size={{ xs: 12 }}>
                             <CippFormComponent
                               label="Use Application Permissions"
                               name={`Fields.${index}.Parameters.asApp`} // Corrected index
@@ -365,14 +355,14 @@ const Page = () => {
                           compareValue={"Exchange"}
                           formControl={formControl}
                         >
-                          <Grid item xs={12}>
+                          <Grid item size={{ xs: 12 }}>
                             <CippFormComponent
                               label="Exchange Command (PowerShell Syntax)"
                               name={`Fields.${index}.Command`} // Corrected index
                               formControl={formControl}
                             />
                           </Grid>
-                          <Grid item xs={12}>
+                          <Grid item size={{ xs: 12 }}>
                             <CippFormComponent
                               label="Where Object (PowerShell Syntax, optional)"
                               name={`Fields.${index}.where`} // Corrected index
@@ -386,14 +376,14 @@ const Page = () => {
                           compareValue={"CIPPFunction"}
                           formControl={formControl}
                         >
-                          <Grid item xs={12}>
+                          <Grid item size={{ xs: 12 }}>
                             <CippFormComponent
                               label="CIPP Command (Get- only)"
                               name={`Fields.${index}.Command`} // Corrected index
                               formControl={formControl}
                             />
                           </Grid>
-                          <Grid item xs={12}>
+                          <Grid item size={{ xs: 12 }}>
                             <CippFormComponent
                               label="Where Object (PowerShell Syntax, optional)"
                               name={`Fields.${index}.where`} // Corrected index
@@ -401,7 +391,7 @@ const Page = () => {
                             />
                           </Grid>
                         </CippFormCondition>
-                        <Grid item xs={12}>
+                        <Grid item size={{ xs: 12 }}>
                           <CippFormComponent
                             label="What fields from the API response should we save?"
                             name={`Fields.${index}.ExtractFields`} // Corrected index
@@ -409,7 +399,7 @@ const Page = () => {
                             type="autoComplete"
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item size={{ xs: 12 }}>
                           <CippFormComponent
                             label="Store this data as"
                             name={`Fields.${index}.StoreAs`} // Corrected index
@@ -430,14 +420,14 @@ const Page = () => {
                           />
                         </Grid>
                       </CippFormCondition>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         <CippFormComponent
                           label="Datasource Reference Name - This is the name stored in the database."
                           name={`Fields.${index}.name`} // Corrected index
                           formControl={formControl}
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item size={{ xs: 12 }}>
                         {layoutMode === "Table" ? null : (
                           <CippFormComponent
                             label="Card Formatter"
@@ -472,7 +462,7 @@ const Page = () => {
                         compareValue={true}
                         formControl={formControl}
                       >
-                        <Grid item xs={12}>
+                        <Grid item size={{ xs: 12 }}>
                           <CippFormComponent
                             name={`Fields.${index}.FrontendFields.0.value`} // Corrected index
                             label={"Card Content"}
@@ -499,7 +489,7 @@ const Page = () => {
                         compareValue={false}
                         formControl={formControl}
                       >
-                        <Grid item xs={12}>
+                        <Grid item size={{ xs: 12 }}>
                           {layoutMode === "Table" ? null : (
                             <CippFormComponent
                               label="Card Value"
