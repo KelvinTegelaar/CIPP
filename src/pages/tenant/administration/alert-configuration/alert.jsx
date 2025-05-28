@@ -338,7 +338,7 @@ const AlertWizard = () => {
               <Grid
                 container
                 spacing={4}
-                sx={{ mt: 3, width: "100%" }}
+                sx={{ mt: 2, width: "100%" }}
                 justifyContent="space-around"
               >
                 <Grid size={12}>
