@@ -44,7 +44,7 @@ If you're self-hosted, ensure that your deployed instance of CIPP is running ver
 3. Enable the integration using the toggle switch
 4. **Enter API Credentials** from your **Sherweb Cumulus Account** in the relevant fields.
 5. **Custom Roles for License Purchase:** (Optional)
-   * If required, use the autocomplete field to select [custom roles](../advanced/super-admin/cipp-roles.md) allowed to purchase licenses. This allows you to specify which CIPP users with particular roles can use the purchase licenses functionality on the onboarding wizards & report pages.
+   * If required, use the autocomplete field to select [custom roles](../advanced/super-admin/custom-roles.md) allowed to purchase licenses. This allows you to specify which CIPP users with particular roles can use the purchase licenses functionality on the onboarding wizards & report pages.
 6. **Save Configuration:** Ensure that you save the configuration by pressing Submit.
 
 ### Mapping Your Tenants

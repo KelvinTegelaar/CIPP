@@ -42,7 +42,7 @@ CIPP features a role management system which utilizes the [Roles feature of Azur
 | admin      | Allowed to perform everything.                                                                                                                                                                                |
 | superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. This role must be combined with 'admin' |
 
-You can assign these roles to users using the [CIPP Roles](../../user-documentation/cipp/advanced/super-admin/cipp-roles.md) page. [Role Management system of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#role-management)
+You can assign these roles to users using the [CIPP Roles](../../user-documentation/cipp/advanced/super-admin/custom-roles.md) page. [Role Management system of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#role-management)
 
 {% hint style="info" %}
 You can assign built-in roles using Entra groups. Select Edit from the Action column next to the role in the CIPP Roles table and select an Entra group from the drop down. Don't forget to hit `Save` at the bottom!

@@ -4,10 +4,6 @@
 
 CIPP supports three default roles for typical day-to-day permissions: `readonly`, `editor`, and `admin`. When adding yourself, `admin` is suitable for any tenant management you need to perform  outside of [managing your own partner tenant](owntenant.md).&#x20;
 
-{% hint style="danger" %}
-`superadmin` and `custom` roles are reserved for specific situations and should not be assigned to users by default unless you are certain of the implications. More information on native and custom roles can found on the [Roles](https://docs.cipp.app/setup/installation/roles) page.
-{% endhint %}
-
 ## Adding Users via the Management App for Hosted Deployments
 
 Hosted clients can use the backend management system to add and remove users.
