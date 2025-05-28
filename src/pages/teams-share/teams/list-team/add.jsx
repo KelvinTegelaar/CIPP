@@ -28,6 +28,7 @@ const TeamsAddTeamForm = () => {
       title="Add Team"
       backButtonTitle="Teams Overview"
       postUrl="/api/AddTeam"
+      resetForm={true}
       customDataformatter={(values) => {
         const shippedValues = {
           tenantID: tenantDomain,
