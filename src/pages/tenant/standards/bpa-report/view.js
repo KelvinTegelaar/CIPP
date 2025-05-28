@@ -1,16 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  Grid,
-  Stack,
-  SvgIcon,
-  Skeleton,
-  Chip,
-  Alert,
-} from "@mui/material";
+import { Box, Container, Typography, Button, Stack, SvgIcon, Skeleton, Chip, Alert } from "@mui/material";
+import { Grid } from "@mui/system";
 import Head from "next/head";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
@@ -143,7 +133,7 @@ const Page = () => {
               </Button>
             </Stack>
             <Grid container spacing={2}>
-              <Grid item xs={10} sm={6} md={4}>
+              <Grid item size={{ md: 4, sm: 6, xs: 10 }}>
                 <Typography variant="h4" gutterBottom>
                   {pageTitle}
                 </Typography>
@@ -154,7 +144,7 @@ const Page = () => {
 
           <Grid container spacing={2}>
             {currentTenant === "AllTenants" && layoutMode !== "Table" ? (
-              <Grid item xs={10} sm={6} md={4}>
+              <Grid item size={{ md: 4, sm: 6, xs: 10 }}>
                 <CippImageCard
                   title="Not supported"
                   imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
@@ -168,9 +158,7 @@ const Page = () => {
                 {blockCards.map((block, index) => (
                   <Grid
                     item
-                    xs={10}
-                    sm={layoutMode === "Table" ? 12 : 6}
-                    md={layoutMode === "Table" ? 12 : 4}
+                    size={{ md: layoutMode === "Table" ? 12 : 4, sm: layoutMode === "Table" ? 12 : 6, xs: 10 }}
                     key={block.name}
                   >
                     <CippButtonCard
@@ -209,9 +197,9 @@ const Page = () => {
                         />
                       ) : block.formatter === "number" ? (
                         //really big number centered in the card.
-                        <Typography variant="h1" color="textPrimary">
+                        (<Typography variant="h1" color="textPrimary">
                           <center>{block.data}</center>
-                        </Typography>
+                        </Typography>)
                       ) : block.formatter === "Percentage" ? (
                         <>{block.data}</>
                       ) : block.formatter === "table" ? (

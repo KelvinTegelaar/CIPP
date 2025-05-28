@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Grid,
   Button,
   Collapse,
   Switch,
@@ -13,6 +12,7 @@ import {
   Divider,
   FormControlLabel,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -152,7 +152,7 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       ? {
           children: (
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item size={{ xs: 12 }}>
                 {info}
               </Grid>
             </Grid>
@@ -182,12 +182,11 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       ? {
           children: (
             //4 headers, "Record" and then  <CippCodeBlock code={record?.Record} /> under it.
-            <>
+            (<>
               <Typography variant="h6" gutterBottom>
                 Record:
               </Typography>
               <CippCodeBlock code={data?.Record} />
-
               <CippPropertyListCard
                 title="Settings"
                 copyItems={true}
@@ -238,7 +237,7 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
                   value: email,
                 }))}
               />
-            </>
+            </>)
           ),
         }
       : type === "SPF"
@@ -362,7 +361,7 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       }
       isFetching={isFetching}
     >
-      <Grid item xs={12}>
+      <Grid item size={{ xs: 12 }}>
         {info}
       </Grid>
       <CippOffCanvas visible={visible} onClose={() => setVisible(false)} {...offCanvasData} />
@@ -484,7 +483,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
-        <Grid item xs={fullwidth ? 12 : 4}>
+        <Grid item size={{ xs: fullwidth ? 12 : 4 }}>
           <CippButtonCard
             title="Domain Check"
             cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
@@ -497,7 +496,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
             }
           >
             <Grid container spacing={2}>
-              <Grid item xs={8}>
+              <Grid item size={{ xs: 8 }}>
                 <Controller
                   name="domain"
                   control={control}
@@ -506,7 +505,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item size={{ xs: 4 }}>
                 <Button type="submit" variant="contained" startIcon={<SearchIcon />}>
                   Check
                 </Button>
@@ -563,7 +562,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
 
         {domain && (
           <>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="Whois Results"
                 type="whois"
@@ -576,7 +575,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="NS Records"
                 data={nsData}
@@ -589,10 +588,10 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <MXResultsCard domain={domain} mxData={mxData} isFetching={mxLoading} />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="SPF Record"
                 type="SPF"
@@ -611,7 +610,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="DMARC Policy"
                 type="DMARC"
@@ -630,7 +629,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="DKIM Record"
                 data={dkimData}
@@ -649,7 +648,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="DNSSEC"
                 type={"DNSSEC"}
@@ -666,7 +665,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 }
               />
             </Grid>
-            <Grid item xs={12} md={gridItemSize}>
+            <Grid item size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="MTA-STS"
                 type="MTA-STS"
@@ -686,7 +685,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
               />
             </Grid>
             {enableHttps && (
-              <Grid item xs={12} md={gridItemSize}>
+              <Grid item size={{ md: gridItemSize, xs: 12 }}>
                 <DomainResultCard
                   title="HTTPS Certificate"
                   type="HTTPS"
