@@ -1,21 +1,12 @@
-# Executing the SAM Setup Wizard
+# Executing the Setup Wizard
 
 {% hint style="info" %}
 **Do not attempt to log in to CIPP with the CIPP Service Account you created.** Make sure you've gone through the steps of [inviting yourself into your CIPP instance](addingusers.md) either via Azure (self-hosted) or through the Management Portal (hosted).
 {% endhint %}
 
-## Walkthrough Video for Running the SAM Setup Wizard
-
-{% hint style="info" %}
-Video removed temporarily as it referenced the v6 UI and process.
-{% endhint %}
-
-***
-
 {% hint style="danger" %}
 **When using the SAM Wizard to create your CIPP-SAM application, it's important to remember the following:**
 
-* You're using a chromium based browser. It **MUST** allow cookies and have any ad-blocker disabled for the duration of the wizard. Do not use in-private mode.
 * When you're asked to authenticate during the SAM Setup Wizard, **remember to use to the CIPP service account credentials**. If you do not have a service account prepared you can do so now by going to the [Creating the CIPP Service Account](creating-the-cipp-service-account-gdap-ready.md) page and following the instructions there.
 {% endhint %}
 

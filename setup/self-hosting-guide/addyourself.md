@@ -7,10 +7,10 @@ description: How to configure CIPP after you've completed installation.
 {% hint style="warning" %}
 **For Hosted Clients**
 
-If you’re using a CyberDrain hosted instance of CIPP:
+If you’re using a **CyberDrain hosted instance of CIPP:**
 
 1. **Log in** at [management.cipp.app](https://management.cipp.app/) to manage users.
-2. From the **Management Portal**, click **Invite User**, which generates a shareable invite link.
+2. From the **Management Portal**, click **Invite User**, and assign the first user the "superadmin" role.
 
 **NOTE:** Clicking on Invite User will return the invite link to you directly. You must share this link with the user. **It is not e-mailed or sent to the user in any way.**
 {% endhint %}
@@ -45,7 +45,7 @@ In the “UPN” field, enter the **Microsoft 365 UPN** (user principal name) of
 {% endstep %}
 
 {% step %}
-Assign the **Admin** role.
+Assign the **superadmin** role.
 {% endstep %}
 
 {% step %}
@@ -77,5 +77,3 @@ With user access established, you can:
 
 * **Invite other team members** or clients (using the same Role Management process or the [management portal](https://management.cipp.app) for hosted users.).
 * **Configure** advanced settings (e.g., custom domains, environment variables, or additional roles).
-
-Congratulations! You’re now ready to use CIPP for tenant management in your Azure environment.
