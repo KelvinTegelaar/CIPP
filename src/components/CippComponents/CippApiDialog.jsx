@@ -1,5 +1,12 @@
 import { useRouter } from "next/router";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  useMediaQuery,
+} from "@mui/material";
 import { Stack, Grid } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
@@ -227,7 +234,8 @@ export const CippApiDialog = (props) => {
           (_, key) => getNestedValue(row, key) || `[${key}]`
         );
         setLinkClicked(true);
-        if (linkWithData.startsWith("/")) router.push(linkWithData, undefined, { shallow: true });
+        if (linkWithData.startsWith("/") && !api?.external)
+          router.push(linkWithData, undefined, { shallow: true });
         else window.open(linkWithData, api.target || "_blank");
       }, 0);
 
