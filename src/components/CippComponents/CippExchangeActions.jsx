@@ -154,7 +154,7 @@ export const CippExchangeActions = () => {
       confirmText: "Are you sure you want to enable Copy Sent Items to Shared Mailbox?",
       icon: <MailOutline />,
       condition: (row) =>
-        row.MessageCopyForSentAsEnabled === false && row.recipientTypeDetails === "SharedMailbox",
+        row.MessageCopyForSentAsEnabled === false,
     },
     {
       label: "Disable Copy Sent Items to Shared Mailbox",
@@ -164,7 +164,7 @@ export const CippExchangeActions = () => {
       confirmText: "Are you sure you want to disable Copy Sent Items to Shared Mailbox?",
       icon: <MailOutline />,
       condition: (row) =>
-        row.MessageCopyForSentAsEnabled === true && row.recipientTypeDetails === "SharedMailbox",
+        row.MessageCopyForSentAsEnabled === true,
     },
     {
       label: "Set Litigation Hold",
