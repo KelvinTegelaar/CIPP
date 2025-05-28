@@ -841,7 +841,7 @@
     "logo": "/assets/integrations/github.png",
     "logoDark": "/assets/integrations/github_dark.png",
     "description": "Enable the GitHub integration to manage your repositories from CIPP.",
-    "helpText": "This integration allows you to manage GitHub repositories from CIPP, including the Community Repositorities functionality. Requires a GitHub Personal Access Token (PAT) with a minimum of repo:public_repo permissions. If you plan on saving your templates to GitHub or accessing private/internal repositories, you will need to grant the whole repo scope. You can create a PAT in your GitHub account settings, see the GitHub Token documentation for more info. If you do not enable the extension, a read-only API will be provided.",
+    "helpText": "This integration allows you to manage GitHub repositories from CIPP, including the Community Repositories functionality. Requires a GitHub Personal Access Token (PAT) with a minimum of repo:public_repo permissions. If you plan on saving your templates to GitHub or accessing private/internal repositories, you will need to grant the whole repo scope. You can create a PAT in your GitHub account settings, see the GitHub Token documentation for more info. If you do not enable the extension, a read-only API will be provided.",
     "links": [
       {
         "name": "GitHub Token",
