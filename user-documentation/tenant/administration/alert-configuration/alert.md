@@ -38,6 +38,7 @@ Within CIPP, there are two types of alerts:
 * Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.
 * Alert on changed admin Passwords
 * Alert on licensed users that have not logged in for 90 days
+* Alert if Entra Connect sync is enabled and has not run in the last X hours
 * Alert on % mailbox quota used
 * Alert on % SharePoint quota used
 * Alert on licenses expiring in 30 days

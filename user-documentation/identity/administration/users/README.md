@@ -36,7 +36,7 @@ The properties returned are for the Graph resource type user. For more informati
 
 #### Password Management
 
-<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Reset Password (Must Change)</td><td>Sets random password and forces change</td><td>- User must create new password at next login<br>- Example format: 2WcAu%VMy89P</td><td>true</td></tr><tr><td>Reset Password</td><td>Sets new random password</td><td>- Password immediately active<br>- No change requirement</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Reset Password (Must Change)</td><td>Sets random password and forces change</td><td>- User must create new password at next login<br>- Example format: 2WcAu%VMy89P</td><td>true</td></tr><tr><td>Reset Password</td><td>Sets new random password</td><td>- Password immediately active<br>- No change requirement</td><td>true</td></tr><tr><td>Set Password Never Expires</td><td>Set Password Never Expires state for this user. If the password of the user is older than the set expiration date of the organization, the user will be prompted to change their password at their next login.</td><td></td><td>true</td></tr></tbody></table>
 
 #### Mail and Communication
 
