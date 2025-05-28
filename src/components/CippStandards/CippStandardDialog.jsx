@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -16,6 +15,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { Add } from "@mui/icons-material";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
@@ -59,6 +59,7 @@ const CippStandardDialog = ({
       open={dialogOpen}
       onClose={handleCloseDialog}
       maxWidth="xxl"
+      fullWidth
       PaperProps={{
         sx: {
           minWidth: "720px",
@@ -87,7 +88,7 @@ const CippStandardDialog = ({
           ) : (
             Object.keys(categories).map((category) =>
               filterStandards(categories[category]).map((standard) => (
-                <Grid item xs={12} md={3} key={standard.name}>
+                <Grid item size={{ md: 3, xs: 12 }} key={standard.name}>
                   <Card
                     sx={{
                       display: "flex",
