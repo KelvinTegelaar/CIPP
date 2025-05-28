@@ -9,9 +9,7 @@ const CippAddGroupTemplateForm = (props) => {
 
   // Debug the current form values, especially groupType
   useEffect(() => {
-    const subscription = formControl.watch((value, { name, type }) => {
-      console.log("Form value changed:", name, value);
-    });
+    const subscription = formControl.watch((value, { name, type }) => {});
     return () => subscription.unsubscribe();
   }, [formControl]);
 

@@ -13,6 +13,8 @@ export const CippWizardConfirmation = (props) => {
 
   const blacklist = [
     "selectedOption",
+    "GDAPAuth",
+    "SAMWizard",
     "GUID",
     "ID",
     "noSubmitButton",

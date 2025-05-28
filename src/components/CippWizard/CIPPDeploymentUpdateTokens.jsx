@@ -19,7 +19,6 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
   // Handle successful authentication
   const handleAuthSuccess = (tokenData) => {
     setTokens(tokenData);
-    console.log("Token data received:", tokenData);
   };
 
   return (

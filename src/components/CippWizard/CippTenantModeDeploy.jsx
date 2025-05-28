@@ -21,7 +21,12 @@ export const CippTenantModeDeploy = (props) => {
       formControl.setValue("GDAPAuth", true);
       formControl.trigger("GDAPAuth");
     }
-  }, [updateRefreshToken.isSuccess, formControl]);
+    if (addTenant.isSuccess) {
+      // Reset the form control for the next tenant addition
+      formControl.setValue("GDAPAuth", true);
+      formControl.trigger("GDAPAuth");
+    }
+  }, [updateRefreshToken.isSuccess, formControl, addTenant.isSuccess]);
 
   return (
     <Stack spacing={2}>
