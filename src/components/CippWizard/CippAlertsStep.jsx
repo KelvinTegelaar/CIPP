@@ -55,9 +55,7 @@ export const CippAlertsStep = (props) => {
           </ul>
           <ul>
             <li>
-              You can deploy Windows Applications too, directly using intune. We have Chocolately,
-              WinGet, and RMM apps under &gt; Intune &gt; Applications. Some examples are CSP
-              integrations, Password Pusher, PSA, and more.
+              Adding more users to CIPP? you can do this via CIPP &gt; Advanced &gt; Super Admin.
             </li>
           </ul>
           <ul>
