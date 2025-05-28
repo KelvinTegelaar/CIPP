@@ -66,6 +66,7 @@ export const CippDataTable = (props) => {
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [graphFilterData, setGraphFilterData] = useState({});
   const [sorting, setSorting] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
   const waitingBool = api?.url ? true : false;
 
   const settings = useSettings();
@@ -77,6 +78,12 @@ export const CippDataTable = (props) => {
     waiting: waitingBool,
     ...graphFilterData,
   });
+
+  useEffect(() => {
+    if (filters && Array.isArray(filters) && filters.length > 0) {
+      setColumnFilters(filters);
+    }
+  }, [filters]);
 
   useEffect(() => {
     if (Array.isArray(data) && !api?.url) {
@@ -208,6 +215,7 @@ export const CippDataTable = (props) => {
     state: {
       columnVisibility,
       sorting,
+      columnFilters,
       showSkeletons: getRequestData.isFetchingNextPage
         ? false
         : getRequestData.isFetching
@@ -217,6 +225,7 @@ export const CippDataTable = (props) => {
     onSortingChange: (newSorting) => {
       setSorting(newSorting ?? []);
     },
+    onColumnFiltersChange: setColumnFilters,
     renderEmptyRowsFallback: ({ table }) =>
       getRequestData.data?.pages?.[0].Metadata?.QueueMessage ? (
         <Box sx={{ py: 4 }}>
@@ -367,6 +376,7 @@ export const CippDataTable = (props) => {
         }
       },
     },
+    globalFilterFn: "contains",
     enableGlobalFilterModes: true,
     renderGlobalFilterModeMenuItems: ({ internalFilterOptions, onSelectFilterMode }) => {
       // add custom filter options
@@ -436,6 +446,21 @@ export const CippDataTable = (props) => {
   });
 
   useEffect(() => {
+    if (filters && Array.isArray(filters) && filters.length > 0 && memoizedColumns.length > 0) {
+      // Make sure the table and columns are ready
+      setTimeout(() => {
+        if (table && typeof table.setColumnFilters === "function") {
+          const formattedFilters = filters.map((filter) => ({
+            id: filter.id || filter.columnId,
+            value: filter.value,
+          }));
+          table.setColumnFilters(formattedFilters);
+        }
+      });
+    }
+  }, [filters, memoizedColumns, table]);
+
+  useEffect(() => {
     if (onChange && table.getSelectedRowModel().rows) {
       onChange(table.getSelectedRowModel().rows.map((row) => row.original));
     }
@@ -470,7 +495,7 @@ export const CippDataTable = (props) => {
         </Scrollbar>
       ) : (
         // Render the table inside a Card
-        <Card style={{ width: "100%" }} {...props.cardProps}>
+        (<Card style={{ width: "100%" }} {...props.cardProps}>
           {cardButton || !hideTitle ? (
             <>
               <CardHeader action={cardButton} title={hideTitle ? "" : title} />
@@ -502,7 +527,7 @@ export const CippDataTable = (props) => {
               )}
             </Scrollbar>
           </CardContent>
-        </Card>
+        </Card>)
       )}
       <CippOffCanvas
         isFetching={getRequestData.isFetching}
