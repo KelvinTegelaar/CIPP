@@ -122,7 +122,6 @@ export const CippApiResults = (props) => {
   const [fetchingVisible, setFetchingVisible] = useState(false);
   const [finalResults, setFinalResults] = useState([]);
   const tableDialog = useDialog();
-  const router = useRouter();
   const pageTitle = `${document.title} - Results`;
   const correctResultObj = useMemo(() => {
     if (!apiObject.isSuccess) return;
@@ -218,29 +217,29 @@ export const CippApiResults = (props) => {
   return (
     <Stack spacing={2}>
       {/* Loading alert */}
-
-      <Collapse in={fetchingVisible} unmountOnExit>
-        <Alert
-          sx={alertSx}
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => setFetchingVisible(false)}
-            >
-              <Close fontSize="inherit" />
-            </IconButton>
-          }
-          variant="outlined"
-          severity="info"
-        >
-          <Typography variant="body2">
-            <CircularProgress size={20} /> Loading...
-          </Typography>
-        </Alert>
-      </Collapse>
-
+      {!errorsOnly && (
+        <Collapse in={fetchingVisible} unmountOnExit>
+          <Alert
+            sx={alertSx}
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => setFetchingVisible(false)}
+              >
+                <Close fontSize="inherit" />
+              </IconButton>
+            }
+            variant="outlined"
+            severity="info"
+          >
+            <Typography variant="body2">
+              <CircularProgress size={20} /> Loading...
+            </Typography>
+          </Alert>
+        </Collapse>
+      )}
       {/* Error alert */}
       <Collapse in={errorVisible} unmountOnExit>
         {apiObject.isError && (
