@@ -1,6 +1,7 @@
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import UnauthenticatedPage from "../pages/unauthenticated.js";
 import LoadingPage from "../pages/loading.js";
+import ApiOfflinePage from "../pages/api-offline.js";
 
 export const PrivateRoute = ({ children, routeType }) => {
   const {
@@ -12,6 +13,7 @@ export const PrivateRoute = ({ children, routeType }) => {
   } = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
+    retry: 2, // Reduced retry count to show offline message sooner
   });
 
   const session = ApiGetCall({
@@ -24,6 +26,18 @@ export const PrivateRoute = ({ children, routeType }) => {
   // Check if the session is still loading before determining authentication status
   if (session.isLoading || isLoading) {
     return <LoadingPage />;
+  }
+
+  // Check if the API is offline (404 error from /api/me endpoint)
+  // Or other network errors that would indicate API is unavailable
+  if (
+    error?.response?.status === 404 || // API endpoint not found
+    error?.response?.status === 502 || // Service unavailable
+    (error && !error.response) || // Network error (no response)
+    error?.code === "ECONNABORTED" || // Connection timeout
+    error?.message?.includes("Network Error") // Generic network error
+  ) {
+    return <ApiOfflinePage />;
   }
 
   // if not logged into swa
