@@ -4,14 +4,7 @@ import LoadingPage from "../pages/loading.js";
 import ApiOfflinePage from "../pages/api-offline.js";
 
 export const PrivateRoute = ({ children, routeType }) => {
-  const {
-    data: profile,
-    error,
-    isLoading,
-    isSuccess,
-    refetch,
-    header,
-  } = ApiGetCall({
+  const apiRoles = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
     retry: 2, // Reduced retry count to show offline message sooner
@@ -25,19 +18,18 @@ export const PrivateRoute = ({ children, routeType }) => {
   });
 
   // Check if the session is still loading before determining authentication status
-  if (session.isLoading || isLoading) {
+  if (session.isLoading || apiRoles.isLoading) {
     return <LoadingPage />;
   }
+
+  console.log(apiRoles);
 
   // Check if the API is offline (404 error from /api/me endpoint)
   // Or other network errors that would indicate API is unavailable
   if (
-    error?.response?.status === 404 || // API endpoint not found
-    error?.response?.status === 502 || // Service unavailable
-    (error && !error.response) || // Network error (no response)
-    error?.code === "ECONNABORTED" || // Connection timeout
-    error?.message?.includes("Network Error") || // Generic network error
-    header?.contentType === "text/html" // If the response is HTML, likely an error page
+    apiRoles?.error?.response?.status === 404 || // API endpoint not found
+    apiRoles?.error?.response?.status === 502 || // Service unavailable
+    (apiRoles?.isSuccess && !apiRoles?.data?.clientPrincipal) // No client principal data, indicating API might be offline
   ) {
     return <ApiOfflinePage />;
   }
@@ -51,19 +43,19 @@ export const PrivateRoute = ({ children, routeType }) => {
 
   if (
     session?.isSuccess &&
-    isSuccess &&
-    undefined !== profile &&
+    apiRoles?.isSuccess &&
+    undefined !== apiRoles?.data?.clientPrincipal &&
     session?.data?.clientPrincipal?.userDetails &&
-    profile?.userDetails &&
-    session?.data?.clientPrincipal?.userDetails !== profile?.userDetails
+    apiRoles?.data?.clientPrincipal?.userDetails &&
+    session?.data?.clientPrincipal?.userDetails !== apiRoles?.data?.clientPrincipal?.userDetails
   ) {
     // refetch the profile if the user details are different
     refetch();
   }
 
-  if (null !== profile?.clientPrincipal && undefined !== profile) {
-    roles = profile?.clientPrincipal?.userRoles ?? [];
-  } else if (null === profile?.clientPrincipal || undefined === profile) {
+  if (null !== apiRoles?.data?.clientPrincipal && undefined !== apiRoles?.data) {
+    roles = apiRoles?.data?.clientPrincipal?.userRoles ?? [];
+  } else if (null === apiRoles?.data?.clientPrincipal || undefined === apiRoles?.data) {
     return <UnauthenticatedPage />;
   }
   if (null === roles) {
@@ -71,7 +63,7 @@ export const PrivateRoute = ({ children, routeType }) => {
   } else {
     const blockedRoles = ["anonymous", "authenticated"];
     const userRoles = roles?.filter((role) => !blockedRoles.includes(role)) ?? [];
-    const isAuthenticated = userRoles.length > 0 && !error;
+    const isAuthenticated = userRoles.length > 0 && !apiRoles?.error;
     const isAdmin = roles?.includes("admin") || roles?.includes("superadmin");
     if (routeType === "admin") {
       return !isAdmin ? <UnauthenticatedPage /> : children;

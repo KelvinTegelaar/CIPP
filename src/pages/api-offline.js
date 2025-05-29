@@ -20,6 +20,7 @@ const ApiOfflinePage = () => {
   const [testingConnection, setTestingConnection] = useState(false);
   const [testResult, setTestResult] = useState(null);
   const [apiVersion, setApiVersion] = useState(null);
+  const [contentType, setContentType] = useState(null);
 
   // Check API version when component mounts
   useEffect(() => {
@@ -41,7 +42,11 @@ const ApiOfflinePage = () => {
 
     try {
       // Try to ping the API
-      await axios.get("/api/me", { timeout: 45000 });
+      const testCall = await axios.get("/api/me", { timeout: 45000 });
+      setContentType(testCall.headers["content-type"]);
+      if (contentType && !contentType.includes("application/json")) {
+        throw new Error(`Unexpected content type: ${contentType}. Expected application/json.`);
+      }
       setTestResult({ success: true, message: "Connection successful! Try refreshing the page." });
     } catch (error) {
       let errorMessage = "Connection failed.";
