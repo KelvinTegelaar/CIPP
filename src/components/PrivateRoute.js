@@ -10,6 +10,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     isLoading,
     isSuccess,
     refetch,
+    header,
   } = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
@@ -35,7 +36,8 @@ export const PrivateRoute = ({ children, routeType }) => {
     error?.response?.status === 502 || // Service unavailable
     (error && !error.response) || // Network error (no response)
     error?.code === "ECONNABORTED" || // Connection timeout
-    error?.message?.includes("Network Error") // Generic network error
+    error?.message?.includes("Network Error") || // Generic network error
+    header?.contentType === "text/html" // If the response is HTML, likely an error page
   ) {
     return <ApiOfflinePage />;
   }
@@ -60,7 +62,7 @@ export const PrivateRoute = ({ children, routeType }) => {
   }
 
   if (null !== profile?.clientPrincipal && undefined !== profile) {
-    roles = profile?.clientPrincipal?.userRoles;
+    roles = profile?.clientPrincipal?.userRoles ?? [];
   } else if (null === profile?.clientPrincipal || undefined === profile) {
     return <UnauthenticatedPage />;
   }
@@ -70,7 +72,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     const blockedRoles = ["anonymous", "authenticated"];
     const userRoles = roles?.filter((role) => !blockedRoles.includes(role)) ?? [];
     const isAuthenticated = userRoles.length > 0 && !error;
-    const isAdmin = roles.includes("admin") || roles.includes("superadmin");
+    const isAdmin = roles?.includes("admin") || roles?.includes("superadmin");
     if (routeType === "admin") {
       return !isAdmin ? <UnauthenticatedPage /> : children;
     } else {
