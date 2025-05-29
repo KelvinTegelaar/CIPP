@@ -163,6 +163,6 @@
     "inputLabel": "Alert % (default: 80)",
     "inputName": "TERRLThreshold",
     "recommendedRunInterval": "1h",
-    "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Data is updated every hour. The alert triggers when email volume exceeds the specified percentage of the tenant's limit."
+    "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Tenant data is updated every hour."
   }
 ]

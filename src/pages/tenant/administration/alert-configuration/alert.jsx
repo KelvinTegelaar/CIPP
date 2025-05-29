@@ -556,6 +556,9 @@ const AlertWizard = () => {
                                 multiple={false}
                                 formControl={formControl}
                                 label="Included Tenants for alert"
+                                validators={{
+                                  required: { value: true, message: "This field is required" },
+                                }}
                               />
                             </Grid>
                             <CippFormCondition
