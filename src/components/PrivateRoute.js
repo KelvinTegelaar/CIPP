@@ -22,8 +22,6 @@ export const PrivateRoute = ({ children, routeType }) => {
     return <LoadingPage />;
   }
 
-  console.log(apiRoles);
-
   // Check if the API is offline (404 error from /api/me endpoint)
   // Or other network errors that would indicate API is unavailable
   if (
