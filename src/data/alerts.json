@@ -154,5 +154,15 @@
     "label": "Alert on Huntress Rogue Apps detected",
     "recommendedRunInterval": "4h",
     "description": "Huntress has provided a repository of known rogue apps that are commonly used in BEC, data exfiltration and other Microsoft 365 attacks. This alert will notify you if any of these apps are detected in the selected tenant(s). For more information, see <a href='https://huntresslabs.github.io/rogueapps/' target='_blank'>https://huntresslabs.github.io/rogueapps/</a>."
+  },
+  {
+    "name": "TERRL",
+    "label": "Alert when Tenant External Recipient Rate Limit exceeds X %",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert % (default: 80)",
+    "inputName": "TERRLThreshold",
+    "recommendedRunInterval": "1h",
+    "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Data is updated every hour. The alert triggers when email volume exceeds the specified percentage of the tenant's limit."
   }
 ]
