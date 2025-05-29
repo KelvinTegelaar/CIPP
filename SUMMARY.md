@@ -235,7 +235,7 @@
       * [Deploy Connection Filter](user-documentation/email/spamfilter/list-connectionfilter/add.md)
     * [Connection filter templates](user-documentation/email/spamfilter/connection-filter-templates.md)
     * [Quarantine Policies](user-documentation/email/spamfilter/list-quarantine-policies/README.md)
-      * [Edit Global Quarantine](user-documentation/email/spamfilter/list-quarantine-policies/edit.md)
+      * [Edit Global Settings](user-documentation/email/spamfilter/list-quarantine-policies/edit.md)
       * [Deploy Custom Policy](user-documentation/email/spamfilter/list-quarantine-policies/add.md)
   * [Tools](user-documentation/email/tools/README.md)
     * [Mail Test](user-documentation/email/tools/mail-test.md)

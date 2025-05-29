@@ -1,4 +1,4 @@
-# Edit Settings
+# Edit Global Settings
 
 This page will allow you to edit the settings of the global quarantine policy for the selected tenant. Except language Settings.
 
