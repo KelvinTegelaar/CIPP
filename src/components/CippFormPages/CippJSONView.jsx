@@ -4,10 +4,10 @@ import {
   AccordionSummary,
   AccordionDetails,
   IconButton,
-  Grid,
   Typography,
   Button,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -241,8 +241,7 @@ function CippJsonView({
             {drilldownData?.map((data, index) => (
               <Grid
                 item
-                xs={12}
-                sm={type === "intune" ? 12 : 3}
+                size={{ sm: type === "intune" ? 12 : 3, xs: 12 }}
                 key={index}
                 sx={{
                   //give a top border if the item is > 4, and add spacing between the top and bottom items

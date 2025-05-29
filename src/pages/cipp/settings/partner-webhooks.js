@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   Chip,
-  Grid,
   Stack,
   Typography,
   Link,
@@ -17,6 +16,7 @@ import {
   IconButton,
   SvgIcon,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
@@ -132,7 +132,7 @@ const Page = () => {
       }
     >
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
             Subscribe to Microsoft Partner center webhooks to enable automatic tenant onboarding and
             alerting. Updating the settings will replace any existing webhook subscription with one
@@ -147,7 +147,7 @@ const Page = () => {
             for more information on the webhook types.
           </Typography>
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippPropertyList
             sx={{ mb: 3, mx: 0, p: 0 }}
             isFetching={listSubscription.isFetching}
@@ -168,7 +168,7 @@ const Page = () => {
             showDivider={false}
           />
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             fullWidth
@@ -181,7 +181,7 @@ const Page = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Exclude onboarded tenants from top-level standards"
@@ -190,7 +190,7 @@ const Page = () => {
           />
         </Grid>
         {testRunning && (
-          <Grid item xs={12} md={12} sx={{ mt: 2 }}>
+          <Grid item size={{ md: 12, xs: 12 }} sx={{ mt: 2 }}>
             <Card variant="outlined">
               <CardHeader
                 title={
