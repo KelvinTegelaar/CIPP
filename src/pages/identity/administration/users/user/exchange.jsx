@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail, Fingerprint, Launch } from "@mui/icons-material";
+import { Check, Error, Mail, Fingerprint, Launch, Delete, Star } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
@@ -18,16 +18,20 @@ import CippExchangeSettingsForm from "../../../../../components/CippFormPages/Ci
 import { useForm } from "react-hook-form";
 import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
-import { Block, PlayArrow, DeleteForever } from "@mui/icons-material";
+import { Block, PlayArrow } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
 import CippExchangeActions from "../../../../../components/CippComponents/CippExchangeActions";
+import { CippApiDialog } from "../../../../../components/CippComponents/CippApiDialog";
+import { useDialog } from "../../../../../hooks/use-dialog";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const [waiting, setWaiting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [actionData, setActionData] = useState({ ready: false });
+  const createDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
 
@@ -221,7 +225,7 @@ const Page = () => {
     {
       label: "Remove Mailbox Rule",
       type: "POST",
-      icon: <DeleteForever />,
+      icon: <Delete />,
       url: "/api/ExecRemoveMailboxRule",
       data: {
         ruleId: "Identity",
@@ -279,6 +283,90 @@ const Page = () => {
                 title="Rule Details"
                 propertyItems={properties}
                 actionItems={mailboxRuleActions}
+              />
+            );
+          },
+        },
+      },
+    },
+  ];
+
+  const proxyAddressActions = [
+    {
+      label: "Make Primary",
+      type: "POST",
+      icon: <Star />,
+      url: "/api/SetUserAliases",
+      data: {
+        id: userId,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        MakePrimary: "Address",
+      },
+      confirmText: "Are you sure you want to make this the primary proxy address?",
+      multiPost: false,
+      relatedQueryKeys: `ListUsers-${userId}`,
+    },
+    {
+      label: "Remove Proxy Address",
+      type: "POST",
+      icon: <Delete />,
+      url: "/api/SetUserAliases",
+      data: {
+        id: userId,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        RemovedAliases: "Address",
+      },
+      confirmText: "Are you sure you want to remove this proxy address?",
+      multiPost: false,
+      relatedQueryKeys: `ListUsers-${userId}`,
+    },
+  ];
+
+  const proxyAddressesCard = [
+    {
+      id: 1,
+      cardLabelBox: {
+        cardLabelBoxHeader: graphUserRequest.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : graphUserRequest.data?.[0]?.proxyAddresses?.length !== 0 ? (
+          <Check />
+        ) : (
+          <Error />
+        ),
+      },
+      text: "Current Proxy Addresses",
+      subtext: graphUserRequest.data?.[0]?.proxyAddresses?.length > 1
+        ? "Proxy addresses are configured for this user"
+        : "No proxy addresses configured for this user",
+      statusColor: "green.main",
+      table: {
+        title: "Proxy Addresses",
+        hideTitle: true,
+        data: graphUserRequest.data?.[0]?.proxyAddresses?.map(address => ({
+          Address: address,
+          Type: address.startsWith('SMTP:') ? 'Primary' : 'Alias',
+        })) || [],
+        refreshFunction: () => graphUserRequest.refetch(),
+        isFetching: graphUserRequest.isFetching,
+        simpleColumns: ["Address", "Type"],
+        actions: proxyAddressActions,
+        offCanvas: {
+          children: (data) => {
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Address Details"
+                propertyItems={[
+                  {
+                    label: "Address",
+                    value: data.Address,
+                  },
+                  {
+                    label: "Type",
+                    value: data.Type,
+                  },
+                ]}
+                actionItems={proxyAddressActions}
               />
             );
           },
@@ -346,6 +434,11 @@ const Page = () => {
                 <Grid item size={8}>
                   <Stack spacing={3}>
                     <CippBannerListCard
+                      isFetching={graphUserRequest.isLoading}
+                      items={proxyAddressesCard}
+                      isCollapsible={graphUserRequest.data?.[0]?.proxyAddresses?.length !== 0}
+                    />
+                    <CippBannerListCard
                       isFetching={userRequest.isLoading}
                       items={permissions}
                       isCollapsible={userRequest.data?.[0]?.Permissions?.length !== 0}
@@ -373,6 +466,14 @@ const Page = () => {
             )}
           </Grid>
         </Box>
+      )}
+      {actionData.ready && (
+        <CippApiDialog
+          createDialog={createDialog}
+          title="Confirmation"
+          api={actionData.action}
+          row={actionData.data}
+        />
       )}
     </HeaderedTabbedLayout>
   );
