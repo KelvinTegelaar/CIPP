@@ -564,7 +564,7 @@ const AlertWizard = () => {
                             <CippFormCondition
                               field="tenantFilter"
                               formControl={formControl}
-                              compareType="is"
+                              compareType="contains"
                               compareValue="AllTenants"
                             >
                               <Grid size={12}>

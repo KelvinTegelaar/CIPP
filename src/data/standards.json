@@ -39,6 +39,45 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.DeployMailContact",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Creates a new mail contact in Exchange Online across all selected tenants. The contact will be visible in the Global Address List.",
+    "docsDescription": "This standard creates a new mail contact in Exchange Online. Mail contacts are useful for adding external email addresses to your organization's address book. They can be used for distribution lists, shared mailboxes, and other collaboration scenarios.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.ExternalEmailAddress",
+        "label": "External Email Address",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.DisplayName",
+        "label": "Display Name",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.FirstName",
+        "label": "First Name",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.LastName",
+        "label": "Last Name",
+        "required": false
+      }
+    ],
+    "label": "Deploy Mail Contact",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2024-03-19",
+    "powershellEquivalent": "New-MailContact",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
     "tag": ["CIS", "mip_search_auditlog"],
@@ -1610,6 +1649,38 @@
     "impactColour": "warning",
     "addedDate": "2024-05-31",
     "powershellEquivalent": "Set-OrganizationConfig -BookingsEnabled",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.EXODirectSend",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the state of Direct Send in Exchange Online. Direct Send allows applications to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication.",
+    "docsDescription": "Controls whether applications can use Direct Send to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication. A detailed explanation from Microsoft can be found [here.](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365)",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.EXODirectSend.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set Direct Send state",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-28",
+    "powershellEquivalent": "Set-OrganizationConfig -RejectDirectSend $true/$false",
     "recommendedBy": []
   },
   {
@@ -4060,6 +4131,7 @@
   {
     "name": "standards.ExchangeConnectorTemplate",
     "label": "Exchange Connector Template",
+    "cat": "Templates",
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -4109,5 +4181,26 @@
         }
       }
     ]
+  },
+  {
+    "name": "standards.MailboxRecipientLimits",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the maximum number of recipients that can be specified in the To, Cc, and Bcc fields of a message for all mailboxes in the tenant.",
+    "docsDescription": "This standard configures the recipient limits for all mailboxes in the tenant. The recipient limit determines the maximum number of recipients that can be specified in the To, Cc, and Bcc fields of a message. This helps prevent spam and manage email flow.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.MailboxRecipientLimits.RecipientLimit",
+        "label": "Recipient Limit",
+        "defaultValue": 500
+      }
+    ],
+    "label": "Set Mailbox Recipient Limits",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-28",
+    "powershellEquivalent": "Set-Mailbox -RecipientLimits",
+    "recommendedBy": ["CIPP"]
   }
 ]
