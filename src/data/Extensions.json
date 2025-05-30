@@ -81,7 +81,7 @@
       {
         "type": "autoComplete",
         "name": "Sherweb.AllowedCustomRoles",
-        "label": "Select custom roles that are allowed to purchase licenses",
+        "label": "Select CIPP roles that are allowed to purchase licenses",
         "api": {
           "url": "/api/ListCustomRole",
           "queryKey": "CustomRoles",
