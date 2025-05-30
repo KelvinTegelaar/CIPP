@@ -13,6 +13,7 @@ import {
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { getCippError } from "../../utils/get-cipp-error";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
+import { CippDocsLookup } from "./CippDocsLookup";
 import React from "react";
 import { CippTableDialog } from "./CippTableDialog";
 import { EyeIcon } from "@heroicons/react/24/outline";
@@ -276,6 +277,9 @@ export const CippApiResults = (props) => {
                   action={
                     <>
                       <CippCopyToClipBoard text={resultObj.copyField || resultObj.text} />
+                      {resultObj.severity === "error" && (
+                        <CippDocsLookup text={resultObj.copyField || resultObj.text} />
+                      )}
                       <IconButton
                         aria-label="close"
                         color="inherit"
