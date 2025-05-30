@@ -30,7 +30,7 @@ const Page = () => {
   const GlobalQuarantinePolicy = ApiGetCall({
     url: "/api/ListQuarantinePolicy",
     data: { tenantFilter: currentTenant, type: "GlobalQuarantinePolicy" },
-    queryKey: "GlobalQuarantinePolicy",
+    queryKey: `GlobalQuarantinePolicy-${currentTenant}`,
   });
 
   // Get the policy data regardless of array or object
@@ -304,7 +304,7 @@ const Page = () => {
   const infoBarData = [
     {
       icon: <AccessTime />,
-      data: globalQuarantineData?.EndUserSpamNotificationFrequency,
+      data: globalQuarantineData?.EndUserSpamNotificationFrequency ?? "n/a",
       name: "Notification Frequency",
     },
     {
@@ -390,7 +390,7 @@ const Page = () => {
             Name: "Name",
             Identity: "Guid",
           },
-          relatedQueryKeys: ["GlobalQuarantinePolicy"],
+          relatedQueryKeys: [`GlobalQuarantinePolicy-${currentTenant}`],
           confirmText:
             "Are you sure you want to update Global Quarantine settings?",
         }}
