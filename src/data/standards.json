@@ -1613,6 +1613,38 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.EXODirectSend",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the state of Direct Send in Exchange Online. Direct Send allows applications to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication.",
+    "docsDescription": "Controls whether applications can use Direct Send to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication. A detailed explanation from Microsoft can be found [here.](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365)",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.EXODirectSend.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set Direct Send state",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-28",
+    "powershellEquivalent": "Set-OrganizationConfig -RejectDirectSend $true/$false",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
     "tag": ["CIS", "exo_outlookaddins"],
@@ -4060,6 +4092,7 @@
   {
     "name": "standards.ExchangeConnectorTemplate",
     "label": "Exchange Connector Template",
+    "cat": "Templates",
     "disabledFeatures": {
       "report": true,
       "warn": true,
