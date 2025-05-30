@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { GroupAdd } from "@mui/icons-material";
+import { Delete, GroupAdd } from "@mui/icons-material";
 import Link from "next/link";
 import { Edit } from "@mui/icons-material";
 
@@ -15,6 +15,19 @@ const Page = () => {
       multiPost: false,
       color: "warning",
       icon: <Edit />,
+    },
+    {
+      label: "Delete Team",
+      type: "POST",
+      url: "/api/ExecGroupsDelete",
+      icon: <Delete />,
+      data: {
+        ID: "id",
+        GroupType: "!Microsoft 365",
+        DisplayName: "displayName",
+      },
+      confirmText: "Are you sure you want to delete this team?",
+      multiPost: false,
     },
   ];
 
