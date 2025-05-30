@@ -325,7 +325,7 @@ const Page = () => {
       relatedQueryKeys: `ListUsers-${userId}`,
     },
   ];
-
+  
   const handleAddAliases = () => {
     const aliases = newAliases
       .split('\n')
