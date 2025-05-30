@@ -137,6 +137,7 @@ function CippJsonView({
   const [accordionOpen, setAccordionOpen] = useState(defaultOpen);
   const [drilldownData, setDrilldownData] = useState([]);
   const [guidMapping, setGuidMapping] = useState({});
+  const [notFoundGuids, setNotFoundGuids] = useState(new Set());
   const [isLoadingGuids, setIsLoadingGuids] = useState(false);
   const [pendingGuids, setPendingGuids] = useState([]);
   const [lastRequestTime, setLastRequestTime] = useState(0);
@@ -148,12 +149,29 @@ function CippJsonView({
     onResult: (data) => {
       if (data && Array.isArray(data.value)) {
         const newMapping = {};
+
+        // Process the returned results
         data.value.forEach((item) => {
           if (item.id && (item.displayName || item.userPrincipalName || item.mail)) {
             // Prefer displayName, fallback to UPN or mail if available
             newMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
           }
         });
+
+        // Find GUIDs that were sent but not returned in the response
+        const processedGuids = new Set(pendingGuids);
+        const returnedGuids = new Set(data.value.map((item) => item.id));
+        const notReturned = [...processedGuids].filter((guid) => !returnedGuids.has(guid));
+
+        // Add them to the notFoundGuids set
+        if (notReturned.length > 0) {
+          setNotFoundGuids((prev) => {
+            const newSet = new Set(prev);
+            notReturned.forEach((guid) => newSet.add(guid));
+            return newSet;
+          });
+        }
+
         setGuidMapping((prevMapping) => ({ ...prevMapping, ...newMapping }));
         setPendingGuids([]);
         setIsLoadingGuids(false);
@@ -168,7 +186,10 @@ function CippJsonView({
     if (guidsSet.size === 0) return;
 
     const guidsArray = Array.from(guidsSet);
-    const notResolvedGuids = guidsArray.filter((guid) => !guidMapping[guid]);
+    // Filter out GUIDs that are already resolved or known to not be resolvable
+    const notResolvedGuids = guidsArray.filter(
+      (guid) => !guidMapping[guid] && !notFoundGuids.has(guid)
+    );
 
     if (notResolvedGuids.length === 0) return;
 
@@ -446,6 +467,7 @@ function CippJsonView({
     }
   }, [
     guidMapping,
+    notFoundGuids,
     pendingGuids,
     lastRequestTime,
     isLoadingGuids,
