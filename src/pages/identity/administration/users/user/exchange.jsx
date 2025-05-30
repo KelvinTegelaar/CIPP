@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail, Fingerprint, Launch, Delete, Star } from "@mui/icons-material";
+import { Check, Error, Mail, Fingerprint, Launch, Delete, Star, Close } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
@@ -16,7 +16,7 @@ import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippEx
 import { useEffect, useState } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
-import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
+import { Alert, Button, Collapse, CircularProgress, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 import { Block, PlayArrow } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
@@ -31,6 +31,10 @@ const Page = () => {
   const [waiting, setWaiting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [actionData, setActionData] = useState({ ready: false });
+  const [showAddAliasDialog, setShowAddAliasDialog] = useState(false);
+  const [newAliases, setNewAliases] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
   const createDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
@@ -321,6 +325,45 @@ const Page = () => {
       relatedQueryKeys: `ListUsers-${userId}`,
     },
   ];
+  
+  const handleAddAliases = () => {
+    const aliases = newAliases
+      .split('\n')
+      .map(alias => alias.trim())
+      .filter(alias => alias);
+    if (aliases.length > 0) {
+      setIsSubmitting(true);
+      setSubmitResult(null);
+      fetch('/api/SetUserAliases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          tenantFilter: userSettingsDefaults.currentTenant,
+          AddedAliases: aliases.join(','),
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          setSubmitResult({ success: true, message: 'Aliases added successfully' });
+          graphUserRequest.refetch();
+          setTimeout(() => {
+            setShowAddAliasDialog(false);
+            setNewAliases('');
+            setSubmitResult(null);
+          }, 1500);
+        })
+        .catch(error => {
+          setSubmitResult({ success: false, message: 'Failed to add aliases' });
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    }
+  };
 
   const proxyAddressesCard = [
     {
@@ -328,7 +371,7 @@ const Page = () => {
       cardLabelBox: {
         cardLabelBoxHeader: graphUserRequest.isFetching ? (
           <CircularProgress size="25px" color="inherit" />
-        ) : graphUserRequest.data?.[0]?.proxyAddresses?.length !== 0 ? (
+        ) : graphUserRequest.data?.[0]?.proxyAddresses?.length > 1 ? (
           <Check />
         ) : (
           <Error />
@@ -372,6 +415,19 @@ const Page = () => {
           },
         },
       },
+      children: (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 2, px: 2 }}>
+          <Button
+            startIcon={<Mail />}
+            onClick={() => setShowAddAliasDialog(true)}
+            variant="contained"
+            color="primary"
+            size="small"
+          >
+            Add Alias
+          </Button>
+        </Box>
+      ),
     },
   ];
 
@@ -475,6 +531,61 @@ const Page = () => {
           row={actionData.data}
         />
       )}
+      <Dialog 
+        open={showAddAliasDialog} 
+        onClose={() => setShowAddAliasDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Add Proxy Addresses
+            <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              autoFocus
+              fullWidth
+              multiline
+              rows={6}
+              value={newAliases}
+              onChange={(e) => setNewAliases(e.target.value)}
+              placeholder="One alias per line"
+              variant="outlined"
+              disabled={isSubmitting}
+            />
+            {submitResult && (
+              <Alert 
+                severity={submitResult.success ? "success" : "error"}
+                sx={{ mt: 2 }}
+              >
+                {submitResult.message}
+              </Alert>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button 
+            onClick={() => setShowAddAliasDialog(false)}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleAddAliases} 
+            variant="contained" 
+            color="primary"
+            disabled={!newAliases.trim() || isSubmitting}
+            startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+          >
+            {isSubmitting ? 'Adding...' : 'Add Aliases'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </HeaderedTabbedLayout>
   );
 };

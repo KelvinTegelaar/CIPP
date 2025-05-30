@@ -35,6 +35,11 @@ import { useRouter } from "next/router";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 
+const ReactQueryDevtoolsProduction = React.lazy(() =>
+  import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
+    default: d.ReactQueryDevtools,
+  }))
+);
 TimeAgo.addDefaultLocale(en);
 
 const queryClient = new QueryClient();
@@ -131,12 +136,6 @@ const App = (props) => {
       onClick: () => window.open(`https://docs.cipp.app/user-documentation/${pathname}`, "_blank"),
     },
   ];
-
-  const ReactQueryDevtoolsProduction = React.lazy(() =>
-    import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
-      default: d.ReactQueryDevtools,
-    }))
-  );
 
   return (
     <CacheProvider value={emotionCache}>
