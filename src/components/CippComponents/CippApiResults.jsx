@@ -307,6 +307,9 @@ export const CippApiResults = (props) => {
                         </Button>
                       )}
                       <CippCopyToClipBoard text={resultObj.copyField || resultObj.text} />
+                      {resultObj.severity === "error" && (
+                        <CippDocsLookup text={resultObj.copyField || resultObj.text} />
+                      )}
                       <IconButton
                         aria-label="close"
                         color="inherit"
