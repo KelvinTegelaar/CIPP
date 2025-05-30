@@ -34,8 +34,13 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+
+const ReactQueryDevtoolsProduction = React.lazy(() =>
+  import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
+    default: d.ReactQueryDevtools,
+  }))
+);
 TimeAgo.addDefaultLocale(en);
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -70,7 +75,7 @@ const App = (props) => {
               if (!queryKey || !queryKey.length) {
                 return false;
               }
-              const queryKeyString = String(queryKey[0] || '');
+              const queryKeyString = String(queryKey[0] || "");
               const excludeFromPersisting = excludeQueryKeys.some((key) =>
                 queryKeyString.includes(key)
               );
@@ -178,7 +183,7 @@ const App = (props) => {
                       </ThemeProvider>
                       {settings.isInitialized && settings?.showDevtools === true ? (
                         <React.Suspense fallback={null}>
-                          <ReactQueryDevtools />
+                          <ReactQueryDevtoolsProduction />
                         </React.Suspense>
                       ) : null}
                     </>
