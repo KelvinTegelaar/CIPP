@@ -4060,6 +4060,7 @@
   {
     "name": "standards.ExchangeConnectorTemplate",
     "label": "Exchange Connector Template",
+    "cat": "Templates",
     "disabledFeatures": {
       "report": true,
       "warn": true,
