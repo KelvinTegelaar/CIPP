@@ -85,8 +85,8 @@
         "api": {
           "url": "/api/ListCustomRole",
           "queryKey": "CustomRoles",
-          "labelField": "RowKey",
-          "valueField": "RowKey"
+          "labelField": "RoleName",
+          "valueField": "RoleName"
         },
         "multiple": true,
         "condition": {
