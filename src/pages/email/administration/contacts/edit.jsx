@@ -53,8 +53,7 @@ const EditContact = () => {
       return null;
     }
 
-    // Handle both single object (when fetching by ID) and array responses
-    const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
+    const contact = contactInfo.data;
     const address = contact.addresses?.[0] || {};
     const phones = contact.phones || [];
     
