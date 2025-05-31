@@ -2,7 +2,7 @@
 description: How to grant users access to the CIPP App
 ---
 
-# Adding Users
+# Adding Users and Managing Roles
 
 ### Initial User Setup
 
@@ -12,8 +12,8 @@ When you first set up CIPP, you will need to create your first user in one of tw
 This user should be at minimum given the role of `superadmin` to allow you to complete the setup of your additional users. This user will be used to configure the remaining settings within CIPP and certain features like role management are restricted to `superadmin` only.
 {% endhint %}
 
-* For hosted clients, invites and roles can be managed by logging into the management portal [here](https://management.cipp.app/)
-* For self-hosted users:
+* For **hosted clients,** invites and roles can be managed by logging into the management portal [here](https://management.cipp.app/)
+* For **self-hosted users**:
   * Go to the Azure Portal.
   * Go to your CIPP Resource Group.
   * Select your CIPP Static Web App `CIPP-SWA-XXXX`.
@@ -59,7 +59,7 @@ Set up Custom Roles by following these steps:
 * Go to CIPP -> Advanced -> Super Admin -> CIPP Roles.
 * Select a Custom Role from the list or start typing to create a new one if you do not yet have any.
   * Please ensure that your custom role is entirely in lowercase and does not contain spaces or special characters.
-* Optionally select a Entra group this role will be mapped to. Adding an Entra group removes the requirement to add the user to either the SWA or inviting via the Management Portal.
+* Optionally select a Entra group this role will be mapped to. Adding an Entra group allows all users in this group to access CIPP.
 * For Allowed Tenants select a subset of tenants to manage or AllTenants.
   * If AllTenants is selected, you can block a subset of tenants using Blocked Tenants.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
