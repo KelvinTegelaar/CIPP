@@ -131,6 +131,7 @@ const EditContactTemplate = () => {
     >
       <ContactFormLayout
         formControl={formControl}
+        formType="edit"
       />
     </CippFormPage>
   );

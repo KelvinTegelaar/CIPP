@@ -78,78 +78,25 @@
     "recommendedBy": ["CIPP"]
   },
   {
-    "name": "standards.DeployMailContactTemplate",
+    "name": "standards.DeployContactTemplates",
     "cat": "Exchange Standards",
     "tag": [],
     "helpText": "Creates new mail contacts in Exchange Online across all selected tenants based on the selected templates. The contact will be visible in the Global Address List unless hidden.",
     "docsDescription": "This standard creates new mail contacts in Exchange Online based on the selected templates. Mail contacts are useful for adding external email addresses to your organization's address book. They can be used for distribution lists, shared mailboxes, and other collaboration scenarios.",
     "addedComponent": [
       {
-        "type": "textField",
-        "name": "DisplayName",
-        "label": "Display Name",
-        "required": true
-      },
-      {
-        "type": "textField",
-        "name": "ExternalEmailAddress",
-        "label": "External Email Address",
-        "required": true
-      },
-      {
-        "type": "textField",
-        "name": "FirstName",
-        "label": "First Name",
-        "required": false
-      },
-      {
-        "type": "textField",
-        "name": "LastName",
-        "label": "Last Name",
-        "required": false
-      },
-      {
-        "type": "textField",
-        "name": "Company",
-        "label": "Company",
-        "required": false
-      },
-      {
-        "type": "textField",
-        "name": "Office",
-        "label": "Office",
-        "required": false
-      },
-      {
-        "type": "textField",
-        "name": "State",
-        "label": "State",
-        "required": false
-      },
-      {
-        "type": "textField",
-        "name": "Phone",
-        "label": "Phone Number",
-        "required": false
-      },
-      {
-        "type": "textField",
-        "name": "Website",
-        "label": "Website",
-        "required": false
-      },
-      {
-        "type": "textField",
-        "name": "MailTip",
-        "label": "Mail Tip",
-        "required": false
-      },
-      {
-        "type": "switch",
-        "name": "HideFromGAL",
-        "label": "Hide from Global Address List"
-      }
-    ],
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "label": "Select Mail Contact Templates",
+        "name": "standards.DeployContactTemplates.templateIds",
+        "api": {
+          "url": "/api/ListContactTemplates",
+          "labelField": "name",
+          "valueField": "GUID",
+          "queryKey": "Contact Templates"
+        }
+      }],
     "label": "Deploy Mail Contact Template",
     "disabledFeatures": {
       "report": false,
@@ -158,7 +105,7 @@
     },
     "impact": "Low Impact",
     "impactColour": "info",
-    "addedDate": "2024-03-19",
+    "addedDate": "2025-05-31",
     "powershellEquivalent": "New-MailContact",
     "recommendedBy": ["CIPP"]
   },

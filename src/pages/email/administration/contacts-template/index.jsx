@@ -85,6 +85,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListContactTemplates"
+      queryKey="Contact Templates"
       actions={actions}
       simpleColumns={simpleColumns}
       cardButton={

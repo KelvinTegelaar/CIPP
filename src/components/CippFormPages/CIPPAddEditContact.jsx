@@ -9,7 +9,7 @@ const countryOptions = countryList.map(({ Code, Name }) => ({
   value: Code,
 }));
 
-const ContactFormLayout = ({ formControl }) => {
+const ContactFormLayout = ({ formControl, formType = "add" }) => {
   return (
     <Grid container spacing={2}>
       {/* Display Name */}
@@ -18,6 +18,7 @@ const ContactFormLayout = ({ formControl }) => {
           type="textField"
           label="Display Name *"
           name="displayName"
+          disabled={formType === "edit"}
           formControl={formControl}
           validators={{ required: "Display Name is required" }}
         />
