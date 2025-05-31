@@ -103,10 +103,7 @@ const AddContact = () => {
             formControl={formControl}
             validators={{
               required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Please enter a valid email address",
-              },
+              validate: (value) => getCippValidator(value, "email"),
             }}
           />
         </Grid>
@@ -149,10 +146,7 @@ const AddContact = () => {
             name="website"
             formControl={formControl}
             validators={{
-              pattern: {
-                value: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
-                message: "Please enter a valid website URL",
-              },
+              validate: (value) => getCippValidator(value, "url"),
             }}
           />
         </Grid>

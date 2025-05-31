@@ -9,6 +9,7 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import { useSettings } from "../../../../hooks/use-settings";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import countryList from "/src/data/countryList.json";
+import { getCippValidator } from "/src/utils/get-cipp-validator.js";
 
 const countryLookup = new Map(
   countryList.map(country => [country.Name, country.Code])
@@ -54,7 +55,7 @@ const EditContact = () => {
     defaultValues: defaultFormValues,
   });
 
-  // OPTIMIZATION: Memoize processed contact data
+  // Memoize processed contact data
   const processedContactData = useMemo(() => {
     if (!contactInfo.isSuccess || !contactInfo.data) {
       return null;
@@ -65,7 +66,7 @@ const EditContact = () => {
     const address = contact.addresses?.[0] || {};
     const phones = contact.phones || [];
     
-    // OPTIMIZATION: Use Map for O(1) phone lookup
+    // Use Map for O(1) phone lookup
     const phoneMap = new Map(phones.map(p => [p.type, p.number]));
 
     return {
@@ -90,7 +91,7 @@ const EditContact = () => {
     };
   }, [contactInfo.isSuccess, contactInfo.data]);
 
-  // OPTIMIZATION: Use callback to prevent unnecessary re-renders
+  // Use callback to prevent unnecessary re-renders
   const resetForm = useCallback(() => {
     if (processedContactData) {
       formControl.reset(processedContactData);
@@ -101,7 +102,7 @@ const EditContact = () => {
     resetForm();
   }, [resetForm]);
 
-  // OPTIMIZATION: Memoize custom data formatter
+  // Memoize custom data formatter
   const customDataFormatter = useCallback((values) => {
     const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
     return {
@@ -125,32 +126,7 @@ const EditContact = () => {
       mailTip: values.mailTip,
     };
   }, [tenantDomain, contactInfo.data]);
-
-  // OPTIMIZATION: Early returns for loading/error states
-  if (!router.isReady) {
-    return <div>Loading router...</div>;
-  }
-
-  if (!id) {
-    return <div>No contact ID provided</div>;
-  }
-
-  if (!tenantDomain) {
-    return <div>No tenant domain available</div>;
-  }
-
-  if (contactInfo.isLoading) {
-    return <div>Loading contact...</div>;
-  }
-
-  if (contactInfo.isError) {
-    return <div>Error loading contact: {contactInfo.error?.message}</div>;
-  }
-
-  if (!contactInfo.data) {
-    return <div>Contact not found</div>;
-  }
-
+  
   const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
 
   return (
@@ -200,15 +176,12 @@ const EditContact = () => {
         <Grid item size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="textField"
-            label="Email"
+            label="Email *"
             name="email"
             formControl={formControl}
             validators={{
               required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Please enter a valid email address",
-              },
+              validate: (value) => getCippValidator(value, "email"),
             }}
           />
         </Grid>
@@ -251,10 +224,7 @@ const EditContact = () => {
             name="website"
             formControl={formControl}
             validators={{
-              pattern: {
-                value: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
-                message: "Please enter a valid website URL",
-              },
+              validate: (value) => getCippValidator(value, "url"),
             }}
           />
         </Grid>
