@@ -11,34 +11,34 @@ const Page = () => {
   const actions = useMemo(() => [
     {
       label: "Edit Contact",
-      link: "/email/administration/contacts/edit?id=[id]",
+      link: "/email/administration/contacts/edit?id=[Guid]",
       multiPost: false,
       postEntireRow: true,
       icon: <Edit />,
       color: "warning",
-      condition: (row) => !row.onPremisesSyncEnabled,
+      condition: (row) => !row.IsDirSynced,
     },
     {
       label: "Remove Contact",
       type: "POST",
       url: "/api/RemoveContact",
       data: {
-        GUID: "id",
-        mail: "mail",
+        GUID: "Guid",
+        mail: "WindowsEmailAddress",
       },
       confirmText:
         "Are you sure you want to delete this contact? Remember this will not work if the contact is AD Synced.",
       color: "danger",
       icon: <TrashIcon />,
-      condition: (row) => !row.onPremisesSyncEnabled,
+      condition: (row) => !row.IsDirSynced,
     },
   ], []);
 
   const simpleColumns = useMemo(() => [
-    "displayName", 
-    "mail", 
-    "companyName", 
-    "onPremisesSyncEnabled"
+    "DisplayName", 
+    "WindowsEmailAddress", 
+    "Company", 
+    "IsDirSynced"
   ], []);
 
   const cardButton = useMemo(() => (
