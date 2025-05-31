@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Edit, PersonAdd } from "@mui/icons-material";
@@ -7,8 +8,7 @@ import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 
 const Page = () => {
   const pageTitle = "Contacts";
-
-  const actions = [
+  const actions = useMemo(() => [
     {
       label: "Edit Contact",
       link: "/email/administration/contacts/edit?id=[id]",
@@ -32,9 +32,24 @@ const Page = () => {
       icon: <TrashIcon />,
       condition: (row) => !row.onPremisesSyncEnabled,
     },
-  ];
+  ], []);
 
-  const simpleColumns = ["displayName", "mail", "companyName", "onPremisesSyncEnabled"];
+  const simpleColumns = useMemo(() => [
+    "displayName", 
+    "mail", 
+    "companyName", 
+    "onPremisesSyncEnabled"
+  ], []);
+
+  const cardButton = useMemo(() => (
+    <Button
+      component={Link}
+      href="/email/administration/contacts/add"
+      startIcon={<PersonAdd />}
+    >
+      Add contact
+    </Button>
+  ), []);
 
   return (
     <CippTablePage
@@ -42,17 +57,7 @@ const Page = () => {
       apiUrl="/api/ListContacts"
       actions={actions}
       simpleColumns={simpleColumns}
-      cardButton={
-        <>
-          <Button
-            component={Link}
-            href="/email/administration/contacts/add"
-            startIcon={<PersonAdd />}
-          >
-            Add contact
-          </Button>
-        </>
-      }
+      cardButton={cardButton}
     />
   );
 };
