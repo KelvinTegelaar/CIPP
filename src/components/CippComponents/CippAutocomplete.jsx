@@ -328,13 +328,20 @@ export const CippAutoComplete = (props) => {
       }}
       options={memoizedOptions}
       getOptionLabel={useCallback(
-        (option) =>
-          option
-            ? option.label === null
-              ? ""
-              : option.label || "Label not found - Are you missing a labelField?"
-            : "",
-        []
+        (option) => {
+          if (!option) return "";
+          // For static options (non-API), the option should already have a label
+          if (!api && option.label !== undefined) {
+            return option.label === null ? "" : String(option.label);
+          }
+          // For API options, use the existing logic
+          if (api) {
+            return option.label === null ? "" : option.label || "Label not found - Are you missing a labelField?";
+          }
+          // Fallback for any edge cases
+          return option.label || option.value || "";
+        },
+        [api]
       )}
       sx={sx}
       renderInput={(params) => (
