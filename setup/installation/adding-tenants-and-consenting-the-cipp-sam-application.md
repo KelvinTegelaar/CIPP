@@ -11,7 +11,7 @@ The Tenant Onboarding Wizard further simplifies the process of getting setup in 
 * Verifies Graph API connectivity and access.
 
 {% hint style="danger" %}
-CIPP requires its Service Account user to be a member of the specific security groups with the [recommended roles](../gdap/recommended-roles.md) assigned for proper functionality within your GDAP relationship. This step is completed during the [Setup Wizard execution](../../user-documentation/cipp/onboardingv2.md) prior to tenant onboarding.
+CIPP requires its Service Account user to be a member of the specific security groups with the [recommended roles](recommended-roles.md) assigned for proper functionality within your GDAP relationship. This step is completed during the [Setup Wizard execution](../../user-documentation/cipp/sam-setup-wizard.md) prior to tenant onboarding.
 
 If these roles are missing or the groups haven't been applied to the CIPP user, CIPP will not be able to access the tenant, resulting in errors such as: `invalid_grant:AADSTS65001: The user or administrator has not consented to use the application.`
 
@@ -90,7 +90,7 @@ Tenants are cached for 24 hours within CIPP. To see a newly added Microsoft Tena
 
 ## Direct Tenant Add
 
-To directly add a tenant, go to the [Setup Wizard](../../user-documentation/cipp/onboardingv2.md) and select "Add a Tenant" - Make sure you log into a tenant using a service account. This tenant is added to the list of managed tenants immediately.
+To directly add a tenant, go to the [Setup Wizard](../../user-documentation/cipp/sam-setup-wizard.md) and select "Add a Tenant" - Make sure you log into a tenant using a service account. This tenant is added to the list of managed tenants immediately.
 
 ### Limitations of Direct Tenants
 

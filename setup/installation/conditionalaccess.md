@@ -20,3 +20,5 @@ GDAP is affected by your clients conditional access policies. To make sure you c
 
 1. Browse to your client's [Conditional Access Policies](https://portal.azure.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) blade in Azure.
 2. For each policy listed. Add an exclusion to "Users and Groups" with the following settings: - Guest or external users - Service Provider Users - Selected, enter your tenantid. If you do not know what your tenant id is you can look this up at https://whatismytenantid.com
+
+Optional: If you are running in Direct Tenant mode, exclude the CIPP service account for this tenant instead of the tenant exclusion.
