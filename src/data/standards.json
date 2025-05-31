@@ -78,6 +78,38 @@
     "recommendedBy": ["CIPP"]
   },
   {
+    "name": "standards.DeployContactTemplates",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Creates new mail contacts in Exchange Online across all selected tenants based on the selected templates. The contact will be visible in the Global Address List unless hidden.",
+    "docsDescription": "This standard creates new mail contacts in Exchange Online based on the selected templates. Mail contacts are useful for adding external email addresses to your organization's address book. They can be used for distribution lists, shared mailboxes, and other collaboration scenarios.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "label": "Select Mail Contact Templates",
+        "name": "standards.DeployContactTemplates.templateIds",
+        "api": {
+          "url": "/api/ListContactTemplates",
+          "labelField": "name",
+          "valueField": "GUID",
+          "queryKey": "Contact Templates"
+        }
+      }],
+    "label": "Deploy Mail Contact Template",
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-31",
+    "powershellEquivalent": "New-MailContact",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
     "tag": ["CIS", "mip_search_auditlog"],

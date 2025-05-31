@@ -99,6 +99,7 @@ const pages = [
   { title: "Deleted Mailboxes", path: "/email/administration/deleted-mailboxes" },
   { title: "Mailbox Rules", path: "/email/administration/mailbox-rules" },
   { title: "Contacts", path: "/email/administration/contacts" },
+  { title: "Contact Templates", path: "/email/administration/contacts-template" },
   { title: "Quarantine", path: "/email/administration/quarantine" },
   { title: "Tenant Allow/Block Lists", path: "/email/administration/tenant-allow-block-lists" },
   { title: "Mailbox Restore Wizard", path: "/email/tools/mailbox-restore-wizard" },
