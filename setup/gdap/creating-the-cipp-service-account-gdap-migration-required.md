@@ -14,10 +14,10 @@ Auto Extend is only available for relationships without the Global Administrator
 
 ## **If you did not perform GDAP migration of your tenants via CIPP or believe you need to setup new GDAP relationships:**
 
-You have some extra steps you'll need to perform, such as [creating a CIPP service account](creating-the-cipp-service-account-gdap-ready.md). CIPP uses this account to help alleviate some of the manual steps by generating the invite links you'll need to accept using the GDAP Invite Wizard.&#x20;
+You have some extra steps you'll need to perform, such as [creating a CIPP service account](creating-the-cipp-service-account-gdap-ready.md). CIPP uses this account to help alleviate some of the manual steps by generating the invite links you'll need to accept using the GDAP Invite Wizard.
 
-The next few pages will walk you through the setting up of a CIPP Service Account, and the best practices you will need to follow within your microsoft environments to ensure you dont run into any issues.&#x20;
+The next few pages will walk you through the setting up of a CIPP Service Account, and the best practices you will need to follow within your microsoft environments to ensure you dont run into any issues.
 
 It is important this account is setup correctly to ensure a seamless process when you get into CIPP and start the onboarding process.
 
-If you have already migrated to GDAP and have a valid service account that you would like to use you can jump over to [Executing the SAM Setup Wizard](../installation/executing-the-sam-setup-wizard.md), however, its important to ensure you follow the steps for creating this account to the letter. Including **the user having access to** [**the relevant security groups**](recommended-roles.md)  and **MFA & conditional access expectations are adhered to**.
+If you have already migrated to GDAP and have a valid service account that you would like to use you can jump over to [Executing the SAM Setup Wizard](broken-reference), however, its important to ensure you follow the steps for creating this account to the letter. Including **the user having access to** [**the relevant security groups**](recommended-roles.md) and **MFA & conditional access expectations are adhered to**.

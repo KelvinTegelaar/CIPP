@@ -69,7 +69,7 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 #### Multi-factor Authentication
 
 1. **MFA Setup:** This account must have **Microsoft** MFA enforced for each logon.
-   1. Use [Conditional Access](../../setup/installation/conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when not available.
+   1. Use [Conditional Access](broken-reference) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when not available.
 2. **Microsoft MFA is mandatory.** Do not use alternative providers like Duo, and ensure it's setup **before any login attempts.**
    1. Reference [this article on Supported MFA options](https://learn.microsoft.com/en-us/partner-center/security/partner-security-requirements-mandating-mfa#supported-mfa-options) from Microsoft for more details.
 {% endhint %}

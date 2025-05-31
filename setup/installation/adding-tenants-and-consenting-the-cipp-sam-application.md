@@ -11,7 +11,7 @@ The Tenant Onboarding Wizard further simplifies the process of getting setup in 
 * Verifies Graph API connectivity and access.
 
 {% hint style="danger" %}
-CIPP requires its Service Account user to be a member of the specific security groups with the [recommended roles](../gdap/recommended-roles.md) assigned for proper functionality within your GDAP relationship. This step is completed during the [SAM Setup Wizard execution](../../user-documentation/cipp/sam-setup-wizard.md) prior to tenant onboarding.
+CIPP requires its Service Account user to be a member of the specific security groups with the [recommended roles](../gdap/recommended-roles.md) assigned for proper functionality within your GDAP relationship. This step is completed during the [Setup Wizard execution](../../user-documentation/cipp/onboardingv2.md) prior to tenant onboarding.
 
 If these roles are missing or the groups haven't been applied to the CIPP user, CIPP will not be able to access the tenant, resulting in errors such as: `invalid_grant:AADSTS65001: The user or administrator has not consented to use the application.`
 
@@ -24,9 +24,7 @@ If these roles are missing or the groups haven't been applied to the CIPP user, 
 
 ## Methods of adding a tenant
 
-We currently support two methods of connecting to Microsoft Tenants, using a direct connection or a GDAP connection. It's recommended to setup a GDAP relationship with your clients, but in some cases this is not always possible due to transaction regions or other potential blockers.
-
-
+We currently support two methods of connecting to Microsoft Tenants, using a direct connection or a GDAP connection. It's recommended to setup a GDAP relationship with your clients, but in some cases, this is not always possible due to transaction regions or other potential blockers.
 
 ## GDAP
 
@@ -92,5 +90,16 @@ Tenants are cached for 24 hours within CIPP. To see a newly added Microsoft Tena
 
 ## Direct Tenant Add
 
-To directly add a tenant go to the Setup Wizard and select "Add a Tenant" - Make sure you log into a tenant using a service account. This tenant is added to the list of managed tenants immediately.
+To directly add a tenant, go to the [Setup Wizard](../../user-documentation/cipp/onboardingv2.md) and select "Add a Tenant" - Make sure you log into a tenant using a service account. This tenant is added to the list of managed tenants immediately.
+
+### Limitations of Direct Tenants
+
+There are limitations to what CIPP can do with directly added tenants due to some features relying on Lighthouse, Partner Center APIs, etc.
+
+* Universal Search - This relies on Lighthouse to search for users
+* Admin Portal Links - These utilize the GDAP relationship to log in as your CSP user. You will have to log in to the portal with an account native to the tenant
+* Alerts - There are certain alerts that will only work with GDAP/Lighthouse
+  * Alert if Defender is not running
+  * Alert if Defender Malware found
+* Inactive Users Report - Relies on a CSP report
 

@@ -13,7 +13,7 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 
 ### Available CIPP Alerts
 
-Under the "Choose which logs you would like to receive alerts from" you will be able to select what you would like to receive alerts from CIPP actions. A sample of the alerts is listed below:f
+Under the "Choose which logs you would like to receive alerts from" you will be able to select what you would like to receive alerts from CIPP actions. A sample of the alerts is listed below:
 
 * New Accounts created via CIPP
 * Removed Accounts via CIPP
@@ -29,7 +29,13 @@ Under the "Choose which logs you would like to receive alerts from" you will be 
 
 Enter as many email addresses as you need, separated by a comma.
 
-Email will be sent from the service account used for the SAM Wizard. The service account must have a mailbox available. This can be accomplished by either assigning a license with Exchange to the service account permanently or temporarily and converting the service account's mailbox to a shared mailbox. If you do not have a mailbox available on the account the log will state we could not send out the notifications.
+Email will be sent from the service account used for the Setup Wizard.&#x20;
+
+{% hint style="warning" %}
+The service account must have a mailbox available. This can be accomplished by either assigning a license with Exchange to the service account permanently or temporarily and converting the service account's mailbox to a shared mailbox. If you do not have a mailbox available on the account, the log will state we could not send out the notifications.
+
+If you have already completed the Setup Wizard prior to converting the service account to a shared mailbox you will want to rerun the Setup Wizard using the option "Refresh Tokens for existing application registration".
+{% endhint %}
 
 {% hint style="info" %}
 Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder.
