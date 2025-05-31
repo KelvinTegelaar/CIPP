@@ -6,7 +6,7 @@ Below are error codes that can occur in CIPP. Use this page to troubleshoot your
 
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
 2. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx) in the partner tenant.
-3. Check our section on [Conditional Access](/setup/installation/conditionalaccess.md) on how to handle Conditional Access issues.
+3. Check our section on [Conditional Access](broken-reference) on how to handle Conditional Access issues.
 
 ### Request not applicable to target tenant.
 
@@ -38,7 +38,7 @@ Multiple Potential Causes:
 
 1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 2. The user that was used for the CIPP Authorisation is a guest in this tenant
-3. You have not added the user to the correct group(s) for CIPP to function. See [samwizard.md](../setup/installation/samwizard.md "mention") for more information.
+3. You have not added the user to the correct group(s) for CIPP to function. See [Broken link](broken-reference "mention") for more information.
 
 ### AADSTS50020 or AADSTS50177
 
@@ -47,7 +47,7 @@ Multiple Potential Causes:
 * The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 * The user that was used for the CIPP Authorization is a guest in this tenant
 * A Conditional Access policy may be blocking your access. Add your CSP tenant as a serviceProvider exception.
-* You have not added the user to the correct group(s) for CIPP to function. See [samwizard.md](../setup/installation/samwizard.md "mention") for more information.
+* You have not added the user to the correct group(s) for CIPP to function. See [Broken link](broken-reference "mention") for more information.
 
 {% hint style="info" %}
 **These errors may also present themselves something like the below. The steps above are still accurate in these cases:**
@@ -60,7 +60,7 @@ Multiple Potential Causes:
 
 You have not finished the SAM Setup wizard - CIPP cannot connect to the API with the current credentials.
 
-NOTE: If you are receiving this during the SAM Setup wizard, copy the complete URL from the address bar in your browser and paste it into a new tab. 
+NOTE: If you are receiving this during the SAM Setup wizard, copy the complete URL from the address bar in your browser and paste it into a new tab.
 
 ### AADSTS650051
 
@@ -83,12 +83,12 @@ The user that authorized the CSP or Graph API connection has had their password 
 This error can have three causes.
 
 1. The user has not had MFA set up when performing authorization.
-2. The client has Conditional Access policies blocking CIPP's access. See the chapter about [Conditional Access](/setup/installation/conditionalaccess.md) to resolve.
+2. The client has Conditional Access policies blocking CIPP's access. See the chapter about [Conditional Access](broken-reference) to resolve.
 3. The CIPP-SAM application in the customer tenant is disabled for login. This can be remediated by doing the following:
-    1. Navigate to the customer tenant and log in either via the partner relationship or an customer admin account.
-    2. Locate the CIPP-SAM app under Enterprise Application by removing the Application type filter.
-    3. Under the properties tab, set "Enabled for users to sign-in?" to "Yes"
-    4. Wait a few minutes and run a tenant access check.
+   1. Navigate to the customer tenant and log in either via the partner relationship or an customer admin account.
+   2. Locate the CIPP-SAM app under Enterprise Application by removing the Application type filter.
+   3. Under the properties tab, set "Enabled for users to sign-in?" to "Yes"
+   4. Wait a few minutes and run a tenant access check.
 
 ### Presented multi-factor authentication has expired to the policies configured by your administrator, you must refresh your multi-factor authentication to access
 
@@ -106,7 +106,7 @@ This error occurs when CIPP cannot write to the errors table - Clear your tenant
 
 This occurs when the app has existed for more than 2 years and requires a new certificate or secret, or when a secret has been expired manually.
 
-1. [Go to Azure Portal](https://portal.azure.com/#view/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/\~/RegisteredApps)
+1. [Go to Azure Portal](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
 2. Find and click on your app
 3. Navigate to "Certificates & secrets"
 4. Click "+ New client secret"
@@ -124,19 +124,11 @@ This occurs when the app has existed for more than 2 years and requires a new ce
 
 * Find your repository secret by going to your CIPP Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
 
-<!---->
-
-* Note down the name of your repository secret (Should be similar to "AZURE\_STATIC\_WEB\_APPS\_API\_TOKEN\_RANDOM\_WORD\_047D97703"
-
-<!---->
+- Note down the name of your repository secret (Should be similar to "AZURE\_STATIC\_WEB\_APPS\_API\_TOKEN\_RANDOM\_WORD\_047D97703"
 
 * Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
 
-<!---->
-
-* Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) into the new file you created
-
-<!---->
+- Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) into the new file you created
 
 * Edit lines 25 and 44 to your repository secret name noted down in step 2 above
 
@@ -148,25 +140,15 @@ This occurs when the app has existed for more than 2 years and requires a new ce
 
 * Find your repository secret by going to your CIPP-API Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
 
-<!---->
-
-* Note down the name of your repository secret (Should be similar to "AZUREAPPSERVICE\_PUBLISHPROFILE\_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-
-<!---->
+- Note down the name of your repository secret (Should be similar to "AZUREAPPSERVICE\_PUBLISHPROFILE\_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 * Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
 
-<!---->
-
-* Copy the contents of this [file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167)[ into](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) the new file you created
-
-<!---->
+- Copy the contents of this [file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167)[ into](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) the new file you created
 
 * Edit lines 4 and 26 so they have your function name in
 
-<!---->
-
-* Edit Line 29 to your repository secret name noted down in step 2 above
+- Edit Line 29 to your repository secret name noted down in step 2 above
 
 </details>
 
@@ -183,8 +165,6 @@ This issue can occur when you restart the app during an important task. It's nev
 5. Restart the function app.
 
 This procedure can also be used to safely restart the function app when required.
-
-
 
 #### Credits
 

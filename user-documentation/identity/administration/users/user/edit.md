@@ -54,6 +54,8 @@ description: >-
   * Allows you to select another Entra ID user to copy groups from&#x20;
 * Add to Groups
   * Multi-select dropdown that will allow you to add the user to groups
+* Remove from Groups
+  * Multi-select dropdown that will allow you to remove the user from groups
 
 ### **Custom Attributes**
 

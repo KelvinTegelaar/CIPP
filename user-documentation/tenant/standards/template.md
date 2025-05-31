@@ -14,7 +14,7 @@ In the "Template Name" field, enter the name for this template
 {% step %}
 ### Assign Template to Tenants
 
-In the "Included Tenants" dropdown, select the tenant or tenants that you want this template to apply to.&#x20;
+In the "Included Tenants" dropdown, select the tenant or tenants that you want this template to apply to. You can optionally select a tenant group to include. Including a tenant group will allow you to select tenant(s) or tenant group(s) to exclude.
 
 {% hint style="info" %}
 If you select "AllTenants", you will be shown an additional dropdown for "Excluded Tenants" to indicate any tenants or tenant groups that you don't want this standard to apply to.

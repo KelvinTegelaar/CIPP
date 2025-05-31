@@ -1,2 +1,0 @@
-# GDAP Setup Guide
-

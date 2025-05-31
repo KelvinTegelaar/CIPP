@@ -1,4 +1,4 @@
-# Compare Tenant to Standard
+# View Tenant Report
 
 When selected from the per-row actions on the [List Standards Templates](list-standards/) page, this report will provide you with an outline of the tenant currently selected menu bar against the standard template.
 

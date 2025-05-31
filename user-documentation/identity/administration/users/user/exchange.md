@@ -50,12 +50,13 @@ description: This page displays information about the user's Exchange settings.
 
 ### Expandable Actions in Info Area
 
-| Action               | Description                                                                                               |
-| -------------------- | --------------------------------------------------------------------------------------------------------- |
-| Mailbox Permissions  | A widget that allows for updating mailbox permissions other users can be granted to this user's mailbox.  |
-| Calendar Permissions | A widget that allows for updating calendar permissions other users can be granted to this user's mailbox. |
-| Mailbox Forwarding   | A widget that allows for updating mail forwarding options for this user's mailbox.                        |
-| Out of Office        | A widget that allows you to edit the out of office settings for this user's mailbox.                      |
+| Action                  | Description                                                                                               |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| Current Proxy Addresses | A widget that allows for updating a user/mailbox proxy addresses with both add and delete capability.     |
+| Mailbox Permissions     | A widget that allows for updating mailbox permissions other users can be granted to this user's mailbox.  |
+| Calendar Permissions    | A widget that allows for updating calendar permissions other users can be granted to this user's mailbox. |
+| Mailbox Forwarding      | A widget that allows for updating mail forwarding options for this user's mailbox.                        |
+| Out of Office           | A widget that allows you to edit the out of office settings for this user's mailbox.                      |
 
 ***
 

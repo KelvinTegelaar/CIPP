@@ -6,7 +6,7 @@ On this page you can find a list of frequently asked questions about the CyberDr
 
 <summary>I updated, but CIPP still says my frontend is out of date. How do I fix this?</summary>
 
-SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](../../setup/installation/updating.md).
+SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](broken-reference).
 
 CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well Github and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
 
@@ -426,7 +426,7 @@ This error can mean two things;
 * You migrated using different tools, such as Microsoft Lighthouse.
 * You didn't assign the groups to the user after migrating.
 
-Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](../../setup/installation/samwizard.md#authorization-best-practices-for-cipp).
+Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](broken-reference).
 
 </details>
 

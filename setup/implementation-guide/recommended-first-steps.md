@@ -10,7 +10,9 @@ Welcome to the post-setup implementation guide for CIPP! In this guide, you will
 This guide is not meant to be exhaustive, but rather point you towards other pages in the documentation for a deeper dive. Click any of the available links for more information on each page.
 {% endhint %}
 
-
+{% hint style="success" %}
+Select [Setup Wizard](../installation/executing-the-setup-wizard.md) from CIPP settings for easy set up of several of the basics needed to operate CIPP.
+{% endhint %}
 
 ## Tenant Navigation
 
