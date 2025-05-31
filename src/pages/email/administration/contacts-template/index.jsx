@@ -4,11 +4,11 @@ import Link from "next/link";
 import { RocketLaunch } from "@mui/icons-material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { GitHub } from "@mui/icons-material";
+import { GitHub, Edit } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
-  const pageTitle = "Exchange Connector Templates";
+  const pageTitle = "Contact Templates";
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
@@ -63,7 +63,7 @@ const Page = () => {
     {
       label: "Delete Template",
       type: "POST",
-      url: "/api/RemoveContactTemplate",
+      url: "/api/RemoveContactTemplates",
       data: {
         ID: "GUID",
       },
@@ -71,13 +71,20 @@ const Page = () => {
       icon: <TrashIcon />,
       color: "danger",
     },
+    {
+        label: "Edit Contact Template",
+        link: "/email/administration/contacts-template/edit?id=[GUID]",
+        icon: <Edit />,
+        color: "success",
+        target: "_self",
+      },
   ];
   const simpleColumns = ["name", "contactTemplateName", "GUID"];
 
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListExconnectorTemplates"
+      apiUrl="/api/ListContactTemplates"
       actions={actions}
       simpleColumns={simpleColumns}
       cardButton={

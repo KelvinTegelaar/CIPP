@@ -11,7 +11,7 @@ const Page = () => {
     mode: "onChange",
     defaultValues: {
       selectedTenants: [],
-      TemplateList: null,
+      TemplateList: [],
     },
   });
 

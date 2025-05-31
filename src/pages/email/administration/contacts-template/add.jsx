@@ -3,7 +3,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import ContactFormLayout from "/src/components/CippFormPages/CIPPAddEditContact";
 
-const AddContactTemplate = () => {
+const AddContactTemplates = () => {
 
   const formControl = useForm({
     mode: "onChange",
@@ -63,6 +63,6 @@ const AddContactTemplate = () => {
   );
 };
 
-AddContactTemplate.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+AddContactTemplates.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default AddContactTemplate;
+export default AddContactTemplates;

@@ -5,12 +5,14 @@ import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import ContactFormLayout from "/src/components/CippFormPages/CIPPAddEditContact";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import countryList from "/src/data/countryList.json";
+import { useRouter } from "next/router";
 
 const countryLookup = new Map(
   countryList.map(country => [country.Name, country.Code])
 );
 
 const EditContactTemplate = () => {
+  const router = useRouter();
   const { id } = router.query;
   
   const contactTemplateInfo = ApiGetCall({
@@ -58,10 +60,11 @@ const EditContactTemplate = () => {
     const phoneMap = new Map(phones.map(p => [p.type, p.number]));
 
     return {
+      ContactTemplateID: id || "",
       displayName: contact.displayName || "",
       firstName: contact.givenName || "",
       lastName: contact.surname || "",
-      email: contact.mail || "",
+      email: contact.email || "",
       hidefromGAL: contact.hidefromGAL || false,
       streetAddress: address.street || "",
       postalCode: address.postalCode || "",
@@ -92,9 +95,8 @@ const EditContactTemplate = () => {
 
   // Memoize custom data formatter
   const customDataFormatter = useCallback((values) => {
-    const contactTemplate = Array.isArray(contactTemplateInfo.data) ? contactTemplateInfo.data[0] : contactTemplateInfo.data;
     return {
-      ContactTemplateID: contactTemplate?.id,
+      ContactTemplateID: id,
       DisplayName: values.displayName,
       hidefromGAL: values.hidefromGAL,
       email: values.email,
@@ -112,7 +114,7 @@ const EditContactTemplate = () => {
       website: values.website,
       mailTip: values.mailTip,
     };
-  }, [contactTemplateInfo.data]);
+  },);
   
   const contactTemplate = Array.isArray(contactTemplateInfo.data) ? contactTemplateInfo.data[0] : contactTemplateInfo.data;
 
