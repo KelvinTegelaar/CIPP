@@ -638,13 +638,6 @@ const Page = () => {
     },
   ];
 
-  const aliasApiRequest = {
-    isSuccess: submitResult?.success,
-    isError: submitResult?.success === false,
-    error: submitResult?.success === false ? submitResult?.message : null,
-    data: submitResult?.success ? { message: submitResult?.message } : null,
-  };
-
   const permissionsApiRequest = {
     isSuccess: submitPermissionsResult?.success,
     isError: submitPermissionsResult?.success === false,
@@ -774,7 +767,7 @@ const Page = () => {
           </Stack>
         </DialogTitle>
         <DialogContent>
-          <Box>
+          <Stack spacing={2}>
             <TextField
               autoFocus
               fullWidth
@@ -786,8 +779,8 @@ const Page = () => {
               variant="outlined"
               disabled={setUserAliases.isPending}
             />
-            <CippApiResults apiObject={aliasApiRequest} />
-          </Box>
+            <CippApiResults apiObject={setUserAliases} />
+          </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setShowAddAliasDialog(false)} disabled={setUserAliases.isPending}>
