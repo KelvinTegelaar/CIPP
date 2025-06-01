@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { Check, Error, Mail, Fingerprint, Launch, Delete, Star, Close } from "@mui/icons-material";
@@ -194,16 +194,15 @@ const Page = () => {
       label: "Remove Permission",
       type: "POST",
       icon: <Delete />,
-      url: "/api/ExecEditMailboxPermissions",
+      url: "/api/ExecModifyMBPerms",
       data: {
-        tenantFilter: userSettingsDefaults.currentTenant,
         userID: graphUserRequest.data?.[0]?.userPrincipalName,
-        RemoveFullAccess: {
-          value: "User"
-        },
-        RemoveSendAs: {
-          value: "User"
-        }
+        tenantFilter: userSettingsDefaults.currentTenant,
+        permissions: [{
+          UserID: "User",
+          PermissionLevel: "AccessRights",
+          Modification: "Remove"
+        }]
       },
       confirmText: "Are you sure you want to remove this permission?",
       multiPost: false,
@@ -211,46 +210,67 @@ const Page = () => {
     },
   ];
 
+  const addPermissionsMutation = ApiPostCall({
+    relatedQueryKeys: `Mailbox-${userId}`
+  });
+
   const handleAddPermissions = () => {
     const values = formControl.getValues();
-    const data = {
-      tenantFilter: userSettingsDefaults.currentTenant,
-      userid: graphUserRequest.data?.[0]?.userPrincipalName,
-      ...values.permissions
-    };
+    const permissions = [];
 
-    //remove all nulls and undefined values
-    Object.keys(data).forEach((key) => {
-      if (data[key] === "" || data[key] === null) {
-        delete data[key];
-      }
-    });
+    // Build permissions array based on form values
+    if (values.permissions?.AddFullAccess) {
+      permissions.push({
+        UserID: values.permissions.AddFullAccess,
+        PermissionLevel: "FullAccess", 
+        Modification: "Add",
+        AutoMap: autoMap,
+      });
+    }
+    if (values.permissions?.AddSendAs) {
+      permissions.push({
+        UserID: values.permissions.AddSendAs,
+        PermissionLevel: "SendAs",
+        Modification: "Add"
+      });
+    }
+    if (values.permissions?.AddSendOnBehalf) {
+      permissions.push({
+        UserID: values.permissions.AddSendOnBehalf,
+        PermissionLevel: "SendOnBehalf",
+        Modification: "Add"
+      });
+    }
+
+    if (permissions.length === 0) return;
 
     setIsSubmittingPermissions(true);
     setSubmitPermissionsResult(null);
-    fetch('/api/ExecEditMailboxPermissions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(data => {
-        setSubmitPermissionsResult({ success: true, message: 'Permissions added successfully' });
+    
+    addPermissionsMutation.mutate({
+      url: '/api/ExecModifyMBPerms',
+      data: {
+        userID: graphUserRequest.data?.[0]?.userPrincipalName,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        permissions: permissions
+      }
+    }, {
+      onSuccess: (response) => {
+        setSubmitPermissionsResult({ success: true, message: response.data?.Results?.join('\n') || 'Permissions added successfully' });
         userRequest.refetch();
         setTimeout(() => {
           setShowAddPermissionsDialog(false);
           formControl.reset();
           setSubmitPermissionsResult(null);
         }, 1500);
-      })
-      .catch(error => {
-        setSubmitPermissionsResult({ success: false, message: 'Failed to add permissions' });
-      })
-      .finally(() => {
+      },
+      onError: (error) => {
+        setSubmitPermissionsResult({ success: false, message: error.message || 'Failed to add permissions' });
+      },
+      onSettled: () => {
         setIsSubmittingPermissions(false);
-      });
+      }
+    });
   };
 
   const handleOpenPermissionsDialog = () => {
@@ -291,6 +311,7 @@ const Page = () => {
         data: userRequest.data?.[0]?.Permissions?.map(permission => ({
           User: permission.User,
           AccessRights: permission.AccessRights,
+          _raw: permission
         })) || [],
         refreshFunction: () => userRequest.refetch(),
         isFetching: userRequest.isFetching,
@@ -486,34 +507,31 @@ const Page = () => {
     if (aliases.length > 0) {
       setIsSubmitting(true);
       setSubmitResult(null);
-      fetch('/api/SetUserAliases', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      
+      ApiPostCall({
+        url: '/api/SetUserAliases',
+        data: {
           id: userId,
           tenantFilter: userSettingsDefaults.currentTenant,
           AddedAliases: aliases.join(','),
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          setSubmitResult({ success: true, message: 'Aliases added successfully' });
+        },
+        onSuccess: (response) => {
+          setSubmitResult({ success: true, message: response.message || 'Aliases added successfully' });
           graphUserRequest.refetch();
           setTimeout(() => {
             setShowAddAliasDialog(false);
             setNewAliases('');
             setSubmitResult(null);
           }, 1500);
-        })
-        .catch(error => {
-          setSubmitResult({ success: false, message: 'Failed to add aliases' });
-        })
-        .finally(() => {
+        },
+        onError: (error) => {
+          setSubmitResult({ success: false, message: error.message || 'Failed to add aliases' });
+        },
+        onFinally: () => {
           setIsSubmitting(false);
-        });
+        }
+      });
     }
   };
 
@@ -773,27 +791,21 @@ const Page = () => {
                 }
                 formControl={formControl}
               />
-              {(() => {
-                const fullAccessValue = formControl.watch("permissions.AutoMap");
-                console.log("FullAccess value:", fullAccessValue);
-                console.log("FullAccess value type:", typeof fullAccessValue);
-                console.log("FullAccess value structure:", JSON.stringify(fullAccessValue, null, 2));
-                return fullAccessValue && (
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        size="small"
-                        checked={formControl.watch("permissions.AutoMap")}
-                        onChange={(e) => {
-                          formControl.setValue("permissions.AutoMap", e.target.checked);
-                        }}
-                      />
-                    }
-                    label="Enable Automapping"
-                    sx={{ mt: 0.5, ml: 0.5 }}
-                  />
-                );
-              })()}
+              {formControl.watch("permissions.AddFullAccess") && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      size="small"
+                      checked={autoMap}
+                      onChange={(e) => {
+                        setAutoMap(e.target.checked);
+                      }}
+                    />
+                  }
+                  label="Enable Automapping"
+                  sx={{ mt: 0.5, ml: 0.5 }}
+                />
+              )}
             </Box>
             <Box>
               <CippFormComponent
