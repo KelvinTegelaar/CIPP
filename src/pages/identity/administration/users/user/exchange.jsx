@@ -16,7 +16,7 @@ import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippEx
 import { useEffect, useState } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
-import { Alert, Button, Collapse, CircularProgress, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from "@mui/material";
+import { Alert, Button, Collapse, CircularProgress, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, FormControlLabel, Switch } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 import { Block, PlayArrow } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
@@ -25,6 +25,7 @@ import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
 import CippExchangeActions from "../../../../../components/CippComponents/CippExchangeActions";
 import { CippApiDialog } from "../../../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../../../hooks/use-dialog";
+import { CippFormComponent } from "../../../../../components/CippComponents/CippFormComponent";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -35,6 +36,10 @@ const Page = () => {
   const [newAliases, setNewAliases] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
+  const [showAddPermissionsDialog, setShowAddPermissionsDialog] = useState(false);
+  const [isSubmittingPermissions, setIsSubmittingPermissions] = useState(false);
+  const [submitPermissionsResult, setSubmitPermissionsResult] = useState(null);
+  const [autoMap, setAutoMap] = useState(true);
   const createDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
@@ -56,6 +61,18 @@ const Page = () => {
     waiting: waiting,
   });
 
+  const usersList = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: `users`,
+      tenantFilter: userSettingsDefaults.currentTenant,
+      $select: "id,displayName,userPrincipalName,mail",
+      noPagination: true,
+      $top: 999,
+    },
+    queryKey: `UserNames-${userSettingsDefaults.currentTenant}`,
+  });
+
   const oooRequest = ApiGetCall({
     url: `/api/ListOoO?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `ooo-${userId}`,
@@ -73,6 +90,36 @@ const Page = () => {
     queryKey: `MailboxRules-${userId}`,
     waiting: waiting,
   });
+
+  const permissionsFormControl = useForm({
+    mode: "onChange",
+    defaultValues: {
+      fullAccess: "",
+      sendAs: "",
+      sendOnBehalf: "",
+      autoMap: true,
+    },
+  });
+
+  const fullAccessValue = permissionsFormControl.watch("fullAccess");
+  
+  useEffect(() => {
+    const subscription = permissionsFormControl.watch((value, { name, type }) => {
+    });
+    return () => subscription.unsubscribe();
+  }, [permissionsFormControl]);
+
+  useEffect(() => {
+    if (showAddPermissionsDialog) {
+      permissionsFormControl.reset({
+        fullAccess: "",
+        sendAs: "",
+        sendOnBehalf: "",
+        autoMap: true,
+      });
+      usersList.refetch();
+    }
+  }, [showAddPermissionsDialog]);
 
   useEffect(() => {
     if (oooRequest.isSuccess) {
@@ -142,6 +189,74 @@ const Page = () => {
 
   const data = userRequest.data?.[0];
 
+  const mailboxPermissionActions = [
+    {
+      label: "Remove Permission",
+      type: "POST",
+      icon: <Delete />,
+      url: "/api/ExecEditMailboxPermissions",
+      data: {
+        tenantFilter: userSettingsDefaults.currentTenant,
+        userID: graphUserRequest.data?.[0]?.userPrincipalName,
+        RemoveFullAccess: {
+          value: "User"
+        },
+        RemoveSendAs: {
+          value: "User"
+        }
+      },
+      confirmText: "Are you sure you want to remove this permission?",
+      multiPost: false,
+      relatedQueryKeys: `Mailbox-${userId}`,
+    },
+  ];
+
+  const handleAddPermissions = () => {
+    const values = formControl.getValues();
+    const data = {
+      tenantFilter: userSettingsDefaults.currentTenant,
+      userid: graphUserRequest.data?.[0]?.userPrincipalName,
+      ...values.permissions
+    };
+
+    //remove all nulls and undefined values
+    Object.keys(data).forEach((key) => {
+      if (data[key] === "" || data[key] === null) {
+        delete data[key];
+      }
+    });
+
+    setIsSubmittingPermissions(true);
+    setSubmitPermissionsResult(null);
+    fetch('/api/ExecEditMailboxPermissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        setSubmitPermissionsResult({ success: true, message: 'Permissions added successfully' });
+        userRequest.refetch();
+        setTimeout(() => {
+          setShowAddPermissionsDialog(false);
+          formControl.reset();
+          setSubmitPermissionsResult(null);
+        }, 1500);
+      })
+      .catch(error => {
+        setSubmitPermissionsResult({ success: false, message: 'Failed to add permissions' });
+      })
+      .finally(() => {
+        setIsSubmittingPermissions(false);
+      });
+  };
+
+  const handleOpenPermissionsDialog = () => {
+    setShowAddPermissionsDialog(true);
+  };
+
   const permissions = [
     {
       id: 1,
@@ -154,18 +269,55 @@ const Page = () => {
           <Error />
         ),
       },
-      text: "Current mailbox permissions",
-      subtext:
-        userRequest.data?.[0]?.Permissions?.length !== 0
-          ? "Other users have access to this mailbox"
-          : "No other users have access to this mailbox",
+      text: "Mailbox permissions",
+      subtext: userRequest.data?.[0]?.Permissions?.length !== 0
+        ? "Other users have access to this mailbox"
+        : "No other users have access to this mailbox",
       statusColor: "green.main",
-      //map each of the permissions to a label/value pair, where the label is the user's name and the value is the permission level
-      propertyItems:
-        userRequest.data?.[0]?.Permissions?.map((permission) => ({
-          label: permission.User,
-          value: permission.AccessRights,
+      cardLabelBoxActions: (
+        <Button
+          startIcon={<Mail />}
+          onClick={handleOpenPermissionsDialog}
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+          Add Permissions
+        </Button>
+      ),
+      table: {
+        title: "Mailbox Permissions",
+        hideTitle: true,
+        data: userRequest.data?.[0]?.Permissions?.map(permission => ({
+          User: permission.User,
+          AccessRights: permission.AccessRights,
         })) || [],
+        refreshFunction: () => userRequest.refetch(),
+        isFetching: userRequest.isFetching,
+        simpleColumns: ["User", "AccessRights"],
+        actions: mailboxPermissionActions,
+        offCanvas: {
+          children: (data) => {
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Permission Details"
+                propertyItems={[
+                  {
+                    label: "User",
+                    value: data.User,
+                  },
+                  {
+                    label: "Access Rights",
+                    value: data.AccessRights,
+                  },
+                ]}
+                actionItems={mailboxPermissionActions}
+              />
+            );
+          },
+        },
+      },
     },
   ];
 
@@ -377,11 +529,22 @@ const Page = () => {
           <Error />
         ),
       },
-      text: "Current Proxy Addresses",
+      text: "Proxy Addresses",
       subtext: graphUserRequest.data?.[0]?.proxyAddresses?.length > 1
         ? "Proxy addresses are configured for this user"
         : "No proxy addresses configured for this user",
       statusColor: "green.main",
+      cardLabelBoxActions: (
+        <Button
+          startIcon={<Mail />}
+          onClick={() => setShowAddAliasDialog(true)}
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+          Add Alias
+        </Button>
+      ),
       table: {
         title: "Proxy Addresses",
         hideTitle: true,
@@ -415,21 +578,22 @@ const Page = () => {
           },
         },
       },
-      children: (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 2, px: 2 }}>
-          <Button
-            startIcon={<Mail />}
-            onClick={() => setShowAddAliasDialog(true)}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            Add Alias
-          </Button>
-        </Box>
-      ),
     },
   ];
+
+  const aliasApiRequest = {
+    isSuccess: submitResult?.success,
+    isError: submitResult?.success === false,
+    error: submitResult?.success === false ? submitResult?.message : null,
+    data: submitResult?.success ? { message: submitResult?.message } : null,
+  };
+
+  const permissionsApiRequest = {
+    isSuccess: submitPermissionsResult?.success,
+    isError: submitPermissionsResult?.success === false,
+    error: submitPermissionsResult?.success === false ? submitPermissionsResult?.message : null,
+    data: submitPermissionsResult?.success ? { message: submitPermissionsResult?.message } : null,
+  };
 
   return (
     <HeaderedTabbedLayout
@@ -558,14 +722,7 @@ const Page = () => {
               variant="outlined"
               disabled={isSubmitting}
             />
-            {submitResult && (
-              <Alert 
-                severity={submitResult.success ? "success" : "error"}
-                sx={{ mt: 2 }}
-              >
-                {submitResult.message}
-              </Alert>
-            )}
+            <CippApiResults apiObject={aliasApiRequest} />
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
@@ -583,6 +740,112 @@ const Page = () => {
             startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
           >
             {isSubmitting ? 'Adding...' : 'Add Aliases'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog 
+        open={showAddPermissionsDialog} 
+        onClose={() => setShowAddPermissionsDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Add Mailbox Permissions
+            <IconButton onClick={() => setShowAddPermissionsDialog(false)} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ mt: 1 }}>
+            <Box>
+            <CippFormComponent
+                type="autoComplete"
+                label="Add Full Access"
+                name="permissions.AddFullAccess"
+                isFetching={userRequest.isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+              {(() => {
+                const fullAccessValue = formControl.watch("permissions.AutoMap");
+                console.log("FullAccess value:", fullAccessValue);
+                console.log("FullAccess value type:", typeof fullAccessValue);
+                console.log("FullAccess value structure:", JSON.stringify(fullAccessValue, null, 2));
+                return fullAccessValue && (
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        size="small"
+                        checked={formControl.watch("permissions.AutoMap")}
+                        onChange={(e) => {
+                          formControl.setValue("permissions.AutoMap", e.target.checked);
+                        }}
+                      />
+                    }
+                    label="Enable Automapping"
+                    sx={{ mt: 0.5, ml: 0.5 }}
+                  />
+                );
+              })()}
+            </Box>
+            <Box>
+              <CippFormComponent
+                type="autoComplete"
+                label="Add Send-as Permissions"
+                name="permissions.AddSendAs"
+                isFetching={userRequest.isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+            </Box>
+            <Box>
+              <CippFormComponent
+                type="autoComplete"
+                label="Add Send On Behalf Permissions" 
+                name="permissions.AddSendOnBehalf"
+                isFetching={userRequest.isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                formControl={formControl}
+              />
+            </Box>
+            <CippApiResults apiObject={permissionsApiRequest} />
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 2, pb: 2 }}>
+          <Button 
+            onClick={() => setShowAddPermissionsDialog(false)}
+            disabled={isSubmittingPermissions}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleAddPermissions} 
+            variant="contained" 
+            color="primary"
+            disabled={(!formControl.watch("permissions.AddFullAccess") && 
+                      !formControl.watch("permissions.AddSendAs") && 
+                      !formControl.watch("permissions.AddSendOnBehalf")) || 
+                      isSubmittingPermissions}
+            startIcon={isSubmittingPermissions ? <CircularProgress size={20} color="inherit" /> : null}
+          >
+            {isSubmittingPermissions ? 'Adding...' : 'Add Permissions'}
           </Button>
         </DialogActions>
       </Dialog>
