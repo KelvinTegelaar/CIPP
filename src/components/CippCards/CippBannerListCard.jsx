@@ -127,6 +127,7 @@ export const CippBannerListCard = (props) => {
                           <Typography variant="body2">{item.statusText}</Typography>
                         </Stack>
                       )}
+                      {item?.cardLabelBoxActions && item.cardLabelBoxActions}
                       {isCollapsible && (
                         <IconButton onClick={() => handleExpand(item.id)}>
                           <SvgIcon
@@ -190,6 +191,7 @@ CippBannerListCard.propTypes = {
       actionButton: PropTypes.element,
       isFetching: PropTypes.bool,
       children: PropTypes.node,
+      cardLabelBoxActions: PropTypes.element,
     })
   ).isRequired,
   isCollapsible: PropTypes.bool,
