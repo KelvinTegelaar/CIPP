@@ -4,7 +4,18 @@ import { useRouter } from "next/router";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail, Fingerprint, Launch, Delete, Star, Close, AlternateEmail, PersonAdd } from "@mui/icons-material";
+import {
+  Check,
+  Error,
+  Mail,
+  Fingerprint,
+  Launch,
+  Delete,
+  Star,
+  Close,
+  AlternateEmail,
+  PersonAdd,
+} from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
@@ -48,7 +59,6 @@ const Page = () => {
   const [actionData, setActionData] = useState({ ready: false });
   const [showAddAliasDialog, setShowAddAliasDialog] = useState(false);
   const [newAliases, setNewAliases] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
   const [showAddPermissionsDialog, setShowAddPermissionsDialog] = useState(false);
   const [isSubmittingPermissions, setIsSubmittingPermissions] = useState(false);
@@ -116,6 +126,11 @@ const Page = () => {
   });
 
   const fullAccessValue = permissionsFormControl.watch("fullAccess");
+
+  const setUserAliases = ApiPostCall({
+    relatedQueryKeys: `ListUsers-${userId}`,
+    datafromUrl: true,
+  });
 
   useEffect(() => {
     const subscription = permissionsFormControl.watch((value, { name, type }) => {});
@@ -289,9 +304,6 @@ const Page = () => {
             success: false,
             message: error.message || "Failed to add permissions",
           });
-        },
-        onSettled: () => {
-          setIsSubmittingPermissions(false);
         },
       }
     );
@@ -531,10 +543,9 @@ const Page = () => {
       .map((alias) => alias.trim())
       .filter((alias) => alias);
     if (aliases.length > 0) {
-      setIsSubmitting(true);
       setSubmitResult(null);
 
-      ApiPostCall({
+      setUserAliases.mutate({
         url: "/api/SetUserAliases",
         data: {
           id: userId,
@@ -556,9 +567,6 @@ const Page = () => {
         },
         onError: (error) => {
           setSubmitResult({ success: false, message: error.message || "Failed to add aliases" });
-        },
-        onFinally: () => {
-          setIsSubmitting(false);
         },
       });
     }
@@ -752,15 +760,21 @@ const Page = () => {
         fullWidth
       >
         <DialogTitle>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            Add Proxy Addresses
-            <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
-              <Close />
-            </IconButton>
-          </Box>
+          <Stack spacing={2}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              Add Proxy Addresses
+              <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
+                <Close />
+              </IconButton>
+            </Box>
+            <Typography variant="subtitle2" color="textSecondary">
+              Add one or more proxy addresses (aliases) for this user. Each alias should be on a new
+              line. This should be in the format of smtp:user@domain.com.
+            </Typography>
+          </Stack>
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ mt: 2 }}>
+          <Box>
             <TextField
               autoFocus
               fullWidth
@@ -770,23 +784,25 @@ const Page = () => {
               onChange={(e) => setNewAliases(e.target.value)}
               placeholder="One alias per line"
               variant="outlined"
-              disabled={isSubmitting}
+              disabled={setUserAliases.isPending}
             />
             <CippApiResults apiObject={aliasApiRequest} />
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setShowAddAliasDialog(false)} disabled={isSubmitting}>
+          <Button onClick={() => setShowAddAliasDialog(false)} disabled={setUserAliases.isPending}>
             Cancel
           </Button>
           <Button
             onClick={handleAddAliases}
             variant="contained"
             color="primary"
-            disabled={!newAliases.trim() || isSubmitting}
-            startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+            disabled={!newAliases.trim() || setUserAliases.isPending}
+            startIcon={
+              setUserAliases.isPending ? <CircularProgress size={20} color="inherit" /> : null
+            }
           >
-            {isSubmitting ? "Adding..." : "Add Aliases"}
+            {setUserAliases.isPending ? "Adding..." : "Add Aliases"}
           </Button>
         </DialogActions>
       </Dialog>
