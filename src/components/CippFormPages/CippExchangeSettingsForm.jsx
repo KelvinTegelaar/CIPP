@@ -172,19 +172,19 @@ const CippExchangeSettingsForm = (props) => {
                 {(() => {
                   const permissionLevel = useWatch({
                     control: formControl.control,
-                    name: "calendar.Permissions"
+                    name: "calendar.Permissions",
                   });
                   const isEditor = permissionLevel?.value === "Editor";
-                  
+
                   // Use useEffect to handle the switch value reset
                   useEffect(() => {
                     if (!isEditor) {
                       formControl.setValue("calendar.CanViewPrivateItems", false);
                     }
                   }, [isEditor, formControl]);
-                  
+
                   return (
-                    <Tooltip 
+                    <Tooltip
                       title={!isEditor ? "Only usable when permission level is Editor" : ""}
                       followCursor
                       placement="right"
@@ -423,7 +423,12 @@ const CippExchangeSettingsForm = (props) => {
                 display: "flex",
                 justifyContent: "space-between",
                 p: 2,
+                cursor: "pointer",
+                "&:hover": {
+                  bgcolor: "action.hover",
+                },
               }}
+              onClick={() => handleExpand(section.id)}
             >
               {/* Left Side: cardLabelBox, text, subtext */}
               <Stack direction="row" spacing={2} alignItems="center">
@@ -453,18 +458,15 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Stack>
 
-              {/* Expand Icon */}
-              <IconButton onClick={() => handleExpand(section.id)}>
-                <SvgIcon
-                  fontSize="small"
-                  sx={{
-                    transition: "transform 150ms",
-                    transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                  }}
-                >
-                  <ExpandMoreIcon />
-                </SvgIcon>
-              </IconButton>
+              <SvgIcon
+                fontSize="small"
+                sx={{
+                  transition: "transform 150ms",
+                  transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                }}
+              >
+                <ExpandMoreIcon />
+              </SvgIcon>
             </Box>
             <Collapse in={isExpanded} unmountOnExit>
               <Divider />

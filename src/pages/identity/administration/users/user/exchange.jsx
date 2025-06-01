@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail, Fingerprint, Launch, Delete, Star, Close } from "@mui/icons-material";
+import { Check, Error, Mail, Fingerprint, Launch, Delete, Star, Close, AlternateEmail, PersonAdd } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
@@ -16,7 +16,21 @@ import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippEx
 import { useEffect, useState } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
-import { Alert, Button, Collapse, CircularProgress, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, FormControlLabel, Switch } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Collapse,
+  CircularProgress,
+  Typography,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 import { Block, PlayArrow } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
@@ -33,7 +47,7 @@ const Page = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [actionData, setActionData] = useState({ ready: false });
   const [showAddAliasDialog, setShowAddAliasDialog] = useState(false);
-  const [newAliases, setNewAliases] = useState('');
+  const [newAliases, setNewAliases] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
   const [showAddPermissionsDialog, setShowAddPermissionsDialog] = useState(false);
@@ -102,10 +116,9 @@ const Page = () => {
   });
 
   const fullAccessValue = permissionsFormControl.watch("fullAccess");
-  
+
   useEffect(() => {
-    const subscription = permissionsFormControl.watch((value, { name, type }) => {
-    });
+    const subscription = permissionsFormControl.watch((value, { name, type }) => {});
     return () => subscription.unsubscribe();
   }, [permissionsFormControl]);
 
@@ -198,11 +211,13 @@ const Page = () => {
       data: {
         userID: graphUserRequest.data?.[0]?.userPrincipalName,
         tenantFilter: userSettingsDefaults.currentTenant,
-        permissions: [{
-          UserID: "User",
-          PermissionLevel: "AccessRights",
-          Modification: "Remove"
-        }]
+        permissions: [
+          {
+            UserID: "User",
+            PermissionLevel: "AccessRights",
+            Modification: "Remove",
+          },
+        ],
       },
       confirmText: "Are you sure you want to remove this permission?",
       multiPost: false,
@@ -211,7 +226,7 @@ const Page = () => {
   ];
 
   const addPermissionsMutation = ApiPostCall({
-    relatedQueryKeys: `Mailbox-${userId}`
+    relatedQueryKeys: `Mailbox-${userId}`,
   });
 
   const handleAddPermissions = () => {
@@ -222,7 +237,7 @@ const Page = () => {
     if (values.permissions?.AddFullAccess) {
       permissions.push({
         UserID: values.permissions.AddFullAccess,
-        PermissionLevel: "FullAccess", 
+        PermissionLevel: "FullAccess",
         Modification: "Add",
         AutoMap: autoMap,
       });
@@ -231,14 +246,14 @@ const Page = () => {
       permissions.push({
         UserID: values.permissions.AddSendAs,
         PermissionLevel: "SendAs",
-        Modification: "Add"
+        Modification: "Add",
       });
     }
     if (values.permissions?.AddSendOnBehalf) {
       permissions.push({
         UserID: values.permissions.AddSendOnBehalf,
         PermissionLevel: "SendOnBehalf",
-        Modification: "Add"
+        Modification: "Add",
       });
     }
 
@@ -246,31 +261,40 @@ const Page = () => {
 
     setIsSubmittingPermissions(true);
     setSubmitPermissionsResult(null);
-    
-    addPermissionsMutation.mutate({
-      url: '/api/ExecModifyMBPerms',
-      data: {
-        userID: graphUserRequest.data?.[0]?.userPrincipalName,
-        tenantFilter: userSettingsDefaults.currentTenant,
-        permissions: permissions
-      }
-    }, {
-      onSuccess: (response) => {
-        setSubmitPermissionsResult({ success: true, message: response.data?.Results?.join('\n') || 'Permissions added successfully' });
-        userRequest.refetch();
-        setTimeout(() => {
-          setShowAddPermissionsDialog(false);
-          formControl.reset();
-          setSubmitPermissionsResult(null);
-        }, 1500);
+
+    addPermissionsMutation.mutate(
+      {
+        url: "/api/ExecModifyMBPerms",
+        data: {
+          userID: graphUserRequest.data?.[0]?.userPrincipalName,
+          tenantFilter: userSettingsDefaults.currentTenant,
+          permissions: permissions,
+        },
       },
-      onError: (error) => {
-        setSubmitPermissionsResult({ success: false, message: error.message || 'Failed to add permissions' });
-      },
-      onSettled: () => {
-        setIsSubmittingPermissions(false);
+      {
+        onSuccess: (response) => {
+          setSubmitPermissionsResult({
+            success: true,
+            message: response.data?.Results?.join("\n") || "Permissions added successfully",
+          });
+          userRequest.refetch();
+          setTimeout(() => {
+            setShowAddPermissionsDialog(false);
+            formControl.reset();
+            setSubmitPermissionsResult(null);
+          }, 1500);
+        },
+        onError: (error) => {
+          setSubmitPermissionsResult({
+            success: false,
+            message: error.message || "Failed to add permissions",
+          });
+        },
+        onSettled: () => {
+          setIsSubmittingPermissions(false);
+        },
       }
-    });
+    );
   };
 
   const handleOpenPermissionsDialog = () => {
@@ -289,14 +313,15 @@ const Page = () => {
           <Error />
         ),
       },
-      text: "Mailbox permissions",
-      subtext: userRequest.data?.[0]?.Permissions?.length !== 0
-        ? "Other users have access to this mailbox"
-        : "No other users have access to this mailbox",
+      text: "Mailbox Permissions",
+      subtext:
+        userRequest.data?.[0]?.Permissions?.length !== 0
+          ? "Other users have access to this mailbox"
+          : "No other users have access to this mailbox",
       statusColor: "green.main",
       cardLabelBoxActions: (
         <Button
-          startIcon={<Mail />}
+          startIcon={<PersonAdd />}
           onClick={handleOpenPermissionsDialog}
           variant="outlined"
           color="primary"
@@ -308,11 +333,12 @@ const Page = () => {
       table: {
         title: "Mailbox Permissions",
         hideTitle: true,
-        data: userRequest.data?.[0]?.Permissions?.map(permission => ({
-          User: permission.User,
-          AccessRights: permission.AccessRights,
-          _raw: permission
-        })) || [],
+        data:
+          userRequest.data?.[0]?.Permissions?.map((permission) => ({
+            User: permission.User,
+            AccessRights: permission.AccessRights,
+            _raw: permission,
+          })) || [],
         refreshFunction: () => userRequest.refetch(),
         isFetching: userRequest.isFetching,
         simpleColumns: ["User", "AccessRights"],
@@ -498,39 +524,42 @@ const Page = () => {
       relatedQueryKeys: `ListUsers-${userId}`,
     },
   ];
-  
+
   const handleAddAliases = () => {
     const aliases = newAliases
-      .split('\n')
-      .map(alias => alias.trim())
-      .filter(alias => alias);
+      .split("\n")
+      .map((alias) => alias.trim())
+      .filter((alias) => alias);
     if (aliases.length > 0) {
       setIsSubmitting(true);
       setSubmitResult(null);
-      
+
       ApiPostCall({
-        url: '/api/SetUserAliases',
+        url: "/api/SetUserAliases",
         data: {
           id: userId,
           tenantFilter: userSettingsDefaults.currentTenant,
-          AddedAliases: aliases.join(','),
+          AddedAliases: aliases.join(","),
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
         },
         onSuccess: (response) => {
-          setSubmitResult({ success: true, message: response.message || 'Aliases added successfully' });
+          setSubmitResult({
+            success: true,
+            message: response.message || "Aliases added successfully",
+          });
           graphUserRequest.refetch();
           setTimeout(() => {
             setShowAddAliasDialog(false);
-            setNewAliases('');
+            setNewAliases("");
             setSubmitResult(null);
           }, 1500);
         },
         onError: (error) => {
-          setSubmitResult({ success: false, message: error.message || 'Failed to add aliases' });
+          setSubmitResult({ success: false, message: error.message || "Failed to add aliases" });
         },
         onFinally: () => {
           setIsSubmitting(false);
-        }
+        },
       });
     }
   };
@@ -548,13 +577,14 @@ const Page = () => {
         ),
       },
       text: "Proxy Addresses",
-      subtext: graphUserRequest.data?.[0]?.proxyAddresses?.length > 1
-        ? "Proxy addresses are configured for this user"
-        : "No proxy addresses configured for this user",
+      subtext:
+        graphUserRequest.data?.[0]?.proxyAddresses?.length > 1
+          ? "Proxy addresses are configured for this user"
+          : "No proxy addresses configured for this user",
       statusColor: "green.main",
       cardLabelBoxActions: (
         <Button
-          startIcon={<Mail />}
+          startIcon={<AlternateEmail />}
           onClick={() => setShowAddAliasDialog(true)}
           variant="outlined"
           color="primary"
@@ -566,10 +596,11 @@ const Page = () => {
       table: {
         title: "Proxy Addresses",
         hideTitle: true,
-        data: graphUserRequest.data?.[0]?.proxyAddresses?.map(address => ({
-          Address: address,
-          Type: address.startsWith('SMTP:') ? 'Primary' : 'Alias',
-        })) || [],
+        data:
+          graphUserRequest.data?.[0]?.proxyAddresses?.map((address) => ({
+            Address: address,
+            Type: address.startsWith("SMTP:") ? "Primary" : "Alias",
+          })) || [],
         refreshFunction: () => graphUserRequest.refetch(),
         isFetching: graphUserRequest.isFetching,
         simpleColumns: ["Address", "Type"],
@@ -629,6 +660,7 @@ const Page = () => {
           sx={{
             flexGrow: 1,
             py: 4,
+            mr: 2,
           }}
         >
           <Grid container spacing={2}>
@@ -713,14 +745,14 @@ const Page = () => {
           row={actionData.data}
         />
       )}
-      <Dialog 
-        open={showAddAliasDialog} 
+      <Dialog
+        open={showAddAliasDialog}
         onClose={() => setShowAddAliasDialog(false)}
         maxWidth="sm"
         fullWidth
       >
         <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             Add Proxy Addresses
             <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
               <Close />
@@ -744,31 +776,28 @@ const Page = () => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button 
-            onClick={() => setShowAddAliasDialog(false)}
-            disabled={isSubmitting}
-          >
+          <Button onClick={() => setShowAddAliasDialog(false)} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleAddAliases} 
-            variant="contained" 
+          <Button
+            onClick={handleAddAliases}
+            variant="contained"
             color="primary"
             disabled={!newAliases.trim() || isSubmitting}
             startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
           >
-            {isSubmitting ? 'Adding...' : 'Add Aliases'}
+            {isSubmitting ? "Adding..." : "Add Aliases"}
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog 
-        open={showAddPermissionsDialog} 
+      <Dialog
+        open={showAddPermissionsDialog}
         onClose={() => setShowAddPermissionsDialog(false)}
         maxWidth="sm"
         fullWidth
       >
         <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             Add Mailbox Permissions
             <IconButton onClick={() => setShowAddPermissionsDialog(false)} size="small">
               <Close />
@@ -778,7 +807,7 @@ const Page = () => {
         <DialogContent>
           <Stack spacing={3} sx={{ mt: 1 }}>
             <Box>
-            <CippFormComponent
+              <CippFormComponent
                 type="autoComplete"
                 label="Add Full Access"
                 name="permissions.AddFullAccess"
@@ -825,7 +854,7 @@ const Page = () => {
             <Box>
               <CippFormComponent
                 type="autoComplete"
-                label="Add Send On Behalf Permissions" 
+                label="Add Send On Behalf Permissions"
                 name="permissions.AddSendOnBehalf"
                 isFetching={userRequest.isFetching || usersList.isFetching}
                 options={
@@ -841,23 +870,27 @@ const Page = () => {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 2, pb: 2 }}>
-          <Button 
+          <Button
             onClick={() => setShowAddPermissionsDialog(false)}
             disabled={isSubmittingPermissions}
           >
             Cancel
           </Button>
-          <Button 
-            onClick={handleAddPermissions} 
-            variant="contained" 
+          <Button
+            onClick={handleAddPermissions}
+            variant="contained"
             color="primary"
-            disabled={(!formControl.watch("permissions.AddFullAccess") && 
-                      !formControl.watch("permissions.AddSendAs") && 
-                      !formControl.watch("permissions.AddSendOnBehalf")) || 
-                      isSubmittingPermissions}
-            startIcon={isSubmittingPermissions ? <CircularProgress size={20} color="inherit" /> : null}
+            disabled={
+              (!formControl.watch("permissions.AddFullAccess") &&
+                !formControl.watch("permissions.AddSendAs") &&
+                !formControl.watch("permissions.AddSendOnBehalf")) ||
+              isSubmittingPermissions
+            }
+            startIcon={
+              isSubmittingPermissions ? <CircularProgress size={20} color="inherit" /> : null
+            }
           >
-            {isSubmittingPermissions ? 'Adding...' : 'Add Permissions'}
+            {isSubmittingPermissions ? "Adding..." : "Add Permissions"}
           </Button>
         </DialogActions>
       </Dialog>
