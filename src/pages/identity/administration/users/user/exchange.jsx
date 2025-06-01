@@ -769,7 +769,7 @@ const Page = () => {
             </Box>
             <Typography variant="subtitle2" color="textSecondary">
               Add one or more proxy addresses (aliases) for this user. Each alias should be on a new
-              line. This should be in the format of smtp:user@domain.com.
+              line.
             </Typography>
           </Stack>
         </DialogTitle>
