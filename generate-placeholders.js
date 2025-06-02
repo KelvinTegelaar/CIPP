@@ -70,6 +70,8 @@ const pages = [
   { title: "Defender Deployment", path: "/security/defender/deployment" },
   { title: "Vulnerabilities", path: "/security/defender/list-defender-tvm" },
   { title: "Device Compliance", path: "/security/reports/list-device-compliance" },
+  { title: "Safe Links", path: "/security/safelinks/safelinks" },
+  { title: "Safe Links Templates", path: "/security/safelinks/safelinks-template" },
   { title: "Applications", path: "/endpoint/applications/list" },
   { title: "Application Queue", path: "/endpoint/applications/queue" },
   { title: "Add Choco App", path: "/endpoint/applications/add-choco-app" },
@@ -122,7 +124,6 @@ const pages = [
   { title: "Message Trace", path: "/email/reports/message-trace" },
   { title: "Anti-Phishing Filters", path: "/email/reports/antiphishing-filters" },
   { title: "Malware Filters", path: "/email/reports/malware-filters" },
-  { title: "Safe Links Filters", path: "/email/reports/safelinks-filters" },
   { title: "Safe Attachments Filters", path: "/email/reports/safeattachments-filters" },
   {
     title: "Shared Mailbox with Enabled Account",
