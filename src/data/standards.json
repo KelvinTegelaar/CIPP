@@ -337,9 +337,52 @@
     "docsDescription": "Uses the CIPP functionality that deploys applications across an entire tenant base as a standard.",
     "addedComponent": [
       {
+        "type": "select",
+        "multiple": false,
+        "creatable": false,
+        "label": "App Approval Mode",
+        "name": "standards.AppDeploy.mode",
+        "options": [
+          {
+            "label": "Template",
+            "value": "template"
+          },
+          {
+            "label": "Copy Permissions",
+            "value": "copy"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "label": "Select Applications",
+        "name": "standards.AppDeploy.templateIds",
+        "api": {
+          "url": "/api/ListAppApprovalTemplates",
+          "labelField": "TemplateName",
+          "valueField": "TemplateId",
+          "queryKey": "StdAppApprovalTemplateList",
+          "addedField": {
+            "AppId": "AppId"
+          }
+        },
+        "condition": {
+          "field": "standards.AppDeploy.mode",
+          "compareType": "is",
+          "compareValue": "template"
+        }
+      },
+      {
         "type": "textField",
         "name": "standards.AppDeploy.appids",
-        "label": "Application IDs, comma separated"
+        "label": "Application IDs, comma separated",
+        "condition": {
+          "field": "standards.AppDeploy.mode",
+          "compareType": "isNot",
+          "compareValue": "template"
+        }
       }
     ],
     "label": "Deploy Application",
@@ -1372,6 +1415,60 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.EXOOutboundSpamLimits",
+    "cat": "Exchange Standards",
+    "tag": ["CIS"],
+    "helpText": "Configures the outbound spam recipient limits (external per hour, internal per hour, per day) and the action to take when a limit is reached. The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one. ",
+    "docsDescription": "Configures the Exchange Online outbound spam recipient limits for external per hour, internal per hour, and per day, along with the action to take (e.g., BlockUser, Alert) when these limits are exceeded. This helps prevent abuse and manage email flow. Microsoft's recommendations can be found [here.](https://learn.microsoft.com/en-us/defender-office-365/recommended-settings-for-eop-and-office365#eop-outbound-spam-policy-settings) The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.EXOOutboundSpamLimits.RecipientLimitExternalPerHour",
+        "label": "External Recipient Limit Per Hour",
+        "defaultValue": 400
+      },
+      {
+        "type": "number",
+        "name": "standards.EXOOutboundSpamLimits.RecipientLimitInternalPerHour",
+        "label": "Internal Recipient Limit Per Hour",
+        "defaultValue": 800
+      },
+      {
+        "type": "number",
+        "name": "standards.EXOOutboundSpamLimits.RecipientLimitPerDay",
+        "label": "Daily Recipient Limit",
+        "defaultValue": 800
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.EXOOutboundSpamLimits.ActionWhenThresholdReached",
+        "label": "Action When Threshold Reached",
+        "options": [
+          {
+            "label": "Alert",
+            "value": "Alert"
+          },
+          {
+            "label": "Block User",
+            "value": "BlockUser"
+          },
+          {
+            "label": "Block user from sending mail for the rest of the day",
+            "value": "BlockUserForToday"
+          }
+        ]
+      }
+    ],
+    "label": "Set Exchange Outbound Spam Limits",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-13",
+    "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy",
+    "recommendedBy": ["CIPP", "CIS"]
+  },
+  {
     "name": "standards.DisableExternalCalendarSharing",
     "cat": "Exchange Standards",
     "tag": ["CIS", "exo_individualsharing"],
@@ -1513,6 +1610,38 @@
     "impactColour": "warning",
     "addedDate": "2024-05-31",
     "powershellEquivalent": "Set-OrganizationConfig -BookingsEnabled",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.EXODirectSend",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the state of Direct Send in Exchange Online. Direct Send allows applications to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication.",
+    "docsDescription": "Controls whether applications can use Direct Send to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication. A detailed explanation from Microsoft can be found [here.](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365)",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.EXODirectSend.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set Direct Send state",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-28",
+    "powershellEquivalent": "Set-OrganizationConfig -RejectDirectSend $true/$false",
     "recommendedBy": []
   },
   {
@@ -1823,6 +1952,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Quarantine policy for Spoof",
         "name": "standards.AntiPhishPolicy.SpoofQuarantineTag",
         "options": [
@@ -1863,6 +1993,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Quarantine policy for user impersonation",
         "name": "standards.AntiPhishPolicy.TargetedUserQuarantineTag",
         "options": [
@@ -1903,6 +2034,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Quarantine policy for domain impersonation",
         "name": "standards.AntiPhishPolicy.TargetedDomainQuarantineTag",
         "options": [
@@ -1943,6 +2075,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "Apply quarantine policy",
         "name": "standards.AntiPhishPolicy.MailboxIntelligenceQuarantineTag",
         "options": [
@@ -1997,6 +2130,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "QuarantineTag",
         "name": "standards.SafeAttachmentPolicy.QuarantineTag",
         "options": [
@@ -2023,7 +2157,12 @@
         "type": "textField",
         "name": "standards.SafeAttachmentPolicy.RedirectAddress",
         "label": "Redirect Address",
-        "required": false
+        "required": false,
+        "condition": {
+          "field": "standards.SafeAttachmentPolicy.Redirect",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "label": "Default Safe Attachment Policy",
@@ -2083,6 +2222,13 @@
         "required": false,
         "label": "Phishing Simulation Urls",
         "name": "standards.PhishingSimulations.PhishingSimUrls"
+      },
+      {
+        "type": "switch",
+        "label": "Remove extra urls",
+        "name": "standards.PhishingSimulations.RemoveExtraUrls",
+        "defaultValue": false,
+        "required": false
       }
     ],
     "label": "Phishing Simulation Configuration",
@@ -2123,6 +2269,7 @@
       {
         "type": "select",
         "multiple": false,
+        "creatable": true,
         "label": "QuarantineTag",
         "name": "standards.MalwareFilterPolicy.QuarantineTag",
         "options": [
@@ -2150,7 +2297,12 @@
         "type": "textField",
         "name": "standards.MalwareFilterPolicy.InternalSenderAdminAddress",
         "required": false,
-        "label": "Internal Sender Admin Address"
+        "label": "Internal Sender Admin Address",
+        "condition": {
+          "field": "standards.MalwareFilterPolicy.EnableInternalSenderAdminNotifications",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "switch",
@@ -2162,7 +2314,12 @@
         "type": "textField",
         "name": "standards.MalwareFilterPolicy.ExternalSenderAdminAddress",
         "required": false,
-        "label": "External Sender Admin Address"
+        "label": "External Sender Admin Address",
+        "condition": {
+          "field": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "label": "Default Malware Filter Policy",
@@ -2178,6 +2335,13 @@
     "tag": [],
     "helpText": "This adds allowed domains to the Spoof Intelligence Allow/Block List.",
     "addedComponent": [
+      {
+        "type": "switch",
+        "label": "Remove extra domains from the allow list",
+        "name": "standards.PhishSimSpoofIntelligence.RemoveExtraDomains",
+        "defaultValue": false,
+        "required": false
+      },
       {
         "type": "autoComplete",
         "multiple": true,
@@ -2228,7 +2392,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.SpamQuarantineTag",
         "options": [
@@ -2268,7 +2432,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "High Confidence Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
         "options": [
@@ -2308,7 +2472,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "Bulk Quarantine Tag",
         "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
         "options": [
@@ -2348,7 +2512,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.PhishQuarantineTag",
         "options": [
@@ -2370,7 +2534,7 @@
         "type": "autoComplete",
         "required": true,
         "multiple": false,
-        "creatable": false,
+        "creatable": true,
         "label": "High Confidence Phish Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidencePhishQuarantineTag",
         "options": [
@@ -2448,7 +2612,12 @@
         "creatable": true,
         "required": false,
         "name": "standards.SpamFilterPolicy.LanguageBlockList",
-        "label": "Languages to block (uppercase ISO 639-1 two-letter)"
+        "label": "Languages to block (uppercase ISO 639-1 two-letter)",
+        "condition": {
+          "field": "standards.SpamFilterPolicy.EnableLanguageBlockList",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "switch",
@@ -2462,7 +2631,12 @@
         "creatable": true,
         "required": false,
         "name": "standards.SpamFilterPolicy.RegionBlockList",
-        "label": "Regions to block (uppercase ISO 3166-1 two-letter)"
+        "label": "Regions to block (uppercase ISO 3166-1 two-letter)",
+        "condition": {
+          "field": "standards.SpamFilterPolicy.EnableRegionBlockList",
+          "compareType": "is",
+          "compareValue": true
+        }
       },
       {
         "type": "autoComplete",
@@ -2478,6 +2652,92 @@
     "impactColour": "warning",
     "addedDate": "2024-07-15",
     "powershellEquivalent": "New-HostedContentFilterPolicy or Set-HostedContentFilterPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.QuarantineTemplate",
+    "cat": "Defender Standards",
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "tag": [],
+    "helpText": "This standard creates a Custom Quarantine Policies that can be used in Anti-Spam and all MDO365 policies. Quarantine Policies can be used to specify recipients permissions, enable end-user spam notifications, and specify the release action preference",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": true,
+        "name": "displayName",
+        "label": "Quarantine Display Name",
+        "required": true
+      },
+      {
+        "type": "switch",
+        "label": "Enable end-user spam notifications",
+        "name": "ESNEnabled",
+        "defaultValue": true,
+        "required": false
+      },
+      {
+        "type": "select",
+        "multiple": false,
+        "label": "Select release action preference",
+        "name": "ReleaseAction",
+        "options": [
+          {
+            "label": "Allow recipients to request a message to be released from quarantine",
+            "value": "PermissionToRequestRelease"
+          },
+          {
+            "label": "Allow recipients to release a message from quarantine",
+            "value": "PermissionToRelease"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "label": "Include Messages From Blocked Sender Address",
+        "name": "IncludeMessagesFromBlockedSenderAddress",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to delete message",
+        "name": "PermissionToDelete",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to preview message",
+        "name": "PermissionToPreview",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to block Sender Address",
+        "name": "PermissionToBlockSender",
+        "defaultValue": false,
+        "required": false
+      },
+      {
+        "type": "switch",
+        "label": "Allow recipients to whitelist Sender Address",
+        "name": "PermissionToAllowSender",
+        "defaultValue": false,
+        "required": false
+      }
+    ],
+    "label": "Custom Quarantine Policy",
+    "multiple": true,
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-16",
+    "powershellEquivalent": "Set-QuarantinePolicy or New-QuarantinePolicy",
     "recommendedBy": []
   },
   {
@@ -2621,9 +2881,18 @@
         "label": "MDM User Scope?",
         "type": "radio",
         "options": [
-          { "label": "All", "value": "all" },
-          { "label": "None", "value": "none" },
-          { "label": "Custom Group", "value": "selected" }
+          {
+            "label": "All",
+            "value": "all"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          },
+          {
+            "label": "Custom Group",
+            "value": "selected"
+          }
         ]
       },
       {
@@ -3331,11 +3600,6 @@
       },
       {
         "type": "switch",
-        "name": "standards.TeamsExternalAccessPolicy.EnablePublicCloudAccess",
-        "label": "Allow user to communicate with Skype users"
-      },
-      {
-        "type": "switch",
         "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
         "label": "Allow communication with unmanaged Teams accounts"
       }
@@ -3358,11 +3622,6 @@
         "type": "switch",
         "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
         "label": "Allow users to communicate with other organizations"
-      },
-      {
-        "type": "switch",
-        "name": "standards.TeamsFederationConfiguration.AllowPublicUsers",
-        "label": "Allow users to communicate with Skype Users"
       },
       {
         "type": "autoComplete",
@@ -3716,11 +3975,26 @@
         "label": "Who should this template be assigned to?",
         "type": "radio",
         "options": [
-          { "label": "Do not assign", "value": "On" },
-          { "label": "Assign to all users", "value": "allLicensedUsers" },
-          { "label": "Assign to all devices", "value": "AllDevices" },
-          { "label": "Assign to all users and devices", "value": "AllDevicesAndUsers" },
-          { "label": "Assign to Custom Group", "value": "customGroup" }
+          {
+            "label": "Do not assign",
+            "value": "On"
+          },
+          {
+            "label": "Assign to all users",
+            "value": "allLicensedUsers"
+          },
+          {
+            "label": "Assign to all devices",
+            "value": "AllDevices"
+          },
+          {
+            "label": "Assign to all users and devices",
+            "value": "AllDevicesAndUsers"
+          },
+          {
+            "label": "Assign to Custom Group",
+            "value": "customGroup"
+          }
         ]
       },
       {
@@ -3795,10 +4069,22 @@
         "label": "What state should we deploy this template in?",
         "type": "radio",
         "options": [
-          { "value": "donotchange", "label": "Do not change state" },
-          { "value": "Enabled", "label": "Set to enabled" },
-          { "value": "Disabled", "label": "Set to disabled" },
-          { "value": "enabledForReportingButNotEnforced", "label": "Set to report only" }
+          {
+            "value": "donotchange",
+            "label": "Do not change state"
+          },
+          {
+            "value": "Enabled",
+            "label": "Set to enabled"
+          },
+          {
+            "value": "Disabled",
+            "label": "Set to disabled"
+          },
+          {
+            "value": "enabledForReportingButNotEnforced",
+            "label": "Set to report only"
+          }
         ]
       }
     ]
@@ -3806,6 +4092,7 @@
   {
     "name": "standards.ExchangeConnectorTemplate",
     "label": "Exchange Connector Template",
+    "cat": "Templates",
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -3849,6 +4136,7 @@
         "api": {
           "url": "/api/ListGroupTemplates",
           "labelField": "Displayname",
+          "altLabelField": "displayName",
           "valueField": "GUID",
           "queryKey": "ListGroupTemplates"
         }

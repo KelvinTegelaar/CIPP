@@ -4,30 +4,38 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail, Fingerprint, Launch } from "@mui/icons-material";
+import { Check, Error, Mail, Fingerprint, Launch, Delete, Star, Close } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippExchangeInfoCard";
 import { useEffect, useState } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
-import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
+import { Alert, Button, Collapse, CircularProgress, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
-import { Block, PlayArrow, DeleteForever } from "@mui/icons-material";
+import { Block, PlayArrow } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
 import CippExchangeActions from "../../../../../components/CippComponents/CippExchangeActions";
+import { CippApiDialog } from "../../../../../components/CippComponents/CippApiDialog";
+import { useDialog } from "../../../../../hooks/use-dialog";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const [waiting, setWaiting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [actionData, setActionData] = useState({ ready: false });
+  const [showAddAliasDialog, setShowAddAliasDialog] = useState(false);
+  const [newAliases, setNewAliases] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
+  const createDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
 
@@ -221,7 +229,7 @@ const Page = () => {
     {
       label: "Remove Mailbox Rule",
       type: "POST",
-      icon: <DeleteForever />,
+      icon: <Delete />,
       url: "/api/ExecRemoveMailboxRule",
       data: {
         ruleId: "Identity",
@@ -287,6 +295,142 @@ const Page = () => {
     },
   ];
 
+  const proxyAddressActions = [
+    {
+      label: "Make Primary",
+      type: "POST",
+      icon: <Star />,
+      url: "/api/SetUserAliases",
+      data: {
+        id: userId,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        MakePrimary: "Address",
+      },
+      confirmText: "Are you sure you want to make this the primary proxy address?",
+      multiPost: false,
+      relatedQueryKeys: `ListUsers-${userId}`,
+    },
+    {
+      label: "Remove Proxy Address",
+      type: "POST",
+      icon: <Delete />,
+      url: "/api/SetUserAliases",
+      data: {
+        id: userId,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        RemovedAliases: "Address",
+      },
+      confirmText: "Are you sure you want to remove this proxy address?",
+      multiPost: false,
+      relatedQueryKeys: `ListUsers-${userId}`,
+    },
+  ];
+
+  const handleAddAliases = () => {
+    const aliases = newAliases
+      .split('\n')
+      .map(alias => alias.trim())
+      .filter(alias => alias);
+    if (aliases.length > 0) {
+      setIsSubmitting(true);
+      setSubmitResult(null);
+      fetch('/api/SetUserAliases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          tenantFilter: userSettingsDefaults.currentTenant,
+          AddedAliases: aliases.join(','),
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          setSubmitResult({ success: true, message: 'Aliases added successfully' });
+          graphUserRequest.refetch();
+          setTimeout(() => {
+            setShowAddAliasDialog(false);
+            setNewAliases('');
+            setSubmitResult(null);
+          }, 1500);
+        })
+        .catch(error => {
+          setSubmitResult({ success: false, message: 'Failed to add aliases' });
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    }
+  };
+
+  const proxyAddressesCard = [
+    {
+      id: 1,
+      cardLabelBox: {
+        cardLabelBoxHeader: graphUserRequest.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : graphUserRequest.data?.[0]?.proxyAddresses?.length > 1 ? (
+          <Check />
+        ) : (
+          <Error />
+        ),
+      },
+      text: "Current Proxy Addresses",
+      subtext: graphUserRequest.data?.[0]?.proxyAddresses?.length > 1
+        ? "Proxy addresses are configured for this user"
+        : "No proxy addresses configured for this user",
+      statusColor: "green.main",
+      table: {
+        title: "Proxy Addresses",
+        hideTitle: true,
+        data: graphUserRequest.data?.[0]?.proxyAddresses?.map(address => ({
+          Address: address,
+          Type: address.startsWith('SMTP:') ? 'Primary' : 'Alias',
+        })) || [],
+        refreshFunction: () => graphUserRequest.refetch(),
+        isFetching: graphUserRequest.isFetching,
+        simpleColumns: ["Address", "Type"],
+        actions: proxyAddressActions,
+        offCanvas: {
+          children: (data) => {
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Address Details"
+                propertyItems={[
+                  {
+                    label: "Address",
+                    value: data.Address,
+                  },
+                  {
+                    label: "Type",
+                    value: data.Type,
+                  },
+                ]}
+                actionItems={proxyAddressActions}
+              />
+            );
+          },
+        },
+      },
+      children: (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 2, px: 2 }}>
+          <Button
+            startIcon={<Mail />}
+            onClick={() => setShowAddAliasDialog(true)}
+            variant="contained"
+            color="primary"
+            size="small"
+          >
+            Add Alias
+          </Button>
+        </Box>
+      ),
+    },
+  ];
+
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
@@ -346,6 +490,11 @@ const Page = () => {
                 <Grid item size={8}>
                   <Stack spacing={3}>
                     <CippBannerListCard
+                      isFetching={graphUserRequest.isLoading}
+                      items={proxyAddressesCard}
+                      isCollapsible={graphUserRequest.data?.[0]?.proxyAddresses?.length !== 0}
+                    />
+                    <CippBannerListCard
                       isFetching={userRequest.isLoading}
                       items={permissions}
                       isCollapsible={userRequest.data?.[0]?.Permissions?.length !== 0}
@@ -374,6 +523,69 @@ const Page = () => {
           </Grid>
         </Box>
       )}
+      {actionData.ready && (
+        <CippApiDialog
+          createDialog={createDialog}
+          title="Confirmation"
+          api={actionData.action}
+          row={actionData.data}
+        />
+      )}
+      <Dialog 
+        open={showAddAliasDialog} 
+        onClose={() => setShowAddAliasDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Add Proxy Addresses
+            <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              autoFocus
+              fullWidth
+              multiline
+              rows={6}
+              value={newAliases}
+              onChange={(e) => setNewAliases(e.target.value)}
+              placeholder="One alias per line"
+              variant="outlined"
+              disabled={isSubmitting}
+            />
+            {submitResult && (
+              <Alert 
+                severity={submitResult.success ? "success" : "error"}
+                sx={{ mt: 2 }}
+              >
+                {submitResult.message}
+              </Alert>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button 
+            onClick={() => setShowAddAliasDialog(false)}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleAddAliases} 
+            variant="contained" 
+            color="primary"
+            disabled={!newAliases.trim() || isSubmitting}
+            startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+          >
+            {isSubmitting ? 'Adding...' : 'Add Aliases'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </HeaderedTabbedLayout>
   );
 };

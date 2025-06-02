@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Enterprise Apps",
+    "path": "/tenant/administration/applications/enterprise-apps"
+  },
+  {
+    "label": "App Registrations",
+    "path": "/tenant/administration/applications/app-registrations"
+  },
+  {
+    "label": "Permission Sets",
+    "path": "/tenant/administration/applications/permission-sets"
+  },
+  {
+    "label": "Templates",
+    "path": "/tenant/administration/applications/templates"
+  }
+]

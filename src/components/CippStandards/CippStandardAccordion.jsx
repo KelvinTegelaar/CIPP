@@ -9,7 +9,6 @@ import {
   SvgIcon,
   Collapse,
   Divider,
-  Grid,
   Tooltip,
   Chip,
   TextField,
@@ -26,6 +25,7 @@ import {
   Close,
   FilterAlt,
 } from "@mui/icons-material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useWatch } from "react-hook-form";
 import _ from "lodash";
@@ -37,6 +37,7 @@ import Intune from "../../icons/iconly/bulk/intune";
 import GDAPRoles from "/src/data/GDAPRoles";
 import timezoneList from "/src/data/timezoneList";
 import standards from "/src/data/standards.json";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 const getAvailableActions = (disabledFeatures) => {
   const allActions = [
@@ -68,7 +69,7 @@ const CippAddedComponent = React.memo(({ standardName, component, formControl })
   }
 
   return (
-    <Grid item xs={12}>
+    <Grid size={12}>
       <CippFormComponent
         type={updatedComponent.type}
         label={updatedComponent.label}
@@ -108,6 +109,48 @@ const CippStandardAccordion = ({
 
         const addedComponentsFilled =
           standard.addedComponent?.every((component) => {
+            // Skip validation for components with conditions
+            if (component.condition) {
+              const conditionField = `${standardName}.${component.condition.field}`;
+              const conditionValue = _.get(watchedValues, conditionField);
+              const compareType = component.condition.compareType || "is";
+              const compareValue = component.condition.compareValue;
+              const propertyName = component.condition.propertyName || "value";
+
+              // Check if condition is met based on the compareType
+              let conditionMet = false;
+              if (propertyName === "value") {
+                switch (compareType) {
+                  case "is":
+                    conditionMet = _.isEqual(conditionValue, compareValue);
+                    break;
+                  case "isNot":
+                    conditionMet = !_.isEqual(conditionValue, compareValue);
+                    break;
+                  // Add other compareType cases as needed
+                  default:
+                    conditionMet = false;
+                }
+              } else if (Array.isArray(conditionValue)) {
+                // Handle array values with propertyName
+                switch (compareType) {
+                  case "valueEq":
+                    conditionMet = conditionValue.some(
+                      (item) => item?.[propertyName] === compareValue
+                    );
+                    break;
+                  // Add other compareType cases for arrays as needed
+                  default:
+                    conditionMet = false;
+                }
+              }
+
+              // If condition is not met, we don't need to validate this field
+              if (!conditionMet) {
+                return true;
+              }
+            }
+
             const isRequired = component.required !== false && component.type !== "switch";
             if (!isRequired) return true;
             return !!_.get(watchedValues, `${standardName}.${component.name}`);
@@ -370,7 +413,7 @@ const CippStandardAccordion = ({
                           />
                         </Stack>
                       )}
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography variant="body2" color="textSecondary" sx={{ mr: 1 }}>
                         {standard.helpText}
                       </Typography>
                     </Stack>
@@ -394,9 +437,11 @@ const CippStandardAccordion = ({
                     <Typography variant="body2">
                       {isConfigured ? "Configured" : "Unconfigured"}
                     </Typography>
-                    <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
-                      <Delete />
-                    </IconButton>
+                    <Tooltip title="Remove Standard">
+                      <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
 
                     <IconButton onClick={() => handleAccordionToggle(standardName)}>
                       <SvgIcon
@@ -411,7 +456,7 @@ const CippStandardAccordion = ({
                   <Divider />
                   <Box sx={{ p: 3 }}>
                     <Grid container spacing={2}>
-                      <Grid item xs={4}>
+                      <Grid size={4}>
                         <CippFormComponent
                           type="autoComplete"
                           name={`${standardName}.action`}
@@ -423,16 +468,34 @@ const CippStandardAccordion = ({
                       </Grid>
 
                       {hasAddedComponents && (
-                        <Grid item xs={8}>
+                        <Grid size={8}>
                           <Grid container spacing={2}>
-                            {standard.addedComponent?.map((component, idx) => (
-                              <CippAddedComponent
-                                key={idx}
-                                standardName={standardName}
-                                component={component}
-                                formControl={formControl}
-                              />
-                            ))}
+                            {standard.addedComponent?.map((component, idx) =>
+                              component?.condition ? (
+                                <CippFormCondition
+                                  key={idx}
+                                  formControl={formControl}
+                                  field={`${standardName}.${component.condition.field}`}
+                                  compareType={component.condition.compareType}
+                                  compareValue={component.condition.compareValue}
+                                  propertyName={component.condition.propertyName || "value"}
+                                  action={component.condition.action || "hide"}
+                                >
+                                  <CippAddedComponent
+                                    standardName={standardName}
+                                    component={component}
+                                    formControl={formControl}
+                                  />
+                                </CippFormCondition>
+                              ) : (
+                                <CippAddedComponent
+                                  key={idx}
+                                  standardName={standardName}
+                                  component={component}
+                                  formControl={formControl}
+                                />
+                              )
+                            )}
                           </Grid>
                         </Grid>
                       )}
