@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,6 +9,7 @@ import {
   Stack,
   SvgIcon,
   Typography,
+  Tooltip,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -18,6 +19,7 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import { useWatch, useFormContext } from "react-hook-form";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
@@ -312,44 +314,80 @@ const CippExchangeSettingsForm = (props) => {
             multiple={false}
             formControl={formControl}
           />
-          <CippFormComponent
-            type="hidden"
-            name="calendar.FolderName"
-            value={calPermissions?.[0]?.FolderName ?? "Calendar"}
-            formControl={formControl}
-          />
           <CippFormCondition
             formControl={formControl}
             field="calendar.UserToGetPermissions"
             compareType="hasValue"
             compareValue={true}
           >
-            <CippFormComponent
-              type="autoComplete"
-              label="Permission Level"
-              name="calendar.Permissions"
-              required={true}
-              validators={{
-                validate: (value) =>
-                  value ? true : "Select the permission level for the calendar",
-              }}
-              isFetching={isFetching || usersList.isFetching}
-              options={[
-                { value: "Author", label: "Author" },
-                { value: "Contributor", label: "Contributor" },
-                { value: "Editor", label: "Editor" },
-                { value: "Owner", label: "Owner" },
-                { value: "NonEditingAuthor", label: "Non Editing Author" },
-                { value: "PublishingAuthor", label: "Publishing Author" },
-                { value: "PublishingEditor", label: "Publishing Editor" },
-                { value: "Reviewer", label: "Reviewer" },
-                { value: "LimitedDetails", label: "Limited Details" },
-                { value: "AvailabilityOnly", label: "Availability Only" },
-              ]}
-              multiple={false}
-              formControl={formControl}
-            />
+            <Stack spacing={0.5}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Permission Level"
+                name="calendar.Permissions"
+                required={true}
+                validators={{
+                  validate: (value) =>
+                    value ? true : "Select the permission level for the calendar",
+                }}
+                isFetching={isFetching || usersList.isFetching}
+                options={[
+                  { value: "Author", label: "Author" },
+                  { value: "Contributor", label: "Contributor" },
+                  { value: "Editor", label: "Editor" },
+                  { value: "Owner", label: "Owner" },
+                  { value: "NonEditingAuthor", label: "Non Editing Author" },
+                  { value: "PublishingAuthor", label: "Publishing Author" },
+                  { value: "PublishingEditor", label: "Publishing Editor" },
+                  { value: "Reviewer", label: "Reviewer" },
+                  { value: "LimitedDetails", label: "Limited Details" },
+                  { value: "AvailabilityOnly", label: "Availability Only" },
+                ]}
+                multiple={false}
+                formControl={formControl}
+              />
+              <Box sx={{ pl: 2 }}>
+                {(() => {
+                  const permissionLevel = useWatch({
+                    control: formControl.control,
+                    name: "calendar.Permissions"
+                  });
+                  const isEditor = permissionLevel?.value === "Editor";
+                  
+                  // Use useEffect to handle the switch value reset
+                  useEffect(() => {
+                    if (!isEditor) {
+                      formControl.setValue("calendar.CanViewPrivateItems", false);
+                    }
+                  }, [isEditor, formControl]);
+                  
+                  return (
+                    <Tooltip 
+                      title={!isEditor ? "Only usable when permission level is Editor" : ""}
+                      followCursor
+                      placement="right"
+                    >
+                      <span>
+                        <CippFormComponent
+                          type="switch"
+                          label="Can view Private items"
+                          name="calendar.CanViewPrivateItems"
+                          formControl={formControl}
+                          disabled={!isEditor}
+                        />
+                      </span>
+                    </Tooltip>
+                  );
+                })()}
+              </Box>
+            </Stack>
           </CippFormCondition>
+          <CippFormComponent
+            type="hidden"
+            name="calendar.FolderName"
+            value={calPermissions?.[0]?.FolderName ?? "Calendar"}
+            formControl={formControl}
+          />
           <Grid item size={12}>
             <CippApiResults apiObject={postRequest} />
           </Grid>

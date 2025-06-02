@@ -29,16 +29,18 @@ import {
 } from "@mui/icons-material";
 import { SvgIcon } from "@mui/material";
 import discordIcon from "../../public/discord-mark-blue.svg";
-import React from "react";
+import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
-TimeAgo.addDefaultLocale(en);
+import { persistQueryClient } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 
 const ReactQueryDevtoolsProduction = React.lazy(() =>
   import("@tanstack/react-query-devtools/build/modern/production.js").then((d) => ({
     default: d.ReactQueryDevtools,
   }))
 );
+TimeAgo.addDefaultLocale(en);
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -48,6 +50,43 @@ const App = (props) => {
   const preferredTheme = useMediaPredicate("(prefers-color-scheme: dark)") ? "dark" : "light";
   const pathname = usePathname();
   const route = useRouter();
+
+  const excludeQueryKeys = ["authmeswa"];
+
+  // 👇 Persist TanStack Query cache to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const localStoragePersister = createSyncStoragePersister({
+        storage: window.localStorage,
+      });
+
+      persistQueryClient({
+        queryClient,
+        persister: localStoragePersister,
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        staleTime: 1000 * 60 * 5, // optional: 5 minutes
+        buster: "v1",
+        dehydrateOptions: {
+          shouldDehydrateQuery: (query) => {
+            const queryIsReadyForPersistence = query.state.status === "success";
+            if (queryIsReadyForPersistence) {
+              const { queryKey } = query;
+              // Check if queryKey exists and has elements before accessing index 0
+              if (!queryKey || !queryKey.length) {
+                return false;
+              }
+              const queryKeyString = String(queryKey[0] || "");
+              const excludeFromPersisting = excludeQueryKeys.some((key) =>
+                queryKeyString.includes(key)
+              );
+              return !excludeFromPersisting;
+            }
+            return queryIsReadyForPersistence;
+          },
+        },
+      });
+    }
+  }, []);
 
   const speedDialActions = [
     {

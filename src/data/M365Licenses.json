@@ -1,5 +1,21 @@
 [
   {
+    "Product_Display_Name": "10-Year Audit Log Retention Add On",
+    "String_Id": "10_ALR_ADDON",
+    "GUID": "c2e41e49-e2a2-4c55-832a-cf13ffba1d6a",
+    "Service_Plan_Name": "Auditing_10Year_ Retention_ Add_On",
+    "Service_Plan_Id": "7d16094b-4db8-41ff-a182-372a90a85407",
+    "Service_Plans_Included_Friendly_Names": "Auditing 10Year Retention Add On"
+  },
+  {
+    "Product_Display_Name": "Advanced Communications",
+    "String_Id": "ADV_COMMS",
+    "GUID": "e4654015-5daf-4a48-9b37-4f309dddd88b",
+    "Service_Plan_Name": "TEAMS_ADVCOMMS",
+    "Service_Plan_Id": "604ec28a-ae18-4bc6-91b0-11da94504ba9",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Advanced Communications"
+  },
+  {
     "Product_Display_Name": "AI Builder Capacity add-on",
     "String_Id": "CDSAICAPACITY",
     "GUID": "d2dea78b-507c-4e56-b400-39447f4738f8",
@@ -54,6 +70,30 @@
     "Service_Plan_Name": "MICROSOFT_APPLICATION_PROTECTION_AND_GOVERNANCE_D",
     "Service_Plan_Id": "2e6ffd72-52d1-4541-8f6c-938f9a8d4cdc",
     "Service_Plans_Included_Friendly_Names": "Microsoft Application Protection and Governance (D)"
+  },
+  {
+    "Product_Display_Name": "Azure Information Protection Premium P1 for Government",
+    "String_Id": "RIGHTSMANAGEMENT_CE_GOV\t",
+    "GUID": "78362de1-6942-4bb8-83a1-a32aa67e6e2c",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION_GOV",
+    "Service_Plan_Id": "922ba911-5694-4e99-a794-73aed9bfeec8",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation for Government"
+  },
+  {
+    "Product_Display_Name": "Azure Information Protection Premium P1 for Government",
+    "String_Id": "RIGHTSMANAGEMENT_CE_GOV\t",
+    "GUID": "78362de1-6942-4bb8-83a1-a32aa67e6e2c",
+    "Service_Plan_Name": "RMS_S_PREMIUM_GOV",
+    "Service_Plan_Id": "1b66aedf-8ca1-4f73-af76-ec76c6180f98",
+    "Service_Plans_Included_Friendly_Names": "Azure Information Protection Premium P1 for GCC"
+  },
+  {
+    "Product_Display_Name": "Azure Information Protection Premium P1 for Government",
+    "String_Id": "RIGHTSMANAGEMENT_CE_GOV\t",
+    "GUID": "78362de1-6942-4bb8-83a1-a32aa67e6e2c",
+    "Service_Plan_Name": "RMS_S_ENTERPRISE_GOV",
+    "Service_Plan_Id": "6a76346d-5d6e-4051-9fe3-ed3f312b5597",
+    "Service_Plans_Included_Friendly_Names": "Azure Rights Management"
   },
   {
     "Product_Display_Name": "Career Coach for faculty",
@@ -1280,6 +1320,30 @@
     "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
   },
   {
+    "Product_Display_Name": "Dynamics 365 Customer Service Voice Channel Add-in",
+    "String_Id": "DYN365_CS_VOICE",
+    "GUID": "dadd2312-b5b1-4fa0-8c15-0903de3e2303",
+    "Service_Plan_Name": "DYN365_CS_VOICE",
+    "Service_Plan_Id": "f6ec6dfa-2402-468d-a455-89be11116d43",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Customer Service Voice Add-in"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Service Voice Channel Add-in",
+    "String_Id": "DYN365_CS_VOICE",
+    "GUID": "dadd2312-b5b1-4fa0-8c15-0903de3e2303",
+    "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_D365_CS_VOICE",
+    "Service_Plan_Id": "a3dce1be-e9ca-453a-9483-e69a5b46ce98",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Customer Service Voice"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Service Voice Channel Add-in",
+    "String_Id": "DYN365_CS_VOICE",
+    "GUID": "dadd2312-b5b1-4fa0-8c15-0903de3e2303",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
     "Product_Display_Name": "Dynamics 365 Customer Insights Standalone",
     "String_Id": "DYN365_CUSTOMER_INSIGHTS_BASE",
     "GUID": "0c250654-c7f7-461f-871a-7222f6592cf2",
@@ -1968,6 +2032,118 @@
     "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
   },
   {
+    "Product_Display_Name": "Dynamics 365 for Finance Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_FINANCE_ATTACH",
+    "GUID": "d721f2e4-099b-4105-b40e-872e46cad402",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Finance Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_FINANCE_ATTACH",
+    "GUID": "d721f2e4-099b-4105-b40e-872e46cad402",
+    "Service_Plan_Name": "CDS_AI_Capacity_FI",
+    "Service_Plan_Id": "5d85ec34-44e5-43b6-a9aa-d1b4c1d3aa3b",
+    "Service_Plans_Included_Friendly_Names": "AI Builder Capacity Add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Finance Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_FINANCE_ATTACH",
+    "GUID": "d721f2e4-099b-4105-b40e-872e46cad402",
+    "Service_Plan_Name": "DYN365_CDS_FINANCE",
+    "Service_Plan_Id": "e95d7060-d4d9-400a-a2bd-a244bf0b609e",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service for Dynamics 365 Finance"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Finance Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_FINANCE_ATTACH",
+    "GUID": "d721f2e4-099b-4105-b40e-872e46cad402",
+    "Service_Plan_Name": "DYN365_REGULATORY_SERVICE",
+    "Service_Plan_Id": "c7657ae3-c0b0-4eed-8c1d-6a7967bd9c65",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Finance and Operations, Enterprise edition - Regulatory Service"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Finance Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_FINANCE_ATTACH",
+    "GUID": "d721f2e4-099b-4105-b40e-872e46cad402",
+    "Service_Plan_Name": "D365_Finance_Attach",
+    "Service_Plan_Id": "223e33cb-eee0-462d-b1bd-e9a5febf8e85",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Finance Attach"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Finance Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_FINANCE_ATTACH",
+    "GUID": "d721f2e4-099b-4105-b40e-872e46cad402",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "D365_ProjectOperationsCDSAttach",
+    "Service_Plan_Id": "e564d403-7eaf-4c91-b92f-bb0dc62026e1",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Project Operations CDS Attach"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "CDS_AI_Capacity_FI",
+    "Service_Plan_Id": "5d85ec34-44e5-43b6-a9aa-d1b4c1d3aa3b",
+    "Service_Plans_Included_Friendly_Names": "AI Builder Capacity Add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "D365_Finance_Attach",
+    "Service_Plan_Id": "223e33cb-eee0-462d-b1bd-e9a5febf8e85",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Finance Attach"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "D365_ProjectOperationsAttach",
+    "Service_Plan_Id": "fa7675bd-6717-40e7-8172-d0bbcbe1ab12",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Project Operations Attach"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "PROJECT_FOR_PROJECT_OPERATIONS_ATTACH",
+    "Service_Plan_Id": "6d8e07c6-9613-484f-8cc1-a66c5c3979bb",
+    "Service_Plans_Included_Friendly_Names": "Project for Project Operations Attach"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Finance Attach to Qualifying Base Offer Embedded with Project Management & Accounting",
+    "String_Id": "DYN365_FINANCE_ATTACH_ISVEMB_PROJOPS",
+    "GUID": "db5bd06c-b99a-4c54-98e9-90fea5164c88",
+    "Service_Plan_Name": "SHAREPOINTSTANDARD",
+    "Service_Plan_Id": "c7699d2e-19aa-44de-8edf-1736da088ca1",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 1)"
+  },
+  {
     "Product_Display_Name": "Dynamics 365 for Case Management Enterprise Edition",
     "String_Id": "DYN365_ENTERPRISE_CASE_MANAGEMENT",
     "GUID": "d39fb075-21ae-42d0-af80-22a2599749e0",
@@ -2259,6 +2435,454 @@
     "Product_Display_Name": "Dynamics 365 Commerce",
     "String_Id": "DYN365_RETAIL",
     "GUID": "79909bd8-4c69-4202-939e-11bc4385b134",
+    "Service_Plan_Name": "FLOW_DYN_APPS",
+    "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "DYN365_CC",
+    "Service_Plan_Id": "2a9d72b3-1714-440f-babf-bf92bf9683d8",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Contact Center"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "DYN365_CS_MESSAGING_TPS",
+    "Service_Plan_Id": "47c2b191-a5fb-4129-b690-00c474d2f623",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Service Digital Messaging add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "DYN365_CS_VOICE",
+    "Service_Plan_Id": "f6ec6dfa-2402-468d-a455-89be11116d43",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Customer Service Voice Add-in"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_D365_CS_VOICE",
+    "Service_Plan_Id": "a3dce1be-e9ca-453a-9483-e69a5b46ce98",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Customer Service Voice"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE",
+    "Service_Plan_Id": "5dbe027f-2339-4123-9542-606e4d348a72",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS",
+    "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER",
+    "GUID": "dfb1700c-013e-4132-8bce-0d319c43a95d",
+    "Service_Plan_Name": "FLOW_DYN_APPS",
+    "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "DYN365_CC",
+    "Service_Plan_Id": "2a9d72b3-1714-440f-babf-bf92bf9683d8",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Contact Center"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "DYN365_CS_MESSAGING_TPS",
+    "Service_Plan_Id": "47c2b191-a5fb-4129-b690-00c474d2f623",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Service Digital Messaging add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "DYN365_CS_VOICE",
+    "Service_Plan_Id": "f6ec6dfa-2402-468d-a455-89be11116d43",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Customer Service Voice Add-in"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_D365_CS_VOICE",
+    "Service_Plan_Id": "a3dce1be-e9ca-453a-9483-e69a5b46ce98",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Customer Service Voice"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE",
+    "Service_Plan_Id": "5dbe027f-2339-4123-9542-606e4d348a72",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS",
+    "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "39a78eb6-3a8a-4e1e-878a-575a5c8984e7",
+    "Service_Plan_Name": "FLOW_DYN_APPS",
+    "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "DYN365_CC_DIGITAL",
+    "Service_Plan_Id": "0ef2b4e3-0a2b-450d-8c5f-a52203c40f50",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Contact Center Digital"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "DYN365_CS_MESSAGING_TPS",
+    "Service_Plan_Id": "47c2b191-a5fb-4129-b690-00c474d2f623",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Service Digital Messaging add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "DYN365_CS_MESSAGING",
+    "Service_Plan_Id": "43b076f2-1123-45ba-a339-2e170ee58c53",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Service Digital Messaging Application Integration"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE",
+    "Service_Plan_Id": "5dbe027f-2339-4123-9542-606e4d348a72",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS",
+    "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL",
+    "GUID": "59d3d0bf-df39-4b8b-8601-ea6c09a7fd66",
+    "Service_Plan_Name": "FLOW_DYN_APPS",
+    "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "DYN365_CC_DIGITAL",
+    "Service_Plan_Id": "0ef2b4e3-0a2b-450d-8c5f-a52203c40f50",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Contact Center Digital"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "DYN365_CS_MESSAGING_TPS",
+    "Service_Plan_Id": "47c2b191-a5fb-4129-b690-00c474d2f623",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Service Digital Messaging add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "DYN365_CS_MESSAGING",
+    "Service_Plan_Id": "43b076f2-1123-45ba-a339-2e170ee58c53",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Service Digital Messaging Application Integration"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE",
+    "Service_Plan_Id": "5dbe027f-2339-4123-9542-606e4d348a72",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS",
+    "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Digital Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_DIGITAL_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "7e6e6091-1680-4532-9370-6cd4598483ac",
+    "Service_Plan_Name": "FLOW_DYN_APPS",
+    "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "DYN365_CC_VOICE",
+    "Service_Plan_Id": "57517633-b4ad-4db8-8c1a-65f443424490",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Contact Center Voice"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "DYN365_CS_VOICE",
+    "Service_Plan_Id": "f6ec6dfa-2402-468d-a455-89be11116d43",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Customer Service Voice Add-in"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_D365_CS_VOICE",
+    "Service_Plan_Id": "a3dce1be-e9ca-453a-9483-e69a5b46ce98",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Customer Service Voice"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE",
+    "Service_Plan_Id": "5dbe027f-2339-4123-9542-606e4d348a72",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS",
+    "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE",
+    "GUID": "79e2368c-4568-48d5-a352-b0344afabcf8",
+    "Service_Plan_Name": "FLOW_DYN_APPS",
+    "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "DYN365_CC_VOICE",
+    "Service_Plan_Id": "57517633-b4ad-4db8-8c1a-65f443424490",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Contact Center Voice"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "DYN365_CS_VOICE",
+    "Service_Plan_Id": "f6ec6dfa-2402-468d-a455-89be11116d43",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Customer Service Voice Add-in"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_D365_CS_VOICE",
+    "Service_Plan_Id": "a3dce1be-e9ca-453a-9483-e69a5b46ce98",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Customer Service Voice"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE",
+    "Service_Plan_Id": "5dbe027f-2339-4123-9542-606e4d348a72",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS",
+    "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Contact Center Voice Add-on for Customer Service Enterprise",
+    "String_Id": "DYNAMICS_365_CONTACT_CENTER_VOICE_ADD_ON_FOR_CUSTOMER_SERVICE_ENTERPRISE",
+    "GUID": "73e8b747-20bf-463d-8ffd-274a7d65d0bc",
     "Service_Plan_Name": "FLOW_DYN_APPS",
     "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
     "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
@@ -3216,6 +3840,78 @@
     "Service_Plans_Included_Friendly_Names": "PowerApps for Dynamics 365 for Government"
   },
   {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "DYN365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "Service_Plan_Id": "1d8c8e0e-4308-4db5-8a41-b129dbdaea20",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Project Service Automation for Government"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "Forms_Pro_PS_GCC",
+    "Service_Plan_Id": "e98256c5-17d0-4987-becc-e991c52d55c6",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Dynamics 365 Customer Voice for Project Service Automation for GCC"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION_GOV",
+    "Service_Plan_Id": "922ba911-5694-4e99-a794-73aed9bfeec8",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation for Government"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "SHAREPOINTWAC_GOV",
+    "Service_Plan_Id": "8f9f0f3b-ca90-406c-a842-95579171f8ec",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web for Government"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "PROJECT_CLIENT_SUBSCRIPTION_GOV",
+    "Service_Plan_Id": "45c6831b-ad74-4c7f-bd03-7c2b3fa39067",
+    "Service_Plans_Included_Friendly_Names": "Project Online Desktop Client"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "SHAREPOINT_PROJECT_GOV",
+    "Service_Plan_Id": "e57afa78-1f19-4542-ba13-b32cd4d8f472",
+    "Service_Plans_Included_Friendly_Names": "Project Online Service for Government"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "SHAREPOINTENTERPRISE_GOV",
+    "Service_Plan_Id": "153f85dd-d912-4762-af6c-d6e0fb4f6692",
+    "Service_Plans_Included_Friendly_Names": "SharePoint Plan 2G"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "FLOW_DYN_APPS_GOV",
+    "Service_Plan_Id": "2c6af4f1-e7b6-4d59-bbc8-eaa884f42d69",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365 for Government"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Project Service Automation for Government",
+    "String_Id": "D365_ENTERPRISE_PROJECT_SERVICE_AUTOMATION_GOV",
+    "GUID": "6c827f0a-42cb-4cff-b1cd-f4104c16ede3",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS_GOV",
+    "Service_Plan_Id": "3089c02b-e533-4b73-96a5-01fa648c3c3c",
+    "Service_Plans_Included_Friendly_Names": "PowerApps for Dynamics 365 for Government"
+  },
+  {
     "Product_Display_Name": "Dynamics 365 for Sales and Customer Service Enterprise Edition",
     "String_Id": "DYN365_ENTERPRISE_SALES_CUSTOMERSERVICE",
     "GUID": "8edc2cf8-6438-4fa9-b6e3-aa1660c640cc",
@@ -3926,6 +4622,110 @@
     "Service_Plan_Name": "POWERAPPS_DYN_APPS",
     "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
     "Service_Plans_Included_Friendly_Names": "POWERAPPS FOR DYNAMICS 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "DYN365_CDS_SUPPLYCHAINMANAGEMENT",
+    "Service_Plan_Id": "b6a8b974-2956-4e14-ae81-f0384c363528",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service for Dynamics 365 Supply Chain Management"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "FLOW_FOR_IOM_USL",
+    "Service_Plan_Id": "9e6d1620-dce9-4655-8933-af8fa5bccc9c",
+    "Service_Plans_Included_Friendly_Names": "Data Integration for IOM with Power Automate USL"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "CDS_FOR_IOM",
+    "Service_Plan_Id": "2bb89402-51e9-4c5a-be33-e954a9dd1ba6",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for IOM"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "D365_DemandPlanning",
+    "Service_Plan_Id": "e8b616eb-1a6d-42b4-84c7-b63870791349",
+    "Service_Plans_Included_Friendly_Names": "DO NOT USE - Dynamics 365 Supply Chain Management Premium"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "DYN365_REGULATORY_SERVICE",
+    "Service_Plan_Id": "c7657ae3-c0b0-4eed-8c1d-6a7967bd9c65",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Finance and Operations, Enterprise edition - Regulatory Service"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "D365_SCM",
+    "Service_Plan_Id": "1224eae4-0d91-474a-8a52-27ec96a63fe7",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Supply Chain Management"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "DYN365_IOM",
+    "Service_Plan_Id": "616cf6e2-f52f-4738-b463-10003061fcd3",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Intelligent Order Management"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "DYN365_IOM_USER",
+    "Service_Plan_Id": "81375e2f-5ef7-4773-96aa-e3279f50bd21",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Intelligent Order Management USL"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "D365_SCM_Premium",
+    "Service_Plan_Id": "0363c8e5-c30d-4d7c-a621-7b6cab5e0482",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Supply Chain Management Premium"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "POWERAPPS_DYN_APPS",
+    "Service_Plan_Id": "874fc546-6efe-4d22-90b8-5c4e7aa59f4b",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Dynamics 365"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Supply Chain Management Premium",
+    "String_Id": "Dynamics_365_Supply_Chain_Management_Premium",
+    "GUID": "9467fd84-2758-4287-b1fa-6a908c441b8a",
+    "Service_Plan_Name": "FLOW_DYN_APPS",
+    "Service_Plan_Id": "7e6d7d78-73de-46ba-83b1-6d25117334ba",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
   },
   {
     "Product_Display_Name": "Dynamics 365 for Talent",
@@ -5264,6 +6064,22 @@
     "Service_Plans_Included_Friendly_Names": "Mobile Device Management for Office 365"
   },
   {
+    "Product_Display_Name": "Exchange Online (Plan 2) for GCC",
+    "String_Id": "EXCHANGEENTERPRISE_GOV",
+    "GUID": "7be8dc28-4da4-4e6d-b9b9-c60f2806df8a",
+    "Service_Plan_Name": "EXCHANGE_S_ENTERPRISE_GOV",
+    "Service_Plan_Id": "8c3069c0-ccdb-44be-ab77-986203a67df2",
+    "Service_Plans_Included_Friendly_Names": "Exchange Online (Plan 2) for Government"
+  },
+  {
+    "Product_Display_Name": "Exchange Online (Plan 2) for GCC",
+    "String_Id": "EXCHANGEENTERPRISE_GOV",
+    "GUID": "7be8dc28-4da4-4e6d-b9b9-c60f2806df8a",
+    "Service_Plan_Name": "INTUNE_O365",
+    "Service_Plan_Id": "882e1d05-acd1-4ccb-8708-6ee03664b117",
+    "Service_Plans_Included_Friendly_Names": "Mobile Device Management for Office 365"
+  },
+  {
     "Product_Display_Name": "Exchange Online (Plan 2)",
     "String_Id": "EXCHANGEENTERPRISE",
     "GUID": "19ec0d23-8335-4cbd-94ac-6050e30712fa",
@@ -5366,6 +6182,30 @@
     "Service_Plan_Name": "EOP_ENTERPRISE",
     "Service_Plan_Id": "326e2b78-9d27-42c9-8509-46c827743a17",
     "Service_Plans_Included_Friendly_Names": "Exchange Online Protection"
+  },
+  {
+    "Product_Display_Name": "Flow Plan 1 for Government",
+    "String_Id": "FLOW_P1_GOV",
+    "GUID": "2b3b0c87-36af-4d15-8124-04a691cc2546",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION_GOV",
+    "Service_Plan_Id": "922ba911-5694-4e99-a794-73aed9bfeec8",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation for Government"
+  },
+  {
+    "Product_Display_Name": "Flow Plan 1 for Government",
+    "String_Id": "FLOW_P1_GOV",
+    "GUID": "2b3b0c87-36af-4d15-8124-04a691cc2546",
+    "Service_Plan_Name": "DYN365_CDS_P1_GOV",
+    "Service_Plan_Id": "ce361df2-f2a5-4713-953f-4050ba09aad8",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service for Government"
+  },
+  {
+    "Product_Display_Name": "Flow Plan 1 for Government",
+    "String_Id": "FLOW_P1_GOV",
+    "GUID": "2b3b0c87-36af-4d15-8124-04a691cc2546",
+    "Service_Plan_Name": "FLOW_P1_GOV",
+    "Service_Plan_Id": "774da41c-a8b3-47c1-8322-b9c1ab68be9f",
+    "Service_Plans_Included_Friendly_Names": "Power Automate (Plan 1) for Government"
   },
   {
     "Product_Display_Name": "Intune",
@@ -13075,6 +13915,102 @@
     "Product_Display_Name": "Microsoft 365 Copilot (Education Faculty)",
     "String_Id": "Microsoft_365_Copilot_EDU",
     "GUID": "ad9c22b3-52d7-4e7e-973c-88121ea96436",
+    "Service_Plan_Name": "M365_COPILOT_CONNECTORS",
+    "Service_Plan_Id": "89f1c4c8-0878-40f7-804d-869c9128ab5d",
+    "Service_Plans_Included_Friendly_Names": "Power Platform Connectors in Microsoft 365 Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "COPILOT_STUDIO_IN_COPILOT_FOR_M365",
+    "Service_Plan_Id": "fe6c28b3-d468-44ea-bbd0-a10a5167435c",
+    "Service_Plans_Included_Friendly_Names": "Copilot Studio in Copilot for M365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_COPILOT",
+    "Service_Plan_Id": "82d30987-df9b-4486-b146-198b21d164c7",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors in Microsoft 365 Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_INTELLIGENT_SEARCH",
+    "Service_Plan_Id": "931e4a88-a67f-48b5-814f-16a5f1e6028d",
+    "Service_Plans_Included_Friendly_Names": "Intelligent Search"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_SHAREPOINT",
+    "Service_Plan_Id": "0aedf20c-091d-420b-aadf-30c042609612",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot for SharePoint"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_TEAMS",
+    "Service_Plan_Id": "b95945de-b3bd-46db-8437-f2beb6ea2347",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Microsoft Teams"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_APPS",
+    "Service_Plan_Id": "a62f8878-de10-42f3-b68f-6149a25ceb97",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Copilot in Productivity Apps"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "Microsoft_Copilot_for_Sales",
+    "Service_Plan_Id": "a2194428-ead1-4fc1-bb81-ab8675125f42",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot for Sales"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "Microsoft_Copilot_for_Sales_PowerAutomate",
+    "Service_Plan_Id": "0c1c2af2-6c51-43c7-9c55-fa487ac147ff",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot for Sales with Power Automate"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "M365_COPILOT_BUSINESS_CHAT",
+    "Service_Plan_Id": "3f30311c-6b1e-48a4-ab79-725b469da960",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Copilot with Graph-grounded chat"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_USER",
+    "Service_Plan_Id": "b622badb-1b45-48d5-920f-4b27a2c0996c",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
+    "Service_Plan_Name": "WORKPLACE_ANALYTICS_INSIGHTS_BACKEND",
+    "Service_Plan_Id": "ff7b261f-d98b-415b-827c-42a3fdf015af",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Viva Insights Backend"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 Copilot for Sales",
+    "String_Id": "Microsoft_Copilot_for_Sales",
+    "GUID": "15f2e9fc-b782-4f73-bf51-81d8b7fff6f4",
     "Service_Plan_Name": "M365_COPILOT_CONNECTORS",
     "Service_Plan_Id": "89f1c4c8-0878-40f7-804d-869c9128ab5d",
     "Service_Plans_Included_Friendly_Names": "Power Platform Connectors in Microsoft 365 Copilot"
@@ -28744,6 +29680,22 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Domestic Calling Plan (240 min)"
   },
   {
+    "Product_Display_Name": "Microsoft Teams Domestic Calling Plan for GCC",
+    "String_Id": "MCOPSTN_1_GOV",
+    "GUID": "923f58ab-fca1-46a1-92f9-89fda21238a8",
+    "Service_Plan_Name": "MCOPSTN1_GOV",
+    "Service_Plan_Id": "3c8a8792-7866-409b-bb61-1b20ace0368b",
+    "Service_Plans_Included_Friendly_Names": "Domestic Calling Plan for Government"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Domestic Calling Plan for GCC",
+    "String_Id": "MCOPSTN_1_GOV",
+    "GUID": "923f58ab-fca1-46a1-92f9-89fda21238a8",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION_GOV",
+    "Service_Plan_Id": "922ba911-5694-4e99-a794-73aed9bfeec8",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation for Government"
+  },
+  {
     "Product_Display_Name": "Microsoft Teams Essentials",
     "String_Id": "Teams_Ess",
     "GUID": "fde42873-30b6-436b-b361-21af5a6b84ae",
@@ -39109,7 +40061,7 @@
     "GUID": "0f13a262-dc6f-4800-8dc6-a62f72c95fad",
     "Service_Plan_Name": "CDSAICAPACITY_PERUSER",
     "Service_Plan_Id": "91f50f7b-2204-4803-acac-5cf5668b8b39",
-    "Service_Plans_Included_Friendly_Names": "DO NOT USE - AI Builder capacity Per User add-on"
+    "Service_Plans_Included_Friendly_Names": "AI Builder capacity Per User add-on"
   },
   {
     "Product_Display_Name": "PowerApps & Flow GCC Test - O365 & Dyn365 Plans",
@@ -40310,6 +41262,22 @@
     "Service_Plan_Name": "PowerPages_Authenticated_User_GCCH",
     "Service_Plan_Id": "18e74ca2-b5f0-4802-9a8b-00d2ff1e8322",
     "Service_Plans_Included_Friendly_Names": "Power Pages Authenticated Users per site monthly capacity GCCH"
+  },
+  {
+    "Product_Display_Name": "Power Pages authenticated users T1 100 users/per site/month capacity pack CN_CN",
+    "String_Id": "Power Pages authenticated users T1_CN_CN",
+    "GUID": "9a3c2a19-06c0-41b1-b2ea-13528d7b2e17",
+    "Service_Plan_Name": "DV_PowerPages_Authenticated_User",
+    "Service_Plan_Id": "7aae746a-3463-4737-b295-3c1a16c31438",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Power Pages Authenticated users per site"
+  },
+  {
+    "Product_Display_Name": "Power Pages authenticated users T1 100 users/per site/month capacity pack CN_CN",
+    "String_Id": "Power Pages authenticated users T1_CN_CN",
+    "GUID": "9a3c2a19-06c0-41b1-b2ea-13528d7b2e17",
+    "Service_Plan_Name": "PowerPages_Authenticated_User_CN",
+    "Service_Plan_Id": "967d9574-a076-4bb7-ab89-f41f64bc142e",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Authenticated Users per site monthly capacity China"
   },
   {
     "Product_Display_Name": "Power Pages authenticated users T1 100 users/per site/month capacity pack_GCC",
