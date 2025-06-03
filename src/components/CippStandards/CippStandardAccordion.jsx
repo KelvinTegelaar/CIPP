@@ -758,8 +758,10 @@ const CippStandardAccordion = ({
                         </Grid>
                       )}
                     </Grid>
-                    <Divider sx={{ mt: 2 }} />
-                    <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ mt: 2 }}>
+                  </Box>
+                  <Divider sx={{ mt: 2 }} />
+                  <Box sx={{ px: 3 , py: 2 }}>
+                    <Stack direction="row" justifyContent="flex-end" spacing={1}>
                       <Button
                         variant="outlined"
                         color="primary"
