@@ -48,7 +48,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     session?.data?.clientPrincipal?.userDetails !== apiRoles?.data?.clientPrincipal?.userDetails
   ) {
     // refetch the profile if the user details are different
-    refetch();
+    apiRoles.refetch();
   }
 
   if (null !== apiRoles?.data?.clientPrincipal && undefined !== apiRoles?.data) {
