@@ -24,6 +24,9 @@ import {
   Search,
   Close,
   FilterAlt,
+  NotificationImportant,
+  Assignment,
+  Construction,
 } from "@mui/icons-material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -258,19 +261,19 @@ const CippStandardAccordion = ({
 
     // Set the entire standard's value at once to ensure proper handling of nested objects and arrays
     formControl.setValue(standardName, _.cloneDeep(savedValue));
-    
+
     // Find the original standard definition to get the base standard
     const baseStandardName = standardName.split("[")[0];
     const standard = providedStandards.find((s) => s.name === baseStandardName);
-    
+
     // Determine if the standard was configured with saved values
     if (standard) {
       const isConfigured = isStandardConfigured(standardName, standard, savedValue);
-      
+
       // Restore the previous configuration state
       setConfiguredState((prev) => ({
         ...prev,
-        [standardName]: isConfigured
+        [standardName]: isConfigured,
       }));
     }
 
@@ -324,7 +327,7 @@ const CippStandardAccordion = ({
         if (standardName === expanded) {
           return true;
         }
-        
+
         const matchesSearch =
           !searchQuery ||
           categoryMatchesSearch ||
@@ -635,28 +638,37 @@ const CippStandardAccordion = ({
                     </Avatar>
                     <Stack>
                       <Typography variant="h6">{accordionTitle}</Typography>
-                      {selectedActions && selectedActions?.length > 0 && (
-                        <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
-                          {selectedActions?.map((action, index) => (
-                            <React.Fragment key={index}>
-                              <Chip
-                                label={action.label}
-                                color="info"
-                                variant="outlined"
-                                size="small"
-                                sx={{ mr: 1 }}
-                              />
-                            </React.Fragment>
-                          ))}
-                          <Chip
-                            label={standard?.impact}
-                            color={standard?.impact === "High Impact" ? "error" : "info"}
-                            variant="outlined"
-                            size="small"
-                            sx={{ mr: 1 }}
-                          />
-                        </Stack>
-                      )}
+                      <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
+                        {selectedActions && selectedActions?.length > 0 && (
+                          <>
+                            {selectedActions?.map((action, index) => (
+                              <React.Fragment key={index}>
+                                <Chip
+                                  label={action.label}
+                                  color="primary"
+                                  variant="outlined"
+                                  size="small"
+                                  sx={{ mr: 1 }}
+                                  icon={
+                                    <SvgIcon>
+                                      {action.value === "Report" && <Assignment />}
+                                      {action.value === "warn" && <NotificationImportant />}
+                                      {action.value === "Remediate" && <Construction />}
+                                    </SvgIcon>
+                                  }
+                                />
+                              </React.Fragment>
+                            ))}
+                          </>
+                        )}
+                        <Chip
+                          label={standard?.impact}
+                          color={standard?.impact === "High Impact" ? "error" : "info"}
+                          variant="outlined"
+                          size="small"
+                          sx={{ mr: 1 }}
+                        />
+                      </Stack>
                       <Typography variant="body2" color="textSecondary" sx={{ mr: 1 }}>
                         {standard.helpText}
                       </Typography>
