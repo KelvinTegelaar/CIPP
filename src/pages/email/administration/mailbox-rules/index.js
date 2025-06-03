@@ -4,14 +4,45 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
+import { Block, PlayArrow, DeleteForever } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Mailbox Rules";
   const actions = [
     {
+      label: "Enable Mailbox Rule",
+      type: "POST",
+      icon: <PlayArrow />,
+      url: "/api/ExecSetMailboxRule",
+      data: {
+        ruleId: "Identity",
+        userPrincipalName: "UserPrincipalName",
+        ruleName: "Name",
+        Enable: true,
+      },
+      condition: (row) => !row.Enabled,
+      confirmText: "Are you sure you want to enable this mailbox rule?",
+      multiPost: false,
+    },
+    {
+      label: "Disable Mailbox Rule",
+      type: "POST",
+      icon: <Block />,
+      url: "/api/ExecSetMailboxRule",
+      data: {
+        ruleId: "Identity",
+        userPrincipalName: "UserPrincipalName",
+        ruleName: "Name",
+        Disable: true,
+      },
+      condition: (row) => row.Enabled,
+      confirmText: "Are you sure you want to disable this mailbox rule?",
+      multiPost: false,
+    },
+    {
       label: "Remove Mailbox Rule",
       type: "POST",
-      icon: <TrashIcon />,
+      icon: <DeleteForever />,
       url: "/api/ExecRemoveMailboxRule",
       data: { ruleId: "Identity", userPrincipalName: "UserPrincipalName", ruleName: "Name" },
       confirmText: "Are you sure you want to remove this mailbox rule?",
@@ -39,6 +70,7 @@ const Page = () => {
           title="Rule Details"
           propertyItems={properties}
           actionItems={actions}
+          data={data}
         />
       );
     },

@@ -87,8 +87,8 @@ export const nativeMenuItems = [
           },
           { title: "Audit Logs", path: "/tenant/administration/audit-logs" },
           {
-            title: "Enterprise Applications",
-            path: "/tenant/administration/enterprise-apps",
+            title: "Applications",
+            path: "/tenant/administration/applications/enterprise-apps",
           },
           { title: "Secure Score", path: "/tenant/administration/securescore" },
           {
@@ -258,6 +258,7 @@ export const nativeMenuItems = [
         path: "/endpoint/reports",
         items: [
           { title: "Analytics Device Score", path: "/endpoint/reports/analyticsdevicescore" },
+          { title: "Work from anywhere", path: "/endpoint/reports/workfromanywhere" },
         ],
       },
     ],
@@ -340,6 +341,10 @@ export const nativeMenuItems = [
           {
             title: "Connection filter templates",
             path: "/email/spamfilter/list-connectionfilter-templates",
+          },
+          {
+            title: "Quarantine Policies",
+            path: "/email/spamfilter/list-quarantine-policies",
           },
         ],
       },
@@ -464,12 +469,12 @@ export const nativeMenuItems = [
     items: [
       { title: "Application Settings", path: "/cipp/settings", roles: ["admin", "superadmin"] },
       { title: "Logbook", path: "/cipp/logs", roles: ["editor", "admin", "superadmin"] },
-      { title: "SAM Setup Wizard", path: "/onboarding", roles: ["admin", "superadmin"] },
+      { title: "Setup Wizard", path: "/onboardingv2", roles: ["admin", "superadmin"] },
       { title: "Integrations", path: "/cipp/integrations", roles: ["admin", "superadmin"] },
       {
         title: "Custom Data",
         path: "/cipp/custom-data/directory-extensions",
-        roles: ["admin", "superadmin"]
+        roles: ["admin", "superadmin"],
       },
       {
         title: "Advanced",

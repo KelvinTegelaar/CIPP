@@ -1,11 +1,10 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
   Container,
   Stack,
   Typography,
-  Grid,
   Card,
   CardActionArea,
   CardContent,
@@ -13,7 +12,9 @@ import {
   IconButton,
   Skeleton,
   Divider,
+  Tooltip,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import { useForm, useFormState, useWatch } from "react-hook-form";
@@ -32,7 +33,7 @@ import { CippFormCondition } from "../../../../components/CippComponents/CippFor
 
 const AlertWizard = () => {
   const apiRequest = ApiPostCall({
-    relatedQueryKeys: "ListAlertsQueue",
+    relatedQueryKeys: ["ListAlertsQueue", "ListCurrentAlerts"],
   });
   const router = useRouter();
   const [editAlert, setAlertEdit] = useState(false);
@@ -45,6 +46,7 @@ const AlertWizard = () => {
   const existingAlert = ApiGetCall({
     url: "/api/ListAlertsQueue",
     relatedQueryKeys: "ListAlertsQueue",
+    queryKey: "ListCurrentAlerts",
   });
   const [recurrenceOptions, setRecurrenceOptions] = useState([
     { value: "30m", label: "Every 30 minutes" },
@@ -81,22 +83,61 @@ const AlertWizard = () => {
       const alert = existingAlert?.data?.find((alert) => alert.RowKey === router.query.id);
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
-        formControl.setValue("tenantFilter", {
-          value: alert.RawAlert.Tenant,
-          label: alert.RawAlert.Tenant,
-        });
+
+        //console.log(alert);
+
+        // Create formatted excluded tenants array if it exists
+        const excludedTenantsFormatted = Array.isArray(alert.excludedTenants)
+          ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
+          : [];
+
+        // Format the command object
         const usedCommand = alertList?.find(
           (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
         );
-        formControl.setValue("command", { value: usedCommand, label: usedCommand.label });
-        formControl.setValue(
-          "recurrence",
-          recurrenceOptions?.find((opt) => opt.value === alert.RawAlert.Recurrence)
+
+        // Format recurrence option
+        const recurrenceOption = recurrenceOptions?.find(
+          (opt) => opt.value === alert.RawAlert.Recurrence
         );
+
+        // Format post execution values
         const postExecutionValue = postExecutionOptions.filter((opt) =>
           alert.RawAlert.PostExecution.split(",").includes(opt.value)
         );
-        formControl.setValue("postExecution", postExecutionValue);
+
+        // Create the reset object with all the form values
+        const resetObject = {
+          tenantFilter: {
+            value: alert.RawAlert.Tenant,
+            label: alert.RawAlert.Tenant,
+          },
+          excludedTenants: excludedTenantsFormatted,
+          command: { value: usedCommand, label: usedCommand.label },
+          recurrence: recurrenceOption,
+          postExecution: postExecutionValue,
+        };
+
+        // Parse Parameters field if it exists and is a string
+        if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
+          try {
+            // Check if Parameters is a string that needs parsing
+            const params =
+              typeof alert.RawAlert.Parameters === "string"
+                ? JSON.parse(alert.RawAlert.Parameters)
+                : alert.RawAlert.Parameters;
+
+            // Set the input value if it exists
+            if (params.InputValue) {
+              resetObject[usedCommand.inputName] = params.InputValue;
+            }
+          } catch (error) {
+            console.error("Error parsing parameters:", error);
+          }
+        }
+
+        // Reset the form with all values at once
+        formControl.reset(resetObject, { keepDirty: false });
       }
       if (alert?.PartitionKey === "Webhookv2") {
         setAlertType("audit");
@@ -113,6 +154,7 @@ const AlertWizard = () => {
         formControl.reset({
           RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
           tenantFilter: alert.RawAlert.Tenants,
+          excludedTenants: alert.excludedTenants,
           Actions: alert.RawAlert.Actions,
           conditions: alert.RawAlert.Conditions,
           logbook: foundLogbook,
@@ -266,7 +308,7 @@ const AlertWizard = () => {
           </Stack>
 
           <Grid container spacing={1}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Card>
                 <CardActionArea onClick={() => setAlertType("audit")}>
                   <CardContent>
@@ -278,7 +320,7 @@ const AlertWizard = () => {
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={12} md={5.9}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Card>
                 <CardActionArea onClick={() => setAlertType("script")}>
                   <CardContent>
@@ -293,19 +335,25 @@ const AlertWizard = () => {
 
             {/* Audit Log Form */}
             {alertType === "audit" && (
-              <Grid container spacing={4} sx={{ mt: 3 }} justifyContent="space-around">
-                <Grid item xs={12}>
+              <Grid
+                container
+                spacing={4}
+                sx={{ mt: 2, width: "100%" }}
+                justifyContent="space-around"
+              >
+                <Grid size={12}>
                   <form id="auditAlertForm" onSubmit={formControl.handleSubmit(handleAuditSubmit)}>
-                    <Grid container spacing={4} justifyContent="space-around">
-                      <Grid item xs={12} md={12}>
+                    <Grid container spacing={3} justifyContent="space-around">
+                      <Grid size={12}>
                         <CippButtonCard title="Tenant Selector" sx={{ mb: 3 }}>
                           <Grid container spacing={3}>
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                               <CippFormTenantSelector
                                 multiple={true}
                                 formControl={formControl}
                                 allTenants={true}
                                 label="Included Tenants for alert"
+                                includeGroups={true}
                               />
                             </Grid>
                             <CippFormCondition
@@ -314,7 +362,7 @@ const AlertWizard = () => {
                               compareType="valueContains"
                               compareValue="AllTenants"
                             >
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <CippFormTenantSelector
                                   multiple={true}
                                   label="Excluded Tenants for alert"
@@ -328,7 +376,7 @@ const AlertWizard = () => {
                         </CippButtonCard>
                       </Grid>
 
-                      <Grid item xs={12} md={12}>
+                      <Grid size={12}>
                         <CippButtonCard
                           title="Alert Criteria"
                           CardButton={
@@ -339,7 +387,7 @@ const AlertWizard = () => {
                           sx={{ mb: 3 }}
                         >
                           <Grid container spacing={3} sx={{ mb: 2 }}>
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                               <CippFormComponent
                                 type="autoComplete"
                                 multiple={false}
@@ -353,11 +401,12 @@ const AlertWizard = () => {
                               />
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                               <CippFormComponent
                                 type="autoComplete"
                                 name="logbook"
                                 multiple={false}
+                                creatable={false}
                                 formControl={formControl}
                                 validators={{
                                   required: { value: true, message: "This field is required" },
@@ -367,15 +416,28 @@ const AlertWizard = () => {
                               />
                             </Grid>
                           </Grid>
+                          <Grid size={12} sx={{ mb: 2 }}>
+                            <Button
+                              color="primary"
+                              onClick={() => handleAddCondition()}
+                              startIcon={
+                                <SvgIcon>
+                                  <PlusIcon />
+                                </SvgIcon>
+                              }
+                            >
+                              Add a condition
+                            </Button>
+                          </Grid>
                           {addedEvent.map((event) => (
                             <Grid
                               container
-                              spacing={3}
+                              spacing={2}
                               justifyContent="space-around"
                               sx={{ mb: 2 }}
                               key={event.id}
                             >
-                              <Grid item xs={4}>
+                              <Grid size={4}>
                                 <CippFormComponent
                                   type="autoComplete"
                                   multiple={false}
@@ -385,7 +447,7 @@ const AlertWizard = () => {
                                   options={getAuditLogSchema(logbookWatcher?.value)}
                                 />
                               </Grid>
-                              <Grid item xs={4}>
+                              <Grid size={4}>
                                 <CippFormComponent
                                   type="autoComplete"
                                   multiple={false}
@@ -405,11 +467,11 @@ const AlertWizard = () => {
                                   ]}
                                 />
                               </Grid>
-                              <Grid item xs={3}>
+                              <Grid size={3}>
                                 <CippFormCondition
                                   field={`conditions.${event.id}.Property`}
                                   formControl={formControl}
-                                  compareType="is"
+                                  compareType="contains"
                                   compareValue={"String"}
                                 >
                                   <CippFormComponent
@@ -423,7 +485,7 @@ const AlertWizard = () => {
                                   field={`conditions.${event.id}.Property`}
                                   formControl={formControl}
                                   compareType="contains"
-                                  compareValue={"List:"}
+                                  compareValue="List:"
                                 >
                                   <CippFormComponent
                                     type="autoComplete"
@@ -437,23 +499,20 @@ const AlertWizard = () => {
                                   />
                                 </CippFormCondition>
                               </Grid>
-                              <Grid item xs={1}>
-                                <IconButton color="primary" onClick={() => handleAddCondition()}>
-                                  <SvgIcon>
-                                    <PlusIcon />
-                                  </SvgIcon>
-                                </IconButton>
-                                <IconButton
-                                  color="error"
-                                  onClick={() => handleRemoveCondition(event.id)}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
+                              <Grid size={1}>
+                                <Tooltip title="Remove condition">
+                                  <IconButton
+                                    color="error"
+                                    onClick={() => handleRemoveCondition(event.id)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Tooltip>
                               </Grid>
                             </Grid>
                           ))}
 
-                          <Grid item xs={12} sx={{ mt: 2 }}>
+                          <Grid size={12} sx={{ mt: 2 }}>
                             <CippFormComponent
                               type="autoComplete"
                               name="Actions"
@@ -462,11 +521,12 @@ const AlertWizard = () => {
                                 required: { value: true, message: "This field is required" },
                               }}
                               formControl={formControl}
-                              multiple
+                              multiple={true}
+                              creatable={false}
                               options={actionstoTake}
                             />
                           </Grid>
-                          <Grid item xs={12} md={12} sx={{ mt: 2 }}>
+                          <Grid size={12} sx={{ mt: 2 }}>
                             <CippApiResults apiObject={apiRequest} />
                           </Grid>
                         </CippButtonCard>
@@ -479,18 +539,18 @@ const AlertWizard = () => {
 
             {/* Scripted CIPP Alert Form */}
             {alertType === "script" && (
-              <Grid container spacing={3} sx={{ mt: 2 }}>
-                <Grid item xs={12}>
+              <Grid container spacing={3} sx={{ mt: 2, width: "100%" }}>
+                <Grid size={12}>
                   <form
                     id="scriptAlertForm"
                     onSubmit={formControl.handleSubmit(handleScriptSubmit)}
                     disabled={isValid === false}
                   >
                     <Grid container spacing={3}>
-                      <Grid item xs={12} md={12}>
+                      <Grid size={12}>
                         <CippButtonCard title="Tenant Selector">
                           <Grid container spacing={3}>
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                               <CippFormTenantSelector
                                 allTenants={true}
                                 multiple={false}
@@ -501,10 +561,10 @@ const AlertWizard = () => {
                             <CippFormCondition
                               field="tenantFilter"
                               formControl={formControl}
-                              compareType="is"
+                              compareType="contains"
                               compareValue="AllTenants"
                             >
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <CippFormTenantSelector
                                   multiple={true}
                                   label="Excluded Tenants for alert"
@@ -518,7 +578,7 @@ const AlertWizard = () => {
                         </CippButtonCard>
                       </Grid>
 
-                      <Grid item xs={12} md={12}>
+                      <Grid size={12}>
                         <CippButtonCard
                           title="Alert Criteria"
                           CardButton={
@@ -528,11 +588,12 @@ const AlertWizard = () => {
                           }
                         >
                           <Grid spacing={2} container>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                               <CippFormComponent
                                 type="autoComplete"
                                 validators={{ required: true }}
                                 multiple={false}
+                                creatable={false}
                                 name="command"
                                 formControl={formControl}
                                 label="What alerting script should run"
@@ -543,10 +604,11 @@ const AlertWizard = () => {
                                 }))}
                               />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                               <CippFormComponent
                                 type="autoComplete"
                                 multiple={false}
+                                creatable={false}
                                 name="recurrence"
                                 validators={{
                                   required: { value: true, message: "This field is required" },
@@ -556,7 +618,7 @@ const AlertWizard = () => {
                                 options={recurrenceOptions} // Use the state-managed recurrenceOptions here
                               />
                             </Grid>
-                            <Grid item xs={12} md={12}>
+                            <Grid size={12}>
                               {commandValue?.value?.requiresInput && (
                                 <CippFormComponent
                                   type={commandValue.value?.inputType}
@@ -566,7 +628,7 @@ const AlertWizard = () => {
                                 />
                               )}
                             </Grid>
-                            <Grid item xs={12} md={12}>
+                            <Grid size={12}>
                               <CippFormComponent
                                 type="autoComplete"
                                 name="postExecution"
@@ -575,11 +637,12 @@ const AlertWizard = () => {
                                   required: { value: true, message: "This field is required" },
                                 }}
                                 formControl={formControl}
-                                multiple
+                                multiple={true}
+                                creatable={false}
                                 options={postExecutionOptions}
                               />
                             </Grid>
-                            <Grid item xs={12} md={12}>
+                            <Grid size={12}>
                               <CippApiResults apiObject={apiRequest} />
                             </Grid>
                           </Grid>

@@ -1,4 +1,5 @@
-import { Box, Button, Container, Stack, Typography, SvgIcon, Grid, Skeleton } from "@mui/material";
+import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from "@mui/material";
+import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -200,7 +201,7 @@ const Page = () => {
 
           <Grid container spacing={3}>
             {/* Left Column for Accordions */}
-            <Grid item xs={12} lg={4}>
+            <Grid size={{ xs: 12, lg: 4 }}>
               <CippStandardsSideBar
                 title="Standard Template Setup"
                 subtitle="Follow the steps to configure the Standard"
@@ -213,7 +214,7 @@ const Page = () => {
                 updatedAt={updatedAt}
               />
             </Grid>
-            <Grid item xs={12} lg={8}>
+            <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
                 {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
                 {existingTemplate.isLoading ? (

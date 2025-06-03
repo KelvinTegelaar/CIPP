@@ -11,7 +11,7 @@ import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import CippRemediationCard from "../../../../../components/CippCards/CippRemediationCard";
 import CippButtonCard from "../../../../../components/CippCards/CippButtonCard";
 import { SvgIcon, Typography, CircularProgress, Button } from "@mui/material";
@@ -58,7 +58,11 @@ const Page = () => {
 
   // Fetch BEC Check result using GUID
   const becPollingCall = ApiGetCall({
-    url: `/api/execBECCheck?GUID=${becInitialCall.data?.GUID}`,
+    url: `/api/execBECCheck`,
+    data: {
+      GUID: becInitialCall.data?.GUID,
+      tenantFilter: userSettingsDefaults.currentTenant,
+    },
     queryKey: `execBECCheck-polling-${becInitialCall.data?.GUID}`,
     waiting: false,
   });
