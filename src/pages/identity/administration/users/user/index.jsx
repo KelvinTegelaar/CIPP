@@ -9,7 +9,7 @@ import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayou
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippUserInfoCard } from "../../../../../components/CippCards/CippUserInfoCard";
 import { SvgIcon, Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
@@ -81,13 +81,13 @@ const Page = () => {
   }, [userId]);
 
   const userRequest = ApiGetCall({
-    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
+    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${router.query.tenantFilter ?? userSettingsDefaults.currentTenant}`,
     queryKey: `ListUsers-${userId}`,
     waiting: waiting,
   });
 
   const userBulkRequest = ApiPostCall({
-    urlfromdata: true,
+    urlFromData: true,
   });
 
   useEffect(() => {

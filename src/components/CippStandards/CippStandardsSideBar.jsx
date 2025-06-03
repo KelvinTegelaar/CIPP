@@ -134,7 +134,7 @@ const CippStandardsSideBar = ({
             required={true}
             includeGroups={true}
           />
-          {watchForm.tenantFilter?.some((tenant) => tenant.value === "AllTenants") && (
+          {watchForm.tenantFilter?.some((tenant) => tenant.value === "AllTenants" || tenant.type === "Group" ) && (
             <>
               <Divider />
               <CippFormTenantSelector
@@ -142,6 +142,7 @@ const CippStandardsSideBar = ({
                 name="excludedTenants"
                 allTenants={false}
                 formControl={formControl}
+                includeGroups={true}
               />
             </>
           )}

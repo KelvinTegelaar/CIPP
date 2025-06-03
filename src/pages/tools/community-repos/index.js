@@ -204,9 +204,9 @@ const Page = () => {
           <FormProvider {...createForm}>
             <RadioGroup
               row
-              value={createForm.watch("Type")}
+              value={createForm.watch("type")}
               onChange={(e) => {
-                createForm.setValue("Type", e.target.value);
+                createForm.setValue("type", e.target.value);
               }}
             >
               <FormControlLabel value="user" control={<Radio />} label="User" />
@@ -214,7 +214,7 @@ const Page = () => {
             </RadioGroup>
             <Stack spacing={1} sx={{ mt: 2 }}>
               <CippFormCondition
-                field="Type"
+                field="type"
                 compareType="is"
                 compareValue="org"
                 formControl={createForm}
