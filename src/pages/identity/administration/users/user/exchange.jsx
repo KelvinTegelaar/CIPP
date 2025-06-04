@@ -43,9 +43,10 @@ import {
   FormControlLabel,
   Switch,
   Tooltip,
+  Chip,
 } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
-import { Block, PlayArrow } from "@mui/icons-material";
+import { Block, PlayArrow, Add } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
@@ -60,7 +61,8 @@ const Page = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [actionData, setActionData] = useState({ ready: false });
   const [showAddAliasDialog, setShowAddAliasDialog] = useState(false);
-  const [newAliases, setNewAliases] = useState("");
+  const [newAlias, setNewAlias] = useState("");
+  const [aliasList, setAliasList] = useState([]);
   const [submitResult, setSubmitResult] = useState(null);
   const [showAddPermissionsDialog, setShowAddPermissionsDialog] = useState(false);
   const [isSubmittingPermissions, setIsSubmittingPermissions] = useState(false);
@@ -627,12 +629,26 @@ const Page = () => {
     },
   ];
 
+  const handleAddAlias = () => {
+    if (newAlias.trim()) {
+      setAliasList([...aliasList, newAlias.trim()]);
+      setNewAlias("");
+    }
+  };
+
+  const handleDeleteAlias = (aliasToDelete) => {
+    setAliasList(aliasList.filter((alias) => alias !== aliasToDelete));
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleAddAlias();
+    }
+  };
+
   const handleAddAliases = () => {
-    const aliases = newAliases
-      .split("\n")
-      .map((alias) => alias.trim())
-      .filter((alias) => alias);
-    if (aliases.length > 0) {
+    if (aliasList.length > 0) {
       setSubmitResult(null);
 
       setUserAliases.mutate({
@@ -640,7 +656,7 @@ const Page = () => {
         data: {
           id: userId,
           tenantFilter: userSettingsDefaults.currentTenant,
-          AddedAliases: aliases.join(","),
+          AddedAliases: aliasList.join(","),
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
         },
         onSuccess: (response) => {
@@ -651,7 +667,8 @@ const Page = () => {
           graphUserRequest.refetch();
           setTimeout(() => {
             setShowAddAliasDialog(false);
-            setNewAliases("");
+            setAliasList([]);
+            setNewAlias("");
             setSubmitResult(null);
           }, 1500);
         },
@@ -908,44 +925,104 @@ const Page = () => {
         fullWidth
       >
         <DialogTitle>
-          <Stack spacing={2}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              Add Proxy Addresses
-              <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
-                <Close />
-              </IconButton>
-            </Box>
-            <Typography variant="subtitle2" color="textSecondary">
-              Add one or more proxy addresses (aliases) for this user. Each alias should be on a new
-              line.
-            </Typography>
-          </Stack>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography variant="h6">Add Proxy Addresses</Typography>
+            <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
+              <Close />
+            </IconButton>
+          </Box>
         </DialogTitle>
         <DialogContent>
-          <Stack spacing={2}>
-            <TextField
-              autoFocus
-              fullWidth
-              multiline
-              rows={6}
-              value={newAliases}
-              onChange={(e) => setNewAliases(e.target.value)}
-              placeholder="One alias per line"
-              variant="outlined"
-              disabled={setUserAliases.isPending}
-            />
+          <Stack spacing={3} sx={{ mt: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              Add proxy addresses (aliases) for this user. Enter each alias and click Add or press Enter.
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <TextField
+                fullWidth
+                value={newAlias}
+                onChange={(e) => setNewAlias(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Enter an alias"
+                variant="outlined"
+                disabled={setUserAliases.isPending}
+                size="small"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'monospace',
+                    '& .MuiOutlinedInput-input': {
+                      px: 2
+                    }
+                  }
+                }}
+              />
+              <Button
+                onClick={handleAddAlias}
+                variant="contained"
+                disabled={!newAlias.trim() || setUserAliases.isPending}
+                startIcon={<Add />}
+                size="small"
+              >
+                Add
+              </Button>
+            </Box>
+            <Box sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              gap: 1,
+              minHeight: '40px',
+              p: 1,
+              border: '1px dashed',
+              borderColor: 'divider',
+              borderRadius: 1,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {aliasList.length === 0 ? (
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary" 
+                  sx={{ 
+                    px: 2,
+                    py: 1,
+                    textAlign: 'center',
+                    width: '100%'
+                  }}
+                >
+                  No aliases added yet
+                </Typography>
+              ) : (
+                aliasList.map((alias) => (
+                  <Chip
+                    key={alias}
+                    label={alias}
+                    onDelete={() => handleDeleteAlias(alias)}
+                    color="primary"
+                    variant="outlined"
+                  />
+                ))
+              )}
+            </Box>
             <CippApiResults apiObject={setUserAliases} />
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setShowAddAliasDialog(false)} disabled={setUserAliases.isPending}>
+          <Button 
+            onClick={() => {
+              setShowAddAliasDialog(false);
+              setAliasList([]);
+              setNewAlias("");
+            }} 
+            disabled={setUserAliases.isPending}
+            color="inherit"
+          >
             Cancel
           </Button>
           <Button
             onClick={handleAddAliases}
             variant="contained"
             color="primary"
-            disabled={!newAliases.trim() || setUserAliases.isPending}
+            disabled={aliasList.length === 0 || setUserAliases.isPending}
             startIcon={
               setUserAliases.isPending ? <CircularProgress size={20} color="inherit" /> : null
             }
