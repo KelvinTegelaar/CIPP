@@ -13,6 +13,7 @@ import {
   Delete,
   Star,
   Close,
+  CalendarToday,
   AlternateEmail,
   PersonAdd,
 } from "@mui/icons-material";
@@ -41,6 +42,7 @@ import {
   IconButton,
   FormControlLabel,
   Switch,
+  Tooltip,
 } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 import { Block, PlayArrow } from "@mui/icons-material";
@@ -67,6 +69,9 @@ const Page = () => {
   const createDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
+  const [showAddCalendarPermissionsDialog, setShowAddCalendarPermissionsDialog] = useState(false);
+  const [isSubmittingCalendarPermissions, setIsSubmittingCalendarPermissions] = useState(false);
+  const [submitCalendarPermissionsResult, setSubmitCalendarPermissionsResult] = useState(null);
 
   const formControl = useForm({
     mode: "onChange",
@@ -392,17 +397,102 @@ const Page = () => {
           <Error />
         ),
       },
-      text: "Current Calendar permissions",
-      subtext: calPermissions.data?.length
-        ? "Other users have access to this users calendar"
-        : "No other users have access to this users calendar",
+      text: "Calendar permissions",
+      subtext: calPermissions.data?.length !== 0
+        ? "Other users have access to this calendar"
+        : "No other users have access to this calendar",
       statusColor: "green.main",
-      //map each of the permissions to a label/value pair, where the label is the user's name and the value is the permission level
-      propertyItems:
-        calPermissions.data?.map((permission) => ({
-          label: `${permission.User} - ${permission.FolderName}`,
-          value: permission.AccessRights.join(", "),
+      cardLabelBoxActions: (
+        <Button
+          startIcon={<CalendarToday />}
+          onClick={() => setShowAddCalendarPermissionsDialog(true)}
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+          Add Permissions
+        </Button>
+      ),
+      table: {
+        title: "Calendar Permissions",
+        hideTitle: true,
+        data: calPermissions.data?.map(permission => ({
+          User: permission.User,
+          AccessRights: permission.AccessRights.join(", "),
+          FolderName: permission.FolderName,
+          _raw: permission
         })) || [],
+        refreshFunction: () => calPermissions.refetch(),
+        isFetching: calPermissions.isFetching,
+        simpleColumns: ["User", "AccessRights", "FolderName"],
+        actions: [
+          {
+            label: "Remove Permission",
+            type: "POST",
+            icon: <Delete />,
+            url: "/api/ExecModifyCalPerms",
+            data: {
+              userID: graphUserRequest.data?.[0]?.userPrincipalName,
+              tenantFilter: userSettingsDefaults.currentTenant,
+              permissions: [{
+                UserID: "User",
+                PermissionLevel: "AccessRights",
+                FolderName: "FolderName",
+                Modification: "Remove"
+              }]
+            },
+            confirmText: "Are you sure you want to remove this calendar permission?",
+            multiPost: false,
+            relatedQueryKeys: `CalendarPermissions-${userId}`,
+            hideBulk: true
+          }
+        ],
+        offCanvas: {
+          children: (data) => {
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Permission Details"
+                propertyItems={[
+                  {
+                    label: "User",
+                    value: data.User,
+                  },
+                  {
+                    label: "Access Rights",
+                    value: data.AccessRights,
+                  },
+                  {
+                    label: "Folder Name",
+                    value: data.FolderName,
+                  }
+                ]}
+                actionItems={[
+                  {
+                    label: "Remove Permission",
+                    type: "POST",
+                    icon: <Delete />,
+                    url: "/api/ExecModifyCalPerms",
+                    data: {
+                      userID: graphUserRequest.data?.[0]?.userPrincipalName,
+                      tenantFilter: userSettingsDefaults.currentTenant,
+                      permissions: [{
+                        UserID: data.User,
+                        PermissionLevel: data.AccessRights,
+                        FolderName: data.FolderName,
+                        Modification: "Remove"
+                      }]
+                    },
+                    confirmText: "Are you sure you want to remove this calendar permission?",
+                    multiPost: false,
+                    relatedQueryKeys: `CalendarPermissions-${userId}`,
+                  }
+                ]}
+              />
+            );
+          },
+        },
+      },
     },
   ];
 
@@ -643,6 +733,71 @@ const Page = () => {
     isError: submitPermissionsResult?.success === false,
     error: submitPermissionsResult?.success === false ? submitPermissionsResult?.message : null,
     data: submitPermissionsResult?.success ? { message: submitPermissionsResult?.message } : null,
+  };
+
+  const calendarPermissionsFormControl = useForm({
+    mode: "onChange",
+    defaultValues: {
+      UserToGetPermissions: null,
+      Permissions: null,
+      CanViewPrivateItems: false,
+      FolderName: "Calendar"
+    },
+  });
+
+  const handleAddCalendarPermissions = () => {
+    const values = calendarPermissionsFormControl.getValues();
+    if (!values.UserToGetPermissions || !values.Permissions) return;
+
+    setIsSubmittingCalendarPermissions(true);
+    setSubmitCalendarPermissionsResult(null);
+    
+    // Build permission object dynamically
+    const permission = {
+      UserID: values.UserToGetPermissions,
+      PermissionLevel: values.Permissions,
+      Modification: "Add"
+    };
+    if (values.CanViewPrivateItems) {
+      permission.CanViewPrivateItems = true;
+    }
+
+    addPermissionsMutation.mutate({
+      url: '/api/ExecModifyCalPerms',
+      data: {
+        userID: graphUserRequest.data?.[0]?.userPrincipalName,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        permissions: [permission]
+      }
+    }, {
+      onSuccess: (response) => {
+        setSubmitCalendarPermissionsResult({ success: true, message: response.data?.Results?.join('\n') || 'Calendar permissions added successfully' });
+        calPermissions.refetch();
+        setTimeout(() => {
+          setShowAddCalendarPermissionsDialog(false);
+          calendarPermissionsFormControl.reset();
+          setSubmitCalendarPermissionsResult(null);
+        }, 1500);
+      },
+      onError: (error) => {
+        // Try to extract a detailed message from the API response
+        const apiMessage =
+          error?.response?.data?.Results?.join('\n') ||
+          error?.message ||
+          'Failed to add calendar permissions';
+        setSubmitCalendarPermissionsResult({ success: false, message: apiMessage });
+      },
+      onSettled: () => {
+        setIsSubmittingCalendarPermissions(false);
+      }
+    });
+  };
+
+  const calendarPermissionsApiRequest = {
+    isSuccess: submitCalendarPermissionsResult?.success,
+    isError: submitCalendarPermissionsResult?.success === false,
+    error: submitCalendarPermissionsResult?.success === false ? submitCalendarPermissionsResult?.message : null,
+    data: submitCalendarPermissionsResult?.success ? { message: submitCalendarPermissionsResult?.message } : null,
   };
 
   return (
@@ -900,6 +1055,118 @@ const Page = () => {
             }
           >
             {isSubmittingPermissions ? "Adding..." : "Add Permissions"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog 
+        open={showAddCalendarPermissionsDialog} 
+        onClose={() => setShowAddCalendarPermissionsDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Add Calendar Permissions
+            <IconButton onClick={() => setShowAddCalendarPermissionsDialog(false)} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ mt: 1 }}>
+            <Box>
+              <CippFormComponent
+                type="autoComplete"
+                label="Add Access"
+                name="UserToGetPermissions"
+                isFetching={userRequest.isFetching || usersList.isFetching}
+                options={
+                  usersList?.data?.Results?.map((user) => ({
+                    value: user.userPrincipalName,
+                    label: `${user.displayName} (${user.userPrincipalName})`,
+                  })) || []
+                }
+                multiple={false}
+                formControl={calendarPermissionsFormControl}
+              />
+            </Box>
+            <Box>
+              <CippFormComponent
+                type="autoComplete"
+                label="Permission Level"
+                name="Permissions"
+                required={true}
+                validators={{
+                  validate: (value) =>
+                    value ? true : "Select the permission level for the calendar",
+                }}
+                isFetching={userRequest.isFetching || usersList.isFetching}
+                options={[
+                  { value: "Author", label: "Author" },
+                  { value: "Contributor", label: "Contributor" },
+                  { value: "Editor", label: "Editor" },
+                  { value: "Owner", label: "Owner" },
+                  { value: "NonEditingAuthor", label: "Non Editing Author" },
+                  { value: "PublishingAuthor", label: "Publishing Author" },
+                  { value: "PublishingEditor", label: "Publishing Editor" },
+                  { value: "Reviewer", label: "Reviewer" },
+                  { value: "LimitedDetails", label: "Limited Details" },
+                  { value: "AvailabilityOnly", label: "Availability Only" },
+                ]}
+                multiple={false}
+                formControl={calendarPermissionsFormControl}
+              />
+            </Box>
+            <Box>
+              {(() => {
+                const permissionLevel = calendarPermissionsFormControl.watch("Permissions");
+                const isEditor = permissionLevel?.value === "Editor";
+                
+                useEffect(() => {
+                  if (!isEditor) {
+                    calendarPermissionsFormControl.setValue("CanViewPrivateItems", false);
+                  }
+                }, [isEditor, calendarPermissionsFormControl]);
+                
+                return (
+                  <Tooltip 
+                    title={!isEditor ? "Only usable when permission level is Editor" : ""}
+                    followCursor
+                    placement="right"
+                  >
+                    <span>
+                      <CippFormComponent
+                        type="switch"
+                        label="Can view Private items"
+                        name="CanViewPrivateItems"
+                        formControl={calendarPermissionsFormControl}
+                        disabled={!isEditor}
+                      />
+                    </span>
+                  </Tooltip>
+                );
+              })()}
+            </Box>
+            <CippApiResults apiObject={calendarPermissionsApiRequest} />
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 2, pb: 2 }}>
+          <Button 
+            onClick={() => setShowAddCalendarPermissionsDialog(false)}
+            disabled={isSubmittingCalendarPermissions}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleAddCalendarPermissions} 
+            variant="contained" 
+            color="primary"
+            disabled={(!calendarPermissionsFormControl.watch("UserToGetPermissions") || 
+                      !calendarPermissionsFormControl.watch("Permissions")) || 
+                      isSubmittingCalendarPermissions}
+            startIcon={isSubmittingCalendarPermissions ? <CircularProgress size={20} color="inherit" /> : null}
+          >
+            {isSubmittingCalendarPermissions ? 'Adding...' : 'Add Permissions'}
           </Button>
         </DialogActions>
       </Dialog>
