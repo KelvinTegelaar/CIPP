@@ -318,8 +318,8 @@ const Page = () => {
                 Save Template
               </Button>
               <Button
-                variant="contained"
-                color="secondary"
+                variant="outlined"
+                color="primary"
                 onClick={handleOpenDialog}
                 startIcon={<Add />}
               >
