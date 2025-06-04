@@ -19,7 +19,7 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../CippComponents/CippApiResults";
-import { useWatch, useFormContext } from "react-hook-form";
+import { useWatch } from "react-hook-form";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
@@ -50,9 +50,7 @@ const CippExchangeSettingsForm = (props) => {
   });
 
   const handleSubmit = (type) => {
-    if (type === "permissions") {
-      setRelatedQueryKeys([`Mailbox-${userId}`]);
-    } else if (type === "calendar") {
+    if (type === "calendar") {
       setRelatedQueryKeys([`CalendarPermissions-${userId}`]);
     } else if (type === "forwarding") {
       setRelatedQueryKeys([`Mailbox-${userId}`]);
@@ -83,7 +81,6 @@ const CippExchangeSettingsForm = (props) => {
       }
     });
     const url = {
-      permissions: "/api/ExecEditMailboxPermissions",
       calendar: "/api/ExecEditCalendarPermissions",
       forwarding: "/api/ExecEmailForward",
       ooo: "/api/ExecSetOoO",
@@ -101,308 +98,6 @@ const CippExchangeSettingsForm = (props) => {
 
   // Data for each section
   const sections = [
-    {
-      id: "mailboxPermissions",
-      cardLabelBox: "-",
-      text: "Mailbox Permissions",
-      subtext: "Manage mailbox permissions for users",
-      formContent: (
-        <Stack spacing={1.5}>
-          {/* Full Access Section */}
-          <Box sx={{ 
-            p: 2, 
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1,
-            backgroundColor: 'background.paper'
-          }}>
-            <Typography variant="subtitle2" gutterBottom>Full Access</Typography>
-            <Typography variant="caption" color="text.secondary" gutterBottom>
-              Manage who has full access to this mailbox
-            </Typography>
-            <Stack spacing={2} sx={{ mt: 2 }}>
-              <CippFormComponent
-                type="autoComplete"
-                label="Remove Full Access"
-                name="permissions.RemoveFullAccess"
-                isFetching={isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.filter((user) =>
-                    currentSettings?.Permissions?.some(
-                      (perm) =>
-                        perm.AccessRights === "FullAccess" && perm.User === user.userPrincipalName
-                    )
-                  ).map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Full Access - Automapping Enabled"
-                name="permissions.AddFullAccess"
-                isFetching={isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Full Access - Automapping Disabled"
-                name="permissions.AddFullAccessNoAutoMap"
-                isFetching={isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-            </Stack>
-          </Box>
-
-          {/* Send As Section */}
-          <Box sx={{ 
-            p: 2, 
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1,
-            backgroundColor: 'background.paper'
-          }}>
-            <Typography variant="subtitle2" gutterBottom>Send As</Typography>
-            <Typography variant="caption" color="text.secondary" gutterBottom>
-              Manage who can send emails as this user
-            </Typography>
-            <Stack spacing={2} sx={{ mt: 2 }}>
-              <CippFormComponent
-                type="autoComplete"
-                label="Remove Send-as Permissions"
-                name="permissions.RemoveSendAs"
-                isFetching={isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.filter((user) =>
-                    currentSettings?.Permissions?.some(
-                      (perm) => perm.AccessRights === "SendAs" && perm.User === user.userPrincipalName
-                    )
-                  ).map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Send-as Permissions"
-                name="permissions.AddSendAs"
-                isFetching={isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-            </Stack>
-          </Box>
-
-          {/* Send On Behalf Section */}
-          <Box sx={{ 
-            p: 2, 
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1,
-            backgroundColor: 'background.paper'
-          }}>
-            <Typography variant="subtitle2" gutterBottom>Send On Behalf</Typography>
-            <Typography variant="caption" color="text.secondary" gutterBottom>
-              Manage who can send emails on behalf of this user
-            </Typography>
-            <Stack spacing={2} sx={{ mt: 2 }}>
-              <CippFormComponent
-                type="autoComplete"
-                label="Remove Send On Behalf Permissions"
-                name="permissions.RemoveSendOnBehalf"
-                isFetching={isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.filter((user) =>
-                    currentSettings?.Permissions?.some(
-                      (perm) =>
-                        perm.AccessRights === "SendOnBehalf" && perm.User === user.userPrincipalName
-                    )
-                  ).map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Send On Behalf Permissions"
-                name="permissions.AddSendOnBehalf"
-                isFetching={isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-            </Stack>
-          </Box>
-
-          <Grid item size={12}>
-            <CippApiResults apiObject={postRequest} />
-          </Grid>
-          <Grid>
-            <Button
-              onClick={() => handleSubmit("permissions")}
-              variant="contained"
-              disabled={!formControl.formState.isValid || postRequest.isPending}
-            >
-              Submit
-            </Button>
-          </Grid>
-        </Stack>
-      ),
-    },
-    {
-      id: "calendarPermissions",
-      cardLabelBox: "-",
-      text: "Calendar Permissions",
-      subtext: "Adjust calendar sharing settings",
-      formContent: (
-        <Stack spacing={2}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Remove Access"
-            name="calendar.RemoveAccess"
-            multiple={false}
-            isFetching={isFetching || usersList.isFetching}
-            options={
-              usersList?.data?.Results?.filter((user) =>
-                calPermissions?.some((perm) => perm.User === user.displayName)
-              ).map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
-            formControl={formControl}
-          />
-          <CippFormComponent
-            type="autoComplete"
-            label="Add Access"
-            name="calendar.UserToGetPermissions"
-            isFetching={isFetching || usersList.isFetching}
-            options={[
-              { value: "Default", label: "Default (Default)" },
-              ...(usersList?.data?.Results?.map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []),
-            ]}
-            multiple={false}
-            formControl={formControl}
-          />
-          <CippFormCondition
-            formControl={formControl}
-            field="calendar.UserToGetPermissions"
-            compareType="hasValue"
-            compareValue={true}
-          >
-            <Stack spacing={0.5}>
-              <CippFormComponent
-                type="autoComplete"
-                label="Permission Level"
-                name="calendar.Permissions"
-                required={true}
-                validators={{
-                  validate: (value) =>
-                    value ? true : "Select the permission level for the calendar",
-                }}
-                isFetching={isFetching || usersList.isFetching}
-                options={[
-                  { value: "Author", label: "Author" },
-                  { value: "Contributor", label: "Contributor" },
-                  { value: "Editor", label: "Editor" },
-                  { value: "Owner", label: "Owner" },
-                  { value: "NonEditingAuthor", label: "Non Editing Author" },
-                  { value: "PublishingAuthor", label: "Publishing Author" },
-                  { value: "PublishingEditor", label: "Publishing Editor" },
-                  { value: "Reviewer", label: "Reviewer" },
-                  { value: "LimitedDetails", label: "Limited Details" },
-                  { value: "AvailabilityOnly", label: "Availability Only" },
-                ]}
-                multiple={false}
-                formControl={formControl}
-              />
-              <Box sx={{ pl: 2 }}>
-                {(() => {
-                  const permissionLevel = useWatch({
-                    control: formControl.control,
-                    name: "calendar.Permissions"
-                  });
-                  const isEditor = permissionLevel?.value === "Editor";
-                  
-                  // Use useEffect to handle the switch value reset
-                  useEffect(() => {
-                    if (!isEditor) {
-                      formControl.setValue("calendar.CanViewPrivateItems", false);
-                    }
-                  }, [isEditor, formControl]);
-                  
-                  return (
-                    <Tooltip 
-                      title={!isEditor ? "Only usable when permission level is Editor" : ""}
-                      followCursor
-                      placement="right"
-                    >
-                      <span>
-                        <CippFormComponent
-                          type="switch"
-                          label="Can view Private items"
-                          name="calendar.CanViewPrivateItems"
-                          formControl={formControl}
-                          disabled={!isEditor}
-                        />
-                      </span>
-                    </Tooltip>
-                  );
-                })()}
-              </Box>
-            </Stack>
-          </CippFormCondition>
-          <CippFormComponent
-            type="hidden"
-            name="calendar.FolderName"
-            value={calPermissions?.[0]?.FolderName ?? "Calendar"}
-            formControl={formControl}
-          />
-          <Grid item size={12}>
-            <CippApiResults apiObject={postRequest} />
-          </Grid>
-          <Grid>
-            <Button
-              onClick={() => handleSubmit("calendar")}
-              variant="contained"
-              disabled={!formControl.formState.isValid || postRequest.isPending}
-            >
-              Submit
-            </Button>
-          </Grid>
-        </Stack>
-      ),
-    },
     {
       id: "mailboxForwarding",
       cardLabelBox: currentSettings?.ForwardAndDeliver ? <Forward /> : "-",
@@ -601,7 +296,12 @@ const CippExchangeSettingsForm = (props) => {
                 display: "flex",
                 justifyContent: "space-between",
                 p: 2,
+                cursor: "pointer",
+                "&:hover": {
+                  bgcolor: "action.hover",
+                },
               }}
+              onClick={() => handleExpand(section.id)}
             >
               {/* Left Side: cardLabelBox, text, subtext */}
               <Stack direction="row" spacing={2} alignItems="center">
@@ -631,18 +331,15 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Stack>
 
-              {/* Expand Icon */}
-              <IconButton onClick={() => handleExpand(section.id)}>
-                <SvgIcon
-                  fontSize="small"
-                  sx={{
-                    transition: "transform 150ms",
-                    transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                  }}
-                >
-                  <ExpandMoreIcon />
-                </SvgIcon>
-              </IconButton>
+              <SvgIcon
+                fontSize="small"
+                sx={{
+                  transition: "transform 150ms",
+                  transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                }}
+              >
+                <ExpandMoreIcon />
+              </SvgIcon>
             </Box>
             <Collapse in={isExpanded} unmountOnExit>
               <Divider />
