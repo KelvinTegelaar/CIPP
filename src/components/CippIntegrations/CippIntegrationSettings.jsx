@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, CardContent } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
