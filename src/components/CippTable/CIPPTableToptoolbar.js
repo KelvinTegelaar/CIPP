@@ -493,7 +493,7 @@ export const CIPPTableToptoolbar = ({
                 <SevereCold />
               </Tooltip>
             )}
-            {actions && getBulkActions(actions).length > 0 && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
+            {actions && getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
               <>
                 <Button
                   onClick={popover.handleOpen}
