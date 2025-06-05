@@ -20,6 +20,7 @@ import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useWatch } from "react-hook-form";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
@@ -295,7 +296,9 @@ const CippExchangeSettingsForm = (props) => {
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "space-between",
-                p: 2,
+                py: 3,
+                pl: 2,
+                pr: 4,
                 cursor: "pointer",
                 "&:hover": {
                   bgcolor: "action.hover",
@@ -338,7 +341,7 @@ const CippExchangeSettingsForm = (props) => {
                   transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
                 }}
               >
-                <ExpandMoreIcon />
+                <ChevronDownIcon />
               </SvgIcon>
             </Box>
             <Collapse in={isExpanded} unmountOnExit>
