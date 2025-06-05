@@ -414,7 +414,8 @@ const Page = () => {
             type: "POST",
             icon: <Delete />,
             url: "/api/ExecModifyCalPerms",
-            customDataFormatter: (row, action, formData) => {
+            customDataformatter: (row, action, formData) => {
+              console.log(row);
               // build permissions
               var permissions = [];
               // if the row is an array, iterate through it
@@ -442,11 +443,9 @@ const Page = () => {
                 permissions: permissions,
               };
             },
-
             confirmText: "Are you sure you want to remove this calendar permission?",
             multiPost: false,
             relatedQueryKeys: `CalendarPermissions-${userId}`,
-            hideBulk: true,
             condition: (row) => row.User !== "Default" && row.User == "Anonymous",
           },
         ],
