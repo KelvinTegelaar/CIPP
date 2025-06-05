@@ -415,7 +415,6 @@ const Page = () => {
             icon: <Delete />,
             url: "/api/ExecModifyCalPerms",
             customDataformatter: (row, action, formData) => {
-              console.log(row);
               // build permissions
               var permissions = [];
               // if the row is an array, iterate through it
