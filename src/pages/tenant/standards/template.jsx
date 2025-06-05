@@ -104,7 +104,7 @@ const Page = () => {
     // Compare the current form values with the initial values to check for real changes
     const currentValues = formControl.getValues();
     const initialValues = initialStandardsRef.current;
-    
+
     if (
       formState.isDirty ||
       JSON.stringify(selectedStandards) !== JSON.stringify(initialStandardsRef.current)
@@ -367,6 +367,7 @@ const Page = () => {
                     handleRemoveStandard={handleRemoveStandard}
                     handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
                     formControl={formControl}
+                    editMode={editMode}
                   />
                 )}
               </Stack>
