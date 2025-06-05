@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -7,11 +8,11 @@ import {
   DialogTitle,
   useMediaQuery,
 } from "@mui/material";
-import { Stack, Grid } from "@mui/system";
+import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
 
@@ -25,6 +26,7 @@ export const CippApiDialog = (props) => {
     relatedQueryKeys,
     dialogAfterEffect,
     allowResubmit = false,
+    children,
     ...other
   } = props;
   const router = useRouter();
@@ -36,7 +38,6 @@ export const CippApiDialog = (props) => {
   if (mdDown) {
     other.fullScreen = true;
   }
-
   useEffect(() => {
     if (createDialog.open) {
       setIsFormSubmitted(false);
@@ -74,11 +75,15 @@ export const CippApiDialog = (props) => {
   });
 
   const processActionData = (dataObject, row, replacementBehaviour) => {
-    if (typeof api?.dataFunction === "function") return api.dataFunction(row);
+    if (typeof api?.dataFunction === "function") return api.dataFunction(row, dataObject);
 
     let newData = {};
     if (api?.postEntireRow) {
       return row;
+    }
+
+    if (!dataObject) {
+      return dataObject;
     }
 
     Object.keys(dataObject).forEach((key) => {
@@ -106,56 +111,64 @@ export const CippApiDialog = (props) => {
   const tenantFilter = useSettings().currentTenant;
   const handleActionClick = (row, action, formData) => {
     setIsFormSubmitted(true);
-    if (action.multiPost === undefined) action.multiPost = false;
+    let finalData = {};
+    if (typeof api?.customDataformatter === "function") {
+      finalData = api.customDataformatter(row, action, formData);
+    } else {
+      if (action.multiPost === undefined) action.multiPost = false;
 
-    if (api.customFunction) {
-      action.customFunction(row, action, formData);
-      createDialog.handleClose();
-      return;
-    }
-
-    const commonData = {
-      tenantFilter,
-      ...formData,
-      ...addedFieldData,
-    };
-    const processedActionData = processActionData(action.data, row, action.replacementBehaviour);
-
-    // MULTI ROW CASES
-    if (Array.isArray(row)) {
-      const arrayData = row.map((singleRow) => {
-        const itemData = { ...commonData };
-        Object.keys(processedActionData).forEach((key) => {
-          const rowValue = singleRow[processedActionData[key]];
-          itemData[key] = rowValue !== undefined ? rowValue : processedActionData[key];
-        });
-        return itemData;
-      });
-
-      const payload = {
-        url: action.url,
-        bulkRequest: !action.multiPost,
-        data: arrayData,
-      };
-
-      if (action.type === "POST") {
-        actionPostRequest.mutate(payload);
-      } else if (action.type === "GET") {
-        setGetRequestInfo({
-          ...payload,
-          waiting: true,
-          queryKey: Date.now(),
-        });
+      if (api.customFunction) {
+        action.customFunction(row, action, formData);
+        createDialog.handleClose();
+        return;
       }
 
-      return;
-    }
+      const commonData = {
+        tenantFilter,
+        ...formData,
+        ...addedFieldData,
+      };
+      const processedActionData = processActionData(action.data, row, action.replacementBehaviour);
 
-    // ✅ FIXED: DIRECT MERGE INSTEAD OF CORRUPT TRANSFORMATION
-    const finalData = {
-      ...commonData,
-      ...processedActionData,
-    };
+      if (!processedActionData || Object.keys(processedActionData).length === 0) {
+        console.warn("No data to process for action:", action);
+      } else {
+        // MULTI ROW CASES
+        if (Array.isArray(row)) {
+          const arrayData = row.map((singleRow) => {
+            const itemData = { ...commonData };
+            Object.keys(processedActionData).forEach((key) => {
+              const rowValue = singleRow[processedActionData[key]];
+              itemData[key] = rowValue !== undefined ? rowValue : processedActionData[key];
+            });
+            return itemData;
+          });
+
+          const payload = {
+            url: action.url,
+            bulkRequest: !action.multiPost,
+            data: arrayData,
+          };
+
+          if (action.type === "POST") {
+            actionPostRequest.mutate(payload);
+          } else if (action.type === "GET") {
+            setGetRequestInfo({
+              ...payload,
+              waiting: true,
+              queryKey: Date.now(),
+            });
+          }
+
+          return;
+        }
+      }
+      // ✅ FIXED: DIRECT MERGE INSTEAD OF CORRUPT TRANSFORMATION
+      finalData = {
+        ...commonData,
+        ...processedActionData,
+      };
+    }
 
     if (action.type === "POST") {
       actionPostRequest.mutate({
@@ -303,18 +316,31 @@ export const CippApiDialog = (props) => {
               <Stack spacing={2}>{confirmText}</Stack>
             </DialogContent>
             <DialogContent>
-              <Grid container spacing={2}>
-                {fields?.map((fieldProps, i) => (
-                  <Grid item size={{ xs: 12 }} key={i}>
-                    <CippFormComponent
-                      formControl={formHook}
-                      addedFieldData={addedFieldData}
-                      setAddedFieldData={setAddedFieldData}
-                      {...fieldProps}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              <Stack spacing={2}>
+                {children ? (
+                  typeof children === "function" ? (
+                    children({
+                      formHook,
+                      row,
+                    })
+                  ) : (
+                    children
+                  )
+                ) : (
+                  <>
+                    {fields?.map((fieldProps, i) => (
+                      <Box key={i} sx={{ width: "100%" }}>
+                        <CippFormComponent
+                          formControl={formHook}
+                          addedFieldData={addedFieldData}
+                          setAddedFieldData={setAddedFieldData}
+                          {...fieldProps}
+                        />
+                      </Box>
+                    ))}
+                  </>
+                )}
+              </Stack>
             </DialogContent>
             <DialogContent>
               <CippApiResults apiObject={{ ...selectedType, data: partialResults }} />

@@ -95,6 +95,7 @@
     "react-redux": "9.2.0",
     "react-syntax-highlighter": "^15.6.1",
     "react-time-ago": "^7.3.3",
+    "react-virtuoso": "^4.12.8",
     "react-window": "^1.8.10",
     "redux": "5.0.1",
     "redux-devtools-extension": "2.13.9",

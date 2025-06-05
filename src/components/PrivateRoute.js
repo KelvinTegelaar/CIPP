@@ -27,7 +27,7 @@ export const PrivateRoute = ({ children, routeType }) => {
   if (
     apiRoles?.error?.response?.status === 404 || // API endpoint not found
     apiRoles?.error?.response?.status === 502 || // Service unavailable
-    (apiRoles?.isSuccess && !apiRoles?.data?.clientPrincipal) // No client principal data, indicating API might be offline
+    (apiRoles?.isSuccess && !apiRoles?.data) // No client principal data, indicating API might be offline
   ) {
     return <ApiOfflinePage />;
   }
@@ -48,7 +48,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     session?.data?.clientPrincipal?.userDetails !== apiRoles?.data?.clientPrincipal?.userDetails
   ) {
     // refetch the profile if the user details are different
-    refetch();
+    apiRoles.refetch();
   }
 
   if (null !== apiRoles?.data?.clientPrincipal && undefined !== apiRoles?.data) {
