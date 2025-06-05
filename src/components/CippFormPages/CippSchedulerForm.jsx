@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Button, Divider, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useWatch } from "react-hook-form";
@@ -234,11 +233,11 @@ const CippSchedulerForm = (props) => {
             compareType="isNot"
             compareValue={true}
             formControl={formControl}
+            key={idx}
           >
             <Grid
               item
               size={{ md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize, xs: 12 }}
-              key={idx}
             >
               {param.Type === "System.Boolean" ||
               param.Type === "System.Management.Automation.SwitchParameter" ? (

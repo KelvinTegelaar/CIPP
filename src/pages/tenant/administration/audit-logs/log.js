@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "/src/api/ApiCall";
 import {
   Box,
   Typography,

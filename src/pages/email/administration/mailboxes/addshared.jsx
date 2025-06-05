@@ -1,8 +1,6 @@
-import React from "react";
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";

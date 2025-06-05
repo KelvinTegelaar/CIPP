@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Skeleton } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@mui/material";
 import { Grid } from "@mui/system";
 import dynamic from "next/dynamic";
 import { ApiPostCall } from "/src/api/ApiCall";

@@ -13,7 +13,6 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ErrorOutlineOutlined } from "@mui/icons-material";
 
 const ApiOfflinePage = () => {

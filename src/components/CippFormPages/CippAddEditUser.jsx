@@ -9,7 +9,7 @@ import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useWatch } from "react-hook-form";
-import { use, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 
 const CippAddEditUser = (props) => {

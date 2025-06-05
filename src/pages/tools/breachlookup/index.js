@@ -119,8 +119,8 @@ const Page = () => {
                   </CippButtonCard>
                 </Grid>
               )}
-              {getGeoIP.data?.map((breach) => (
-                <Grid spacing={2} item size={{ xs: 3 }}>
+              {getGeoIP.data?.map((breach, index) => (
+                <Grid key={index} spacing={2} item size={{ xs: 3 }}>
                   <CippButtonCard
                     cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
                     title={<>{breach.Title}</>}

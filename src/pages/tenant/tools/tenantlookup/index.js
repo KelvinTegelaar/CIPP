@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography, CircularProgress, Skeleton, Link } from "@mui/material";
+import { Box, Button, Container, Typography, Skeleton, Link } from "@mui/material";
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
@@ -93,8 +93,8 @@ const Page = () => {
                       <strong>domains:</strong>
                     </Typography>
                     <Typography variant="body1">
-                      {getTenant.data?.Domains?.map((domain) => (
-                        <li>
+                      {getTenant.data?.Domains?.map((domain, index) => (
+                        <li key={index}>
                           <Link href={`https://${domain}`} target="_blank">
                             {domain}
                           </Link>
