@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -25,6 +26,7 @@ export const CippApiDialog = (props) => {
     relatedQueryKeys,
     dialogAfterEffect,
     allowResubmit = false,
+    children,
     ...other
   } = props;
   const router = useRouter();
@@ -303,18 +305,31 @@ export const CippApiDialog = (props) => {
               <Stack spacing={2}>{confirmText}</Stack>
             </DialogContent>
             <DialogContent>
-              <Grid container spacing={2}>
-                {fields?.map((fieldProps, i) => (
-                  <Grid item size={{ xs: 12 }} key={i}>
-                    <CippFormComponent
-                      formControl={formHook}
-                      addedFieldData={addedFieldData}
-                      setAddedFieldData={setAddedFieldData}
-                      {...fieldProps}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              <Stack spacing={2}>
+                {children ? (
+                  typeof children === "function" ? (
+                    children({
+                      formHook,
+                      row,
+                    })
+                  ) : (
+                    children
+                  )
+                ) : (
+                  <>
+                    {fields?.map((fieldProps, i) => (
+                      <Box key={i} sx={{ width: "100%" }}>
+                        <CippFormComponent
+                          formControl={formHook}
+                          addedFieldData={addedFieldData}
+                          setAddedFieldData={setAddedFieldData}
+                          {...fieldProps}
+                        />
+                      </Box>
+                    ))}
+                  </>
+                )}
+              </Stack>
             </DialogContent>
             <DialogContent>
               <CippApiResults apiObject={{ ...selectedType, data: partialResults }} />
