@@ -79,7 +79,7 @@ const Page = () => {
     url: "/api/ListStandardsCompare",
     data: {
       TemplateId: templateId,
-      CompareTenantId: formControl.watch("compareTenantId"),
+      tenantFilter: currentTenant,
       CompareToStandard: true, // Always compare to standard, even in tenant comparison mode
     },
     queryKey: `ListStandardsCompare-${templateId}-${
