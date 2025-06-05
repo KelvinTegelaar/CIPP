@@ -477,7 +477,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
     waiting: !!domain && enableHttps,
   });
 
-  // Adjust grid item size based on fullwidth prop
+  // Adjust Grid size based on fullwidth prop
   const gridItemSize = fullwidth ? 12 : 4;
 
   return (

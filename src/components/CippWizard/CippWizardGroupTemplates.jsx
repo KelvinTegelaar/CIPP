@@ -30,7 +30,7 @@ export const CippWizardGroupTemplates = (props) => {
   return (
     <Stack spacing={3}>
       <Grid container spacing={3}>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormComponent
             type="autoComplete"
             name="TemplateList"
@@ -56,7 +56,7 @@ export const CippWizardGroupTemplates = (props) => {
             }}
           />
         </Grid>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormComponent
             type="radio"
             name="groupType"
@@ -66,7 +66,7 @@ export const CippWizardGroupTemplates = (props) => {
             validators={{ required: "Please select a group type" }}
           />
         </Grid>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormComponent
             type="textField"
             name="Displayname"
@@ -75,7 +75,7 @@ export const CippWizardGroupTemplates = (props) => {
             validators={{ required: "Group display name is required" }}
           />
         </Grid>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormComponent
             type="textField"
             name="Description"
@@ -83,7 +83,7 @@ export const CippWizardGroupTemplates = (props) => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormComponent
             type="textField"
             name="username"
@@ -91,7 +91,7 @@ export const CippWizardGroupTemplates = (props) => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormCondition
             field="groupType"
             compareType="is"
@@ -106,11 +106,27 @@ export const CippWizardGroupTemplates = (props) => {
             />
           </CippFormCondition>
         </Grid>
-        <Grid item size={12}>
+        <Grid size={12}>
           <CippFormCondition
             field="groupType"
-            compareType="contains"
-            compareValue={"dynamic"}
+            compareType="is"
+            compareValue="dynamic"
+            formControl={formControl}
+          >
+            <CippFormComponent
+              type="textField"
+              name="MembershipRules"
+              label="Membership Rules"
+              formControl={formControl}
+              validators={{ required: "Membership rules are required" }}
+            />
+          </CippFormCondition>
+        </Grid>
+        <Grid size={12}>
+          <CippFormCondition
+            field="groupType"
+            compareType="is"
+            compareValue="dynamicdistribution"
             formControl={formControl}
           >
             <CippFormComponent

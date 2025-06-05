@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import ContactFormLayout from "/src/components/CippFormPages/CippAddEditContact";
 import { useSettings } from "../../../../hooks/use-settings";
 
 const AddContact = () => {
@@ -59,9 +58,67 @@ const AddContact = () => {
         };
       }}
     >
-      <ContactFormLayout 
-        formControl={formControl} 
-      />
+      <Grid container spacing={2}>
+        {/* Display Name */}
+        <Grid size={{ md: 10, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            label="Display Name"
+            name="displayName"
+            formControl={formControl}
+            validators={{ required: "Display Name is required" }}
+          />
+        </Grid>
+
+        {/* First Name and Last Name */}
+        <Grid size={{ md: 5, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            label="First Name"
+            name="firstName"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid size={{ md: 5, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            label="Last Name"
+            name="lastName"
+            formControl={formControl}
+          />
+        </Grid>
+
+        <Divider sx={{ my: 2, width: "100%" }} />
+
+        {/* Email */}
+        <Grid size={{ md: 8, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            label="Email"
+            name="email"
+            formControl={formControl}
+            validators={{
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Please enter a valid email address",
+              },
+            }}
+          />
+        </Grid>
+
+        {/* Hide from GAL */}
+        <Grid size={{ md: 4, xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label="Hide from Global Address List"
+            name="hidefromGAL"
+            formControl={formControl}
+          />
+        </Grid>
+
+        <Divider sx={{ my: 2, width: "100%" }} />
+      </Grid>
     </CippFormPage>
   );
 };

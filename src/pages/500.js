@@ -38,7 +38,7 @@ const Error500 = (props) => {
                 alignItems="center"
                 sx={{ height: "100%" }}
               >
-                <Grid item size={{ md: 6, xs: 12 }}>
+                <Grid size={{ md: 6, xs: 12 }}>
                   <CippImageCard
                     isFetching={false}
                     imageUrl="/assets/illustrations/undraw_bug_fixing_oc-7-a.svg"

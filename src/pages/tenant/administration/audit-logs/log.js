@@ -152,7 +152,7 @@ const Page = () => {
             {logData.Title}
           </Typography>
           <Grid container spacing={2}>
-            <Grid item size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CippPropertyListCard
                 title="Log Information"
                 propertyItems={propertyItems}
@@ -176,7 +176,7 @@ const Page = () => {
             </Grid>
 
             {lookupIp && (
-              <Grid item size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Card variant="outlined">
                   <CardHeader title={`Location Information for ${lookupIp}`} />
                   <Divider />
@@ -186,7 +186,7 @@ const Page = () => {
                 </Card>
               </Grid>
             )}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippPropertyListCard
                 title="Audit Data"
                 propertyItems={rawDataItems}

@@ -187,7 +187,7 @@ const Page = () => {
               </Alert>
             )}
             <Grid container spacing={2}>
-              <Grid item size={{ xs: 12, md: 8 }}>
+              <Grid size={{ xs: 12, md: 8 }}>
                 <CippPropertyListCard
                   layout="double"
                   title="Relationship Details"
@@ -195,7 +195,7 @@ const Page = () => {
                   propertyItems={relationshipProperties}
                 />
               </Grid>
-              <Grid item size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <CippDataTable
                   title="Approved Roles"
                   simple={true}

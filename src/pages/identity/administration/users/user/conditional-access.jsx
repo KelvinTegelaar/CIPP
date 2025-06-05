@@ -108,7 +108,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Form Section */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippButtonCard
                 title={"Test Conditional Access Policy"}
                 CardButton={
@@ -242,7 +242,7 @@ const Page = () => {
                 </form>
               </CippButtonCard>
             </Grid>
-            <Grid item size={{ md: 8, xs: 12 }}>
+            <Grid size={{ md: 8, xs: 12 }}>
               <CippDataTable
                 queryKey={`ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`}
                 title={"CA Test Results"}

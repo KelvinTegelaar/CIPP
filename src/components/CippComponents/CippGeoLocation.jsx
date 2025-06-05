@@ -61,7 +61,7 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item size={{ xs: 12, sm: 8 }}>
+      <Grid size={{ xs: 12, sm: 8 }}>
         {geoLookup.isPending ? (
           <Skeleton variant="rectangular" height={400} />
         ) : (
@@ -78,7 +78,7 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
           </>
         )}
       </Grid>
-      <Grid item size={{ xs: 12, sm: 4 }}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <CippPropertyList
           propertyItems={properties}
           showDivider={false}
