@@ -364,7 +364,7 @@ export const CIPPTableToptoolbar = ({
               onClose={filterPopover.handleClose}
               MenuListProps={{ dense: true }}
             >
-              <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+              <MenuItem key="reset-filters" onClick={() => setTableFilter("", "reset", "")}>
                 <ListItemText primary="Reset all filters" />
               </MenuItem>
               {api?.url === "/api/ListGraphRequest" && (
