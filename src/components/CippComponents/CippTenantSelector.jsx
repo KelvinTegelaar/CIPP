@@ -43,6 +43,7 @@ export const CippTenantSelector = (props) => {
     toast: true,
   });
 
+  // This effect handles updates when the tenant is changed via dropdown selection
   useEffect(() => {
     if (!router.isReady) return;
     if (currentTenant?.value) {
@@ -65,14 +66,62 @@ export const CippTenantSelector = (props) => {
     }
   }, [currentTenant?.value]);
 
+  // This effect handles when the URL parameter changes externally
+  useEffect(() => {
+    if (!router.isReady || !tenantList.isSuccess) return;
+
+    // Get the current tenant from URL or settings
+    const urlTenant = router.query.tenantFilter || settings.currentTenant;
+
+    // Only update if there's a URL tenant and it's different from our current state
+    if (urlTenant && (!currentTenant || urlTenant !== currentTenant.value)) {
+      // Find the tenant in our list
+      const matchingTenant = tenantList.data.find(
+        ({ defaultDomainName }) => defaultDomainName === urlTenant
+      );
+
+      if (matchingTenant) {
+        setSelectedTenant({
+          value: urlTenant,
+          label: `${matchingTenant.displayName} (${urlTenant})`,
+          addedFields: {
+            defaultDomainName: matchingTenant.defaultDomainName,
+            displayName: matchingTenant.displayName,
+            customerId: matchingTenant.customerId,
+            initialDomainName: matchingTenant.initialDomainName,
+          },
+        });
+      }
+    }
+  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess, settings.currentTenant]);
+
+  // This effect ensures the tenant filter parameter is included in the URL when missing
+  useEffect(() => {
+    if (!router.isReady || !settings.currentTenant) return;
+
+    // If the tenant parameter is missing from the URL but we have it in settings
+    if (!router.query.tenantFilter && settings.currentTenant) {
+      const query = { ...router.query, tenantFilter: settings.currentTenant };
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: query,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [router.isReady, router.query, settings.currentTenant]);
+
   useEffect(() => {
     if (tenant && currentTenant?.value && currentTenant?.value !== "AllTenants") {
       tenantDetails.refetch();
     }
   }, [tenant, offcanvasVisible]);
 
+  // We can simplify this effect since we now have the new effect above to handle URL changes
   useEffect(() => {
-    if (tenant && tenantList.isSuccess) {
+    if (tenant && tenantList.isSuccess && !currentTenant) {
       const matchingTenant = tenantList.data.find(
         ({ defaultDomainName }) => defaultDomainName === tenant
       );
@@ -94,7 +143,8 @@ export const CippTenantSelector = (props) => {
             }
       );
     }
-  }, [tenant, tenantList.isSuccess]);
+  }, [tenant, tenantList.isSuccess, currentTenant]);
+
   return (
     <>
       <Box
