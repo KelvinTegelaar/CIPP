@@ -158,5 +158,15 @@
     "inputType": "switch",
     "inputLabel": "Ignore Disabled Apps?",
     "inputName": "IgnoreDisabledApps"
+  },
+  {
+    "name": "TERRL",
+    "label": "Alert when Tenant External Recipient Rate Limit exceeds X %",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert % (default: 80)",
+    "inputName": "TERRLThreshold",
+    "recommendedRunInterval": "1h",
+    "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Tenant data is updated every hour."
   }
 ]
