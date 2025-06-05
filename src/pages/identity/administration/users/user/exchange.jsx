@@ -54,26 +54,21 @@ import CippExchangeActions from "../../../../../components/CippComponents/CippEx
 import { CippApiDialog } from "../../../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../../../hooks/use-dialog";
 import { CippFormComponent } from "../../../../../components/CippComponents/CippFormComponent";
+import CippAliasDialog from "../../../../../components/CippComponents/CippAliasDialog";
+import CippMailboxPermissionsDialog from "../../../../../components/CippComponents/CippMailboxPermissionsDialog";
+import CippCalendarPermissionsDialog from "../../../../../components/CippComponents/CippCalendarPermissionsDialog";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const [waiting, setWaiting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [actionData, setActionData] = useState({ ready: false });
-  const [showAddAliasDialog, setShowAddAliasDialog] = useState(false);
-  const [newAlias, setNewAlias] = useState("");
-  const [aliasList, setAliasList] = useState([]);
-  const [submitResult, setSubmitResult] = useState(null);
-  const [showAddPermissionsDialog, setShowAddPermissionsDialog] = useState(false);
-  const [isSubmittingPermissions, setIsSubmittingPermissions] = useState(false);
-  const [submitPermissionsResult, setSubmitPermissionsResult] = useState(null);
-  const [autoMap, setAutoMap] = useState(true);
   const createDialog = useDialog();
+  const aliasDialog = useDialog();
+  const permissionsDialog = useDialog();
+  const calendarPermissionsDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
-  const [showAddCalendarPermissionsDialog, setShowAddCalendarPermissionsDialog] = useState(false);
-  const [isSubmittingCalendarPermissions, setIsSubmittingCalendarPermissions] = useState(false);
-  const [submitCalendarPermissionsResult, setSubmitCalendarPermissionsResult] = useState(null);
 
   const formControl = useForm({
     mode: "onChange",
@@ -122,39 +117,40 @@ const Page = () => {
     waiting: waiting,
   });
 
-  const permissionsFormControl = useForm({
-    mode: "onChange",
-    defaultValues: {
-      fullAccess: "",
-      sendAs: "",
-      sendOnBehalf: "",
-      autoMap: true,
-    },
-  });
+  // Define API configurations for the dialogs
+  const aliasApiConfig = {
+    type: "POST",
+    url: "/api/SetUserAliases",
+    relatedQueryKeys: `ListUsers-${userId}`,
+    confirmText: "Add the specified proxy addresses to this user?",
+  };
 
-  const fullAccessValue = permissionsFormControl.watch("fullAccess");
+  const permissionsApiConfig = {
+    type: "POST",
+    url: "/api/ExecModifyMBPerms",
+    relatedQueryKeys: `Mailbox-${userId}`,
+    confirmText: "Add the specified permissions to this mailbox?",
+  };
+
+  const calendarPermissionsApiConfig = {
+    type: "POST",
+    url: "/api/ExecModifyCalPerms",
+    relatedQueryKeys: `CalendarPermissions-${userId}`,
+    confirmText: "Add the specified permissions to this calendar?",
+  };
 
   const setUserAliases = ApiPostCall({
     relatedQueryKeys: `ListUsers-${userId}`,
     datafromUrl: true,
   });
 
-  useEffect(() => {
-    const subscription = permissionsFormControl.watch((value, { name, type }) => {});
-    return () => subscription.unsubscribe();
-  }, [permissionsFormControl]);
+  // This effect is no longer needed since we use CippApiDialog for form handling
 
   useEffect(() => {
-    if (showAddPermissionsDialog) {
-      permissionsFormControl.reset({
-        fullAccess: "",
-        sendAs: "",
-        sendOnBehalf: "",
-        autoMap: true,
-      });
+    if (permissionsDialog.open) {
       usersList.refetch();
     }
-  }, [showAddPermissionsDialog]);
+  }, [permissionsDialog.open]);
 
   useEffect(() => {
     if (oooRequest.isSuccess) {
@@ -251,74 +247,7 @@ const Page = () => {
     relatedQueryKeys: `Mailbox-${userId}`,
   });
 
-  const handleAddPermissions = () => {
-    const values = formControl.getValues();
-    const permissions = [];
-
-    // Build permissions array based on form values
-    if (values.permissions?.AddFullAccess) {
-      permissions.push({
-        UserID: values.permissions.AddFullAccess,
-        PermissionLevel: "FullAccess",
-        Modification: "Add",
-        AutoMap: autoMap,
-      });
-    }
-    if (values.permissions?.AddSendAs) {
-      permissions.push({
-        UserID: values.permissions.AddSendAs,
-        PermissionLevel: "SendAs",
-        Modification: "Add",
-      });
-    }
-    if (values.permissions?.AddSendOnBehalf) {
-      permissions.push({
-        UserID: values.permissions.AddSendOnBehalf,
-        PermissionLevel: "SendOnBehalf",
-        Modification: "Add",
-      });
-    }
-
-    if (permissions.length === 0) return;
-
-    setIsSubmittingPermissions(true);
-    setSubmitPermissionsResult(null);
-
-    addPermissionsMutation.mutate(
-      {
-        url: "/api/ExecModifyMBPerms",
-        data: {
-          userID: graphUserRequest.data?.[0]?.userPrincipalName,
-          tenantFilter: userSettingsDefaults.currentTenant,
-          permissions: permissions,
-        },
-      },
-      {
-        onSuccess: (response) => {
-          setSubmitPermissionsResult({
-            success: true,
-            message: response.data?.Results?.join("\n") || "Permissions added successfully",
-          });
-          userRequest.refetch();
-          setTimeout(() => {
-            setShowAddPermissionsDialog(false);
-            formControl.reset();
-            setSubmitPermissionsResult(null);
-          }, 1500);
-        },
-        onError: (error) => {
-          setSubmitPermissionsResult({
-            success: false,
-            message: error.message || "Failed to add permissions",
-          });
-        },
-      }
-    );
-  };
-
-  const handleOpenPermissionsDialog = () => {
-    setShowAddPermissionsDialog(true);
-  };
+  // Permissions dialog functionality is now handled by the CippPermissionsDialog component
 
   const permissions = [
     {
@@ -341,7 +270,7 @@ const Page = () => {
       cardLabelBoxActions: (
         <Button
           startIcon={<PersonAdd />}
-          onClick={handleOpenPermissionsDialog}
+          onClick={() => permissionsDialog.handleOpen()}
           variant="outlined"
           color="primary"
           size="small"
@@ -400,14 +329,15 @@ const Page = () => {
         ),
       },
       text: "Calendar permissions",
-      subtext: calPermissions.data?.length !== 0
-        ? "Other users have access to this calendar"
-        : "No other users have access to this calendar",
+      subtext:
+        calPermissions.data?.length !== 0
+          ? "Other users have access to this calendar"
+          : "No other users have access to this calendar",
       statusColor: "green.main",
       cardLabelBoxActions: (
         <Button
           startIcon={<CalendarToday />}
-          onClick={() => setShowAddCalendarPermissionsDialog(true)}
+          onClick={() => calendarPermissionsDialog.handleOpen()}
           variant="outlined"
           color="primary"
           size="small"
@@ -418,12 +348,13 @@ const Page = () => {
       table: {
         title: "Calendar Permissions",
         hideTitle: true,
-        data: calPermissions.data?.map(permission => ({
-          User: permission.User,
-          AccessRights: permission.AccessRights.join(", "),
-          FolderName: permission.FolderName,
-          _raw: permission
-        })) || [],
+        data:
+          calPermissions.data?.map((permission) => ({
+            User: permission.User,
+            AccessRights: permission.AccessRights.join(", "),
+            FolderName: permission.FolderName,
+            _raw: permission,
+          })) || [],
         refreshFunction: () => calPermissions.refetch(),
         isFetching: calPermissions.isFetching,
         simpleColumns: ["User", "AccessRights", "FolderName"],
@@ -436,18 +367,21 @@ const Page = () => {
             data: {
               userID: graphUserRequest.data?.[0]?.userPrincipalName,
               tenantFilter: userSettingsDefaults.currentTenant,
-              permissions: [{
-                UserID: "User",
-                PermissionLevel: "AccessRights",
-                FolderName: "FolderName",
-                Modification: "Remove"
-              }]
+              permissions: [
+                {
+                  UserID: "User",
+                  PermissionLevel: "AccessRights",
+                  FolderName: "FolderName",
+                  Modification: "Remove",
+                },
+              ],
             },
             confirmText: "Are you sure you want to remove this calendar permission?",
             multiPost: false,
             relatedQueryKeys: `CalendarPermissions-${userId}`,
-            hideBulk: true
-          }
+            hideBulk: true,
+            condition: (row) => row.User !== "Default" && row.User !== "Anonymous",
+          },
         ],
         offCanvas: {
           children: (data) => {
@@ -467,7 +401,7 @@ const Page = () => {
                   {
                     label: "Folder Name",
                     value: data.FolderName,
-                  }
+                  },
                 ]}
                 actionItems={[
                   {
@@ -478,17 +412,19 @@ const Page = () => {
                     data: {
                       userID: graphUserRequest.data?.[0]?.userPrincipalName,
                       tenantFilter: userSettingsDefaults.currentTenant,
-                      permissions: [{
-                        UserID: data.User,
-                        PermissionLevel: data.AccessRights,
-                        FolderName: data.FolderName,
-                        Modification: "Remove"
-                      }]
+                      permissions: [
+                        {
+                          UserID: data.User,
+                          PermissionLevel: data.AccessRights,
+                          FolderName: data.FolderName,
+                          Modification: "Remove",
+                        },
+                      ],
                     },
                     confirmText: "Are you sure you want to remove this calendar permission?",
                     multiPost: false,
                     relatedQueryKeys: `CalendarPermissions-${userId}`,
-                  }
+                  },
                 ]}
               />
             );
@@ -629,55 +565,7 @@ const Page = () => {
     },
   ];
 
-  const handleAddAlias = () => {
-    if (newAlias.trim()) {
-      setAliasList([...aliasList, newAlias.trim()]);
-      setNewAlias("");
-    }
-  };
-
-  const handleDeleteAlias = (aliasToDelete) => {
-    setAliasList(aliasList.filter((alias) => alias !== aliasToDelete));
-  };
-
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      handleAddAlias();
-    }
-  };
-
-  const handleAddAliases = () => {
-    if (aliasList.length > 0) {
-      setSubmitResult(null);
-
-      setUserAliases.mutate({
-        url: "/api/SetUserAliases",
-        data: {
-          id: userId,
-          tenantFilter: userSettingsDefaults.currentTenant,
-          AddedAliases: aliasList.join(","),
-          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-        },
-        onSuccess: (response) => {
-          setSubmitResult({
-            success: true,
-            message: response.message || "Aliases added successfully",
-          });
-          graphUserRequest.refetch();
-          setTimeout(() => {
-            setShowAddAliasDialog(false);
-            setAliasList([]);
-            setNewAlias("");
-            setSubmitResult(null);
-          }, 1500);
-        },
-        onError: (error) => {
-          setSubmitResult({ success: false, message: error.message || "Failed to add aliases" });
-        },
-      });
-    }
-  };
+  // Proxy address actions implementations are handled by the CippAliasDialog component
 
   const proxyAddressesCard = [
     {
@@ -700,7 +588,7 @@ const Page = () => {
       cardLabelBoxActions: (
         <Button
           startIcon={<AlternateEmail />}
-          onClick={() => setShowAddAliasDialog(true)}
+          onClick={() => aliasDialog.handleOpen()}
           variant="outlined"
           color="primary"
           size="small"
@@ -745,77 +633,9 @@ const Page = () => {
     },
   ];
 
-  const permissionsApiRequest = {
-    isSuccess: submitPermissionsResult?.success,
-    isError: submitPermissionsResult?.success === false,
-    error: submitPermissionsResult?.success === false ? submitPermissionsResult?.message : null,
-    data: submitPermissionsResult?.success ? { message: submitPermissionsResult?.message } : null,
-  };
+  // These API request objects are no longer needed as they're handled by CippApiDialog
 
-  const calendarPermissionsFormControl = useForm({
-    mode: "onChange",
-    defaultValues: {
-      UserToGetPermissions: null,
-      Permissions: null,
-      CanViewPrivateItems: false,
-      FolderName: "Calendar"
-    },
-  });
-
-  const handleAddCalendarPermissions = () => {
-    const values = calendarPermissionsFormControl.getValues();
-    if (!values.UserToGetPermissions || !values.Permissions) return;
-
-    setIsSubmittingCalendarPermissions(true);
-    setSubmitCalendarPermissionsResult(null);
-    
-    // Build permission object dynamically
-    const permission = {
-      UserID: values.UserToGetPermissions,
-      PermissionLevel: values.Permissions,
-      Modification: "Add"
-    };
-    if (values.CanViewPrivateItems) {
-      permission.CanViewPrivateItems = true;
-    }
-
-    addPermissionsMutation.mutate({
-      url: '/api/ExecModifyCalPerms',
-      data: {
-        userID: graphUserRequest.data?.[0]?.userPrincipalName,
-        tenantFilter: userSettingsDefaults.currentTenant,
-        permissions: [permission]
-      }
-    }, {
-      onSuccess: (response) => {
-        setSubmitCalendarPermissionsResult({ success: true, message: response.data?.Results?.join('\n') || 'Calendar permissions added successfully' });
-        calPermissions.refetch();
-        setTimeout(() => {
-          setShowAddCalendarPermissionsDialog(false);
-          calendarPermissionsFormControl.reset();
-          setSubmitCalendarPermissionsResult(null);
-        }, 1500);
-      },
-      onError: (error) => {
-        // Try to extract a detailed message from the API response
-        const apiMessage =
-          error?.response?.data?.Results?.join('\n') ||
-          error?.message ||
-          'Failed to add calendar permissions';
-        setSubmitCalendarPermissionsResult({ success: false, message: apiMessage });
-      },
-      onSettled: () => {
-        setIsSubmittingCalendarPermissions(false);
-      }
-    });
-  };
-
-  const calendarPermissionsApiRequest = {
-    isSuccess: submitCalendarPermissionsResult?.success,
-    isError: submitCalendarPermissionsResult?.success === false,
-    error: submitCalendarPermissionsResult?.success === false ? submitCalendarPermissionsResult?.message : null,
-    data: submitCalendarPermissionsResult?.success ? { message: submitCalendarPermissionsResult?.message } : null,
-  };
+  // Calendar permissions dialog functionality is now handled by the CippCalendarPermissionsDialog component
 
   return (
     <HeaderedTabbedLayout
@@ -918,335 +738,107 @@ const Page = () => {
           row={actionData.data}
         />
       )}
-      <Dialog
-        open={showAddAliasDialog}
-        onClose={() => setShowAddAliasDialog(false)}
-        maxWidth="sm"
-        fullWidth
+      <CippApiDialog
+        createDialog={aliasDialog}
+        title="Add Proxy Addresses"
+        api={aliasApiConfig}
+        row={graphUserRequest.data?.[0]}
+        customDataformatter={(row, action, formData) => {
+          return {
+            id: userId,
+            tenantFilter: userSettingsDefaults.currentTenant,
+            AddedAliases: formData?.AddedAliases?.join(",") || "",
+            userPrincipalName: graphUserRequest?.data?.[0]?.userPrincipalName,
+          };
+        }}
       >
-        <DialogTitle>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Typography variant="h6">Add Proxy Addresses</Typography>
-            <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
-              <Close />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Stack spacing={3} sx={{ mt: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Add proxy addresses (aliases) for this user. Enter each alias and click Add or press Enter.
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <TextField
-                fullWidth
-                value={newAlias}
-                onChange={(e) => setNewAlias(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter an alias"
-                variant="outlined"
-                disabled={setUserAliases.isPending}
-                size="small"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    fontFamily: 'monospace',
-                    '& .MuiOutlinedInput-input': {
-                      px: 2
-                    }
-                  }
-                }}
-              />
-              <Button
-                onClick={handleAddAlias}
-                variant="contained"
-                disabled={!newAlias.trim() || setUserAliases.isPending}
-                startIcon={<Add />}
-                size="small"
-              >
-                Add
-              </Button>
-            </Box>
-            <Box sx={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: 1,
-              minHeight: '40px',
-              p: 1,
-              border: '1px dashed',
-              borderColor: 'divider',
-              borderRadius: 1,
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              {aliasList.length === 0 ? (
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ 
-                    px: 2,
-                    py: 1,
-                    textAlign: 'center',
-                    width: '100%'
-                  }}
-                >
-                  No aliases added yet
-                </Typography>
-              ) : (
-                aliasList.map((alias) => (
-                  <Chip
-                    key={alias}
-                    label={alias}
-                    onDelete={() => handleDeleteAlias(alias)}
-                    color="primary"
-                    variant="outlined"
-                  />
-                ))
-              )}
-            </Box>
-            <CippApiResults apiObject={setUserAliases} />
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button 
-            onClick={() => {
-              setShowAddAliasDialog(false);
-              setAliasList([]);
-              setNewAlias("");
-            }} 
-            disabled={setUserAliases.isPending}
-            color="inherit"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleAddAliases}
-            variant="contained"
-            color="primary"
-            disabled={aliasList.length === 0 || setUserAliases.isPending}
-            startIcon={
-              setUserAliases.isPending ? <CircularProgress size={20} color="inherit" /> : null
-            }
-          >
-            {setUserAliases.isPending ? "Adding..." : "Add Aliases"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={showAddPermissionsDialog}
-        onClose={() => setShowAddPermissionsDialog(false)}
-        maxWidth="sm"
-        fullWidth
+        {({ formHook }) => <CippAliasDialog formHook={formHook} />}
+      </CippApiDialog>
+
+      <CippApiDialog
+        createDialog={permissionsDialog}
+        title="Add Mailbox Permissions"
+        api={permissionsApiConfig}
+        row={graphUserRequest.data?.[0]}
+        allowResubmit={true}
+        customDataformatter={(row, action, data) => {
+          const permissions = [];
+          const { permissions: permissionValues } = data;
+          const autoMap = data.autoMap === undefined ? true : data.autoMap;
+
+          // Build permissions array based on form values
+          if (permissionValues?.AddFullAccess) {
+            permissions.push({
+              UserID: permissionValues.AddFullAccess,
+              PermissionLevel: "FullAccess",
+              Modification: "Add",
+              AutoMap: autoMap,
+            });
+          }
+          if (permissionValues?.AddSendAs) {
+            permissions.push({
+              UserID: permissionValues.AddSendAs,
+              PermissionLevel: "SendAs",
+              Modification: "Add",
+            });
+          }
+          if (permissionValues?.AddSendOnBehalf) {
+            permissions.push({
+              UserID: permissionValues.AddSendOnBehalf,
+              PermissionLevel: "SendOnBehalf",
+              Modification: "Add",
+            });
+          }
+
+          return {
+            userID: graphUserRequest.data?.[0]?.userPrincipalName,
+            tenantFilter: userSettingsDefaults.currentTenant,
+            permissions: permissions,
+          };
+        }}
       >
-        <DialogTitle>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            Add Mailbox Permissions
-            <IconButton onClick={() => setShowAddPermissionsDialog(false)} size="small">
-              <Close />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Stack spacing={3} sx={{ mt: 1 }}>
-            <Box>
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Full Access"
-                name="permissions.AddFullAccess"
-                isFetching={userRequest.isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-              {formControl.watch("permissions.AddFullAccess") && (
-                <FormControlLabel
-                  control={
-                    <Switch
-                      size="small"
-                      checked={autoMap}
-                      onChange={(e) => {
-                        setAutoMap(e.target.checked);
-                      }}
-                    />
-                  }
-                  label="Enable Automapping"
-                  sx={{ mt: 0.5, ml: 0.5 }}
-                />
-              )}
-            </Box>
-            <Box>
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Send-as Permissions"
-                name="permissions.AddSendAs"
-                isFetching={userRequest.isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-            </Box>
-            <Box>
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Send On Behalf Permissions"
-                name="permissions.AddSendOnBehalf"
-                isFetching={userRequest.isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                formControl={formControl}
-              />
-            </Box>
-            <CippApiResults apiObject={permissionsApiRequest} />
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ px: 2, pb: 2 }}>
-          <Button
-            onClick={() => setShowAddPermissionsDialog(false)}
-            disabled={isSubmittingPermissions}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleAddPermissions}
-            variant="contained"
-            color="primary"
-            disabled={
-              (!formControl.watch("permissions.AddFullAccess") &&
-                !formControl.watch("permissions.AddSendAs") &&
-                !formControl.watch("permissions.AddSendOnBehalf")) ||
-              isSubmittingPermissions
+        {({ formHook }) => (
+          <CippMailboxPermissionsDialog
+            formHook={formHook}
+            options={
+              usersList?.data?.Results?.map((user) => ({
+                value: user.userPrincipalName,
+                label: `${user.displayName} (${user.userPrincipalName})`,
+              })) || []
             }
-            startIcon={
-              isSubmittingPermissions ? <CircularProgress size={20} color="inherit" /> : null
-            }
-          >
-            {isSubmittingPermissions ? "Adding..." : "Add Permissions"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog 
-        open={showAddCalendarPermissionsDialog} 
-        onClose={() => setShowAddCalendarPermissionsDialog(false)}
-        maxWidth="sm"
-        fullWidth
+          />
+        )}
+      </CippApiDialog>
+
+      <CippApiDialog
+        createDialog={calendarPermissionsDialog}
+        title="Add Calendar Permissions"
+        api={calendarPermissionsApiConfig}
+        row={graphUserRequest.data?.[0]}
+        allowResubmit={true}
+        customDataformatter={(row, action, data) => {
+          if (!data.UserToGetPermissions || !data.Permissions) return null;
+
+          // Build permission object dynamically
+          const permission = {
+            UserID: data.UserToGetPermissions,
+            PermissionLevel: data.Permissions,
+            Modification: "Add",
+          };
+
+          if (data.CanViewPrivateItems) {
+            permission.CanViewPrivateItems = true;
+          }
+
+          return {
+            userID: graphUserRequest.data?.[0]?.userPrincipalName,
+            tenantFilter: userSettingsDefaults.currentTenant,
+            permissions: [permission],
+          };
+        }}
       >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            Add Calendar Permissions
-            <IconButton onClick={() => setShowAddCalendarPermissionsDialog(false)} size="small">
-              <Close />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Stack spacing={3} sx={{ mt: 1 }}>
-            <Box>
-              <CippFormComponent
-                type="autoComplete"
-                label="Add Access"
-                name="UserToGetPermissions"
-                isFetching={userRequest.isFetching || usersList.isFetching}
-                options={
-                  usersList?.data?.Results?.map((user) => ({
-                    value: user.userPrincipalName,
-                    label: `${user.displayName} (${user.userPrincipalName})`,
-                  })) || []
-                }
-                multiple={false}
-                formControl={calendarPermissionsFormControl}
-              />
-            </Box>
-            <Box>
-              <CippFormComponent
-                type="autoComplete"
-                label="Permission Level"
-                name="Permissions"
-                required={true}
-                validators={{
-                  validate: (value) =>
-                    value ? true : "Select the permission level for the calendar",
-                }}
-                isFetching={userRequest.isFetching || usersList.isFetching}
-                options={[
-                  { value: "Author", label: "Author" },
-                  { value: "Contributor", label: "Contributor" },
-                  { value: "Editor", label: "Editor" },
-                  { value: "Owner", label: "Owner" },
-                  { value: "NonEditingAuthor", label: "Non Editing Author" },
-                  { value: "PublishingAuthor", label: "Publishing Author" },
-                  { value: "PublishingEditor", label: "Publishing Editor" },
-                  { value: "Reviewer", label: "Reviewer" },
-                  { value: "LimitedDetails", label: "Limited Details" },
-                  { value: "AvailabilityOnly", label: "Availability Only" },
-                ]}
-                multiple={false}
-                formControl={calendarPermissionsFormControl}
-              />
-            </Box>
-            <Box>
-              {(() => {
-                const permissionLevel = calendarPermissionsFormControl.watch("Permissions");
-                const isEditor = permissionLevel?.value === "Editor";
-                
-                useEffect(() => {
-                  if (!isEditor) {
-                    calendarPermissionsFormControl.setValue("CanViewPrivateItems", false);
-                  }
-                }, [isEditor, calendarPermissionsFormControl]);
-                
-                return (
-                  <Tooltip 
-                    title={!isEditor ? "Only usable when permission level is Editor" : ""}
-                    followCursor
-                    placement="right"
-                  >
-                    <span>
-                      <CippFormComponent
-                        type="switch"
-                        label="Can view Private items"
-                        name="CanViewPrivateItems"
-                        formControl={calendarPermissionsFormControl}
-                        disabled={!isEditor}
-                      />
-                    </span>
-                  </Tooltip>
-                );
-              })()}
-            </Box>
-            <CippApiResults apiObject={calendarPermissionsApiRequest} />
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ px: 2, pb: 2 }}>
-          <Button 
-            onClick={() => setShowAddCalendarPermissionsDialog(false)}
-            disabled={isSubmittingCalendarPermissions}
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleAddCalendarPermissions} 
-            variant="contained" 
-            color="primary"
-            disabled={(!calendarPermissionsFormControl.watch("UserToGetPermissions") || 
-                      !calendarPermissionsFormControl.watch("Permissions")) || 
-                      isSubmittingCalendarPermissions}
-            startIcon={isSubmittingCalendarPermissions ? <CircularProgress size={20} color="inherit" /> : null}
-          >
-            {isSubmittingCalendarPermissions ? 'Adding...' : 'Add Permissions'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        {({ formHook }) => <CippCalendarPermissionsDialog formHook={formHook} />}
+      </CippApiDialog>
     </HeaderedTabbedLayout>
   );
 };
