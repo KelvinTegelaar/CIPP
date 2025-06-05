@@ -27,7 +27,6 @@ export const CippApiDialog = (props) => {
     dialogAfterEffect,
     allowResubmit = false,
     children,
-    customDataformatter,
     ...other
   } = props;
   const router = useRouter();
@@ -113,8 +112,8 @@ export const CippApiDialog = (props) => {
   const handleActionClick = (row, action, formData) => {
     setIsFormSubmitted(true);
     let finalData = {};
-    if (typeof customDataformatter === "function") {
-      finalData = customDataformatter(row, action, formData);
+    if (typeof api?.customDataformatter === "function") {
+      finalData = api.customDataformatter(row, action, formData);
     } else {
       if (action.multiPost === undefined) action.multiPost = false;
 
@@ -131,36 +130,39 @@ export const CippApiDialog = (props) => {
       };
       const processedActionData = processActionData(action.data, row, action.replacementBehaviour);
 
-      // MULTI ROW CASES
-      if (Array.isArray(row)) {
-        const arrayData = row.map((singleRow) => {
-          const itemData = { ...commonData };
-          Object.keys(processedActionData).forEach((key) => {
-            const rowValue = singleRow[processedActionData[key]];
-            itemData[key] = rowValue !== undefined ? rowValue : processedActionData[key];
+      if (!processedActionData || Object.keys(processedActionData).length === 0) {
+        console.warn("No data to process for action:", action);
+      } else {
+        // MULTI ROW CASES
+        if (Array.isArray(row)) {
+          const arrayData = row.map((singleRow) => {
+            const itemData = { ...commonData };
+            Object.keys(processedActionData).forEach((key) => {
+              const rowValue = singleRow[processedActionData[key]];
+              itemData[key] = rowValue !== undefined ? rowValue : processedActionData[key];
+            });
+            return itemData;
           });
-          return itemData;
-        });
 
-        const payload = {
-          url: action.url,
-          bulkRequest: !action.multiPost,
-          data: arrayData,
-        };
+          const payload = {
+            url: action.url,
+            bulkRequest: !action.multiPost,
+            data: arrayData,
+          };
 
-        if (action.type === "POST") {
-          actionPostRequest.mutate(payload);
-        } else if (action.type === "GET") {
-          setGetRequestInfo({
-            ...payload,
-            waiting: true,
-            queryKey: Date.now(),
-          });
+          if (action.type === "POST") {
+            actionPostRequest.mutate(payload);
+          } else if (action.type === "GET") {
+            setGetRequestInfo({
+              ...payload,
+              waiting: true,
+              queryKey: Date.now(),
+            });
+          }
+
+          return;
         }
-
-        return;
       }
-
       // ✅ FIXED: DIRECT MERGE INSTEAD OF CORRUPT TRANSFORMATION
       finalData = {
         ...commonData,
