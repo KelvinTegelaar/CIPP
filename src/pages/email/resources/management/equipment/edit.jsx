@@ -32,145 +32,123 @@ const automateProcessingOptions = [
   { value: "AutoAccept", label: "AutoAccept - Accept and delete" },
 ];
 
-const EditRoomMailbox = () => {
+const EditEquipmentMailbox = () => {
   const router = useRouter();
-  const { roomId } = router.query;
+  const { equipmentId } = router.query;
   const tenantDomain = useSettings().currentTenant;
   const formControl = useForm({
     mode: "onChange",
   });
 
-  const roomInfo = ApiGetCall({
-    url: `/api/ListRooms?roomId=${roomId}&tenantFilter=${tenantDomain}`,
-    queryKey: `Room-${roomId}`,
+  const equipmentInfo = ApiGetCall({
+    url: `/api/ListEquipment?EquipmentId=${equipmentId}&tenantFilter=${tenantDomain}`,
+    queryKey: `Equipment-${equipmentId}`,
     waiting: false,
   });
 
   useEffect(() => {
-    if (roomInfo.isSuccess && roomInfo.data?.[0]) {
-      const room = roomInfo.data[0];
+    if (equipmentInfo.isSuccess && equipmentInfo.data?.[0]) {
+      const equipment = equipmentInfo.data[0];
       formControl.reset({
         // Core Properties
-        displayName: room.displayName,
-        hiddenFromAddressListsEnabled: room.hiddenFromAddressListsEnabled,
+        displayName: equipment.displayName,
+        hiddenFromAddressListsEnabled: equipment.hiddenFromAddressListsEnabled,
 
-        // Room Booking Settings
-        capacity: room.capacity,
+        // Equipment Details
+        department: equipment.department,
+        company: equipment.company,
 
         // Location Information
-        building: room.building,
-        floor: room.floor,
-        floorLabel: room.floorLabel,
-        street: room.street,
-        city: room.city,
-        state: room.state,
-        postalCode: room.postalCode,
-        countryOrRegion: room.countryOrRegion
-          ? countryList.find((c) => c.Name === room.countryOrRegion)?.Code || ""
+        streetAddress: equipment.streetAddress,
+        city: equipment.city,
+        stateOrProvince: equipment.stateOrProvince,
+        postalCode: equipment.postalCode,
+        countryOrRegion: equipment.countryOrRegion
+          ? countryList.find((c) => c.Name === equipment.countryOrRegion)?.Code || ""
           : "",
+        phone: equipment.phone,
+        tags: equipment.tags?.map((tag) => ({ label: tag, value: tag })) || [],
 
-        // Room Equipment
-        audioDeviceName: room.audioDeviceName,
-        videoDeviceName: room.videoDeviceName,
-        displayDeviceName: room.displayDeviceName,
-
-        // Room Features
-        isWheelChairAccessible: room.isWheelChairAccessible,
-        phone: room.phone,
-        tags: room.tags?.map((tag) => ({ label: tag, value: tag })) || [],
-
-        // Calendar Properties
-        AllowConflicts: room.AllowConflicts,
-        AllowRecurringMeetings: room.AllowRecurringMeetings,
-        BookingWindowInDays: room.BookingWindowInDays,
-        MaximumDurationInMinutes: room.MaximumDurationInMinutes,
-        ProcessExternalMeetingMessages: room.ProcessExternalMeetingMessages,
-        EnforceCapacity: room.EnforceCapacity,
-        ForwardRequestsToDelegates: room.ForwardRequestsToDelegates,
-        ScheduleOnlyDuringWorkHours: room.ScheduleOnlyDuringWorkHours,
-        AutomateProcessing: room.AutomateProcessing,
+        // Booking Information
+        allowConflicts: equipment.allowConflicts,
+        allowRecurringMeetings: equipment.allowRecurringMeetings,
+        bookingWindowInDays: equipment.bookingWindowInDays,
+        maximumDurationInMinutes: equipment.maximumDurationInMinutes,
+        processExternalMeetingMessages: equipment.processExternalMeetingMessages,
+        forwardRequestsToDelegates: equipment.forwardRequestsToDelegates,
+        scheduleOnlyDuringWorkHours: equipment.scheduleOnlyDuringWorkHours,
+        automateProcessing: equipment.automateProcessing,
 
         // Calendar Configuration
-        WorkDays:
-          room.WorkDays?.split(",")?.map((day) => ({
+        workDays:
+          equipment.workDays?.split(",")?.map((day) => ({
             label: day.trim(),
             value: day.trim(),
           })) || [],
-        WorkHoursStartTime: room.WorkHoursStartTime,
-        WorkHoursEndTime: room.WorkHoursEndTime,
-        WorkingHoursTimeZone: room.WorkingHoursTimeZone
+        workHoursStartTime: equipment.workHoursStartTime,
+        workHoursEndTime: equipment.workHoursEndTime,
+        workingHoursTimeZone: equipment.workingHoursTimeZone
           ? {
-              value: room.WorkingHoursTimeZone,
-              label: timezoneList.find((tz) => tz.standardTime === room.WorkingHoursTimeZone)
-                ? `${room.WorkingHoursTimeZone} - ${
-                    timezoneList.find((tz) => tz.standardTime === room.WorkingHoursTimeZone)
+              value: equipment.workingHoursTimeZone,
+              label: timezoneList.find((tz) => tz.standardTime === equipment.workingHoursTimeZone)
+                ? `${equipment.workingHoursTimeZone} - ${
+                    timezoneList.find((tz) => tz.standardTime === equipment.workingHoursTimeZone)
                       ?.timezone
                   }`
-                : room.WorkingHoursTimeZone,
+                : equipment.workingHoursTimeZone,
             }
           : null,
       });
     }
-  }, [roomInfo.isSuccess, roomInfo.data]);
+  }, [equipmentInfo.isSuccess, equipmentInfo.data]);
 
   useEffect(() => {
-    if (roomId) {
-      roomInfo.refetch();
+    if (equipmentId) {
+      equipmentInfo.refetch();
     }
-  }, [router.query, roomId, tenantDomain]);
+  }, [router.query, equipmentId, tenantDomain]);
 
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey={`Room-${roomId}`}
-      title="Edit Room Mailbox"
-      backButtonTitle="Room Mailboxes Overview"
-      postUrl="/api/EditRoomMailbox"
+      queryKey={`Equipment-${equipmentId}`}
+      title="Edit Equipment Mailbox"
+      backButtonTitle="Equipment Mailboxes Overview"
+      postUrl="/api/EditEquipmentMailbox"
       customDataformatter={(values) => ({
         tenantID: tenantDomain,
-        roomId: roomId,
+        equipmentId: equipmentId,
         displayName: values.displayName?.trim(),
         hiddenFromAddressListsEnabled: values.hiddenFromAddressListsEnabled,
 
-        // Room Booking Settings
-        capacity: values.capacity,
+        // Equipment Details
+        department: values.department?.trim(),
+        company: values.company?.trim(),
 
         // Location Information
-        building: values.building?.trim(),
-        floor: values.floor,
-        floorLabel: values.floorLabel?.trim(),
-        street: values.street?.trim(),
+        streetAddress: values.streetAddress?.trim(),
         city: values.city?.trim(),
-        state: values.state?.trim(),
+        stateOrProvince: values.stateOrProvince?.trim(),
         postalCode: values.postalCode?.trim(),
         countryOrRegion: values.countryOrRegion?.value || values.countryOrRegion || null,
-
-        // Room Equipment
-        audioDeviceName: values.audioDeviceName?.trim(),
-        videoDeviceName: values.videoDeviceName?.trim(),
-        displayDeviceName: values.displayDeviceName?.trim(),
-
-        // Room Features
-        isWheelChairAccessible: values.isWheelChairAccessible,
         phone: values.phone?.trim(),
         tags: values.tags?.map((tag) => tag.value),
 
-        // Calendar Properties
-        AllowConflicts: values.AllowConflicts,
-        AllowRecurringMeetings: values.AllowRecurringMeetings,
-        BookingWindowInDays: values.BookingWindowInDays,
-        MaximumDurationInMinutes: values.MaximumDurationInMinutes,
-        ProcessExternalMeetingMessages: values.ProcessExternalMeetingMessages,
-        EnforceCapacity: values.EnforceCapacity,
-        ForwardRequestsToDelegates: values.ForwardRequestsToDelegates,
-        ScheduleOnlyDuringWorkHours: values.ScheduleOnlyDuringWorkHours,
-        AutomateProcessing: values.AutomateProcessing?.value || values.AutomateProcessing,
+        // Booking Information
+        allowConflicts: values.allowConflicts,
+        allowRecurringMeetings: values.allowRecurringMeetings,
+        bookingWindowInDays: values.bookingWindowInDays,
+        maximumDurationInMinutes: values.maximumDurationInMinutes,
+        processExternalMeetingMessages: values.processExternalMeetingMessages,
+        forwardRequestsToDelegates: values.forwardRequestsToDelegates,
+        scheduleOnlyDuringWorkHours: values.scheduleOnlyDuringWorkHours,
+        automateProcessing: values.automateProcessing?.value || values.automateProcessing,
 
         // Calendar Configuration
-        WorkDays: values.WorkDays?.map((day) => day.value).join(","),
-        WorkHoursStartTime: values.WorkHoursStartTime,
-        WorkHoursEndTime: values.WorkHoursEndTime,
-        WorkingHoursTimeZone: values.WorkingHoursTimeZone?.value || values.WorkingHoursTimeZone,
+        workDays: values.workDays?.map((day) => day.value).join(","),
+        workHoursStartTime: values.workHoursStartTime,
+        workHoursEndTime: values.workHoursEndTime,
+        workingHoursTimeZone: values.workingHoursTimeZone?.value || values.workingHoursTimeZone,
       })}
     >
       <Grid container spacing={2}>
@@ -180,6 +158,7 @@ const EditRoomMailbox = () => {
             Basic Information
           </Typography>
         </Grid>
+
         <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
@@ -189,6 +168,7 @@ const EditRoomMailbox = () => {
             validators={{ required: "Display Name is required" }}
           />
         </Grid>
+
         <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
@@ -197,29 +177,21 @@ const EditRoomMailbox = () => {
             formControl={formControl}
           />
         </Grid>
+
         <Divider sx={{ my: 2, width: "100%" }} />
-        {/* Booking Settings */}
+
+        {/* Booking Information */}
         <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Booking Settings
+            Booking Information
           </Typography>
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="number"
-            label="Room Capacity"
-            name="capacity"
-            formControl={formControl}
-            InputProps={{
-              inputProps: { min: 0 },
-            }}
-          />
-        </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Maximum Booking Duration (Minutes)"
-            name="MaximumDurationInMinutes"
+            name="maximumDurationInMinutes"
             formControl={formControl}
             validators={{
               min: { value: 1, message: "Minimum duration is 1 minute" },
@@ -231,11 +203,12 @@ const EditRoomMailbox = () => {
             fullWidth
           />
         </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Booking Window (Days)"
-            name="BookingWindowInDays"
+            name="bookingWindowInDays"
             formControl={formControl}
             validators={{
               min: { value: 0, message: "Minimum is 0 days" },
@@ -247,88 +220,90 @@ const EditRoomMailbox = () => {
             fullWidth
           />
         </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Booking Process"
-            name="AutomateProcessing"
+            name="automateProcessing"
             multiple={false}
             creatable={false}
             options={automateProcessingOptions}
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Allow Recurring Meetings"
-            name="AllowRecurringMeetings"
+            name="allowRecurringMeetings"
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Allow Double-Booking"
-            name="AllowConflicts"
+            name="allowConflicts"
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Process External Meetings"
-            name="ProcessExternalMeetingMessages"
+            name="processExternalMeetingMessages"
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Enforce Room Capacity"
-            name="EnforceCapacity"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+
+        <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Forward to Delegates"
-            name="ForwardRequestsToDelegates"
+            name="forwardRequestsToDelegates"
             formControl={formControl}
           />
         </Grid>
+
         <Divider sx={{ my: 2, width: "100%" }} />
+
         {/* Working Hours */}
         <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
             Working Hours
           </Typography>
         </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Schedule Only During Work Hours"
-            name="ScheduleOnlyDuringWorkHours"
+            name="scheduleOnlyDuringWorkHours"
             formControl={formControl}
           />
         </Grid>
+
         <Grid item size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Working Days"
-            name="WorkDays"
+            name="workDays"
             multiple={true}
             creatable={false}
             options={workDaysOptions}
             formControl={formControl}
           />
-        </Grid>{" "}
+        </Grid>
+
         <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Timezone"
-            name="WorkingHoursTimeZone"
+            name="workingHoursTimeZone"
             options={timezoneList.map((tz) => ({
               value: tz.standardTime,
               label: `${tz.standardTime} - ${tz.timezone}`,
@@ -338,37 +313,52 @@ const EditRoomMailbox = () => {
             formControl={formControl}
           />
         </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="time"
-            label="Work Hours Start"
-            name="WorkHoursStartTime"
+            label="Work Hours Start Time"
+            name="workHoursStartTime"
             formControl={formControl}
           />
         </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="time"
-            label="Work Hours End"
-            name="WorkHoursEndTime"
+            label="Work Hours End Time"
+            name="workHoursEndTime"
             formControl={formControl}
           />
         </Grid>
+
         <Divider sx={{ my: 2, width: "100%" }} />
-        {/* Room Facilities */}
+
+        {/* Equipment & Location Details */}
         <Grid item size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Room Facilities & Equipment
+            Equipment & Location Details
           </Typography>
         </Grid>
+
         <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
-            type="switch"
-            label="Wheelchair Accessible"
-            name="isWheelChairAccessible"
+            type="textField"
+            label="Department"
+            name="department"
             formControl={formControl}
           />
         </Grid>
+
+        <Grid item size={{ md: 6, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            label="Company"
+            name="company"
+            formControl={formControl}
+          />
+        </Grid>
+
         <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
@@ -377,85 +367,29 @@ const EditRoomMailbox = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Audio Device"
-            name="audioDeviceName"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Video Device"
-            name="videoDeviceName"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Display Device"
-            name="displayDeviceName"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid item size={{ xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Tags"
-            name="tags"
-            formControl={formControl}
-            multiple={true}
-            creatable={true}
-          />
-        </Grid>
-        <Divider sx={{ my: 2, width: "100%" }} />
-        {/* Location Information */}
-        <Grid item size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Location Information
-          </Typography>
-        </Grid>
+
         <Grid item size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
-            label="Building"
-            name="building"
+            label="Street"
+            name="streetAddress"
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 3, xs: 12 }}>
-          <CippFormComponent type="number" label="Floor" name="floor" formControl={formControl} />
-        </Grid>
-        <Grid item size={{ md: 3, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Floor Label"
-            name="floorLabel"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid item size={{ md: 12, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Street Address"
-            name="street"
-            formControl={formControl}
-          />
-        </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="textField" label="City" name="city" formControl={formControl} />
         </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
-            label="State/Province"
-            name="state"
+            label="State"
+            name="stateOrProvince"
             formControl={formControl}
           />
         </Grid>
+
         <Grid item size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
@@ -464,6 +398,7 @@ const EditRoomMailbox = () => {
             formControl={formControl}
           />
         </Grid>
+
         <Grid item size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
@@ -478,11 +413,24 @@ const EditRoomMailbox = () => {
             formControl={formControl}
           />
         </Grid>
+
+        <Grid item size={{ md: 12, xs: 12 }}>
+          <CippFormComponent
+            type="autoComplete"
+            label="Tags"
+            name="tags"
+            multiple={true}
+            creatable={true}
+            formControl={formControl}
+          />
+        </Grid>
+
+        <Divider sx={{ my: 2, width: "100%" }} />
       </Grid>
     </CippFormPage>
   );
 };
 
-EditRoomMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditEquipmentMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default EditRoomMailbox;
+export default EditEquipmentMailbox;

@@ -352,6 +352,7 @@ export const nativeMenuItems = [
         title: "Resource Management",
         path: "/email/resources/management",
         items: [
+          { title: "Equipment", path: "/email/resources/management/equipment" },
           { title: "Rooms", path: "/email/resources/management/list-rooms" },
           { title: "Room Lists", path: "/email/resources/management/room-lists" },
         ],
