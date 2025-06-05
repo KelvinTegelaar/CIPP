@@ -80,6 +80,7 @@ const Page = () => {
             url: apiUrl,
             data: { FunctionName: "Command", Parameters: "Parameters" },
             confirmText: "Do you want to run this task now?",
+            allowResubmit: true,
           },
         ]}
       />
