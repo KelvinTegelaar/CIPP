@@ -240,13 +240,13 @@
     "recommendedBy": []
   },
   {
-    "name": "standards.NamePronounciation",
+    "name": "standards.NamePronunciation",
     "cat": "Global Standards",
     "tag": [],
-    "helpText": "Enables the Name Pronounciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
-    "docsDescription": "Enables the Name Pronounciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
+    "helpText": "Enables the Name Pronunciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
+    "docsDescription": "Enables the Name Pronunciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
     "addedComponent": [],
-    "label": "Enable Name Pronounciation",
+    "label": "Enable Name Pronunciation",
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2025-06-06",
