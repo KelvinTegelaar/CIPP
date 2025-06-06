@@ -26,6 +26,7 @@ import { usePopover } from "../hooks/use-popover";
 import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
 import { CogIcon } from "@heroicons/react/24/outline";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const AccountPopover = (props) => {
   const {
@@ -38,7 +39,7 @@ export const AccountPopover = (props) => {
   const router = useRouter();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const popover = usePopover();
-
+  const queryClient = useQueryClient();
   const orgData = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
@@ -47,10 +48,13 @@ export const AccountPopover = (props) => {
   const handleLogout = useCallback(async () => {
     try {
       popover.handleClose();
+      // delete query cache and persisted data
+      queryClient.clear();
 
       router.push("/.auth/logout?post_logout_redirect_uri=" + encodeURIComponent(paths.index));
     } catch (err) {
       console.error(err);
+      console.log(orgData);
       toast.error("Something went wrong");
     }
   }, [router, popover]);

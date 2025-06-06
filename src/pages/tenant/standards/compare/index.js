@@ -118,8 +118,9 @@ const Page = () => {
                     (s) => s.standardId === standardId
                   );
 
-                  // Get the direct standard value from the tenant object
-                  const directStandardValue = currentTenantObj?.[standardId];
+                  // Get the standard object and its value from the tenant object
+                  const standardObject = currentTenantObj?.[standardId];
+                  const directStandardValue = standardObject?.Value;
 
                   // Determine compliance status
                   let isCompliant = false;
@@ -151,8 +152,11 @@ const Page = () => {
                       templateItem.TemplateList?.label || templateId
                     }`,
                     currentTenantValue:
-                      directStandardValue !== undefined
-                        ? directStandardValue
+                      standardObject !== undefined
+                        ? {
+                            Value: directStandardValue,
+                            LastRefresh: standardObject?.LastRefresh,
+                          }
                         : currentTenantStandard?.value,
                     standardValue: templateSettings, // Use the template settings object instead of true
                     complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
@@ -188,9 +192,12 @@ const Page = () => {
               let isCompliant = false;
               let reportingDisabled = !reportingEnabled;
 
-              // Check if the standard is directly in the tenant object (like "standards.AuditLog": true)
+              // Check if the standard is directly in the tenant object (like "standards.AuditLog": {...})
               const standardIdWithoutPrefix = standardId.replace("standards.", "");
-              const directStandardValue = currentTenantObj?.[standardId];
+              const standardObject = currentTenantObj?.[standardId];
+
+              // Extract the actual value from the standard object (new data structure includes .Value property)
+              const directStandardValue = standardObject?.Value;
 
               // Special case for boolean standards that are true in the tenant
               if (directStandardValue === true) {
@@ -223,8 +230,11 @@ const Page = () => {
                 standardId,
                 standardName: standardInfo?.label || standardKey,
                 currentTenantValue:
-                  directStandardValue !== undefined
-                    ? directStandardValue
+                  standardObject !== undefined
+                    ? {
+                        Value: directStandardValue,
+                        LastRefresh: standardObject?.LastRefresh,
+                      }
                     : currentTenantStandard?.value,
                 standardValue: standardSettings,
                 complianceStatus,
@@ -365,7 +375,9 @@ const Page = () => {
             </Tooltip>
           </Stack>
           <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-            {comparisonApi.data?.find((comparison) => comparison.RowKey === currentTenant) && (
+            {comparisonApi.data?.find(
+              (comparison) => comparison.tenantFilter === currentTenant
+            ) && (
               <Stack alignItems="center" direction="row" spacing={1}>
                 <Chip
                   icon={
@@ -384,19 +396,6 @@ const Page = () => {
                       : "error"
                   }
                   sx={{ ml: 2 }}
-                />
-                <Chip
-                  icon={
-                    <SvgIcon fontSize="small">
-                      <ClockIcon />
-                    </SvgIcon>
-                  }
-                  size="small"
-                  label={`Updated on ${new Date(
-                    comparisonApi.data.find(
-                      (comparison) => comparison.RowKey === currentTenant
-                    ).LastRefresh
-                  ).toLocaleString()}`}
                 />
               </Stack>
             )}
@@ -501,209 +500,380 @@ const Page = () => {
             ))}
           </>
         )}
-
-        <Divider sx={{ my: 2 }} />
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          sx={{
-            mt: 2,
-            alignItems: { xs: "flex-start", sm: "center" },
-            displayPrint: "none", // Hide filters in print view
-          }}
-        >
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
-            <TextField
-              size="small"
-              variant="filled"
-              fullWidth={{ xs: true, sm: false }}
-              sx={{ width: { xs: "100%", sm: 350 } }}
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start" sx={{ margin: "0 !important" }}>
-                      <Search />
-                    </InputAdornment>
-                  ),
-                  endAdornment: searchQuery && (
-                    <InputAdornment position="end">
-                      <Tooltip title="Clear search">
-                        <IconButton
-                          size="small"
-                          onClick={() => setSearchQuery("")}
-                          aria-label="Clear search"
-                        >
-                          <Close />
-                        </IconButton>
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                },
+        {!comparisonApi.isFetching && (
+          <>
+            <Divider sx={{ my: 2 }} />
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+              sx={{
+                mt: 2,
+                alignItems: { xs: "flex-start", sm: "center" },
+                displayPrint: "none", // Hide filters in print view
               }}
-            />
-          </Stack>
-          <ButtonGroup variant="outlined" color="primary" size="small">
-            <Button disabled={true} color="primary">
-              <SvgIcon fontSize="small">
-                <FilterAlt />
-              </SvgIcon>
-            </Button>
-            <Button
-              variant={filter === "all" ? "contained" : "outlined"}
-              onClick={() => setFilter("all")}
             >
-              All ({allCount})
-            </Button>
-            <Button
-              variant={filter === "compliant" ? "contained" : "outlined"}
-              onClick={() => setFilter("compliant")}
-            >
-              Compliant ({compliantCount})
-            </Button>
-            <Button
-              variant={filter === "nonCompliant" ? "contained" : "outlined"}
-              onClick={() => setFilter("nonCompliant")}
-            >
-              Non-Compliant ({nonCompliantCount})
-            </Button>
-          </ButtonGroup>
-        </Stack>
-        {comparisonApi.isError && (
-          <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
-            <Alert severity="error" sx={{ mb: 2 }}>
-              Error fetching comparison data
-            </Alert>
-            <Typography variant="body2">
-              There was an error retrieving the comparison data. Please try running the report again
-              by clicking the "Run Report Once" button above.
-            </Typography>
-            {comparisonApi.error && (
-              <Box
-                sx={{
-                  mt: 2,
-                  p: 2,
-                  bgcolor: "background.default",
-                  borderRadius: 1,
-                  border: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <Typography variant="caption" component="pre" sx={{ whiteSpace: "pre-wrap" }}>
-                  {comparisonApi.error.message || JSON.stringify(comparisonApi.error, null, 2)}
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
+                <TextField
+                  size="small"
+                  variant="filled"
+                  fullWidth={{ xs: true, sm: false }}
+                  sx={{ width: { xs: "100%", sm: 350 } }}
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start" sx={{ margin: "0 !important" }}>
+                          <Search />
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchQuery && (
+                        <InputAdornment position="end">
+                          <Tooltip title="Clear search">
+                            <IconButton
+                              size="small"
+                              onClick={() => setSearchQuery("")}
+                              aria-label="Clear search"
+                            >
+                              <Close />
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </Stack>
+              <ButtonGroup variant="outlined" color="primary" size="small">
+                <Button disabled={true} color="primary">
+                  <SvgIcon fontSize="small">
+                    <FilterAlt />
+                  </SvgIcon>
+                </Button>
+                <Button
+                  variant={filter === "all" ? "contained" : "outlined"}
+                  onClick={() => setFilter("all")}
+                >
+                  All ({allCount})
+                </Button>
+                <Button
+                  variant={filter === "compliant" ? "contained" : "outlined"}
+                  onClick={() => setFilter("compliant")}
+                >
+                  Compliant ({compliantCount})
+                </Button>
+                <Button
+                  variant={filter === "nonCompliant" ? "contained" : "outlined"}
+                  onClick={() => setFilter("nonCompliant")}
+                >
+                  Non-Compliant ({nonCompliantCount})
+                </Button>
+              </ButtonGroup>
+            </Stack>
+            {comparisonApi.isError && (
+              <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  Error fetching comparison data
+                </Alert>
+                <Typography variant="body2">
+                  There was an error retrieving the comparison data. Please try running the report
+                  again by clicking the "Run Report Once" button above.
                 </Typography>
-              </Box>
+                {comparisonApi.error && (
+                  <Box
+                    sx={{
+                      mt: 2,
+                      p: 2,
+                      bgcolor: "background.default",
+                      borderRadius: 1,
+                      border: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  >
+                    <Typography variant="caption" component="pre" sx={{ whiteSpace: "pre-wrap" }}>
+                      {comparisonApi.error.message || JSON.stringify(comparisonApi.error, null, 2)}
+                    </Typography>
+                  </Box>
+                )}
+              </Card>
             )}
-          </Card>
-        )}
 
-        {comparisonApi.isSuccess && (!comparisonApi.data || comparisonApi.data.length === 0) && (
-          <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
-            <Alert severity="info" sx={{ mb: 2 }}>
-              No comparison data is available. This might be because:
-            </Alert>
-            <Box sx={{ pl: 2 }}>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                • The tenant has not been scanned yet
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                • The template has no standards configured
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                • There was an issue with the comparison
-              </Typography>
-            </Box>
-            <Typography variant="body2">
-              Try running the report by clicking the "Run Report Once" button above.
-            </Typography>
-          </Card>
-        )}
+            {comparisonApi.isSuccess &&
+              (!comparisonApi.data || comparisonApi.data.length === 0) && (
+                <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+                  <Alert severity="info" sx={{ mb: 2 }}>
+                    No comparison data is available. This might be because:
+                  </Alert>
+                  <Box sx={{ pl: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      • The tenant has not been scanned yet
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      • The template has no standards configured
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                      • There was an issue with the comparison
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2">
+                    Try running the report by clicking the "Run Report Once" button above.
+                  </Typography>
+                </Card>
+              )}
 
-        {filteredGroupedStandards && Object.keys(filteredGroupedStandards).length === 0 && (
-          <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
-            <Alert severity="info" sx={{ mb: 2 }}>
-              No standards match the selected filter criteria or search query.
-            </Alert>
-            <Typography variant="body2">
-              Try selecting a different filter or modifying the search query.
-            </Typography>
-          </Card>
-        )}
+            {filteredGroupedStandards && Object.keys(filteredGroupedStandards).length === 0 && (
+              <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  No standards match the selected filter criteria or search query.
+                </Alert>
+                <Typography variant="body2">
+                  Try selecting a different filter or modifying the search query.
+                </Typography>
+              </Card>
+            )}
 
-        {Object.keys(filteredGroupedStandards).map((category) => (
-          <React.Fragment key={category}>
-            <Typography variant="h6" sx={{ mb: 2, mt: 3 }}>
-              {category}
-            </Typography>
+            {Object.keys(filteredGroupedStandards).map((category) => (
+              <React.Fragment key={category}>
+                <Typography variant="h6" sx={{ mb: 2, mt: 3 }}>
+                  {category}
+                </Typography>
 
-            {filteredGroupedStandards[category].map((standard, index) => (
-              <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
-                <Grid item size={{ xs: 12, md: 6 }}>
-                  <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{ p: 3 }}
-                    >
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        sx={{ width: "100%" }}
-                      >
-                        <Stack direction="row" alignItems="center" spacing={3}>
-                          <Box
-                            sx={{
-                              width: 40,
-                              height: 40,
-                              borderRadius: "50%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              bgcolor:
-                                standard.complianceStatus === "Compliant"
-                                  ? "success.main"
-                                  : standard.complianceStatus === "Reporting Disabled"
-                                  ? "grey.500"
-                                  : "error.main",
-                            }}
+                {filteredGroupedStandards[category].map((standard, index) => (
+                  <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
+                    <Grid item size={{ xs: 12, md: 6 }}>
+                      <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          sx={{ p: 3 }}
+                        >
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            sx={{ width: "100%" }}
                           >
-                            {standard.complianceStatus === "Compliant" ? (
-                              <CheckCircle sx={{ color: "white" }} />
-                            ) : standard.complianceStatus === "Reporting Disabled" ? (
-                              <Info sx={{ color: "white" }} />
-                            ) : (
-                              <Cancel sx={{ color: "white" }} />
-                            )}
-                          </Box>
-                          <Stack>
-                            <Typography variant="h6">{standard?.standardName}</Typography>
-                            <Box>
-                              <Chip
-                                label="Standard"
-                                size="small"
-                                color="info"
-                                variant="outlined"
-                                sx={{ mt: 1, px: 2 }}
-                              />
-                            </Box>
+                            <Stack direction="row" alignItems="center" spacing={3}>
+                              <Box
+                                sx={{
+                                  width: 40,
+                                  height: 40,
+                                  borderRadius: "50%",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  bgcolor:
+                                    standard.complianceStatus === "Compliant"
+                                      ? "success.main"
+                                      : standard.complianceStatus === "Reporting Disabled"
+                                      ? "grey.500"
+                                      : "error.main",
+                                }}
+                              >
+                                {standard.complianceStatus === "Compliant" ? (
+                                  <CheckCircle sx={{ color: "white" }} />
+                                ) : standard.complianceStatus === "Reporting Disabled" ? (
+                                  <Info sx={{ color: "white" }} />
+                                ) : (
+                                  <Cancel sx={{ color: "white" }} />
+                                )}
+                              </Box>
+                              <Stack>
+                                <Typography variant="h6">{standard?.standardName}</Typography>
+                                <Box>
+                                  <Chip
+                                    label="Standard"
+                                    size="small"
+                                    color="info"
+                                    variant="outlined"
+                                    sx={{ mt: 1, px: 2 }}
+                                  />
+                                </Box>
+                              </Stack>
+                            </Stack>
                           </Stack>
                         </Stack>
-                      </Stack>
-                    </Stack>
-                    <Divider />
-                    <Box sx={{ p: 3 }}>
-                      {!standard.standardValue ? (
-                        <Alert severity="info" sx={{ mb: 2 }}>
-                          This data has not yet been collected. Collect the data by pressing the
-                          report button on the top of the page.
-                        </Alert>
-                      ) : (
-                        <Box>
-                          <Box>
+                        <Divider />
+                        <Box sx={{ p: 3 }}>
+                          {!standard.standardValue ? (
+                            <Alert severity="info" sx={{ mb: 2 }}>
+                              This data has not yet been collected. Collect the data by pressing the
+                              report button on the top of the page.
+                            </Alert>
+                          ) : (
+                            <Box>
+                              <Box>
+                                <Box
+                                  sx={{
+                                    p: 2,
+                                    bgcolor: "background.default",
+                                    borderRadius: 1,
+                                    border: "1px solid",
+                                    borderColor: "divider",
+                                  }}
+                                >
+                                  {standard.standardValue &&
+                                  typeof standard.standardValue === "object" &&
+                                  Object.keys(standard.standardValue).length > 0 ? (
+                                    Object.entries(standard.standardValue).map(([key, value]) => (
+                                      <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                        <Typography
+                                          variant="body2"
+                                          sx={{ fontWeight: "medium", mr: 1 }}
+                                        >
+                                          {key}:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {typeof value === "object" && value !== null
+                                            ? value?.label || JSON.stringify(value)
+                                            : value === true
+                                            ? "Enabled"
+                                            : value === false
+                                            ? "Disabled"
+                                            : String(value)}
+                                        </Typography>
+                                      </Box>
+                                    ))
+                                  ) : (
+                                    <Typography variant="body2">
+                                      {standard.standardValue === true ? (
+                                        <Alert severity="success" sx={{ mt: 1 }}>
+                                          This setting is configured correctly
+                                        </Alert>
+                                      ) : standard.standardValue === false ? (
+                                        <Alert severity="warning" sx={{ mt: 1 }}>
+                                          This setting is not configured correctly
+                                        </Alert>
+                                      ) : standard.standardValue !== undefined ? (
+                                        typeof standard.standardValue === "object" ? (
+                                          "No settings configured"
+                                        ) : (
+                                          String(standard.standardValue)
+                                        )
+                                      ) : (
+                                        <Alert severity="info" sx={{ mt: 1 }}>
+                                          This setting is not configured, or data has not been
+                                          collected. If you are getting this after data collection,
+                                          the tenant might not be licensed for this feature
+                                        </Alert>
+                                      )}
+                                    </Typography>
+                                  )}
+                                </Box>
+                              </Box>
+                            </Box>
+                          )}
+
+                          <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
+                            <Chip
+                              label={standard.standardImpact || "Medium Impact"}
+                              size="small"
+                              color={
+                                standard.standardImpactColour === "info"
+                                  ? "info"
+                                  : standard.standardImpactColour === "warning"
+                                  ? "warning"
+                                  : "error"
+                              }
+                              sx={{ mr: 1 }}
+                            />
+                          </Box>
+                        </Box>
+                      </Card>
+                    </Grid>
+
+                    <Grid item size={{ xs: 12, md: 6 }}>
+                      <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          sx={{ p: 3 }}
+                        >
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            sx={{ width: "100%" }}
+                          >
+                            <Stack direction="row" alignItems="center" spacing={3}>
+                              <Box
+                                sx={{
+                                  width: 40,
+                                  height: 40,
+                                  borderRadius: "50%",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  bgcolor: "primary.main",
+                                }}
+                              >
+                                <Microsoft sx={{ color: "white" }} />
+                              </Box>
+                              <Stack>
+                                <Typography variant="h6">{currentTenant}</Typography>
+                                <Box>
+                                  <Chip
+                                    label="Current Tenant"
+                                    size="small"
+                                    color="primary"
+                                    variant="outlined"
+                                    sx={{ mt: 1, px: 2 }}
+                                  />
+                                </Box>
+                              </Stack>
+                            </Stack>
+                            <Stack spacing={1}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "flex-end",
+                                  width: "100%",
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    backgroundColor:
+                                      standard.complianceStatus === "Compliant"
+                                        ? "success.main"
+                                        : standard.complianceStatus === "Reporting Disabled"
+                                        ? "grey.500"
+                                        : "error.main",
+                                    borderRadius: "50%",
+                                    width: 8,
+                                    height: 8,
+                                    mr: 1,
+                                  }}
+                                />
+                                <Typography variant="body2" sx={{ mr: 1 }}>
+                                  {standard.complianceStatus}
+                                </Typography>
+                              </Box>
+                              {standard.currentTenantValue?.LastRefresh && (
+                                <Chip
+                                  icon={
+                                    <SvgIcon fontSize="small">
+                                      <ClockIcon />
+                                    </SvgIcon>
+                                  }
+                                  size="small"
+                                  label={`${new Date(
+                                    standard.currentTenantValue.LastRefresh
+                                  ).toLocaleString()}`}
+                                  variant="outlined"
+                                />
+                              )}
+                            </Stack>
+                          </Stack>
+                        </Stack>
+                        <Divider />
+                        <Box sx={{ p: 3 }}>
+                          {/* Existing tenant comparison content */}
+                          {typeof standard.currentTenantValue?.Value === "object" &&
+                          standard.currentTenantValue?.Value !== null ? (
                             <Box
                               sx={{
                                 p: 2,
@@ -713,273 +883,167 @@ const Page = () => {
                                 borderColor: "divider",
                               }}
                             >
-                              {standard.standardValue &&
-                              typeof standard.standardValue === "object" &&
-                              Object.keys(standard.standardValue).length > 0 ? (
-                                Object.entries(standard.standardValue).map(([key, value]) => (
-                                  <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
-                                    <Typography
-                                      variant="body2"
-                                      sx={{ fontWeight: "medium", mr: 1 }}
-                                    >
-                                      {key}:
-                                    </Typography>
-                                    <Typography variant="body2">
-                                      {typeof value === "object" && value !== null
-                                        ? value?.label || JSON.stringify(value)
-                                        : value === true
-                                        ? "Enabled"
-                                        : value === false
-                                        ? "Disabled"
-                                        : String(value)}
-                                    </Typography>
-                                  </Box>
-                                ))
+                              {standard.complianceStatus === "Reporting Disabled" ? (
+                                <Alert severity="info" sx={{ mt: 1 }}>
+                                  Reporting is disabled for this standard in the template
+                                  configuration.
+                                </Alert>
                               ) : (
-                                <Typography variant="body2">
-                                  {standard.standardValue === true ? (
-                                    <Alert severity="success" sx={{ mt: 1 }}>
+                                <>
+                                  {standard.complianceStatus === "Compliant" ? (
+                                    <Alert severity="success" sx={{ mb: 2 }}>
                                       This setting is configured correctly
                                     </Alert>
-                                  ) : standard.standardValue === false ? (
-                                    <Alert severity="warning" sx={{ mt: 1 }}>
+                                  ) : standard.currentTenantValue?.Value === false ? (
+                                    <Alert severity="warning" sx={{ mb: 2 }}>
                                       This setting is not configured correctly
                                     </Alert>
-                                  ) : standard.standardValue !== undefined ? (
-                                    typeof standard.standardValue === "object" ? (
-                                      "No settings configured"
-                                    ) : (
-                                      String(standard.standardValue)
-                                    )
-                                  ) : (
-                                    <Alert severity="info" sx={{ mt: 1 }}>
-                                      This setting is not configured, or data has not been
-                                      collected. If you are getting this after data collection, the
-                                      tenant might not be licensed for this feature
-                                    </Alert>
-                                  )}
-                                </Typography>
+                                  ) : null}
+
+                                  {/* Only show values if they're not simple true/false that's already covered by the alerts above */}
+                                  {!(
+                                    standard.complianceStatus === "Compliant" &&
+                                    (standard.currentTenantValue?.Value === true ||
+                                      standard.currentTenantValue?.Value === false)
+                                  ) &&
+                                    Object.entries(standard.currentTenantValue)
+                                      .filter(
+                                        ([key]) =>
+                                          key !== "LastRefresh" &&
+                                          // Skip showing the Value field separately if it's just true/false
+                                          !(
+                                            key === "Value" &&
+                                            (standard.currentTenantValue?.Value === true ||
+                                              standard.currentTenantValue?.Value === false)
+                                          )
+                                      )
+                                      .map(([key, value]) => {
+                                        const actualValue = key === "Value" ? value : value;
+
+                                        const standardValueForKey =
+                                          standard.standardValue &&
+                                          typeof standard.standardValue === "object"
+                                            ? standard.standardValue[key]
+                                            : undefined;
+
+                                        const isDifferent =
+                                          standardValueForKey !== undefined &&
+                                          JSON.stringify(actualValue) !==
+                                            JSON.stringify(standardValueForKey);
+
+                                        return (
+                                          <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                            <Typography
+                                              variant="body2"
+                                              sx={{ fontWeight: "medium", mr: 1 }}
+                                            >
+                                              {key}:
+                                            </Typography>{" "}
+                                            <Typography
+                                              variant="body2"
+                                              sx={{
+                                                color:
+                                                  standard.complianceStatus === "Compliant"
+                                                    ? "success.main"
+                                                    : isDifferent
+                                                    ? "error.main"
+                                                    : "inherit",
+                                                fontWeight:
+                                                  standard.complianceStatus === "Non-Compliant" &&
+                                                  isDifferent
+                                                    ? "medium"
+                                                    : "inherit",
+                                              }}
+                                            >
+                                              {typeof value === "object" && value !== null
+                                                ? value?.label || JSON.stringify(value)
+                                                : value === true
+                                                ? "Enabled"
+                                                : value === false
+                                                ? "Disabled"
+                                                : String(value)}
+                                            </Typography>
+                                          </Box>
+                                        );
+                                      })}
+                                </>
                               )}
                             </Box>
-                          </Box>
+                          ) : (
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                whiteSpace: "pre-wrap",
+                                color:
+                                  standard.complianceStatus === "Compliant"
+                                    ? "success.main"
+                                    : standard.complianceStatus === "Reporting Disabled"
+                                    ? "text.secondary"
+                                    : "error.main",
+                                fontWeight:
+                                  standard.complianceStatus === "Non-Compliant"
+                                    ? "medium"
+                                    : "inherit",
+                              }}
+                            >
+                              {standard.complianceStatus === "Reporting Disabled" ? (
+                                <Alert severity="info" sx={{ mt: 1 }}>
+                                  Reporting is disabled for this standard in the template
+                                  configuration.
+                                </Alert>
+                              ) : standard.complianceStatus === "Compliant" ? (
+                                <Alert severity="success" sx={{ mt: 1 }}>
+                                  This setting is configured correctly
+                                </Alert>
+                              ) : standard.currentTenantValue?.Value === false ||
+                                standard.currentTenantValue === false ? (
+                                <Alert severity="warning" sx={{ mt: 1 }}>
+                                  This setting is not configured correctly
+                                </Alert>
+                              ) : standard.currentTenantValue !== undefined ? (
+                                String(
+                                  standard.currentTenantValue?.Value !== undefined
+                                    ? standard.currentTenantValue?.Value
+                                    : standard.currentTenantValue
+                                )
+                              ) : (
+                                <Alert severity="info" sx={{ mt: 1 }}>
+                                  This setting is not configured, or data has not been collected. If
+                                  you are getting this after data collection, the tenant might not
+                                  be licensed for this feature
+                                </Alert>
+                              )}
+                            </Typography>
+                          )}
                         </Box>
-                      )}
+                      </Card>
+                    </Grid>
 
-                      <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
-                        <Chip
-                          label={standard.standardImpact || "Medium Impact"}
-                          size="small"
-                          color={
-                            standard.standardImpactColour === "info"
-                              ? "info"
-                              : standard.standardImpactColour === "warning"
-                              ? "warning"
-                              : "error"
-                          }
-                          sx={{ mr: 1 }}
-                        />
-                      </Box>
-                    </Box>
-                  </Card>
-                </Grid>
-
-                <Grid item size={{ xs: 12, md: 6 }}>
-                  <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{ p: 3 }}
-                    >
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        sx={{ width: "100%" }}
-                      >
-                        <Stack direction="row" alignItems="center" spacing={3}>
-                          <Box
-                            sx={{
-                              width: 40,
-                              height: 40,
-                              borderRadius: "50%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              bgcolor: "primary.main",
-                            }}
-                          >
-                            <Microsoft sx={{ color: "white" }} />
-                          </Box>
-                          <Stack>
-                            <Typography variant="h6">{currentTenant}</Typography>
-                            <Box>
-                              <Chip
-                                label="Current Tenant"
-                                size="small"
-                                color="primary"
-                                variant="outlined"
-                                sx={{ mt: 1, px: 2 }}
-                              />
+                    {standard.complianceDetails && (
+                      <Grid item size={12}>
+                        <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
+                          <Stack direction="row" alignItems="flex-start" spacing={2} sx={{ p: 3 }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "info.main",
+                              }}
+                            >
+                              <Info />
                             </Box>
+                            <Typography variant="body2">{standard.complianceDetails}</Typography>
                           </Stack>
-                        </Stack>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              backgroundColor:
-                                standard.complianceStatus === "Compliant"
-                                  ? "success.main"
-                                  : standard.complianceStatus === "Reporting Disabled"
-                                  ? "grey.500"
-                                  : "error.main",
-                              borderRadius: "50%",
-                              width: 8,
-                              height: 8,
-                              mr: 1,
-                            }}
-                          />
-                          <Typography variant="body2" sx={{ mr: 1 }}>
-                            {standard.complianceStatus}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </Stack>
-                    <Divider />
-                    <Box sx={{ p: 3 }}>
-                      {/* Existing tenant comparison content */}
-                      {typeof standard.currentTenantValue === "object" &&
-                      standard.currentTenantValue !== null ? (
-                        <Box
-                          sx={{
-                            p: 2,
-                            bgcolor: "background.default",
-                            borderRadius: 1,
-                            border: "1px solid",
-                            borderColor: "divider",
-                          }}
-                        >
-                          {standard.complianceStatus === "Reporting Disabled" ? (
-                            <Alert severity="info" sx={{ mt: 1 }}>
-                              Reporting is disabled for this standard in the template configuration.
-                            </Alert>
-                          ) : (
-                            Object.entries(standard.currentTenantValue).map(([key, value]) => {
-                              const standardValueForKey =
-                                standard.standardValue && typeof standard.standardValue === "object"
-                                  ? standard.standardValue[key]
-                                  : undefined;
-
-                              const isDifferent =
-                                standardValueForKey !== undefined &&
-                                JSON.stringify(value) !== JSON.stringify(standardValueForKey);
-
-                              return (
-                                <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
-                                  <Typography variant="body2" sx={{ fontWeight: "medium", mr: 1 }}>
-                                    {key}:
-                                  </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{
-                                      color:
-                                        standard.complianceStatus === "Compliant"
-                                          ? "success.main"
-                                          : isDifferent
-                                          ? "error.main"
-                                          : "inherit",
-                                      fontWeight:
-                                        standard.complianceStatus === "Non-Compliant" && isDifferent
-                                          ? "medium"
-                                          : "inherit",
-                                    }}
-                                  >
-                                    {standard.complianceStatus === "Compliant" && value === true
-                                      ? "Compliant"
-                                      : typeof value === "object" && value !== null
-                                      ? value?.label || JSON.stringify(value)
-                                      : value === true
-                                      ? "Enabled"
-                                      : value === false
-                                      ? "Disabled"
-                                      : String(value)}
-                                  </Typography>
-                                </Box>
-                              );
-                            })
-                          )}
-                        </Box>
-                      ) : (
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            whiteSpace: "pre-wrap",
-                            color:
-                              standard.complianceStatus === "Compliant"
-                                ? "success.main"
-                                : standard.complianceStatus === "Reporting Disabled"
-                                ? "text.secondary"
-                                : "error.main",
-                            fontWeight:
-                              standard.complianceStatus === "Non-Compliant" ? "medium" : "inherit",
-                          }}
-                        >
-                          {standard.complianceStatus === "Reporting Disabled" ? (
-                            <Alert severity="info" sx={{ mt: 1 }}>
-                              Reporting is disabled for this standard in the template configuration.
-                            </Alert>
-                          ) : standard.complianceStatus === "Compliant" &&
-                            standard.currentTenantValue === true ? (
-                            <Alert severity="success" sx={{ mt: 1 }}>
-                              This setting is configured correctly
-                            </Alert>
-                          ) : standard.currentTenantValue === false ? (
-                            <Alert severity="warning" sx={{ mt: 1 }}>
-                              This setting is not configured correctly
-                            </Alert>
-                          ) : standard.currentTenantValue !== undefined ? (
-                            String(standard.currentTenantValue)
-                          ) : (
-                            <Alert severity="info" sx={{ mt: 1 }}>
-                              This setting is not configured, or data has not been collected. If you
-                              are getting this after data collection, the tenant might not be
-                              licensed for this feature
-                            </Alert>
-                          )}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Card>
-                </Grid>
-
-                {standard.complianceDetails && (
-                  <Grid item size={12}>
-                    <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
-                      <Stack direction="row" alignItems="flex-start" spacing={2} sx={{ p: 3 }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "info.main",
-                          }}
-                        >
-                          <Info />
-                        </Box>
-                        <Typography variant="body2">{standard.complianceDetails}</Typography>
-                      </Stack>
-                    </Card>
+                        </Card>
+                      </Grid>
+                    )}
                   </Grid>
-                )}
-              </Grid>
+                ))}
+              </React.Fragment>
             ))}
-          </React.Fragment>
-        ))}
+          </>
+        )}
       </Stack>
 
       <CippApiDialog
