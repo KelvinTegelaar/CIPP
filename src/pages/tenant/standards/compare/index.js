@@ -118,8 +118,9 @@ const Page = () => {
                     (s) => s.standardId === standardId
                   );
 
-                  // Get the direct standard value from the tenant object
-                  const directStandardValue = currentTenantObj?.[standardId];
+                  // Get the standard object and its value from the tenant object
+                  const standardObject = currentTenantObj?.[standardId];
+                  const directStandardValue = standardObject?.Value;
 
                   // Determine compliance status
                   let isCompliant = false;
@@ -151,8 +152,11 @@ const Page = () => {
                       templateItem.TemplateList?.label || templateId
                     }`,
                     currentTenantValue:
-                      directStandardValue !== undefined
-                        ? directStandardValue
+                      standardObject !== undefined
+                        ? {
+                            Value: directStandardValue,
+                            LastRefresh: standardObject?.LastRefresh,
+                          }
                         : currentTenantStandard?.value,
                     standardValue: templateSettings, // Use the template settings object instead of true
                     complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
@@ -188,9 +192,12 @@ const Page = () => {
               let isCompliant = false;
               let reportingDisabled = !reportingEnabled;
 
-              // Check if the standard is directly in the tenant object (like "standards.AuditLog": true)
+              // Check if the standard is directly in the tenant object (like "standards.AuditLog": {...})
               const standardIdWithoutPrefix = standardId.replace("standards.", "");
-              const directStandardValue = currentTenantObj?.[standardId];
+              const standardObject = currentTenantObj?.[standardId];
+
+              // Extract the actual value from the standard object (new data structure includes .Value property)
+              const directStandardValue = standardObject?.Value;
 
               // Special case for boolean standards that are true in the tenant
               if (directStandardValue === true) {
@@ -223,8 +230,11 @@ const Page = () => {
                 standardId,
                 standardName: standardInfo?.label || standardKey,
                 currentTenantValue:
-                  directStandardValue !== undefined
-                    ? directStandardValue
+                  standardObject !== undefined
+                    ? {
+                        Value: directStandardValue,
+                        LastRefresh: standardObject?.LastRefresh,
+                      }
                     : currentTenantStandard?.value,
                 standardValue: standardSettings,
                 complianceStatus,
@@ -365,7 +375,9 @@ const Page = () => {
             </Tooltip>
           </Stack>
           <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-            {comparisonApi.data?.find((comparison) => comparison.RowKey === currentTenant) && (
+            {comparisonApi.data?.find(
+              (comparison) => comparison.tenantFilter === currentTenant
+            ) && (
               <Stack alignItems="center" direction="row" spacing={1}>
                 <Chip
                   icon={
@@ -384,19 +396,6 @@ const Page = () => {
                       : "error"
                   }
                   sx={{ ml: 2 }}
-                />
-                <Chip
-                  icon={
-                    <SvgIcon fontSize="small">
-                      <ClockIcon />
-                    </SvgIcon>
-                  }
-                  size="small"
-                  label={`Updated on ${new Date(
-                    comparisonApi.data.find(
-                      (comparison) => comparison.RowKey === currentTenant
-                    ).LastRefresh
-                  ).toLocaleString()}`}
                 />
               </Stack>
             )}
@@ -826,37 +825,55 @@ const Page = () => {
                                 </Box>
                               </Stack>
                             </Stack>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
+                            <Stack spacing={1}>
                               <Box
                                 sx={{
-                                  backgroundColor:
-                                    standard.complianceStatus === "Compliant"
-                                      ? "success.main"
-                                      : standard.complianceStatus === "Reporting Disabled"
-                                      ? "grey.500"
-                                      : "error.main",
-                                  borderRadius: "50%",
-                                  width: 8,
-                                  height: 8,
-                                  mr: 1,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "flex-end",
+                                  width: "100%",
                                 }}
-                              />
-                              <Typography variant="body2" sx={{ mr: 1 }}>
-                                {standard.complianceStatus}
-                              </Typography>
-                            </Box>
+                              >
+                                <Box
+                                  sx={{
+                                    backgroundColor:
+                                      standard.complianceStatus === "Compliant"
+                                        ? "success.main"
+                                        : standard.complianceStatus === "Reporting Disabled"
+                                        ? "grey.500"
+                                        : "error.main",
+                                    borderRadius: "50%",
+                                    width: 8,
+                                    height: 8,
+                                    mr: 1,
+                                  }}
+                                />
+                                <Typography variant="body2" sx={{ mr: 1 }}>
+                                  {standard.complianceStatus}
+                                </Typography>
+                              </Box>
+                              {standard.currentTenantValue?.LastRefresh && (
+                                <Chip
+                                  icon={
+                                    <SvgIcon fontSize="small">
+                                      <ClockIcon />
+                                    </SvgIcon>
+                                  }
+                                  size="small"
+                                  label={`${new Date(
+                                    standard.currentTenantValue.LastRefresh
+                                  ).toLocaleString()}`}
+                                  variant="outlined"
+                                />
+                              )}
+                            </Stack>
                           </Stack>
                         </Stack>
                         <Divider />
                         <Box sx={{ p: 3 }}>
                           {/* Existing tenant comparison content */}
-                          {typeof standard.currentTenantValue === "object" &&
-                          standard.currentTenantValue !== null ? (
+                          {typeof standard.currentTenantValue?.Value === "object" &&
+                          standard.currentTenantValue?.Value !== null ? (
                             <Box
                               sx={{
                                 p: 2,
@@ -872,54 +889,84 @@ const Page = () => {
                                   configuration.
                                 </Alert>
                               ) : (
-                                Object.entries(standard.currentTenantValue).map(([key, value]) => {
-                                  const standardValueForKey =
-                                    standard.standardValue &&
-                                    typeof standard.standardValue === "object"
-                                      ? standard.standardValue[key]
-                                      : undefined;
+                                <>
+                                  {standard.complianceStatus === "Compliant" ? (
+                                    <Alert severity="success" sx={{ mb: 2 }}>
+                                      This setting is configured correctly
+                                    </Alert>
+                                  ) : standard.currentTenantValue?.Value === false ? (
+                                    <Alert severity="warning" sx={{ mb: 2 }}>
+                                      This setting is not configured correctly
+                                    </Alert>
+                                  ) : null}
 
-                                  const isDifferent =
-                                    standardValueForKey !== undefined &&
-                                    JSON.stringify(value) !== JSON.stringify(standardValueForKey);
+                                  {/* Only show values if they're not simple true/false that's already covered by the alerts above */}
+                                  {!(
+                                    standard.complianceStatus === "Compliant" &&
+                                    (standard.currentTenantValue?.Value === true ||
+                                      standard.currentTenantValue?.Value === false)
+                                  ) &&
+                                    Object.entries(standard.currentTenantValue)
+                                      .filter(
+                                        ([key]) =>
+                                          key !== "LastRefresh" &&
+                                          // Skip showing the Value field separately if it's just true/false
+                                          !(
+                                            key === "Value" &&
+                                            (standard.currentTenantValue?.Value === true ||
+                                              standard.currentTenantValue?.Value === false)
+                                          )
+                                      )
+                                      .map(([key, value]) => {
+                                        const actualValue = key === "Value" ? value : value;
 
-                                  return (
-                                    <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
-                                      <Typography
-                                        variant="body2"
-                                        sx={{ fontWeight: "medium", mr: 1 }}
-                                      >
-                                        {key}:
-                                      </Typography>
-                                      <Typography
-                                        variant="body2"
-                                        sx={{
-                                          color:
-                                            standard.complianceStatus === "Compliant"
-                                              ? "success.main"
-                                              : isDifferent
-                                              ? "error.main"
-                                              : "inherit",
-                                          fontWeight:
-                                            standard.complianceStatus === "Non-Compliant" &&
-                                            isDifferent
-                                              ? "medium"
-                                              : "inherit",
-                                        }}
-                                      >
-                                        {standard.complianceStatus === "Compliant" && value === true
-                                          ? "Compliant"
-                                          : typeof value === "object" && value !== null
-                                          ? value?.label || JSON.stringify(value)
-                                          : value === true
-                                          ? "Enabled"
-                                          : value === false
-                                          ? "Disabled"
-                                          : String(value)}
-                                      </Typography>
-                                    </Box>
-                                  );
-                                })
+                                        const standardValueForKey =
+                                          standard.standardValue &&
+                                          typeof standard.standardValue === "object"
+                                            ? standard.standardValue[key]
+                                            : undefined;
+
+                                        const isDifferent =
+                                          standardValueForKey !== undefined &&
+                                          JSON.stringify(actualValue) !==
+                                            JSON.stringify(standardValueForKey);
+
+                                        return (
+                                          <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                            <Typography
+                                              variant="body2"
+                                              sx={{ fontWeight: "medium", mr: 1 }}
+                                            >
+                                              {key}:
+                                            </Typography>{" "}
+                                            <Typography
+                                              variant="body2"
+                                              sx={{
+                                                color:
+                                                  standard.complianceStatus === "Compliant"
+                                                    ? "success.main"
+                                                    : isDifferent
+                                                    ? "error.main"
+                                                    : "inherit",
+                                                fontWeight:
+                                                  standard.complianceStatus === "Non-Compliant" &&
+                                                  isDifferent
+                                                    ? "medium"
+                                                    : "inherit",
+                                              }}
+                                            >
+                                              {typeof value === "object" && value !== null
+                                                ? value?.label || JSON.stringify(value)
+                                                : value === true
+                                                ? "Enabled"
+                                                : value === false
+                                                ? "Disabled"
+                                                : String(value)}
+                                            </Typography>
+                                          </Box>
+                                        );
+                                      })}
+                                </>
                               )}
                             </Box>
                           ) : (
@@ -944,17 +991,21 @@ const Page = () => {
                                   Reporting is disabled for this standard in the template
                                   configuration.
                                 </Alert>
-                              ) : standard.complianceStatus === "Compliant" &&
-                                standard.currentTenantValue === true ? (
+                              ) : standard.complianceStatus === "Compliant" ? (
                                 <Alert severity="success" sx={{ mt: 1 }}>
                                   This setting is configured correctly
                                 </Alert>
-                              ) : standard.currentTenantValue === false ? (
+                              ) : standard.currentTenantValue?.Value === false ||
+                                standard.currentTenantValue === false ? (
                                 <Alert severity="warning" sx={{ mt: 1 }}>
                                   This setting is not configured correctly
                                 </Alert>
                               ) : standard.currentTenantValue !== undefined ? (
-                                String(standard.currentTenantValue)
+                                String(
+                                  standard.currentTenantValue?.Value !== undefined
+                                    ? standard.currentTenantValue?.Value
+                                    : standard.currentTenantValue
+                                )
                               ) : (
                                 <Alert severity="info" sx={{ mt: 1 }}>
                                   This setting is not configured, or data has not been collected. If
