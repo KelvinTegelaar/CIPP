@@ -44,7 +44,7 @@ const CippMailboxPermissionsDialog = ({ formHook }) => {
           <CippFormComponent
             type="switch"
             label="Enable Automapping"
-            name="permissions.AutoMapping"
+            name="permissions.AutoMap"
             formControl={formHook}
             sx={{ mt: 0.5, ml: 0.5 }}
           />
