@@ -6,6 +6,21 @@ import { CippFormCondition } from "/src/components/CippComponents/CippFormCondit
 import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
 
+const DynamicMembershipRules = ({ formControl }) => (
+  <Grid item size={{ xs: 12 }}>
+    <CippFormComponent
+      type="textField"
+      label="Dynamic Group Parameters"
+      name="membershipRules"
+      formControl={formControl}
+      placeholder="Enter dynamic group parameters syntax"
+      multiline
+      rows={4}
+      fullWidth
+    />
+  </Grid>
+);
+
 const CippAddGroupForm = (props) => {
   const { formControl } = props;
 
@@ -101,25 +116,17 @@ const CippAddGroupForm = (props) => {
           />
         </Grid>
       </CippFormCondition>
-      <CippFormCondition
-        formControl={formControl}
-        field="groupType"
-        compareType="contains"
-        compareValue="dynamic"
-      >
-        <Grid item size={{ xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Dynamic Group Parameters"
-            name="membershipRules"
-            formControl={formControl}
-            placeholder="Enter dynamic group parameters syntax"
-            multiline
-            rows={4}
-            fullWidth
-          />
-        </Grid>
-      </CippFormCondition>
+      {["dynamic", "dynamicDistribution", "m365"].map((groupType) => (
+        <CippFormCondition
+          key={groupType}
+          formControl={formControl}
+          field="groupType"
+          compareType="is"
+          compareValue={groupType}
+        >
+          <DynamicMembershipRules formControl={formControl} />
+        </CippFormCondition>
+      ))}
     </Grid>
   );
 };
