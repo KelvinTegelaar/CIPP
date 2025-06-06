@@ -1,25 +1,23 @@
 import { useEffect, useMemo, useCallback } from "react";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import ContactFormLayout from "/src/components/CippFormPages/CippAddEditContact";
-import { useSettings } from "../../../../hooks/use-settings";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import countryList from "/src/data/countryList.json";
+import { useRouter } from "next/router";
 
 const countryLookup = new Map(
   countryList.map(country => [country.Name, country.Code])
 );
 
-const EditContact = () => {
-  const tenantDomain = useSettings().currentTenant;
+const EditContactTemplate = () => {
   const router = useRouter();
   const { id } = router.query;
   
-  const contactInfo = ApiGetCall({
-    url: `/api/ListContacts?tenantFilter=${tenantDomain}&id=${id}`,
-    queryKey: `ListContacts-${id}`,
+  const contactTemplateInfo = ApiGetCall({
+    url: `/api/ListContactTemplates?id=${id}`,
+    queryKey: `ListContactTemplates-${id}`,
     waiting: !!id,
   });
 
@@ -49,11 +47,12 @@ const EditContact = () => {
 
   // Memoize processed contact data
   const processedContactData = useMemo(() => {
-    if (!contactInfo.isSuccess || !contactInfo.data) {
+    if (!contactTemplateInfo.isSuccess || !contactTemplateInfo.data) {
       return null;
     }
 
-    const contact = contactInfo.data;
+    // Handle both single object (when fetching by ID) and array responses
+    const contact = Array.isArray(contactTemplateInfo.data) ? contactTemplateInfo.data[0] : contactTemplateInfo.data;
     const address = contact.addresses?.[0] || {};
     const phones = contact.phones || [];
     
@@ -61,10 +60,11 @@ const EditContact = () => {
     const phoneMap = new Map(phones.map(p => [p.type, p.number]));
 
     return {
+      ContactTemplateID: id || "",
       displayName: contact.displayName || "",
       firstName: contact.givenName || "",
       lastName: contact.surname || "",
-      email: contact.mail || "",
+      email: contact.email || "",
       hidefromGAL: contact.hidefromGAL || false,
       streetAddress: address.street || "",
       postalCode: address.postalCode || "",
@@ -80,7 +80,7 @@ const EditContact = () => {
       website: contact.website || "",
       mailTip: contact.mailTip || "",
     };
-  }, [contactInfo.isSuccess, contactInfo.data]);
+  }, [contactTemplateInfo.isSuccess, contactTemplateInfo.data]);
 
   // Use callback to prevent unnecessary re-renders
   const resetForm = useCallback(() => {
@@ -95,10 +95,8 @@ const EditContact = () => {
 
   // Memoize custom data formatter
   const customDataFormatter = useCallback((values) => {
-    const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
     return {
-      tenantID: tenantDomain,
-      ContactID: contact?.id,
+      ContactTemplateID: id,
       DisplayName: values.displayName,
       hidefromGAL: values.hidefromGAL,
       email: values.email,
@@ -116,28 +114,29 @@ const EditContact = () => {
       website: values.website,
       mailTip: values.mailTip,
     };
-  }, [tenantDomain, contactInfo.data]);
+  },);
   
-  const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
+  const contactTemplate = Array.isArray(contactTemplateInfo.data) ? contactTemplateInfo.data[0] : contactTemplateInfo.data;
 
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey={`ListContacts-${id}`}
-      title={`Contact: ${contact?.displayName || ""}`}
-      backButtonTitle="Contacts Overview"
+      queryKey={`ListContactTemplates-${id}`}
+      title={`Contact Template: ${contactTemplateInfo?.displayName || ""}`}
+      backButtonTitle="Contact Templates"
       formPageType="Edit"
-      postUrl="/api/EditContact"
-      data={contact}
+      postUrl="/api/EditContactTemplates"
+      data={contactTemplate}
       customDataformatter={customDataFormatter}
     >
-      <ContactFormLayout 
-        formControl={formControl} 
+      <ContactFormLayout
+        formControl={formControl}
+        formType="edit"
       />
     </CippFormPage>
   );
 };
 
-EditContact.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditContactTemplate.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default EditContact;
+export default EditContactTemplate;
