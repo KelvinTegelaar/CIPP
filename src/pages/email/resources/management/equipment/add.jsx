@@ -43,7 +43,7 @@ const AddEquipmentMailbox = () => {
     >
       <Grid container spacing={2}>
         {/* Display Name */}
-        <Grid item size={{ md: 8, xs: 12 }}>
+        <Grid size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -56,7 +56,7 @@ const AddEquipmentMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Username and Domain */}
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Username"
@@ -65,7 +65,7 @@ const AddEquipmentMailbox = () => {
             validators={{ required: "Username is required" }}
           />
         </Grid>
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormDomainSelector
             formControl={formControl}
             name="domain"

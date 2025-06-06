@@ -153,13 +153,13 @@ const EditEquipmentMailbox = () => {
     >
       <Grid container spacing={2}>
         {/* Basic Information */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
             Basic Information
           </Typography>
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -169,7 +169,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Hidden From Address Lists"
@@ -181,13 +181,13 @@ const EditEquipmentMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Booking Information */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
             Booking Information
           </Typography>
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Maximum Booking Duration (Minutes)"
@@ -204,7 +204,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Booking Window (Days)"
@@ -221,7 +221,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Booking Process"
@@ -233,7 +233,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Allow Recurring Meetings"
@@ -242,7 +242,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Allow Double-Booking"
@@ -251,7 +251,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Process External Meetings"
@@ -260,7 +260,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Forward to Delegates"
@@ -272,13 +272,13 @@ const EditEquipmentMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Working Hours */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
             Working Hours
           </Typography>
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Schedule Only During Work Hours"
@@ -287,7 +287,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 8, xs: 12 }}>
+        <Grid size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Working Days"
@@ -299,7 +299,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Timezone"
@@ -314,7 +314,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="time"
             label="Work Hours Start Time"
@@ -323,7 +323,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="time"
             label="Work Hours End Time"
@@ -335,13 +335,13 @@ const EditEquipmentMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Equipment & Location Details */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
             Equipment & Location Details
           </Typography>
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Department"
@@ -350,7 +350,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Company"
@@ -359,7 +359,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Phone"
@@ -368,7 +368,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Street"
@@ -377,11 +377,11 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="textField" label="City" name="city" formControl={formControl} />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="State"
@@ -390,7 +390,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Postal Code"
@@ -399,7 +399,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Country/Region"
@@ -414,7 +414,7 @@ const EditEquipmentMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Tags"
