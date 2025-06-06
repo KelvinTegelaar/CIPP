@@ -78,6 +78,7 @@ const Page = () => {
         $count: true,
       }}
       apiDataKey="Results"
+      queryKey={`EntraDevices-${tenantFilter}`}
       actions={actions}
       simpleColumns={[
         "displayName",
