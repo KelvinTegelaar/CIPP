@@ -14,7 +14,7 @@ import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayou
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
-import { Button } from "@mui/material";
+import { Button, Alert } from "@mui/material";
 import { Box } from "@mui/system";
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -102,6 +102,11 @@ const Page = () => {
       subtitle={subtitle}
       isFetching={userRequest.isLoading}
     >
+      {userRequest.isSuccess && userRequest.data?.[0]?.onPremisesSyncEnabled && (
+        <Alert severity="error" sx={{ mb: 1 }}>
+          This user is synced from on-premises Active Directory. Changes should be made in the on-premises environment instead.
+        </Alert>
+      )}
       <CippFormPage
         queryKey={[`ListUsers-${userId}`, `Licenses-${userSettingsDefaults.currentTenant}`]}
         formControl={formControl}

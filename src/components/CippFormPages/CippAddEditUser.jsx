@@ -111,19 +111,6 @@ const CippAddEditUser = (props) => {
         />
       </Grid>
       <Grid item size={{ xs: 12 }}>
-        <CippFormComponent
-          type="textField"
-          fullWidth
-          label="Add Aliases"
-          placeholder="One alias per line"
-          name="addedAliases"
-          formControl={formControl}
-          multiline
-          rows={4}
-        />
-      </Grid>
-
-      <Grid item size={{ xs: 12 }}>
         <Typography variant="h6">Settings</Typography>
       </Grid>
       <Grid item size={{ xs: 6 }}>
