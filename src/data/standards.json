@@ -240,6 +240,21 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.NamePronunciation",
+    "cat": "Global Standards",
+    "tag": [],
+    "helpText": "Enables the Name Pronunciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
+    "docsDescription": "Enables the Name Pronunciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
+    "addedComponent": [],
+    "label": "Enable Name Pronunciation",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-06",
+    "recommendedBy": [
+      "CIPP"
+    ]
+  },
+  {
     "name": "standards.AnonReportDisable",
     "cat": "Global Standards",
     "tag": [],
