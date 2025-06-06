@@ -40,16 +40,18 @@ const CippMailboxPermissionsDialog = ({ formHook }) => {
             })) || []
           }
         />
-        {fullAccess && (
+      </Box>
+      {fullAccess && (
+        <Box>
           <CippFormComponent
             type="switch"
             label="Enable Automapping"
             name="permissions.AutoMap"
             formControl={formHook}
-            sx={{ mt: 0.5, ml: 0.5 }}
+            sx={{ ml: 1.5, mt: 0, mb: 0 }}
           />
-        )}
-      </Box>
+        </Box>
+      )}
       <Box>
         <CippFormComponent
           type="autoComplete"

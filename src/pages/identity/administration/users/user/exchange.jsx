@@ -613,6 +613,7 @@ const Page = () => {
       confirmText: "Are you sure you want to make this the primary proxy address?",
       multiPost: false,
       relatedQueryKeys: `ListUsers-${userId}`,
+      condition: (row) => !row.Type === "Primary",
     },
     {
       label: "Remove Proxy Address",
@@ -627,6 +628,7 @@ const Page = () => {
       confirmText: "Are you sure you want to remove this proxy address?",
       multiPost: false,
       relatedQueryKeys: `ListUsers-${userId}`,
+      condition: (row) => !row.Type === "Primary",
     },
   ];
 
