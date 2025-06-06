@@ -93,6 +93,7 @@ const CippStandardAccordion = ({
   handleRemoveStandard,
   handleAddMultipleStandard,
   formControl,
+  editMode = false,
 }) => {
   const [configuredState, setConfiguredState] = useState({});
   const [filter, setFilter] = useState("all");
@@ -188,46 +189,48 @@ const CippStandardAccordion = ({
 
   // Initialize when watchedValues are available
   useEffect(() => {
-    // Only run initialization if we have watchedValues and they contain data
-    if (!watchedValues || Object.keys(watchedValues).length === 0) {
-      return;
-    }
-
-    // Prevent re-initialization if we already have configuration state
-    const hasConfigState = Object.keys(configuredState).length > 0;
-    if (hasConfigState) {
-      return;
-    }
-
-    console.log("Initializing configuration state from template values");
-    const initial = {};
-    const initialConfigured = {};
-
-    // For each standard, get its current values and determine if it's configured
-    Object.keys(selectedStandards).forEach((standardName) => {
-      const currentValues = _.get(watchedValues, standardName);
-      if (!currentValues) return;
-
-      initial[standardName] = _.cloneDeep(currentValues);
-
-      const baseStandardName = standardName.split("[")[0];
-      const standard = providedStandards.find((s) => s.name === baseStandardName);
-      if (standard) {
-        initialConfigured[standardName] = isStandardConfigured(
-          standardName,
-          standard,
-          currentValues
-        );
+    if (editMode) {
+      // Only run initialization if we have watchedValues and they contain data
+      if (!watchedValues || Object.keys(watchedValues).length === 0) {
+        return;
       }
-    });
 
-    // Store both the initial values and set them as current saved values
-    setOriginalValues(initial);
-    setSavedValues(initial);
-    setConfiguredState(initialConfigured);
-    // Only depend on watchedValues and selectedStandards to avoid infinite loops
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchedValues, selectedStandards]);
+      // Prevent re-initialization if we already have configuration state
+      const hasConfigState = Object.keys(configuredState).length > 0;
+      if (hasConfigState) {
+        return;
+      }
+
+      console.log("Initializing configuration state from template values");
+      const initial = {};
+      const initialConfigured = {};
+
+      // For each standard, get its current values and determine if it's configured
+      Object.keys(selectedStandards).forEach((standardName) => {
+        const currentValues = _.get(watchedValues, standardName);
+        if (!currentValues) return;
+
+        initial[standardName] = _.cloneDeep(currentValues);
+
+        const baseStandardName = standardName.split("[")[0];
+        const standard = providedStandards.find((s) => s.name === baseStandardName);
+        if (standard) {
+          initialConfigured[standardName] = isStandardConfigured(
+            standardName,
+            standard,
+            currentValues
+          );
+        }
+      });
+
+      // Store both the initial values and set them as current saved values
+      setOriginalValues(initial);
+      setSavedValues(initial);
+      setConfiguredState(initialConfigured);
+      // Only depend on watchedValues and selectedStandards to avoid infinite loops
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+  }, [watchedValues, selectedStandards, editMode]);
 
   // Save changes for a standard
   const handleSave = (standardName, standard, current) => {
@@ -519,6 +522,9 @@ const CippStandardAccordion = ({
             // Get current values and check if they differ from saved values
             const current = _.get(watchedValues, standardName);
             const saved = _.get(savedValues, standardName) || {};
+            console.log(`Current values for ${standardName}:`, current);
+            console.log(`Saved values for ${standardName}:`, saved);
+
             const hasUnsaved = !_.isEqual(current, saved);
 
             // Check if all required fields are filled
@@ -609,7 +615,7 @@ const CippStandardAccordion = ({
             const canSave = hasAction && requiredFieldsFilled && hasUnsaved;
 
             console.log(
-              `Standard: ${standardName}, Action Required: ${actionRequired}, Has Action: ${hasAction}, Required Fields Filled: ${requiredFieldsFilled}, Can Save: ${canSave}`
+              `Standard: ${standardName}, Action Required: ${actionRequired}, Has Action: ${hasAction}, Required Fields Filled: ${requiredFieldsFilled}, Unsaved Changes: ${hasUnsaved}, Can Save: ${canSave}`
             );
 
             return (
@@ -760,7 +766,7 @@ const CippStandardAccordion = ({
                     </Grid>
                   </Box>
                   <Divider sx={{ mt: 2 }} />
-                  <Box sx={{ px: 3 , py: 2 }}>
+                  <Box sx={{ px: 3, py: 2 }}>
                     <Stack direction="row" justifyContent="flex-end" spacing={1}>
                       <Button
                         variant="outlined"
