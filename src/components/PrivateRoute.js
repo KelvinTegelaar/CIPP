@@ -18,7 +18,11 @@ export const PrivateRoute = ({ children, routeType }) => {
   });
 
   // Check if the session is still loading before determining authentication status
-  if (session.isLoading || apiRoles.isLoading) {
+  if (
+    session.isLoading ||
+    apiRoles.isLoading ||
+    (apiRoles.isFetching && (apiRoles.data === null || apiRoles.data === undefined))
+  ) {
     return <LoadingPage />;
   }
 
