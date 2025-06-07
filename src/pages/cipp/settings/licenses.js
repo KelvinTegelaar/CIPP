@@ -4,7 +4,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button, SvgIcon } from "@mui/material";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { Add, Remove } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../hooks/use-dialog";
 

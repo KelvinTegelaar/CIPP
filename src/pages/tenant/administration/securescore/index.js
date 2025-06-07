@@ -46,7 +46,7 @@ const Page = () => {
     >
       <Grid container spacing={2}>
         {currentTenant === "AllTenants" && (
-          <Grid item size={{ md: 4, xs: 12 }}>
+          <Grid size={{ md: 4, xs: 12 }}>
             <CippImageCard
               title="Not supported"
               imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
@@ -58,7 +58,7 @@ const Page = () => {
         )}
         {currentTenant !== "AllTenants" && (
           <>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <CippInfoBar
                 isFetching={secureScore.isFetching}
                 data={[
@@ -87,7 +87,7 @@ const Page = () => {
                 ]}
               />
             </Grid>
-            <Grid item size={{ md: 3, xs: 12 }}>
+            <Grid size={{ md: 3, xs: 12 }}>
               <CippChartCard
                 isFetching={secureScore.isFetching}
                 title={"Secure Score"}
@@ -111,7 +111,7 @@ const Page = () => {
             {currentTenant !== "AllTenants" &&
               secureScore.isSuccess &&
               secureScore.translatedData.controlScores.map((secureScoreControl) => (
-                <Grid item size={{ md: 3, xs: 12 }} key={secureScoreControl.controlName}>
+                <Grid size={{ md: 3, xs: 12 }} key={secureScoreControl.controlName}>
                   <CippButtonCard
                     title={secureScoreControl.title}
                     isFetching={secureScore.isFetching}

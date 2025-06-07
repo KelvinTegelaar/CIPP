@@ -1,10 +1,9 @@
-import { Stack, Typography, Alert, Box } from "@mui/material";
+import { Stack, Alert } from "@mui/material";
 import CippWizardStepButtons from "./CippWizardStepButtons";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { getCippValidator } from "../../utils/get-cipp-validator";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
-import { useEffect } from "react";
 import CippPermissionPreview from "../CippComponents/CippPermissionPreview";
 import { useWatch } from "react-hook-form";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";

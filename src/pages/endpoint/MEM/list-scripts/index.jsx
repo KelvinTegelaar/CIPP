@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage";
-import { Code, TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { showToast } from "/src/store/toasts";
 import {
   Button,
@@ -14,7 +14,7 @@ import {
 import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Search, Close, Save } from "@mui/icons-material";
+import { Close, Save } from "@mui/icons-material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
 import { CardContent } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AppApprovalTemplateForm from "/src/components/CippComponents/AppApprovalTemplateForm";
 
 const Page = () => {

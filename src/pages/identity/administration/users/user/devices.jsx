@@ -343,10 +343,10 @@ const Page = () => {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item size={4}>
+            <Grid size={4}>
               <CippUserInfoCard user={data} isFetching={userRequest.isLoading} />
             </Grid>
-            <Grid item size={8}>
+            <Grid size={8}>
               <Stack spacing={3}>
                 <Typography variant="h6">Latest Logon</Typography>
                 <CippBannerListCard

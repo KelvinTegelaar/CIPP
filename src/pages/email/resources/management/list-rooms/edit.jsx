@@ -323,11 +323,11 @@ const EditRoomMailbox = () => {
     >
       <Grid container spacing={2}>
         {/* Basic Information */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Basic Information</Typography>
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -337,7 +337,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Hidden From Address Lists"
@@ -349,11 +349,11 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Booking Settings */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Booking Settings</Typography>
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Room Capacity"
@@ -365,7 +365,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Maximum Booking Duration (Minutes)"
@@ -382,7 +382,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Booking Window (Days)"
@@ -399,7 +399,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Booking Process"
@@ -411,7 +411,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Allow Recurring Meetings"
@@ -420,7 +420,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Allow Double-Booking"
@@ -429,7 +429,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Process External Meetings"
@@ -438,7 +438,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Enforce Room Capacity"
@@ -447,7 +447,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Forward to Delegates"
@@ -459,11 +459,11 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Working Hours */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Working Hours</Typography>
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Schedule Only During Work Hours"
@@ -472,7 +472,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 8, xs: 12 }}>
+        <Grid size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Working Days"
@@ -484,7 +484,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Timezone"
@@ -496,7 +496,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="time"
             label="Work Hours Start"
@@ -505,7 +505,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="time"
             label="Work Hours End"
@@ -517,11 +517,11 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Room Facilities */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Room Facilities & Equipment</Typography>
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Wheelchair Accessible"
@@ -530,7 +530,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Phone"
@@ -539,7 +539,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Audio Device"
@@ -548,7 +548,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Video Device"
@@ -557,7 +557,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Device"
@@ -566,7 +566,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Tags"
@@ -580,11 +580,11 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Location Information */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>Location Information</Typography>
         </Grid>
 
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Building"
@@ -593,7 +593,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 3, xs: 12 }}>
+        <Grid size={{ md: 3, xs: 12 }}>
           <CippFormComponent
             type="number"
             label="Floor"
@@ -602,7 +602,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 3, xs: 12 }}>
+        <Grid size={{ md: 3, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Floor Label"
@@ -611,7 +611,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Street Address"
@@ -620,7 +620,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="City"
@@ -629,7 +629,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="State/Province"
@@ -638,7 +638,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Postal Code"
@@ -647,7 +647,7 @@ const EditRoomMailbox = () => {
           />
         </Grid>
 
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Country/Region"

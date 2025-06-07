@@ -3,8 +3,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "../tabOptions";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
 import CippRoles from "/src/components/CippSettings/CippRoles";
-import { Alert, CardContent, Stack, Typography } from "@mui/material";
-import { WarningAmberOutlined } from "@mui/icons-material";
+import { CardContent, Stack, Typography } from "@mui/material";
 
 const Page = () => {
   return (

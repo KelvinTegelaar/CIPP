@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { Box, Button, Container, Stack, SvgIcon } from "@mui/material";
 import { CippWizard } from "./CippWizard";
 import { useRouter } from "next/router";

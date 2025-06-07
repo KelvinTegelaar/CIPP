@@ -1,4 +1,3 @@
-import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";

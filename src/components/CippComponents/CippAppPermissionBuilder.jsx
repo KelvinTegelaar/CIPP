@@ -567,7 +567,7 @@ const CippAppPermissionBuilder = ({
                   <>
                     <Stack spacing={2}>
                       <Grid container sx={{ display: "flex", alignItems: "center" }} spacing={2}>
-                        <Grid item size={{ xl: 8, xs: 12 }}>
+                        <Grid size={{ xl: 8, xs: 12 }}>
                           <CippFormComponent
                             type="autoComplete"
                             label="Application Permissions"
@@ -583,7 +583,7 @@ const CippAppPermissionBuilder = ({
                             multiple={false}
                           />
                         </Grid>
-                        <Grid item>
+                        <Grid>
                           <Tooltip title="Add Permission">
                             <div
                               onClick={() =>
@@ -629,7 +629,7 @@ const CippAppPermissionBuilder = ({
                     </Alert>
                   )}
                   <Grid container sx={{ display: "flex", alignItems: "center" }} spacing={2}>
-                    <Grid item size={{ xl: 8, xs: 12 }}>
+                    <Grid size={{ xl: 8, xs: 12 }}>
                       <CippFormComponent
                         type="autoComplete"
                         label="Delegated Permissions"
@@ -645,7 +645,7 @@ const CippAppPermissionBuilder = ({
                         multiple={false}
                       />
                     </Grid>
-                    <Grid item sx={{ ms: 2 }}>
+                    <Grid sx={{ ms: 2 }}>
                       <Tooltip title="Add Permission">
                         <div
                           onClick={() =>
@@ -737,7 +737,7 @@ const CippAppPermissionBuilder = ({
                     </IconButton>
                   </Stack>
                 </Grid>
-                <Grid item>
+                <Grid>
                   <Stack direction="row" spacing={1}>
                     <Tooltip title="Add Service Principal">
                       <div
@@ -820,7 +820,7 @@ const CippAppPermissionBuilder = ({
                 }}
               >
                 <Grid container>
-                  <Grid item size={12}>
+                  <Grid size={12}>
                     <Typography variant="h4" sx={{ mb: 2 }}>
                       Import Permission Manifest
                     </Typography>
@@ -832,7 +832,7 @@ const CippAppPermissionBuilder = ({
                   </Grid>
                 </Grid>
                 <Grid container>
-                  <Grid item size={12}>
+                  <Grid size={12}>
                     <FileDropzone
                       onDrop={onManifestImport}
                       accept={{
@@ -852,12 +852,12 @@ const CippAppPermissionBuilder = ({
                 {importedManifest && (
                   <>
                     <Grid container sx={{ mt: 2 }} spacing={2}>
-                      <Grid item size={12}>
+                      <Grid size={12}>
                         <Alert color="success" icon={<TaskAlt />}>
                           Manifest is valid. Click Import to apply the permissions.
                         </Alert>
                       </Grid>
-                      <Grid item size={12}>
+                      <Grid size={12}>
                         <Button
                           variant="contained"
                           onClick={() => importManifest()}
@@ -872,7 +872,7 @@ const CippAppPermissionBuilder = ({
                       </Grid>
                     </Grid>
                     <Grid container className="mt-3">
-                      <Grid item size={12}>
+                      <Grid size={12}>
                         <h4>Preview</h4>
                         <CippCodeBlock
                           code={JSON.stringify(importedManifest, null, 2)}
@@ -1065,7 +1065,7 @@ const CippAppPermissionBuilder = ({
           </Grid>
 
           <Grid container sx={{ display: "flex", alignItems: "center" }}>
-            <Grid item size={{ xl: 1, xs: 12 }}>
+            <Grid size={{ xl: 1, xs: 12 }}>
               <Button
                 variant="contained"
                 startIcon={

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useCSVReader, lightenDarkenColor, formatFileSize } from "react-papaparse";
 
 const GREY = "#CCC";

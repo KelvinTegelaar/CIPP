@@ -1,4 +1,4 @@
-import { Box, Button, Container, Skeleton } from "@mui/material";
+import { Box, Button, Container } from "@mui/material";
 import { Grid, Stack } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
@@ -91,13 +91,13 @@ const Page = () => {
     >
       <Container maxWidth={false}>
         <Grid container spacing={1}>
-          <Grid item size={{ xs: 4 }}>
+          <Grid size={{ xs: 4 }}>
             <CippButtonCard
               title="Geo IP Check"
               cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
             >
               <Grid container spacing={2}>
-                <Grid item size={8}>
+                <Grid size={8}>
                   <CippFormComponent
                     formControl={formControl}
                     name="ipAddress"
@@ -109,7 +109,7 @@ const Page = () => {
                     required
                   />
                 </Grid>
-                <Grid item size={4}>
+                <Grid size={4}>
                   <Button
                     type="submit"
                     onClick={() => setIpAddress(ip)}
@@ -122,19 +122,19 @@ const Page = () => {
               </Grid>
             </CippButtonCard>
           </Grid>
-          <Grid item size={8}></Grid>
+          <Grid size={8}></Grid>
 
           {/* Results Card */}
           {ipAddress && (
-            <Grid item size={6}>
+            <Grid size={6}>
               <CippButtonCard title="Geo IP Results">
                 <Grid container spacing={2}>
-                  <Grid item size={12}>
+                  <Grid size={12}>
                     <CippGeoLocation ipAddress={ipAddress} />
                   </Grid>
                 </Grid>
                 <Grid container spacing={2} mt={2}>
-                  <Grid item size={12}>
+                  <Grid size={12}>
                     <Stack direction="row" spacing={1}>
                       <Button variant="contained" color="primary" onClick={handleAddToWhitelist}>
                         Add to Whitelist
@@ -149,7 +149,7 @@ const Page = () => {
               </CippButtonCard>
             </Grid>
           )}
-          <Grid item size={6}>
+          <Grid size={6}>
             <CippDataTable
               title={"IP Whitelist"}
               api={{ url: "/api/ListIPWhitelist" }}

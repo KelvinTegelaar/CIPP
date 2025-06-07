@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import {
   Alert,
   Button,
-  Stack,
   Typography,
   CircularProgress,
   Box,
 } from "@mui/material";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { ApiGetCall } from "../../api/ApiCall";
 
 /**
  * CIPPDeviceCodeButton - A button component for Microsoft 365 OAuth authentication using device code flow

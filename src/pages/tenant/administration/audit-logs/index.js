@@ -61,7 +61,7 @@ const Page = () => {
             <form onSubmit={formControl.handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 {/* Date Filter Type */}
-                <Grid item size={12}>
+                <Grid size={12}>
                   <CippFormComponent
                     type="radio"
                     row
@@ -78,9 +78,9 @@ const Page = () => {
                 {/* Relative Time Filter */}
                 {formControl.watch("dateFilter") === "relative" && (
                   <>
-                    <Grid item size={{ xs: 12, md: 8 }}>
+                    <Grid size={{ xs: 12, md: 8 }}>
                       <Grid container spacing={2}>
-                        <Grid item size={{ xs: 6 }}>
+                        <Grid size={{ xs: 6 }}>
                           <CippFormComponent
                             type="number"
                             name="Time"
@@ -88,7 +88,7 @@ const Page = () => {
                             formControl={formControl}
                           />
                         </Grid>
-                        <Grid item size={2}>
+                        <Grid size={2}>
                           <CippFormComponent
                             type="autoComplete"
                             name="Interval"
@@ -109,7 +109,7 @@ const Page = () => {
                 {/* Start and End Date Filters */}
                 {formControl.watch("dateFilter") === "startEnd" && (
                   <>
-                    <Grid item size={{ xs: 6, md: 3 }}>
+                    <Grid size={{ xs: 6, md: 3 }}>
                       <CippFormComponent
                         type="datePicker"
                         name="startDate"
@@ -118,7 +118,7 @@ const Page = () => {
                         formControl={formControl}
                       />
                     </Grid>
-                    <Grid item size={{ xs: 6, md: 3 }}>
+                    <Grid size={{ xs: 6, md: 3 }}>
                       <CippFormComponent
                         type="datePicker"
                         name="endDate"
@@ -131,7 +131,7 @@ const Page = () => {
                 )}
 
                 {/* Submit Button */}
-                <Grid item size={12}>
+                <Grid size={12}>
                   <Button type="submit" variant="contained" color="primary">
                     Apply Filters
                   </Button>

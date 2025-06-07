@@ -1,10 +1,5 @@
-import { Alert, Stack, Typography, Box } from "@mui/material";
-import { Grid } from "@mui/system";
-import CippFormComponent from "../CippComponents/CippFormComponent";
+import { Alert, Stack, Typography } from "@mui/material";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
-import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
-import { CippFormCondition } from "../CippComponents/CippFormCondition";
-import alertList from "../../data/alerts.json";
 
 export const CippAlertsStep = (props) => {
   const { formControl, onPreviousStep, onNextStep, currentStep } = props;

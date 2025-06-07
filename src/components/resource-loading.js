@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { CircularProgress, SvgIcon, Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const ResourceLoadingRoot = styled("div")(({ theme }) => ({

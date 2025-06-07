@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Alert,
   Skeleton,
@@ -9,13 +9,11 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider,
   Tab,
   Tabs,
   Chip,
   SvgIcon,
 } from "@mui/material";
-import { ApiGetCall } from "/src/api/ApiCall";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { CippCardTabPanel } from "./CippCardTabPanel";
 

@@ -1,12 +1,9 @@
 import { BuildingOfficeIcon, HomeIcon, UsersIcon, WrenchIcon } from "@heroicons/react/24/outline";
 import {
-  Cloud,
   CloudOutlined,
-  DeviceHub,
   HomeRepairService,
   Laptop,
   MailOutline,
-  Shield,
   ShieldOutlined,
 } from "@mui/icons-material";
 import { SvgIcon } from "@mui/material";

@@ -23,10 +23,10 @@ const AddSiteForm = () => {
       backButtonTitle="Back to Sites"
     >
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent name="siteName" label="Site Name" formControl={formControl} required />
         </Grid>
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="siteDescription"
             label="Site Description"
@@ -34,7 +34,7 @@ const AddSiteForm = () => {
             required
           />
         </Grid>
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="SiteOwner"
             label="Add Owner"
@@ -69,7 +69,7 @@ const AddSiteForm = () => {
             }}
           />
         </Grid>
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="TemplateName"
             label="Template Name"
@@ -91,7 +91,7 @@ const AddSiteForm = () => {
             }}
           />
         </Grid>
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="siteDesign"
             label="Site Design Template"

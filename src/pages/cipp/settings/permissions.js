@@ -13,16 +13,16 @@ const Page = () => {
   return (
     <Container sx={{ pt: 3 }} maxWidth="xl">
       <Grid container spacing={2}>
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippPermissionReport importReport={importReport} setImportReport={setImportReport} />
         </Grid>
-        <Grid item size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
           <CippPermissionCheck type="Permissions" importReport={importReport} />
         </Grid>
-        <Grid item size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
           <CippPermissionCheck type="GDAP" importReport={importReport} />
         </Grid>
-        <Grid item size={{ lg: 12, md: 12, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 12, md: 12, sm: 12, xs: 12 }}>
           <CippPermissionCheck type="Tenants" importReport={importReport} />
         </Grid>
       </Grid>

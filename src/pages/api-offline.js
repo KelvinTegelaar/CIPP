@@ -13,7 +13,6 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ErrorOutlineOutlined } from "@mui/icons-material";
 
 const ApiOfflinePage = () => {
@@ -96,7 +95,7 @@ const ApiOfflinePage = () => {
               alignItems="center" // Center vertically
               sx={{ height: "100%" }} // Ensure the container takes full height
             >
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippImageCard
                   isFetching={false}
                   imageUrl="/assets/illustrations/undraw_server_status_re_n8ln.svg"

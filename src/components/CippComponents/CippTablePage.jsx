@@ -1,6 +1,5 @@
 import { Alert, Card, Divider } from "@mui/material";
 import { Box, Container, Stack } from "@mui/system";
-import Head from "next/head";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useSettings } from "../../hooks/use-settings";
 import { CippHead } from "./CippHead";

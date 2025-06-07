@@ -187,20 +187,20 @@ const Page = () => {
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Container maxWidth={false}>
           <Grid container spacing={3}>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <CippUniversalSearch />
             </Grid>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <BulkActionsMenu
                 buttonName="Portals"
                 actions={PortalMenuItems}
                 disabled={!currentTenantInfo.isSuccess}
               />
             </Grid>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <CippInfoBar data={tenantInfo} isFetching={organization.isFetching} />
             </Grid>
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippChartCard
                 title="User Statistics"
                 isFetching={dashboard.isFetching || GlobalAdminList.isFetching}
@@ -225,7 +225,7 @@ const Page = () => {
               />
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippChartCard
                 title="Standards Set"
                 isFetching={standards.isFetching}
@@ -235,7 +235,7 @@ const Page = () => {
               />
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippChartCard
                 title="SharePoint Quota"
                 isFetching={sharepoint.isFetching}
@@ -254,7 +254,7 @@ const Page = () => {
             </Grid>
 
             {/* Converted Domain Names to Property List */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippPropertyListCard
                 title="Domain Names"
                 showDivider={false}
@@ -276,7 +276,7 @@ const Page = () => {
               />
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippPropertyListCard
                 showDivider={false}
                 copyItems={true}
@@ -289,7 +289,7 @@ const Page = () => {
               />
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippPropertyListCard
                 copyItems={true}
                 showDivider={false}

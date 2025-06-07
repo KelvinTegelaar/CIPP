@@ -111,7 +111,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
             filteredItems.length > 0 ? (
               <Grid container spacing={2} mt={2}>
                 {filteredItems.map((item, index) => (
-                  <Grid item size={{ md: 12, sm: 12, xs: 12 }} key={index}>
+                  <Grid size={{ md: 12, sm: 12, xs: 12 }} key={index}>
                     <Card variant="outlined" sx={{ height: "100%" }}>
                       <CardActionArea
                         onClick={() => handleCardClick(item.path)}

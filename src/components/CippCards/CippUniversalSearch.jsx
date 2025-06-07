@@ -97,7 +97,7 @@ const Results = ({ items = [], searchValue }) => {
       </Typography>
       <Grid container spacing={2} mt={2}>
         {displayedResults.map((item, key) => (
-          <Grid item size={{ md: 4, sm: 6, xs: 12 }} key={key}>
+          <Grid size={{ md: 4, sm: 6, xs: 12 }} key={key}>
             <ResultsRow match={item} searchValue={searchValue} />
           </Grid>
         ))}

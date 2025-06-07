@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -18,7 +18,7 @@ const CippAddGroupTemplateForm = (props) => {
       {/* Hidden field to store the template GUID when editing */}
       <CippFormComponent type="hidden" name="GUID" formControl={formControl} />
 
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Display Name"
@@ -28,7 +28,7 @@ const CippAddGroupTemplateForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Description"
@@ -37,7 +37,7 @@ const CippAddGroupTemplateForm = (props) => {
           fullWidth
         />
       </Grid>
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Username (do not include domain)"
@@ -48,7 +48,7 @@ const CippAddGroupTemplateForm = (props) => {
         />
       </Grid>
 
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="radio"
           name="groupType"
@@ -72,7 +72,7 @@ const CippAddGroupTemplateForm = (props) => {
         compareType="is"
         compareValue="distribution"
       >
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Let people outside the organization email the group"
@@ -87,7 +87,7 @@ const CippAddGroupTemplateForm = (props) => {
         compareType="contains"
         compareValue="dynamic"
       >
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Dynamic Group Parameters"
