@@ -41,7 +41,7 @@ const CippMailboxPermissionsDialog = ({ formHook }) => {
           }
         />
       </Box>
-      {fullAccess && (
+      {fullAccess?.length > 0 && (
         <Box>
           <CippFormComponent
             type="switch"
