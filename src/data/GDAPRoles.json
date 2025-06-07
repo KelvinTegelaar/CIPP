@@ -65,6 +65,22 @@
   },
   {
     "ExtensionData": {},
+    "Description": "Read audit logs and configure diagnostic settings for events related to custom security attributes.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Attribute Log Administrator",
+    "ObjectId": "5b784334-f94b-471a-a387-e7219fc49ca2"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Read audit logs related to custom security attributes.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Attribute Log Reader",
+    "ObjectId": "9c99539d-8186-4804-835f-fd51ef9e2dcd"
+  },
+  {
+    "ExtensionData": {},
     "Description": "Allowed to view, set and reset authentication method information for any non-admin user.",
     "IsEnabled": true,
     "IsSystem": true,
@@ -78,6 +94,14 @@
     "IsSystem": true,
     "Name": "Authentication Policy Administrator",
     "ObjectId": "0526716b-113d-4c15-b2c8-68e3c22b9f80"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Customize sign in and sign up experiences for users by creating and managing custom authentication extensions.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Authentication Extensibility Administrator",
+    "ObjectId": "25a516ed-2fa0-40ea-a2d0-12923a21473a"
   },
   {
     "ExtensionData": {},
@@ -313,6 +337,14 @@
   },
   {
     "ExtensionData": {},
+    "Description": "Create and manage all aspects of Microsoft Entra Internet Access and Microsoft Entra Private Access, including managing access to public and private endpoints.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Global Secure Access Administrator",
+    "ObjectId": "ac434307-12b9-4fa1-a708-88bf58caabc1"
+  },
+  {
+    "ExtensionData": {},
     "Description": "Members of this role can create/manage groups, create/manage groups settings like naming and expiration policies, and view groups activity and audit reports.",
     "IsEnabled": true,
     "IsSystem": true,
@@ -441,6 +473,30 @@
   },
   {
     "ExtensionData": {},
+    "Description": "Perform all migration functionality to migrate content to Microsoft 365 using Migration Manager.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Microsoft 365 Migration Administrator",
+    "ObjectId": "8c8b803f-96e1-4129-9349-20738d9f9652"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Create and manage all aspects warranty claims and entitlements for Microsoft manufactured hardware, like Surface and HoloLens.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Microsoft Hardware Warranty Administrator",
+    "ObjectId": "1501b917-7653-4ff9-a4b5-203eaf33784f"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Create and read warranty claims for Microsoft manufactured hardware, like Surface and HoloLens.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Microsoft Hardware Warranty Specialist",
+    "ObjectId": "281fe777-fb20-4fbb-b7a3-ccebce5b0d96"
+  },
+  {
+    "ExtensionData": {},
     "Description": "Can manage network locations and review enterprise network design insights for Microsoft 365 Software as a Service applications.",
     "IsEnabled": true,
     "IsSystem": true,
@@ -454,6 +510,14 @@
     "IsSystem": true,
     "Name": "Office Apps Administrator",
     "ObjectId": "2b745bdf-0803-4d80-aa65-822c4493daac"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Write, publish, manage, and review the organizational messages for end-users through Microsoft product surfaces.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Organizational Messages Writer",
+    "ObjectId": "507f53e4-4e52-4077-abd3-d2e1558b6ea2"
   },
   {
     "ExtensionData": {},
@@ -585,6 +649,14 @@
   },
   {
     "ExtensionData": {},
+    "Description": "Manage all aspects of SharePoint Embedded containers.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "SharePoint Embedded Administrator",
+    "ObjectId": "1a7d78b6-429f-476b-8eb-35fb715fffd4"
+  },
+  {
+    "ExtensionData": {},
     "Description": "Can manage all aspects of the Skype for Business product.",
     "IsEnabled": true,
     "IsSystem": true,
@@ -633,6 +705,22 @@
   },
   {
     "ExtensionData": {},
+    "Description": "Manage voice and telephony features and troubleshoot communication issues within the Microsoft Teams service.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Teams Telephony Administrator",
+    "ObjectId": "aa38014f-0993-46e9-9b45-30501a20909d"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Create new Microsoft Entra or Azure AD B2C tenants.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Tenant Creator",
+    "ObjectId": "112ca1a2-15ad-4102-995e-45b0bc479a6a"
+  },
+  {
+    "ExtensionData": {},
     "Description": "Can see only tenant level aggregates in Microsoft 365 Usage Analytics and Productivity Score.",
     "IsEnabled": true,
     "IsSystem": true,
@@ -646,6 +734,14 @@
     "IsSystem": true,
     "Name": "User Administrator",
     "ObjectId": "fe930be7-5e62-47db-91af-98c3a49a38b1"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "View product feedback, survey results, and reports to find training and communication opportunities.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "User Experience Success Manager",
+    "ObjectId": "27460883-1df1-4691-b032-3b79643e5e63"
   },
   {
     "ExtensionData": {},

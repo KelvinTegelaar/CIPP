@@ -123,7 +123,7 @@ const Page = () => {
     customDataformatter: (row, action, data) => {
       const permissions = [];
       const { permissions: permissionValues } = data;
-      const autoMap = data.autoMap === undefined ? true : data.autoMap;
+      const autoMap = permissionValues.AutoMap === undefined ? true : permissionValues.AutoMap;
 
       // Build permissions array based on form values
       if (permissionValues?.AddFullAccess) {

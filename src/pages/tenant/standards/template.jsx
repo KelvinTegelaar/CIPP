@@ -101,6 +101,10 @@ const Page = () => {
 
   // Track form changes
   useEffect(() => {
+    // Compare the current form values with the initial values to check for real changes
+    const currentValues = formControl.getValues();
+    const initialValues = initialStandardsRef.current;
+
     if (
       formState.isDirty ||
       JSON.stringify(selectedStandards) !== JSON.stringify(initialStandardsRef.current)
@@ -109,7 +113,7 @@ const Page = () => {
     } else {
       setHasUnsavedChanges(false);
     }
-  }, [formState.isDirty, selectedStandards]);
+  }, [formState.isDirty, selectedStandards, formControl]);
 
   useEffect(() => {
     if (router.query.id) {
@@ -341,7 +345,12 @@ const Page = () => {
                 selectedStandards={selectedStandards}
                 edit={editMode}
                 updatedAt={updatedAt}
-                onSaveSuccess={() => setHasUnsavedChanges(false)}
+                onSaveSuccess={() => {
+                  // Reset unsaved changes flag
+                  setHasUnsavedChanges(false);
+                  // Update reference for future change detection
+                  initialStandardsRef.current = { ...selectedStandards };
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, lg: 8 }}>
@@ -358,6 +367,7 @@ const Page = () => {
                     handleRemoveStandard={handleRemoveStandard}
                     handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
                     formControl={formControl}
+                    editMode={editMode}
                   />
                 )}
               </Stack>
