@@ -94,6 +94,7 @@ const CippCalendarPermissionsDialog = ({ formHook }) => {
               name="CanViewPrivateItems"
               formControl={formHook}
               disabled={!isEditor}
+              sx={{ ml: 1.5, mt: 0, mb: 0 }}
             />
           </span>
         </Tooltip>
