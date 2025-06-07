@@ -416,7 +416,7 @@ const CippStandardDialog = ({
             Search returned no results
           </Typography>
         ) : (
-          <VirtualizedStandardGrids items={processedItems} renderItem={renderStandardCard} />
+          <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
         )}
       </DialogContent>
       <DialogActions>
