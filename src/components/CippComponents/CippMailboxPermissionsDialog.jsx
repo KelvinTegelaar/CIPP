@@ -25,7 +25,7 @@ const CippMailboxPermissionsDialog = ({ formHook }) => {
   });
 
   return (
-    <Stack spacing={3} sx={{ mt: 1 }}>
+    <Stack spacing={2} sx={{ mt: 1 }}>
       <Box>
         <CippFormComponent
           type="autoComplete"
