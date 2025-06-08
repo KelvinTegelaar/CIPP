@@ -47,11 +47,11 @@ export const CippWizardGroupTemplates = (props) => {
               valueField: "GUID",
               addedField: {
                 groupType: "groupType",
-                Displayname: "Displayname",
-                Description: "Description",
+                Displayname: "displayName",
+                Description: "description",
                 username: "username",
                 allowExternal: "allowExternal",
-                MembershipRules: "MembershipRules",
+                MembershipRules: "membershipRules",
               },
             }}
           />
@@ -109,24 +109,8 @@ export const CippWizardGroupTemplates = (props) => {
         <Grid item size={12}>
           <CippFormCondition
             field="groupType"
-            compareType="is"
-            compareValue="dynamic"
-            formControl={formControl}
-          >
-            <CippFormComponent
-              type="textField"
-              name="MembershipRules"
-              label="Membership Rules"
-              formControl={formControl}
-              validators={{ required: "Membership rules are required" }}
-            />
-          </CippFormCondition>
-        </Grid>
-        <Grid item size={12}>
-          <CippFormCondition
-            field="groupType"
-            compareType="is"
-            compareValue="dynamicdistribution"
+            compareType="contains"
+            compareValue={"dynamic"}
             formControl={formControl}
           >
             <CippFormComponent
