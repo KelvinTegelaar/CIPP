@@ -78,6 +78,38 @@
     "recommendedBy": ["CIPP"]
   },
   {
+    "name": "standards.DeployContactTemplates",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Creates new mail contacts in Exchange Online across all selected tenants based on the selected templates. The contact will be visible in the Global Address List unless hidden.",
+    "docsDescription": "This standard creates new mail contacts in Exchange Online based on the selected templates. Mail contacts are useful for adding external email addresses to your organization's address book. They can be used for distribution lists, shared mailboxes, and other collaboration scenarios.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "label": "Select Mail Contact Templates",
+        "name": "standards.DeployContactTemplates.templateIds",
+        "api": {
+          "url": "/api/ListContactTemplates",
+          "labelField": "name",
+          "valueField": "GUID",
+          "queryKey": "Contact Templates"
+        }
+      }],
+    "label": "Deploy Mail Contact Template",
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-31",
+    "powershellEquivalent": "New-MailContact",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
     "tag": ["CIS", "mip_search_auditlog"],
@@ -223,6 +255,21 @@
     "addedDate": "2024-06-05",
     "powershellEquivalent": "Update-MgBetaAdminPeoplePronoun -IsEnabledInOrganization:$true",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.EnableNamePronunciation",
+    "cat": "Global Standards",
+    "tag": [],
+    "helpText": "Enables the Name Pronunciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
+    "docsDescription": "Enables the Name Pronunciation feature for the tenant. This allows users to set their name pronunciation in their profile.",
+    "addedComponent": [],
+    "label": "Enable Name Pronunciation",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-06",
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.AnonReportDisable",
@@ -546,6 +593,20 @@
     "addedDate": "2022-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.FormsPhishingProtection",
+    "cat": "Global Standards",
+    "tag": ["CIS", "Security", "PhishingProtection"],
+    "helpText": "Enables internal phishing protection for Microsoft Forms to help prevent malicious forms from being created and shared within the organization. This feature scans forms created by internal users for potential phishing content and suspicious patterns.",
+    "docsDescription": "Enables internal phishing protection for Microsoft Forms by setting the isInOrgFormsPhishingScanEnabled property to true. This security feature helps protect organizations from internal phishing attacks through Microsoft Forms by automatically scanning forms created by internal users for potential malicious content, suspicious links, and phishing patterns. When enabled, Forms will analyze form content and block or flag potentially dangerous forms before they can be shared within the organization.",
+    "addedComponent": [],
+    "label": "Enable internal phishing protection for Forms",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-06",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": ["CIS", "CIPP"]
   },
   {
     "name": "standards.TAP",
@@ -1793,10 +1854,24 @@
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "docsDescription": "Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact.",
     "addedComponent": [],
-    "label": "Disable Shared Mailbox AAD accounts",
+    "label": "Disable Shared Mailbox Entra accounts",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2021-11-16",
+    "powershellEquivalent": "Get-Mailbox & Update-MgUser",
+    "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.DisableResourceMailbox",
+    "cat": "Exchange Standards",
+    "tag": ["CIS"],
+    "helpText": "Blocks login for all accounts that are marked as a resource mailbox and does not have a license assigned. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
+    "docsDescription": "Resource mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for resource mailboxes. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
+    "addedComponent": [],
+    "label": "Disable Unlicensed Resource Mailbox Entra accounts",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-06-01",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
     "recommendedBy": ["CIS", "CIPP"]
   },
