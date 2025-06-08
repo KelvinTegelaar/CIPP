@@ -265,7 +265,11 @@ const ApplicationDeploymentForm = () => {
               </Grid>
             ))}
             {selectedTenants?.map((tenant, index) => (
-              <Grid item size={{ md: 6, xs: 12 }} key={`${tenant.addedFields.customerId}_location_${index}`}>
+              <Grid
+                item
+                size={{ md: 6, xs: 12 }}
+                key={`${tenant.addedFields.customerId}_location_${index}`}
+              >
                 <CippFormComponent
                   type="textField"
                   label={`Location ID for ${tenant.label}`}
@@ -635,7 +639,7 @@ const ApplicationDeploymentForm = () => {
               name="languages"
               options={languageList.map(({ language, tag }) => ({
                 value: tag,
-                label: language,
+                label: `${language} (${tag})`,
               }))}
               multiple={true}
               formControl={formControl}
