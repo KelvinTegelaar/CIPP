@@ -56,6 +56,15 @@
     "recommendedRunInterval": "4h"
   },
   {
+    "name": "OneDriveQuota",
+    "label": "Alert on % OneDrive quota used",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Enter quota percentage (default: 90)",
+    "inputName": "OneDriveQuota",
+    "recommendedRunInterval": "4h"
+  },
+  {
     "name": "ExpiringLicenses",
     "label": "Alert on licenses expiring in 30 days",
     "recommendedRunInterval": "7d"
