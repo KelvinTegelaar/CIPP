@@ -70,7 +70,18 @@ const CippAppPermissionBuilder = ({
     setExpanded(newExpanded ? panel : false);
   };
 
+  const deprecatedServicePrincipals = [
+    "00000002-0000-0000-c000-000000000000", // Windows Azure Active Directory
+    "a0c73c16-a7e3-4564-9a95-2bdf47383716", // Microsoft Exchange Online Remote PowerShell
+    "1b730954-1685-4b74-9bfd-dac224a7b894", // Azure Active Directory PowerShell
+  ];
+
   const currentSelectedSp = useWatch({ control: formControl.control, name: "servicePrincipal" });
+
+  // Check if selected service principal is in the deprecated list
+  const isDeprecatedSp =
+    currentSelectedSp && deprecatedServicePrincipals.includes(currentSelectedSp.value);
+
   const {
     data: servicePrincipals = [],
     isSuccess: spSuccess,
@@ -739,22 +750,31 @@ const CippAppPermissionBuilder = ({
                 </Grid>
                 <Grid item>
                   <Stack direction="row" spacing={1}>
-                    <Tooltip title="Add Service Principal">
+                    <Tooltip
+                      title={
+                        isDeprecatedSp
+                          ? "This service principal is deprecated and cannot be added"
+                          : "Add Service Principal"
+                      }
+                    >
                       <div
                         onClick={(e) => {
-                          setSelectedApp([
-                            ...selectedApp,
-                            servicePrincipals?.Results?.find(
-                              (sp) => sp.appId === currentSelectedSp.value
-                            ),
-                          ]);
-                          formControl.setValue("servicePrincipal", null);
+                          // Only add if not deprecated
+                          if (!isDeprecatedSp) {
+                            setSelectedApp([
+                              ...selectedApp,
+                              servicePrincipals?.Results?.find(
+                                (sp) => sp.appId === currentSelectedSp.value
+                              ),
+                            ]);
+                            formControl.setValue("servicePrincipal", null);
+                          }
                         }}
                       >
                         <Button
                           variant="contained"
                           component={!currentSelectedSp?.value ? "span" : undefined}
-                          disabled={!currentSelectedSp?.value}
+                          disabled={!currentSelectedSp?.value || isDeprecatedSp}
                         >
                           <SvgIcon fontSize="small">
                             <PlusIcon />
@@ -885,10 +905,21 @@ const CippAppPermissionBuilder = ({
                 )}
               </CippOffCanvas>
               {calloutMessage && (
-                <Grid container sx={{ my: 3 }}>
+                <Grid container>
                   <Grid size={{ xl: 8, xs: 12 }}>
                     <Alert variant="outlined" color="info" onClose={() => setCalloutMessage(null)}>
                       {calloutMessage}
+                    </Alert>
+                  </Grid>
+                </Grid>
+              )}
+
+              {isDeprecatedSp && (
+                <Grid container>
+                  <Grid size={{ xl: 8, xs: 12 }}>
+                    <Alert color="error" icon={<WarningAmberOutlined />}>
+                      {currentSelectedSp.label} is deprecated and cannot be added. Please select a
+                      different service principal.
                     </Alert>
                   </Grid>
                 </Grid>
