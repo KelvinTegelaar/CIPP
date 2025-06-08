@@ -8,7 +8,7 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
 import { useSettings } from "/src/hooks/use-settings";
 
-const AddRoomMailbox = () => {
+const AddEquipmentMailbox = () => {
   const tenantDomain = useSettings().currentTenant;
   const formControl = useForm({
     mode: "onChange",
@@ -16,17 +16,19 @@ const AddRoomMailbox = () => {
       displayName: "",
       username: "",
       domain: null,
-      resourceCapacity: "",
+      location: "",
+      department: "",
+      company: "",
     },
   });
 
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey="RoomMailbox-Add"
-      title="Add Room Mailbox"
-      backButtonTitle="Room Mailboxes Overview"
-      postUrl="/api/AddRoomMailbox"
+      queryKey="EquipmentMailbox-Add"
+      title="Add Equipment Mailbox"
+      backButtonTitle="Equipment Mailboxes Overview"
+      postUrl="/api/AddEquipmentMailbox"
       customDataformatter={(values) => {
         const shippedValues = {
           tenantID: tenantDomain,
@@ -35,10 +37,6 @@ const AddRoomMailbox = () => {
           username: values.username.trim(),
           userPrincipalName: values.username.trim() + "@" + (values.domain?.value || "").trim(),
         };
-
-        if (values.resourceCapacity && values.resourceCapacity.trim() !== "") {
-          shippedValues.resourceCapacity = values.resourceCapacity.trim();
-        }
 
         return shippedValues;
       }}
@@ -58,7 +56,7 @@ const AddRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Username and Domain */}
-        <Grid size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Username"
@@ -67,7 +65,7 @@ const AddRoomMailbox = () => {
             validators={{ required: "Username is required" }}
           />
         </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormDomainSelector
             formControl={formControl}
             name="domain"
@@ -75,23 +73,11 @@ const AddRoomMailbox = () => {
             validators={{ required: "Please select a domain" }}
           />
         </Grid>
-
-        <Divider sx={{ my: 2, width: "100%" }} />
-
-        {/* Resource Capacity (Optional) */}
-        <Grid size={{ xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Resource Capacity (Optional)"
-            name="resourceCapacity"
-            formControl={formControl}
-          />
-        </Grid>
       </Grid>
     </CippFormPage>
   );
 };
 
-AddRoomMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+AddEquipmentMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default AddRoomMailbox;
+export default AddEquipmentMailbox;

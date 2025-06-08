@@ -2,10 +2,8 @@ import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import ContactFormLayout from "/src/components/CippFormPages/CippAddEditContact";
-import { useSettings } from "../../../../hooks/use-settings";
 
-const AddContact = () => {
-  const tenantDomain = useSettings().currentTenant;
+const AddContactTemplates = () => {
 
   const formControl = useForm({
     mode: "onChange",
@@ -32,14 +30,13 @@ const AddContact = () => {
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey="AddContact"
-      title="Add Contact"
-      backButtonTitle="Contacts Overview"
-      postUrl="/api/AddContact"
+      queryKey="AddContactTemplates"
+      title="Add Contact Template"
+      backButtonTitle="Contact Templates"
+      postUrl="/api/AddContactTemplates"
       resetForm={true}
       customDataformatter={(values) => {
         return {
-          tenantID: tenantDomain,
           DisplayName: values.displayName,
           hidefromGAL: values.hidefromGAL,
           email: values.email,
@@ -66,6 +63,6 @@ const AddContact = () => {
   );
 };
 
-AddContact.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+AddContactTemplates.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default AddContact;
+export default AddContactTemplates;

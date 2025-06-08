@@ -308,6 +308,7 @@ export const nativeMenuItems = [
           { title: "Deleted Mailboxes", path: "/email/administration/deleted-mailboxes" },
           { title: "Mailbox Rules", path: "/email/administration/mailbox-rules" },
           { title: "Contacts", path: "/email/administration/contacts" },
+          { title: "Contact Templates", path: "/email/administration/contacts-template" },
           { title: "Quarantine", path: "/email/administration/quarantine" },
           {
             title: "Tenant Allow/Block Lists",
@@ -352,6 +353,7 @@ export const nativeMenuItems = [
         title: "Resource Management",
         path: "/email/resources/management",
         items: [
+          { title: "Equipment", path: "/email/resources/management/equipment" },
           { title: "Rooms", path: "/email/resources/management/list-rooms" },
           { title: "Room Lists", path: "/email/resources/management/room-lists" },
         ],
