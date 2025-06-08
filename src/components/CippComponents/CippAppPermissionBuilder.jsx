@@ -905,7 +905,7 @@ const CippAppPermissionBuilder = ({
                 )}
               </CippOffCanvas>
               {calloutMessage && (
-                <Grid container sx={{ my: 3 }}>
+                <Grid container>
                   <Grid size={{ xl: 8, xs: 12 }}>
                     <Alert variant="outlined" color="info" onClose={() => setCalloutMessage(null)}>
                       {calloutMessage}
@@ -915,7 +915,7 @@ const CippAppPermissionBuilder = ({
               )}
 
               {isDeprecatedSp && (
-                <Grid container sx={{ my: 3 }}>
+                <Grid container>
                   <Grid size={{ xl: 8, xs: 12 }}>
                     <Alert color="error" icon={<WarningAmberOutlined />}>
                       {currentSelectedSp.label} is deprecated and cannot be added. Please select a
