@@ -70,7 +70,11 @@ const CippAppPermissionBuilder = ({
     setExpanded(newExpanded ? panel : false);
   };
 
-  const deprecatedServicePrincipals = ["00000002-0000-0000-c000-000000000000"];
+  const deprecatedServicePrincipals = [
+    "00000002-0000-0000-c000-000000000000", // Windows Azure Active Directory
+    "a0c73c16-a7e3-4564-9a95-2bdf47383716", // Microsoft Exchange Online Remote PowerShell
+    "1b730954-1685-4b74-9bfd-dac224a7b894", // Azure Active Directory PowerShell
+  ];
 
   const currentSelectedSp = useWatch({ control: formControl.control, name: "servicePrincipal" });
 
@@ -901,7 +905,7 @@ const CippAppPermissionBuilder = ({
                 )}
               </CippOffCanvas>
               {calloutMessage && (
-                <Grid container sx={{ my: 3 }}>
+                <Grid container>
                   <Grid size={{ xl: 8, xs: 12 }}>
                     <Alert variant="outlined" color="info" onClose={() => setCalloutMessage(null)}>
                       {calloutMessage}
@@ -911,7 +915,7 @@ const CippAppPermissionBuilder = ({
               )}
 
               {isDeprecatedSp && (
-                <Grid container sx={{ my: 3 }}>
+                <Grid container>
                   <Grid size={{ xl: 8, xs: 12 }}>
                     <Alert color="error" icon={<WarningAmberOutlined />}>
                       {currentSelectedSp.label} is deprecated and cannot be added. Please select a
