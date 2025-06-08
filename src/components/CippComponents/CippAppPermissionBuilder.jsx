@@ -70,7 +70,11 @@ const CippAppPermissionBuilder = ({
     setExpanded(newExpanded ? panel : false);
   };
 
-  const deprecatedServicePrincipals = ["00000002-0000-0000-c000-000000000000"];
+  const deprecatedServicePrincipals = [
+    "00000002-0000-0000-c000-000000000000", // Windows Azure Active Directory
+    "a0c73c16-a7e3-4564-9a95-2bdf47383716", // Microsoft Exchange Online Remote PowerShell
+    "1b730954-1685-4b74-9bfd-dac224a7b894", // Azure Active Directory PowerShell
+  ];
 
   const currentSelectedSp = useWatch({ control: formControl.control, name: "servicePrincipal" });
 
