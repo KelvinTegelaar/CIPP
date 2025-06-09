@@ -6,7 +6,7 @@ Below are error codes that can occur in CIPP. Use this page to troubleshoot your
 
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
 2. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx) in the partner tenant.
-3. Check our section on [Conditional Access](broken-reference) on how to handle Conditional Access issues.
+3. Check our section on [Conditional Access](../setup/installation/conditionalaccess.md) on how to handle Conditional Access issues.
 
 ### Request not applicable to target tenant.
 
@@ -38,7 +38,7 @@ Multiple Potential Causes:
 
 1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 2. The user that was used for the CIPP Authorisation is a guest in this tenant
-3. You have not added the user to the correct group(s) for CIPP to function. See [Broken link](broken-reference "mention") for more information.
+3. You have not added the user to the correct group(s) for CIPP to function. See [recommended-roles.md](../setup/installation/recommended-roles.md "mention") for more information.
 
 ### AADSTS50020 or AADSTS50177
 
@@ -47,7 +47,7 @@ Multiple Potential Causes:
 * The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 * The user that was used for the CIPP Authorization is a guest in this tenant
 * A Conditional Access policy may be blocking your access. Add your CSP tenant as a serviceProvider exception.
-* You have not added the user to the correct group(s) for CIPP to function. See [Broken link](broken-reference "mention") for more information.
+* You have not added the user to the correct group(s) for CIPP to function. See [recommended-roles.md](../setup/installation/recommended-roles.md "mention") for more information.
 
 {% hint style="info" %}
 **These errors may also present themselves something like the below. The steps above are still accurate in these cases:**
@@ -83,7 +83,7 @@ The user that authorized the CSP or Graph API connection has had their password 
 This error can have three causes.
 
 1. The user has not had MFA set up when performing authorization.
-2. The client has Conditional Access policies blocking CIPP's access. See the chapter about [Conditional Access](broken-reference) to resolve.
+2. The client has Conditional Access policies blocking CIPP's access. See the chapter about [Conditional Access](../setup/installation/conditionalaccess.md) to resolve.
 3. The CIPP-SAM application in the customer tenant is disabled for login. This can be remediated by doing the following:
    1. Navigate to the customer tenant and log in either via the partner relationship or an customer admin account.
    2. Locate the CIPP-SAM app under Enterprise Application by removing the Application type filter.

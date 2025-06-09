@@ -6,13 +6,13 @@ On this page you can find a list of frequently asked questions about the CyberDr
 
 <summary>I updated, but CIPP still says my frontend is out of date. How do I fix this?</summary>
 
-SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](broken-reference).
+SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](../../setup/self-hosting-guide/updating.md).
 
-CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well Github and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
+CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well GitHub and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
 
 CIPP v7 heavily relies on caching. Because of this it is necessary to clear your browser's cookies and cache to pull in the most up to date version of CIPP's frontend.
 
-* Chrome/Edge - Open Devtools (F12), right click on the refresh button, select "Empty cache and hard reset"
+* Chrome/Edge - Open DevTools (F12), right click on the refresh button, select "Empty cache and hard reset"
 * Firefox - Click the padlock in the URL bar and select "Clear cookies and site data..."
 
 </details>
@@ -95,7 +95,7 @@ If you have completed all of these, your instance may benefit from implementing 
 
 If users in your organization have not accessed CIPP in a while, the Static Web App will put itself into a sleep state to save on resource usage. It's normal to see an initial 15-20 second delay on the first results being called from the CIPP-API backend. This is sometimes known as a cold start.
 
-If you want to avoid cold starts, it's possible to utilize the [CIPP API](broken-reference) and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `/getversion` every 5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making.&#x20;
+If you want to avoid cold starts, it's possible to utilize the [CIPP API](broken-reference) and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `/PublicPing` every 3-5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making. The `/PublicPing` endpoint does not require the full authentication setup for the API.
 
 Self-hosted clients should see minimal impact to their overall costs.
 
@@ -268,7 +268,7 @@ For more details, refer to the [permissions setup guide](https://docs.cipp.app/s
 
 <summary>Does CIPP require a specific license?</summary>
 
-No, CIPP can work with any M365 license, for specific features CIPP will of course the tenant to be licensed correctly; e.g. to manage Intune, the tenant must have Intune Licensing.
+No, CIPP can work with any M365 license, for specific features CIPP will of course the tenant to be licensed correctly, e.g. to manage Intune, the tenant must have Intune Licensing.
 
 </details>
 
@@ -284,13 +284,13 @@ Please see the standard "Enable Usernames instead of pseudo anonymized names in 
 
 <summary>Why can't I install CIPP using the "Deploy to Azure" button?</summary>
 
-If you're experiencing issues with installation please report these in `#cipp-community-help` on the [CIPP Discord](https://discord.gg/cyberdrain)
+If you're experiencing issues with installation, please report these in `#cipp-community-help` on the [CIPP Discord](https://discord.gg/cyberdrain)
 
 </details>
 
 <details>
 
-<summary>My tenant requires admin approval for user apps, how do I do this for CIPP?</summary>
+<summary>My tenant requires admin approval for user apps; how do I do this for CIPP?</summary>
 
 If your Azure Tenant requires admin approval for user apps, add consent by following the below steps:
 
@@ -419,20 +419,20 @@ This ensures the display name in CIPP matches the current name in the Partner Ce
 
 <details>
 
-<summary>When trying to onboarding a GDAP relationship, I received an error that only x amount of groups were found, or that the group is not assigned to a user. What does this mean?</summary>
+<summary>When trying to onboard a GDAP relationship, I received an error that only x amount of groups were found, or that the group is not assigned to a user. What does this mean?</summary>
 
 This error can mean two things;
 
 * You migrated using different tools, such as Microsoft Lighthouse.
 * You didn't assign the groups to the user after migrating.
 
-Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](broken-reference).
+Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](../../setup/installation/recommended-roles.md).
 
 </details>
 
 <details>
 
-<summary>I've already setup my GDAP relationships, and given them access to a Global Administrator role. Can I still auto-extend these after their expiration?</summary>
+<summary>I've already setup my GDAP relationships and given them access to a Global Administrator role. Can I still auto-extend these after their expiration?</summary>
 
 Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years.
 
