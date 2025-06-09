@@ -102,7 +102,7 @@ const Page = () => {
   // Define API configurations for the dialogs
   const aliasApiConfig = {
     type: "POST",
-    url: "/api/SetUserAliases",
+    url: "/api/EditUserAliases",
     relatedQueryKeys: `ListUsers-${userId}`,
     confirmText: "Add the specified proxy addresses to this user?",
     customDataformatter: (row, action, formData) => {
@@ -604,7 +604,7 @@ const Page = () => {
       label: "Make Primary",
       type: "POST",
       icon: <Star />,
-      url: "/api/SetUserAliases",
+      url: "/api/EditUserAliases",
       data: {
         id: userId,
         tenantFilter: userSettingsDefaults.currentTenant,
@@ -619,7 +619,7 @@ const Page = () => {
       label: "Remove Proxy Address",
       type: "POST",
       icon: <Delete />,
-      url: "/api/SetUserAliases",
+      url: "/api/EditUserAliases",
       data: {
         id: userId,
         tenantFilter: userSettingsDefaults.currentTenant,
