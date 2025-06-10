@@ -15,7 +15,6 @@ import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboardingv2";
 import { useDialog } from "../hooks/use-dialog";
 import { nativeMenuItems } from "/src/layouts/config";
-import { keepPreviousData } from "@tanstack/react-query";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -35,7 +34,6 @@ const useMobileNav = () => {
     () => {
       handlePathnameChange();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [pathname]
   );
 
@@ -275,7 +273,7 @@ export const Layout = (props) => {
             <Box sx={{ flexGrow: 1, py: 4 }}>
               <Container maxWidth={false}>
                 <Grid container spacing={3}>
-                  <Grid item size={6}>
+                  <Grid size={6}>
                     <CippImageCard
                       title="Not supported"
                       imageUrl="/assets/illustrations/undraw_website_ij0l.svg"

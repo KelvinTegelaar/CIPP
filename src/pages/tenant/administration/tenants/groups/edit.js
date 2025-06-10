@@ -56,7 +56,7 @@ const Page = () => {
     >
       <Box sx={{ width: "100%" }}>
         <Grid container spacing={2} sx={{ my: 2, px: 2 }}>
-          <Grid item size={{ md: 8, xs: 12 }}>
+          <Grid size={{ md: 8, xs: 12 }}>
             <CippAddEditTenantGroups
               formControl={formControl}
               title="Edit Tenant Group"

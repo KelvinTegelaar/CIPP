@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Alert, Skeleton, Stack, Typography, Button, Box } from "@mui/material";
-import { ApiGetCall } from "/src/api/ApiCall";
 import { CippFormComponent } from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
 import { Grid } from "@mui/system";

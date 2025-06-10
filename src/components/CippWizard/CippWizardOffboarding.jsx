@@ -40,7 +40,7 @@ export const CippWizardOffboarding = (props) => {
   return (
     <Stack spacing={4}>
       <Grid container spacing={4}>
-        <Grid item size={6}>
+        <Grid size={6}>
           <Card variant="outlined">
             <CardHeader title="Offboarding Settings" />
             <Divider />
@@ -133,7 +133,7 @@ export const CippWizardOffboarding = (props) => {
           </Card>
         </Grid>
 
-        <Grid item size={6}>
+        <Grid size={6}>
           <Card variant="outlined">
             <CardHeader title="Permissions and forwarding" />
             <Divider />
@@ -286,7 +286,7 @@ export const CippWizardOffboarding = (props) => {
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 name="Scheduled.enabled"
                 label="Schedule this offboarding"
@@ -301,7 +301,7 @@ export const CippWizardOffboarding = (props) => {
               compareType="is"
               compareValue={true}
             >
-              <Grid item size={{ sm: 6, xs: 12 }}>
+              <Grid size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Scheduled Offboarding Date</Typography>
                 <CippFormComponent
                   name="Scheduled.date"
@@ -311,7 +311,7 @@ export const CippWizardOffboarding = (props) => {
                 />
               </Grid>
 
-              <Grid item size={{ sm: 6, xs: 12 }}>
+              <Grid size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Send results to:</Typography>
                 <CippFormComponent
                   name="postExecution.webhook"
