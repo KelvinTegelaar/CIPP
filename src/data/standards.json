@@ -554,6 +554,10 @@
           {
             "label": "Disabled",
             "value": "disabled"
+          },
+          {
+            "label": "Microsoft managed",
+            "value": "default"
           }
         ]
       }
