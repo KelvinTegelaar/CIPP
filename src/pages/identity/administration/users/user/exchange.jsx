@@ -1,10 +1,21 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Error, Mail, Fingerprint, Launch, Delete, Star, Close } from "@mui/icons-material";
+import {
+  Check,
+  Error,
+  Mail,
+  Fingerprint,
+  Launch,
+  Delete,
+  Star,
+  CalendarToday,
+  AlternateEmail,
+  PersonAdd,
+} from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
@@ -16,26 +27,28 @@ import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippEx
 import { useEffect, useState } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
-import { Alert, Button, Collapse, CircularProgress, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from "@mui/material";
+import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
-import { Block, PlayArrow } from "@mui/icons-material";
+import { Block, PlayArrow, Add } from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
 import CippExchangeActions from "../../../../../components/CippComponents/CippExchangeActions";
 import { CippApiDialog } from "../../../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../../../hooks/use-dialog";
+import CippAliasDialog from "../../../../../components/CippComponents/CippAliasDialog";
+import CippMailboxPermissionsDialog from "../../../../../components/CippComponents/CippMailboxPermissionsDialog";
+import CippCalendarPermissionsDialog from "../../../../../components/CippComponents/CippCalendarPermissionsDialog";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const [waiting, setWaiting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [actionData, setActionData] = useState({ ready: false });
-  const [showAddAliasDialog, setShowAddAliasDialog] = useState(false);
-  const [newAliases, setNewAliases] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitResult, setSubmitResult] = useState(null);
   const createDialog = useDialog();
+  const aliasDialog = useDialog();
+  const permissionsDialog = useDialog();
+  const calendarPermissionsDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
 
@@ -56,6 +69,18 @@ const Page = () => {
     waiting: waiting,
   });
 
+  const usersList = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: `users`,
+      tenantFilter: userSettingsDefaults.currentTenant,
+      $select: "id,displayName,userPrincipalName,mail",
+      noPagination: true,
+      $top: 999,
+    },
+    queryKey: `UserNames-${userSettingsDefaults.currentTenant}`,
+  });
+
   const oooRequest = ApiGetCall({
     url: `/api/ListOoO?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `ooo-${userId}`,
@@ -73,6 +98,99 @@ const Page = () => {
     queryKey: `MailboxRules-${userId}`,
     waiting: waiting,
   });
+
+  // Define API configurations for the dialogs
+  const aliasApiConfig = {
+    type: "POST",
+    url: "/api/SetUserAliases",
+    relatedQueryKeys: `ListUsers-${userId}`,
+    confirmText: "Add the specified proxy addresses to this user?",
+    customDataformatter: (row, action, formData) => {
+      return {
+        id: userId,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        AddedAliases: formData?.AddedAliases?.join(",") || "",
+        userPrincipalName: graphUserRequest?.data?.[0]?.userPrincipalName,
+      };
+    },
+  };
+
+  const permissionsApiConfig = {
+    type: "POST",
+    url: "/api/ExecModifyMBPerms",
+    relatedQueryKeys: `Mailbox-${userId}`,
+    confirmText: "Add the specified permissions to this mailbox?",
+    customDataformatter: (row, action, data) => {
+      const permissions = [];
+      const { permissions: permissionValues } = data;
+      const autoMap = permissionValues.AutoMap === undefined ? true : permissionValues.AutoMap;
+
+      // Build permissions array based on form values
+      if (permissionValues?.AddFullAccess) {
+        permissions.push({
+          UserID: permissionValues.AddFullAccess,
+          PermissionLevel: "FullAccess",
+          Modification: "Add",
+          AutoMap: autoMap,
+        });
+      }
+      if (permissionValues?.AddSendAs) {
+        permissions.push({
+          UserID: permissionValues.AddSendAs,
+          PermissionLevel: "SendAs",
+          Modification: "Add",
+        });
+      }
+      if (permissionValues?.AddSendOnBehalf) {
+        permissions.push({
+          UserID: permissionValues.AddSendOnBehalf,
+          PermissionLevel: "SendOnBehalf",
+          Modification: "Add",
+        });
+      }
+
+      return {
+        userID: graphUserRequest.data?.[0]?.userPrincipalName,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        permissions: permissions,
+      };
+    },
+  };
+
+  const calendarPermissionsApiConfig = {
+    type: "POST",
+    url: "/api/ExecModifyCalPerms",
+    relatedQueryKeys: `CalendarPermissions-${userId}`,
+    confirmText: "Add the specified permissions to this calendar?",
+    customDataformatter: (row, action, data) => {
+      if (!data.UserToGetPermissions || !data.Permissions) return null;
+
+      // Build permission object dynamically
+      const permission = {
+        UserID: data.UserToGetPermissions,
+        PermissionLevel: data.Permissions,
+        Modification: "Add",
+      };
+
+      if (data.CanViewPrivateItems) {
+        permission.CanViewPrivateItems = true;
+      }
+
+      return {
+        userID: graphUserRequest.data?.[0]?.userPrincipalName,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        permissions: [permission],
+      };
+    },
+  };
+
+  // This effect is no longer needed since we use CippApiDialog for form handling
+
+  useEffect(() => {
+    if (permissionsDialog.open) {
+      usersList.refetch();
+    }
+  }, [permissionsDialog.open]);
 
   useEffect(() => {
     if (oooRequest.isSuccess) {
@@ -142,6 +260,45 @@ const Page = () => {
 
   const data = userRequest.data?.[0];
 
+  const mailboxPermissionActions = [
+    {
+      label: "Remove Permission",
+      type: "POST",
+      icon: <Delete />,
+      url: "/api/ExecModifyMBPerms",
+      customDataformatter: (row, action, formData) => {
+        // build permissions
+        var permissions = [];
+        // if the row is an array, iterate through it
+        if (Array.isArray(row)) {
+          row.forEach((item) => {
+            permissions.push({
+              UserID: item.User,
+              PermissionLevel: item.AccessRights,
+              Modification: "Remove",
+            });
+          });
+        } else {
+          // if it's a single object, just push it
+          permissions.push({
+            UserID: row.User,
+            PermissionLevel: row.AccessRights,
+            Modification: "Remove",
+          });
+        }
+
+        return {
+          userID: graphUserRequest.data?.[0]?.userPrincipalName,
+          tenantFilter: userSettingsDefaults.currentTenant,
+          permissions: permissions,
+        };
+      },
+      confirmText: "Are you sure you want to remove this permission?",
+      multiPost: false,
+      relatedQueryKeys: `Mailbox-${userId}`,
+    },
+  ];
+
   const permissions = [
     {
       id: 1,
@@ -154,18 +311,58 @@ const Page = () => {
           <Error />
         ),
       },
-      text: "Current mailbox permissions",
+      text: "Mailbox Permissions",
       subtext:
         userRequest.data?.[0]?.Permissions?.length !== 0
           ? "Other users have access to this mailbox"
           : "No other users have access to this mailbox",
       statusColor: "green.main",
-      //map each of the permissions to a label/value pair, where the label is the user's name and the value is the permission level
-      propertyItems:
-        userRequest.data?.[0]?.Permissions?.map((permission) => ({
-          label: permission.User,
-          value: permission.AccessRights,
-        })) || [],
+      cardLabelBoxActions: (
+        <Button
+          startIcon={<PersonAdd />}
+          onClick={() => permissionsDialog.handleOpen()}
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+          Add Permissions
+        </Button>
+      ),
+      table: {
+        title: "Mailbox Permissions",
+        hideTitle: true,
+        data:
+          userRequest.data?.[0]?.Permissions?.map((permission) => ({
+            User: permission.User,
+            AccessRights: permission.AccessRights,
+            _raw: permission,
+          })) || [],
+        refreshFunction: () => userRequest.refetch(),
+        isFetching: userRequest.isFetching,
+        simpleColumns: ["User", "AccessRights"],
+        actions: mailboxPermissionActions,
+        offCanvas: {
+          children: (data) => {
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Permission Details"
+                propertyItems={[
+                  {
+                    label: "User",
+                    value: data.User,
+                  },
+                  {
+                    label: "Access Rights",
+                    value: data.AccessRights,
+                  },
+                ]}
+                actionItems={mailboxPermissionActions}
+              />
+            );
+          },
+        },
+      },
     },
   ];
 
@@ -181,17 +378,124 @@ const Page = () => {
           <Error />
         ),
       },
-      text: "Current Calendar permissions",
-      subtext: calPermissions.data?.length
-        ? "Other users have access to this users calendar"
-        : "No other users have access to this users calendar",
+      text: "Calendar permissions",
+      subtext:
+        calPermissions.data?.length !== 0
+          ? "Other users have access to this calendar"
+          : "No other users have access to this calendar",
       statusColor: "green.main",
-      //map each of the permissions to a label/value pair, where the label is the user's name and the value is the permission level
-      propertyItems:
-        calPermissions.data?.map((permission) => ({
-          label: `${permission.User} - ${permission.FolderName}`,
-          value: permission.AccessRights.join(", "),
-        })) || [],
+      cardLabelBoxActions: (
+        <Button
+          startIcon={<CalendarToday />}
+          onClick={() => calendarPermissionsDialog.handleOpen()}
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+          Add Permissions
+        </Button>
+      ),
+      table: {
+        title: "Calendar Permissions",
+        hideTitle: true,
+        data:
+          calPermissions.data?.map((permission) => ({
+            User: permission.User,
+            AccessRights: permission.AccessRights.join(", "),
+            FolderName: permission.FolderName,
+            _raw: permission,
+          })) || [],
+        refreshFunction: () => calPermissions.refetch(),
+        isFetching: calPermissions.isFetching,
+        simpleColumns: ["User", "AccessRights", "FolderName"],
+        actions: [
+          {
+            label: "Remove Permission",
+            type: "POST",
+            icon: <Delete />,
+            url: "/api/ExecModifyCalPerms",
+            customDataformatter: (row, action, formData) => {
+              // build permissions
+              var permissions = [];
+              // if the row is an array, iterate through it
+              if (Array.isArray(row)) {
+                row.forEach((item) => {
+                  permissions.push({
+                    UserID: item.User,
+                    PermissionLevel: item.AccessRights,
+                    FolderName: item.FolderName,
+                    Modification: "Remove",
+                  });
+                });
+              } else {
+                // if it's a single object, just push it
+                permissions.push({
+                  UserID: row.User,
+                  PermissionLevel: row.AccessRights,
+                  FolderName: row.FolderName,
+                  Modification: "Remove",
+                });
+              }
+              return {
+                userID: graphUserRequest.data?.[0]?.userPrincipalName,
+                tenantFilter: userSettingsDefaults.currentTenant,
+                permissions: permissions,
+              };
+            },
+            confirmText: "Are you sure you want to remove this calendar permission?",
+            multiPost: false,
+            relatedQueryKeys: `CalendarPermissions-${userId}`,
+            condition: (row) => row.User !== "Default" && row.User == "Anonymous",
+          },
+        ],
+        offCanvas: {
+          children: (data) => {
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Permission Details"
+                propertyItems={[
+                  {
+                    label: "User",
+                    value: data.User,
+                  },
+                  {
+                    label: "Access Rights",
+                    value: data.AccessRights,
+                  },
+                  {
+                    label: "Folder Name",
+                    value: data.FolderName,
+                  },
+                ]}
+                actionItems={[
+                  {
+                    label: "Remove Permission",
+                    type: "POST",
+                    icon: <Delete />,
+                    url: "/api/ExecModifyCalPerms",
+                    data: {
+                      userID: graphUserRequest.data?.[0]?.userPrincipalName,
+                      tenantFilter: userSettingsDefaults.currentTenant,
+                      permissions: [
+                        {
+                          UserID: data.User,
+                          PermissionLevel: data.AccessRights,
+                          FolderName: data.FolderName,
+                          Modification: "Remove",
+                        },
+                      ],
+                    },
+                    confirmText: "Are you sure you want to remove this calendar permission?",
+                    multiPost: false,
+                    relatedQueryKeys: `CalendarPermissions-${userId}`,
+                  },
+                ]}
+              />
+            );
+          },
+        },
+      },
     },
   ];
 
@@ -326,44 +630,7 @@ const Page = () => {
     },
   ];
 
-  const handleAddAliases = () => {
-    const aliases = newAliases
-      .split('\n')
-      .map(alias => alias.trim())
-      .filter(alias => alias);
-    if (aliases.length > 0) {
-      setIsSubmitting(true);
-      setSubmitResult(null);
-      fetch('/api/SetUserAliases', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: userId,
-          tenantFilter: userSettingsDefaults.currentTenant,
-          AddedAliases: aliases.join(','),
-          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          setSubmitResult({ success: true, message: 'Aliases added successfully' });
-          graphUserRequest.refetch();
-          setTimeout(() => {
-            setShowAddAliasDialog(false);
-            setNewAliases('');
-            setSubmitResult(null);
-          }, 1500);
-        })
-        .catch(error => {
-          setSubmitResult({ success: false, message: 'Failed to add aliases' });
-        })
-        .finally(() => {
-          setIsSubmitting(false);
-        });
-    }
-  };
+  // Proxy address actions implementations are handled by the CippAliasDialog component
 
   const proxyAddressesCard = [
     {
@@ -377,18 +644,31 @@ const Page = () => {
           <Error />
         ),
       },
-      text: "Current Proxy Addresses",
-      subtext: graphUserRequest.data?.[0]?.proxyAddresses?.length > 1
-        ? "Proxy addresses are configured for this user"
-        : "No proxy addresses configured for this user",
+      text: "Proxy Addresses",
+      subtext:
+        graphUserRequest.data?.[0]?.proxyAddresses?.length > 1
+          ? "Proxy addresses are configured for this user"
+          : "No proxy addresses configured for this user",
       statusColor: "green.main",
+      cardLabelBoxActions: (
+        <Button
+          startIcon={<AlternateEmail />}
+          onClick={() => aliasDialog.handleOpen()}
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+          Add Alias
+        </Button>
+      ),
       table: {
         title: "Proxy Addresses",
         hideTitle: true,
-        data: graphUserRequest.data?.[0]?.proxyAddresses?.map(address => ({
-          Address: address,
-          Type: address.startsWith('SMTP:') ? 'Primary' : 'Alias',
-        })) || [],
+        data:
+          graphUserRequest.data?.[0]?.proxyAddresses?.map((address) => ({
+            Address: address,
+            Type: address.startsWith("SMTP:") ? "Primary" : "Alias",
+          })) || [],
         refreshFunction: () => graphUserRequest.refetch(),
         isFetching: graphUserRequest.isFetching,
         simpleColumns: ["Address", "Type"],
@@ -415,21 +695,12 @@ const Page = () => {
           },
         },
       },
-      children: (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 2, px: 2 }}>
-          <Button
-            startIcon={<Mail />}
-            onClick={() => setShowAddAliasDialog(true)}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            Add Alias
-          </Button>
-        </Box>
-      ),
     },
   ];
+
+  // These API request objects are no longer needed as they're handled by CippApiDialog
+
+  // Calendar permissions dialog functionality is now handled by the CippCalendarPermissionsDialog component
 
   return (
     <HeaderedTabbedLayout
@@ -447,6 +718,7 @@ const Page = () => {
           sx={{
             flexGrow: 1,
             py: 4,
+            mr: 2,
           }}
         >
           <Grid container spacing={2}>
@@ -492,22 +764,22 @@ const Page = () => {
                     <CippBannerListCard
                       isFetching={graphUserRequest.isLoading}
                       items={proxyAddressesCard}
-                      isCollapsible={graphUserRequest.data?.[0]?.proxyAddresses?.length !== 0}
+                      isCollapsible={true}
                     />
                     <CippBannerListCard
                       isFetching={userRequest.isLoading}
                       items={permissions}
-                      isCollapsible={userRequest.data?.[0]?.Permissions?.length !== 0}
+                      isCollapsible={true}
                     />
                     <CippBannerListCard
                       isFetching={calPermissions.isLoading}
                       items={calCard}
-                      isCollapsible={calPermissions.data?.length !== 0}
+                      isCollapsible={true}
                     />
                     <CippBannerListCard
                       isFetching={mailboxRulesRequest.isLoading}
                       items={mailboxRulesCard}
-                      isCollapsible={mailboxRulesRequest.data?.length !== 0}
+                      isCollapsible={true}
                     />
                     <CippExchangeSettingsForm
                       userId={userId}
@@ -531,61 +803,44 @@ const Page = () => {
           row={actionData.data}
         />
       )}
-      <Dialog 
-        open={showAddAliasDialog} 
-        onClose={() => setShowAddAliasDialog(false)}
-        maxWidth="sm"
-        fullWidth
+      <CippApiDialog
+        createDialog={aliasDialog}
+        title="Add Proxy Addresses"
+        api={aliasApiConfig}
+        row={graphUserRequest.data?.[0]}
       >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            Add Proxy Addresses
-            <IconButton onClick={() => setShowAddAliasDialog(false)} size="small">
-              <Close />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 2 }}>
-            <TextField
-              autoFocus
-              fullWidth
-              multiline
-              rows={6}
-              value={newAliases}
-              onChange={(e) => setNewAliases(e.target.value)}
-              placeholder="One alias per line"
-              variant="outlined"
-              disabled={isSubmitting}
-            />
-            {submitResult && (
-              <Alert 
-                severity={submitResult.success ? "success" : "error"}
-                sx={{ mt: 2 }}
-              >
-                {submitResult.message}
-              </Alert>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button 
-            onClick={() => setShowAddAliasDialog(false)}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleAddAliases} 
-            variant="contained" 
-            color="primary"
-            disabled={!newAliases.trim() || isSubmitting}
-            startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
-          >
-            {isSubmitting ? 'Adding...' : 'Add Aliases'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        {({ formHook }) => <CippAliasDialog formHook={formHook} />}
+      </CippApiDialog>
+
+      <CippApiDialog
+        createDialog={permissionsDialog}
+        title="Add Mailbox Permissions"
+        api={permissionsApiConfig}
+        row={graphUserRequest.data?.[0]}
+        allowResubmit={true}
+      >
+        {({ formHook }) => (
+          <CippMailboxPermissionsDialog
+            formHook={formHook}
+            options={
+              usersList?.data?.Results?.map((user) => ({
+                value: user.userPrincipalName,
+                label: `${user.displayName} (${user.userPrincipalName})`,
+              })) || []
+            }
+          />
+        )}
+      </CippApiDialog>
+
+      <CippApiDialog
+        createDialog={calendarPermissionsDialog}
+        title="Add Calendar Permissions"
+        api={calendarPermissionsApiConfig}
+        row={graphUserRequest.data?.[0]}
+        allowResubmit={true}
+      >
+        {({ formHook }) => <CippCalendarPermissionsDialog formHook={formHook} />}
+      </CippApiDialog>
     </HeaderedTabbedLayout>
   );
 };
