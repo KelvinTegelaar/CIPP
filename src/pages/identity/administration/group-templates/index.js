@@ -110,7 +110,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListGroupTemplates"
-      queryKey="GroupTemplatesList"
+      queryKey="ListGroupTemplates"
       tenantInTitle={false}
       actions={actions}
       cardButton={
