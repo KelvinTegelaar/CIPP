@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useSettings } from "../../hooks/use-settings";
 import { GroupHeader, GroupItems } from "../CippComponents/CippAutocompleteGrouping";
@@ -30,10 +30,14 @@ export const CippFormTenantSelector = ({
 
   // Fetch tenant list
   const tenantList = ApiGetCall({
-    url: allTenants ? "/api/ListTenants?AllTenantSelector=true" : "/api/ListTenants",
-    queryKey: allTenants ? "ListTenants-FormAllTenantSelector" : "ListTenants-FormnotAllTenants",
+    url: "/api/listTenants",
+    data: { AllTenantSelector: true },
+    queryKey: "TenantSelector",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
-
+  
   // Fetch tenant group list if includeGroups is true
   const tenantGroupList = ApiGetCall({
     url: "/api/ListTenantGroups",
@@ -46,7 +50,7 @@ export const CippFormTenantSelector = ({
 
   useEffect(() => {
     if (tenantList.isSuccess && (!includeGroups || tenantGroupList.isSuccess)) {
-      const tenantData = tenantList.data.map((tenant) => ({
+      let tenantData = tenantList.data.map((tenant) => ({
         value: tenant[valueField],
         label: `${tenant.displayName} (${tenant.defaultDomainName})`,
         type: "Tenant",
@@ -56,6 +60,11 @@ export const CippFormTenantSelector = ({
           customerId: tenant.customerId,
         },
       }));
+
+      // Filter out "AllTenants" option if allTenants is false
+      if (!allTenants) {
+        tenantData = tenantData.filter(tenant => tenant.value !== "AllTenants");
+      }
 
       const groupData = includeGroups
         ? tenantGroupList?.data?.Results?.map((group) => ({
@@ -67,7 +76,7 @@ export const CippFormTenantSelector = ({
 
       setOptions([...tenantData, ...groupData]);
     }
-  }, [tenantList.isSuccess, tenantGroupList.isSuccess, includeGroups]);
+  }, [tenantList.isSuccess, tenantGroupList.isSuccess, includeGroups, allTenants]);
 
   return (
     <CippFormComponent
