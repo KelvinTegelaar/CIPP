@@ -99,11 +99,11 @@ const Page = () => {
         <CippButtonCard component="accordion" title="Cmdlet Search" accordionExpanded={true}>
           <Grid container spacing={2}>
             {/* Tenant Filter */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormTenantSelector formControl={formControl} name="tenant" multiple={false} />
             </Grid>
             {/* Compliance Filter */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 name="compliance"
@@ -112,7 +112,7 @@ const Page = () => {
               />
             </Grid>
             {/* AsApp Filter */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 name="asApp"
@@ -121,7 +121,7 @@ const Page = () => {
               />
             </Grid>
             {/* Submit Button */}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
                 Search
               </Button>

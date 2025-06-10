@@ -102,7 +102,7 @@ const Page = () => {
   // Define API configurations for the dialogs
   const aliasApiConfig = {
     type: "POST",
-    url: "/api/SetUserAliases",
+    url: "/api/EditUserAliases",
     relatedQueryKeys: `ListUsers-${userId}`,
     confirmText: "Add the specified proxy addresses to this user?",
     customDataformatter: (row, action, formData) => {
@@ -604,7 +604,7 @@ const Page = () => {
       label: "Make Primary",
       type: "POST",
       icon: <Star />,
-      url: "/api/SetUserAliases",
+      url: "/api/EditUserAliases",
       data: {
         id: userId,
         tenantFilter: userSettingsDefaults.currentTenant,
@@ -619,7 +619,7 @@ const Page = () => {
       label: "Remove Proxy Address",
       type: "POST",
       icon: <Delete />,
-      url: "/api/SetUserAliases",
+      url: "/api/EditUserAliases",
       data: {
         id: userId,
         tenantFilter: userSettingsDefaults.currentTenant,
@@ -725,7 +725,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {userRequest?.data?.[0]?.Mailbox?.[0]?.error && (
-              <Grid item size={12}>
+              <Grid size={12}>
                 <Alert severity="error">
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="body2">
@@ -753,7 +753,7 @@ const Page = () => {
               "Microsoft.Exchange.Configuration.Tasks.ManagementObjectNotFoundException"
             ) && (
               <>
-                <Grid item size={4}>
+                <Grid size={4}>
                   <CippExchangeInfoCard
                     exchangeData={data}
                     isLoading={userRequest.isLoading}
@@ -761,7 +761,7 @@ const Page = () => {
                     handleRefresh={() => userRequest.refetch()}
                   />
                 </Grid>
-                <Grid item size={8}>
+                <Grid size={8}>
                   <Stack spacing={3}>
                     <CippBannerListCard
                       isFetching={graphUserRequest.isLoading}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
@@ -176,10 +176,9 @@ const EditRoomMailbox = () => {
       <Grid container spacing={2}>
         {/* Basic Information */}
         <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Basic Information
-          </Typography>
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>Basic Information</Typography>
         </Grid>
+
         <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
@@ -200,10 +199,9 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
         {/* Booking Settings */}
         <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Booking Settings
-          </Typography>
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>Booking Settings</Typography>
         </Grid>
+
         <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="number"
@@ -301,10 +299,9 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
         {/* Working Hours */}
         <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Working Hours
-          </Typography>
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>Working Hours</Typography>
         </Grid>
+
         <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
@@ -323,8 +320,9 @@ const EditRoomMailbox = () => {
             options={workDaysOptions}
             formControl={formControl}
           />
-        </Grid>{" "}
-        <Grid size={{ md: 12, xs: 12 }}>
+        </Grid>
+
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Timezone"
@@ -357,10 +355,9 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
         {/* Room Facilities */}
         <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Room Facilities & Equipment
-          </Typography>
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>Room Facilities & Equipment</Typography>
         </Grid>
+
         <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
@@ -414,10 +411,9 @@ const EditRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
         {/* Location Information */}
         <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            Location Information
-          </Typography>
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>Location Information</Typography>
         </Grid>
+
         <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
@@ -426,9 +422,16 @@ const EditRoomMailbox = () => {
             formControl={formControl}
           />
         </Grid>
+
         <Grid size={{ md: 3, xs: 12 }}>
-          <CippFormComponent type="number" label="Floor" name="floor" formControl={formControl} />
+          <CippFormComponent
+            type="number"
+            label="Floor"
+            name="floor"
+            formControl={formControl}
+          />
         </Grid>
+
         <Grid size={{ md: 3, xs: 12 }}>
           <CippFormComponent
             type="textField"
@@ -445,9 +448,16 @@ const EditRoomMailbox = () => {
             formControl={formControl}
           />
         </Grid>
+
         <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent type="textField" label="City" name="city" formControl={formControl} />
+          <CippFormComponent
+            type="textField"
+            label="City"
+            name="city"
+            formControl={formControl}
+          />
         </Grid>
+
         <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"

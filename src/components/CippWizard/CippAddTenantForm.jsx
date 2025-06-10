@@ -182,13 +182,13 @@ export const CippAddTenantForm = (props) => {
           <React.Fragment key={index}>
             {field.type === "header" ? (
               <>
-                <Grid item size={12}>
+                <Grid size={12}>
                   <Typography variant="h5">{field.label}</Typography>
                   <Divider sx={{ mt: 1 }} />
                 </Grid>
               </>
             ) : (
-              <Grid item size={field?.gridSize ?? { xs: 12, md: 6 }}>
+              <Grid size={field?.gridSize ?? { xs: 12, md: 6 }}>
                 <CippFormComponent {...field} formControl={formControl} />
               </Grid>
             )}

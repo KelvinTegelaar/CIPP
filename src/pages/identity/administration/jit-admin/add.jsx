@@ -22,7 +22,7 @@ const Page = () => {
       >
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <CippFormTenantSelector
                 label={"Select a tenant to create the JIT Admin in"}
                 formControl={formControl}
@@ -30,7 +30,7 @@ const Page = () => {
                 allTenants={false}
               />
             </Grid>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <Divider sx={{ mb: 2 }} />
               <CippFormComponent
                 type="radio"
@@ -52,7 +52,7 @@ const Page = () => {
               compareType="is"
               compareValue="create"
             >
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
                   fullWidth
@@ -62,7 +62,7 @@ const Page = () => {
                   required={true}
                 />
               </Grid>
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
                   fullWidth
@@ -72,7 +72,7 @@ const Page = () => {
                   required={true}
                 />
               </Grid>
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
                   fullWidth
@@ -82,7 +82,7 @@ const Page = () => {
                   required={true}
                 />
               </Grid>
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormDomainSelector
                   formControl={formControl}
                   name="domain"
@@ -98,7 +98,7 @@ const Page = () => {
                   }}
                 />
               </Grid>
-              <Grid item size={{ md: 12, xs: 12 }}>
+              <Grid size={{ md: 12, xs: 12 }}>
                 <Divider sx={{ me: 2 }} />
               </Grid>
             </CippFormCondition>
@@ -108,8 +108,8 @@ const Page = () => {
               compareType="is"
               compareValue="select"
             >
-              <Grid item size={{ md: 12, xs: 12 }}>
-                <Grid item size={{ md: 12, xs: 12 }}>
+              <Grid size={{ md: 12, xs: 12 }}>
+                <Grid size={{ md: 12, xs: 12 }}>
                   <CippFormUserSelector
                     formControl={formControl}
                     multiple={false}
@@ -120,7 +120,7 @@ const Page = () => {
                 </Grid>
               </Grid>
             </CippFormCondition>
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 fullWidth
@@ -138,7 +138,7 @@ const Page = () => {
                 }}
               />
             </Grid>
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 fullWidth
@@ -160,7 +160,7 @@ const Page = () => {
                 }}
               />
             </Grid>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <CippFormComponent
                 type="autoComplete"
                 fullWidth
@@ -179,7 +179,7 @@ const Page = () => {
                 }}
               />
             </Grid>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 label="Generate TAP"
@@ -187,7 +187,7 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="autoComplete"
                 fullWidth
@@ -211,7 +211,7 @@ const Page = () => {
                 }}
               />
             </Grid>
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="autoComplete"
                 fullWidth

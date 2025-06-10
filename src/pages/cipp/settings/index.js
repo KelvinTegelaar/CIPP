@@ -13,19 +13,19 @@ const Page = () => {
   return (
     <Container sx={{ pt: 3 }} maxWidth="xl">
       <Grid container spacing={2}>
-        <Grid item size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippVersionProperties />
         </Grid>
-        <Grid item size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippPasswordSettings />
         </Grid>
-        <Grid item size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippDnsSettings />
         </Grid>
-        <Grid item size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippCacheSettings />
         </Grid>
-        <Grid item size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippBackupSettings />
         </Grid>
       </Grid>
