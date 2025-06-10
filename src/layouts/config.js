@@ -207,6 +207,14 @@ export const nativeMenuItems = [
           },
         ],
       },
+      {
+        title: "Safe Links",
+        path: "/security/safelinks",
+        items: [
+          { title: "Safe Links Policies", path: "/security/safelinks/safelinks" },
+          { title: "Safe Links Templates", path: "/security/safelinks/safelinks-template" },
+        ],
+      },
     ],
   },
   {
