@@ -14,7 +14,7 @@ The **First Setup** option is designed for initial configuration. It guides you 
    * **Important:** Use the dedicated CIPP service account created during the preparation steps.
 3. **Tenant Configuration**\
    Choose how you want to connect your tenants. Even if you’re not a Microsoft Partner, we strongly recommend selecting **"Connect to Partner Tenant"** first. This allows CIPP to manage credentials and application permissions effectively.
-   * You can also add tenants individually, outside your partner relationship.
+   * You can also add tenants individually, outside your partner relationship. These tenants show up in the table directly below, and can be removed if you accidentally authenticated the wrong tenant.
    * For these separate tenants, use a service account with equivalent permissions as the partner tenant. More information on these roles can be found under [recommended-roles.md](recommended-roles.md "mention")
 4. **Select Baselines**\
    Choose from a list of available configuration baselines. These presets help you quickly apply best practices and policies.

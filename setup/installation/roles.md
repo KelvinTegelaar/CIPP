@@ -33,12 +33,12 @@ Once you have your initial `superadmin` user added, you are now able to set up a
 
 CIPP features a role management system which utilizes the [Roles feature of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
 
-| Role Name  | Description                                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                                                          |
-| editor     | Allowed to perform everything, except change system settings.                                                                                                                                                 |
-| admin      | Allowed to perform everything.                                                                                                                                                                                |
-| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. This role must be combined with 'admin' |
+| Role Name  | Description                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                   |
+| editor     | Allowed to perform everything, except change system settings.                                                                                                          |
+| admin      | Allowed to perform everything.                                                                                                                                         |
+| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings.  |
 
 You can assign these roles to users using the [CIPP Roles](../../user-documentation/cipp/advanced/super-admin/custom-roles.md) page.&#x20;
 
@@ -64,6 +64,10 @@ Set up Custom Roles by following these steps:
   * If AllTenants is selected, you can block a subset of tenants using Blocked Tenants.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
   * To find out which API endpoints are affected by these selections, click on the Info button.
+
+{% hint style="info" %}
+If you are continuing to statically assign roles, the custom roles created in CIPP do not sync back to the SWA role management (self-hosted) or management portal (CyberDrain hosted). You will need to add the role to the invited user exactly how it appears in CIPP manually.
+{% endhint %}
 
 {% hint style="warning" %}
 Users previously directly added to the SWA or via the Management App will retain their settings from there. Adding those users via Entra group to a role with different permissions can cause errors in determining the user's access. It is recommended not to duplicate how you provide the user with permissions.

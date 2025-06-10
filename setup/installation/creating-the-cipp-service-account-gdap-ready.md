@@ -17,7 +17,7 @@
 ### Multi-factor Authentication
 
 1. **MFA Setup:** This account must have **Microsoft** MFA enforced for each logon.
-   1. Use [Conditional Access](broken-reference) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when not available.
+   1. Use [Conditional Access](conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when not available.
 2. **Microsoft MFA is mandatory.** Do not use alternative providers like Duo, and ensure it's setup **before any login attempts.**
    1. Reference [this article on Supported MFA options](https://learn.microsoft.com/en-us/partner-center/security/partner-security-requirements-mandating-mfa#supported-mfa-options) from Microsoft for more details.
 {% endhint %}
@@ -75,7 +75,7 @@ If you have not migrated or used GDAP at all, **or** are planning to onboard you
 {% hint style="warning" %}
 These groups might not exist if you have not yet migrated to GDAP.&#x20;
 
-If you want to move to using CIPP and Microsoft's best practice recommendation of mapping one role to one security group, you can skip this step for now. CIPP will create the groups when you first setup adding your client tenants in [Adding Tenants](../installation/adding-tenants-and-consenting-the-cipp-sam-application.md).
+If you want to move to using CIPP and Microsoft's best practice recommendation of mapping one role to one security group, you can skip this step for now. CIPP will create the groups when you first setup adding your client tenants in [Adding Tenants](adding-tenants-and-consenting-the-cipp-sam-application.md).
 {% endhint %}
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FohuBSMhxAWuhe35TnuLP9o_doc.png?alt=media\&token=fcdc99db-ea70-46bb-8276-1a21d659948e\&time=Fri%20Jul%2026%202024%2021:58:00%20GMT-0400%20\(Eastern%20Daylight%20Time\))

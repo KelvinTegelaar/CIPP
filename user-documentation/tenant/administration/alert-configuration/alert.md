@@ -60,6 +60,7 @@ Within CIPP, there are two types of alerts:
 * Alert on device compliance issues
 * Alert on (new) potentially breached passwords. Generates an alert if a password is found to be breached.
 * Alert on Huntress Rogue Apps detected
+* Alert when Tenant External Recipient Rate Limit exceeds X %
 
 ### Available Template Audit Log Alerts
 
