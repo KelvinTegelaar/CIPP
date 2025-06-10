@@ -72,7 +72,7 @@ const EditGroup = () => {
           mailNickname: group.mailNickname || "",
           allowExternal: groupInfo?.data?.allowExternal,
           sendCopies: groupInfo?.data?.sendCopies,
-          groupName: group.displayName,
+          displayName: group.displayName,
           description: group.description || "",
           membershipRules: group.membershipRule || "",
           groupId: group.id,
@@ -150,7 +150,7 @@ const EditGroup = () => {
                   type="textField"
                   fullWidth
                   label="Display Name"
-                  name="groupName"
+                  name="displayName"
                   formControl={formControl}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}

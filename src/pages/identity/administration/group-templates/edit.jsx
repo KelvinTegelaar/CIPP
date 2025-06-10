@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
@@ -82,7 +82,7 @@ const Page = () => {
     <>
       <CippFormPage
         resetForm={false}
-        queryKey={[`GroupTemplatesList`, `GroupTemplate-${id}`]}
+        queryKey={[`ListGroupTemplates`, `GroupTemplate-${id}`]}
         formControl={formControl}
         title="Edit Group Template"
         backButtonTitle="Group Overview"

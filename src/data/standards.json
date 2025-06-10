@@ -96,7 +96,8 @@
           "valueField": "GUID",
           "queryKey": "Contact Templates"
         }
-      }],
+      }
+    ],
     "label": "Deploy Mail Contact Template",
     "disabledFeatures": {
       "report": false,
@@ -121,6 +122,20 @@
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Enable-OrganizationCustomization",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.RestrictThirdPartyStorageServices",
+    "cat": "Global Standards",
+    "tag": ["CIS"],
+    "helpText": "Restricts third-party storage services in Microsoft 365 on the web by managing the Microsoft 365 on the web service principal. This disables integrations with services like Dropbox, Google Drive, Box, and other third-party storage providers.",
+    "docsDescription": "Third-party storage can be enabled for users in Microsoft 365, allowing them to store and share documents using services such as Dropbox, alongside OneDrive and team sites. This standard ensures Microsoft 365 on the web third-party storage services are restricted by creating and disabling the Microsoft 365 on the web service principal (appId: c1f33bc0-bdb4-4248-ba9b-096807ddb43e). By using external storage services an organization may increase the risk of data breaches and unauthorized access to confidential information. Additionally, third-party services may not adhere to the same security standards as the organization, making it difficult to maintain data privacy and security. Impact is highly dependent upon current practices - if users do not use other storage providers, then minimal impact is likely. However, if users regularly utilize providers outside of the tenant this will affect their ability to continue to do so.",
+    "addedComponent": [],
+    "label": "Restrict third-party storage services in Microsoft 365 on the web",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-06-06",
+    "powershellEquivalent": "New-MgServicePrincipal and Update-MgServicePrincipal",
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.ProfilePhotos",
@@ -267,9 +282,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2025-06-06",
-    "recommendedBy": [
-      "CIPP"
-    ]
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.AnonReportDisable",
