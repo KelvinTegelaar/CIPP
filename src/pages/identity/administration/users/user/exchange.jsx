@@ -169,6 +169,7 @@ const Page = () => {
       const permission = {
         UserID: data.UserToGetPermissions,
         PermissionLevel: data.Permissions,
+        FolderName: calPermissions.data?.[0]?.FolderName ?? "Calendar",
         Modification: "Add",
       };
 
