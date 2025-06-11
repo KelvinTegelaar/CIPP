@@ -824,7 +824,7 @@ const Page = () => {
         defaultvalues={{
           permissions: {
             AutoMap: true,
-          }
+          },
         }}
       >
         {({ formHook }) => (
