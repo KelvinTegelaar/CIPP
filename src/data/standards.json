@@ -4145,7 +4145,8 @@
       {
         "type": "textField",
         "name": "standards.AutopilotProfile.DeviceNameTemplate",
-        "label": "Unique Device Name Template"
+        "label": "Unique Device Name Template",
+        "required": false
       },
       {
         "type": "autoComplete",
