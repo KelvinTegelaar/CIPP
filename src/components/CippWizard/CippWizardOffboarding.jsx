@@ -155,6 +155,7 @@ export const CippWizardOffboarding = (props) => {
                   dataKey: "Results",
                   labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
                   valueField: "id",
+                  queryKey: "Offboarding-Users",
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -179,6 +180,7 @@ export const CippWizardOffboarding = (props) => {
                   url: "/api/ListGraphRequest",
                   dataKey: "Results",
                   tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  queryKey: "Offboarding-Users",
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -203,6 +205,7 @@ export const CippWizardOffboarding = (props) => {
                   valueField: "id",
                   url: "/api/ListGraphRequest",
                   dataKey: "Results",
+                  queryKey: "Offboarding-Users",
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -244,6 +247,7 @@ export const CippWizardOffboarding = (props) => {
                     valueField: "id",
                     url: "/api/ListGraphRequest",
                     dataKey: "Results",
+                    queryKey: "Offboarding-Users",
                     data: {
                       Endpoint: "users",
                       manualPagination: true,
