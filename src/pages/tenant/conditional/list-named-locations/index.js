@@ -2,7 +2,13 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { MinusIcon, PlusIcon, PencilIcon } from "@heroicons/react/24/outline";
+import {
+  MinusIcon,
+  PlusIcon,
+  PencilIcon,
+  ShieldCheckIcon,
+  ShieldExclamationIcon,
+} from "@heroicons/react/24/outline";
 import { LocationOn } from "@mui/icons-material";
 
 const Page = () => {
@@ -20,6 +26,31 @@ const Page = () => {
       },
       fields: [{ type: "textField", name: "input", label: "New Name" }],
       confirmText: "Enter the new name for this named location.",
+    },
+    {
+      label: "Mark as Trusted",
+      type: "POST",
+      url: "/api/ExecNamedLocation",
+      icon: <ShieldCheckIcon />,
+      data: {
+        namedLocationId: "id",
+        change: "!setTrusted",
+      },
+      confirmText: "Are you sure you want to mark this IP location as trusted?",
+      condition: (row) =>
+        row["@odata.type"] == "#microsoft.graph.ipNamedLocation" && !row.isTrusted,
+    },
+    {
+      label: "Mark as Untrusted",
+      type: "POST",
+      url: "/api/ExecNamedLocation",
+      icon: <ShieldExclamationIcon />,
+      data: {
+        namedLocationId: "id",
+        change: "!setUntrusted",
+      },
+      confirmText: "Are you sure you want to mark this IP location as untrusted?",
+      condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation" && row.isTrusted,
     },
     {
       label: "Add location to named location",
