@@ -8,6 +8,7 @@ import {
   PencilIcon,
   ShieldCheckIcon,
   ShieldExclamationIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { LocationOn } from "@mui/icons-material";
 
@@ -104,19 +105,26 @@ const Page = () => {
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
       condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation",
     },
+    {
+      label: "Delete named location",
+      type: "POST",
+      url: "/api/ExecNamedLocation",
+      icon: <TrashIcon />,
+      data: {
+        namedLocationId: "id",
+        change: "!delete",
+      },
+      confirmText:
+        "Are you sure you want to delete this named location? This action cannot be undone.",
+      color: "error",
+    },
   ];
-
-  const offCanvas = {
-    extendedInfoFields: ["displayName", "rangeOrLocation"],
-    actions: actions,
-  };
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListNamedLocations"
       actions={actions}
-      offCanvas={offCanvas}
       cardButton={
         <>
           <Button component={Link} href="list-named-locations/add" startIcon={<LocationOn />}>
