@@ -237,6 +237,16 @@ export const CippDataTable = (props) => {
           minHeight: '24px',
           maxHeight: '24px',
         },
+        // Target regular input fields (not in Autocomplete)
+        '& .MuiInputBase-root': {
+          height: '40px !important',
+        },
+        // Ensure all input fields have consistent styling
+        '& .MuiInputBase-input': {
+          height: '24px',
+          minHeight: '24px',
+          maxHeight: '24px',
+        },
         // Target the specific chip class mentioned
         '& .MuiChip-label.MuiChip-labelMedium': {
           maxWidth: '80px',
