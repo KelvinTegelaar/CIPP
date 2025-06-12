@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { MinusIcon, PlusIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { LocationOn } from "@mui/icons-material";
 
 const Page = () => {
@@ -10,13 +10,25 @@ const Page = () => {
 
   const actions = [
     {
+      label: "Rename named location",
+      type: "POST",
+      url: "/api/ExecNamedLocation",
+      icon: <PencilIcon />,
+      data: {
+        namedLocationId: "id",
+        change: "!rename",
+      },
+      fields: [{ type: "textField", name: "input", label: "New Name" }],
+      confirmText: "Enter the new name for this named location.",
+    },
+    {
       label: "Add location to named location",
       type: "POST",
       url: "/api/ExecNamedLocation",
       icon: <PlusIcon />,
       data: {
         namedLocationId: "id",
-        change: "addLocation",
+        change: "!addLocation",
       },
       fields: [{ type: "textField", name: "input", label: "Country Code" }],
       confirmText: "Enter a two-letter country code, e.g., US.",
@@ -29,7 +41,7 @@ const Page = () => {
       icon: <MinusIcon />,
       data: {
         namedLocationId: "id",
-        change: "removeLocation",
+        change: "!removeLocation",
       },
       fields: [{ type: "textField", name: "input", label: "Country Code" }],
       confirmText: "Enter a two-letter country code, e.g., US.",
@@ -42,7 +54,7 @@ const Page = () => {
       icon: <PlusIcon />,
       data: {
         namedLocationId: "id",
-        change: "addIp",
+        change: "!addIp",
       },
       fields: [{ type: "textField", name: "input", label: "IP" }],
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
@@ -55,7 +67,7 @@ const Page = () => {
       icon: <MinusIcon />,
       data: {
         namedLocationId: "id",
-        change: "removeIp",
+        change: "!removeIp",
       },
       fields: [{ type: "textField", name: "input", label: "IP" }],
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
