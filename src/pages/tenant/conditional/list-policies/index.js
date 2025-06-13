@@ -7,6 +7,7 @@ import {
   MenuBook as MenuBookIcon,
   AddModerator as AddModeratorIcon,
   Visibility as VisibilityIcon,
+  Edit as EditIcon,
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
@@ -79,6 +80,32 @@ const Page = () => {
       confirmText: "Are you sure you want to delete this policy?",
       icon: <DeleteIcon />,
       color: "danger",
+    },
+    {
+      label: "Change Display Name",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id"
+      },
+      confirmText: "Are you sure you want to change the display name of this policy?",
+      icon: <EditIcon />,
+      color: "info",
+      hideBulk: true,
+      fields: [
+        {
+          type: "textField",
+          name: "newDisplayName",
+          label: "New Display Name",
+          required: true,
+          validate: (value) => {
+            if (!value) {
+              return "Display name is required.";
+            }
+            return true;
+          },
+        },
+      ],
     },
   ];
 
