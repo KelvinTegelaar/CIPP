@@ -3533,14 +3533,34 @@
     "name": "standards.unmanagedSync",
     "cat": "SharePoint Standards",
     "tag": [],
-    "helpText": "The unmanaged Sync standard has been temporarily disabled and does nothing.",
-    "addedComponent": [],
-    "label": "Only allow users to sync OneDrive from AAD joined devices",
+    "helpText": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect.",
+    "docsDescription": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect. 0 = Allow Access, 1 = Allow limited, web-only access, 2 = Block access. All information about this can be found in Microsofts documentation [here.](https://learn.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices)",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.unmanagedSync.state",
+        "label": "State",
+        "options": [
+          {
+            "label": "Allow limited, web-only access",
+            "value": "1"
+          },
+          {
+            "label": "Block access",
+            "value": "2"
+          }
+        ],
+        "required": false
+      }
+    ],
+    "label": "Restrict access to SharePoint and OneDrive from unmanaged devices",
     "impact": "High Impact",
     "impactColour": "danger",
-    "addedDate": "2022-06-15",
-    "powershellEquivalent": "Update-MgAdminSharePointSetting",
-    "recommendedBy": []
+    "addedDate": "2025-06-13",
+    "powershellEquivalent": "Set-SPOTenant -ConditionalAccessPolicy AllowFullAccess | AllowLimitedAccess | BlockAccess",
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.sharingDomainRestriction",
