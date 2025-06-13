@@ -151,8 +151,8 @@ export const SideNav = (props) => {
       }
     }
   };
-
-  const randomimg = randomSponsorImage();
+  
+  const [sponsor] = useState(() => randomSponsorImage());
   return (
     <>
       {profile?.clientPrincipal && profile?.clientPrincipal?.userRoles?.length > 2 && (
@@ -229,10 +229,10 @@ export const SideNav = (props) => {
                     }}
                   >
                     <img
-                      src={randomimg.imagesrc}
+                      src={sponsor.imagesrc}
                       alt="sponsor"
                       style={{ cursor: "pointer" }}
-                      onClick={() => window.open(randomimg.link)}
+                      onClick={() => window.open(sponsor.link)}
                       width={"100px"}
                     />
                   </Box>
