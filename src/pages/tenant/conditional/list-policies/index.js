@@ -25,8 +25,12 @@ const Page = () => {
       type: "POST",
       url: "/api/AddCATemplate",
       dataFunction: (data) => {
+        if (Array.isArray(data)) {
+          return data.map((item) => JSON.parse(item.rawjson));
+        }
         return JSON.parse(data.rawjson);
       },
+      hideBulk: true,
       confirmText: "Are you sure you want to create a template based on this policy?",
       icon: <MenuBookIcon />,
       color: "info",
@@ -86,7 +90,7 @@ const Page = () => {
       type: "POST",
       url: "/api/EditCAPolicy",
       data: {
-        GUID: "id"
+        GUID: "id",
       },
       confirmText: "Are you sure you want to change the display name of this policy?",
       icon: <EditIcon />,
