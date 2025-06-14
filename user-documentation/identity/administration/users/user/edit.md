@@ -42,7 +42,7 @@ description: >-
 * **Current Licenses**
   * Shows currently assigned licenses
   * Drop down box allows you to multi-select the licenses you want the user to have after editing
-  * Option to remove all licenses (toggle)
+  * Option to remove all licenses (toggle) - When removing the final license on a user, this must be checked.
 * **SherWeb Integration** (if enabled)
   * Auto-purchase option appears when licenses unavailable
   * Select license SKU for purchase
