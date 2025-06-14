@@ -3747,6 +3747,38 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.TeamsMeetingVerification",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Configures CAPTCHA verification for external users joining Teams meetings. This helps prevent unauthorized AI notetakers and bots from joining meetings.",
+    "docsDescription": "Configures CAPTCHA verification for external users joining Teams meetings. This security feature requires external participants to complete a CAPTCHA challenge before joining, which helps prevent unauthorized AI notetakers, bots, and other automated systems from accessing meetings.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "CAPTCHA Verification Setting",
+        "name": "standards.TeamsMeetingVerification.CaptchaVerificationForMeetingJoin",
+        "options": [
+          {
+            "label": "Not Required",
+            "value": "NotRequired"
+          },
+          {
+            "label": "Anonymous Users and Untrusted Organizations",
+            "value": "AnonymousUsersAndUntrustedOrganizations"
+          }
+        ]
+      }
+    ],
+    "label": "Teams Meeting Verification (CAPTCHA)",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-14",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -CaptchaVerificationForMeetingJoin",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.TeamsExternalFileSharing",
     "cat": "Teams Standards",
     "tag": [],
