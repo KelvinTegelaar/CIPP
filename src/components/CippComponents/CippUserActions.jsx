@@ -267,7 +267,7 @@ export const CippUserActions = () => {
           name: "siteUrl",
           label: "Select a Site",
           multiple: false,
-          creatable: false,
+          creatable: true,
           api: {
             url: "/api/ListSites",
             data: { type: "SharePointSiteUsage", URLOnly: true },
