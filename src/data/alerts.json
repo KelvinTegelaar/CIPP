@@ -187,5 +187,11 @@
     "inputName": "InputValue",
     "recommendedRunInterval": "7d",
     "description": "Monitors domain security scores from the DomainAnalyser and alerts when scores fall below the specified threshold."
+  },
+  {
+    "name": "GlobalAdminNoAltEmail",
+    "label": "Alert on Global Admin accounts without alternate email address",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors Global Admin accounts and alerts when they don't have an alternate email address set, which is important for password recovery of key accounts."
   }
 ]
