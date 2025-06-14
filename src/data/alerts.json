@@ -177,5 +177,15 @@
     "inputName": "TERRLThreshold",
     "recommendedRunInterval": "1h",
     "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Tenant data is updated every hour."
+  },
+  {
+    "name": "LowDomainScore",
+    "label": "Alert on domains with low security score",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert when score is below % (default: 70)",
+    "inputName": "InputValue",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors domain security scores from the DomainAnalyser and alerts when scores fall below the specified threshold."
   }
 ]
