@@ -195,14 +195,42 @@ const CippStandardAccordion = ({
         return;
       }
 
-    // Store both the initial values and set them as current saved values
-    setOriginalValues(initial);
-    setSavedValues(initial);
-    setConfiguredState(initialConfigured);
-    // Only depend on watchedValues and selectedStandards to avoid infinite loops
-    }
-  }, [watchedValues, selectedStandards]);
+      // Prevent re-initialization if we already have configuration state
+      const hasConfigState = Object.keys(configuredState).length > 0;
+      if (hasConfigState) {
+        return;
+      }
 
+      console.log("Initializing configuration state from template values");
+      const initial = {};
+      const initialConfigured = {};
+
+      // For each standard, get its current values and determine if it's configured
+      Object.keys(selectedStandards).forEach((standardName) => {
+        const currentValues = _.get(watchedValues, standardName);
+        if (!currentValues) return;
+
+        initial[standardName] = _.cloneDeep(currentValues);
+
+        const baseStandardName = standardName.split("[")[0];
+        const standard = providedStandards.find((s) => s.name === baseStandardName);
+        if (standard) {
+          initialConfigured[standardName] = isStandardConfigured(
+            standardName,
+            standard,
+            currentValues
+          );
+        }
+      });
+
+      // Store both the initial values and set them as current saved values
+      setOriginalValues(initial);
+      setSavedValues(initial);
+      setConfiguredState(initialConfigured);
+      // Only depend on watchedValues and selectedStandards to avoid infinite loops
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+  }, [watchedValues, selectedStandards, editMode]);
 
   // Save changes for a standard
   const handleSave = (standardName, standard, current) => {
