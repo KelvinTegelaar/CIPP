@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Box, Container, Button } from "@mui/material";
+import { Box, Container, Button, Card, CardContent } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippInfoBar } from "../components/CippCards/CippInfoBar";
 import { CippChartCard } from "../components/CippCards/CippChartCard";
@@ -188,14 +188,19 @@ const Page = () => {
         <Container maxWidth={false}>
           <Grid container spacing={3}>
             <Grid size={{ md: 12, xs: 12 }}>
-              <CippUniversalSearch />
-            </Grid>
-            <Grid size={{ md: 12, xs: 12 }}>
-              <BulkActionsMenu
-                buttonName="Portals"
-                actions={PortalMenuItems}
-                disabled={!currentTenantInfo.isSuccess}
-              />
+              <Card>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2 }}>
+                  <BulkActionsMenu
+                    buttonName="Portals"
+                    actions={PortalMenuItems}
+                    disabled={!currentTenantInfo.isSuccess}
+                  />
+                  <Box sx={{ flex: 1 }}>
+                    {/* TODO: Remove Card from inside CippUniversalSearch to avoid double border */}
+                    <CippUniversalSearch />
+                  </Box>
+                </CardContent>
+              </Card>
             </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
               <CippInfoBar data={tenantInfo} isFetching={organization.isFetching} />
