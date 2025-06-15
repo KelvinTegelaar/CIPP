@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import {
@@ -29,7 +29,7 @@ import CippExchangeSettingsForm from "../../../../../components/CippFormPages/Ci
 import { useForm } from "react-hook-form";
 import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
-import { Block, PlayArrow, Add } from "@mui/icons-material";
+import { Block, PlayArrow} from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
@@ -185,8 +185,6 @@ const Page = () => {
     },
   };
 
-  // This effect is no longer needed since we use CippApiDialog for form handling
-
   useEffect(() => {
     if (permissionsDialog.open) {
       usersList.refetch();
@@ -218,6 +216,43 @@ const Page = () => {
       setWaiting(true);
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (userRequest.isSuccess && userRequest.data?.[0]) {
+      const currentSettings = userRequest.data[0];
+      const forwardingAddress = currentSettings.ForwardingAddress;
+      const forwardingSmtpAddress = currentSettings.MailboxActionsData?.ForwardingSmtpAddress;
+      const forwardAndDeliver = currentSettings.ForwardAndDeliver;
+      
+      let forwardingType = "disabled";
+      let cleanAddress = "";
+      
+      if (forwardingSmtpAddress) {
+        // External forwarding
+        forwardingType = "ExternalAddress";
+        cleanAddress = forwardingSmtpAddress;
+      } else if (forwardingAddress) {
+        // Internal forwarding
+        forwardingType = "internalAddress";
+        cleanAddress = forwardingAddress;
+      }
+      
+      // Set form values
+      formControl.setValue("forwarding.forwardOption", forwardingType);
+      formControl.setValue("forwarding.KeepCopy", forwardAndDeliver === true);
+      
+      if (forwardingType === "internalAddress") {
+        formControl.setValue("forwarding.ForwardInternal", cleanAddress);
+        formControl.setValue("forwarding.ForwardExternal", "");
+      } else if (forwardingType === "ExternalAddress") {
+        formControl.setValue("forwarding.ForwardExternal", cleanAddress);
+        formControl.setValue("forwarding.ForwardInternal", "");
+      } else {
+        formControl.setValue("forwarding.ForwardInternal", "");
+        formControl.setValue("forwarding.ForwardExternal", "");
+      }
+    }
+  }, [userRequest.isSuccess, userRequest.dataUpdatedAt, formControl]);
 
   const title = graphUserRequest.isSuccess ? graphUserRequest.data?.[0]?.displayName : "Loading...";
 
@@ -633,8 +668,6 @@ const Page = () => {
     },
   ];
 
-  // Proxy address actions implementations are handled by the CippAliasDialog component
-
   const proxyAddressesCard = [
     {
       id: 1,
@@ -700,10 +733,6 @@ const Page = () => {
       },
     },
   ];
-
-  // These API request objects are no longer needed as they're handled by CippApiDialog
-
-  // Calendar permissions dialog functionality is now handled by the CippCalendarPermissionsDialog component
 
   return (
     <HeaderedTabbedLayout

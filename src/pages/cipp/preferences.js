@@ -216,7 +216,7 @@ const Page = () => {
                           value: (
                             <CippFormComponent
                               type="switch"
-                              name="offboardingDefaults.keepCopy"
+                              name="offboardingDefaults.KeepCopy"
                               formControl={formcontrol}
                             />
                           ),

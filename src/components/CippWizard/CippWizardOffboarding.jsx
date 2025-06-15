@@ -33,7 +33,7 @@ export const CippWizardOffboarding = (props) => {
   useEffect(() => {
     if (disableForwarding) {
       formControl.setValue("forward", null);
-      formControl.setValue("keepCopy", false);
+      formControl.setValue("KeepCopy", false);
     }
   }, [disableForwarding, formControl]);
 
@@ -260,7 +260,7 @@ export const CippWizardOffboarding = (props) => {
                 />
 
                 <CippFormComponent
-                  name="keepCopy"
+                  name="KeepCopy"
                   label="Keep a copy of forwarded mail"
                   type="switch"
                   formControl={formControl}
