@@ -821,6 +821,11 @@ const Page = () => {
         api={permissionsApiConfig}
         row={graphUserRequest.data?.[0]}
         allowResubmit={true}
+        defaultvalues={{
+          permissions: {
+            AutoMap: true,
+          },
+        }}
       >
         {({ formHook }) => (
           <CippMailboxPermissionsDialog

@@ -179,6 +179,23 @@
     "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Tenant data is updated every hour."
   },
   {
+    "name": "LowDomainScore",
+    "label": "Alert on domains with low security score",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert when score is below % (default: 70)",
+    "inputName": "InputValue",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors domain security scores from the DomainAnalyser and alerts when scores fall below the specified threshold."
+  },
+  {
+    "name": "GlobalAdminNoAltEmail",
+    "label": "Alert on Global Admin accounts without alternate email address",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors Global Admin accounts and alerts when they don't have an alternate email address set, which is important for password recovery of key accounts."
+  },
+  {
+    
     "name": "NewRiskyUsers",
     "label": "Alert on new risky users (P2 License Required)",
     "recommendedRunInterval": "30m",

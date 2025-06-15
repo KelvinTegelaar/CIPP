@@ -1256,6 +1256,38 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.TwoClickEmailProtection",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures the two-click confirmation requirement for viewing encrypted/protected emails in OWA and new Outlook. When enabled, users must click \"View message\" before accessing protected content, providing an additional layer of privacy protection.",
+    "docsDescription": "Configures the TwoClickMailPreviewEnabled setting in Exchange Online organization configuration. This security feature requires users to click \"View message\" before accessing encrypted or protected emails in Outlook on the web (OWA) and new Outlook for Windows. This provides additional privacy protection by preventing protected content from automatically displaying, giving users time to ensure their screen is not visible to others before viewing sensitive content. The feature helps protect against shoulder surfing and accidental disclosure of confidential information.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.TwoClickEmailProtection.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set two-click confirmation for encrypted emails in New Outlook",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-13",
+    "powershellEquivalent": "Set-OrganizationConfig -TwoClickMailPreviewEnabled $true | $false",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.EnableOnlineArchiving",
     "cat": "Exchange Standards",
     "tag": [],
@@ -3533,14 +3565,34 @@
     "name": "standards.unmanagedSync",
     "cat": "SharePoint Standards",
     "tag": [],
-    "helpText": "The unmanaged Sync standard has been temporarily disabled and does nothing.",
-    "addedComponent": [],
-    "label": "Only allow users to sync OneDrive from AAD joined devices",
+    "helpText": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect.",
+    "docsDescription": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect. 0 = Allow Access, 1 = Allow limited, web-only access, 2 = Block access. All information about this can be found in Microsofts documentation [here.](https://learn.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices)",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.unmanagedSync.state",
+        "label": "State",
+        "options": [
+          {
+            "label": "Allow limited, web-only access",
+            "value": "1"
+          },
+          {
+            "label": "Block access",
+            "value": "2"
+          }
+        ],
+        "required": false
+      }
+    ],
+    "label": "Restrict access to SharePoint and OneDrive from unmanaged devices",
     "impact": "High Impact",
     "impactColour": "danger",
-    "addedDate": "2022-06-15",
-    "powershellEquivalent": "Update-MgAdminSharePointSetting",
-    "recommendedBy": []
+    "addedDate": "2025-06-13",
+    "powershellEquivalent": "Set-SPOTenant -ConditionalAccessPolicy AllowFullAccess | AllowLimitedAccess | BlockAccess",
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.sharingDomainRestriction",
@@ -3693,6 +3745,38 @@
     "addedDate": "2025-06-03",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGuestUser $true",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsMeetingVerification",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Configures CAPTCHA verification for external users joining Teams meetings. This helps prevent unauthorized AI notetakers and bots from joining meetings.",
+    "docsDescription": "Configures CAPTCHA verification for external users joining Teams meetings. This security feature requires external participants to complete a CAPTCHA challenge before joining, which helps prevent unauthorized AI notetakers, bots, and other automated systems from accessing meetings.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "CAPTCHA Verification Setting",
+        "name": "standards.TeamsMeetingVerification.CaptchaVerificationForMeetingJoin",
+        "options": [
+          {
+            "label": "Not Required",
+            "value": "NotRequired"
+          },
+          {
+            "label": "Anonymous Users and Untrusted Organizations",
+            "value": "AnonymousUsersAndUntrustedOrganizations"
+          }
+        ]
+      }
+    ],
+    "label": "Teams Meeting Verification (CAPTCHA)",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-14",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -CaptchaVerificationForMeetingJoin",
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.TeamsExternalFileSharing",
@@ -4047,7 +4131,8 @@
       {
         "type": "textField",
         "name": "standards.AutopilotProfile.DeviceNameTemplate",
-        "label": "Unique Device Name Template"
+        "label": "Unique Device Name Template",
+        "required": false
       },
       {
         "type": "autoComplete",

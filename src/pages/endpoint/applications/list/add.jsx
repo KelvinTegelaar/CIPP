@@ -265,7 +265,10 @@ const ApplicationDeploymentForm = () => {
               </Grid>
             ))}
             {selectedTenants?.map((tenant, index) => (
-              <Grid size={{ md: 6, xs: 12 }} key={`${tenant.addedFields.customerId}_location_${index}`}>
+              <Grid
+                size={{ md: 6, xs: 12 }}
+                key={`${tenant.addedFields.customerId}_location_${index}`}
+              >
                 <CippFormComponent
                   type="textField"
                   label={`Location ID for ${tenant.label}`}
@@ -346,7 +349,7 @@ const ApplicationDeploymentForm = () => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 6 }}>
+          <Grid size={{ xs: 5 }}>
             <Button
               onClick={() => {
                 searchApp(formControl.getValues("searchQuery"), "StoreApp");
@@ -460,7 +463,7 @@ const ApplicationDeploymentForm = () => {
               formControl={formControl}
             />
           </Grid>
-          <Grid size={{ xs: 6 }}>
+          <Grid size={{ xs: 5 }}>
             <Button
               onClick={() => {
                 searchApp(formControl.getValues("searchQuery"), "choco");
