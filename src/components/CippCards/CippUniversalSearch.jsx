@@ -34,33 +34,28 @@ export const CippUniversalSearch = React.forwardRef(
     };
 
     return (
-      <Card>
-        <CardHeader title="Universal Search" />
-        <CardContent>
-          <Box>
-            <TextField
-              ref={ref}
-              fullWidth
-              type="text"
-              label="Search users in any tenant by UPN or Display Name. Requires Lighthouse onboarding"
-              onKeyDown={handleKeyDown}
-              onChange={handleChange}
-              value={searchValue}
-            />
+      <Box sx={{ p: 0.5 }}>
+        <TextField
+          ref={ref}
+          fullWidth
+          type="text"
+          label="Search users in any tenant by UPN or Display Name. Requires Lighthouse onboarding"
+          onKeyDown={handleKeyDown}
+          onChange={handleChange}
+          value={searchValue}
+        />
 
-            {search.isFetching && (
-              <Box display="flex" justifyContent="center" mt={2}>
-                <Skeleton width={"100%"} />
-              </Box>
-            )}
-            {search.isSuccess && search?.data?.length > 0 ? (
-              <Results items={search.data} searchValue={searchValue} />
-            ) : (
-              search.isSuccess && "No results found."
-            )}
+        {search.isFetching && (
+          <Box display="flex" justifyContent="center" mt={2}>
+            <Skeleton width={"100%"} />
           </Box>
-        </CardContent>
-      </Card>
+        )}
+        {search.isSuccess && search?.data?.length > 0 ? (
+          <Results items={search.data} searchValue={searchValue} />
+        ) : (
+          search.isSuccess && "No results found."
+        )}
+      </Box>
     );
   }
 );
