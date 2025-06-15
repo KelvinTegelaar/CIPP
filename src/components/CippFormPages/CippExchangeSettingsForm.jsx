@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
   Card,
   Collapse,
   Divider,
-  IconButton,
   Stack,
   SvgIcon,
   Typography,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Check, Error } from "@mui/icons-material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
-import { Forward } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useWatch } from "react-hook-form";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import CippForwardingSection from "../CippComponents/CippForwardingSection";
 
 const CippExchangeSettingsForm = (props) => {
   const userSettingsDefaults = useSettings();
@@ -37,22 +36,6 @@ const CippExchangeSettingsForm = (props) => {
 
   // Calculate if date fields should be disabled
   const areDateFieldsDisabled = autoReplyState?.value !== "Scheduled";
-  
-  useEffect(() => {
-    console.log('Auto Reply State changed:', {
-      autoReplyState,
-      areDateFieldsDisabled,
-      fullFormValues: formControl.getValues()
-    });
-  }, [autoReplyState]);
-
-  // Add debug logging for form values
-  useEffect(() => {
-    const subscription = formControl.watch((value, { name, type }) => {
-      console.log('Form value changed:', { name, type, value });
-    });
-    return () => subscription.unsubscribe();
-  }, [formControl]);
 
   const handleExpand = (panel) => {
     setExpandedPanel((prev) => (prev === panel ? null : panel));
@@ -68,6 +51,18 @@ const CippExchangeSettingsForm = (props) => {
       $top: 999,
     },
     queryKey: `UserNames-${userSettingsDefaults.currentTenant}`,
+  });
+
+  const contactsList = ApiGetCall({
+    url: "/api/ListGraphRequest",
+    data: {
+      Endpoint: `contacts`,
+      tenantFilter: userSettingsDefaults.currentTenant,
+      $select: "displayName,mail,mailNickname",
+      noPagination: true,
+      $top: 999,
+    },
+    queryKey: `TenantContacts-${userSettingsDefaults.currentTenant}`,
   });
 
   const postRequest = ApiPostCall({
@@ -126,84 +121,34 @@ const CippExchangeSettingsForm = (props) => {
   const sections = [
     {
       id: "mailboxForwarding",
-      cardLabelBox: currentSettings?.ForwardAndDeliver ? <Forward /> : "-",
+      cardLabelBox: {
+        cardLabelBoxHeader: isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : (currentSettings?.ForwardingAddress) ? (
+          <Check/>
+        ) : (
+          <Error/>
+        ),
+      },
       text: "Mailbox Forwarding",
-      subtext: "Configure email forwarding options",
+      subtext: (currentSettings?.ForwardingAddress)
+        ? "Email forwarding is configured for this mailbox"
+        : "No email forwarding configured for this mailbox",
       formContent: (
-        <Stack spacing={2}>
-          <CippFormComponent
-            type="radio"
-            name="forwarding.forwardOption"
-            formControl={formControl}
-            options={[
-              { label: "Forward to Internal Address", value: "internalAddress" },
-              {
-                label: "Forward to External Address (Tenant must allow this)",
-                value: "ExternalAddress",
-              },
-              { label: "Disable Email Forwarding", value: "disabled" },
-            ]}
-          />
-
-          <CippFormCondition
-            formControl={formControl}
-            field="forwarding.forwardOption"
-            compareType="is"
-            compareValue="internalAddress"
-          >
-            <CippFormComponent
-              type="autoComplete"
-              label="Select User"
-              name="forwarding.ForwardInternal"
-              multiple={false}
-              options={
-                usersList?.data?.Results?.map((user) => ({
-                  value: user.userPrincipalName,
-                  label: `${user.displayName} (${user.userPrincipalName})`,
-                })) || []
-              }
-              formControl={formControl}
-            />
-          </CippFormCondition>
-
-          <CippFormCondition
-            formControl={formControl}
-            field="forwarding.forwardOption"
-            compareType="is"
-            compareValue="ExternalAddress"
-          >
-            <CippFormComponent
-              type="textField"
-              label="External Email Address"
-              name="forwarding.ForwardExternal"
-              formControl={formControl}
-            />
-          </CippFormCondition>
-
-          <CippFormComponent
-            type="switch"
-            label="Keep a Copy of the Forwarded Mail in the Source Mailbox"
-            name="forwarding.KeepCopy"
-            formControl={formControl}
-          />
-          <Grid item size={12}>
-            <CippApiResults apiObject={postRequest} />
-          </Grid>
-          <Grid>
-            <Button
-              onClick={() => handleSubmit("forwarding")}
-              variant="contained"
-              disabled={!formControl.formState.isValid || postRequest.isPending}
-            >
-              Submit
-            </Button>
-          </Grid>
-        </Stack>
+        <CippForwardingSection
+          formControl={formControl}
+          usersList={usersList}
+          contactsList={contactsList}
+          postRequest={postRequest}
+          handleSubmit={handleSubmit}
+        />
       ),
     },
     {
       id: "outOfOffice",
-      cardLabelBox: "OOO",
+      cardLabelBox: {
+        cardLabelBoxHeader: <Typography variant="subtitle2">OOO</Typography>,
+      },
       text: "Out Of Office",
       subtext: "Set automatic replies for when you are away",
       formContent: (
@@ -293,7 +238,9 @@ const CippExchangeSettingsForm = (props) => {
     },
     {
       id: "recipientLimits",
-      cardLabelBox: "RL",
+      cardLabelBox: {
+        cardLabelBoxHeader: <Typography variant="subtitle2">RL</Typography>,
+      },
       text: "Recipient Limits",
       subtext: "Set the maximum number of recipients per message",
       formContent: (
@@ -306,6 +253,11 @@ const CippExchangeSettingsForm = (props) => {
                 name="recipientLimits.MaxRecipients"
                 formControl={formControl}
                 defaultValue={currentSettings?.Mailbox?.[0]?.RecipientLimits || 500}
+                validators={{
+                  required: "Please enter a number",
+                  min: { value: 1, message: "The minimum is 1" },
+                  max: { value: 1000, message: "The maximum is 1000" }, 
+                }}
               />
             </Grid>
             <Grid item size={12}>
@@ -354,14 +306,14 @@ const CippExchangeSettingsForm = (props) => {
                   sx={{
                     alignItems: "center",
                     borderRadius: 1,
-                    color: "primary.contrastText",
+                    color: "text.secondary",
                     display: "flex",
                     height: 40,
                     justifyContent: "center",
                     width: 40,
                   }}
                 >
-                  <Typography variant="subtitle2">{section.cardLabelBox}</Typography>
+                  {section.cardLabelBox.cardLabelBoxHeader}
                 </Box>
 
                 {/* Main Text and Subtext */}
