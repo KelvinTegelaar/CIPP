@@ -164,6 +164,13 @@ const Page = () => {
 
   const [PortalMenuItems, setPortalMenuItems] = useState([]);
 
+  const formatStorageSize = (sizeInMB) => {
+    if (sizeInMB >= 1024) {
+      return `${(sizeInMB / 1024).toFixed(2)}GB`;
+    }
+    return `${sizeInMB}MB`;
+  };
+
   useEffect(() => {
     if (currentTenantInfo.isSuccess) {
       const tenantLookup = currentTenantInfo.data?.find(
@@ -245,10 +252,8 @@ const Page = () => {
                   Number(sharepoint.data?.GeoUsedStorageMB) || 0,
                 ]}
                 labels={[
-                  `Free (${
-                    sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB
-                  }MB)`,
-                  `Used (${Number(sharepoint.data?.GeoUsedStorageMB)}MB)`,
+                  `Free (${formatStorageSize(sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB)})`,
+                  `Used (${formatStorageSize(sharepoint.data?.GeoUsedStorageMB)})`,
                 ]}
               />
             </Grid>
