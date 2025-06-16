@@ -832,7 +832,7 @@
     "name": "standards.DisableSelfServiceLicenses",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "helpText": "This standard disables all self service licenses and enables all exclusions",
+    "helpText": "Note: requires 'Billing Administrator' GDAP role. This standard disables all self service licenses and enables all exclusions",
     "addedComponent": [
       {
         "type": "textField",
