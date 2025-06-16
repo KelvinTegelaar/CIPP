@@ -1452,6 +1452,36 @@
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
+    "name": "standards.AddDMARCToMOERA",
+    "cat": "Global Standards",
+    "tag": ["CIS", "Security", "PhishingProtection"],
+    "helpText": "This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default value is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "docsDescription": "Adds a DMARC record to MOERA (onmicrosoft.com) domains. This should be enabled even if the MOERA (onmicrosoft.com) domains is not used for sending. Enabling this prevents email spoofing. The default record is 'v=DMARC1; p=reject;' recommended because the domain is only used within M365 and reporting is not needed. Omitting pct tag default to 100%",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": true,
+        "required": false,
+        "placeholder": "v=DMARC1; p=reject; (recommended)",
+        "label": "Value",
+        "name": "standards.AddDMARCToMOERA.RecordValue",
+        "options": [
+          {
+            "label": "v=DMARC1; p=reject; (recommended)",
+            "value": "v=DMARC1; p=reject;"
+          }
+        ]
+      }
+    ],
+    "label": "Enables DMARC on MOERA (onmicrosoft.com) domains",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-16",
+    "powershellEquivalent": "Portal only",
+    "recommendedBy": ["CIS", "Microsoft"]
+  },
+  {
     "name": "standards.EnableMailboxAuditing",
     "cat": "Exchange Standards",
     "tag": ["CIS", "exo_mailboxaudit"],
