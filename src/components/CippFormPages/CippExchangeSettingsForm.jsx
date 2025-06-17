@@ -161,6 +161,7 @@ const CippExchangeSettingsForm = (props) => {
                 label="Auto Reply State"
                 multiple={false}
                 formControl={formControl}
+                creatable={false}
                 options={[
                   { label: "Enabled", value: "Enabled" },
                   { label: "Disabled", value: "Disabled" },

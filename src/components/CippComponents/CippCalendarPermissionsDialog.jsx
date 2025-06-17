@@ -1,30 +1,45 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Box, Stack, Tooltip } from "@mui/material";
 import CippFormComponent from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
-import { ApiGetCall } from "../../api/ApiCall";
-import { useSettings } from "../../hooks/use-settings";
 
-const CippCalendarPermissionsDialog = ({ formHook }) => {
+const CippCalendarPermissionsDialog = ({ formHook, groupsList, usersList }) => {
   const permissionLevel = useWatch({
     control: formHook.control,
     name: "Permissions",
   });
 
-  const userSettingsDefaults = useSettings();
+  // Combine users and groups into a single options array
+  const combinedOptions = useMemo(() => {
+    const options = [];
+    
+    // Add users (from parent)
+    if (usersList?.data?.Results) {
+      usersList.data.Results.forEach((user) => {
+        options.push({
+          value: user.userPrincipalName,
+          label: `${user.displayName} (${user.userPrincipalName})`,
+          type: 'user'
+        });
+      });
+    }
+    
+    // Add mail-enabled security groups (from parent)
+    if (groupsList?.data?.Results) {
+      groupsList.data.Results.forEach((group) => {
+        options.push({
+          value: group.mail,
+          label: `${group.displayName} (${group.mail})`,
+          type: 'group'
+        });
+      });
+    }
+    
+    // Sort alphabetically by label
+    return options.sort((a, b) => a.label.localeCompare(b.label));
+  }, [usersList?.data?.Results, groupsList?.data?.Results]);
 
-  const usersList = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      Endpoint: `users`,
-      tenantFilter: userSettingsDefaults.currentTenant,
-      $select: "id,displayName,userPrincipalName,mail",
-      noPagination: true,
-      $top: 999,
-    },
-    queryKey: `UserNames-${userSettingsDefaults.currentTenant}`,
-  });
-
+  const isLoading = usersList.isFetching || groupsList.isFetching;
   const isEditor = permissionLevel?.value === "Editor";
 
   useEffect(() => {
@@ -42,18 +57,14 @@ const CippCalendarPermissionsDialog = ({ formHook }) => {
           name="UserToGetPermissions"
           multiple={false}
           formControl={formHook}
-          isFetching={usersList.isFetching}
-          options={
-            usersList?.data?.Results?.map((user) => ({
-              value: user.userPrincipalName,
-              label: `${user.displayName} (${user.userPrincipalName})`,
-            })) || []
-          }
+          isFetching={isLoading}
+          options={combinedOptions}
+          creatable={false}
           required={true}
           validators={{
-            validate: (value) => (value ? true : "Select a user to assign permissions to"),
+            validate: (value) => (value ? true : "Select a user or group to assign permissions to"),
           }}
-          placeholder="Select a user to assign permissions to"
+          placeholder="Select a user or group to assign permissions to"
         />
       </Box>
       <Box>
@@ -62,6 +73,7 @@ const CippCalendarPermissionsDialog = ({ formHook }) => {
           label="Permission Level"
           name="Permissions"
           required={true}
+          creatable={false}
           validators={{
             validate: (value) => (value ? true : "Select the permission level for the calendar"),
           }}

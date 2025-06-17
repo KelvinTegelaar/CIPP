@@ -15,6 +15,8 @@ import {
   CalendarToday,
   AlternateEmail,
   PersonAdd,
+  Block,
+  PlayArrow
 } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
@@ -29,7 +31,6 @@ import CippExchangeSettingsForm from "../../../../../components/CippFormPages/Ci
 import { useForm } from "react-hook-form";
 import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
-import { Block, PlayArrow} from "@mui/icons-material";
 import { CippPropertyListCard } from "../../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
@@ -98,6 +99,65 @@ const Page = () => {
     queryKey: `MailboxRules-${userId}`,
     waiting: waiting,
   });
+
+  const groupsList = ApiGetCall({
+    url: "/api/ListGraphRequest", 
+    data: {
+      Endpoint: `groups`,
+      tenantFilter: userSettingsDefaults.currentTenant,
+      $filter: "securityEnabled eq true and mailEnabled eq true",
+      $select: "id,displayName,mail,description",
+      noPagination: true,
+      $top: 999,
+    },
+    queryKey: `MailEnabledSecurityGroups-${userSettingsDefaults.currentTenant}`,
+  });
+
+  const getPermissionInfo = (userIdentifier, groupsList) => {
+    // Handle undefined/null cases first
+    if (!userIdentifier) {
+      return {
+        type: 'Unknown',
+        displayName: 'Unknown User'
+      };
+    }
+
+    // Handle special built-in cases
+    if (userIdentifier === 'Default' || userIdentifier === 'Anonymous') {
+      return {
+        type: 'System',
+        displayName: userIdentifier
+      };
+    }
+
+    // Check if it's a group - handle Exchange's different naming patterns
+    const matchingGroup = groupsList?.data?.Results?.find(group => {
+      // Ensure group properties exist before comparison
+      if (!group) return false;
+      
+      return (
+        // Exact match on mail address
+        (group.mail && group.mail === userIdentifier) || 
+        // Exact match on display name
+        (group.displayName && group.displayName === userIdentifier) ||
+        // Partial match - permission identifier starts with group display name (handles timestamps)
+        (group.displayName && userIdentifier.startsWith(group.displayName))
+      );
+    });
+
+    if (matchingGroup) {
+      return {
+        type: 'Group',
+        displayName: matchingGroup.displayName  // Use clean name from Graph API
+      };
+    }
+
+    // If not a system entity or group, assume it's a user
+    return {
+      type: 'User',
+      displayName: userIdentifier  // Keep original for users
+    };
+  };
 
   // Define API configurations for the dialogs
   const aliasApiConfig = {
@@ -303,24 +363,29 @@ const Page = () => {
       icon: <Delete />,
       url: "/api/ExecModifyMBPerms",
       customDataformatter: (row, action, formData) => {
-        // build permissions
         var permissions = [];
-        // if the row is an array, iterate through it
         if (Array.isArray(row)) {
           row.forEach((item) => {
-            permissions.push({
-              UserID: item.User,
-              PermissionLevel: item.AccessRights,
-              Modification: "Remove",
-            });
+            // Safely extract original user identifier
+            const originalUser = item?._raw?.User || item?.User;
+            if (originalUser) {  // Only add if we have a valid user
+              permissions.push({
+                UserID: originalUser,  // Use original identifier for API calls
+                PermissionLevel: item?.AccessRights || 'Unknown',
+                Modification: "Remove",
+              });
+            }
           });
         } else {
-          // if it's a single object, just push it
-          permissions.push({
-            UserID: row.User,
-            PermissionLevel: row.AccessRights,
-            Modification: "Remove",
-          });
+          // Safely extract original user identifier
+          const originalUser = row?._raw?.User || row?.User;
+          if (originalUser) {  // Only add if we have a valid user
+            permissions.push({
+              UserID: originalUser,  // Use original identifier for API calls
+              PermissionLevel: row?.AccessRights || 'Unknown',
+              Modification: "Remove",
+            });
+          }
         }
 
         return {
@@ -350,8 +415,8 @@ const Page = () => {
       text: "Mailbox Permissions",
       subtext:
         userRequest.data?.[0]?.Permissions?.length !== 0
-          ? "Other users have access to this mailbox"
-          : "No other users have access to this mailbox",
+          ? "Other users or groups have access to this mailbox"
+          : "No other users or groups have access to this mailbox",
       statusColor: "green.main",
       cardLabelBoxActions: (
         <Button
@@ -368,29 +433,40 @@ const Page = () => {
         title: "Mailbox Permissions",
         hideTitle: true,
         data:
-          userRequest.data?.[0]?.Permissions?.map((permission) => ({
-            User: permission.User,
-            AccessRights: permission.AccessRights,
-            _raw: permission,
-          })) || [],
+          userRequest.data?.[0]?.Permissions?.map((permission) => {
+            const userIdentifier = permission?.User;
+            const permissionInfo = getPermissionInfo(permission.User, groupsList);
+            return {
+              User: permissionInfo.displayName,  // Show clean name
+              AccessRights: permission.AccessRights,
+              Type: permissionInfo.type,
+              _raw: permission,
+            };
+          }) || [],
         refreshFunction: () => userRequest.refetch(),
         isFetching: userRequest.isFetching,
-        simpleColumns: ["User", "AccessRights"],
+        simpleColumns: ["User", "AccessRights", "Type"],
         actions: mailboxPermissionActions,
         offCanvas: {
           children: (data) => {
+            const originalUser = data?._raw?.User || data?.User;
+            const permissionInfo = getPermissionInfo(originalUser, groupsList);
             return (
               <CippPropertyListCard
                 cardSx={{ p: 0, m: -2 }}
                 title="Permission Details"
                 propertyItems={[
                   {
-                    label: "User",
-                    value: data.User,
+                    label: "User/Group",
+                    value: permissionInfo.displayName,
+                  },
+                  {
+                    label: "Type",
+                    value: permissionInfo.type,
                   },
                   {
                     label: "Access Rights",
-                    value: data.AccessRights,
+                    value: data?.AccessRights || 'Unknown',
                   },
                 ]}
                 actionItems={mailboxPermissionActions}
@@ -402,6 +478,7 @@ const Page = () => {
     },
   ];
 
+  // Replace your existing calCard array with this simple version:
   const calCard = [
     {
       id: 1,
@@ -417,8 +494,8 @@ const Page = () => {
       text: "Calendar permissions",
       subtext:
         calPermissions.data?.length !== 0
-          ? "Other users have access to this calendar"
-          : "No other users have access to this calendar",
+          ? "Other users or groups have access to this calendar"
+          : "No other users or groups have access to this calendar",
       statusColor: "green.main",
       cardLabelBoxActions: (
         <Button
@@ -435,15 +512,20 @@ const Page = () => {
         title: "Calendar Permissions",
         hideTitle: true,
         data:
-          calPermissions.data?.map((permission) => ({
-            User: permission.User,
-            AccessRights: permission.AccessRights.join(", "),
-            FolderName: permission.FolderName,
-            _raw: permission,
-          })) || [],
+          calPermissions.data?.map((permission) => {
+            const userIdentifier = permission?.User;
+            const permissionInfo = getPermissionInfo(permission.User, groupsList);
+            return {
+              User: permissionInfo.displayName,
+              AccessRights: permission?.AccessRights?.join(", ") || 'Unknown',
+              FolderName: permission?.FolderName || 'Unknown',
+              Type: permissionInfo.type,
+              _raw: permission,
+            };
+          }) || [],
         refreshFunction: () => calPermissions.refetch(),
         isFetching: calPermissions.isFetching,
-        simpleColumns: ["User", "AccessRights", "FolderName"],
+        simpleColumns: ["User", "AccessRights", "FolderName", "Type"],
         actions: [
           {
             label: "Remove Permission",
@@ -451,22 +533,21 @@ const Page = () => {
             icon: <Delete />,
             url: "/api/ExecModifyCalPerms",
             customDataformatter: (row, action, formData) => {
-              // build permissions
               var permissions = [];
-              // if the row is an array, iterate through it
               if (Array.isArray(row)) {
                 row.forEach((item) => {
+                  const originalUser = item._raw ? item._raw.User : item.User;
                   permissions.push({
-                    UserID: item.User,
+                    UserID: originalUser,  // Use original identifier for API calls
                     PermissionLevel: item.AccessRights,
                     FolderName: item.FolderName,
                     Modification: "Remove",
                   });
                 });
               } else {
-                // if it's a single object, just push it
+                const originalUser = row._raw ? row._raw.User : row.User;
                 permissions.push({
-                  UserID: row.User,
+                  UserID: originalUser,  // Use original identifier for API calls
                   PermissionLevel: row.AccessRights,
                   FolderName: row.FolderName,
                   Modification: "Remove",
@@ -481,19 +562,25 @@ const Page = () => {
             confirmText: "Are you sure you want to remove this calendar permission?",
             multiPost: false,
             relatedQueryKeys: `CalendarPermissions-${userId}`,
-            condition: (row) => row.User !== "Default" && row.User == "Anonymous",
+            condition: (row) => row.User !== "Default" && row.User !== "Anonymous",
           },
         ],
         offCanvas: {
           children: (data) => {
+            const originalUser = data._raw ? data._raw.User : data.User;
+            const permissionInfo = getPermissionInfo(originalUser, groupsList);
             return (
               <CippPropertyListCard
                 cardSx={{ p: 0, m: -2 }}
                 title="Permission Details"
                 propertyItems={[
                   {
-                    label: "User",
-                    value: data.User,
+                    label: "User/Group",
+                    value: permissionInfo.displayName,
+                  },
+                  {
+                    label: "Type",
+                    value: permissionInfo.type,
                   },
                   {
                     label: "Access Rights",
@@ -515,7 +602,7 @@ const Page = () => {
                       tenantFilter: userSettingsDefaults.currentTenant,
                       permissions: [
                         {
-                          UserID: data.User,
+                          UserID: originalUser,  // Use original identifier for API calls
                           PermissionLevel: data.AccessRights,
                           FolderName: data.FolderName,
                           Modification: "Remove",
@@ -859,12 +946,8 @@ const Page = () => {
         {({ formHook }) => (
           <CippMailboxPermissionsDialog
             formHook={formHook}
-            options={
-              usersList?.data?.Results?.map((user) => ({
-                value: user.userPrincipalName,
-                label: `${user.displayName} (${user.userPrincipalName})`,
-              })) || []
-            }
+            groupsList={groupsList}
+            usersList={usersList}
           />
         )}
       </CippApiDialog>
@@ -876,7 +959,13 @@ const Page = () => {
         row={graphUserRequest.data?.[0]}
         allowResubmit={true}
       >
-        {({ formHook }) => <CippCalendarPermissionsDialog formHook={formHook} />}
+        {({ formHook }) => (
+          <CippCalendarPermissionsDialog
+            formHook={formHook}
+            groupsList={groupsList}
+            usersList={usersList}
+          />
+        )}
       </CippApiDialog>
     </HeaderedTabbedLayout>
   );
