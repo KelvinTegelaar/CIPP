@@ -1,4 +1,4 @@
-import { Close, Download } from "@mui/icons-material";
+import { Close, Download, Help } from "@mui/icons-material";
 import {
   Alert,
   CircularProgress,
@@ -9,10 +9,13 @@ import {
   Box,
   SvgIcon,
   Tooltip,
+  Button,
+  keyframes,
 } from "@mui/material";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { getCippError } from "../../utils/get-cipp-error";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
+import { CippDocsLookup } from "./CippDocsLookup";
 import React from "react";
 import { CippTableDialog } from "./CippTableDialog";
 import { EyeIcon } from "@heroicons/react/24/outline";
@@ -275,7 +278,38 @@ export const CippApiResults = (props) => {
                   severity={resultObj.severity || "success"}
                   action={
                     <>
+                      {resultObj.severity === "error" && (
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="secondary"
+                          startIcon={<Help />}
+                          onClick={() => {
+                            const searchUrl = `https://docs.cipp.app/?q=Help+with:+${encodeURIComponent(
+                              resultObj.copyField || resultObj.text
+                            )}&ask=true`;
+                            window.open(searchUrl, "_blank");
+                          }}
+                          sx={{
+                            ml: 1,
+                            mr: 1,
+                            backgroundColor: "white",
+                            color: "error.main",
+                            "&:hover": {
+                              backgroundColor: "grey.100",
+                            },
+                            py: 0.5,
+                            px: 1,
+                            minWidth: "auto",
+                            fontSize: "0.875rem",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Get Help
+                        </Button>
+                      )}
                       <CippCopyToClipBoard text={resultObj.copyField || resultObj.text} />
+
                       <IconButton
                         aria-label="close"
                         color="inherit"
