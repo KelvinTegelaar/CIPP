@@ -167,7 +167,33 @@ export const CippUserActions = () => {
       type: "POST",
       icon: <GroupAdd />,
       url: "/api/EditGroup",
-      data: { addMember: "userPrincipalName" },
+      customDataformatter: (row, action, formData) => {
+        let addMember = [];
+        if (Array.isArray(row)) {
+          row
+            .map((r) => ({
+              label: r.displayName,
+              value: r.userPrincipalName,
+              addedFields: {
+                id: r.id,
+              },
+            }))
+            .forEach((r) => addMember.push(r));
+        } else {
+          addMember.push({
+            label: row.displayName,
+            value: row.userPrincipalName,
+            addedFields: {
+              id: row.id,
+            },
+          });
+        }
+        return {
+          addMember: addMember,
+          tenantFilter: tenant,
+          groupId: formData.groupId,
+        };
+      },
       fields: [
         {
           type: "autoComplete",
@@ -184,10 +210,12 @@ export const CippUserActions = () => {
               groupName: "displayName",
             },
             queryKey: `groups-${tenant}`,
+            showRefresh: true,
           },
         },
       ],
       confirmText: "Are you sure you want to add the user to this group?",
+      multiPost: true,
     },
     {
       label: "Manage Licenses",
