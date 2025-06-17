@@ -26,7 +26,7 @@ import { Box, Stack } from "@mui/system";
 import { Grid } from "@mui/system";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippExchangeInfoCard } from "../../../../../components/CippCards/CippExchangeInfoCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import CippExchangeSettingsForm from "../../../../../components/CippFormPages/CippExchangeSettingsForm";
 import { useForm } from "react-hook-form";
 import { Alert, Button, Collapse, CircularProgress, Typography } from "@mui/material";
@@ -315,6 +315,38 @@ const Page = () => {
   }, [userRequest.isSuccess, userRequest.dataUpdatedAt, formControl]);
 
   const title = graphUserRequest.isSuccess ? graphUserRequest.data?.[0]?.displayName : "Loading...";
+
+  // Combine users and groups into a single options array
+  const combinedOptions = useMemo(() => {
+    const options = [];
+  
+    // Add users
+    if (usersList?.data?.Results) {
+      usersList.data.Results.forEach((user) => {
+        options.push({
+          value: user.userPrincipalName,
+          label: `${user.displayName} (${user.userPrincipalName})`,
+          type: 'user'
+        });
+      });
+    }
+  
+    // Add mail-enabled security groups
+    if (groupsList?.data?.Results) {
+      groupsList.data.Results.forEach((group) => {
+        options.push({
+          value: group.mail,
+          label: `${group.displayName} (${group.mail})`,
+          type: 'group'
+        });
+      });
+    }
+  
+    // Sort alphabetically by label
+    return options.sort((a, b) => a.label.localeCompare(b.label));
+  }, [usersList?.data?.Results, groupsList?.data?.Results]);
+
+  const isUserGroupLoading = usersList.isFetching || groupsList.isFetching;
 
   const subtitle = graphUserRequest.isSuccess
     ? [
@@ -946,8 +978,8 @@ const Page = () => {
         {({ formHook }) => (
           <CippMailboxPermissionsDialog
             formHook={formHook}
-            groupsList={groupsList}
-            usersList={usersList}
+            combinedOptions={combinedOptions}
+            isUserGroupLoading={isUserGroupLoading}
           />
         )}
       </CippApiDialog>
@@ -962,8 +994,8 @@ const Page = () => {
         {({ formHook }) => (
           <CippCalendarPermissionsDialog
             formHook={formHook}
-            groupsList={groupsList}
-            usersList={usersList}
+            combinedOptions={combinedOptions}
+            isUserGroupLoading={isUserGroupLoading}
           />
         )}
       </CippApiDialog>
