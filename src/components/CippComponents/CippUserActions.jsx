@@ -61,9 +61,7 @@ export const CippUserActions = () => {
         {
           type: "number",
           name: "lifetimeInMinutes",
-          label: "Lifetime in Minutes (10-43200)",
-          min: 10,
-          max: 43200,
+          label: "Lifetime (Minutes)",
           placeholder: "Leave blank for default"
         },
         {
