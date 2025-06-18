@@ -6,7 +6,7 @@ import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector
 import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
 
 const DynamicMembershipRules = ({ formControl }) => (
-  <Grid item size={{ xs: 12 }}>
+  <Grid size={{ xs: 12 }}>
     <CippFormComponent
       type="textField"
       label="Dynamic Group Parameters"

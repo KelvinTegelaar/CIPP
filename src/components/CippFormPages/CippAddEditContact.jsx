@@ -13,7 +13,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
   return (
     <Grid container spacing={2}>
       {/* Display Name */}
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Display Name *"
@@ -25,7 +25,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       </Grid>
 
       {/* First Name and Last Name */}
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="First Name"
@@ -33,7 +33,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Last Name"
@@ -45,7 +45,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       <Divider sx={{ my: 2, width: "100%" }} />
 
       {/* Email */}
-      <Grid item size={{ md: 8, xs: 12 }}>
+      <Grid size={{ md: 8, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Email *"
@@ -59,7 +59,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       </Grid>
 
       {/* Hide from GAL */}
-      <Grid item size={{ md: 4, xs: 12 }}>
+      <Grid size={{ md: 4, xs: 12 }}>
         <CippFormComponent
           type="switch"
           label="Hidden from Global Address List"
@@ -71,7 +71,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       <Divider sx={{ my: 2, width: "100%" }} />
 
       {/* Company Information */}
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Company Name"
@@ -79,7 +79,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Job Title"
@@ -89,7 +89,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       </Grid>
 
       {/* Website */}
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Website"
@@ -104,7 +104,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       <Divider sx={{ my: 2, width: "100%" }} />
 
       {/* Address Information */}
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Street Address"
@@ -112,7 +112,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 3, xs: 12 }}>
+      <Grid size={{ md: 3, xs: 12 }}>
         <CippFormComponent 
           type="textField" 
           label="City" 
@@ -120,7 +120,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
           formControl={formControl} 
         />
       </Grid>
-      <Grid item size={{ md: 3, xs: 12 }}>
+      <Grid size={{ md: 3, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="State/Province"
@@ -128,7 +128,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 3, xs: 12 }}>
+      <Grid size={{ md: 3, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Postal Code"
@@ -136,7 +136,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 3, xs: 12 }}>
+      <Grid size={{ md: 3, xs: 12 }}>
         <CippFormComponent
           type="autoComplete"
           label="Country"
@@ -151,7 +151,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       <Divider sx={{ my: 2, width: "100%" }} />
 
       {/* Phone Numbers */}
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Mobile Phone"
@@ -159,7 +159,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Business Phone"
@@ -171,7 +171,7 @@ const ContactFormLayout = ({ formControl, formType = "add" }) => {
       <Divider sx={{ my: 2, width: "100%" }} />
 
       {/* Mail Tip */}
-      <Grid item size={{ md: 12, xs: 12 }}>
+      <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
           label="Mail Tip"

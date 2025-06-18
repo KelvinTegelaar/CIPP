@@ -154,7 +154,7 @@ const CippExchangeSettingsForm = (props) => {
       formContent: (
         <Stack spacing={2}>
           <Grid container spacing={2}>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippFormComponent
                 type="autoComplete"
                 name="ooo.AutoReplyState"
@@ -168,7 +168,7 @@ const CippExchangeSettingsForm = (props) => {
                 ]}
               />
             </Grid>
-            <Grid item size={6}>
+            <Grid size={6}>
               <Tooltip 
                 title={areDateFieldsDisabled ? "Scheduling is only available when Auto Reply State is set to Scheduled" : ""}
                 placement="bottom"
@@ -184,7 +184,7 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Tooltip>
             </Grid>
-            <Grid item size={6}>
+            <Grid size={6}>
               <Tooltip 
                 title={areDateFieldsDisabled ? "Scheduling is only available when Auto Reply State is set to Scheduled" : ""}
                 placement="bottom"
@@ -200,7 +200,7 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Tooltip>
             </Grid>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippFormComponent
                 type="richText"
                 label="Internal Message"
@@ -210,7 +210,7 @@ const CippExchangeSettingsForm = (props) => {
                 rows={4}
               />
             </Grid>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippFormComponent
                 type="richText"
                 label="External Message"
@@ -220,7 +220,7 @@ const CippExchangeSettingsForm = (props) => {
                 rows={4}
               />
             </Grid>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippApiResults apiObject={postRequest} />
             </Grid>
             <Grid>
@@ -246,7 +246,7 @@ const CippExchangeSettingsForm = (props) => {
       formContent: (
         <Stack spacing={2}>
           <Grid container spacing={2}>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippFormComponent
                 type="number"
                 label="Maximum Recipients"
@@ -260,7 +260,7 @@ const CippExchangeSettingsForm = (props) => {
                 }}
               />
             </Grid>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippApiResults apiObject={postRequest} />
             </Grid>
             <Grid>
