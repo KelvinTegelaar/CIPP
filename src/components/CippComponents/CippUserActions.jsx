@@ -52,12 +52,32 @@ export const CippUserActions = () => {
     },
     {
       //tested
-
       label: "Create Temporary Access Password",
       type: "POST",
       icon: <Password />,
       url: "/api/ExecCreateTAP",
       data: { ID: "userPrincipalName" },
+      fields: [
+        {
+          type: "number",
+          name: "lifetimeInMinutes",
+          label: "Lifetime in Minutes (10-43200)",
+          min: 10,
+          max: 43200,
+          placeholder: "Leave blank for default"
+        },
+        {
+          type: "switch",
+          name: "isUsableOnce",
+          label: "One-time use only"
+        },
+        {
+          type: "datePicker",
+          name: "startDateTime",
+          label: "Start Date/Time (leave blank for immediate)",
+          dateTimeType: "datetime"
+        }
+      ],
       confirmText: "Are you sure you want to create a Temporary Access Password?",
       multiPost: false,
     },
