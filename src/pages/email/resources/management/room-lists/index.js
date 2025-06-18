@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Visibility, ListAlt } from "@mui/icons-material";
+import { Visibility, ListAlt, Edit } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
 import Link from "next/link";
@@ -17,6 +17,14 @@ const Page = () => {
       icon: <Visibility />,
     },
     {
+      label: "Edit Room List",
+      link: "/identity/administration/groups/edit?groupId=[PrimarySmtpAddress]&groupType=[groupType]",
+      multiPost: false,
+      icon: <Edit />,
+      color: "success",
+    },
+
+    {
       label: "Delete Room List",
       type: "POST",
       url: "/api/ExecGroupsDelete",
@@ -24,7 +32,7 @@ const Page = () => {
       data: {
         id: "Guid",
         displayName: "DisplayName",
-        GroupType: "calculatedGroupType",
+        GroupType: "groupType",
       },
       confirmText: "Are you sure you want to delete this room list?",
       multiPost: false,
@@ -33,7 +41,7 @@ const Page = () => {
 
   const offCanvas = {
     extendedInfoFields: [
-      "ExternalDirectoryObjectId",
+      "Guid",
       "PrimarySmtpAddress",
       "DisplayName",
       "Phone",
@@ -57,7 +65,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       actions={actions}
-      apiDataKey=""
+      apiDataKey="Results"
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       cardButton={
