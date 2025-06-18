@@ -620,6 +620,7 @@ const CippAppPermissionBuilder = ({
                         customFunction: (row) => handleRemoveRow("applicationPermissions", row),
                       },
                     ]}
+                    isFetching={spInfoFetching}
                   />
                 </Stack>
               </>
@@ -684,6 +685,7 @@ const CippAppPermissionBuilder = ({
                     customFunction: (row) => handleRemoveRow("delegatedPermissions", row),
                   },
                 ]}
+                isFetching={spInfoFetching}
               />
             </Stack>
           </CippCardTabPanel>
