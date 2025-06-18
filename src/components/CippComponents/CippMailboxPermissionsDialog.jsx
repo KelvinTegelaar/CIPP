@@ -1,27 +1,11 @@
 import { Box, Stack } from "@mui/material";
 import CippFormComponent from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
-import { ApiGetCall } from "../../api/ApiCall";
-import { useSettings } from "../../hooks/use-settings";
 
-const CippMailboxPermissionsDialog = ({ formHook }) => {
+const CippMailboxPermissionsDialog = ({ formHook, combinedOptions, isUserGroupLoading }) => {
   const fullAccess = useWatch({
     control: formHook.control,
     name: "permissions.AddFullAccess",
-  });
-
-  const userSettingsDefaults = useSettings();
-
-  const usersList = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    data: {
-      Endpoint: `users`,
-      tenantFilter: userSettingsDefaults.currentTenant,
-      $select: "id,displayName,userPrincipalName,mail",
-      noPagination: true,
-      $top: 999,
-    },
-    queryKey: `UserNames-${userSettingsDefaults.currentTenant}`,
   });
 
   return (
@@ -32,13 +16,9 @@ const CippMailboxPermissionsDialog = ({ formHook }) => {
           label="Add Full Access"
           name="permissions.AddFullAccess"
           formControl={formHook}
-          isFetching={usersList.isFetching}
-          options={
-            usersList?.data?.Results?.map((user) => ({
-              value: user.userPrincipalName,
-              label: `${user.displayName} (${user.userPrincipalName})`,
-            })) || []
-          }
+          isFetching={isUserGroupLoading}
+          creatable={false}
+          options={combinedOptions}
         />
       </Box>
       <Box>
@@ -57,13 +37,9 @@ const CippMailboxPermissionsDialog = ({ formHook }) => {
           label="Add Send-as Permissions"
           name="permissions.AddSendAs"
           formControl={formHook}
-          isFetching={usersList.isFetching}
-          options={
-            usersList?.data?.Results?.map((user) => ({
-              value: user.userPrincipalName,
-              label: `${user.displayName} (${user.userPrincipalName})`,
-            })) || []
-          }
+          isFetching={isUserGroupLoading}
+          creatable={false}
+          options={combinedOptions}
         />
       </Box>
       <Box>
@@ -72,13 +48,9 @@ const CippMailboxPermissionsDialog = ({ formHook }) => {
           label="Add Send On Behalf Permissions"
           name="permissions.AddSendOnBehalf"
           formControl={formHook}
-          isFetching={usersList.isFetching}
-          options={
-            usersList?.data?.Results?.map((user) => ({
-              value: user.userPrincipalName,
-              label: `${user.displayName} (${user.userPrincipalName})`,
-            })) || []
-          }
+          isFetching={isUserGroupLoading}
+          creatable={false}
+          options={combinedOptions}
         />
       </Box>
     </Stack>
