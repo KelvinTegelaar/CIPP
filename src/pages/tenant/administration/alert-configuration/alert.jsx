@@ -63,7 +63,7 @@ const AlertWizard = () => {
     { label: "Email", value: "Email" },
     { label: "PSA", value: "PSA" },
   ];
-  const actionstoTake = [
+  const actionsToTake = [
     //{ value: 'cippcommand', label: 'Execute a CIPP Command' },
     { value: "becremediate", label: "Execute a BEC Remediate" },
     { value: "disableuser", label: "Disable the user in the log entry" },
@@ -523,7 +523,7 @@ const AlertWizard = () => {
                               formControl={formControl}
                               multiple={true}
                               creatable={false}
-                              options={actionstoTake}
+                              options={actionsToTake}
                             />
                           </Grid>
                           <Grid size={12} sx={{ mt: 2 }}>
@@ -556,12 +556,15 @@ const AlertWizard = () => {
                                 multiple={false}
                                 formControl={formControl}
                                 label="Included Tenants for alert"
+                                validators={{
+                                  required: { value: true, message: "This field is required" },
+                                }}
                               />
                             </Grid>
                             <CippFormCondition
                               field="tenantFilter"
                               formControl={formControl}
-                              compareType="is"
+                              compareType="contains"
                               compareValue="AllTenants"
                             >
                               <Grid size={12}>

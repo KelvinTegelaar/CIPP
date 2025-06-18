@@ -39,9 +39,53 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.DeployMailContact",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Creates a new mail contact in Exchange Online across all selected tenants. The contact will be visible in the Global Address List.",
+    "docsDescription": "This standard creates a new mail contact in Exchange Online. Mail contacts are useful for adding external email addresses to your organization's address book. They can be used for distribution lists, shared mailboxes, and other collaboration scenarios.",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.ExternalEmailAddress",
+        "label": "External Email Address",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.DisplayName",
+        "label": "Display Name",
+        "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.FirstName",
+        "label": "First Name",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployMailContact.LastName",
+        "label": "Last Name",
+        "required": false
+      }
+    ],
+    "label": "Deploy Mail Contact",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2024-03-19",
+    "powershellEquivalent": "New-MailContact",
+    "recommendedBy": [
+      "CIPP"
+    ]
+  },
+  {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "tag": ["CIS", "mip_search_auditlog"],
+    "tag": [
+      "CIS",
+      "mip_search_auditlog"
+    ],
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
@@ -49,7 +93,10 @@
     "impactColour": "info",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Enable-OrganizationCustomization",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.ProfilePhotos",
@@ -99,7 +146,9 @@
       "remediate": false
     },
     "powershellEquivalent": "Portal only",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.Branding",
@@ -161,7 +210,10 @@
   {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
-    "tag": ["CIS", "CustomerLockBoxEnabled"],
+    "tag": [
+      "CIS",
+      "CustomerLockBoxEnabled"
+    ],
     "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
     "docsDescription": "Customer Lockbox ensures that Microsoft can't access your content to do service operations without your explicit approval. Customer Lockbox ensures only authorized requests allow access to your organizations data.",
     "addedComponent": [],
@@ -170,7 +222,9 @@
     "impactColour": "info",
     "addedDate": "2024-01-08",
     "powershellEquivalent": "Set-OrganizationConfig -CustomerLockBoxEnabled $true",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.EnablePronouns",
@@ -197,7 +251,9 @@
     "impactColour": "info",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgBetaAdminReportSetting -BodyParameter @{displayConcealedNames = $true}",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableGuestDirectory",
@@ -211,7 +267,9 @@
     "impactColour": "info",
     "addedDate": "2022-05-04",
     "powershellEquivalent": "Set-AzureADMSAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa82404023b'",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableBasicAuthSMTP",
@@ -225,12 +283,18 @@
     "impactColour": "warning",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Set-TransportConfig -SmtpClientAuthenticationDisabled $true",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global Standards",
-    "tag": ["CIS", "spo_idle_session_timeout"],
+    "tag": [
+      "CIS",
+      "spo_idle_session_timeout"
+    ],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": [
       {
@@ -268,7 +332,9 @@
     "impactColour": "warning",
     "addedDate": "2022-04-13",
     "powershellEquivalent": "Portal or Graph API",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.AuthMethodsSettings",
@@ -404,12 +470,16 @@
     "impactColour": "info",
     "addedDate": "2023-04-25",
     "powershellEquivalent": "Portal or Graph API",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.PWdisplayAppInformationRequiredState",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Enables the MS authenticator app to display information about the app that is requesting authentication. This displays the application name.",
     "docsDescription": "Allows users to use Passwordless with Number Matching and adds location information from the last request",
     "addedComponent": [],
@@ -418,7 +488,9 @@
     "impactColour": "info",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.allowOTPTokens",
@@ -478,7 +550,9 @@
     "impactColour": "info",
     "addedDate": "2022-12-08",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.EnableHardwareOAuth",
@@ -538,12 +612,17 @@
     "impactColour": "info",
     "addedDate": "2022-03-15",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.PasswordExpireDisabled",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS", "PWAgePolicyNew"],
+    "tag": [
+      "CIS",
+      "PWAgePolicyNew"
+    ],
     "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "docsDescription": "Sets passwords to never expire for tenant, recommended to use in conjunction with secure password requirements.",
     "addedComponent": [],
@@ -552,7 +631,10 @@
     "impactColour": "info",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgDomain",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.ExternalMFATrusted",
@@ -588,7 +670,9 @@
   {
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles.",
     "docsDescription": "Users by default are allowed to create M365 tenants. This disables that so only admins can create new M365 tenants.",
     "addedComponent": [],
@@ -597,12 +681,17 @@
     "impactColour": "info",
     "addedDate": "2022-11-29",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.EnableAppConsentRequests",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
     "docsDescription": "Enables the ability for users to request admin consent for applications. Should be used in conjunction with the \"Require admin consent for applications\" standards",
     "addedComponent": [
@@ -617,7 +706,9 @@
     "impactColour": "info",
     "addedDate": "2023-11-27",
     "powershellEquivalent": "Update-MgPolicyAdminConsentRequestPolicy",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.NudgeMFA",
@@ -674,7 +765,9 @@
   {
     "name": "standards.DisableAppCreation",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Disables the ability for users to create App registrations in the tenant.",
     "docsDescription": "Disables the ability for users to create applications in Entra. Done to prevent breached accounts from creating an app to maintain access to the tenant, even after the breached account has been secured.",
     "addedComponent": [],
@@ -683,7 +776,10 @@
     "impactColour": "info",
     "addedDate": "2024-03-20",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableSecurityGroupUsers",
@@ -742,12 +838,17 @@
     "impactColour": "warning",
     "addedDate": "2022-10-20",
     "powershellEquivalent": "Graph API",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.OauthConsent",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
     "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
     "addedComponent": [
@@ -763,12 +864,17 @@
     "impactColour": "warning",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.OauthConsentLowSec",
     "cat": "Entra (AAD) Standards",
-    "tag": ["IntegratedApps"],
+    "tag": [
+      "IntegratedApps"
+    ],
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
     "docsDescription": "Allows users to consent to applications with low assigned risk.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
@@ -821,7 +927,9 @@
   {
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
     "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "addedComponent": [
@@ -882,7 +990,9 @@
     "impactColour": "danger",
     "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableVoice",
@@ -896,7 +1006,9 @@
     "impactColour": "danger",
     "addedDate": "2023-12-18",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableEmail",
@@ -982,7 +1094,9 @@
   {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Set the Outbound Spam Alert e-mail address",
     "docsDescription": "Sets the e-mail address to which outbound spam alerts are sent.",
     "addedComponent": [
@@ -997,7 +1111,9 @@
     "impactColour": "info",
     "addedDate": "2023-05-03",
     "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.MessageExpiration",
@@ -1060,7 +1176,9 @@
     "impactColour": "info",
     "addedDate": "2024-04-26",
     "powershellEquivalent": "Set-RemoteDomain -Identity 'Default' -TNEFEnabled $false",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.FocusedInbox",
@@ -1174,7 +1292,9 @@
   {
     "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Adds or removes indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
     "docsDescription": "Adds or removes indicators to e-mail messages received from external senders in Outlook. You can read more about this feature on [Microsoft's Exchange Team Blog.](https://techcommunity.microsoft.com/t5/exchange-team-blog/native-external-sender-callouts-on-email-in-outlook/ba-p/2250098)",
     "addedComponent": [
@@ -1208,12 +1328,18 @@
     "impactColour": "info",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Set-ExternalInOutlook \u2013Enabled $true or $false",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.EnableMailTips",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "exo_mailtipsenabled"],
+    "tag": [
+      "CIS",
+      "exo_mailtipsenabled"
+    ],
     "helpText": "Enables all MailTips in Outlook. MailTips are the notifications Outlook and Outlook on the web shows when an email you create, meets some requirements",
     "addedComponent": [
       {
@@ -1229,7 +1355,10 @@
     "impactColour": "info",
     "addedDate": "2024-01-14",
     "powershellEquivalent": "Set-OrganizationConfig",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.TeamsMeetingsByDefault",
@@ -1279,7 +1408,9 @@
   {
     "name": "standards.RotateDKIM",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Rotate DKIM keys that are 1024 bit to 2048 bit",
     "addedComponent": [],
     "label": "Rotate DKIM keys that are 1024 bit to 2048 bit",
@@ -1287,12 +1418,17 @@
     "impactColour": "info",
     "addedDate": "2023-03-14",
     "powershellEquivalent": "Rotate-DkimSigningConfig",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.AddDKIM",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Enables DKIM for all domains that currently support it",
     "addedComponent": [],
     "label": "Enables DKIM for all domains that currently support it",
@@ -1300,12 +1436,18 @@
     "impactColour": "info",
     "addedDate": "2023-03-14",
     "powershellEquivalent": "New-DkimSigningConfig and Set-DkimSigningConfig",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.EnableMailboxAuditing",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "exo_mailboxaudit"],
+    "tag": [
+      "CIS",
+      "exo_mailboxaudit"
+    ],
     "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. Disables audit bypass on all mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "docsDescription": "Enables mailbox auditing on tenant level and for all mailboxes. Disables audit bypass on all mailboxes. By default Microsoft does not enable mailbox auditing for Resource Mailboxes, Public Folder Mailboxes and DiscoverySearch Mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "addedComponent": [],
@@ -1314,7 +1456,10 @@
     "impactColour": "info",
     "addedDate": "2024-01-08",
     "powershellEquivalent": "Set-OrganizationConfig -AuditDisabled $false",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.SendReceiveLimitTenant",
@@ -1417,7 +1562,9 @@
   {
     "name": "standards.EXOOutboundSpamLimits",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Configures the outbound spam recipient limits (external per hour, internal per hour, per day) and the action to take when a limit is reached. The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one. ",
     "docsDescription": "Configures the Exchange Online outbound spam recipient limits for external per hour, internal per hour, and per day, along with the action to take (e.g., BlockUser, Alert) when these limits are exceeded. This helps prevent abuse and manage email flow. Microsoft's recommendations can be found [here.](https://learn.microsoft.com/en-us/defender-office-365/recommended-settings-for-eop-and-office365#eop-outbound-spam-policy-settings) The 'Set Outbound Spam Alert e-mail' standard is recommended to configure together with this one.",
     "addedComponent": [
@@ -1466,12 +1613,18 @@
     "impactColour": "info",
     "addedDate": "2025-05-13",
     "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy",
-    "recommendedBy": ["CIPP", "CIS"]
+    "recommendedBy": [
+      "CIPP",
+      "CIS"
+    ]
   },
   {
     "name": "standards.DisableExternalCalendarSharing",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "exo_individualsharing"],
+    "tag": [
+      "CIS",
+      "exo_individualsharing"
+    ],
     "helpText": "Disables the ability for users to share their calendar with external users. Only for the default policy, so exclusions can be made if needed.",
     "docsDescription": "Disables external calendar sharing for the entire tenant. This is not a widely used feature, and it's therefore unlikely that this will impact users. Only for the default policy, so exclusions can be made if needed by making a new policy and assigning it to users.",
     "addedComponent": [],
@@ -1480,12 +1633,16 @@
     "impactColour": "info",
     "addedDate": "2024-01-08",
     "powershellEquivalent": "Get-SharingPolicy | Set-SharingPolicy -Enabled $False",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.AutoAddProxy",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Automatically adds all available domains as a proxy address.",
     "docsDescription": "Automatically finds all available domain names in the tenant, and tries to add proxy addresses based on the user's UPN to each of these.",
     "addedComponent": [],
@@ -1504,7 +1661,10 @@
   {
     "name": "standards.DisableAdditionalStorageProviders",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "exo_storageproviderrestricted"],
+    "tag": [
+      "CIS",
+      "exo_storageproviderrestricted"
+    ],
     "helpText": "Disables the ability for users to open files in Outlook on the Web, from other providers such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.",
     "docsDescription": "Disables additional storage providers in OWA. This is to prevent users from using personal storage providers like Dropbox, Google Drive, etc. Usually this has little user impact.",
     "addedComponent": [],
@@ -1513,7 +1673,9 @@
     "impactColour": "info",
     "addedDate": "2024-01-17",
     "powershellEquivalent": "Get-OwaMailboxPolicy | Set-OwaMailboxPolicy -AdditionalStorageProvidersEnabled $False",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.AntiSpamSafeList",
@@ -1613,9 +1775,44 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.EXODirectSend",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the state of Direct Send in Exchange Online. Direct Send allows applications to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication.",
+    "docsDescription": "Controls whether applications can use Direct Send to send emails directly to Exchange Online mailboxes as the tenants domains, without requiring authentication. A detailed explanation from Microsoft can be found [here.](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365)",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.EXODirectSend.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set Direct Send state",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-05-28",
+    "powershellEquivalent": "Set-OrganizationConfig -RejectDirectSend $true/$false",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "exo_outlookaddins"],
+    "tag": [
+      "CIS",
+      "exo_outlookaddins"
+    ],
     "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
     "docsDescription": "Disables users from being able to install add-ins in Outlook. Only admins are able to approve add-ins for the users. This is done to reduce the threat surface for data exfiltration.",
     "addedComponent": [],
@@ -1624,7 +1821,9 @@
     "impactColour": "warning",
     "addedDate": "2024-02-05",
     "powershellEquivalent": "Get-ManagementRoleAssignment | Remove-ManagementRoleAssignment",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.SafeSendersDisable",
@@ -1642,7 +1841,9 @@
     "impactColour": "warning",
     "addedDate": "2023-10-26",
     "powershellEquivalent": "Set-MailboxJunkEmailConfiguration",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DelegateSentItems",
@@ -1676,7 +1877,9 @@
     "impactColour": "warning",
     "addedDate": "2022-05-25",
     "powershellEquivalent": "Set-Mailbox",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.UserSubmissions",
@@ -1718,7 +1921,9 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "docsDescription": "Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact.",
     "addedComponent": [],
@@ -1727,12 +1932,19 @@
     "impactColour": "warning",
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.EXODisableAutoForwarding",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "mdo_autoforwardingmode", "mdo_blockmailforward"],
+    "tag": [
+      "CIS",
+      "mdo_autoforwardingmode",
+      "mdo_blockmailforward"
+    ],
     "helpText": "Disables the ability for users to automatically forward e-mails to external recipients.",
     "docsDescription": "Disables the ability for users to automatically forward e-mails to external recipients. This is to prevent data exfiltration. Please check if there are any legitimate use cases for this feature before implementing, like forwarding invoices and such.",
     "addedComponent": [],
@@ -1741,7 +1953,10 @@
     "impactColour": "danger",
     "addedDate": "2024-07-26",
     "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy -AutoForwardingMode 'Off'",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.RetentionPolicyTag",
@@ -1822,7 +2037,11 @@
   {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
-    "tag": ["CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
+    "tag": [
+      "CIS",
+      "mdo_safelinksforemail",
+      "mdo_safelinksforOfficeApps"
+    ],
     "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
@@ -1854,7 +2073,9 @@
     "impactColour": "info",
     "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-SafeLinksPolicy or New-SafeLinksPolicy",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.AntiPhishPolicy",
@@ -2067,12 +2288,19 @@
     "impactColour": "info",
     "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-AntiPhishPolicy or New-AntiPhishPolicy",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.SafeAttachmentPolicy",
     "cat": "Defender Standards",
-    "tag": ["CIS", "mdo_safedocuments", "mdo_commonattachmentsfilter", "mdo_safeattachmentpolicy"],
+    "tag": [
+      "CIS",
+      "mdo_safedocuments",
+      "mdo_commonattachmentsfilter",
+      "mdo_safeattachmentpolicy"
+    ],
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
@@ -2138,12 +2366,16 @@
     "impactColour": "info",
     "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-SafeAttachmentPolicy or New-SafeAttachmentPolicy",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.AtpPolicyForO365",
     "cat": "Defender Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "This creates a Atp policy that enables Defender for Office 365 for SharePoint, OneDrive and Microsoft Teams.",
     "addedComponent": [
       {
@@ -2159,7 +2391,9 @@
     "impactColour": "info",
     "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-AtpPolicyForO365",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.PhishingSimulations",
@@ -2209,7 +2443,12 @@
   {
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
-    "tag": ["CIS", "mdo_zapspam", "mdo_zapphish", "mdo_zapmalware"],
+    "tag": [
+      "CIS",
+      "mdo_zapspam",
+      "mdo_zapphish",
+      "mdo_zapmalware"
+    ],
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
@@ -2295,7 +2534,9 @@
     "impactColour": "info",
     "addedDate": "2024-03-25",
     "powershellEquivalent": "Set-MalwareFilterPolicy or New-MalwareFilterPolicy",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.PhishSimSpoofIntelligence",
@@ -2725,7 +2966,9 @@
     "impactColour": "info",
     "addedDate": "2023-05-19",
     "powershellEquivalent": "Graph API",
-    "recommendedBy": ["CIPP"]
+    "recommendedBy": [
+      "CIPP"
+    ]
   },
   {
     "name": "standards.intuneBrandingProfile",
@@ -3076,7 +3319,9 @@
   {
     "name": "standards.SPAzureB2B",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
     "addedComponent": [],
     "label": "Enable SharePoint and OneDrive integration with Azure AD B2B",
@@ -3084,12 +3329,16 @@
     "impactColour": "info",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -EnableAzureADB2BIntegration $true",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.SPDisallowInfectedFiles",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Ensure Office 365 SharePoint infected files are disallowed for download",
     "addedComponent": [],
     "label": "Disallow downloading infected files from SharePoint",
@@ -3097,7 +3346,10 @@
     "impactColour": "info",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -DisallowInfectedFileDownload $true",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.SPDisableLegacyWorkflows",
@@ -3115,7 +3367,9 @@
   {
     "name": "standards.SPDirectSharing",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Ensure default link sharing is set to Direct in SharePoint and OneDrive",
     "addedComponent": [],
     "label": "Default sharing to Direct users",
@@ -3123,12 +3377,17 @@
     "impactColour": "warning",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -DefaultSharingLinkType Direct",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.SPExternalUserExpiration",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Ensure guest access to a site or OneDrive will expire automatically",
     "addedComponent": [
       {
@@ -3142,12 +3401,16 @@
     "impactColour": "warning",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.SPEmailAttestation",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Ensure re-authentication with verification code is restricted",
     "addedComponent": [
       {
@@ -3161,7 +3424,10 @@
     "impactColour": "warning",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -EmailAttestationRequired $true -EmailAttestationReAuthDays 15",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableAddShortcutsToOneDrive",
@@ -3228,7 +3494,10 @@
   {
     "name": "standards.DisableSharePointLegacyAuth",
     "cat": "SharePoint Standards",
-    "tag": ["CIS", "spo_legacy_auth"],
+    "tag": [
+      "CIS",
+      "spo_legacy_auth"
+    ],
     "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
     "docsDescription": "Disables the ability for users and applications to access SharePoint via legacy basic authentication. This will likely not have any user impact, but will block systems/applications depending on basic auth or the SharePointOnlineCredentials class.",
     "addedComponent": [],
@@ -3237,12 +3506,17 @@
     "impactColour": "warning",
     "addedDate": "2024-02-05",
     "powershellEquivalent": "Set-SPOTenant -LegacyAuthProtocolsEnabled $false",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.sharingCapability",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Sets the default sharing level for OneDrive and SharePoint. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [
       {
@@ -3275,12 +3549,17 @@
     "impactColour": "danger",
     "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgBetaAdminSharePointSetting",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "docsDescription": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [],
@@ -3289,7 +3568,10 @@
     "impactColour": "danger",
     "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgBetaAdminSharePointSetting",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": [
+      "CIS",
+      "CIPP"
+    ]
   },
   {
     "name": "standards.DisableUserSiteCreate",
@@ -3353,7 +3635,9 @@
   {
     "name": "standards.sharingDomainRestriction",
     "cat": "SharePoint Standards",
-    "tag": ["CIS"],
+    "tag": [
+      "CIS"
+    ],
     "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
     "addedComponent": [
       {
@@ -3460,7 +3744,9 @@
     "impactColour": "info",
     "addedDate": "2024-11-12",
     "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.TeamsEmailIntegration",
@@ -3480,7 +3766,29 @@
     "impactColour": "info",
     "addedDate": "2024-07-30",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
+  },
+  {
+    "name": "standards.TeamsGuestAccess",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Allow guest users access to teams.",
+    "docsDescription": "Allow guest users access to teams. Guest users are users who are not part of your organization but have been invited to collaborate with your organization in Teams. This setting allows you to control whether guest users can access Teams.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.TeamsGuestAccess.AllowGuestUser",
+        "label": "Allow guest users"
+      }
+    ],
+    "label": "Allow guest users in Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-03",
+    "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGuestUser $true",
+    "recommendedBy": []
   },
   {
     "name": "standards.TeamsExternalFileSharing",
@@ -3519,7 +3827,9 @@
     "impactColour": "info",
     "addedDate": "2024-07-28",
     "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
-    "recommendedBy": ["CIS"]
+    "recommendedBy": [
+      "CIS"
+    ]
   },
   {
     "name": "standards.TeamsEnrollUser",
@@ -4060,6 +4370,7 @@
   {
     "name": "standards.ExchangeConnectorTemplate",
     "label": "Exchange Connector Template",
+    "cat": "Templates",
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -4108,6 +4419,29 @@
           "queryKey": "ListGroupTemplates"
         }
       }
+    ]
+  },
+  {
+    "name": "standards.MailboxRecipientLimits",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Sets the maximum number of recipients that can be specified in the To, Cc, and Bcc fields of a message for all mailboxes in the tenant.",
+    "docsDescription": "This standard configures the recipient limits for all mailboxes in the tenant. The recipient limit determines the maximum number of recipients that can be specified in the To, Cc, and Bcc fields of a message. This helps prevent spam and manage email flow.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.MailboxRecipientLimits.RecipientLimit",
+        "label": "Recipient Limit",
+        "defaultValue": 500
+      }
+    ],
+    "label": "Set Mailbox Recipient Limits",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-05-28",
+    "powershellEquivalent": "Set-Mailbox -RecipientLimits",
+    "recommendedBy": [
+      "CIPP"
     ]
   }
 ]

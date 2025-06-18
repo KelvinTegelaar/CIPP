@@ -68,9 +68,9 @@ const AutopilotProfileForm = () => {
             type="autoComplete"
             label="Language"
             name="languages"
-            options={languageList.map(({ language, tag }) => ({
+            options={languageList.map(({ language, tag, "Geographic area": geographicArea }) => ({
               value: tag,
-              label: language,
+              label: `${language} - ${geographicArea}`, // Format as "language - geographic area" for display
             }))}
             formControl={formControl}
             multiple={false}

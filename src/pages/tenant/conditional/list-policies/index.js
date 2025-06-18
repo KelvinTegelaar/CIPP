@@ -84,7 +84,9 @@ const Page = () => {
 
   // Off-canvas configuration
   const offCanvas = {
-    children: (row) => <CippJsonView object={JSON.parse(row?.rawjson ? row.rawjson : null)} />,
+    children: (row) => (
+      <CippJsonView object={JSON.parse(row?.rawjson ? row.rawjson : null)} defaultOpen={true} />
+    ),
     size: "xl",
   };
 
