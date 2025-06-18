@@ -78,7 +78,7 @@ const CippForwardingSection = ({ formControl, usersList, contactsList, postReque
         formControl={formControl}
       />
       
-      <Grid item size={12}>
+      <Grid size={12}>
         <CippApiResults apiObject={postRequest} />
       </Grid>
       

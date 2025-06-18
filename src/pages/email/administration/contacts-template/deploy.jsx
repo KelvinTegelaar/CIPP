@@ -24,7 +24,7 @@ const Page = () => {
       postUrl="/api/DeployContactTemplates"
     >
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
@@ -38,7 +38,7 @@ const Page = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* TemplateList */}
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Select a template"

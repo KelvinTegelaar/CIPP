@@ -142,10 +142,10 @@ const EditGroup = () => {
         ) : (
           <Box sx={{ my: 2 }}>
             <Grid container spacing={2}>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Typography variant="h6">Group Properties</Typography>
               </Grid>
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
                   fullWidth
@@ -156,7 +156,7 @@ const EditGroup = () => {
                   disabled={groupInfo.isFetching}
                 />
               </Grid>
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
                   fullWidth
@@ -167,7 +167,7 @@ const EditGroup = () => {
                   disabled={groupInfo.isFetching}
                 />
               </Grid>
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
                   fullWidth
@@ -180,7 +180,7 @@ const EditGroup = () => {
               </Grid>
 
               {groupInfo.data?.groupInfo?.groupTypes?.includes("DynamicMembership") && (
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="textField"
                     fullWidth
@@ -193,12 +193,12 @@ const EditGroup = () => {
                 </Grid>
               )}
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6">Add Members</Typography>
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormUserSelector
                   formControl={formControl}
                   name="AddMember"
@@ -209,7 +209,7 @@ const EditGroup = () => {
                 />
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormUserSelector
                   formControl={formControl}
                   name="AddOwner"
@@ -220,7 +220,7 @@ const EditGroup = () => {
                 />
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormContactSelector
                   formControl={formControl}
                   name="AddContact"
@@ -236,12 +236,12 @@ const EditGroup = () => {
                 />
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6">Remove Members</Typography>
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   name="RemoveMember"
@@ -262,7 +262,7 @@ const EditGroup = () => {
                 />
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   name="RemoveOwner"
@@ -281,7 +281,7 @@ const EditGroup = () => {
                 />
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   name="RemoveContact"
@@ -302,12 +302,12 @@ const EditGroup = () => {
                 />
               </Grid>
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6">Group Settings</Typography>
               </Grid>
               {(groupType === "Microsoft 365" || groupType === "Distribution List") && (
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
                     label="Let people outside the organization email the group"
@@ -320,7 +320,7 @@ const EditGroup = () => {
               )}
 
               {groupType === "Microsoft 365" && (
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
                     label="Send Copies of team emails and events to team members inboxes"
