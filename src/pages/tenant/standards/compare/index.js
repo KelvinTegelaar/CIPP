@@ -170,7 +170,76 @@ const Page = () => {
                   });
                 }
               });
-            } else {
+            } else if (standardKey === "QuarantineTemplate" && Array.isArray(standardConfig)) {
+              // Process each QuarantineTemplate item separately
+              standardConfig.forEach((templateItem, index) => {
+                const QuarantineName = templateItem.displayName?.value;
+                if (QuarantineName) {
+                  const standardId = `standards.QuarantineTemplate.${QuarantineName}`;
+                  const standardInfo = standards.find((s) => s.name === `standards.QuarantineTemplate`);
+
+                  if ("action" in templateItem) {
+                    delete templateItem.action;
+                  }
+                  const standardSettings = templateItem;
+
+                  // Find the tenant's value for this specific template
+                  const currentTenantStandard = currentTenantData.find(
+                    (s) => s.standardId === standardId
+                  );
+
+                  // Get the standard object and its value from the tenant object
+                  const standardObject = currentTenantObj?.[standardId];
+                  const directStandardValue = standardObject?.Value;
+
+                  // Determine compliance status
+                  let isCompliant = false;
+
+                  // Special case for boolean standards that are true in the tenant
+                  if (directStandardValue === true) {
+                    // If the standard is directly in the tenant and is true, it's compliant
+                    isCompliant = true;
+                  } else if (directStandardValue !== undefined) {
+                    // For non-boolean values, use strict equality
+                    isCompliant =
+                      JSON.stringify(directStandardValue) === JSON.stringify(standardSettings);
+                  } else if (currentTenantStandard) {
+                    // Fall back to the previous logic if the standard is not directly in the tenant object
+                    if (typeof standardSettings === "boolean" && standardSettings === true) {
+                      isCompliant = currentTenantStandard.value === true;
+                    } else {
+                      isCompliant =
+                        JSON.stringify(currentTenantStandard.value) ===
+                        JSON.stringify(standardSettings);
+                    }
+                  }
+
+                  allStandards.push({
+                    standardId,
+                    standardName: `Quarantine Policy: ${
+                      QuarantineName
+                    }`,
+                    currentTenantValue:
+                      standardObject !== undefined
+                        ? {
+                            Value: directStandardValue,
+                            LastRefresh: standardObject?.LastRefresh,
+                          }
+                        : currentTenantStandard?.value,
+                    standardValue: standardSettings, // Use the template settings object instead of true
+                    complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                    complianceDetails:
+                      standardInfo?.docsDescription || standardInfo?.helpText || "",
+                    standardDescription: standardInfo?.helpText || "",
+                    standardImpact: standardInfo?.impact || "Medium Impact",
+                    standardImpactColour: standardInfo?.impactColour || "warning",
+                    templateName: selectedTemplate?.templateName || "Standard Template",
+                    templateActions: templateItem.action || [],
+                  });
+                }
+              });
+            } 
+            else {
               // Regular handling for other standards
               const standardId = `standards.${standardKey}`;
               const standardInfo = standards.find((s) => s.name === standardId);
