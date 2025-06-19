@@ -4458,5 +4458,18 @@
     "addedDate": "2025-05-28",
     "powershellEquivalent": "Set-Mailbox -RecipientLimits",
     "recommendedBy": ["CIPP"]
+  },
+  {
+    "name": "standards.DisableExchangeOnlinePowerShell",
+    "cat": "Exchange Standards",
+    "tag": ["CIS", "Security"],
+    "helpText": "Disables Exchange Online PowerShell access for non-admin users by setting the RemotePowerShellEnabled property to false for each user. This helps prevent attackers from using PowerShell to run malicious commands, access file systems, registry, and distribute ransomware throughout networks. Users with admin roles are automatically excluded.",
+    "docsDescription": "Disables Exchange Online PowerShell access for non-admin users by setting the RemotePowerShellEnabled property to false for each user. This security measure follows a least privileged access approach, preventing potential attackers from using PowerShell to execute malicious commands, access sensitive systems, or distribute malware. Users with management roles containing 'Admin' are automatically excluded to ensure administrators retain PowerShell access to perform necessary management tasks.",
+    "label": "Disable Exchange Online PowerShell for non-admin users",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-06-19",
+    "powershellEquivalent": "Get-ManagementRole | Where-Object { $_.Name -like \"*Admin*\" } | ForEach-Object { Get-ManagementRoleAssignment -Role $_.Name } # To identify admin users\nSet-User -Identity $user -RemotePowerShellEnabled $false # For non-admin users",
+    "recommendedBy": ["CIS", "CIPP"]
   }
 ]
