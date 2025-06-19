@@ -117,7 +117,7 @@ export const SideNav = (props) => {
     },
     {
       link: "https://www.domotz.com/cipp-community-free-domotz-beta.php?utm_source=Community_CIPP&utm_medium=Community_CIPP&utm_campaign=Community_CIPP",
-      imagesrc: theme === "light" ? "/sponsors/domotz-light.svg" : "/sponsors/domotz-dark.png",
+      imagesrc: theme === "light" ? "/sponsors/domotz-light.png" : "/sponsors/domotz-dark.png",
       priority: 1,
     },
     {
