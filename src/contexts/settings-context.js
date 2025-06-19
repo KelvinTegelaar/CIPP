@@ -74,6 +74,10 @@ const initialSettings = {
   pinNav: true,
   currentTenant: null,
   showDevtools: false,
+  customBranding: {
+    colour: "#F77F00",
+    logo: null,
+  },
 };
 
 const initialState = {

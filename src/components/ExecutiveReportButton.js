@@ -15,7 +15,6 @@ import { useSettings } from "../hooks/use-settings";
 // PRODUCTION-GRADE PDF SYSTEM
 const ExecutiveReportDocument = ({
   tenantName,
-  tenantId,
   userStats,
   standardsData,
   organizationData,
