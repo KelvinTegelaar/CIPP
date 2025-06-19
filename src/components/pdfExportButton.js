@@ -8,6 +8,7 @@ import { useSettings } from "../hooks/use-settings";
 export const PDFExportButton = (props) => {
   const { rows, columns, reportName, columnVisibility, ...other } = props;
   const brandingSettings = useSettings().customBranding;
+  //we need to use jspdf here because the react-pdf library gets killed with our amount of data.
   const handleExportRows = (rows) => {
     const unit = "pt";
     const size = "A3"; // Use A1, A2, A3 or A4
@@ -35,12 +36,12 @@ export const PDFExportButton = (props) => {
         const logoSize = 60; // Fixed logo height
         const logoX = 40; // Left margin
         const logoY = 30; // Top margin
-        
+
         // Add the base64 image to the PDF
-        doc.addImage(brandingSettings.logo, 'PNG', logoX, logoY, logoSize, logoSize);
+        doc.addImage(brandingSettings.logo, "PNG", logoX, logoY, logoSize, logoSize);
         logoHeight = logoSize + 20; // Logo height plus some spacing
       } catch (error) {
-        console.warn('Failed to add logo to PDF:', error);
+        console.warn("Failed to add logo to PDF:", error);
       }
     }
 
@@ -69,7 +70,7 @@ export const PDFExportButton = (props) => {
     // Convert hex color to RGB if custom branding color is provided
     const getHeaderColor = () => {
       if (brandingSettings?.colour) {
-        const hex = brandingSettings.colour.replace('#', '');
+        const hex = brandingSettings.colour.replace("#", "");
         const r = parseInt(hex.substr(0, 2), 16);
         const g = parseInt(hex.substr(2, 2), 16);
         const b = parseInt(hex.substr(4, 2), 16);
