@@ -11,6 +11,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { useSettings } from "../hooks/use-settings";
+import { useSecureScore } from "../hooks/use-securescore";
 
 // PRODUCTION-GRADE PDF SYSTEM
 const ExecutiveReportDocument = ({
@@ -19,6 +20,7 @@ const ExecutiveReportDocument = ({
   standardsData,
   organizationData,
   brandingSettings,
+  secureScoreData,
 }) => {
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -608,14 +610,6 @@ const ExecutiveReportDocument = ({
     { standard: "ISO 27001", compliance: 76 },
   ];
 
-  const secureScoreData = {
-    currentScore: 847,
-    fourWeeksAgo: 782,
-    similarCompanies: 723,
-    allCompanies: 654,
-    change: 65,
-  };
-
   // Mock licensing data
   const licensingData = [
     {
@@ -821,7 +815,6 @@ const ExecutiveReportDocument = ({
 
           <View style={styles.tenantCard}>
             <Text style={styles.tenantName}>{tenantName || "Organization Name"}</Text>
-            <Text style={styles.tenantMeta}>Generated on {currentDate}</Text>
           </View>
         </View>
 
@@ -925,7 +918,6 @@ const ExecutiveReportDocument = ({
           <Text style={{ fontWeight: "bold" }}>Proactive security</Text> prevents{"\n"}
           <Text style={{ fontWeight: "bold" }}>repeated attacks</Text>
         </Text>
-        <Text style={styles.statBrandFooter}>CYBERDRAIN SECURITY</Text>
       </Page>
 
       {/* SECURITY CONTROLS - HIGH PERFORMANCE (RAUCH) */}
@@ -1031,7 +1023,6 @@ const ExecutiveReportDocument = ({
           Your <Text style={{ fontWeight: "bold" }}>security resilience</Text> is{"\n"}
           our <Text style={{ fontWeight: "bold" }}>primary mission</Text>
         </Text>
-        <Text style={styles.statBrandFooter}>CYBERDRAIN SECURITY</Text>
       </Page>
 
       {/* MICROSOFT SECURE SCORE - DEDICATED PAGE */}
@@ -1062,44 +1053,55 @@ const ExecutiveReportDocument = ({
 
           <View style={styles.scoreGrid}>
             <View style={styles.scoreCard}>
-              <Text style={styles.scoreNumber}>{secureScoreData.currentScore}</Text>
+              <Text style={styles.scoreNumber}>
+                {secureScoreData?.translatedData?.currentScore || "N/A"}
+              </Text>
               <Text style={styles.scoreLabel}>Current Score</Text>
             </View>
             <View style={styles.scoreCard}>
-              <Text style={styles.scoreNumber}>{secureScoreData.fourWeeksAgo}</Text>
-              <Text style={styles.scoreLabel}>4 Weeks Ago</Text>
+              <Text style={styles.scoreNumber}>
+                {secureScoreData?.translatedData?.maxScore || "N/A"}
+              </Text>
+              <Text style={styles.scoreLabel}>Max Score</Text>
             </View>
             <View style={styles.scoreCard}>
-              <Text style={styles.scoreNumber}>{secureScoreData.similarCompanies}</Text>
-              <Text style={styles.scoreLabel}>Similar Orgs</Text>
+              <Text style={styles.scoreNumber}>
+                {secureScoreData?.translatedData?.percentageVsSimilar || "N/A"}%
+              </Text>
+              <Text style={styles.scoreLabel}>vs Similar Orgs</Text>
             </View>
             <View style={styles.scoreCard}>
-              <Text style={styles.scoreNumber}>{secureScoreData.allCompanies}</Text>
-              <Text style={styles.scoreLabel}>All Orgs</Text>
+              <Text style={styles.scoreNumber}>
+                {secureScoreData?.translatedData?.percentageVsAllTenants || "N/A"}%
+              </Text>
+              <Text style={styles.scoreLabel}>vs All Orgs</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>14-Day Score Trend</Text>
+          <Text style={styles.sectionTitle}>Current Score Overview</Text>
 
           <View style={styles.chartContainer}>
-            <Text style={styles.chartTitle}>Secure Score Progress Over Time</Text>
+            <Text style={styles.chartTitle}>Secure Score Summary</Text>
             <Text style={styles.chartData}>
-              Score progression: 782 → 847 (+65 points){"\n"}
-              Consistent daily improvements showing strong security enhancement{"\n"}
-              Trend indicates effective security control implementation
+              Current Score: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
+              {secureScoreData?.translatedData?.maxScore || "N/A"}
+              {"\n"}
+              Achievement Rate: {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%{"\n"}
+              {secureScoreData?.translatedData?.controlScores?.length || 0} security controls
+              evaluated
             </Text>
           </View>
         </View>
 
         <View style={styles.infoBox}>
-          <Text style={styles.infoTitle}>Understanding Score Changes</Text>
+          <Text style={styles.infoTitle}>Understanding Your Score</Text>
           <Text style={styles.infoText}>
-            Your Secure Score has increased by {secureScoreData.change} points over the past 4
-            weeks, indicating strong security improvements. Score fluctuations are normal and can be
-            influenced by various factors including new user additions, license changes, policy
-            updates, and the introduction of new security features by Microsoft.
+            Your current Secure Score of {secureScoreData?.translatedData?.currentScore || "N/A"}{" "}
+            represents {secureScoreData?.translatedData?.percentageCurrent || "N/A"}% of the maximum
+            possible score. This score is calculated based on your security configurations,
+            policies, and controls implemented across your Microsoft 365 environment.
           </Text>
         </View>
 
@@ -1115,7 +1117,6 @@ const ExecutiveReportDocument = ({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Generated by CIPP - {currentDate}</Text>
           <Text
             style={styles.pageNumber}
             render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
@@ -1139,7 +1140,6 @@ const ExecutiveReportDocument = ({
           <Text style={{ fontWeight: "bold" }}>Proactive defense</Text> beats{"\n"}
           <Text style={{ fontWeight: "bold" }}>reactive recovery</Text>
         </Text>
-        <Text style={styles.statBrandFooter}>CYBERDRAIN SECURITY</Text>
       </Page>
 
       {/* LICENSING PAGE */}
@@ -1234,7 +1234,6 @@ const ExecutiveReportDocument = ({
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Generated by CIPP - {currentDate}</Text>
           <Text
             style={styles.pageNumber}
             render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
@@ -1257,7 +1256,6 @@ const ExecutiveReportDocument = ({
           {"\n"}
           saves <Text style={{ fontWeight: "bold" }}>millions in recovery</Text>
         </Text>
-        <Text style={styles.statBrandFooter}>CYBERDRAIN SECURITY</Text>
       </Page>
 
       {/* DEVICES PAGE - Only show if device data is available */}
@@ -1345,7 +1343,6 @@ const ExecutiveReportDocument = ({
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Generated by CIPP - {currentDate}</Text>
             <Text
               style={styles.pageNumber}
               render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
@@ -1369,7 +1366,6 @@ const ExecutiveReportDocument = ({
           <Text style={{ fontWeight: "bold" }}>Early detection</Text> minimizes{"\n"}
           <Text style={{ fontWeight: "bold" }}>business impact</Text>
         </Text>
-        <Text style={styles.statBrandFooter}>CYBERDRAIN SECURITY</Text>
       </Page>
 
       {/* CONDITIONAL ACCESS POLICIES PAGE - Only show if data is available */}
@@ -1487,7 +1483,6 @@ const ExecutiveReportDocument = ({
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Generated by CIPP - {currentDate}</Text>
             <Text
               style={styles.pageNumber}
               render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
@@ -1505,6 +1500,9 @@ export const ExecutiveReportButton = (props) => {
   const settings = useSettings();
   const brandingSettings = settings.customBranding;
 
+  // Get real secure score data
+  const secureScore = useSecureScore();
+
   const fileName = `Executive_Report_${tenantName?.replace(/[^a-zA-Z0-9]/g, "_") || "Tenant"}_${
     new Date().toISOString().split("T")[0]
   }.pdf`;
@@ -1519,6 +1517,7 @@ export const ExecutiveReportButton = (props) => {
           standardsData={standardsData}
           organizationData={organizationData}
           brandingSettings={brandingSettings}
+          secureScoreData={secureScore}
         />
       }
       fileName={fileName}
@@ -1528,7 +1527,7 @@ export const ExecutiveReportButton = (props) => {
           <Button
             variant="contained"
             startIcon={<PictureAsPdf />}
-            disabled={loading}
+            disabled={loading || secureScore.isFetching}
             sx={{
               fontWeight: "bold",
               textTransform: "none",
@@ -1538,7 +1537,11 @@ export const ExecutiveReportButton = (props) => {
             }}
             {...other}
           >
-            {loading ? "Generating..." : "Executive Report"}
+            {loading
+              ? "Generating..."
+              : secureScore.isFetching
+              ? "Loading Data..."
+              : "Executive Report"}
           </Button>
         </Tooltip>
       )}

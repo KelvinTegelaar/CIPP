@@ -30,12 +30,9 @@ const useMobileNav = () => {
     }
   }, [open]);
 
-  useEffect(
-    () => {
-      handlePathnameChange();
-    },
-    [pathname]
-  );
+  useEffect(() => {
+    handlePathnameChange();
+  }, [pathname]);
 
   const handleOpen = useCallback(() => {
     setOpen(true);
@@ -142,13 +139,11 @@ export const Layout = (props) => {
   const userSettingsAPI = ApiGetCall({
     url: "/api/ListUserSettings",
     queryKey: "userSettings",
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    keepPreviousData: true,
   });
 
   useEffect(() => {
     if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
+      console.log("User Settings API Data:", userSettingsAPI.data);
       //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
       if (userSettingsAPI.data.offboardingDefaults?.user) {
         delete userSettingsAPI.data.offboardingDefaults.user;
