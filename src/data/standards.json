@@ -1893,7 +1893,12 @@
   {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 5.0 (6.3.1)", "exo_outlookaddins", "NIST CSF 2.0 (PR.AA-05)", "NIST CSF 2.0 (PR.PS-05)"],
+    "tag": [
+      "CIS M365 5.0 (6.3.1)",
+      "exo_outlookaddins",
+      "NIST CSF 2.0 (PR.AA-05)",
+      "NIST CSF 2.0 (PR.PS-05)"
+    ],
     "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
     "docsDescription": "Disables users from being able to install add-ins in Outlook. Only admins are able to approve add-ins for the users. This is done to reduce the threat surface for data exfiltration.",
     "addedComponent": [],
@@ -2149,7 +2154,12 @@
   {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
-    "tag": ["CIS M365 5.0 (2.1.1)", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps", "NIST CSF 2.0 (DE.CM-09)"],
+    "tag": [
+      "CIS M365 5.0 (2.1.1)",
+      "mdo_safelinksforemail",
+      "mdo_safelinksforOfficeApps",
+      "NIST CSF 2.0 (DE.CM-09)"
+    ],
     "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
