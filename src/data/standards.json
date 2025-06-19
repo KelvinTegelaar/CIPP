@@ -113,7 +113,7 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "tag": ["CIS M365 5.0 (3.1.1)", "mip_search_auditlog"],
+    "tag": ["CIS M365 5.0 (3.1.1)", "mip_search_auditlog", "NIST CSF 2.0 (DE.CM-09)"],
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
@@ -306,7 +306,8 @@
       "CISA (MS.AAD.5.1v1)",
       "EIDSCA.AP14",
       "EIDSCA.ST08",
-      "EIDSCA.ST09"
+      "EIDSCA.ST09",
+      "NIST CSF 2.0 (PR.AA-05)"
     ],
     "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from seeing other users or guests in the directory.",
     "docsDescription": "Sets it so guests can view only their own user profile. Permission to view other users isn't allowed. Also restricts guest users from seeing the membership of groups they're in. See exactly what get locked down in the [Microsoft documentation.](https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions)",
@@ -321,7 +322,7 @@
   {
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
-    "tag": ["CIS M365 5.0 (6.5.4)"],
+    "tag": ["CIS M365 5.0 (6.5.4)", "NIST CSF 2.0 (PR.IR-01)"],
     "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants.",
     "docsDescription": "Disables SMTP basic authentication for the tenant and all users with it explicitly enabled.",
     "addedComponent": [],
@@ -335,7 +336,7 @@
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global Standards",
-    "tag": ["CIS M365 5.0 (1.3.2)", "spo_idle_session_timeout"],
+    "tag": ["CIS M365 5.0 (1.3.2)", "spo_idle_session_timeout", "NIST CSF 2.0 (PR.AA-03)"],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": [
       {
@@ -522,7 +523,8 @@
       "EIDSCA.AM06",
       "EIDSCA.AM07",
       "EIDSCA.AM09",
-      "EIDSCA.AM10"
+      "EIDSCA.AM10",
+      "NIST CSF 2.0 (PR.AA-03)"
     ],
     "helpText": "Enables the MS authenticator app to display information about the app that is requesting authentication. This displays the application name.",
     "docsDescription": "Allows users to use Passwordless with Number Matching and adds location information from the last request",
@@ -593,7 +595,8 @@
       "EIDSCA.AF03",
       "EIDSCA.AF04",
       "EIDSCA.AF05",
-      "EIDSCA.AF06"
+      "EIDSCA.AF06",
+      "NIST CSF 2.0 (PR.AA-03)"
     ],
     "helpText": "Enables the FIDO2 authenticationMethod for the tenant",
     "docsDescription": "Enables FIDO2 capabilities for the tenant. This allows users to use FIDO2 keys like a Yubikey for authentication.",
@@ -749,7 +752,8 @@
       "EIDSCA.CR02",
       "EIDSCA.CR03",
       "EIDSCA.CR04",
-      "Essential 8 (1507)"
+      "Essential 8 (1507)",
+      "NIST CSF 2.0 (PR.AA-05)"
     ],
     "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
     "docsDescription": "Enables the ability for users to request admin consent for applications. Should be used in conjunction with the \"Require admin consent for applications\" standards",
@@ -826,7 +830,8 @@
       "CIS M365 5.0 (1.2.2)",
       "CISA (MS.AAD.4.1v1)",
       "EIDSCA.AP10",
-      "Essential 8 (1175)"
+      "Essential 8 (1175)",
+      "NIST CSF 2.0 (PR.AA-05)"
     ],
     "helpText": "Disables the ability for users to create App registrations in the tenant.",
     "docsDescription": "Disables the ability for users to create applications in Entra. Done to prevent breached accounts from creating an app to maintain access to the tenant, even after the breached account has been secured.",
@@ -841,7 +846,7 @@
   {
     "name": "standards.DisableSecurityGroupUsers",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CISA (MS.AAD.20.1v1)"],
+    "tag": ["CISA (MS.AAD.20.1v1)", "NIST CSF 2.0 (PR.AA-05)"],
     "helpText": "Completely disables the creation of security groups by users. This also breaks the ability to manage groups themselves, or create Teams",
     "addedComponent": [],
     "label": "Disable Security Group creation by users",
@@ -905,7 +910,8 @@
       "CISA (MS.AAD.4.2v1)",
       "EIDSCA.AP08",
       "EIDSCA.AP09",
-      "Essential 8 (1175)"
+      "Essential 8 (1175)",
+      "NIST CSF 2.0 (PR.AA-05)"
     ],
     "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
     "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
@@ -980,7 +986,7 @@
   {
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS", "Essential 8 (1501)"],
+    "tag": ["CIS", "Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
     "helpText": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
     "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "addedComponent": [
@@ -1032,7 +1038,7 @@
   {
     "name": "standards.DisableSMS",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (2.3.5)", "EIDSCA.AS04"],
+    "tag": ["CIS M365 5.0 (2.3.5)", "EIDSCA.AS04", "NIST CSF 2.0 (PR.AA-03)"],
     "helpText": "This blocks users from using SMS as an MFA method. If a user only has SMS as a MFA method, they will be unable to log in.",
     "docsDescription": "Disables SMS as an MFA method for the tenant. If a user only has SMS as a MFA method, they will be unable to sign in.",
     "addedComponent": [],
@@ -1046,7 +1052,7 @@
   {
     "name": "standards.DisableVoice",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (2.3.5)", "EIDSCA.AV01"],
+    "tag": ["CIS M365 5.0 (2.3.5)", "EIDSCA.AV01", "NIST CSF 2.0 (PR.AA-03)"],
     "helpText": "This blocks users from using Voice call as an MFA method. If a user only has Voice as a MFA method, they will be unable to log in.",
     "docsDescription": "Disables Voice call as an MFA method for the tenant. If a user only has Voice call as a MFA method, they will be unable to sign in.",
     "addedComponent": [],
@@ -1060,7 +1066,7 @@
   {
     "name": "standards.DisableEmail",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (2.3.5)"],
+    "tag": ["CIS M365 5.0 (2.3.5)", "NIST CSF 2.0 (PR.AA-03)"],
     "helpText": "This blocks users from using email as an MFA method. This disables the email OTP option for guest users, and instead prompts them to create a Microsoft account.",
     "addedComponent": [],
     "label": "Disables Email as an MFA method",
@@ -1109,7 +1115,8 @@
       "CISA (MS.AAD.1.2v1)",
       "Essential 8 (1504)",
       "Essential 8 (1173)",
-      "Essential 8 (1401)"
+      "Essential 8 (1401)",
+      "NIST CSF 2.0 (PR.AA-03)"
     ],
     "helpText": "Enables per user MFA for all users.",
     "addedComponent": [],
@@ -1341,7 +1348,7 @@
   {
     "name": "standards.EnableOnlineArchiving",
     "cat": "Exchange Standards",
-    "tag": ["Essential 8 (1511)"],
+    "tag": ["Essential 8 (1511)", "NIST CSF 2.0 (PR.DS-11)"],
     "helpText": "Enables the In-Place Online Archive for all UserMailboxes with a valid license.",
     "addedComponent": [],
     "label": "Enable Online Archive for all users",
@@ -1541,7 +1548,8 @@
       "CIS M365 5.0 (6.1.3)",
       "exo_mailboxaudit",
       "Essential 8 (1509)",
-      "Essential 8 (1683)"
+      "Essential 8 (1683)",
+      "NIST CSF 2.0 (DE.CM-09)"
     ],
     "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. Disables audit bypass on all mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "docsDescription": "Enables mailbox auditing on tenant level and for all mailboxes. Disables audit bypass on all mailboxes. By default Microsoft does not enable mailbox auditing for Resource Mailboxes, Public Folder Mailboxes and DiscoverySearch Mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
@@ -1885,7 +1893,7 @@
   {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 5.0 (6.3.1)", "exo_outlookaddins"],
+    "tag": ["CIS M365 5.0 (6.3.1)", "exo_outlookaddins", "NIST CSF 2.0 (PR.AA-05)", "NIST CSF 2.0 (PR.PS-05)"],
     "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
     "docsDescription": "Disables users from being able to install add-ins in Outlook. Only admins are able to approve add-ins for the users. This is done to reduce the threat surface for data exfiltration.",
     "addedComponent": [],
@@ -1988,7 +1996,7 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 5.0 (1.2.2)", "CISA (MS.AAD.10.1v1)"],
+    "tag": ["CIS M365 5.0 (1.2.2)", "CISA (MS.AAD.10.1v1)", "NIST CSF 2.0 (PR.AA-01)"],
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "docsDescription": "Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact.",
     "addedComponent": [],
@@ -2002,7 +2010,7 @@
   {
     "name": "standards.DisableResourceMailbox",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": ["CIS", "NIST CSF 2.0 (PR.AA-01)"],
     "helpText": "Blocks login for all accounts that are marked as a resource mailbox and does not have a license assigned. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
     "docsDescription": "Resource mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for resource mailboxes. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
     "addedComponent": [],
@@ -2020,7 +2028,8 @@
       "CIS M365 5.0 (6.2.1)",
       "mdo_autoforwardingmode",
       "mdo_blockmailforward",
-      "CISA (MS.EXO.4.1v1)"
+      "CISA (MS.EXO.4.1v1)",
+      "NIST CSF 2.0 (PR.DS-02)"
     ],
     "helpText": "Disables the ability for users to automatically forward e-mails to external recipients.",
     "docsDescription": "Disables the ability for users to automatically forward e-mails to external recipients. This is to prevent data exfiltration. Please check if there are any legitimate use cases for this feature before implementing, like forwarding invoices and such.",
@@ -2140,7 +2149,7 @@
   {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
-    "tag": ["CIS M365 5.0 (2.1.1)", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
+    "tag": ["CIS M365 5.0 (2.1.1)", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps", "NIST CSF 2.0 (DE.CM-09)"],
     "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
@@ -2186,7 +2195,8 @@
       "mdo_spam_notifications_only_for_admins",
       "mdo_antiphishingpolicies",
       "mdo_phishthresholdlevel",
-      "CIS M365 5.0 (2.1.7)"
+      "CIS M365 5.0 (2.1.7)",
+      "NIST CSF 2.0 (DE.CM-09)"
     ],
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mail tips.",
     "addedComponent": [
@@ -2395,7 +2405,8 @@
       "CIS M365 5.0 (2.1.4)",
       "mdo_safedocuments",
       "mdo_commonattachmentsfilter",
-      "mdo_safeattachmentpolicy"
+      "mdo_safeattachmentpolicy",
+      "NIST CSF 2.0 (DE.CM-09)"
     ],
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
@@ -2467,7 +2478,7 @@
   {
     "name": "standards.AtpPolicyForO365",
     "cat": "Defender Standards",
-    "tag": ["CIS M365 5.0 (2.1.5)"],
+    "tag": ["CIS M365 5.0 (2.1.5)", "NIST CSF 2.0 (DE.CM-09)"],
     "helpText": "This creates a Atp policy that enables Defender for Office 365 for SharePoint, OneDrive and Microsoft Teams.",
     "addedComponent": [
       {
@@ -2538,7 +2549,8 @@
       "CIS M365 5.0 (2.1.3)",
       "mdo_zapspam",
       "mdo_zapphish",
-      "mdo_zapmalware"
+      "mdo_zapmalware",
+      "NIST CSF 2.0 (DE.CM-09)"
     ],
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
@@ -3419,7 +3431,7 @@
   {
     "name": "standards.SPDisallowInfectedFiles",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.3.1)", "CISA (MS.SPO.3.1v1)"],
+    "tag": ["CIS M365 5.0 (7.3.1)", "CISA (MS.SPO.3.1v1)", "NIST CSF 2.0 (DE.CM-09)"],
     "helpText": "Ensure Office 365 SharePoint infected files are disallowed for download",
     "addedComponent": [],
     "label": "Disallow downloading infected files from SharePoint",
@@ -3562,7 +3574,8 @@
       "CIS M365 5.0 (6.5.1)",
       "CIS M365 5.0 (7.2.1)",
       "spo_legacy_auth",
-      "CISA (MS.AAD.3.1v1)"
+      "CISA (MS.AAD.3.1v1)",
+      "NIST CSF 2.0 (PR.IR-01)"
     ],
     "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
     "docsDescription": "Disables the ability for users and applications to access SharePoint via legacy basic authentication. This will likely not have any user impact, but will block systems/applications depending on basic auth or the SharePointOnlineCredentials class.",
@@ -3704,7 +3717,7 @@
     "addedDate": "2025-06-13",
     "powershellEquivalent": "Set-SPOTenant -ConditionalAccessPolicy AllowFullAccess | AllowLimitedAccess | BlockAccess",
     "recommendedBy": ["CIS"],
-    "tag": ["CIS M365 5.0 (7.2.3)", "CISA (MS.SPO.2.1v1)"]
+    "tag": ["CIS M365 5.0 (7.2.3)", "CISA (MS.SPO.2.1v1)", "NIST CSF 2.0 (PR.AA-05)"]
   },
   {
     "name": "standards.sharingDomainRestriction",
@@ -4551,7 +4564,7 @@
   {
     "name": "standards.DisableExchangeOnlinePowerShell",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 5.0 (6.1.1)", "Security"],
+    "tag": ["CIS M365 5.0 (6.1.1)", "Security", "NIST CSF 2.0 (PR.AA-05)"],
     "helpText": "Disables Exchange Online PowerShell access for non-admin users by setting the RemotePowerShellEnabled property to false for each user. This helps prevent attackers from using PowerShell to run malicious commands, access file systems, registry, and distribute ransomware throughout networks. Users with admin roles are automatically excluded.",
     "docsDescription": "Disables Exchange Online PowerShell access for non-admin users by setting the RemotePowerShellEnabled property to false for each user. This security measure follows a least privileged access approach, preventing potential attackers from using PowerShell to execute malicious commands, access sensitive systems, or distribute malware. Users with management roles containing 'Admin' are automatically excluded to ensure administrators retain PowerShell access to perform necessary management tasks.",
     "label": "Disable Exchange Online PowerShell for non-admin users",
