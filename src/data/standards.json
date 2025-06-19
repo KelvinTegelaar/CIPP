@@ -301,7 +301,7 @@
   {
     "name": "standards.DisableGuestDirectory",
     "cat": "Global Standards",
-    "tag": ["CIS M365 5.0 (1.6.2)"],
+    "tag": ["CIS M365 5.0 (5.1.6.2)", "CISA (MS.AAD.5.1v1)"],
     "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from seeing other users or guests in the directory.",
     "docsDescription": "Sets it so guests can view only their own user profile. Permission to view other users isn't allowed. Also restricts guest users from seeing the membership of groups they're in. See exactly what get locked down in the [Microsoft documentation.](https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions)",
     "addedComponent": [],
@@ -705,7 +705,7 @@
   {
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (1.2.3)"],
+    "tag": ["CIS M365 5.0 (1.2.3)", "CISA (MS.AAD.6.1v1)"],
     "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles.",
     "docsDescription": "Users by default are allowed to create M365 tenants. This disables that so only admins can create new M365 tenants.",
     "addedComponent": [],
@@ -719,7 +719,7 @@
   {
     "name": "standards.EnableAppConsentRequests",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (1.5.2)"],
+    "tag": ["CIS M365 5.0 (1.5.2)", "CISA (MS.AAD.9.1v1)"],
     "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
     "docsDescription": "Enables the ability for users to request admin consent for applications. Should be used in conjunction with the \"Require admin consent for applications\" standards",
     "addedComponent": [
@@ -777,7 +777,7 @@
   {
     "name": "standards.DisableM365GroupUsers",
     "cat": "Entra (AAD) Standards",
-    "tag": [],
+    "tag": ["CISA (MS.AAD.21.1v1)"],
     "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "docsDescription": "Users by default are allowed to create M365 groups. This restricts M365 group creation to certain admin roles. This disables the ability to create Teams, SharePoint sites, Planner, etc",
     "addedComponent": [],
@@ -791,7 +791,7 @@
   {
     "name": "standards.DisableAppCreation",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (1.2.2)"],
+    "tag": ["CIS M365 5.0 (1.2.2)", "CISA (MS.AAD.4.1v1)"],
     "helpText": "Disables the ability for users to create App registrations in the tenant.",
     "docsDescription": "Disables the ability for users to create applications in Entra. Done to prevent breached accounts from creating an app to maintain access to the tenant, even after the breached account has been secured.",
     "addedComponent": [],
@@ -805,7 +805,7 @@
   {
     "name": "standards.DisableSecurityGroupUsers",
     "cat": "Entra (AAD) Standards",
-    "tag": [],
+    "tag": ["CISA (MS.AAD.20.1v1)"],
     "helpText": "Completely disables the creation of security groups by users. This also breaks the ability to manage groups themselves, or create Teams",
     "addedComponent": [],
     "label": "Disable Security Group creation by users",
@@ -864,7 +864,7 @@
   {
     "name": "standards.OauthConsent",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (1.5.1)"],
+    "tag": ["CIS M365 5.0 (1.5.1)", "CISA (MS.AAD.4.2v1)"],
     "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
     "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
     "addedComponent": [
@@ -898,7 +898,7 @@
   {
     "name": "standards.GuestInvite",
     "cat": "Entra (AAD) Standards",
-    "tag": [],
+    "tag": ["CISA (MS.AAD.18.1v1)"],
     "helpText": "This setting controls who can invite guests to your directory to collaborate on resources secured by your company, such as SharePoint sites or Azure resources.",
     "addedComponent": [
       {
@@ -976,7 +976,7 @@
   {
     "name": "standards.SecurityDefaults",
     "cat": "Entra (AAD) Standards",
-    "tag": [],
+    "tag": ["CISA (MS.AAD.11.1v1)"],
     "helpText": "Enables security defaults for the tenant, for newer tenants this is enabled by default. Do not enable this feature if you use Conditional Access.",
     "docsDescription": "Enables SD for the tenant, which disables all forms of basic authentication and enforces users to configure MFA. Users are only prompted for MFA when a logon is considered 'suspect' by Microsoft.",
     "addedComponent": [],
@@ -1059,7 +1059,13 @@
   {
     "name": "standards.PerUserMFA",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (1.2.1)", "CIS M365 5.0 (1.1.1)", "CIS M365 5.0 (1.1.2)"],
+    "tag": [
+      "CIS M365 5.0 (1.2.1)",
+      "CIS M365 5.0 (1.1.1)",
+      "CIS M365 5.0 (1.1.2)",
+      "CISA (MS.AAD.1.1v1)",
+      "CISA (MS.AAD.1.2v1)"
+    ],
     "helpText": "Enables per user MFA for all users.",
     "addedComponent": [],
     "label": "Enables per user MFA for all users.",
@@ -1935,7 +1941,7 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 5.0 (1.2.2)"],
+    "tag": ["CIS M365 5.0 (1.2.2)", "CISA (MS.AAD.10.1v1)"],
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "docsDescription": "Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact.",
     "addedComponent": [],
@@ -1963,7 +1969,12 @@
   {
     "name": "standards.EXODisableAutoForwarding",
     "cat": "Exchange Standards",
-    "tag": ["CIS M365 5.0 (6.2.1)", "mdo_autoforwardingmode", "mdo_blockmailforward"],
+    "tag": [
+      "CIS M365 5.0 (6.2.1)",
+      "mdo_autoforwardingmode",
+      "mdo_blockmailforward",
+      "CISA (MS.EXO.4.1v1)"
+    ],
     "helpText": "Disables the ability for users to automatically forward e-mails to external recipients.",
     "docsDescription": "Disables the ability for users to automatically forward e-mails to external recipients. This is to prevent data exfiltration. Please check if there are any legitimate use cases for this feature before implementing, like forwarding invoices and such.",
     "addedComponent": [],
@@ -3152,7 +3163,7 @@
   {
     "name": "standards.DefaultPlatformRestrictions",
     "cat": "Intune Standards",
-    "tag": [],
+    "tag": ["CISA (MS.AAD.19.1v1)"],
     "helpText": "Sets the default platform restrictions for enrolling devices into Intune. Note: Do not block personally owned if platform is blocked.",
     "addedComponent": [
       {
@@ -3226,7 +3237,7 @@
   {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
-    "tag": [],
+    "tag": ["CISA (MS.AAD.17.1v1)"],
     "helpText": "Sets the maximum number of devices that can be registered by a user. A value of 0 disables device registration by users",
     "addedComponent": [
       {
@@ -3361,7 +3372,7 @@
   {
     "name": "standards.SPDisallowInfectedFiles",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.3.1)"],
+    "tag": ["CIS M365 5.0 (7.3.1)", "CISA (MS.SPO.3.1v1)"],
     "helpText": "Ensure Office 365 SharePoint infected files are disallowed for download",
     "addedComponent": [],
     "label": "Disallow downloading infected files from SharePoint",
@@ -3387,7 +3398,7 @@
   {
     "name": "standards.SPDirectSharing",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.7)"],
+    "tag": ["CIS M365 5.0 (7.2.7)", "CISA (MS.SPO.1.4v1)"],
     "helpText": "Ensure default link sharing is set to Direct in SharePoint and OneDrive",
     "addedComponent": [],
     "label": "Default sharing to Direct users",
@@ -3400,7 +3411,7 @@
   {
     "name": "standards.SPExternalUserExpiration",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.9)"],
+    "tag": ["CIS M365 5.0 (7.2.9)", "CISA (MS.SPO.1.5v1)"],
     "helpText": "Ensure guest access to a site or OneDrive will expire automatically",
     "addedComponent": [
       {
@@ -3419,7 +3430,7 @@
   {
     "name": "standards.SPEmailAttestation",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.10)"],
+    "tag": ["CIS M365 5.0 (7.2.10)", "CISA (MS.SPO.1.6v1)"],
     "helpText": "Ensure re-authentication with verification code is restricted",
     "addedComponent": [
       {
@@ -3500,7 +3511,12 @@
   {
     "name": "standards.DisableSharePointLegacyAuth",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (6.5.1)", "CIS M365 5.0 (7.2.1)", "spo_legacy_auth"],
+    "tag": [
+      "CIS M365 5.0 (6.5.1)",
+      "CIS M365 5.0 (7.2.1)",
+      "spo_legacy_auth",
+      "CISA (MS.AAD.3.1v1)"
+    ],
     "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
     "docsDescription": "Disables the ability for users and applications to access SharePoint via legacy basic authentication. This will likely not have any user impact, but will block systems/applications depending on basic auth or the SharePointOnlineCredentials class.",
     "addedComponent": [],
@@ -3514,7 +3530,7 @@
   {
     "name": "standards.sharingCapability",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.3)"],
+    "tag": ["CIS M365 5.0 (7.2.3)", "CISA (MS.AAD.14.1v1)", "CISA (MS.SPO.1.1v1)"],
     "helpText": "Sets the default sharing level for OneDrive and SharePoint. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [
       {
@@ -3552,7 +3568,7 @@
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.5)"],
+    "tag": ["CIS M365 5.0 (7.2.5)", "CISA (MS.AAD.14.2v1)", "CISA (MS.SPO.1.2v1)"],
     "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "docsDescription": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": [],
@@ -3641,12 +3657,12 @@
     "addedDate": "2025-06-13",
     "powershellEquivalent": "Set-SPOTenant -ConditionalAccessPolicy AllowFullAccess | AllowLimitedAccess | BlockAccess",
     "recommendedBy": ["CIS"],
-    "tag": ["CIS M365 5.0 (7.2.3)"]
+    "tag": ["CIS M365 5.0 (7.2.3)", "CISA (MS.SPO.2.1v1)"]
   },
   {
     "name": "standards.sharingDomainRestriction",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.6)"],
+    "tag": ["CIS M365 5.0 (7.2.6)", "CISA (MS.AAD.14.3v1)", "CISA (MS.SPO.1.3v1)"],
     "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
     "addedComponent": [
       {
@@ -3765,7 +3781,6 @@
   {
     "name": "standards.TeamsEmailIntegration",
     "cat": "Teams Standards",
-    "tag": [],
     "helpText": "Should users be allowed to send emails directly to a channel email addresses?",
     "docsDescription": "Teams channel email addresses are an optional feature that allows users to email the Teams channel directly.",
     "addedComponent": [
