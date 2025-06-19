@@ -64,9 +64,12 @@ const ExecutiveReportDocument = ({
     },
 
     logo: {
-      width: 40,
-      height: 40,
+      height: 100,
       marginRight: 12,
+    },
+
+    headerLogo: {
+      height: 30,
     },
 
     brandName: {
@@ -166,6 +169,13 @@ const ExecutiveReportDocument = ({
       borderBottom: `1px solid ${brandColor}`,
       paddingBottom: 12,
       marginBottom: 24,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+    },
+
+    pageHeaderContent: {
+      flex: 1,
     },
 
     pageTitle: {
@@ -790,12 +800,9 @@ const ExecutiveReportDocument = ({
         <Image style={styles.statBackground} src="/reportImages/soc.jpg" />
         <View style={styles.coverHeader}>
           <View style={styles.logoSection}>
-            {brandingSettings?.logo ? (
-              <Image style={styles.logo} src={brandingSettings.logo} />
-            ) : (
-              <View />
+            {brandingSettings?.logo && (
+              <Image style={styles.logo} src={brandingSettings.logo} cache={false} />
             )}
-            <Text style={styles.brandName}>{brandingSettings?.logo ? "" : ""}</Text>
           </View>
           <Text style={styles.dateStamp}>{currentDate}</Text>
         </View>
@@ -826,10 +833,15 @@ const ExecutiveReportDocument = ({
       {/* EXECUTIVE SUMMARY - MODULAR COMPOSITION (FROST) */}
       <Page size="A4" style={styles.page}>
         <View style={styles.pageHeader}>
-          <Text style={styles.pageTitle}>Executive Summary</Text>
-          <Text style={styles.pageSubtitle}>
-            Strategic overview of your Microsoft 365 security posture
-          </Text>
+          <View style={styles.pageHeaderContent}>
+            <Text style={styles.pageTitle}>Executive Summary</Text>
+            <Text style={styles.pageSubtitle}>
+              Strategic overview of your Microsoft 365 security posture
+            </Text>
+          </View>
+          {brandingSettings?.logo && (
+            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+          )}
         </View>
 
         <View style={styles.section}>
@@ -919,10 +931,15 @@ const ExecutiveReportDocument = ({
       {/* SECURITY CONTROLS - HIGH PERFORMANCE (RAUCH) */}
       <Page size="A4" style={styles.page}>
         <View style={styles.pageHeader}>
-          <Text style={styles.pageTitle}>Security Controls Assessment</Text>
-          <Text style={styles.pageSubtitle}>
-            Detailed evaluation of implemented security measures
-          </Text>
+          <View style={styles.pageHeaderContent}>
+            <Text style={styles.pageTitle}>Security Controls Assessment</Text>
+            <Text style={styles.pageSubtitle}>
+              Detailed evaluation of implemented security measures
+            </Text>
+          </View>
+          {brandingSettings?.logo && (
+            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+          )}
         </View>
 
         <View style={styles.section}>
@@ -1020,10 +1037,15 @@ const ExecutiveReportDocument = ({
       {/* MICROSOFT SECURE SCORE - DEDICATED PAGE */}
       <Page size="A4" style={styles.page}>
         <View style={styles.pageHeader}>
-          <Text style={styles.pageTitle}>Microsoft Secure Score</Text>
-          <Text style={styles.pageSubtitle}>
-            Comprehensive security posture measurement and benchmarking
-          </Text>
+          <View style={styles.pageHeaderContent}>
+            <Text style={styles.pageTitle}>Microsoft Secure Score</Text>
+            <Text style={styles.pageSubtitle}>
+              Comprehensive security posture measurement and benchmarking
+            </Text>
+          </View>
+          {brandingSettings?.logo && (
+            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+          )}
         </View>
 
         <View style={styles.section}>
@@ -1123,10 +1145,15 @@ const ExecutiveReportDocument = ({
       {/* LICENSING PAGE */}
       <Page size="A4" style={styles.page}>
         <View style={styles.pageHeader}>
-          <Text style={styles.pageTitle}>License Management</Text>
-          <Text style={styles.pageSubtitle}>
-            Microsoft 365 license allocation and utilization analysis
-          </Text>
+          <View style={styles.pageHeaderContent}>
+            <Text style={styles.pageTitle}>License Management</Text>
+            <Text style={styles.pageSubtitle}>
+              Microsoft 365 license allocation and utilization analysis
+            </Text>
+          </View>
+          {brandingSettings?.logo && (
+            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+          )}
         </View>
 
         <View style={styles.section}>
@@ -1237,10 +1264,15 @@ const ExecutiveReportDocument = ({
       {deviceData && deviceData.totalDevices > 0 && (
         <Page size="A4" style={styles.page}>
           <View style={styles.pageHeader}>
-            <Text style={styles.pageTitle}>Device Management</Text>
-            <Text style={styles.pageSubtitle}>
-              Device compliance status and management overview
-            </Text>
+            <View style={styles.pageHeaderContent}>
+              <Text style={styles.pageTitle}>Device Management</Text>
+              <Text style={styles.pageSubtitle}>
+                Device compliance status and management overview
+              </Text>
+            </View>
+            {brandingSettings?.logo && (
+              <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+            )}
           </View>
 
           <View style={styles.section}>
@@ -1344,10 +1376,15 @@ const ExecutiveReportDocument = ({
       {conditionalAccessPolicies && conditionalAccessPolicies.length > 0 && (
         <Page size="A4" style={styles.page}>
           <View style={styles.pageHeader}>
-            <Text style={styles.pageTitle}>Conditional Access Policies</Text>
-            <Text style={styles.pageSubtitle}>
-              Identity and access management security controls
-            </Text>
+            <View style={styles.pageHeaderContent}>
+              <Text style={styles.pageTitle}>Conditional Access Policies</Text>
+              <Text style={styles.pageSubtitle}>
+                Identity and access management security controls
+              </Text>
+            </View>
+            {brandingSettings?.logo && (
+              <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+            )}
           </View>
 
           <View style={styles.section}>
@@ -1493,14 +1530,6 @@ export const ExecutiveReportButton = (props) => {
             startIcon={<PictureAsPdf />}
             disabled={loading}
             sx={{
-              backgroundColor: brandingSettings?.colour || "rgb(247, 127, 0)",
-              "&:hover": {
-                backgroundColor: brandingSettings?.colour
-                  ? `${brandingSettings.colour}dd`
-                  : "rgb(227, 107, 0)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                transform: "translateY(-1px)",
-              },
               fontWeight: "bold",
               textTransform: "none",
               borderRadius: 2,

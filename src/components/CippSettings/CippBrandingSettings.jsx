@@ -20,11 +20,6 @@ const CippBrandingSettings = () => {
     },
   });
 
-  const brandingSettings = ApiGetCall({
-    url: "/api/ExecBrandingSettings?Action=Get",
-    queryKey: "BrandingSettings",
-  });
-
   const saveBrandingSettings = ApiPostCall({
     datafromUrl: true,
     relatedQueryKeys: ["BrandingSettings"],
@@ -125,8 +120,8 @@ const CippBrandingSettings = () => {
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
         <Typography variant="body2" sx={{ mb: 1 }}>
-          Customize your organization's branding for reports and documents. Changes will be
-          applied to all generated reports.
+          Customize your organization's branding for reports and documents. Changes will be applied
+          to all generated reports.
         </Typography>
 
         {/* Logo Upload Section */}
