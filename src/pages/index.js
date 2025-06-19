@@ -13,6 +13,7 @@ import { BulkActionsMenu } from "../components/bulk-actions-menu.js";
 import { CippUniversalSearch } from "../components/CippCards/CippUniversalSearch.jsx";
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard.jsx";
+import { ExecutiveReportButton } from "../components/ExecutiveReportButton.js";
 
 const Page = () => {
   const { currentTenant } = useSettings();
@@ -196,11 +197,26 @@ const Page = () => {
           <Grid container spacing={3}>
             <Grid size={{ md: 12, xs: 12 }}>
               <Card>
-                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2 }}>
+                <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
                   <BulkActionsMenu
                     buttonName="Portals"
                     actions={PortalMenuItems}
                     disabled={!currentTenantInfo.isSuccess}
+                  />
+                  <ExecutiveReportButton
+                    tenantName={organization.data?.displayName}
+                    tenantId={organization.data?.id}
+                    userStats={{
+                      licensedUsers: dashboard.data?.LicUsers || 0,
+                      unlicensedUsers: dashboard.data?.Users && dashboard.data?.LicUsers && GlobalAdminList.data?.Results && dashboard.data?.Guests
+                        ? dashboard.data?.Users - dashboard.data?.LicUsers - dashboard.data?.Guests - GlobalAdminList.data?.Results?.length
+                        : 0,
+                      guests: dashboard.data?.Guests || 0,
+                      globalAdmins: GlobalAdminList.data?.Results?.length || 0
+                    }}
+                    standardsData={standards.data}
+                    organizationData={organization.data}
+                    disabled={organization.isFetching || dashboard.isFetching}
                   />
                   <Box sx={{ flex: 1 }}>
                     {/* TODO: Remove Card from inside CippUniversalSearch to avoid double border */}
@@ -257,7 +273,9 @@ const Page = () => {
                   Number(sharepoint.data?.GeoUsedStorageMB) || 0,
                 ]}
                 labels={[
-                  `Free (${formatStorageSize(sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB)})`,
+                  `Free (${formatStorageSize(
+                    sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB
+                  )})`,
                   `Used (${formatStorageSize(sharepoint.data?.GeoUsedStorageMB)})`,
                 ]}
               />
