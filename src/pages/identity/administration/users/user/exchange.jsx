@@ -76,7 +76,6 @@ const Page = () => {
       Endpoint: `users`,
       tenantFilter: userSettingsDefaults.currentTenant,
       $select: "id,displayName,userPrincipalName,mail",
-      noPagination: true,
       $top: 999,
     },
     queryKey: `UserNames-${userSettingsDefaults.currentTenant}`,
@@ -107,7 +106,6 @@ const Page = () => {
       tenantFilter: userSettingsDefaults.currentTenant,
       $filter: "securityEnabled eq true and mailEnabled eq true",
       $select: "id,displayName,mail,description",
-      noPagination: true,
       $top: 999,
     },
     queryKey: `MailEnabledSecurityGroups-${userSettingsDefaults.currentTenant}`,
@@ -320,6 +318,13 @@ const Page = () => {
   const combinedOptions = useMemo(() => {
     const options = [];
   
+    // Add special system users for calendar permissions
+    options.push({
+      value: 'Default',
+      label: 'Default',
+      type: 'system'
+    });
+  
     // Add users
     if (usersList?.data?.Results) {
       usersList.data.Results.forEach((user) => {
@@ -342,8 +347,12 @@ const Page = () => {
       });
     }
   
-    // Sort alphabetically by label
-    return options.sort((a, b) => a.label.localeCompare(b.label));
+    // Sort alphabetically by label, but keep system users at the top
+    return options.sort((a, b) => {
+      if (a.type === 'system' && b.type !== 'system') return -1;
+      if (b.type === 'system' && a.type !== 'system') return 1;
+      return a.label.localeCompare(b.label);
+    });
   }, [usersList?.data?.Results, groupsList?.data?.Results]);
 
   const isUserGroupLoading = usersList.isFetching || groupsList.isFetching;
@@ -938,6 +947,7 @@ const Page = () => {
                       currentSettings={userRequest.data?.[0]}
                       isFetching={userRequest.isFetching}
                       formControl={formControl}
+                      oooRequest={oooRequest}
                     />
                   </Stack>
                 </Grid>
