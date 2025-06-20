@@ -15,9 +15,15 @@ import {
   Button,
   IconButton,
   CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Stack,
+  Divider,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Add } from "@mui/icons-material";
+import { Add, Sort, Clear, FilterList } from "@mui/icons-material";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { debounce } from "lodash";
 import { Virtuoso } from "react-virtuoso";
@@ -274,6 +280,113 @@ const CippStandardDialog = ({
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const [localSearchQuery, setLocalSearchQuery] = useState("");
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  
+  // Enhanced filtering and sorting state
+  const [sortBy, setSortBy] = useState("addedDate"); // Default sort by date added
+  const [sortOrder, setSortOrder] = useState("desc"); // desc to show newest first
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedImpacts, setSelectedImpacts] = useState([]);
+  const [selectedRecommendedBy, setSelectedRecommendedBy] = useState([]);
+  const [showOnlyNew, setShowOnlyNew] = useState(false); // Show only standards added in last 30 days
+
+  // Get all unique values for filters
+  const { allCategories, allImpacts, allRecommendedBy } = useMemo(() => {
+    const categorySet = new Set();
+    const impactSet = new Set();
+    const recommendedBySet = new Set();
+
+    Object.keys(categories).forEach((category) => {
+      categorySet.add(category);
+      categories[category].forEach((standard) => {
+        if (standard.impact) impactSet.add(standard.impact);
+        if (standard.recommendedBy && Array.isArray(standard.recommendedBy)) {
+          standard.recommendedBy.forEach(rec => recommendedBySet.add(rec));
+        }
+      });
+    });
+
+    return {
+      allCategories: Array.from(categorySet).sort(),
+      allImpacts: Array.from(impactSet).sort(),
+      allRecommendedBy: Array.from(recommendedBySet).sort(),
+    };
+  }, [categories]);
+
+  // Enhanced filter function
+  const enhancedFilterStandards = useCallback((standardsList) => {
+    return standardsList.filter((standard) => {
+      // Original text search
+      const matchesSearch = !localSearchQuery || 
+        standard.label.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
+        standard.helpText.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
+        (standard.tag && standard.tag.some((tag) => 
+          tag.toLowerCase().includes(localSearchQuery.toLowerCase())
+        ));
+
+      // Category filter
+      const matchesCategory = selectedCategories.length === 0 || 
+        selectedCategories.includes(standard.cat);
+
+      // Impact filter
+      const matchesImpact = selectedImpacts.length === 0 || 
+        selectedImpacts.includes(standard.impact);
+
+      // Recommended by filter
+      const matchesRecommendedBy = selectedRecommendedBy.length === 0 || 
+        (standard.recommendedBy && Array.isArray(standard.recommendedBy) &&
+         standard.recommendedBy.some(rec => selectedRecommendedBy.includes(rec)));
+
+      // New standards filter (last 30 days)
+      const isNewStandard = (dateAdded) => {
+        if (!dateAdded) return false;
+        const currentDate = new Date();
+        const addedDate = new Date(dateAdded);
+        return differenceInDays(currentDate, addedDate) <= 30;
+      };
+      const matchesNewFilter = !showOnlyNew || isNewStandard(standard.addedDate);
+
+      return matchesSearch && matchesCategory && matchesImpact && matchesRecommendedBy && matchesNewFilter;
+    });
+  }, [localSearchQuery, selectedCategories, selectedImpacts, selectedRecommendedBy, showOnlyNew]);
+
+  // Enhanced sort function
+  const sortStandards = useCallback((standardsList) => {
+    return [...standardsList].sort((a, b) => {
+      let aValue, bValue;
+
+      switch (sortBy) {
+        case "label":
+          aValue = a.label.toLowerCase();
+          bValue = b.label.toLowerCase();
+          break;
+        case "addedDate":
+          aValue = new Date(a.addedDate || "1900-01-01");
+          bValue = new Date(b.addedDate || "1900-01-01");
+          break;
+        case "category":
+          aValue = a.cat?.toLowerCase() || "";
+          bValue = b.cat?.toLowerCase() || "";
+          break;
+        case "impact":
+          // Sort by impact priority: High > Medium > Low
+          const impactOrder = { "High Impact": 3, "Medium Impact": 2, "Low Impact": 1 };
+          aValue = impactOrder[a.impact] || 0;
+          bValue = impactOrder[b.impact] || 0;
+          break;
+        case "recommendedBy":
+          aValue = (a.recommendedBy && a.recommendedBy.length > 0) ? a.recommendedBy.join(", ").toLowerCase() : "";
+          bValue = (b.recommendedBy && b.recommendedBy.length > 0) ? b.recommendedBy.join(", ").toLowerCase() : "";
+          break;
+        default:
+          aValue = a.label.toLowerCase();
+          bValue = b.label.toLowerCase();
+      }
+
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [sortBy, sortOrder]);
 
   // Optimize handleAddClick to be more performant
   const handleAddClick = useCallback(
@@ -304,16 +417,32 @@ const CippStandardDialog = ({
   // Handle search input change locally
   const handleLocalSearchChange = useCallback(
     (e) => {
-      const value = e.target.value.toLowerCase();
+      const value = e.target.value;
       setLocalSearchQuery(value);
       handleSearchQueryChange(value);
     },
     [handleSearchQueryChange]
   );
 
+  // Clear all filters
+  const clearAllFilters = useCallback(() => {
+    setLocalSearchQuery("");
+    setSelectedCategories([]);
+    setSelectedImpacts([]);
+    setSelectedRecommendedBy([]);
+    setShowOnlyNew(false);
+    setSortBy("addedDate");
+    setSortOrder("desc");
+    handleSearchQueryChange("");
+  }, [handleSearchQueryChange]);
+
   // Clear dialog state on close
   const handleClose = useCallback(() => {
     setLocalSearchQuery(""); // Clear local search state
+    setSelectedCategories([]);
+    setSelectedImpacts([]);
+    setSelectedRecommendedBy([]);
+    setShowOnlyNew(false);
     handleSearchQueryChange(""); // Clear parent search state
     handleCloseDialog();
   }, [handleCloseDialog, handleSearchQueryChange]);
@@ -327,7 +456,9 @@ const CippStandardDialog = ({
         const allItems = [];
 
         Object.keys(categories).forEach((category) => {
-          const filteredStandards = filterStandards(categories[category]);
+          const categoryStandards = categories[category];
+          const filteredStandards = enhancedFilterStandards(categoryStandards);
+          
           filteredStandards.forEach((standard) => {
             allItems.push({
               standard,
@@ -336,7 +467,13 @@ const CippStandardDialog = ({
           });
         });
 
-        setProcessedItems(allItems);
+        // Apply sorting to the final combined array instead of per-category
+        const sortedAllItems = sortStandards(allItems.map(item => item.standard)).map(standard => {
+          const item = allItems.find(item => item.standard.name === standard.name);
+          return item;
+        });
+
+        setProcessedItems(sortedAllItems);
         setIsInitialLoading(false);
       };
 
@@ -354,7 +491,7 @@ const CippStandardDialog = ({
     } else {
       setIsInitialLoading(true);
     }
-  }, [dialogOpen, categories, filterStandards, localSearchQuery]);
+  }, [dialogOpen, categories, enhancedFilterStandards, sortStandards]);
 
   // Render individual standard card
   const renderStandardCard = useCallback(
@@ -371,6 +508,9 @@ const CippStandardDialog = ({
     ),
     [selectedStandards, handleToggleSingleStandard, handleAddClick, isButtonDisabled]
   );
+
+  // Count active filters
+  const activeFiltersCount = selectedCategories.length + selectedImpacts.length + selectedRecommendedBy.length + (showOnlyNew ? 1 : 0);
 
   // Don't render dialog contents until it's actually open (improves performance)
   return (
@@ -389,34 +529,222 @@ const CippStandardDialog = ({
       PaperProps={{
         sx: {
           minWidth: "720px",
+          maxHeight: "90vh",
         },
       }}
     >
       <DialogTitle>Select a Standard to Add</DialogTitle>
       <DialogContent sx={{ backgroundColor: "background.default", pb: 1 }}>
-        <TextField
-          label="Filter Standards"
-          fullWidth
-          sx={{ mt: 3, mb: 3 }}
-          onChange={handleLocalSearchChange}
-          value={localSearchQuery}
-          autoComplete="off"
-        />
+        {/* Search and Filter Controls */}
+        <Box sx={{ mt: 2, mb: 3 }}>
+          {/* Search Box */}
+          <TextField
+            label="Search Standards"
+            fullWidth
+            onChange={handleLocalSearchChange}
+            value={localSearchQuery}
+            autoComplete="off"
+            placeholder="Search by name, description, or tags..."
+            sx={{ mb: 3 }}
+          />
 
+          {/* Filter Controls Section */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 2, color: 'text.secondary' }}>
+              Sort & Filter Options
+            </Typography>
+            
+            {/* Sort Controls Row */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
+              <FormControl sx={{ minWidth: 200 }}>
+                <InputLabel>Sort By</InputLabel>
+                <Select
+                  value={sortBy}
+                  label="Sort By"
+                  onChange={(e) => setSortBy(e.target.value)}
+                  sx={{ height: 45 }}
+                >
+                  <MenuItem value="label">Name</MenuItem>
+                  <MenuItem value="addedDate">Date Added</MenuItem>
+                </Select>
+              </FormControl>
+              
+              <FormControl sx={{ minWidth: 160 }}>
+                <InputLabel>Order</InputLabel>
+                <Select
+                  value={sortOrder}
+                  label="Order"
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  sx={{ height: 45 }}
+                >
+                  <MenuItem value="asc">Ascending</MenuItem>
+                  <MenuItem value="desc">Descending</MenuItem>
+                </Select>
+              </FormControl>
+
+              {/* Clear All Filters Button */}
+              {activeFiltersCount > 0 && (
+                <Button
+                  variant="outlined"
+                  startIcon={<Clear />}
+                  onClick={clearAllFilters}
+                  sx={{ ml: 'auto', height: 45 }}
+                >
+                  Clear All ({activeFiltersCount})
+                </Button>
+              )}
+            </Box>
+
+            {/* Filter Controls Row */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+              {/* Category Filter */}
+              <FormControl sx={{ minWidth: 220 }}>
+                <InputLabel>Categories</InputLabel>
+                <Select
+                  multiple
+                  value={selectedCategories}
+                  label="Categories"
+                  onChange={(e) => setSelectedCategories(e.target.value)}
+                  sx={{ height: 45 }}
+                  renderValue={(selected) => 
+                    selected.length === 0 ? "All Categories" : `${selected.length} selected`
+                  }
+                >
+                  {allCategories.map((category) => (
+                    <MenuItem key={category} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {/* Impact Filter */}
+              <FormControl sx={{ minWidth: 180 }}>
+                <InputLabel>Impact</InputLabel>
+                <Select
+                  multiple
+                  value={selectedImpacts}
+                  label="Impact"
+                  onChange={(e) => setSelectedImpacts(e.target.value)}
+                  sx={{ height: 45 }}
+                  renderValue={(selected) => 
+                    selected.length === 0 ? "All Impacts" : `${selected.length} selected`
+                  }
+                >
+                  {allImpacts.map((impact) => (
+                    <MenuItem key={impact} value={impact}>
+                      {impact}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {/* Recommended By Filter */}
+              <FormControl sx={{ minWidth: 220 }}>
+                <InputLabel>Recommended By</InputLabel>
+                <Select
+                  multiple
+                  value={selectedRecommendedBy}
+                  label="Recommended By"
+                  onChange={(e) => setSelectedRecommendedBy(e.target.value)}
+                  sx={{ height: 45 }}
+                  renderValue={(selected) => 
+                    selected.length === 0 ? "All Recommendations" : `${selected.length} selected`
+                  }
+                >
+                  {allRecommendedBy.map((rec) => (
+                    <MenuItem key={rec} value={rec}>
+                      {rec}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {/* New Standards Toggle */}
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={showOnlyNew}
+                    onChange={(e) => setShowOnlyNew(e.target.checked)}
+                  />
+                }
+                label="New (30 days)"
+                sx={{ ml: 1 }}
+              />
+            </Box>
+          </Box>
+
+          {/* Active Filter Chips */}
+          {activeFiltersCount > 0 && (
+            <Box>
+              <Stack direction="row" spacing={1} flexWrap="wrap">
+                {selectedCategories.map((category) => (
+                  <Chip
+                    key={category}
+                    label={category}
+                    size="small"
+                    onDelete={() => setSelectedCategories(prev => prev.filter(c => c !== category))}
+                    color="primary"
+                    variant="outlined"
+                  />
+                ))}
+                {selectedImpacts.map((impact) => (
+                  <Chip
+                    key={impact}
+                    label={impact}
+                    size="small"
+                    onDelete={() => setSelectedImpacts(prev => prev.filter(i => i !== impact))}
+                    color="secondary"
+                    variant="outlined"
+                  />
+                ))}
+                {selectedRecommendedBy.map((rec) => (
+                  <Chip
+                    key={rec}
+                    label={rec}
+                    size="small"
+                    onDelete={() => setSelectedRecommendedBy(prev => prev.filter(r => r !== rec))}
+                    color="success"
+                    variant="outlined"
+                  />
+                ))}
+                {showOnlyNew && (
+                  <Chip
+                    label="New Standards"
+                    size="small"
+                    onDelete={() => setShowOnlyNew(false)}
+                    color="info"
+                    variant="outlined"
+                  />
+                )}
+              </Stack>
+            </Box>
+          )}
+
+          <Divider />
+        </Box>
+
+        {/* Results */}
         {isInitialLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
             <CircularProgress />
           </Box>
         ) : processedItems.length === 0 ? (
-          <Typography
-            variant="h6"
-            color="textSecondary"
-            sx={{ mt: 4, textAlign: "center", width: "100%" }}
-          >
-            Search returned no results
-          </Typography>
+          <Box sx={{ textAlign: "center", p: 4 }}>
+            <Typography variant="h6" color="textSecondary">
+              No standards match your search and filter criteria
+            </Typography>
+            <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+              Try adjusting your search terms or clearing some filters
+            </Typography>
+          </Box>
         ) : (
-          <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
+          <Box>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+              Showing {processedItems.length} standard{processedItems.length !== 1 ? 's' : ''}
+            </Typography>
+            <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
+          </Box>
         )}
       </DialogContent>
       <DialogActions>
