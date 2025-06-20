@@ -205,6 +205,8 @@ const AppApprovalTemplateForm = ({
                   showRefresh: true,
                 }}
                 multiple={false}
+                creatable={false}
+                required={true}
                 validators={{ required: "Application is required" }}
               />
 
@@ -224,6 +226,8 @@ const AppApprovalTemplateForm = ({
                   showRefresh: true,
                 }}
                 multiple={false}
+                creatable={false}
+                required={true}
                 validators={{ required: "Permission Set is required" }}
               />
 
