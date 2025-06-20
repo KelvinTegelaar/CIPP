@@ -22,7 +22,6 @@ import { Delete, FileDownload, Upload, Add } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import React from "react";
-import toast from "react-hot-toast";
 
 export const CippWizardCSVImport = (props) => {
   const {
@@ -58,50 +57,81 @@ export const CippWizardCSVImport = (props) => {
       reader.onload = (e) => {
         const text = e.target.result;
         const lines = text.split('\n');
-        const headers = lines[0].split(',').map(header => header.trim());
+        const firstLine = lines[0].split(',').map(header => header.trim());
         
-        // Create mapping for property names and alternative property names
-        const headerMapping = {};
-        fields.forEach(field => {
-          // Map primary property name to itself
-          headerMapping[field.propertyName] = field.propertyName;
-          // Map friendly name to property name
-          headerMapping[field.friendlyName] = field.propertyName;
-          // Map alternative property names to the primary property name
-          if (field.alternativePropertyNames) {
-            field.alternativePropertyNames.forEach(altName => {
-              headerMapping[altName] = field.propertyName;
-            });
-          }
+        // Check if this is a headerless CSV (no recognizable headers)
+        const hasHeaders = firstLine.some(header => {
+          // Check if any header matches our expected field names
+          return fields.some(field => 
+            header === field.propertyName || 
+            header === field.friendlyName || 
+            (field.alternativePropertyNames && field.alternativePropertyNames.includes(header))
+          );
         });
         
-        // Check if all required columns are present (using any of the supported formats)
-        const missingColumns = fields.filter(field => {
-          // Only serial number is required
-          if (field.propertyName !== 'SerialNumber') {
-            return false; // Skip non-required fields
-          }
+        let headers, headerMapping;
+        
+        if (hasHeaders) {
+          // Normal CSV with headers
+          headers = firstLine;
           
-          const hasPropertyName = headers.includes(field.propertyName);
-          const hasFriendlyName = headers.includes(field.friendlyName);
-          const hasAlternativeName = field.alternativePropertyNames ? 
-            field.alternativePropertyNames.some(altName => headers.includes(altName)) : false;
-          return !hasPropertyName && !hasFriendlyName && !hasAlternativeName;
-        });
-        
-        if (missingColumns.length > 0) {
-          const missingFormats = missingColumns.map(f => {
-            const formats = [f.propertyName, f.friendlyName];
-            if (f.alternativePropertyNames) {
-              formats.push(...f.alternativePropertyNames);
+          // Create mapping for property names and alternative property names
+          headerMapping = {};
+          fields.forEach(field => {
+            // Map primary property name to itself
+            headerMapping[field.propertyName] = field.propertyName;
+            // Map friendly name to property name
+            headerMapping[field.friendlyName] = field.propertyName;
+            // Map alternative property names to the primary property name
+            if (field.alternativePropertyNames) {
+              field.alternativePropertyNames.forEach(altName => {
+                headerMapping[altName] = field.propertyName;
+              });
             }
-            return `"${formats.join('" or "')}"`;
-          }).join(', ');
-          toast.error(`CSV is missing required columns: ${missingFormats}`);
-          return;
+          });
+          
+          // Check if all required columns are present (using any of the supported formats)
+          const missingColumns = fields.filter(field => {
+            // Only serial number is required
+            if (field.propertyName !== 'SerialNumber') {
+              return false; // Skip non-required fields
+            }
+            
+            const hasPropertyName = headers.includes(field.propertyName);
+            const hasFriendlyName = headers.includes(field.friendlyName);
+            const hasAlternativeName = field.alternativePropertyNames ? 
+              field.alternativePropertyNames.some(altName => headers.includes(altName)) : false;
+            return !hasPropertyName && !hasFriendlyName && !hasAlternativeName;
+          });
+          
+          if (missingColumns.length > 0) {
+            const missingFormats = missingColumns.map(f => {
+              const formats = [f.propertyName, f.friendlyName];
+              if (f.alternativePropertyNames) {
+                formats.push(...f.alternativePropertyNames);
+              }
+              return `"${formats.join('" or "')}"`;
+            }).join(', ');
+            console.error(`CSV is missing required columns: ${missingFormats}`);
+            return;
+          }
+        } else {
+          // Headerless CSV - assume order: serial, productid, hash
+          headers = ['SerialNumber', 'productKey', 'hardwareHash'];
+          headerMapping = {
+            'SerialNumber': 'SerialNumber',
+            'productKey': 'productKey', 
+            'hardwareHash': 'hardwareHash'
+          };
+          
+          // Check if we have at least 3 columns for the expected order
+          if (firstLine.length < 3) {
+            console.error('Headerless CSV must have at least 3 columns in order: Serial Number, Product ID, Hardware Hash');
+            return;
+          }
         }
 
-        const data = lines.slice(1)
+        const data = lines.slice(hasHeaders ? 1 : 0) // Skip first line only if it has headers
           .filter(line => line.trim() !== '') // Remove empty lines
           .map(line => {
             const values = line.split(',');
