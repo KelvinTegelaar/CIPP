@@ -26,6 +26,7 @@ export const CippSettingsSideBar = (props) => {
 
   const saveSettingsPost = ApiPostCall({
     url: "/api/ExecUserSettings",
+    relatedQueryKeys: "userSettings",
   });
   const handleSaveChanges = () => {
     const shippedValues = {

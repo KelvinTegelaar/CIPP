@@ -26,6 +26,7 @@ const CippPasswordSettings = () => {
     const passwordTypes = ["Classic", "Correct-Battery-Horse"];
     return passwordTypes.map((type) => (
       <Button
+        key={type}
         variant={passwordSetting?.data?.Results?.passwordType === type ? "contained" : "outlined"}
         color="primary"
         size="small"

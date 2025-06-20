@@ -82,7 +82,7 @@ const Page = () => {
     <>
       <CippFormPage
         resetForm={false}
-        queryKey={[`GroupTemplatesList`, `GroupTemplate-${id}`]}
+        queryKey={[`ListGroupTemplates`, `GroupTemplate-${id}`]}
         formControl={formControl}
         title="Edit Group Template"
         backButtonTitle="Group Overview"

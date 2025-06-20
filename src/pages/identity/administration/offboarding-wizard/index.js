@@ -30,6 +30,7 @@ const Page = () => {
         api: {
           url: "/api/ListGraphRequest",
           dataKey: "Results",
+          queryKey: "Users - {tenant}",
           data: {
             Endpoint: "users",
             manualPagination: true,
