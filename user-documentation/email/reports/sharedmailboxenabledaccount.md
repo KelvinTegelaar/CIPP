@@ -4,7 +4,7 @@ Reports on all mailboxes that are shared and also have an enabled user account.
 
 ### Table Details
 
-The properties returned are for the Exchange PowerShell command Get-`Get-Mailbox` with a filter for `RecipientTypeDetails` of `SharedMailbox`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-mailbox?view=exchange-ps).&#x20;
+The properties returned are for the Exchange PowerShell command `Get-Mailbox` with a filter for `RecipientTypeDetails` of `SharedMailbox`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-mailbox?view=exchange-ps).&#x20;
 
 ### Table Actions
 

@@ -12,7 +12,7 @@ The View User page provides a comprehensive overview of user details and setting
 
 ### Actions
 
-The actions dropdown carries forward the same [actions from the list users page](../#per-user-actions).
+The actions dropdown carries forward the same [#table-actions](../#table-actions "mention") from the main Users page.
 
 ***
 
@@ -64,10 +64,10 @@ The actions dropdown carries forward the same [actions from the list users page]
 
 #### Group & Role Memberships
 
-| Field             | Description                                                                                                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Group Memberships | <p>Table of all group associations<br>• Includes per-row actions<br>• Direct link to <a href="../../groups/edit.md">Edit Group</a> page for the associated group to manage membership.</p> |
-| Admin Roles       | Table of assigned administrative roles                                                                                                                                                     |
+| Field             | Description                                                                                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Group Memberships | <p>Table of all group associations<br>• Includes per-row actions<br>• Direct link to <a data-mention href="../../groups/edit.md">edit.md</a> page for the associated group to manage membership.</p> |
+| Admin Roles       | Table of assigned administrative roles                                                                                                                                                               |
 
 ### Notes
 

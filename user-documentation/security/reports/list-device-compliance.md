@@ -4,7 +4,7 @@ The Device Compliance page provides a comprehensive overview of device complianc
 
 ### Table Details
 
-The properties returned are for the Graph resouce type device. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `device`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0#properties).
 
 ### Feature Requests / Ideas
 

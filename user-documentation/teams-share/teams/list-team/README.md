@@ -10,11 +10,11 @@ The List Teams page lists all the teams along with name, description and an over
 
 ### Table Details <a href="#listteams-details" id="listteams-details"></a>
 
-The properties returned are for the Graph resource type team. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/team?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `team`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/team?view=graph-rest-1.0#properties).
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Group</td><td>Opens the group in the <a href="../../../identity/administration/groups/edit.md">Edit Group</a> page.</td><td>false</td></tr><tr><td>Delete Team</td><td>Opens a modal to confirm deletion of the selected team(s)</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Group</td><td>Opens the group in the <a data-mention href="../../../identity/administration/groups/edit.md">edit.md</a>page.</td><td>false</td></tr><tr><td>Delete Team</td><td>Opens a modal to confirm deletion of the selected team(s)</td><td>true</td></tr></tbody></table>
 
 ***
 

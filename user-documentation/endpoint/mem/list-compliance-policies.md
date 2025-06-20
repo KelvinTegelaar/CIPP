@@ -2,7 +2,7 @@
 
 ### Table Details
 
-The properties returned are for the Graph resource type deviceCompliancePolicy . For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-shared-devicecompliancepolicy?view=graph-rest-beta#properties).
+The properties returned are for the Graph resource type `deviceCompliancePolicy`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-shared-devicecompliancepolicy?view=graph-rest-beta#properties).
 
 ### Table Actions
 

@@ -39,7 +39,7 @@ This page is powered by the GitHub integration. CIPP will be able to populate so
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Templates</td><td>Opens a new page where you can see the templates contained in the repo</td><td>false</td></tr><tr><td>Delete</td><td>Deletes the repo from your list of available community repositories. NOTE: Does not delete the repo in GitHub if this is a private repo you own</td><td>true</td></tr><tr><td>Set Upload Branch</td><td>For repositories that you own, this will set the branch that you upload templates to</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Templates</td><td>Opens <a data-mention href="repo.md">repo.md</a> where you can see the templates contained in the repo</td><td>false</td></tr><tr><td>Delete</td><td>Deletes the repo from your list of available community repositories. NOTE: Does not delete the repo in GitHub if this is a private repo you own</td><td>true</td></tr><tr><td>Set Upload Branch</td><td>For repositories that you own, this will set the branch that you upload templates to</td><td>false</td></tr></tbody></table>
 
 ***
 

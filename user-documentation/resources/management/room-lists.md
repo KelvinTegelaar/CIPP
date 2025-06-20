@@ -4,7 +4,7 @@ This page lists all the room lists that are in the tenant. Room lists are used t
 
 ### Table Details
 
-The properties returned are for the Graph resource type roomList. For more information on the properties please see the [Graph documentation.](https://learn.microsoft.com/en-us/graph/api/resources/roomlist?view=graph-rest-1.0#properties)
+The properties returned are for the Graph resource type `roomList`. For more information on the properties please see the [Graph documentation.](https://learn.microsoft.com/en-us/graph/api/resources/roomlist?view=graph-rest-1.0#properties)
 
 ### Table Actions
 

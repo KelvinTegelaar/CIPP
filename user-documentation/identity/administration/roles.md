@@ -10,7 +10,7 @@ The Roles page provides a comprehensive list of all Microsoft 365 roles such as 
 
 ### Column Details
 
-The properties returned are for the Graph resource type directoryRole. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/directoryrole?view=graph-rest-1.0#properties). Additionally, CIPP will include a column outlining who is a member of each role.
+The properties returned are for the Graph resource type `directoryRole`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/directoryrole?view=graph-rest-1.0#properties). Additionally, CIPP will include a column outlining who is a member of each role.
 
 ### Table Actions
 

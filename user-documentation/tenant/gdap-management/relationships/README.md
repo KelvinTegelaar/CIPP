@@ -5,7 +5,7 @@ It shows the status of the relationship, the tenant's name, when it was created,
 
 ### Table Details
 
-The properties returned are for the Graph resource type delegatedAdminRelationship . For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/delegatedadminrelationship?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `delegatedAdminRelationship` . For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/delegatedadminrelationship?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

@@ -10,7 +10,7 @@ This page lists all the profiles that exist on the selected tenant, with a brief
 
 ### Table Details <a href="#listprofiles-details" id="listprofiles-details"></a>
 
-The properties returned are for the Graph resouce type windowsAutopilotDeploymentProfile. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-shared-windowsautopilotdeploymentprofile?view=graph-rest-beta#properties).
+The properties returned are for the Graph resource type `windowsAutopilotDeploymentProfile`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-shared-windowsautopilotdeploymentprofile?view=graph-rest-beta#properties).
 
 ### Table Actions
 

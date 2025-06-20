@@ -1,6 +1,6 @@
 # Executing the Setup Wizard
 
-This guide walks you through the process of executing the Setup Wizard inside CIPP for the first time. The Setup Wizard presents you with multiple options, if this is your first setup, choose the "First Setup" option.
+This guide walks you through the process of executing the Setup Wizard inside CIPP for the first time. The Setup Wizard presents you with multiple options. If this is your first setup, choose the "First Setup" option.
 
 ### Getting Started with the CIPP Setup Wizard
 

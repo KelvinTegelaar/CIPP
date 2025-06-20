@@ -27,6 +27,7 @@ description: This page displays information about the user's Exchange settings.
 | Set Send Quota                            | Sets the quota (in MB, GB, or TB) the mailbox is allowed to send                                                                                                                                                                   |
 | Set Send and Receive Quota                | Sets the quota (in MB, GB, or TB) the mailbox is allowed to send and receive                                                                                                                                                       |
 | Set Quota Warning Level                   | Sets the warning level for the quota (in MB, GB, or TB)                                                                                                                                                                            |
+| Set Calendar Processing                   | Allows you to configure calendar processing settings such as "Automatically Accept Meeting Requests", "Allow Conflits", etc.                                                                                                       |
 
 ### Exchange Details
 

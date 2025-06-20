@@ -4,7 +4,7 @@ Shows the status of the authentication methods for the tenant.
 
 ### Table Details
 
-The properties returned are for the Graph resource type authenticationMethodsPolicy. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/authenticationmethodspolicy?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `authenticationMethodsPolicy`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/authenticationmethodspolicy?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

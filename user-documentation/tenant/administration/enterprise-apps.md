@@ -1,12 +1,12 @@
-# Enterprise Applications
+# Applications
 
-This page shows all the enterprise applications that are available in the tenant.\
-This can for example be very helpful when trying to identify SAM applications from previous MSPs.\
+This page shows all the enterprise applications that are available in the tenant. This can for example be very helpful when trying to identify SAM applications from previous MSPs.
+
 To do this, first clear the filter and then select the `All-non-Microsoft Enterprise Apps` filter. If not done in this order, the filter will not work as expected.
 
 ### Table Details
 
-The properties returned are for the Graph resource type servicePrincipal. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/serviceprincipal?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `servicePrincipal`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/serviceprincipal?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

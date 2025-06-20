@@ -1,22 +1,54 @@
 ---
-description: Deploy applications using the Chocolatey package manager.
+description: Deploy applications using the Microsoft Store.
 ---
 
 # Add Store App
 
-You can add an application deployment utilising [Chocolatey](https://chocolatey.org/) by executing this wizard. The wizard guides you through the steps and provides the ability for you to deploy an app to many tenants at the same time.
+You can add an application deployment utilizing the Microsoft Store by executing this wizard.&#x20;
 
-If you have a personal repository you can enter the address for this repository too to deploy packages from your own trusted sources.
+{% stepper %}
+{% step %}
+### Select Tenant(s)
 
-### Details
 
-The status of the deployment can is traceable through the logs page, or the "Applications queue" page.
+{% endstep %}
 
-The application uploaded is [this prepared IntuneWin file](https://github.com/KelvinTegelaar/CIPP-API/blob/master/AddChocoApp/IntunePackage.intunewin?raw=true) with two scripts included - `install.ps1` and `uninstall.ps1`. These scripts install Chocolatey, and then run an install or uninstall command.
+{% step %}
+### Search Packages
 
-If you are unsure or don't trust the `IntuneWin` file, you have the option to replace this with your own in your fork.
+Enter a search term into the box and click `Search`
+{% endstep %}
 
-It's strongly recommended that you download, test, and view the contents of the intunewin file.
+{% step %}
+### Select Desired Package
+
+The Select Package dropdown will populate with matching applications.
+{% endstep %}
+
+{% step %}
+### (Alternative) Enter Package Manually
+
+Enter the WinGet Package Identifier, Application Name, and Description
+{% endstep %}
+
+{% step %}
+### (Optoinal) Mark for Uninstallation
+
+You can also use the wizard to remove the application
+{% endstep %}
+
+{% step %}
+### Select Assignment Option
+
+Choose who to target assignment of the application installation or removal.
+{% endstep %}
+
+{% step %}
+### Submit
+
+
+{% endstep %}
+{% endstepper %}
 
 ***
 

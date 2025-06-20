@@ -56,13 +56,13 @@ With the launch of CIPP v7, there are now new, more powerful tables at your disp
 
 Some values have special display settings for ease of reading.
 
-| Value Type | Description                                                                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Boolean    | Colunns that display information in a Boolean will utilize a graphical representation instead of `true`and `false` . The value for `true`will display as a check mark. The value for `false`will display as a circle with an X in it. |
+| Value Type | Description                                                                                                                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Boolean    | Colunns that display information in a Boolean will utilize a graphical representation instead of `true` and `false`. The value for `true` will display as a check mark. The value for `false` will display as a circle with an X in it. |
 
 ### Actions
 
-Every table also includes an "Actions" column that will always be visible to the right of the table. Clicking the elipses will open the menu for available per-row actions that can be taken for this table.
+Every table also includes an "Actions" column that will always be visible to the right of the table. Clicking the ellipses will open the menu for available per-row actions that can be taken for this table. In many tables, selecting multiple check boxes next to rows will enable a `Bulk Actions` button for you to take the same action on every row selected.
 
 ***
 

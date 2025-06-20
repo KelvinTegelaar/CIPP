@@ -4,7 +4,7 @@ This report pulls from Intune device management to provide you with an overview 
 
 ### Table Columns
 
-The properties returned are for the Graph resource type userExperienceAnalyticsDeviceScores. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-userexperienceanalyticsdevicescores?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `userExperienceAnalyticsDeviceScores`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-userexperienceanalyticsdevicescores?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

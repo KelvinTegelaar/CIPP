@@ -18,7 +18,7 @@ This page lists SharePoint site usage. You can also see file count, activity, an
 
 ### Table Details
 
-The properties returned are for the Graph resource type site but filtered to only return non-personal sites. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/site?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `site` but filtered to only return non-personal sites. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/site?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

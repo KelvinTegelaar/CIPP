@@ -14,6 +14,6 @@ CIPP is a powerful Microsoft 365 multitenant management system that will allow y
 
 Depending on how you will deploy the software will determine where you will want to start.
 
-* **Self Hosted Instance:** If you are planning on forking and hosting CIPP in your own Azure environment, you will want to start on the [Prerequisites](../self-hosting-guide/index.md) page.
+* **Self-Hosted Instance:** If you are planning on forking and hosting CIPP in your own Azure environment, you will want to start on the [index.md](../self-hosting-guide/index.md "mention") page.
 * **Hosted Sponsor Instance:** If you are planning on sponsoring the CIPP project and having us host your instance for you, you can skip the "Self-hosting guide" and start configuration of CIPP by clicking next.
 

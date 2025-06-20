@@ -6,7 +6,7 @@ description: API Authentication
 
 ## Authentication
 
-CIPP uses OAuth authentication to be able to connect to the API using your Application ID and secret. You can use the PowerShell example below to connect to the API
+CIPP uses OAuth authentication to be able to connect to the API using your Application ID and Secret. You can use the PowerShell example below to connect to the API:
 
 ```powershell
 $CIPPAPIUrl = "https://yourcippurl.com"
@@ -28,10 +28,10 @@ Invoke-RestMethod -Uri "$CIPPAPIUrl/api/ListLogs" -Method GET -Headers $AuthHead
 ```
 
 {% hint style="info" %}
-If you are making an OAuth connection with any 3rd party service, make use of the copyable fields on the CIPP-API integration page indicated by a blue outline. You will also need the API Scope, get this from the API Client > Actions > Copy API Scope.
+If you are making an OAuth connection with any 3rd party service, make use of the copyable fields on the [cipp-api.md](../user-documentation/cipp/integrations/cipp-api.md "mention")integration page indicated by a blue outline. You will also need the API Scope, get this from the CIPP-API Clients table by clicking the Actions three dots for the row you are configuring and selecting `Copy API Scope`.
 {% endhint %}
 
-### Time and rate limits
+### Time and Rate Limits
 
 The API actions have a maximum timeout of 10 minutes. There are no active rate limits, but heavy usage of the API can cause frontend operations to slow down.
 
@@ -61,7 +61,11 @@ You can then test its working
 Get-CIPPLogs
 ```
 
-Further documentation for the module and each of its available functions can be found [here](https://github.com/BNWEIN/CIPPAPIModule/)
+Further documentation for the module and each of its available functions can be found [here](https://github.com/BNWEIN/CIPPAPIModule/).
+
+{% hint style="info" %}
+This module is created and maintained by a community member. With CIPP's rapid development cycle, the module can be expected to lag behind in adding new endpoints. For those, it is recommended to use the command `Invoke-CIPPRestMethod`.
+{% endhint %}
 
 ### Feature Requests / Ideas
 

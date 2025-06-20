@@ -18,18 +18,18 @@ If you've started the sponsorship process and are ready to enhance your manageme
 ## Deployment & Service Account Creation
 
 3. **Configure CIPP Deployment:** Login to your [management portal](https://management.cipp.app) using the GitHub credentials you used to initiate the sponsorship. This is where you can kick off your deployment, add custom domain names, and begin inviting users into CIPP.
-4. **Service Account Creation**: Follow the instructions carefully on the [Creating the CIPP Service Account ](../installation/creating-the-cipp-service-account-gdap-ready.md)page to ensure there are no permission issues when connecting your tenants within CIPP in the subsequent steps.
+4. **Service Account Creation**: Follow the instructions carefully on the [creating-the-cipp-service-account-gdap-ready.md](../installation/creating-the-cipp-service-account-gdap-ready.md "mention")page to ensure there are no permission issues when connecting your tenants within CIPP in the subsequent steps.
 
 ## Accessing CIPP & Executing SAM Wizard
 
-5. **Add Yourself to CIPP:** On the [User Management](https://management.cipp.app/invite-users) page in your management portal, ensure you've invited your work account as an `admin` into your newly deployed instance to avoid `403 Forbidden` errors during login. Further guidance can be found on the [Adding Users to CIPP](../installation/roles.md) page.
+5. **Add Yourself to CIPP:** On the [User Management](https://management.cipp.app/invite-users) page in your management portal, ensure you've invited your work account as an `admin` into your newly deployed instance to avoid `403 Forbidden` errors during login. Further guidance can be found on the [roles.md](../installation/roles.md "mention") page.
 6. **Execute Setup Wizard:** Follow the instructions on the [Executing the Setup Wizard](../installation/executing-the-setup-wizard.md) page once logged into your CIPP instance using your newly invited account, **NOT** the service account. The service account is only used during specific configuration steps within the Setup Wizard.
 
 ## **Managing Client Relationships**
 
-7. **Onboard Existing Relationships:** If your GDAP relationships with clients are already configured and you do not need to create new invites, proceed to [Adding Tenants & **Consenting in the CIPP-SAM Application**](../installation/adding-tenants-and-consenting-the-cipp-sam-application.md) to start managing your clients immediately.
-8. **Establish New Relationships:** If you need to establish new GDAP relationships for new clients, use the [GDAP Invite Wizard](../../user-documentation/tenant/gdap-management/invites/add.md) to generate invites. Once you have completed the invite process, continue the onboarding process and follow up by [consenting within the CIPP app.](../installation/adding-tenants-and-consenting-the-cipp-sam-application.md#manual-steps)
+7. **Onboard Existing Relationships:** If your GDAP relationships with clients are already configured and you do not need to create new invites, proceed to [adding-tenants-and-consenting-the-cipp-sam-application.md](../installation/adding-tenants-and-consenting-the-cipp-sam-application.md "mention") to start managing your clients immediately.
+8. **Establish New Relationships:** If you need to establish new GDAP relationships for new clients, use the [gdap-invite-wizard.md](../installation/gdap-invite-wizard.md "mention") wizard to generate invites and complete the necessary actions to onboard the client to CIPP.
 
 {% hint style="info" %}
-If you are unsure about whether your clients environments are GDAP ready, or need more information about the process, continue to the [Creating GDAP relationships](../installation/gdap-invite-wizard.md) page for more granular details & next steps.
+If you are unsure about whether your clients' environments are GDAP ready, or need more information about the process, continue to the [gdap-invite-wizard.md](../installation/gdap-invite-wizard.md "mention") page for more granular details & next steps.
 {% endhint %}

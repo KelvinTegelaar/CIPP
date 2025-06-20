@@ -43,7 +43,7 @@ Choose:
 {% hint style="info" %}
 The **Contributor** role should allow the identity to create and manage all types of Azure resources but does not allow them to grant access to others.
 
-In the **Select** field and type `cipp`. As you begin typing, the list of options will narrow and you should see the Managed Identity for your Function App.
+In the **Select** field and type `cipp`. As you begin typing, the list of options will narrow, and you should see the Managed Identity for your Function App.
 {% endhint %}
 {% endstep %}
 
@@ -73,4 +73,6 @@ This script can be run in Azure Cloud Shell. Click the link to be taken to the A
 
 ***
 
-Once configured, head over to the [CIPP-API Integration configuration](../../user-documentation/cipp/integrations/cipp-api.md) page in your CIPP UI.
+{% hint style="success" %}
+Once configured, head over to the [cipp-api.md](../../user-documentation/cipp/integrations/cipp-api.md "mention") Integration page in your CIPP UI.
+{% endhint %}

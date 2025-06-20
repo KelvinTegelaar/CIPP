@@ -9,7 +9,7 @@ To not miss any requests, it is recommended to set up the Scripted CIPP Alert `A
 
 ### Table Details
 
-The properties returned are for the Graph resource type appConsentRequest. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/appconsentrequest?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `appConsentRequest`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/appconsentrequest?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

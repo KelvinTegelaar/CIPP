@@ -4,7 +4,11 @@ description: Manage scheduled tenant alerts.
 
 # Add Alert
 
-CIPP offers a set of scheduled, recurring alert checks. Some of these duplicate Microsoft Alerts functionality in a more MSP-friendly manner and some are not available as a Microsoft Alert at this time. Similar to [Tenant Standards](../../standards/), you configure alerts using the wizard to select one or more tenants or -All Tenants- to apply alerts globally, then select from the list of available alerts.
+{% hint style="info" %}
+This same page will display for the edit alert action with the selected alert's information displayed to review, alter, and save.
+{% endhint %}
+
+CIPP offers a set of scheduled, recurring alert checks. Some of these duplicate Microsoft Alerts functionality in a more MSP-friendly manner and some are not available as a Microsoft Alert at this time. Similar to [standards](../../standards/ "mention"), you configure alerts using the wizard to select one or more tenants or -All Tenants- to apply alerts globally, then select from the list of available alerts.
 
 ### Alert Types
 
@@ -27,9 +31,9 @@ Within CIPP, there are two types of alerts:
 
 ### Alert Delivery Methods
 
-* Webhook - This will deliver a JSON payload to the webhook configured in [CIPP Settings](../../../cipp/settings/notifications.md).
-* PSA - This will deliver a formatted payload to the configured PSA in [CIPP Settings](../../../cipp/settings/notifications.md).
-* Email - This will deliver an HTML-formatted table to the email address provided in [CIPP Settings](../../../cipp/settings/notifications.md).&#x20;
+* Webhook - This will deliver a JSON payload to the webhook configured in [notifications.md](../../../cipp/settings/notifications.md "mention").
+* PSA - This will deliver a formatted payload to the configured PSA in [notifications.md](../../../cipp/settings/notifications.md "mention").
+* Email - This will deliver an HTML-formatted table to the email address provided in [notifications.md](../../../cipp/settings/notifications.md "mention").&#x20;
 
 ### Available Scripted CIPP Alerts
 
@@ -41,12 +45,14 @@ Within CIPP, there are two types of alerts:
 * Alert if Entra Connect sync is enabled and has not run in the last X hours
 * Alert on % mailbox quota used
 * Alert on % SharePoint quota used
+* Alert on % OneDrive quota used
 * Alert on licenses expiring in 30 days
 * Alert on new apps in the application approval list
 * Alert on Security Defaults automatic enablement
 * Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)
 * Alert on Defender Malware found (Tenant must be on-boarded in Lighthouse)
 * Alert on new Defender Incidents found
+* Alert on vulnerabilities older than X hours
 * Alert on unused licenses
 * Alert on overused licenses
 * Alert on Entra ID P1/P2 license over-utilization
@@ -61,6 +67,8 @@ Within CIPP, there are two types of alerts:
 * Alert on (new) potentially breached passwords. Generates an alert if a password is found to be breached.
 * Alert on Huntress Rogue Apps detected
 * Alert when Tenant External Recipient Rate Limit exceeds X %
+* Alert on domains with low security score
+* Alert on new risky users (P2 License Required)
 
 ### Available Template Audit Log Alerts
 

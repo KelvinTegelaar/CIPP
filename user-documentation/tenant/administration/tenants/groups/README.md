@@ -18,7 +18,7 @@ This page allows you to view and manage your custom tenant groups. Groups can be
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Group</td><td>Opens the <a href="edit.md">edit group</a> page for the selected row</td><td>false</td></tr><tr><td>Delete Group</td><td>Opens a modal to confirm you want to delete the selected group.</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Group</td><td>Opens the <a data-mention href="edit.md">edit.md</a> page for the selected row</td><td>false</td></tr><tr><td>Delete Group</td><td>Opens a modal to confirm you want to delete the selected group.</td><td>true</td></tr></tbody></table>
 
 ***
 

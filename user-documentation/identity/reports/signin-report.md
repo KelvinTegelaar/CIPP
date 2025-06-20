@@ -8,7 +8,7 @@ Note that this page requires Entra ID Premium (P1/P2) licensing to pull this inf
 
 ### Table Columns
 
-The properties returned are for the Graph resource type signIn. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/signin?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `signIn`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/signin?view=graph-rest-1.0#properties).
 
 ***
 

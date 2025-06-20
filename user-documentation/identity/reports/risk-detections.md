@@ -4,7 +4,7 @@ This page will display the risk detections for the selected tenant or AllTenants
 
 ### Table Columns
 
-This table utilizes the column headings returned from Graph API. For reference on this, please see the Graph [documentation for riskDetection](https://learn.microsoft.com/en-us/graph/api/resources/riskdetection?view=graph-rest-beta).
+The properties returned are for the Graph resource type `riskDetection`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/riskdetection?view=graph-rest-beta).
 
 ### Table Actions
 

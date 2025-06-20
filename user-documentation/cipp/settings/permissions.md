@@ -4,7 +4,7 @@
 
 This section will display the results of a permission check. The checks are built to CIPP best practices to ensure proper application functioning.
 
-{% hint style="info" %}
+{% hint style="warning" %}
 If you see that you are missing permissions, click the `Details` button. You will be presented with the option to repair any missing permissions.
 {% endhint %}
 

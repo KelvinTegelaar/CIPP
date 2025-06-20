@@ -4,7 +4,7 @@ This report lists all mailboxes and pulls activity date, total space used, numbe
 
 ### Table Details
 
-The information displayed comes from the prebuilt Graph report getMailboxUsageDetail. For addtional details please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/reportroot-getmailboxusagedetail?view=graph-rest-1.0\&tabs=http).
+The information displayed comes from the prebuilt Graph report `getMailboxUsageDetail`. For additional details please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/reportroot-getmailboxusagedetail?view=graph-rest-1.0\&tabs=http).
 
 {% hint style="info" %}
 The CIPP call to the Graph endpoint is hard coded to 7 days.

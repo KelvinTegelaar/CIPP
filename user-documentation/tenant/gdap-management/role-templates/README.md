@@ -1,6 +1,6 @@
 # Role Templates
 
-This page will list the GDAP role templates that you have created. If this is your first time setting up CIPP, this page will prompt you to create the "CIPP Defaults" template that includes the 12 roles included on the [Recommended Roles](../../../../setup/installation/recommended-roles.md) page.
+This page will list the GDAP role templates that you have created. If this is your first time setting up CIPP, this page will prompt you to create the "CIPP Defaults" template that includes the 12 roles included on the [recommended-roles.md](../../../../setup/installation/recommended-roles.md "mention") page.
 
 ### Action Buttons
 
@@ -17,7 +17,7 @@ This page will list the GDAP role templates that you have created. If this is yo
 
 ### Table Actions
 
-<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Edit Template</td><td>Opens the template so you can make necessary changes</td><td>false</td></tr><tr><td>Delete Template</td><td>Opens a modal to confirm you want to delete the template(s)</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Edit Template</td><td>Opens <a data-mention href="edit.md">edit.md</a> so you can make necessary changes</td><td>false</td></tr><tr><td>Delete Template</td><td>Opens a modal to confirm you want to delete the template(s)</td><td>true</td></tr></tbody></table>
 
 ***
 

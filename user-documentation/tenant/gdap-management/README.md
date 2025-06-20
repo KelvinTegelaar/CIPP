@@ -8,7 +8,7 @@ A chart showing a high-level view of your GDAP statistics including number of re
 
 #### Add a Tenant Button
 
-Will launch the [GDAP Invite wizard](invites/add.md).
+Will launch the [gdap-invite-wizard.md](../../../setup/installation/gdap-invite-wizard.md "mention") wizard.
 
 #### GDAP Setup
 

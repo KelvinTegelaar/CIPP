@@ -6,14 +6,17 @@ This page lists all devices registered for Autopilot.
 
 ### Action Buttons
 
-| Action                | Description                                                                             |
-| --------------------- | --------------------------------------------------------------------------------------- |
-| Add Autopilot Devices | Opens [Add Autopilot Device](add-device.md)                                             |
-| Sync Devices          | Kicks off a sync of all autopilot devices to pull down up todate configuration profiles |
+{% content-ref url="add-device.md" %}
+[add-device.md](add-device.md)
+{% endcontent-ref %}
+
+| Action       | Description                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------- |
+| Sync Devices | Kicks off a sync of all autopilot devices to pull down up to date configuration profiles |
 
 ### Table Details <a href="#listdevices-details" id="listdevices-details"></a>
 
-The properties returned are for the Graph resouce type windowsAutopilotDeviceIdentity. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-enrollment-windowsautopilotdeviceidentity?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `windowsAutopilotDeviceIdentity`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-enrollment-windowsautopilotdeviceidentity?view=graph-rest-1.0#properties).
 
 ### Table Actions
 
