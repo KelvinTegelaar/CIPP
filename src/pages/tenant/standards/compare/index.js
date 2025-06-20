@@ -181,7 +181,12 @@ const Page = () => {
               // The standard should be reportable if there's an action with value === 'Report'
               const actions = standardConfig?.action ?? [];
               const reportingEnabled =
-                actions.filter((action) => action?.value === "Report").length > 0;
+                //if actions contains Report or Remediate, case insensitive, then we good.
+                actions.filter(
+                  (action) =>
+                    action?.value.toLowerCase() === "report" ||
+                    action?.value.toLowerCase() === "remediate"
+                ).length > 0;
 
               // Find the tenant's value for this standard
               const currentTenantStandard = currentTenantData.find(

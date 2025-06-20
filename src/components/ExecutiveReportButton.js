@@ -9,6 +9,11 @@ import {
   StyleSheet,
   PDFDownloadLink,
   Image,
+  Svg,
+  Path,
+  Circle,
+  Line,
+  Rect,
 } from "@react-pdf/renderer";
 import { useSettings } from "../hooks/use-settings";
 import { useSecureScore } from "../hooks/use-securescore";
@@ -25,6 +30,7 @@ const ExecutiveReportDocument = ({
   licensingData,
   deviceData,
   conditionalAccessData,
+  standardsCompareData,
 }) => {
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -603,69 +609,163 @@ const ExecutiveReportDocument = ({
       marginVertical: 20,
       borderRadius: 8,
     },
+
+    // SVG CHART STYLES
+    svgChartContainer: {
+      alignItems: "center",
+      marginVertical: 12,
+    },
+
+    svgChart: {
+      width: 400,
+      height: 200,
+      marginBottom: 8,
+    },
+
+    chartSummaryText: {
+      fontSize: 8,
+      fontWeight: "bold",
+      color: brandColor,
+      textAlign: "center",
+      marginTop: 8,
+    },
   });
 
-  // MOCK DATA - DETERMINISTIC (FLORENCE)
-  const complianceData = [
-    { standard: "CIS Controls v8", compliance: 87 },
-    { standard: "CISA Directives", compliance: 94 },
-    { standard: "Essential 8", compliance: 82 },
-    { standard: "NIST CSF", compliance: 89 },
-    { standard: "ISO 27001", compliance: 76 },
-  ];
+  // PROCESS REAL STANDARDS DATA
+  const processStandardsData = (apiData) => {
+    console.log("Processing standards data:", apiData);
+    
+    // Try to fetch standards data dynamically
+    let standardsData = null;
+    try {
+      standardsData = require("../data/standards.json");
+      console.log("Standards loaded via require:", standardsData?.length);
+    } catch (error) {
+      console.log("Failed to load standards via require:", error);
+      // Use a simple mapping as fallback
+      standardsData = [
+        {
+          name: "standards.EnablePronouns",
+          label: "Enable Pronouns",
+          helpText: "Enables the Pronouns feature for the tenant. This allows users to set their pronouns in their profile.",
+          tag: []
+        },
+        {
+          name: "standards.AuditLog",
+          label: "Enable the Unified Audit Log",
+          helpText: "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
+          tag: ["CIS M365 5.0 (3.1.1)", "mip_search_auditlog", "NIST CSF 2.0 (DE.CM-09)"]
+        }
+      ];
+    }
+    
+    console.log("Standards definitions available:", standardsData?.length);
+    console.log("First few standards:", standardsData?.slice(0, 3)?.map(s => ({ name: s.name, label: s.label })));
+    if (!apiData || !Array.isArray(apiData) || apiData.length === 0) {
+      return [];
+    }
 
-  const securityControls = [
-    {
-      name: "Multi-Factor Auth",
-      description: "Enforce MFA for all administrative accounts",
-      status: "Compliant",
-    },
-    {
-      name: "Password Policy",
-      description: "Strong password requirements with complexity",
-      status: "Compliant",
-    },
-    {
-      name: "Conditional Access",
-      description: "Location and device-based access controls",
-      status: "Partial",
-    },
-    {
-      name: "Data Loss Prevention",
-      description: "Monitor and prevent data exfiltration",
-      status: "Compliant",
-    },
-    {
-      name: "Audit Logging",
-      description: "Comprehensive audit trail and monitoring",
-      status: "Compliant",
-    },
-    {
-      name: "Guest Access",
-      description: "Restrict external user access permissions",
-      status: "Review",
-    },
-    {
-      name: "Privileged Access",
-      description: "Just-in-time administrative access",
-      status: "Compliant",
-    },
-    {
-      name: "Device Compliance",
-      description: "Devices meet organizational standards",
-      status: "Partial",
-    },
-    {
-      name: "Email Security",
-      description: "Advanced threat protection measures",
-      status: "Compliant",
-    },
-    {
-      name: "Identity Protection",
-      description: "Risk-based authentication analytics",
-      status: "Partial",
-    },
-  ];
+    const processedStandards = [];
+    const tenantData = apiData[0]; // Get the first tenant's data
+
+    // Process each standard from the API response
+    Object.keys(tenantData).forEach((key) => {
+      if (key.startsWith("standards.") && key !== "tenantFilter") {
+        const standardKey = key;
+        const standardValue = tenantData[key];
+
+        // Find the standard definition in standards.json
+        console.log(`Looking for standard: ${standardKey}`);
+        console.log(`Available standards:`, standardsData?.map(s => s.name).slice(0, 5));
+        
+        const standardDef = standardsData?.find((std) => std.name === standardKey);
+        
+        console.log(`Found definition:`, !!standardDef);
+        if (standardDef) {
+          console.log(`Standard details:`, {
+            name: standardDef.name,
+            label: standardDef.label,
+            helpText: standardDef.helpText?.substring(0, 50) + "..."
+          });
+        } else {
+          console.log(`No definition found for: ${standardKey}`);
+          console.log(`Checking if any standards contain: ${standardKey}`);
+          const partialMatch = standardsData?.find(s => s.name.includes(standardKey.replace('standards.', '')));
+          console.log(`Partial match:`, partialMatch?.name);
+        }
+
+        if (standardDef) {
+          // Determine compliance status
+          let status = "Review";
+          if (standardValue && typeof standardValue === "object" && standardValue.Value === true) {
+            status = "Compliant";
+          } else if (standardValue && standardValue.Value === true) {
+            status = "Compliant";
+          }
+
+          // Get tags for display - fix the tags access
+          const tags = standardDef.tag && Array.isArray(standardDef.tag) && standardDef.tag.length > 0
+            ? standardDef.tag.slice(0, 2).join(", ") // Show first 2 tags
+            : "No tags";
+
+          console.log(`Standard ${standardKey} tags:`, standardDef.tag);
+
+          processedStandards.push({
+            name: standardDef.label,
+            description: standardDef.helpText,
+            status: status,
+            tags: tags,
+          });
+        } else {
+          // If no definition found, still add it with basic info
+          let status = "Review";
+          if (standardValue && typeof standardValue === "object" && standardValue.Value === true) {
+            status = "Compliant";
+          } else if (standardValue && standardValue.Value === true) {
+            status = "Compliant";
+          }
+
+          // Create a proper name from the key
+          const displayName = standardKey.replace("standards.", "")
+            .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+            .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+            .trim();
+
+          processedStandards.push({
+            name: displayName,
+            description: "Security standard implementation",
+            status: status,
+            tags: "No tags"
+          });
+        }
+      }
+    });
+
+    console.log("Processed standards:", processedStandards.length);
+    return processedStandards.slice(0, 10); // Limit to 10 for display
+  };
+
+  let securityControls = processStandardsData(standardsCompareData);
+  console.log("Final security controls:", securityControls);
+  
+  // Fallback for testing - if no real data, show some mock data
+  if (!securityControls || securityControls.length === 0) {
+    console.log("No standards data found, using fallback");
+    securityControls = [
+      {
+        name: "Multi-Factor Authentication",
+        description: "Enforce MFA for all administrative accounts",
+        status: "Compliant",
+        tags: "CIS, NIST"
+      },
+      {
+        name: "Password Policy",
+        description: "Strong password requirements with complexity",
+        status: "Review",
+        tags: "CIS"
+      }
+    ];
+  }
 
   const getBadgeStyle = (status) => {
     switch (status) {
@@ -674,6 +774,7 @@ const ExecutiveReportDocument = ({
       case "Partial":
         return [styles.statusText, styles.statusPartial];
       case "Review":
+      case "Review Required":
         return [styles.statusText, styles.statusReview];
       default:
         return styles.statusText;
@@ -770,22 +871,6 @@ const ExecutiveReportDocument = ({
           </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Compliance Framework Alignment</Text>
-
-          <View style={styles.complianceList}>
-            {complianceData.map((item, index) => (
-              <View key={index} style={styles.complianceItem}>
-                <Text style={styles.complianceLabel}>{item.standard}</Text>
-                <View style={styles.complianceBarContainer}>
-                  <View style={[styles.complianceBar, { width: `${item.compliance}%` }]} />
-                </View>
-                <Text style={styles.complianceValue}>{item.compliance}%</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
         <View style={styles.footer}>
           <Text
             style={styles.pageNumber}
@@ -812,93 +897,110 @@ const ExecutiveReportDocument = ({
         </Text>
       </Page>
 
-      {/* SECURITY CONTROLS - HIGH PERFORMANCE (RAUCH) */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Security Controls Assessment</Text>
-            <Text style={styles.pageSubtitle}>
-              Detailed evaluation of implemented security measures
+      {/* SECURITY CONTROLS - Only show if standards data is available */}
+      {(() => {
+        console.log("Checking security controls rendering:", securityControls?.length);
+        return securityControls && securityControls.length > 0;
+      })() && (
+        <Page size="A4" style={styles.page}>
+          <View style={styles.pageHeader}>
+            <View style={styles.pageHeaderContent}>
+              <Text style={styles.pageTitle}>Security Standards Assessment</Text>
+              <Text style={styles.pageSubtitle}>
+                Detailed evaluation of implemented security standards
+              </Text>
+            </View>
+            {brandingSettings?.logo && (
+              <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+            )}
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.bodyText}>
+              Your security standards have been carefully evaluated against industry best practices
+              to protect your business from cyber threats while ensuring smooth daily operations.
+              These standards help maintain business continuity, protect sensitive data, and meet
+              regulatory requirements that are essential for your industry.
             </Text>
           </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
 
-        <View style={styles.section}>
-          <Text style={styles.bodyText}>
-            Your security measures have been carefully designed to protect your business from cyber
-            threats while ensuring smooth daily operations. These safeguards help maintain business
-            continuity, protect sensitive data, and meet regulatory requirements that are essential
-            for your industry.
-          </Text>
-        </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Security Standards Status</Text>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Security Control Status</Text>
-
-          <View style={styles.controlsTable}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.headerCell, styles.headerName]}>Control</Text>
-              <Text style={[styles.headerCell, styles.headerDesc]}>Implementation</Text>
-              <Text style={[styles.headerCell, styles.headerStatus]}>Status</Text>
-            </View>
-
-            {securityControls.map((control, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={styles.cellName}>{control.name}</Text>
-                <Text style={styles.cellDesc}>{control.description}</Text>
-                <View style={styles.cellStatus}>
-                  <Text style={getBadgeStyle(control.status)}>{control.status}</Text>
-                </View>
+            <View style={styles.controlsTable}>
+              <View style={styles.tableHeader}>
+                <Text style={[styles.headerCell, { width: 80 }]}>Standard</Text>
+                <Text style={[styles.headerCell, { flex: 1, marginLeft: 8 }]}>Description</Text>
+                <Text style={[styles.headerCell, { width: 80, marginLeft: 8 }]}>Tags</Text>
+                <Text
+                  style={[styles.headerCell, { width: 60, textAlign: "center", marginLeft: 8 }]}
+                >
+                  Status
+                </Text>
               </View>
-            ))}
-          </View>
-        </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Key Recommendations</Text>
-
-          <View style={styles.recommendationsList}>
-            <View style={styles.recommendationItem}>
-              <Text style={styles.recommendationBullet}>•</Text>
-              <Text style={styles.recommendationText}>
-                <Text style={styles.recommendationLabel}>Immediate Actions:</Text> Address controls
-                marked as "Review" to enhance security posture
-              </Text>
-            </View>
-            <View style={styles.recommendationItem}>
-              <Text style={styles.recommendationBullet}>•</Text>
-              <Text style={styles.recommendationText}>
-                <Text style={styles.recommendationLabel}>Optimization:</Text> Complete
-                implementation of "Partial" controls for comprehensive coverage
-              </Text>
-            </View>
-            <View style={styles.recommendationItem}>
-              <Text style={styles.recommendationBullet}>•</Text>
-              <Text style={styles.recommendationText}>
-                <Text style={styles.recommendationLabel}>Monitoring:</Text> Establish regular review
-                cycles for all security controls
-              </Text>
-            </View>
-            <View style={styles.recommendationItem}>
-              <Text style={styles.recommendationBullet}>•</Text>
-              <Text style={styles.recommendationText}>
-                <Text style={styles.recommendationLabel}>Training:</Text> Implement security
-                awareness programs to reduce human risk factors
-              </Text>
+              {securityControls.map((control, index) => (
+                <View key={index} style={styles.tableRow}>
+                  <Text style={[styles.cellName, { width: 80, marginLeft: 0 }]}>
+                    {control.name}
+                  </Text>
+                  <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
+                    {control.description}
+                  </Text>
+                  <Text style={[styles.cellDesc, { width: 80, marginLeft: 8, fontSize: 6 }]}>
+                    {control.tags}
+                  </Text>
+                  <View style={[styles.cellStatus, { width: 60, marginLeft: 8 }]}>
+                    <Text style={getBadgeStyle(control.status)}>{control.status}</Text>
+                  </View>
+                </View>
+              ))}
             </View>
           </View>
-        </View>
 
-        <View style={styles.footer}>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Key Recommendations</Text>
+
+            <View style={styles.recommendationsList}>
+              <View style={styles.recommendationItem}>
+                <Text style={styles.recommendationBullet}>•</Text>
+                <Text style={styles.recommendationText}>
+                  <Text style={styles.recommendationLabel}>Immediate Actions:</Text> Address
+                  standards marked as "Review" to enhance security posture
+                </Text>
+              </View>
+              <View style={styles.recommendationItem}>
+                <Text style={styles.recommendationBullet}>•</Text>
+                <Text style={styles.recommendationText}>
+                  <Text style={styles.recommendationLabel}>Compliance:</Text> Ensure all security
+                  standards are properly implemented and maintained
+                </Text>
+              </View>
+              <View style={styles.recommendationItem}>
+                <Text style={styles.recommendationBullet}>•</Text>
+                <Text style={styles.recommendationText}>
+                  <Text style={styles.recommendationLabel}>Monitoring:</Text> Establish regular
+                  review cycles for all security standards
+                </Text>
+              </View>
+              <View style={styles.recommendationItem}>
+                <Text style={styles.recommendationBullet}>•</Text>
+                <Text style={styles.recommendationText}>
+                  <Text style={styles.recommendationLabel}>Training:</Text> Implement security
+                  awareness programs to reduce human risk factors
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.footer}>
+            <Text
+              style={styles.pageNumber}
+              render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+            />
+          </View>
+        </Page>
+      )}
 
       {/* STATISTIC PAGE 2 - CHAPTER SPLITTER - Only show if secure score data is available */}
       {secureScoreData?.isSuccess && secureScoreData?.translatedData && (
@@ -975,19 +1077,150 @@ const ExecutiveReportDocument = ({
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Current Score Overview</Text>
+            <Text style={styles.sectionTitle}>7-Day Score Trend</Text>
 
             <View style={styles.chartContainer}>
-              <Text style={styles.chartTitle}>Secure Score Summary</Text>
-              <Text style={styles.chartData}>
-                Current Score: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
-                {secureScoreData?.translatedData?.maxScore || "N/A"}
-                {"\n"}
-                Achievement Rate: {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%
-                {"\n"}
-                {secureScoreData?.translatedData?.controlScores?.length || 0} security controls
-                evaluated
-              </Text>
+              <Text style={styles.chartTitle}>Secure Score Progress</Text>
+              {secureScoreData?.secureScore?.data?.Results &&
+              secureScoreData.secureScore.data.Results.length > 0 ? (
+                <View style={styles.svgChartContainer}>
+                  <Svg style={styles.svgChart} viewBox="0 0 400 200">
+                    {/* Chart Background */}
+                    <Rect
+                      x="40"
+                      y="20"
+                      width="320"
+                      height="140"
+                      fill="#F7FAFC"
+                      stroke="#E2E8F0"
+                      strokeWidth="1"
+                    />
+
+                    {/* Chart Grid Lines */}
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <Line
+                        key={`grid-${i}`}
+                        x1="40"
+                        y1={20 + i * 35}
+                        x2="360"
+                        y2={20 + i * 35}
+                        stroke="#E2E8F0"
+                        strokeWidth="0.5"
+                      />
+                    ))}
+
+                    {/* Chart Data Points and Area */}
+                    {(() => {
+                      const data = secureScoreData.secureScore.data.Results.slice().reverse();
+                      const maxScore = secureScoreData?.translatedData?.maxScore || 100;
+                      const minScore = 0; // Always start from 0
+                      const scoreRange = maxScore; // Full range from 0 to max
+                      const chartWidth = 320;
+                      const chartHeight = 140;
+                      const pointSpacing = chartWidth / Math.max(data.length - 1, 1);
+
+                      // Generate path for area chart
+                      let pathData = `M 40 ${
+                        160 - (data[0].currentScore / scoreRange) * chartHeight
+                      }`;
+                      data.forEach((point, index) => {
+                        if (index > 0) {
+                          const x = 40 + index * pointSpacing;
+                          const y = 160 - (point.currentScore / scoreRange) * chartHeight;
+                          pathData += ` L ${x} ${y}`;
+                        }
+                      });
+                      pathData += ` L ${40 + (data.length - 1) * pointSpacing} 160 L 40 160 Z`;
+
+                      // Generate line path (without area fill)
+                      let lineData = `M 40 ${
+                        160 - (data[0].currentScore / scoreRange) * chartHeight
+                      }`;
+                      data.forEach((point, index) => {
+                        if (index > 0) {
+                          const x = 40 + index * pointSpacing;
+                          const y = 160 - (point.currentScore / scoreRange) * chartHeight;
+                          lineData += ` L ${x} ${y}`;
+                        }
+                      });
+
+                      return (
+                        <>
+                          {/* Area Fill */}
+                          <Path d={pathData} fill={brandColor} fillOpacity="0.3" />
+
+                          {/* Line */}
+                          <Path d={lineData} fill="none" stroke={brandColor} strokeWidth="2" />
+
+                          {/* Data Points */}
+                          {data.map((point, index) => {
+                            const x = 40 + index * pointSpacing;
+                            const y = 160 - (point.currentScore / scoreRange) * chartHeight;
+                            return <Circle key={index} cx={x} cy={y} r="3" fill={brandColor} />;
+                          })}
+
+                          {/* X-axis Labels */}
+                          {data.map((point, index) => {
+                            const x = 40 + index * pointSpacing;
+                            const date = new Date(point.createdDateTime);
+                            const label = date.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            });
+                            return (
+                              <Text
+                                key={`label-${index}`}
+                                x={x}
+                                y="180"
+                                textAnchor="middle"
+                                fontSize="8"
+                                fill="#4A5568"
+                              >
+                                {label}
+                              </Text>
+                            );
+                          })}
+
+                          {/* Y-axis Labels */}
+                          {[
+                            0,
+                            Math.round(maxScore * 0.25),
+                            Math.round(maxScore * 0.5),
+                            Math.round(maxScore * 0.75),
+                            maxScore,
+                          ].map((score, index) => (
+                            <Text
+                              key={`y-label-${index}`}
+                              x="35"
+                              y={165 - index * 35}
+                              textAnchor="end"
+                              fontSize="8"
+                              fill="#4A5568"
+                            >
+                              {score}
+                            </Text>
+                          ))}
+                        </>
+                      );
+                    })()}
+                  </Svg>
+
+                  <Text style={styles.chartSummaryText}>
+                    Current: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
+                    {secureScoreData?.translatedData?.maxScore || "N/A"}(
+                    {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%)
+                  </Text>
+                </View>
+              ) : (
+                <Text style={styles.chartData}>
+                  Current Score: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
+                  {secureScoreData?.translatedData?.maxScore || "N/A"}
+                  {"\n"}
+                  Achievement Rate: {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%
+                  {"\n"}
+                  Historical data not available
+                </Text>
+              )}
             </View>
           </View>
 
@@ -1585,7 +1818,6 @@ export const ExecutiveReportButton = (props) => {
     },
     queryKey: `licenses-report-${settings.currentTenant}`,
   });
-  console.log(secureScore);
   // Get real device data
   const deviceData = ApiGetCall({
     url: "/api/ListDevices",
@@ -1602,6 +1834,15 @@ export const ExecutiveReportButton = (props) => {
       tenantFilter: settings.currentTenant,
     },
     queryKey: `ca-policies-report-${settings.currentTenant}`,
+  });
+
+  // Get real standards data
+  const standardsCompareData = ApiGetCall({
+    url: "/api/ListStandardsCompare",
+    data: {
+      tenantFilter: settings.currentTenant,
+    },
+    queryKey: `standards-compare-report-${settings.currentTenant}`,
   });
 
   // Check if all data is loaded and successful
@@ -1660,6 +1901,7 @@ export const ExecutiveReportButton = (props) => {
           licensingData={licenseData?.data}
           deviceData={deviceData?.data}
           conditionalAccessData={conditionalAccessData?.data}
+          standardsCompareData={standardsCompareData?.data}
         />
       }
       fileName={fileName}
