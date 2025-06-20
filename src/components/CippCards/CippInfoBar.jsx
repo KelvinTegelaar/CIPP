@@ -95,7 +95,7 @@ export const CippInfoBar = ({ data, isFetching }) => {
                     }}
                   >
                     <Grid container spacing={1}>
-                      <Grid item size={{ xs: 12 }}>
+                      <Grid size={{ xs: 12 }}>
                         {item?.offcanvas?.propertyItems?.length > 0 && (
                           <CippPropertyListCard
                             isFetching={isFetching}

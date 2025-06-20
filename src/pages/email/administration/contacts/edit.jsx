@@ -1,119 +1,138 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Divider } from "@mui/material";
-import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import countryList from "/src/data/countryList.json";
+
+const countryLookup = new Map(
+  countryList.map(country => [country.Name, country.Code])
+);
 
 const EditContact = () => {
   const tenantDomain = useSettings().currentTenant;
   const router = useRouter();
   const { id } = router.query;
-
+  
   const contactInfo = ApiGetCall({
     url: `/api/ListContacts?tenantFilter=${tenantDomain}&id=${id}`,
     queryKey: `ListContacts-${id}`,
-    waiting: false,
+    waiting: !!id,
   });
 
-  useEffect(() => {
-    if (id) {
-      contactInfo.refetch();
-    }
-  }, [router.query, id, tenantDomain]);
+  const defaultFormValues = useMemo(() => ({
+    displayName: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    hidefromGAL: false,
+    streetAddress: "",
+    postalCode: "",
+    city: "",
+    state: "",
+    country: "",
+    companyName: "",
+    mobilePhone: "",
+    businessPhone: "",
+    jobTitle: "",
+    website: "",
+    mailTip: "",
+  }), []);
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: {
-      displayName: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      hidefromGAL: false,
-      streetAddress: "",
-      postalCode: "",
-      city: "",
-      country: "",
-      companyName: "",
-      mobilePhone: "",
-      businessPhone: "",
-      jobTitle: "",
-    },
+    defaultValues: defaultFormValues,
   });
 
-  useEffect(() => {
-    if (contactInfo.isSuccess && contactInfo.data?.[0]) {
-      const contact = contactInfo.data[0];
-      // Get the address info from the first address entry
-      const address = contact.addresses?.[0] || {};
-
-      // Find phone numbers by type
-      const phones = contact.phones || [];
-      const mobilePhone = phones.find((p) => p.type === "mobile")?.number;
-      const businessPhone = phones.find((p) => p.type === "business")?.number;
-
-      formControl.reset({
-        displayName: contact.displayName || "",
-        firstName: contact.givenName || "",
-        lastName: contact.surname || "",
-        email: contact.mail || "",
-        hidefromGAL: contact.hidefromGAL || false,
-        streetAddress: address.street || "",
-        postalCode: address.postalCode || "",
-        city: address.city || "",
-        country: address.countryOrRegion
-          ? countryList.find((c) => c.Name === address.countryOrRegion)?.Code || ""
-          : "",
-        companyName: contact.companyName || "",
-        mobilePhone: mobilePhone || "",
-        businessPhone: businessPhone || "",
-        jobTitle: contact.jobTitle || "",
-      });
+  // Memoize processed contact data
+  const processedContactData = useMemo(() => {
+    if (!contactInfo.isSuccess || !contactInfo.data) {
+      return null;
     }
-  }, [contactInfo.isSuccess, contactInfo.data, contactInfo.isFetching]);
 
-  if (contactInfo.isLoading) {
-    return <div>Loading...</div>;
-  }
+    const contact = contactInfo.data;
+    const address = contact.addresses?.[0] || {};
+    const phones = contact.phones || [];
+    
+    // Use Map for O(1) phone lookup
+    const phoneMap = new Map(phones.map(p => [p.type, p.number]));
+
+    return {
+      displayName: contact.displayName || "",
+      firstName: contact.givenName || "",
+      lastName: contact.surname || "",
+      email: contact.mail || "",
+      hidefromGAL: contact.hidefromGAL || false,
+      streetAddress: address.street || "",
+      postalCode: address.postalCode || "",
+      city: address.city || "",
+      state: address.state || "",
+      country: address.countryOrRegion 
+        ? countryLookup.get(address.countryOrRegion) || ""
+        : "",
+      companyName: contact.companyName || "",
+      mobilePhone: phoneMap.get("mobile") || "",
+      businessPhone: phoneMap.get("business") || "",
+      jobTitle: contact.jobTitle || "",
+      website: contact.website || "",
+      mailTip: contact.mailTip || "",
+    };
+  }, [contactInfo.isSuccess, contactInfo.data]);
+
+  // Use callback to prevent unnecessary re-renders
+  const resetForm = useCallback(() => {
+    if (processedContactData) {
+      formControl.reset(processedContactData);
+    }
+  }, [processedContactData, formControl]);
+
+  useEffect(() => {
+    resetForm();
+  }, [resetForm]);
+
+  // Memoize custom data formatter
+  const customDataFormatter = useCallback((values) => {
+    const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
+    return {
+      tenantID: tenantDomain,
+      ContactID: contact?.id,
+      DisplayName: values.displayName,
+      hidefromGAL: values.hidefromGAL,
+      email: values.email,
+      FirstName: values.firstName,
+      LastName: values.lastName,
+      Title: values.jobTitle,
+      StreetAddress: values.streetAddress,
+      PostalCode: values.postalCode,
+      City: values.city,
+      State: values.state,
+      CountryOrRegion: values.country?.value || values.country,
+      Company: values.companyName,
+      mobilePhone: values.mobilePhone,
+      phone: values.businessPhone,
+      website: values.website,
+      mailTip: values.mailTip,
+    };
+  }, [tenantDomain, contactInfo.data]);
+  
+  const contact = Array.isArray(contactInfo.data) ? contactInfo.data[0] : contactInfo.data;
 
   return (
     <CippFormPage
       formControl={formControl}
       queryKey={`ListContacts-${id}`}
-      title={`Contact: ${contactInfo.data?.[0]?.displayName || ""}`}
+      title={`Contact: ${contact?.displayName || ""}`}
       backButtonTitle="Contacts Overview"
       formPageType="Edit"
       postUrl="/api/EditContact"
-      data={contactInfo.data?.[0]}
-      customDataformatter={(values) => {
-        return {
-          tenantID: tenantDomain,
-          ContactID: contactInfo.data?.[0]?.id,
-          DisplayName: values.displayName,
-          hidefromGAL: values.hidefromGAL,
-          email: values.email,
-          FirstName: values.firstName,
-          LastName: values.lastName,
-          Title: values.jobTitle,
-          StreetAddress: values.streetAddress,
-          PostalCode: values.postalCode,
-          City: values.city,
-          CountryOrRegion: values.country?.value || values.country,
-          Company: values.companyName,
-          mobilePhone: values.mobilePhone,
-          phone: values.businessPhone,
-        };
-      }}
+      data={contact}
+      customDataformatter={customDataFormatter}
     >
       <Grid container spacing={2}>
         {/* Display Name */}
-        <Grid item size={{ md: 10, xs: 12 }}>
+        <Grid size={{ md: 10, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -124,7 +143,7 @@ const EditContact = () => {
         </Grid>
 
         {/* First Name and Last Name */}
-        <Grid item size={{ md: 5, xs: 12 }}>
+        <Grid size={{ md: 5, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="First Name"
@@ -132,7 +151,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 5, xs: 12 }}>
+        <Grid size={{ md: 5, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Last Name"
@@ -144,7 +163,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Email */}
-        <Grid item size={{ md: 8, xs: 12 }}>
+        <Grid size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Email"
@@ -161,7 +180,7 @@ const EditContact = () => {
         </Grid>
 
         {/* Hide from GAL */}
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Hidden from Global Address List"
@@ -173,7 +192,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Company Information */}
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Company Name"
@@ -181,7 +200,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Job Title"
@@ -193,7 +212,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Address Information */}
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Street Address"
@@ -201,10 +220,10 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent type="textField" label="City" name="city" formControl={formControl} />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Postal Code"
@@ -212,7 +231,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Country"
@@ -230,7 +249,7 @@ const EditContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Phone Numbers */}
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Mobile Phone"
@@ -238,7 +257,7 @@ const EditContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Business Phone"

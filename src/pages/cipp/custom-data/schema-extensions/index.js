@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Alert, Button, Link, SvgIcon, Typography } from "@mui/material";
-import { Add, Block, CheckCircleOutline, Sync } from "@mui/icons-material";
+import { Add, Block, CheckCircleOutline } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";

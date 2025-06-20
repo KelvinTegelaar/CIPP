@@ -116,8 +116,8 @@ export const SideNav = (props) => {
       priority: 1,
     },
     {
-      link: "https://rightofboom.com",
-      imagesrc: theme === "light" ? "/sponsors/RoB-light.svg" : "/sponsors/RoB.png",
+      link: "https://www.domotz.com/cipp-community-free-domotz-beta.php?utm_source=Community_CIPP&utm_medium=Community_CIPP&utm_campaign=Community_CIPP",
+      imagesrc: theme === "light" ? "/sponsors/domotz-light.png" : "/sponsors/domotz-dark.png",
       priority: 1,
     },
     {
@@ -226,14 +226,20 @@ export const SideNav = (props) => {
                     sx={{
                       display: "flex",
                       justifyContent: "center",
+                      alignItems: "center",
+                      height: "55px", // Fixed height for the container
                     }}
                   >
                     <img
                       src={randomimg.imagesrc}
                       alt="sponsor"
-                      style={{ cursor: "pointer" }}
+                      style={{
+                        cursor: "pointer",
+                        maxHeight: "50px", // Limit the height of the image
+                        width: "auto",
+                        maxWidth: "100px" // Maintain aspect ratio with max width
+                      }}
                       onClick={() => window.open(randomimg.link)}
-                      width={"100px"}
                     />
                   </Box>
                 </>
