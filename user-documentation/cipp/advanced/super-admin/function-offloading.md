@@ -8,8 +8,8 @@ description: Deploying multiple function apps to increase performance
 This is an advanced configuration of CIPP currently in beta. Please proceed with caution.
 {% endhint %}
 
-{% hint style="info" %}
-Hosted CIPP users can request this deployment via the helpdesk. Once deployed, proceed to the "Enabling Function Offloading" section of this page.
+{% hint style="warning" %}
+Hosted CIPP users can request this deployment via the helpdesk. Once deployed, proceed to the [#enabling-function-offloading](function-offloading.md#enabling-function-offloading "mention") section of this page.
 {% endhint %}
 
 ## Deploying Additional CIPP Function Apps to a Resource Group Using an ARM Template
@@ -389,7 +389,7 @@ After successful deployment of the offloading function apps, follow these steps 
 
 ### Automatic Updates
 
-After setting up your additional function apps, make sure to enable CI/CD from the Deployment Center on each of them to ensure they stay on the same version as your main function app. Please see the [Run from Package ](../../../../setup/self-hosting-guide/runfrompackage.md)document for more information.
+After setting up your additional function apps, make sure to enable CI/CD from the Deployment Center on each of them to ensure they stay on the same version as your main function app. Please see the [runfrompackage.md](../../../../setup/self-hosting-guide/runfrompackage.md "mention")document for the section "Run from Package" for more information.
 
 ***
 

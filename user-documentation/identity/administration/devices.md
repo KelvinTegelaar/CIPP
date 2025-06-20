@@ -4,7 +4,7 @@ This page will present a tenant's Entra devices in a table.
 
 ### Column Details
 
-The properties returned are for the Graph resource type device. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `device`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

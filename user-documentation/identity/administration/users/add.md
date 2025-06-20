@@ -46,7 +46,7 @@ When using the **Copy properties from another user** dropdown, the specific fiel
 2. **SherWeb Integration** (if enabled): Auto-purchase option appears when licenses unavailable, allows you to select license SKU for purchase for system to handle for you along with onboarding.
 
 {% hint style="info" %}
-When [SherWeb integration](../../../cipp/integrations/sherweb.md) is enabled and a license shows "(0 available)", you'll see an alert stating: "_This will Purchase a new Sherweb License for the user, according to the terms and conditions with Sherweb. When the license becomes available, CIPP will assign the license to this user."_
+When the [sherweb.md](../../../cipp/integrations/sherweb.md "mention")integration is enabled and a license shows "(0 available)", you'll see an alert stating: "_This will Purchase a new Sherweb License for the user, according to the terms and conditions with Sherweb. When the license becomes available, CIPP will assign the license to this user."_
 {% endhint %}
 
 ### Contact Information

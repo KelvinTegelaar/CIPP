@@ -14,7 +14,7 @@ The List Applications page shows a list of line-of-business applications configu
 
 ### Details
 
-The properties returned are for the Graph resouce type mobileApp. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-apps-mobileapp?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `mobileApp`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-apps-mobileapp?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

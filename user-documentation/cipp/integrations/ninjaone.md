@@ -1,7 +1,7 @@
 # NinjaOne
 
 {% hint style="warning" %}
-Please Note the NinjaOne CIPP integration requires NinjaOne version 5.6 or above. This will be rolling out regionally starting the end of November and going through mid-December.
+Please Note the NinjaOne CIPP integration requires NinjaOne version 5.6 or above.&#x20;
 {% endhint %}
 
 The NinjaOne integration provides several different options to give you control over what is synchronised from CIPP to NinjaOne.

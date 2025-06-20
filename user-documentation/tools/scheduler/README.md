@@ -15,7 +15,7 @@ Scheduled tasks run every 15 minutes on their planned time. A recurring task wil
 | Action                | Description                                                                                       |
 | --------------------- | ------------------------------------------------------------------------------------------------- |
 | Show/Hide System Jobs | Depending on which is displayed, this will either show or hide the system jobs in the table below |
-| Add Job               | Opens the [Add Job](job.md) page                                                                  |
+| Add Job               | Opens the [job.md](job.md "mention") page                                                         |
 
 ### Table Details
 

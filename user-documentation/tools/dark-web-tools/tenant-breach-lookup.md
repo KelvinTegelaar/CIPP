@@ -14,15 +14,11 @@ This will start the process to begin a breach check for the tenant. This check c
 
 ### Table Details
 
-| Column | Description |
-| ------ | ----------- |
-|        |             |
-|        |             |
-|        |             |
+This will display information on all previously discovered potentially breached passwords along with information about the breach.
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View User</td><td>This will open the Breach Lookup tool with the selected user prepopulated</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View User</td><td>This will open the <a data-mention href="../../identity/administration/users/user/bec.md">bec.md</a> tool with the selected user prepopulated</td><td>false</td></tr></tbody></table>
 
 ***
 

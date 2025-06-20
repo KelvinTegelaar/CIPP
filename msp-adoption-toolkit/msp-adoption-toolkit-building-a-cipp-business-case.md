@@ -12,14 +12,14 @@ The CIPP Internal Adoption Guide is a valuable resource designed to assist you i
 
 **Getting Started:**
 
-* Read the [Executive Summary](msp-adoption-toolkit-building-a-cipp-business-case.md#executive-summary), [Introduction](msp-adoption-toolkit-building-a-cipp-business-case.md#introduction), and [Problem Statement](msp-adoption-toolkit-building-a-cipp-business-case.md#problem-statement) to understand benefits, objectives, and challenges.
-* Explore the [Solution](msp-adoption-toolkit-building-a-cipp-business-case.md#solution-cyberdrain-improved-partner-portal-cipp) section to learn about CIPP's features that align with your goals.
+* Read the [#executive-summary](msp-adoption-toolkit-building-a-cipp-business-case.md#executive-summary "mention"), [#executive-summary](msp-adoption-toolkit-building-a-cipp-business-case.md#executive-summary "mention"), and [#problem-statement](msp-adoption-toolkit-building-a-cipp-business-case.md#problem-statement "mention") to understand benefits, objectives, and challenges.
+* Explore the [#solution-cyberdrain-improved-partner-portal-cipp](msp-adoption-toolkit-building-a-cipp-business-case.md#solution-cyberdrain-improved-partner-portal-cipp "mention") section to learn about CIPP's features that align with your goals.
 
 **Building Your Case:**
 
-* Discover [Benefits and Impact](msp-adoption-toolkit-building-a-cipp-business-case.md#benefits-and-impact) for operational efficiency, security, satisfaction, and revenue.
-* Dive into the [Cost-Benefit Analysis](msp-adoption-toolkit-building-a-cipp-business-case.md#cost-benefit-analysis) (Sponsored vs. Self-Hosted) for deployment insights.
-* Learn about [Implementation Approach](msp-adoption-toolkit-building-a-cipp-business-case.md#implementation-approach), including community engagement and decisions.
+* Discover [#benefits-and-impact](msp-adoption-toolkit-building-a-cipp-business-case.md#benefits-and-impact "mention") for operational efficiency, security, satisfaction, and revenue.
+* Dive into the [#cost-benefit-analysis](msp-adoption-toolkit-building-a-cipp-business-case.md#cost-benefit-analysis "mention") (Sponsored vs. Self-Hosted) for deployment insights.
+* Learn about [#implementation-approach](msp-adoption-toolkit-building-a-cipp-business-case.md#implementation-approach "mention"), including community engagement and decisions.
 
 **Taking Action:**
 
@@ -41,9 +41,9 @@ Managing Microsoft 365 tenants efficiently while maintaining security and adheri
 
 ## Problem Statement
 
-Our current multi-tenant management options often lead to inefficiencies, manual processes, and potential security gaps. Additionally, maintaining consistent standards across our client base can be time-consuming and resource-intensive. We need a solution that enhances our operational efficiency, reinforces security measures, and simplifies the management of Microsoft 365 tenants.
+Our current multi-tenant management options often lead to inefficiencies, manual processes, and potential security gaps. Additionally, maintaining consistent standards across our client base can be time-consuming and resource intensive. We need a solution that enhances our operational efficiency, reinforces security measures, and simplifies the management of Microsoft 365 tenants.
 
-#### Solution: CyberDrain Improved Partner Portal (CIPP)
+## Solution: CyberDrain Improved Partner Portal (CIPP)
 
 CIPP is a comprehensive, open source platform (supported by Microsoft themselves) designed to address the challenges we face in managing Microsoft 365 tenants. It offers several key features that align with our objectives:
 
@@ -81,7 +81,7 @@ As we consider the implementation of CIPP at **\[Company Name]**, it's important
      * The hosted version ensures automated updates, support, and a user-friendly management backend, allowing us to focus on Microsoft 365 management tasks without the overhead of infrastructure management.
    * **Self-Hosted Model**:&#x20;
      * Choosing the self-hosted model involves forking the CIPP repository and hosting it within our environment. While this option offers more control and customization, it also requires a higher level of technical expertise.&#x20;
-     * More information on the prerequisites and installation steps for the self-hosted model can be found [here](https://docs.cipp.app/setup/installation).
+     * More information on the prerequisites and installation steps for the self-hosted model can be found in [self-hosting-guide](../setup/self-hosting-guide/ "mention").
 3. **Reaping the Rewards**: After implementing CIPP, we can look forward to the enhanced operational efficiency, strengthened security measures, and improved client satisfaction. As we navigate our Microsoft 365 management with ease and confidence, we'll experience the positive impact that CIPP brings to our MSP operations.
 
 ## Conclusion

@@ -11,13 +11,15 @@ description: >-
 
 Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours**. This automatic enforcement prevents unauthorized changes and helps maintain security.
 
+### Actions
+
 CIPP allows you to set standards in three different settings. Some standards can only be set to specific items, such as Intune standards which can only be "Remediated".
 
-| Action    | Description                                                                                                           |
-| --------- | --------------------------------------------------------------------------------------------------------------------- |
-| Report    | Logs the current configuration and stores this inside of the CIPP database for your standards reports or BPA reports. |
-| Alert     | Sends you a notification via the configured method in CIPP -> Application Settings -> Notifications                   |
-| Remediate | Changes the configuration of the tenant.                                                                              |
+| Action    | Description                                                                                                                                                                                                     |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Report    | Logs the current configuration and stores this inside of the CIPP database for your standards reports or BPA reports.                                                                                           |
+| Alert     | Sends you a notification via the configured method in CIPP -> Application Settings -> Notifications                                                                                                             |
+| Remediate | Changes the configuration of the tenant and enables Report settings in the backend. You can optionally enable Report in addition to Remediate for visual clarity, but all Remediate Standards will also Report. |
 
 For example, when you wish to create a report for Audit log state across all your tenants, you can create an "All Tenants" standard that has the Audit Log standard set to "Report" - This fills the CIPP database with the current setting without editing the clients settings.
 
@@ -33,7 +35,7 @@ Standards are merged based on their specificity and creation date:
 * **Creation Date:** When two standards conflict at the same specificity level (e.g., both tenant-specific), the standard created most recently takes precedence. For example, if you create a tenant-specific standard enabling TOTP and later create another tenant-specific standard disabling TOTP, the more recently created standard (disabling TOTP) will be applied.
 
 {% hint style="warning" %}
-**Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects, detailed in the video and walkthrough on[ this page](../../../setup/implementation-guide/).
+**Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects.
 {% endhint %}
 
 {% hint style="danger" %}

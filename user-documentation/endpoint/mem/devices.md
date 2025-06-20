@@ -8,7 +8,7 @@ The following page in CIPP gives you the ability to manage Intune devices:
 
 ### Table Details <a href="#listdevices-details" id="listdevices-details"></a>
 
-The properties returned are for the Graph resource type userExperienceAnalyticsDeviceScores. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `userExperienceAnalyticsDeviceScores`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0#properties).
 
 ### Actions <a href="#listdevices-actions" id="listdevices-actions"></a>
 

@@ -7,7 +7,7 @@ description: >-
 # Prerequisites
 
 {% hint style="warning" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.
+If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.&#x20;
 {% endhint %}
 
 To get started you must follow or have the following ready. Click on the links for instructions on how to perform some of these tasks, or for more information on the functionality in question.
@@ -62,6 +62,12 @@ For the installation and maintenance of CIPP, we assume you’re comfortable wit
 {% hint style="warning" %}
 The linked resources above will help you understand the Azure services CIPP depends on that you will be required to configure and maintain. If you’re missing any of these skills, we suggest reviewing these before proceeding. Proper knowledge ensures a smooth deployment and ongoing maintenance.
 {% endhint %}
+{% endstep %}
+
+{% step %}
+### GitHub Expertise (Assumed)
+
+For the installation and maintenance of CIPP, understanding how to manage a GitHub repository and app deployment is crucial for the ongoing performance of CIPP. The issues that you can run into with app deployment and updates can be quite numerous and not being familiar with how to troubleshoot those issues can cause you to have your application fail to update. Of course, if you get stuck you can ask in `#cipp-community-help` in Discord.
 {% endstep %}
 {% endstepper %}
 

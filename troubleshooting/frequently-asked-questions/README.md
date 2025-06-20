@@ -6,11 +6,11 @@ On this page you can find a list of frequently asked questions about the CyberDr
 
 <summary>I updated, but CIPP still says my frontend is out of date. How do I fix this?</summary>
 
-SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found [here](../../setup/self-hosting-guide/updating.md).
+SELF-HOSTED NOTE: Be sure to verify that your repo is actually up to date. Instructions for updating self-hosted CIPP can be found in [updating.md](../../setup/self-hosting-guide/updating.md "mention").
 
 CIPP-HOSTED NOTE: Updates can take several hours to roll out to all instances depending on how well GitHub and Azure are communicating at the time the release is pushed. If it's been more than 48 hours, follow these instructions and then reach out to CIPP's helpdesk if still not resolved.
 
-CIPP v7 heavily relies on caching. Because of this it is necessary to clear your browser's cookies and cache to pull in the most up to date version of CIPP's frontend.
+CIPP v7+ heavily relies on caching. Because of this it is necessary to clear your browser's cookies and cache to pull in the most up to date version of CIPP's frontend.
 
 * Chrome/Edge - Open DevTools (F12), right click on the refresh button, select "Empty cache and hard reset"
 * Firefox - Click the padlock in the URL bar and select "Clear cookies and site data..."
@@ -73,19 +73,8 @@ Performance issues in CIPP are not expected. If your performance appears impacte
 
 1. **Check Your Deployment Region:**
    * Ensure that you deployed to the nearest region. You can verify this at [Azure Speed](https://www.azurespeed.com).
-2. **Clear Durable Queues:**
-   * Go to your CIPP instance.
-   * Open the Application Settings menu.
-   * Click on "Maintenance".
-   * Select "Clear Durable Queues".
-3. **Purge Orchestrators:**
-   * Click on "Purge Orchestrators".
-
-For more information, refer to the [maintenance instructions](https://docs.cipp.app/user-documentation/cipp/settings/maintenance).
-
-If you are self-hosted, you will also want to ensure you have configured [Run From Package](../../setup/self-hosting-guide/runfrompackage.md) mode, which can help make sure your system is running efficiently on the backend.
-
-If you have completed all of these, your instance may benefit from implementing function offloading. Refer to the [documentation on function offloading for limitations and setup](../../user-documentation/cipp/advanced/super-admin/function-offloading.md).
+2. **Enable Function Offloading**
+   * For more information, refer to the documentation on [function-offloading.md](../../user-documentation/cipp/advanced/super-admin/function-offloading.md "mention") for limitations and setup.
 
 </details>
 
@@ -95,7 +84,7 @@ If you have completed all of these, your instance may benefit from implementing 
 
 If users in your organization have not accessed CIPP in a while, the Static Web App will put itself into a sleep state to save on resource usage. It's normal to see an initial 15-20 second delay on the first results being called from the CIPP-API backend. This is sometimes known as a cold start.
 
-If you want to avoid cold starts, it's possible to utilize the [CIPP API](broken-reference) and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `/PublicPing` every 3-5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making. The `/PublicPing` endpoint does not require the full authentication setup for the API.
+If you want to avoid cold starts, it's possible to utilize the [Broken link](broken-reference "mention") and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `/PublicPing` every 3-5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making. The `/PublicPing` endpoint does not require the full authentication setup for the API.
 
 Self-hosted clients should see minimal impact to their overall costs.
 
@@ -110,7 +99,7 @@ To add Conditional Access to CIPP, follow the below steps:
 1. Go to your [Conditional Access Policies](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ConditionalAccessBlade/Policies)
 2. Select which users to apply the policy to, default suggestion is _"All Users"_
 3. Select **Azure Static Web Apps** as the included app under "Cloud Apps or actions"
-4. Configure any condition you want. For example Trusted Locations, specific IPs, specific platforms.
+4. Configure any condition you want. For example, Trusted Locations, specific IPs, specific platforms.
 5. At Access Controls you must enable _Grant, with MFA access_.
 6. Select **Save**
 
@@ -124,11 +113,17 @@ Your app is now protected with Conditional Access.
 
 Beginning with v7, CIPP relies on the tenant's name at the time a GDAP relationship was created. Much of the tenant naming and renaming API capabilities were deprecated. As such, it will no longer pull in live information if you rename a tenant through your Microsoft Partner Portal.
 
-To have the new tenant name show up in CIPP:
+To have the new tenant's name show up in CIPP, you have two options
 
-1. After renaming the tenant, create a new GDAP relationship. You can use the [GDAP Management](../../user-documentation/tenant/gdap-management/) page to expedite this process.
-2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the [GDAP Relationships](../../user-documentation/tenant/gdap-management/relationships/) page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
-3. Cleare your tenant cache from [CIPP Application Settings](../../user-documentation/cipp/settings/).
+### Establish a New Relationship
+
+1. After renaming the tenant, create a new GDAP relationship. You can use the [gdap-invite-wizard.md](../../setup/installation/gdap-invite-wizard.md "mention")wizard to expedite this process.
+2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the GDAP [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention")page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
+3. Cleare your tenant cache from [settings](../../user-documentation/cipp/settings/ "mention").
+
+### Utilize the Tenant Alias Functionality
+
+CIPP can also set an alias via the [#properties](../../user-documentation/tenant/administration/tenants/edit.md#properties "mention") section of [edit.md](../../user-documentation/tenant/administration/tenants/edit.md "mention").
 
 </details>
 
@@ -144,9 +139,9 @@ The CIPP alert "Alert on admins without any form of MFA" is based on checking a 
 
 <summary>I'm getting an error that "you must use multi-factor authentication to access" what's going on?</summary>
 
-Typically this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
+Typically, this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
 
-Check the [MFA Troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting) details in the Troubleshooting section for more information.
+Check the [#multi-factor-authentication-troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting "mention") details in the [Broken link](broken-reference "mention")section for more information.
 
 </details>
 
@@ -168,7 +163,7 @@ Check the [MFA Troubleshooting](../troubleshooting.md#multi-factor-authenticatio
    1. Navigate to CIPP -> Application Settings -> Access Check.
    2. Select the relevant tenant and click "Run access check".
 
-Complete all checks for effective troubleshooting. If you still have issues or for detailed instructions, refer to the[refreshing-a-specific-tenants-permissions-via-cpv-api.md](../troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md "mention") page, the [troubleshooting instructions](https://docs.cipp.app/troubleshooting/troubleshooting-instructions) page, and the relevant sections on our [**Error Codes**](https://docs.cipp.app/troubleshooting/troubleshooting) page.
+Complete all checks for effective troubleshooting. If you still have issues or for detailed instructions, refer to the[refreshing-a-specific-tenants-permissions-via-cpv-api.md](../troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md "mention") page, the [troubleshooting-instructions](../troubleshooting-instructions/ "mention") page, and the relevant sections on our [troubleshooting.md](../troubleshooting.md "mention") page.
 
 </details>
 
@@ -180,14 +175,9 @@ Sometimes when you are running a permissions check, you may encounter specific e
 
 To ensure full functionality of CIPP, follow these steps to add the necessary API permissions:
 
-1. **Review the** [**required permissions**](../../setup/installation/permissions.md) **for the Secure Application Model registration:**
-   * Pay attention to the hint boxes on the page, which explain how to find APIs not listed under Graph.
-2. **Add any missing permissions in the** [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) **section of your Azure Portal.**
-   * Some permissions may appear duplicated in both Delegated and Application permissions tables. This is intentional; add both sets of permissions.
-   * Some permissions come from other APIs besides Microsoft Graph. These are indicated by names in brackets (e.g., (WindowsDefenderATP)).
-   * To add these permissions, go to "APIs my organization uses" instead of "Microsoft Graph." Look for the exact name in brackets to find and add the correct resource.
-
-**Note: These tasks must be executed in your own tenant, as authentication is performed using your credentials.**
+1. Click the `Details` button on the [#permissions-check](../../user-documentation/cipp/settings/permissions.md#permissions-check "mention") section of CIPP Settings > [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention")
+2. Click `Repair Permissions`. CIPP will automatically add newly added or missing permissions to your CIPP-SAM application.
+3. CIPP will queue up CPV refreshes to push the update permissions to your client tenants.
 
 </details>
 
@@ -197,17 +187,16 @@ To ensure full functionality of CIPP, follow these steps to add the necessary AP
 
 This error occurs because the user who authorized the CSP or Graph API connection has had their password changed, sessions revoked, or account disabled. Reauthorization is required.
 
-**To resolve this,** e**xecute the SAM Wizard with Option 2:**
+**To resolve this,** e**xecute the SAM Wizard with Option 4:**
 
-* Go to CIPP -> Application Settings -> SAM Setup Wizard.
-* Select "I would like to refresh my token or replace the user I've used for my previous token."
+* Go to CIPP -> Application Settings -> [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention").
+* Select "Refresh Tokens for existing application registration"
 
 **Important:** Ensure your browser allows cookies, disable any ad-blockers, and do not use in-private mode.
 
 For more details, refer to:
 
-* [Troubleshooting guide](https://docs.cipp.app/troubleshooting/troubleshooting#the-provided-grant-has-expired-due-to-it-being-revoked-a-fresh-auth-token-is-needed.-the-user-might)
-* [SAM Wizard best practices](https://docs.cipp.app/setup/installation/samwizard)
+* [Broken link](broken-reference "mention")
 
 </details>
 
@@ -216,14 +205,15 @@ For more details, refer to:
 <summary>How do I resolve issues with the wrong CIPP-SAM user / Service Account?</summary>
 
 1. **Perform a Permissions Check:**
-   * Go to CIPP -> Settings -> Permissions Check.
-   * Click the **Details** button when it appears to see the username used for the SAM setup.
-2. **Ensure the Correct User:**
-   * The user needs to be in the GDAP groups and the AdminAgents group.
-   * If the wrong user is used, go to CIPP -> SAM Setup Wizard.
-   * Select "I would like to refresh my token or replace the user I've used for my previous token."
-
-For more details, refer to the [SAM Wizard best practices](https://docs.cipp.app/setup/installation/samwizard).
+   * Go to CIPP -> Settings -> [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention")
+   * A Permissions Check will automatically run on page load
+2. Confirm the UserPrincipalName matches the expected service account.&#x20;
+3. If not, go to the [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention") and select the option to "Refresh Tokens for existing application registration.
+4. Review the remaining [#permissions-check](../../user-documentation/cipp/settings/permissions.md#permissions-check "mention") output after replacing the incorrect account.
+   * The refresh token matches key vault. This may take a little while to update after first changing the account due to caching.
+   * The user should be a service account.&#x20;
+   * The user needs to be a member of the AdminAgents group.
+   * The application has all the required permissions. If you have an error here, review [#im-getting-missing-permissions-errors-when-performing-the-permissions-check-on-my-cipp-sam-applicati](./#im-getting-missing-permissions-errors-when-performing-the-permissions-check-on-my-cipp-sam-applicati "mention")
 
 </details>
 
@@ -243,8 +233,8 @@ If there are issues with the GDAP relationship, follow these steps:
    * If roles are not mapped, create the mapping by clicking the + icon.
    * Assign these groups to the CIPP service account.
 4. **Identify the CIPP Service Account:**
-   * Go to CIPP -> Application Settings -> Permission Check.
-   * Click the **Details** button to find the CIPP service account.
+   * Go to CIPP -> Application Settings -> [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") -> [#permissions-check](../../user-documentation/cipp/settings/permissions.md#permissions-check "mention").
+   * Review the results for the UserPrncipalName to identify the CIPP service account.
 
 </details>
 
@@ -255,12 +245,10 @@ If there are issues with the GDAP relationship, follow these steps:
 This error may occur because the user is not in any of the GDAP groups. To resolve this:
 
 1. **Check Recommended GDAP Roles and Relationships:**
-   * Refer to the [recommended GDAP roles and relationships](https://docs.cipp.app/setup/installation/permissions) document.
+   * Refer to the [recommended-roles.md](../../setup/installation/recommended-roles.md "mention") document.
 2. **Perform a Tenant Access Check:**
-   * Go to CIPP -> Settings -> Tenant Access Check.
+   * Go to CIPP -> Settings -> [tenants.md](../../user-documentation/cipp/settings/tenants.md "mention") -> perform a Tenant Access Check from the Actions.
    * This will show you which roles might be missing.
-
-For more details, refer to the [permissions setup guide](https://docs.cipp.app/setup/installation/permissions).
 
 </details>
 
@@ -268,7 +256,7 @@ For more details, refer to the [permissions setup guide](https://docs.cipp.app/s
 
 <summary>Does CIPP require a specific license?</summary>
 
-No, CIPP can work with any M365 license, for specific features CIPP will of course the tenant to be licensed correctly, e.g. to manage Intune, the tenant must have Intune Licensing.
+No, CIPP can work with any M365 license in your partner tenant. For specific features CIPP will of course only function if the tenant is licensed correctly, e.g. to manage Intune, the tenant must have Intune Licensing.
 
 </details>
 
@@ -276,7 +264,7 @@ No, CIPP can work with any M365 license, for specific features CIPP will of cour
 
 <summary>My usernames or sites are GUIDs or blank?</summary>
 
-Please see the standard "Enable Usernames instead of pseudo anonymized names in reports" [here](https://docs.cipp.app/user-documentation/tenant/standards/edit-standards#meet-the-standards)
+Please see the standard "Enable Usernames instead of pseudo anonymized names in reports" in [list-standards](../../user-documentation/tenant/standards/list-standards/ "mention").
 
 </details>
 
@@ -306,7 +294,13 @@ This permits users the ability to grant consent when access CIPP now.
 
 <summary>Can I replace the default branding with my own in CIPP?</summary>
 
-No, CIPP's branding is compiled into the code. Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.
+### For the CIPP application:
+
+No, CIPP's branding is compiled into the code. Additionally, the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.
+
+### For CIPP reports:
+
+Yes, please set up the [#branding-settings](../../user-documentation/cipp/settings/#branding-settings "mention") in [settings](../../user-documentation/cipp/settings/ "mention")
 
 </details>
 
@@ -331,27 +325,10 @@ You can use our management portal to add or change a domain name. Follow these s
 To find the correct AppID for CIPP:
 
 1. **Run a Permissions Check:**
-   * Go to CIPP -> Application Settings -> Permissions Check.
-   * Click the **Details** button.
+   * Go to CIPP -> Application Settings -> [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") -> [#permissions-check](../../user-documentation/cipp/settings/permissions.md#permissions-check "mention").
 2. **Locate the Correct AppID:**
-   * There will be a direct link to the application CIPP currently uses.
+   * There will be a direct link to the application registration CIPP currently uses.
    * You can safely delete the other AppIDs.
-
-For more details, refer to the [permissions check guide](https://docs.cipp.app/setup/installation/permissions).
-
-</details>
-
-<details>
-
-<summary>How do I find the SAM App that CIPP is currently using?</summary>
-
-To find the SAM App that CIPP is currently using, follow these steps:
-
-1. **Run a Permissions Check:**
-   * Go to CIPP -> Application Settings -> Permissions Check.
-   * Click the **Details** button.
-2. **Locate the SAM App:**
-   * This will show you the user, IP, and a direct link to the application currently in use by CIPP.
 
 </details>
 
@@ -403,22 +380,6 @@ For more details, refer to the [Lighthouse sign-up guide](https://learn.microsof
 
 <details>
 
-<summary><strong>Does editing the tenant display name in CIPP only affect what is shown in CIPP?</strong></summary>
-
-No, CIPP reflects the tenant name set in the Microsoft Partner Center. When a tenant is added to CIPP, its name is pulled from the Partner Center once. If the name changes in the Partner Center, CIPP does not automatically update it.
-
-To refresh the tenant name in CIPP:
-
-1. Go to **Application Settings > Tenant**.
-2. Select the tenant and delete it.
-3. Clear the tenant cache and wait for the system to refresh the data from the Partner Center.
-
-This ensures the display name in CIPP matches the current name in the Partner Center.
-
-</details>
-
-<details>
-
 <summary>When trying to onboard a GDAP relationship, I received an error that only x amount of groups were found, or that the group is not assigned to a user. What does this mean?</summary>
 
 This error can mean two things;
@@ -426,7 +387,7 @@ This error can mean two things;
 * You migrated using different tools, such as Microsoft Lighthouse.
 * You didn't assign the groups to the user after migrating.
 
-Make sure you assign the correct groups to the CIPP service account. For more information see our best practices [here](../../setup/installation/recommended-roles.md).
+Make sure you assign the correct groups to the CIPP service account. For more information see our best practices in [recommended-roles.md](../../setup/installation/recommended-roles.md "mention").
 
 </details>
 
@@ -434,7 +395,7 @@ Make sure you assign the correct groups to the CIPP service account. For more in
 
 <summary>I've already setup my GDAP relationships and given them access to a Global Administrator role. Can I still auto-extend these after their expiration?</summary>
 
-Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years.
+Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years. If your relationships contain at least the [recommended-roles.md](../../setup/installation/recommended-roles.md "mention") in addition to Global Administrator, you can go to [gdap-management](../../user-documentation/tenant/gdap-management/ "mention") -> [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention"), select one or more relationship and choose the action "Remove Global Administrator from Relationship". After waiting for changes to sync, you can then select the action "Enable automatic extension".
 
 </details>
 
@@ -445,7 +406,7 @@ Auto Extend is only available for relationships without the Global Administrator
 If your CIPP-API isn't updating, start by checking the Actions tab in your repository for a workflow named `_master*.yml`.
 
 * **If the workflow is missing:**\
-  Your repository may not be fully configured. Follow the instructions provided [here](https://docs.cipp.app/setup/self-hosting-guide/runfrompackage) to restore the action workflow.
+  Your repository may not be fully configured. Follow the instructions provided in [#recreate-the-workflow-file](../../setup/self-hosting-guide/updating.md#recreate-the-workflow-file "mention")to restore the action workflow.
 
 </details>
 

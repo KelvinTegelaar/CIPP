@@ -20,7 +20,7 @@ This page displays all current configured Audit Log and Scripted Alerts for CIPP
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td><a href="alert.md">Edit Alert</a></td><td>Opens the alert to be able to adjust settings as needed</td><td>false</td></tr><tr><td>Clone &#x26; Edit Alert</td><td>Copies the selected alert allowing you to make adjustments before saving it as a new alert.</td><td>false</td></tr><tr><td>Delete Alert</td><td>Opens a modal to confirm you want to delete the alert</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Alert</td><td>Opens the <a data-mention href="alert.md">alert.md</a> page to be able to adjust settings as needed</td><td>false</td></tr><tr><td>Clone &#x26; Edit Alert</td><td>Copies the selected alert allowing you to make adjustments before saving it as a new alert.</td><td>false</td></tr><tr><td>Delete Alert</td><td>Opens a modal to confirm you want to delete the alert</td><td>true</td></tr></tbody></table>
 
 ***
 

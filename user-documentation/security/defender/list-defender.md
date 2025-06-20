@@ -8,7 +8,7 @@ This page lists the defender status for all enrolled devices in a tenant. This i
 
 ### Table Details
 
-The properties returned are for the Graph resource type managedDevice. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0#properties). Additionally, CIPP is selecting the additional data that comes with the windowsProtectionState for the devices. For more information on the properties of that object, please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-windowsprotectionstate?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `managedDevice`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0#properties). Additionally, CIPP is selecting the additional data that comes with the `windowsProtectionState` for the devices. For more information on the properties of that object, please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-windowsprotectionstate?view=graph-rest-1.0#properties).
 
 ### Known Issues / Limitations
 

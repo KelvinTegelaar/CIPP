@@ -21,10 +21,9 @@ description: >-
 ### Basic Information
 
 1. **User Identity:** `First Name`, `Last Name`, `Display Name`, `Username` (before the @ symbol), `Primary Domain name` (select from dropdown)
-2. **Email Aliases:**  Add multiple email aliases one per line without domain (added automatically)
-3. **Professional Details:** `Job Title`, `Department`, `Company Name`
-4. **Contact Details:** `Street Address`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
-5. **Management:** `Set Manager` (select from existing users), `Copy groups from another user`
+2. **Professional Details:** `Job Title`, `Department`, `Company Name`
+3. **Contact Details:** `Street Address`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
+4. **Management:** `Set Manager` (select from existing users), `Copy groups from another user`
 
 ### Account Settings
 

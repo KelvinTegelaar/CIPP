@@ -8,7 +8,7 @@ This page lists OneDrive and SharePoint usage from the Microsoft usage API. The 
 
 ### Table Details
 
-The properties returned are for the Graph resource type site but filtered to only return personal sites. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/site?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `site` but filtered to only return personal sites. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/site?view=graph-rest-1.0#properties).
 
 ### Table Actions
 

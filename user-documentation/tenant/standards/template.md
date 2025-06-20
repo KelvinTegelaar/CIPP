@@ -42,7 +42,7 @@ Toggle on the "Add this standard to the template" for each desired template. Onc
 
 For each standard:
 
-* Set the desired Action(s). For assistance on selecting which action, [see the documentation](./#standards-actions).
+* Set the desired Action(s). For assistance on selecting which action, review [#actions](./#actions "mention").
 * Each standard will then have the potential for additional fields that need to be set. Please review those fields and configure as desired.
 * Click Save to store the configured settings. Click Cancel to clear out your changes.
 {% endstep %}

@@ -22,9 +22,9 @@ User management. Equal to and extending [Microsoft 365 admin center > Active Use
 
 ### Table Columns
 
-The properties returned are for the Graph resource type user. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `user`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties).
 
-### Table Actions:
+### Table Actions
 
 #### Account Management Actions
 
@@ -48,7 +48,7 @@ The properties returned are for the Graph resource type user. For more informati
 
 #### Group and Directory Management
 
-<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Add to Group</td><td>Assigns user to specified group(s)</td><td>- Immediate membership<br>- Inherits group permissions</td><td>true</td></tr><tr><td>Clear Immutable ID</td><td>Breaks on-premises AD sync</td><td>- Sets onPremisesImmutableId to null<br>- Stops directory synchronization</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th>Requirements/Implications</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Manage Licenses</td><td>Allows for bulk license management of the selected user(s)</td><td></td><td>true</td></tr><tr><td>Add to Group</td><td>Assigns user to specified group(s)</td><td>- Immediate membership<br>- Inherits group permissions</td><td>true</td></tr><tr><td>Clear Immutable ID</td><td>Breaks on-premises AD sync</td><td>- Sets onPremisesImmutableId to null<br>- Stops directory synchronization</td><td>true</td></tr></tbody></table>
 
 #### Information Access
 

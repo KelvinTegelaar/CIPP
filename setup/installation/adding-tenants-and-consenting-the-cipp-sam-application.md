@@ -11,7 +11,7 @@ The Tenant Onboarding Wizard further simplifies the process of getting setup in 
 * Verifies Graph API connectivity and access.
 
 {% hint style="danger" %}
-CIPP requires its Service Account user to be a member of the specific security groups with the [recommended roles](recommended-roles.md) assigned for proper functionality within your GDAP relationship. This step is completed during the [Setup Wizard execution](../../user-documentation/cipp/sam-setup-wizard.md) prior to tenant onboarding.
+CIPP requires its Service Account user to be a member of the specific security groups with the [recommended-roles.md](recommended-roles.md "mention") assigned for proper functionality within your GDAP relationship. This step is completed during the [executing-the-setup-wizard.md](executing-the-setup-wizard.md "mention") prior to tenant onboarding.
 
 If these roles are missing or the groups haven't been applied to the CIPP user, CIPP will not be able to access the tenant, resulting in errors such as: `invalid_grant:AADSTS65001: The user or administrator has not consented to use the application.`
 
@@ -47,7 +47,7 @@ Navigate to `Tenant Administration` -> `GDAP Management`-> `Relationships`
 * Review the warnings on the tenant as these will indicate if the tenant functions properly within CIPP.
 
 {% hint style="danger" %}
-If you see the warning that the relationship does not have all the CIPP recommended roles, do not proceed. See [Tenant Onboarding](gdap-invite-wizard.md) to create a new GDAP relationship to establish a relationship that meets at least the minimum required roles.
+If you see the warning that the relationship does not have all the CIPP recommended roles, do not proceed. See [gdap-invite-wizard.md](gdap-invite-wizard.md "mention") to create a new GDAP relationship to establish a relationship that meets at least the minimum required roles.
 {% endhint %}
 {% endstep %}
 
@@ -81,7 +81,7 @@ Be sure to update your internal users' GDAP permission to utilize the newly crea
 {% endstepper %}
 
 {% hint style="success" %}
-To automate this process even further, enable Partner Webhooks in Application Settings and newly invited tenants will automatically onboard once accepted.
+To automate this process even further, enable [partner-webhooks.md](../../user-documentation/cipp/settings/partner-webhooks.md "mention") in Application Settings and newly invited tenants will automatically onboard once accepted.
 {% endhint %}
 
 {% hint style="info" %}
@@ -90,12 +90,19 @@ Tenants are cached for 24 hours within CIPP. To see a newly added Microsoft Tena
 
 ## Direct Tenant Add
 
-To directly add a tenant, go to the [Setup Wizard](../../user-documentation/cipp/sam-setup-wizard.md) and select "Add a Tenant" - Make sure you log into a tenant using a service account. This tenant is added to the list of managed tenants immediately.
+To directly add a tenant, go to the [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention") and select "Add a Tenant" - Make sure you log into a tenant using a service account. This tenant is added to the list of managed tenants immediately.
+
+{% hint style="warning" %}
+Do not attempt to add your partner tenant as a direct tenant. This will result in a permission error. To add your partner tenant, please see [tenant-mode.md](../../user-documentation/cipp/advanced/super-admin/tenant-mode.md "mention") and select "Multi Tenant - Add Partner Tenant" or "Single Tenant - Own Tenant Mode".
+{% endhint %}
 
 ### Limitations of Direct Tenants
 
 There are limitations to what CIPP can do with directly added tenants due to some features relying on Lighthouse, Partner Center APIs, etc.
 
+* Permissions errors during addition of the tenant
+  * Consent can only be granted for permissions the direct tenant is licensed for.&#x20;
+  * To work around this until a more robust method can be devised, if you see one of these errors, remove the offending permission (NOT THE CONSENT) from the CIPP-SAM app registration in your tenant.&#x20;
 * Universal Search - This relies on Lighthouse to search for users
 * Admin Portal Links - These utilize the GDAP relationship to log in as your CSP user. You will have to log in to the portal with an account native to the tenant
 * Alerts - There are certain alerts that will only work with GDAP/Lighthouse

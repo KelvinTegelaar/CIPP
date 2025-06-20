@@ -8,7 +8,7 @@ This can be useful to determine if your Intune managed devices are eligible to u
 
 ### Table Columns
 
-The properties returned are for the Graph resource type userExperienceAnalyticsWorkFromAnywhereDevice. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-userexperienceanalyticsworkfromanywheredevice?view=graph-rest-1.0#properties).
+The properties returned are for the Graph resource type `userExperienceAnalyticsWorkFromAnywhereDevice`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-userexperienceanalyticsworkfromanywheredevice?view=graph-rest-1.0#properties).
 
 ### Actions
 
