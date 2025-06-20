@@ -713,12 +713,10 @@ const ExecutiveReportDocument = ({
       }
     });
 
-    console.log("Processed standards:", processedStandards.length);
-    return processedStandards.slice(0, 10); // Limit to 10 for display
+    return processedStandards;
   };
 
   let securityControls = processStandardsData(standardsCompareData);
-  console.log("Final security controls:", securityControls);
 
   // Fallback for testing - if no real data, show some mock data
   if (!securityControls || securityControls.length === 0) {
