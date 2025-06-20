@@ -16,7 +16,6 @@ import {
   ListItemIcon,
   ListItemText,
   Popover,
-  Skeleton,
   Stack,
   SvgIcon,
   Typography,
