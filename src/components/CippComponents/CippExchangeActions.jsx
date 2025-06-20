@@ -16,6 +16,7 @@ import {
   DataUsage,
   MailLock,
   SettingsEthernet,
+  CalendarMonth,
 } from "@mui/icons-material";
 
 export const CippExchangeActions = () => {
@@ -288,6 +289,107 @@ export const CippExchangeActions = () => {
           name: "quota",
           type: "textField",
           placeholder: "e.g. 1000MB, 10GB,1TB",
+        },
+      ],
+    },
+    {
+      label: "Set Calendar Processing",
+      type: "POST",
+      url: "/api/ExecSetCalendarProcessing",
+      data: { UPN: "UPN" },
+      confirmText: "Configure calendar processing settings for [UPN]",
+      icon: <CalendarMonth />,
+      condition: (row) => row.recipientTypeDetails === "RoomMailbox" || row.recipientTypeDetails === "EquipmentMailbox",
+      fields: [
+        {
+          label: "Automatically Process Meeting Requests",
+          name: "automaticallyProcess",
+          type: "switch",
+        },
+        {
+          label: "Automatically Accept Meeting Requests",
+          name: "automaticallyAccept",
+          type: "switch",
+        },
+        {
+          label: "Allow Conflicts",
+          name: "allowConflicts",
+          type: "switch",
+        },
+        {
+          label: "Maximum Number of Conflicts",
+          name: "maxConflicts",
+          type: "number",
+          placeholder: "e.g. 2",
+        },
+        {
+          label: "Allow Recurring Meetings",
+          name: "allowRecurringMeetings",
+          type: "switch",
+        },
+        {
+          label: "Schedule Only During Work Hours",
+          name: "scheduleOnlyDuringWorkHours",
+          type: "switch",
+        },
+        {
+          label: "Maximum Duration (Minutes)",
+          name: "maximumDurationInMinutes",
+          type: "number",
+          placeholder: "e.g. 240",
+        },
+        {
+          label: "Minimum Duration (Minutes)",
+          name: "minimumDurationInMinutes",
+          type: "number",
+          placeholder: "e.g. 30",
+        },
+        {
+          label: "Booking Window (Days)",
+          name: "bookingWindowInDays",
+          type: "number",
+          placeholder: "e.g. 30",
+        },
+        {
+          label: "Add Organizer to Subject",
+          name: "addOrganizerToSubject",
+          type: "switch",
+        },
+        {
+          label: "Delete Comments",
+          name: "deleteComments",
+          type: "switch",
+        },
+        {
+          label: "Delete Subject",
+          name: "deleteSubject",
+          type: "switch",
+        },
+        {
+          label: "Remove Private Property",
+          name: "removePrivateProperty",
+          type: "switch",
+        },
+        {
+          label: "Remove Canceled Meetings",
+          name: "removeCanceledMeetings",
+          type: "switch",
+        },
+        {
+          label: "Remove Old Meeting Messages",
+          name: "removeOldMeetingMessages",
+          type: "switch",
+        },
+        {
+          label: "Process External Meeting Messages",
+          name: "processExternalMeetingMessages",
+          type: "switch",
+        },
+        {
+          label: "Additional Response",
+          name: "additionalResponse",
+          type: "textField",
+          placeholder: "Additional text to add to responses",
         },
       ],
     },

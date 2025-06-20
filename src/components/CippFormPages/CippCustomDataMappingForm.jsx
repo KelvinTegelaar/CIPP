@@ -125,7 +125,7 @@ const CippCustomDataMappingForm = ({ formControl }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item size={{ xl: 8, xs: 12 }}>
+      <Grid size={{ xl: 8, xs: 12 }}>
         <Box sx={{ width: "100%" }}>
           <Stack spacing={2}>
             <Box>
@@ -178,7 +178,7 @@ const CippCustomDataMappingForm = ({ formControl }) => {
           </Stack>
         </Box>
       </Grid>
-      <Grid item size={{ xl: 4, xs: 12 }}>
+      <Grid size={{ xl: 4, xs: 12 }}>
         <Stack spacing={2}>
           {selectedExtensionSyncDataset && (
             <CippPropertyListCard

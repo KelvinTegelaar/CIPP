@@ -1,4 +1,3 @@
-import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
@@ -28,8 +27,11 @@ export const CippFormContactSelector = ({
         addedField: addedField,
         tenantFilter: currentTenant ? currentTenant.value : selectedTenant,
         url: "/api/ListContacts",
-        labelField: (option) => `${option.displayName} (${option.mail})`,
-        valueField: valueField ? valueField : "id",
+        labelField: (option) =>
+          `${option.displayName || option.DisplayName} (${
+            option.mail || option.WindowsEmailAddress
+          })`,
+        valueField: valueField ? valueField : "WindowsEmailAddress" || "mail",
         queryKey: `listcontacts-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
       }}
       creatable={false}
