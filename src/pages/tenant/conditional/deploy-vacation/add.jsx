@@ -46,12 +46,12 @@ const Page = () => {
             exclusions for a specific period of time. Select the CA policy and the date range.
           </Typography>
           <Grid container spacing={2}>
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <Divider sx={{ my: 2 }} />
             </Grid>
 
             {/* User Selector */}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormUserSelector
                 label={`Users in ${tenantDomain}`}
                 formControl={formControl}
@@ -63,7 +63,7 @@ const Page = () => {
             </Grid>
 
             {/* Conditional Access Policy Selector */}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="autoComplete"
                 label={`Conditional Access Policies in ${tenantDomain}`}
@@ -89,7 +89,7 @@ const Page = () => {
             </Grid>
 
             {/* Start Date Picker */}
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 label="Scheduled Start Date"
@@ -109,7 +109,7 @@ const Page = () => {
             </Grid>
 
             {/* End Date Picker */}
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 label="Scheduled End Date"
