@@ -28,6 +28,7 @@ const AddContact = () => {
       title="Shared Mailbox"
       backButtonTitle="Mailbox Overview"
       postUrl="/api/AddSharedMailbox"
+      resetForm={true}
       customDataformatter={(values) => {
         return {
           tenantID: tenantDomain,
