@@ -327,6 +327,7 @@ const CippStandardDialog = ({
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedImpacts, setSelectedImpacts] = useState([]);
   const [selectedRecommendedBy, setSelectedRecommendedBy] = useState([]);
+  const [selectedTagFrameworks, setSelectedTagFrameworks] = useState([]);
   const [showOnlyNew, setShowOnlyNew] = useState(false); // Show only standards added in last 30 days
   const [filtersExpanded, setFiltersExpanded] = useState(true); // Control filter section collapse/expand
 
@@ -342,10 +343,36 @@ const CippStandardDialog = ({
   }, [sortBy]);
 
   // Get all unique values for filters
-  const { allCategories, allImpacts, allRecommendedBy } = useMemo(() => {
+  const { allCategories, allImpacts, allRecommendedBy, allTagFrameworks } = useMemo(() => {
     const categorySet = new Set();
     const impactSet = new Set();
     const recommendedBySet = new Set();
+    const tagFrameworkSet = new Set();
+
+          // Function to extract base framework from tag
+      const extractTagFramework = (tag) => {
+        // Compliance Frameworks - extract version dynamically
+        if (tag.startsWith('CIS M365')) {
+          const versionMatch = tag.match(/CIS M365 (\d+\.\d+)/);
+          return versionMatch ? `CIS M365 ${versionMatch[1]}` : 'CIS M365';
+        }
+        if (tag.startsWith('CISA ')) return 'CISA';
+        if (tag.startsWith('EIDSCA.')) return 'EIDSCA';
+        if (tag.startsWith('Essential 8')) return 'Essential 8';
+        if (tag.startsWith('NIST CSF')) {
+          const versionMatch = tag.match(/NIST CSF (\d+\.\d+)/);
+          return versionMatch ? `NIST CSF ${versionMatch[1]}` : 'NIST CSF';
+        }
+        
+        // Microsoft Secure Score Categories
+        if (tag.startsWith('exo_')) return 'Secure Score - Exchange';
+        if (tag.startsWith('mdo_')) return 'Secure Score - Defender';
+        if (tag.startsWith('spo_')) return 'Secure Score - SharePoint';
+        if (tag.startsWith('mip_')) return 'Secure Score - Purview';
+        
+        // For any other tags, return null to exclude them
+        return null;
+      };
 
     Object.keys(categories).forEach((category) => {
       categorySet.add(category);
@@ -353,6 +380,15 @@ const CippStandardDialog = ({
         if (standard.impact) impactSet.add(standard.impact);
         if (standard.recommendedBy && Array.isArray(standard.recommendedBy)) {
           standard.recommendedBy.forEach(rec => recommendedBySet.add(rec));
+        }
+        // Process tags to extract frameworks
+        if (standard.tag && Array.isArray(standard.tag)) {
+          standard.tag.forEach(tag => {
+            const framework = extractTagFramework(tag);
+            if (framework) { // Only add non-null frameworks
+              tagFrameworkSet.add(framework);
+            }
+          });
         }
       });
     });
@@ -365,15 +401,66 @@ const CippStandardDialog = ({
       return aIndex - bIndex;
     });
 
+    // Sort tag frameworks with compliance frameworks first, then service categories
+    const sortedTagFrameworks = Array.from(tagFrameworkSet).sort((a, b) => {
+      // Define priority groups
+      const getFrameworkPriority = (framework) => {
+        if (framework.startsWith('CIS M365')) return 1;
+        if (framework === 'CISA') return 2;
+        if (framework === 'EIDSCA') return 3;
+        if (framework === 'Essential 8') return 4;
+        if (framework.startsWith('NIST CSF')) return 5;
+        if (framework.startsWith('Secure Score -')) return 6;
+        return 999; // Other tags go last
+      };
+      
+      const aPriority = getFrameworkPriority(a);
+      const bPriority = getFrameworkPriority(b);
+      
+      // If different priorities, sort by priority
+      if (aPriority !== bPriority) {
+        return aPriority - bPriority;
+      }
+      
+      // If same priority, sort alphabetically
+      return a.localeCompare(b);
+    });
+
     return {
       allCategories: Array.from(categorySet).sort(),
       allImpacts: sortedImpacts,
       allRecommendedBy: Array.from(recommendedBySet).sort(),
+      allTagFrameworks: sortedTagFrameworks,
     };
   }, [categories]);
 
   // Enhanced filter function
   const enhancedFilterStandards = useCallback((standardsList) => {
+          // Function to extract base framework from tag (same as in useMemo)
+      const extractTagFramework = (tag) => {
+        // Compliance Frameworks - extract version dynamically
+        if (tag.startsWith('CIS M365')) {
+          const versionMatch = tag.match(/CIS M365 (\d+\.\d+)/);
+          return versionMatch ? `CIS M365 ${versionMatch[1]}` : 'CIS M365';
+        }
+        if (tag.startsWith('CISA ')) return 'CISA';
+        if (tag.startsWith('EIDSCA.')) return 'EIDSCA';
+        if (tag.startsWith('Essential 8')) return 'Essential 8';
+        if (tag.startsWith('NIST CSF')) {
+          const versionMatch = tag.match(/NIST CSF (\d+\.\d+)/);
+          return versionMatch ? `NIST CSF ${versionMatch[1]}` : 'NIST CSF';
+        }
+        
+        // Microsoft Secure Score Categories
+        if (tag.startsWith('exo_')) return 'Secure Score - Exchange';
+        if (tag.startsWith('mdo_')) return 'Secure Score - Defender';
+        if (tag.startsWith('spo_')) return 'Secure Score - SharePoint';
+        if (tag.startsWith('mip_')) return 'Secure Score - Purview';
+        
+        // For any other tags, return null to exclude them
+        return null;
+      };
+
     return standardsList.filter((standard) => {
       // Original text search
       const matchesSearch = !localSearchQuery || 
@@ -396,6 +483,14 @@ const CippStandardDialog = ({
         (standard.recommendedBy && Array.isArray(standard.recommendedBy) &&
          standard.recommendedBy.some(rec => selectedRecommendedBy.includes(rec)));
 
+      // Tag framework filter
+      const matchesTagFramework = selectedTagFrameworks.length === 0 || 
+        (standard.tag && Array.isArray(standard.tag) &&
+         standard.tag.some(tag => {
+           const framework = extractTagFramework(tag);
+           return framework && selectedTagFrameworks.includes(framework);
+         }));
+
       // New standards filter (last 30 days)
       const isNewStandard = (dateAdded) => {
         if (!dateAdded) return false;
@@ -405,9 +500,9 @@ const CippStandardDialog = ({
       };
       const matchesNewFilter = !showOnlyNew || isNewStandard(standard.addedDate);
 
-      return matchesSearch && matchesCategory && matchesImpact && matchesRecommendedBy && matchesNewFilter;
+      return matchesSearch && matchesCategory && matchesImpact && matchesRecommendedBy && matchesTagFramework && matchesNewFilter;
     });
-  }, [localSearchQuery, selectedCategories, selectedImpacts, selectedRecommendedBy, showOnlyNew]);
+  }, [localSearchQuery, selectedCategories, selectedImpacts, selectedRecommendedBy, selectedTagFrameworks, showOnlyNew]);
 
   // Enhanced sort function
   const sortStandards = useCallback((standardsList) => {
@@ -490,6 +585,7 @@ const CippStandardDialog = ({
     setSelectedCategories([]);
     setSelectedImpacts([]);
     setSelectedRecommendedBy([]);
+    setSelectedTagFrameworks([]);
     setShowOnlyNew(false);
     setSortBy("addedDate");
     setSortOrder("desc");
@@ -502,6 +598,7 @@ const CippStandardDialog = ({
     setSelectedCategories([]);
     setSelectedImpacts([]);
     setSelectedRecommendedBy([]);
+    setSelectedTagFrameworks([]);
     setShowOnlyNew(false);
     handleSearchQueryChange(""); // Clear parent search state
     handleCloseDialog();
@@ -570,7 +667,7 @@ const CippStandardDialog = ({
   );
 
   // Count active filters
-  const activeFiltersCount = selectedCategories.length + selectedImpacts.length + selectedRecommendedBy.length + (showOnlyNew ? 1 : 0);
+  const activeFiltersCount = selectedCategories.length + selectedImpacts.length + selectedRecommendedBy.length + selectedTagFrameworks.length + (showOnlyNew ? 1 : 0);
 
   // Don't render dialog contents until it's actually open (improves performance)
   return (
@@ -792,6 +889,26 @@ const CippStandardDialog = ({
                     </Select>
                   </FormControl>
 
+                  <FormControl sx={{ minWidth: 160 }}>
+                    <InputLabel>Compliance Tags</InputLabel>
+                    <Select
+                      multiple
+                      value={selectedTagFrameworks}
+                      label="Compliance Tags"
+                      onChange={(e) => setSelectedTagFrameworks(e.target.value)}
+                      sx={{ height: 45 }}
+                      renderValue={(selected) => 
+                        selected.length === 0 ? "All Tags" : `${selected.length} selected`
+                      }
+                    >
+                      {allTagFrameworks.map((framework) => (
+                        <MenuItem key={framework} value={framework}>
+                          {framework}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
                   {/* New Standards Toggle */}
                   <FormControlLabel
                     control={
@@ -851,6 +968,16 @@ const CippStandardDialog = ({
                     size="small"
                     onDelete={() => setSelectedRecommendedBy(prev => prev.filter(r => r !== rec))}
                     color="success"
+                    variant="outlined"
+                  />
+                ))}
+                {selectedTagFrameworks.map((framework) => (
+                  <Chip
+                    key={framework}
+                    label={framework}
+                    size="small"
+                    onDelete={() => setSelectedTagFrameworks(prev => prev.filter(f => f !== framework))}
+                    color="warning"
                     variant="outlined"
                   />
                 ))}
