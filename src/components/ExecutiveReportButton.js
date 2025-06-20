@@ -633,34 +633,12 @@ const ExecutiveReportDocument = ({
 
   // PROCESS REAL STANDARDS DATA
   const processStandardsData = (apiData) => {
-    console.log("Processing standards data:", apiData);
-    
     // Try to fetch standards data dynamically
     let standardsData = null;
     try {
       standardsData = require("../data/standards.json");
-      console.log("Standards loaded via require:", standardsData?.length);
-    } catch (error) {
-      console.log("Failed to load standards via require:", error);
-      // Use a simple mapping as fallback
-      standardsData = [
-        {
-          name: "standards.EnablePronouns",
-          label: "Enable Pronouns",
-          helpText: "Enables the Pronouns feature for the tenant. This allows users to set their pronouns in their profile.",
-          tag: []
-        },
-        {
-          name: "standards.AuditLog",
-          label: "Enable the Unified Audit Log",
-          helpText: "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
-          tag: ["CIS M365 5.0 (3.1.1)", "mip_search_auditlog", "NIST CSF 2.0 (DE.CM-09)"]
-        }
-      ];
-    }
-    
-    console.log("Standards definitions available:", standardsData?.length);
-    console.log("First few standards:", standardsData?.slice(0, 3)?.map(s => ({ name: s.name, label: s.label })));
+    } catch (error) {}
+
     if (!apiData || !Array.isArray(apiData) || apiData.length === 0) {
       return [];
     }
@@ -674,24 +652,17 @@ const ExecutiveReportDocument = ({
         const standardKey = key;
         const standardValue = tenantData[key];
 
-        // Find the standard definition in standards.json
-        console.log(`Looking for standard: ${standardKey}`);
-        console.log(`Available standards:`, standardsData?.map(s => s.name).slice(0, 5));
-        
         const standardDef = standardsData?.find((std) => std.name === standardKey);
-        
-        console.log(`Found definition:`, !!standardDef);
         if (standardDef) {
           console.log(`Standard details:`, {
             name: standardDef.name,
             label: standardDef.label,
-            helpText: standardDef.helpText?.substring(0, 50) + "..."
+            helpText: standardDef.helpText?.substring(0, 50) + "...",
           });
         } else {
-          console.log(`No definition found for: ${standardKey}`);
-          console.log(`Checking if any standards contain: ${standardKey}`);
-          const partialMatch = standardsData?.find(s => s.name.includes(standardKey.replace('standards.', '')));
-          console.log(`Partial match:`, partialMatch?.name);
+          const partialMatch = standardsData?.find((s) =>
+            s.name.includes(standardKey.replace("standards.", ""))
+          );
         }
 
         if (standardDef) {
@@ -704,15 +675,15 @@ const ExecutiveReportDocument = ({
           }
 
           // Get tags for display - fix the tags access
-          const tags = standardDef.tag && Array.isArray(standardDef.tag) && standardDef.tag.length > 0
-            ? standardDef.tag.slice(0, 2).join(", ") // Show first 2 tags
-            : "No tags";
-
-          console.log(`Standard ${standardKey} tags:`, standardDef.tag);
+          const tags =
+            standardDef.tag && Array.isArray(standardDef.tag) && standardDef.tag.length > 0
+              ? standardDef.tag.slice(0, 2).join(", ") // Show first 2 tags
+              : "No tags";
 
           processedStandards.push({
             name: standardDef.label,
-            description: standardDef.helpText,
+            description:
+              standardDef.executiveText || standardDef.helpText || "No description available",
             status: status,
             tags: tags,
           });
@@ -726,16 +697,17 @@ const ExecutiveReportDocument = ({
           }
 
           // Create a proper name from the key
-          const displayName = standardKey.replace("standards.", "")
-            .replace(/([A-Z])/g, ' $1') // Add space before capital letters
-            .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+          const displayName = standardKey
+            .replace("standards.", "")
+            .replace(/([A-Z])/g, " $1") // Add space before capital letters
+            .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
             .trim();
 
           processedStandards.push({
             name: displayName,
             description: "Security standard implementation",
             status: status,
-            tags: "No tags"
+            tags: "No tags",
           });
         }
       }
@@ -747,7 +719,7 @@ const ExecutiveReportDocument = ({
 
   let securityControls = processStandardsData(standardsCompareData);
   console.log("Final security controls:", securityControls);
-  
+
   // Fallback for testing - if no real data, show some mock data
   if (!securityControls || securityControls.length === 0) {
     console.log("No standards data found, using fallback");
@@ -756,14 +728,14 @@ const ExecutiveReportDocument = ({
         name: "Multi-Factor Authentication",
         description: "Enforce MFA for all administrative accounts",
         status: "Compliant",
-        tags: "CIS, NIST"
+        tags: "CIS, NIST",
       },
       {
         name: "Password Policy",
         description: "Strong password requirements with complexity",
         status: "Review",
-        tags: "CIS"
-      }
+        tags: "CIS",
+      },
     ];
   }
 
