@@ -23,8 +23,6 @@ import { ApiGetCall } from "../api/ApiCall";
 const ExecutiveReportDocument = ({
   tenantName,
   userStats,
-  standardsData,
-  organizationData,
   brandingSettings,
   secureScoreData,
   licensingData,
@@ -184,6 +182,8 @@ const ExecutiveReportDocument = ({
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "flex-start",
+      pageBreakAfter: "avoid",
+      breakAfter: "avoid",
     },
 
     pageHeaderContent: {
@@ -206,6 +206,8 @@ const ExecutiveReportDocument = ({
     // SECTIONS - REPEATABLE PATTERNS (FROST)
     section: {
       marginBottom: 24,
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
     },
 
     sectionTitle: {
@@ -213,6 +215,10 @@ const ExecutiveReportDocument = ({
       fontWeight: "bold",
       color: brandColor,
       marginBottom: 12,
+      pageBreakAfter: "avoid",
+      breakAfter: "avoid",
+      orphans: 3,
+      widows: 3,
     },
 
     bodyText: {
@@ -228,6 +234,8 @@ const ExecutiveReportDocument = ({
       flexDirection: "row",
       gap: 12,
       marginBottom: 20,
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
     },
 
     statCard: {
@@ -305,6 +313,8 @@ const ExecutiveReportDocument = ({
       flexDirection: "row",
       gap: 12,
       marginBottom: 20,
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
     },
 
     scoreCard: {
@@ -341,6 +351,8 @@ const ExecutiveReportDocument = ({
       padding: 16,
       marginBottom: 20,
       alignItems: "center",
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
     },
 
     chartTitle: {
@@ -362,6 +374,8 @@ const ExecutiveReportDocument = ({
       border: `1px solid #E2E8F0`,
       borderRadius: 6,
       overflow: "hidden",
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
     },
 
     tableHeader: {
@@ -454,6 +468,10 @@ const ExecutiveReportDocument = ({
       borderRadius: 4,
       padding: 12,
       marginBottom: 12,
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
+      orphans: 3,
+      widows: 3,
     },
 
     infoTitle: {
@@ -472,6 +490,8 @@ const ExecutiveReportDocument = ({
     // RECOMMENDATIONS - SCALABLE SECTIONS (FROST)
     recommendationsList: {
       gap: 8,
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
     },
 
     recommendationItem: {
@@ -651,19 +671,7 @@ const ExecutiveReportDocument = ({
       if (key.startsWith("standards.") && key !== "tenantFilter") {
         const standardKey = key;
         const standardValue = tenantData[key];
-
         const standardDef = standardsData?.find((std) => std.name === standardKey);
-        if (standardDef) {
-          console.log(`Standard details:`, {
-            name: standardDef.name,
-            label: standardDef.label,
-            helpText: standardDef.helpText?.substring(0, 50) + "...",
-          });
-        } else {
-          const partialMatch = standardsData?.find((s) =>
-            s.name.includes(standardKey.replace("standards.", ""))
-          );
-        }
 
         if (standardDef) {
           // Determine compliance status
@@ -673,7 +681,6 @@ const ExecutiveReportDocument = ({
           } else if (standardValue && standardValue.Value === true) {
             status = "Compliant";
           }
-
           // Get tags for display - fix the tags access
           const tags =
             standardDef.tag && Array.isArray(standardDef.tag) && standardDef.tag.length > 0
@@ -717,25 +724,6 @@ const ExecutiveReportDocument = ({
   };
 
   let securityControls = processStandardsData(standardsCompareData);
-
-  // Fallback for testing - if no real data, show some mock data
-  if (!securityControls || securityControls.length === 0) {
-    console.log("No standards data found, using fallback");
-    securityControls = [
-      {
-        name: "Multi-Factor Authentication",
-        description: "Enforce MFA for all administrative accounts",
-        status: "Compliant",
-        tags: "CIS, NIST",
-      },
-      {
-        name: "Password Policy",
-        description: "Strong password requirements with complexity",
-        status: "Review",
-        tags: "CIS",
-      },
-    ];
-  }
 
   const getBadgeStyle = (status) => {
     switch (status) {
