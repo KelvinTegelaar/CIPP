@@ -21,9 +21,10 @@ import {
   InputLabel,
   Stack,
   Divider,
+  Collapse,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Add, Sort, Clear, FilterList } from "@mui/icons-material";
+import { Add, Sort, Clear, FilterList, ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { debounce } from "lodash";
 import { Virtuoso } from "react-virtuoso";
@@ -78,20 +79,49 @@ const StandardCard = memo(
     }, [standard.name]);
 
     return (
-      <Grid size={{ xs: 12, md: 3 }} key={standard.name}>
+      <Grid size={{ xs: 12, sm: 6, md: 3, lg: 3 }} key={standard.name}>
+        <Box
+          sx={{
+            position: 'relative',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            ...(isNewStandard(standard.addedDate) && {
+              mt: 1.5, // Add top margin to accommodate the "New" label
+            })
+          }}
+        >
+          {isNewStandard(standard.addedDate) && (
+            <Chip
+              label="New"
+              size="small"
+              color="success"
+              sx={{
+                position: 'absolute',
+                top: -10,
+                left: 12,
+                zIndex: 1,
+                fontSize: '0.7rem',
+                height: 20,
+                fontWeight: 'bold'
+              }}
+            />
+          )}
         <Card
           id={`standard-card-${standard.name}`}
           sx={{
             display: "flex",
             flexDirection: "column",
             height: "100%",
+            flex: 1,
             position: "relative",
             m: 0,
+              ...(isNewStandard(standard.addedDate) && {
+                border: '2px solid',
+                borderColor: 'success.main'
+              })
           }}
         >
-          {isNewStandard(standard.addedDate) && (
-            <Chip label="New" size="small" color="success" sx={{ position: "absolute" }} />
-          )}
           <CardContent sx={{ flexGrow: 1, pt: 3, pb: 1 }}>
             <Typography variant="h6" gutterBottom>
               {standard.label}
@@ -197,6 +227,7 @@ const StandardCard = memo(
             )}
           </CardContent>
         </Card>
+        </Box>
       </Grid>
     );
   },
@@ -256,7 +287,16 @@ const VirtualizedStandardGrid = memo(({ items, renderItem }) => {
       defaultItemHeight={320} // Provide estimated row height for better virtualization
       itemContent={(index) => (
         <Box sx={{ pt: index === 0 ? 0 : 2 }}>
-          <Grid container spacing={2} sx={{ width: "100%", m: 0 }}>
+          <Grid 
+            container 
+            spacing={2} 
+            sx={{ 
+              width: "100%", 
+              m: 0,
+              display: 'flex',
+              alignItems: 'stretch' // This ensures all items in the row have equal height
+            }}
+          >
             {rows[index].map(renderItem)}
           </Grid>
         </Box>
@@ -288,6 +328,18 @@ const CippStandardDialog = ({
   const [selectedImpacts, setSelectedImpacts] = useState([]);
   const [selectedRecommendedBy, setSelectedRecommendedBy] = useState([]);
   const [showOnlyNew, setShowOnlyNew] = useState(false); // Show only standards added in last 30 days
+  const [filtersExpanded, setFiltersExpanded] = useState(true); // Control filter section collapse/expand
+
+  // Auto-adjust sort order when sort type changes
+  useEffect(() => {
+    if (sortBy === "label") {
+      setSortOrder("asc"); // Names: A-Z
+    } else if (sortBy === "addedDate") {
+      setSortOrder("desc"); // Dates: Newest first
+    } else if (sortBy === "impact") {
+      setSortOrder("desc"); // Impact: High to Low
+    }
+  }, [sortBy]);
 
   // Get all unique values for filters
   const { allCategories, allImpacts, allRecommendedBy } = useMemo(() => {
@@ -305,9 +357,17 @@ const CippStandardDialog = ({
       });
     });
 
+    // Custom sort order for impacts: Low -> Medium -> High
+    const impactOrder = ["Low Impact", "Medium Impact", "High Impact"];
+    const sortedImpacts = Array.from(impactSet).sort((a, b) => {
+      const aIndex = impactOrder.indexOf(a);
+      const bIndex = impactOrder.indexOf(b);
+      return aIndex - bIndex;
+    });
+
     return {
       allCategories: Array.from(categorySet).sort(),
-      allImpacts: Array.from(impactSet).sort(),
+      allImpacts: sortedImpacts,
       allRecommendedBy: Array.from(recommendedBySet).sort(),
     };
   }, [categories]);
@@ -538,145 +598,231 @@ const CippStandardDialog = ({
         {/* Search and Filter Controls */}
         <Box sx={{ mt: 2, mb: 3 }}>
           {/* Search Box */}
-          <TextField
+        <TextField
             label="Search Standards"
-            fullWidth
-            onChange={handleLocalSearchChange}
-            value={localSearchQuery}
-            autoComplete="off"
+          fullWidth
+          onChange={handleLocalSearchChange}
+          value={localSearchQuery}
+          autoComplete="off"
             placeholder="Search by name, description, or tags..."
             sx={{ mb: 3 }}
           />
 
           {/* Filter Controls Section */}
           <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2" sx={{ mb: 2, color: 'text.secondary' }}>
-              Sort & Filter Options
-            </Typography>
-            
-            {/* Sort Controls Row */}
-            <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
-              <FormControl sx={{ minWidth: 200 }}>
-                <InputLabel>Sort By</InputLabel>
-                <Select
-                  value={sortBy}
-                  label="Sort By"
-                  onChange={(e) => setSortBy(e.target.value)}
-                  sx={{ height: 45 }}
-                >
-                  <MenuItem value="label">Name</MenuItem>
-                  <MenuItem value="addedDate">Date Added</MenuItem>
-                </Select>
-              </FormControl>
-              
-              <FormControl sx={{ minWidth: 160 }}>
-                <InputLabel>Order</InputLabel>
-                <Select
-                  value={sortOrder}
-                  label="Order"
-                  onChange={(e) => setSortOrder(e.target.value)}
-                  sx={{ height: 45 }}
-                >
-                  <MenuItem value="asc">Ascending</MenuItem>
-                  <MenuItem value="desc">Descending</MenuItem>
-                </Select>
-              </FormControl>
-
-              {/* Clear All Filters Button */}
-              {activeFiltersCount > 0 && (
-                <Button
-                  variant="outlined"
-                  startIcon={<Clear />}
-                  onClick={clearAllFilters}
-                  sx={{ ml: 'auto', height: 45 }}
-                >
-                  Clear All ({activeFiltersCount})
-                </Button>
-              )}
-            </Box>
-
-            {/* Filter Controls Row */}
-            <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-              {/* Category Filter */}
-              <FormControl sx={{ minWidth: 220 }}>
-                <InputLabel>Categories</InputLabel>
-                <Select
-                  multiple
-                  value={selectedCategories}
-                  label="Categories"
-                  onChange={(e) => setSelectedCategories(e.target.value)}
-                  sx={{ height: 45 }}
-                  renderValue={(selected) => 
-                    selected.length === 0 ? "All Categories" : `${selected.length} selected`
-                  }
-                >
-                  {allCategories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* Impact Filter */}
-              <FormControl sx={{ minWidth: 180 }}>
-                <InputLabel>Impact</InputLabel>
-                <Select
-                  multiple
-                  value={selectedImpacts}
-                  label="Impact"
-                  onChange={(e) => setSelectedImpacts(e.target.value)}
-                  sx={{ height: 45 }}
-                  renderValue={(selected) => 
-                    selected.length === 0 ? "All Impacts" : `${selected.length} selected`
-                  }
-                >
-                  {allImpacts.map((impact) => (
-                    <MenuItem key={impact} value={impact}>
-                      {impact}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* Recommended By Filter */}
-              <FormControl sx={{ minWidth: 220 }}>
-                <InputLabel>Recommended By</InputLabel>
-                <Select
-                  multiple
-                  value={selectedRecommendedBy}
-                  label="Recommended By"
-                  onChange={(e) => setSelectedRecommendedBy(e.target.value)}
-                  sx={{ height: 45 }}
-                  renderValue={(selected) => 
-                    selected.length === 0 ? "All Recommendations" : `${selected.length} selected`
-                  }
-                >
-                  {allRecommendedBy.map((rec) => (
-                    <MenuItem key={rec} value={rec}>
-                      {rec}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* New Standards Toggle */}
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={showOnlyNew}
-                    onChange={(e) => setShowOnlyNew(e.target.checked)}
-                  />
+            {/* Clickable header bar */}
+            <Box 
+              onClick={() => setFiltersExpanded(!filtersExpanded)}
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                mb: 2,
+                p: 1,
+                borderRadius: 1,
+                cursor: 'pointer',
+                bgcolor: 'action.hover',
+                '&:hover': {
+                  bgcolor: 'action.selected'
                 }
-                label="New (30 days)"
-                sx={{ ml: 1 }}
-              />
+              }}
+            >
+              <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                Sort & Filter Options
+              </Typography>
+              {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
             </Box>
+
+            {/* Compact summary when collapsed */}
+            {!filtersExpanded && (
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1, 
+                py: 0.5,
+                px: 1,
+                bgcolor: 'action.hover',
+                borderRadius: 0.5,
+                mb: 1
+              }}>
+                <Typography variant="caption" color="text.secondary">
+                  Sorted by <strong>{sortBy === 'addedDate' ? 'Date Added' : 'Name'}</strong> ({sortOrder === 'desc' ? 'Desc' : 'Asc'})
+                </Typography>
+                {activeFiltersCount > 0 && (
+                  <>
+                    <Typography variant="caption" color="text.secondary">
+                      • <strong>{activeFiltersCount}</strong> filter{activeFiltersCount !== 1 ? 's' : ''}
+                    </Typography>
+                    <Button
+                      variant="text"
+                      size="small"
+                      onClick={clearAllFilters}
+                      sx={{ 
+                        ml: 'auto', 
+                        minWidth: 'auto', 
+                        px: 1, 
+                        py: 0.25,
+                        fontSize: '0.75rem',
+                        height: 'auto'
+                      }}
+                    >
+                      Clear
+                    </Button>
+                  </>
+                )}
+              </Box>
+            )}
+            
+            {/* Collapsible filter controls */}
+            <Collapse in={filtersExpanded}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                {/* Sort Controls Card */}
+                <Box sx={{ 
+                  display: 'flex', 
+                  gap: 2, 
+                  alignItems: 'center',
+                  p: 2,
+                  bgcolor: 'action.hover',
+                  borderRadius: 1,
+                  border: '1px solid',
+                  borderColor: 'divider'
+                }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'bold', minWidth: 'fit-content' }}>
+                    SORT:
+                  </Typography>
+                  <FormControl sx={{ minWidth: 140 }}>
+                    <InputLabel>Sort By</InputLabel>
+                    <Select
+                      value={sortBy}
+                      label="Sort By"
+                      onChange={(e) => setSortBy(e.target.value)}
+                      sx={{ height: 45 }}
+                    >
+                      <MenuItem value="label">Name</MenuItem>
+                      <MenuItem value="addedDate">Date Added</MenuItem>
+                    </Select>
+                  </FormControl>
+                  
+                  <FormControl sx={{ minWidth: 120 }}>
+                    <InputLabel>Order</InputLabel>
+                    <Select
+                      value={sortOrder}
+                      label="Order"
+                      onChange={(e) => setSortOrder(e.target.value)}
+                      sx={{ height: 45 }}
+                    >
+                      <MenuItem value="asc">Ascending</MenuItem>
+                      <MenuItem value="desc">Descending</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+
+                {/* Filter Controls Card */}
+                <Box sx={{ 
+                  display: 'flex', 
+                  gap: 2, 
+                  alignItems: 'center',
+                  p: 2,
+                  bgcolor: 'action.hover',
+                  borderRadius: 1,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  flex: 1
+                }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'bold', minWidth: 'fit-content' }}>
+                    FILTER:
+                  </Typography>
+                  <FormControl sx={{ minWidth: 160 }}>
+                    <InputLabel>Categories</InputLabel>
+                    <Select
+                      multiple
+                      value={selectedCategories}
+                      label="Categories"
+                      onChange={(e) => setSelectedCategories(e.target.value)}
+                      sx={{ height: 45 }}
+                      renderValue={(selected) => 
+                        selected.length === 0 ? "All Categories" : `${selected.length} selected`
+                      }
+                    >
+                      {allCategories.map((category) => (
+                        <MenuItem key={category} value={category}>
+                          {category}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl sx={{ minWidth: 120 }}>
+                    <InputLabel>Impact</InputLabel>
+                    <Select
+                      multiple
+                      value={selectedImpacts}
+                      label="Impact"
+                      onChange={(e) => setSelectedImpacts(e.target.value)}
+                      sx={{ height: 45 }}
+                      renderValue={(selected) => 
+                        selected.length === 0 ? "All Impacts" : `${selected.length} selected`
+                      }
+                    >
+                      {allImpacts.map((impact) => (
+                        <MenuItem key={impact} value={impact}>
+                          {impact}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl sx={{ minWidth: 160 }}>
+                    <InputLabel>Recommended By</InputLabel>
+                    <Select
+                      multiple
+                      value={selectedRecommendedBy}
+                      label="Recommended By"
+                      onChange={(e) => setSelectedRecommendedBy(e.target.value)}
+                      sx={{ height: 45 }}
+                      renderValue={(selected) => 
+                        selected.length === 0 ? "All Recommendations" : `${selected.length} selected`
+                      }
+                    >
+                      {allRecommendedBy.map((rec) => (
+                        <MenuItem key={rec} value={rec}>
+                          {rec}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  {/* New Standards Toggle */}
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={showOnlyNew}
+                        onChange={(e) => setShowOnlyNew(e.target.checked)}
+                      />
+                    }
+                    label="New (30 days)"
+                    sx={{ ml: 1 }}
+                  />
+
+                  {/* Clear All Filters Button */}
+                  {activeFiltersCount > 0 && (
+                    <Button
+                      variant="outlined"
+                      startIcon={<Clear />}
+                      onClick={clearAllFilters}
+                      sx={{ ml: 'auto', height: 45 }}
+                    >
+                      Clear All ({activeFiltersCount})
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            </Collapse>
           </Box>
 
           {/* Active Filter Chips */}
           {activeFiltersCount > 0 && (
-            <Box>
+            <Box sx={{ mb: 2 }}>
               <Stack direction="row" spacing={1} flexWrap="wrap">
                 {selectedCategories.map((category) => (
                   <Chip
@@ -736,14 +882,14 @@ const CippStandardDialog = ({
             </Typography>
             <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
               Try adjusting your search terms or clearing some filters
-            </Typography>
+          </Typography>
           </Box>
         ) : (
           <Box>
             <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
               Showing {processedItems.length} standard{processedItems.length !== 1 ? 's' : ''}
             </Typography>
-            <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
+          <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
           </Box>
         )}
       </DialogContent>
