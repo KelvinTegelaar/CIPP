@@ -95,6 +95,16 @@
     "recommendedRunInterval": "4h"
   },
   {
+    "name": "Vulnerabilities",
+    "label": "Alert on vulnerabilities older than X hours",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert on vulnerabilities first seen more than X hours ago (default: 24)",
+    "inputName": "AgeInHours",
+    "recommendedRunInterval": "4h",
+    "description": "Monitors for software vulnerabilities that were first discovered more than the specified number of hours ago. This helps identify lingering vulnerabilities that may have been missed or not yet remediated. Requires Defender for Endpoint/Business."
+  },
+  {
     "name": "UnusedLicenses",
     "label": "Alert on unused licenses",
     "recommendedRunInterval": "1d"
@@ -195,7 +205,6 @@
     "description": "Monitors Global Admin accounts and alerts when they don't have an alternate email address set, which is important for password recovery of key accounts."
   },
   {
-    
     "name": "NewRiskyUsers",
     "label": "Alert on new risky users (P2 License Required)",
     "recommendedRunInterval": "30m",
