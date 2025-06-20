@@ -12,6 +12,7 @@ import {
 } from "@react-pdf/renderer";
 import { useSettings } from "../hooks/use-settings";
 import { useSecureScore } from "../hooks/use-securescore";
+import { ApiGetCall } from "../api/ApiCall";
 
 // PRODUCTION-GRADE PDF SYSTEM
 const ExecutiveReportDocument = ({
@@ -21,6 +22,9 @@ const ExecutiveReportDocument = ({
   organizationData,
   brandingSettings,
   secureScoreData,
+  licensingData,
+  deviceData,
+  conditionalAccessData,
 }) => {
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -610,116 +614,8 @@ const ExecutiveReportDocument = ({
     { standard: "ISO 27001", compliance: 76 },
   ];
 
-  // Mock licensing data
-  const licensingData = [
-    {
-      tenant: tenantName || "Organization",
-      license: "Microsoft 365 E5 Developer (without Windows and Audio Conferencing)",
-      countUsed: 13,
-      countAvailable: 12,
-      totalLicenses: 25,
-    },
-    {
-      tenant: tenantName || "Organization",
-      license: "Microsoft Power Apps for Developer",
-      countUsed: 3,
-      countAvailable: 9997,
-      totalLicenses: 10000,
-    },
-    {
-      tenant: tenantName || "Organization",
-      license: "Microsoft 365 Business Premium",
-      countUsed: 45,
-      countAvailable: 5,
-      totalLicenses: 50,
-    },
-    {
-      tenant: tenantName || "Organization",
-      license: "Microsoft Defender for Office 365 (Plan 1)",
-      countUsed: 58,
-      countAvailable: 0,
-      totalLicenses: 58,
-    },
-    {
-      tenant: tenantName || "Organization",
-      license: "Azure Active Directory Premium P2",
-      countUsed: 25,
-      countAvailable: 25,
-      totalLicenses: 50,
-    },
-  ];
 
-  // Mock device data
-  const deviceData = {
-    totalDevices: 127,
-    compliantDevices: 98,
-    nonCompliantDevices: 29,
-    devicesNotSeen30Days: [
-      {
-        deviceName: "LAPTOP-ABC123",
-        lastSeen: "2024-11-15",
-        user: "john.doe@company.com",
-        os: "Windows 11",
-      },
-      {
-        deviceName: "IPHONE-DEF456",
-        lastSeen: "2024-11-20",
-        user: "jane.smith@company.com",
-        os: "iOS 17.1",
-      },
-      {
-        deviceName: "DESKTOP-GHI789",
-        lastSeen: "2024-11-10",
-        user: "bob.wilson@company.com",
-        os: "Windows 10",
-      },
-      {
-        deviceName: "MACBOOK-JKL012",
-        lastSeen: "2024-11-18",
-        user: "alice.brown@company.com",
-        os: "macOS 14.2",
-      },
-    ],
-  };
 
-  // Mock Conditional Access Policies
-  const conditionalAccessPolicies = [
-    {
-      name: "Block Legacy Authentication",
-      state: "Enabled",
-      users: "All Users",
-      conditions: "Legacy authentication protocols",
-      controls: "Block access",
-    },
-    {
-      name: "Require MFA for Admins",
-      state: "Enabled",
-      users: "Directory Roles",
-      conditions: "All cloud apps",
-      controls: "Require MFA",
-    },
-    {
-      name: "Require Compliant Device",
-      state: "Enabled",
-      users: "All Users",
-      conditions: "Office 365",
-      controls: "Require compliant device",
-    },
-    {
-      name: "Block High Risk Sign-ins",
-      state: "Enabled",
-      users: "All Users",
-      conditions: "High risk sign-in",
-      controls: "Block access",
-    },
-    {
-      name: "Require MFA for External Users",
-      state: "Report-only",
-      users: "Guest Users",
-      conditions: "All cloud apps",
-      controls: "Require MFA",
-    },
-  ];
 
   const securityControls = [
     {
@@ -1176,10 +1072,10 @@ const ExecutiveReportDocument = ({
               <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>Total</Text>
             </View>
 
-            {licensingData.map((license, index) => (
+            {licensingData && licensingData.length > 0 ? licensingData.map((license, index) => (
               <View key={index} style={styles.tableRow}>
                 <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
-                  {license.license}
+                  {license.License || license.license || "N/A"}
                 </Text>
                 <Text
                   style={[
@@ -1187,10 +1083,10 @@ const ExecutiveReportDocument = ({
                     { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
                   ]}
                 >
-                  {license.countUsed}
+                  {license.CountUsed || license.countUsed || "0"}
                 </Text>
                 <Text style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}>
-                  {license.countAvailable}
+                  {license.CountAvailable || license.countAvailable || "0"}
                 </Text>
                 <Text
                   style={[
@@ -1198,10 +1094,25 @@ const ExecutiveReportDocument = ({
                     { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
                   ]}
                 >
-                  {license.totalLicenses}
+                  {license.TotalLicenses || license.totalLicenses || "0"}
                 </Text>
               </View>
-            ))}
+            )) : (
+              <View style={styles.tableRow}>
+                <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
+                  No license data available
+                </Text>
+                <Text style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}>
+                  -
+                </Text>
+                <Text style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}>
+                  -
+                </Text>
+                <Text style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}>
+                  -
+                </Text>
+              </View>
+            )}
           </View>
         </View>
 
@@ -1212,22 +1123,25 @@ const ExecutiveReportDocument = ({
             <View style={styles.recommendationItem}>
               <Text style={styles.recommendationBullet}>•</Text>
               <Text style={styles.recommendationText}>
-                <Text style={styles.recommendationLabel}>Over-allocation:</Text> Microsoft Power
-                Apps shows significant unused capacity (9,997 available)
+                <Text style={styles.recommendationLabel}>License Utilization:</Text> Monitor license usage patterns to identify optimization opportunities
               </Text>
             </View>
             <View style={styles.recommendationItem}>
               <Text style={styles.recommendationBullet}>•</Text>
               <Text style={styles.recommendationText}>
-                <Text style={styles.recommendationLabel}>Capacity Planning:</Text> E5 Developer
-                licenses are over-allocated (13 used vs 12 available)
+                <Text style={styles.recommendationLabel}>Cost Management:</Text> Review licenses with high availability counts for potential cost savings
               </Text>
             </View>
             <View style={styles.recommendationItem}>
               <Text style={styles.recommendationBullet}>•</Text>
               <Text style={styles.recommendationText}>
-                <Text style={styles.recommendationLabel}>Cost Optimization:</Text> Review unused
-                licenses for potential cost savings
+                <Text style={styles.recommendationLabel}>Capacity Planning:</Text> Ensure adequate license allocation for business growth while avoiding over-provisioning
+              </Text>
+            </View>
+            <View style={styles.recommendationItem}>
+              <Text style={styles.recommendationBullet}>•</Text>
+              <Text style={styles.recommendationText}>
+                <Text style={styles.recommendationLabel}>Regular Reviews:</Text> Implement quarterly license reviews to maintain optimal allocation
               </Text>
             </View>
           </View>
@@ -1259,7 +1173,7 @@ const ExecutiveReportDocument = ({
       </Page>
 
       {/* DEVICES PAGE - Only show if device data is available */}
-      {deviceData && deviceData.totalDevices > 0 && (
+      {deviceData && deviceData.length > 0 && (
         <Page size="A4" style={styles.page}>
           <View style={styles.pageHeader}>
             <View style={styles.pageHeaderContent}>
@@ -1287,20 +1201,24 @@ const ExecutiveReportDocument = ({
 
             <View style={styles.statsGrid}>
               <View style={styles.statCard}>
-                <Text style={styles.statNumber}>{deviceData.totalDevices}</Text>
+                <Text style={styles.statNumber}>{deviceData.length}</Text>
                 <Text style={styles.statLabel}>Total Devices</Text>
               </View>
               <View style={styles.statCard}>
-                <Text style={styles.statNumber}>{deviceData.compliantDevices}</Text>
+                <Text style={styles.statNumber}>
+                  {deviceData.filter(device => device.complianceState === "Compliant" || device.ComplianceState === "Compliant").length}
+                </Text>
                 <Text style={styles.statLabel}>Compliant</Text>
               </View>
               <View style={styles.statCard}>
-                <Text style={styles.statNumber}>{deviceData.nonCompliantDevices}</Text>
+                <Text style={styles.statNumber}>
+                  {deviceData.filter(device => device.complianceState !== "Compliant" && device.ComplianceState !== "Compliant").length}
+                </Text>
                 <Text style={styles.statLabel}>Non-Compliant</Text>
               </View>
               <View style={styles.statCard}>
                 <Text style={styles.statNumber}>
-                  {Math.round((deviceData.compliantDevices / deviceData.totalDevices) * 100)}%
+                  {Math.round((deviceData.filter(device => device.complianceState === "Compliant" || device.ComplianceState === "Compliant").length / deviceData.length) * 100)}%
                 </Text>
                 <Text style={styles.statLabel}>Compliance Rate</Text>
               </View>
@@ -1308,37 +1226,82 @@ const ExecutiveReportDocument = ({
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Devices Not Seen for 30+ Days</Text>
+            <Text style={styles.sectionTitle}>Device Management Summary</Text>
 
             <View style={styles.controlsTable}>
               <View style={styles.tableHeader}>
-                <Text style={[styles.headerCell, { width: 100 }]}>Device Name</Text>
-                <Text style={[styles.headerCell, { width: 80 }]}>Last Seen</Text>
-                <Text style={[styles.headerCell, { flex: 1 }]}>User</Text>
-                <Text style={[styles.headerCell, { width: 80 }]}>OS</Text>
+                <Text style={[styles.headerCell, { width: 120 }]}>Device Name</Text>
+                <Text style={[styles.headerCell, { width: 70 }]}>OS</Text>
+                <Text style={[styles.headerCell, { width: 70 }]}>Compliance</Text>
+                <Text style={[styles.headerCell, { flex: 1 }]}>Last Sync</Text>
               </View>
 
-              {deviceData.devicesNotSeen30Days.map((device, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <Text style={[styles.cellName, { width: 100, fontSize: 7, marginLeft: 0 }]}>
-                    {device.deviceName}
-                  </Text>
-                  <Text style={[styles.cellName, { width: 80, fontSize: 7 }]}>
-                    {device.lastSeen}
-                  </Text>
-                  <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>{device.user}</Text>
-                  <Text style={[styles.cellName, { width: 80, fontSize: 7 }]}>{device.os}</Text>
-                </View>
-              ))}
+              {deviceData.slice(0, 8).map((device, index) => {
+                const lastSync = device.lastSyncDateTime ? new Date(device.lastSyncDateTime).toLocaleDateString() : "N/A";
+                return (
+                  <View key={index} style={styles.tableRow}>
+                    <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
+                      {device.deviceName || "N/A"}
+                    </Text>
+                    <Text style={[styles.cellName, { width: 70, fontSize: 7 }]}>
+                      {device.operatingSystem || "N/A"}
+                    </Text>
+                    <View style={[styles.cellStatus, { width: 70, marginLeft: 0 }]}>
+                      <Text
+                        style={[
+                          styles.statusText,
+                          device.complianceState === "compliant" ? styles.statusCompliant : styles.statusReview,
+                        ]}
+                      >
+                        {device.complianceState || "Unknown"}
+                      </Text>
+                    </View>
+                    <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>
+                      {lastSync}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Device Insights</Text>
+
+            <View style={styles.statsGrid}>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>
+                  {deviceData.filter(device => device.operatingSystem === "Windows").length}
+                </Text>
+                <Text style={styles.statLabel}>Windows Devices</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>
+                  {deviceData.filter(device => device.operatingSystem === "iOS").length}
+                </Text>
+                <Text style={styles.statLabel}>iOS Devices</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>
+                  {deviceData.filter(device => device.operatingSystem === "Android").length}
+                </Text>
+                <Text style={styles.statLabel}>Android Devices</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>
+                  {deviceData.filter(device => device.isEncrypted === true).length}
+                </Text>
+                <Text style={styles.statLabel}>Encrypted</Text>
+              </View>
             </View>
           </View>
 
           <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Device Security Recommendations</Text>
+            <Text style={styles.infoTitle}>Device Management Recommendations</Text>
             <Text style={styles.infoText}>
-              Devices not seen for 30+ days may pose security risks. Consider implementing automated
-              device cleanup policies and regular device inventory reviews. Ensure all active
-              devices meet compliance requirements and have current security updates installed.
+              Maintain regular device compliance monitoring and ensure all devices sync within acceptable timeframes.
+              Consider implementing automated compliance policies for non-compliant devices and establish
+              regular device inventory reviews to identify security risks and optimization opportunities.
             </Text>
           </View>
 
@@ -1369,7 +1332,7 @@ const ExecutiveReportDocument = ({
       </Page>
 
       {/* CONDITIONAL ACCESS POLICIES PAGE - Only show if data is available */}
-      {conditionalAccessPolicies && conditionalAccessPolicies.length > 0 && (
+      {conditionalAccessData && conditionalAccessData.length > 0 && (
         <Page size="A4" style={styles.page}>
           <View style={styles.pageHeader}>
             <View style={styles.pageHeaderContent}>
@@ -1408,64 +1371,126 @@ const ExecutiveReportDocument = ({
 
             <View style={styles.controlsTable}>
               <View style={styles.tableHeader}>
-                <Text style={[styles.headerCell, { width: 120 }]}>Policy Name</Text>
-                <Text style={[styles.headerCell, { width: 60 }]}>State</Text>
-                <Text style={[styles.headerCell, { width: 80 }]}>Users</Text>
+                <Text style={[styles.headerCell, { width: 140 }]}>Policy Name</Text>
+                <Text style={[styles.headerCell, { width: 80 }]}>State</Text>
+                <Text style={[styles.headerCell, { width: 80 }]}>Applications</Text>
                 <Text style={[styles.headerCell, { flex: 1 }]}>Controls</Text>
               </View>
 
-              {conditionalAccessPolicies.map((policy, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
-                    {policy.name}
-                  </Text>
-                  <View style={[styles.cellStatus, { width: 60, marginLeft: 0 }]}>
-                    <Text
-                      style={[
-                        styles.statusText,
-                        policy.state === "Enabled" ? styles.statusCompliant : styles.statusPartial,
-                      ]}
-                    >
-                      {policy.state}
+              {conditionalAccessData.slice(0, 8).map((policy, index) => {
+                const getStateStyle = (state) => {
+                  switch (state) {
+                    case "enabled":
+                      return styles.statusCompliant;
+                    case "enabledForReportingButNotEnforced":
+                      return styles.statusPartial;
+                    case "disabled":
+                      return styles.statusReview;
+                    default:
+                      return styles.statusText;
+                  }
+                };
+
+                const getStateDisplay = (state) => {
+                  switch (state) {
+                    case "enabled":
+                      return "Enabled";
+                    case "enabledForReportingButNotEnforced":
+                      return "Report Only";
+                    case "disabled":
+                      return "Disabled";
+                    default:
+                      return state || "Unknown";
+                  }
+                };
+
+                const getControlsText = (policy) => {
+                  const controls = [];
+                  if (policy.builtInControls) {
+                    if (policy.builtInControls.includes("mfa")) controls.push("MFA");
+                    if (policy.builtInControls.includes("block")) controls.push("Block");
+                    if (policy.builtInControls.includes("compliantDevice")) controls.push("Compliant Device");
+                  }
+                  return controls.length > 0 ? controls.join(", ") : "Custom";
+                };
+
+                return (
+                  <View key={index} style={styles.tableRow}>
+                    <Text style={[styles.cellName, { width: 140, fontSize: 7, marginLeft: 0 }]}>
+                      {policy.displayName || "N/A"}
+                    </Text>
+                    <View style={[styles.cellStatus, { width: 80, marginLeft: 0 }]}>
+                      <Text style={[styles.statusText, getStateStyle(policy.state)]}>
+                        {getStateDisplay(policy.state)}
+                      </Text>
+                    </View>
+                    <Text style={[styles.cellName, { width: 80, fontSize: 7 }]}>
+                      {policy.includeApplications || "All"}
+                    </Text>
+                    <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>
+                      {getControlsText(policy)}
                     </Text>
                   </View>
-                  <Text style={[styles.cellName, { width: 80, fontSize: 7 }]}>{policy.users}</Text>
-                  <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>{policy.controls}</Text>
-                </View>
-              ))}
+                );
+              })}
             </View>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Policy Effectiveness</Text>
+            <Text style={styles.sectionTitle}>Policy Overview</Text>
+
+            <View style={styles.statsGrid}>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>{conditionalAccessData.length}</Text>
+                <Text style={styles.statLabel}>Total Policies</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>
+                  {conditionalAccessData.filter(policy => policy.state === "enabled").length}
+                </Text>
+                <Text style={styles.statLabel}>Enabled</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>
+                  {conditionalAccessData.filter(policy => policy.state === "enabledForReportingButNotEnforced").length}
+                </Text>
+                <Text style={styles.statLabel}>Report Only</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>
+                  {conditionalAccessData.filter(policy => policy.builtInControls && policy.builtInControls.includes("mfa")).length}
+                </Text>
+                <Text style={styles.statLabel}>MFA Policies</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Policy Analysis</Text>
 
             <View style={styles.recommendationsList}>
               <View style={styles.recommendationItem}>
                 <Text style={styles.recommendationBullet}>•</Text>
                 <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Legacy Authentication:</Text>{" "}
-                  Successfully blocked across all users
+                  <Text style={styles.recommendationLabel}>Policy Coverage:</Text> {conditionalAccessData.length} conditional access policies configured
                 </Text>
               </View>
               <View style={styles.recommendationItem}>
                 <Text style={styles.recommendationBullet}>•</Text>
                 <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Administrative Protection:</Text> MFA
-                  enforced for all privileged accounts
+                  <Text style={styles.recommendationLabel}>Enforcement Status:</Text> {conditionalAccessData.filter(policy => policy.state === "enabled").length} policies actively enforced
                 </Text>
               </View>
               <View style={styles.recommendationItem}>
                 <Text style={styles.recommendationBullet}>•</Text>
                 <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Device Compliance:</Text> Compliant
-                  devices required for Office 365 access
+                  <Text style={styles.recommendationLabel}>Testing Phase:</Text> {conditionalAccessData.filter(policy => policy.state === "enabledForReportingButNotEnforced").length} policies in report-only mode
                 </Text>
               </View>
               <View style={styles.recommendationItem}>
                 <Text style={styles.recommendationBullet}>•</Text>
                 <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Risk-Based Access:</Text> High-risk
-                  sign-ins automatically blocked
+                  <Text style={styles.recommendationLabel}>Security Controls:</Text> Multi-factor authentication and access blocking implemented
                 </Text>
               </View>
             </View>
@@ -1474,11 +1499,11 @@ const ExecutiveReportDocument = ({
           <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Policy Optimization Recommendations</Text>
             <Text style={styles.infoText}>
-              Consider enabling the "Require MFA for External Users" policy currently in report-only
-              mode. Regularly review policy effectiveness through sign-in logs and consider
-              implementing additional location-based restrictions for sensitive applications.
-              Monitor policy impact to ensure business continuity while maintaining security
-              standards.
+              {conditionalAccessData.filter(policy => policy.state === "enabledForReportingButNotEnforced").length > 0
+                ? `Consider transitioning ${conditionalAccessData.filter(policy => policy.state === "enabledForReportingButNotEnforced").length} report-only policies to enforcement after thorough testing. `
+                : "All policies are either enabled or disabled. "}
+              Regularly review policy effectiveness through sign-in logs and monitor for any business impact.
+              Consider implementing additional risk-based and location-based restrictions for enhanced security.
             </Text>
           </View>
 
@@ -1499,9 +1524,36 @@ export const ExecutiveReportButton = (props) => {
 
   const settings = useSettings();
   const brandingSettings = settings.customBranding;
-
+  
   // Get real secure score data
   const secureScore = useSecureScore();
+  
+  // Get real license data
+  const licenseData = ApiGetCall({
+    url: "/api/ListLicenses",
+    data: {
+      tenantFilter: settings.currentTenant,
+    },
+    queryKey: `licenses-report-${settings.currentTenant}`,
+  });
+
+  // Get real device data
+  const deviceData = ApiGetCall({
+    url: "/api/ListDevices",
+    data: {
+      tenantFilter: settings.currentTenant,
+    },
+    queryKey: `devices-report-${settings.currentTenant}`,
+  });
+
+  // Get real conditional access policy data
+  const conditionalAccessData = ApiGetCall({
+    url: "/api/ListConditionalAccessPolicies",
+    data: {
+      tenantFilter: settings.currentTenant,
+    },
+    queryKey: `ca-policies-report-${settings.currentTenant}`,
+  });
 
   const fileName = `Executive_Report_${tenantName?.replace(/[^a-zA-Z0-9]/g, "_") || "Tenant"}_${
     new Date().toISOString().split("T")[0]
@@ -1518,6 +1570,9 @@ export const ExecutiveReportButton = (props) => {
           organizationData={organizationData}
           brandingSettings={brandingSettings}
           secureScoreData={secureScore}
+          licensingData={licenseData?.data}
+          deviceData={deviceData?.data}
+          conditionalAccessData={conditionalAccessData?.data}
         />
       }
       fileName={fileName}
@@ -1527,7 +1582,7 @@ export const ExecutiveReportButton = (props) => {
           <Button
             variant="contained"
             startIcon={<PictureAsPdf />}
-            disabled={loading || secureScore.isFetching}
+            disabled={loading || secureScore.isFetching || licenseData.isFetching || deviceData.isFetching || conditionalAccessData.isFetching}
             sx={{
               fontWeight: "bold",
               textTransform: "none",
@@ -1539,7 +1594,7 @@ export const ExecutiveReportButton = (props) => {
           >
             {loading
               ? "Generating..."
-              : secureScore.isFetching
+              : (secureScore.isFetching || licenseData.isFetching || deviceData.isFetching || conditionalAccessData.isFetching)
               ? "Loading Data..."
               : "Executive Report"}
           </Button>
