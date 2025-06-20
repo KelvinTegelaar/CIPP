@@ -186,6 +186,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? "Password hidden" : <CippCopyToClipBoard text={data} type="password" />;
   }
 
+  // Handle hardware hash fields
+  const hardwareHashFields = ["hardwareHash", "Hardware Hash"];
+  if (hardwareHashFields.includes(cellName) || cellNameLower.includes("hardware")) {
+    if (typeof data === "string" && data.length > 15) {
+      return isText ? data : `${data.substring(0, 15)}...`;
+    }
+    return isText ? data : data;
+  }
+
   if (cellName === "RepeatsEvery") {
     //convert 1d to "Every 1 day", 1w to "Every 1 week" etc.
     const match = data.match(/(\d+)([a-zA-Z]+)/);

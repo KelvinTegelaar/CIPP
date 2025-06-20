@@ -28,3 +28,7 @@ yarn-error.log*
 # vscode debug logs
 debug.log
 app.log
+
+# Cursor IDE
+.cursor/rules
+
