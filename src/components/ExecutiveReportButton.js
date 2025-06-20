@@ -734,15 +734,16 @@ const ExecutiveReportDocument = ({
           <Text style={styles.bodyText}>
             This security assessment for{" "}
             <Text style={{ fontWeight: "bold" }}>{tenantName || "your organization"}</Text> provides
-            a clear picture of your organization's cybersecurity posture and readiness against modern
-            threats. We've evaluated your current security measures against industry best practices
-            to identify strengths and opportunities for improvement.
+            a clear picture of your organization's cybersecurity posture and readiness against
+            modern threats. We've evaluated your current security measures against industry best
+            practices to identify strengths and opportunities for improvement.
           </Text>
 
           <Text style={styles.bodyText}>
-            Our assessment follows globally recognized security standards to ensure your organization
-            meets regulatory requirements and industry benchmarks. This approach helps protect your
-            business assets, maintain customer trust, and reduce operational risks from cyber threats.
+            Our assessment follows globally recognized security standards to ensure your
+            organization meets regulatory requirements and industry benchmarks. This approach helps
+            protect your business assets, maintain customer trust, and reduce operational risks from
+            cyber threats.
           </Text>
         </View>
 
@@ -899,7 +900,6 @@ const ExecutiveReportDocument = ({
         </View>
       </Page>
 
-
       {/* STATISTIC PAGE 2 - CHAPTER SPLITTER - Only show if secure score data is available */}
       {secureScoreData?.isSuccess && secureScoreData?.translatedData && (
         <Page size="A4" style={styles.statPage}>
@@ -1041,111 +1041,113 @@ const ExecutiveReportDocument = ({
               <Text style={{ fontWeight: "bold" }}>reactive recovery</Text>
             </Text>
           </Page>
-        <Page size="A4" style={styles.page}>
-          <View style={styles.pageHeader}>
-            <View style={styles.pageHeaderContent}>
-              <Text style={styles.pageTitle}>License Management</Text>
-              <Text style={styles.pageSubtitle}>
-                Microsoft 365 license allocation and utilization analysis
+          <Page size="A4" style={styles.page}>
+            <View style={styles.pageHeader}>
+              <View style={styles.pageHeaderContent}>
+                <Text style={styles.pageTitle}>License Management</Text>
+                <Text style={styles.pageSubtitle}>
+                  Microsoft 365 license allocation and utilization analysis
+                </Text>
+              </View>
+              {brandingSettings?.logo && (
+                <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+              )}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.bodyText}>
+                Smart license management helps control costs while ensuring your team has the tools
+                they need to be productive. This analysis shows how your current licenses are being
+                used and identifies opportunities to optimize spending without compromising business
+                operations.
               </Text>
             </View>
-            {brandingSettings?.logo && (
-              <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-            )}
-          </View>
 
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
-              Smart license management helps control costs while ensuring your team has the tools
-              they need to be productive. This analysis shows how your current licenses are being
-              used and identifies opportunities to optimize spending without compromising business
-              operations.
-            </Text>
-          </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>License Allocation Summary</Text>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>License Allocation Summary</Text>
+              <View style={styles.controlsTable}>
+                <View style={styles.tableHeader}>
+                  <Text style={[styles.headerCell, { width: 200 }]}>License Type</Text>
+                  <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>Used</Text>
+                  <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>
+                    Available
+                  </Text>
+                  <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>Total</Text>
+                </View>
 
-            <View style={styles.controlsTable}>
-              <View style={styles.tableHeader}>
-                <Text style={[styles.headerCell, { width: 200 }]}>License Type</Text>
-                <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>Used</Text>
-                <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>
-                  Available
-                </Text>
-                <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>Total</Text>
+                {licensingData.map((license, index) => (
+                  <View key={index} style={styles.tableRow}>
+                    <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
+                      {license.License || license.license || "N/A"}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.cellName,
+                        { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
+                      ]}
+                    >
+                      {license.CountUsed || license.countUsed || "0"}
+                    </Text>
+                    <Text
+                      style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}
+                    >
+                      {license.CountAvailable || license.countAvailable || "0"}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.cellName,
+                        { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
+                      ]}
+                    >
+                      {license.TotalLicenses || license.totalLicenses || "0"}
+                    </Text>
+                  </View>
+                ))}
               </View>
+            </View>
 
-              {licensingData.map((license, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
-                    {license.License || license.license || "N/A"}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.cellName,
-                      { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
-                    ]}
-                  >
-                    {license.CountUsed || license.countUsed || "0"}
-                  </Text>
-                  <Text style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}>
-                    {license.CountAvailable || license.countAvailable || "0"}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.cellName,
-                      { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
-                    ]}
-                  >
-                    {license.TotalLicenses || license.totalLicenses || "0"}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>License Optimization Recommendations</Text>
+
+              <View style={styles.recommendationsList}>
+                <View style={styles.recommendationItem}>
+                  <Text style={styles.recommendationBullet}>•</Text>
+                  <Text style={styles.recommendationText}>
+                    <Text style={styles.recommendationLabel}>Usage Monitoring:</Text> Track how
+                    licenses are being used to identify cost-saving opportunities
                   </Text>
                 </View>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>License Optimization Recommendations</Text>
-
-            <View style={styles.recommendationsList}>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Usage Monitoring:</Text> Track how
-                  licenses are being used to identify cost-saving opportunities
-                </Text>
-              </View>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Cost Control:</Text> Review unused
-                  licenses to reduce unnecessary spending
-                </Text>
-              </View>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Growth Planning:</Text> Ensure you have
-                  enough licenses for business expansion without overspending
-                </Text>
-              </View>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Regular Reviews:</Text> Conduct quarterly
-                  reviews to maintain cost-effective license allocation
-                </Text>
+                <View style={styles.recommendationItem}>
+                  <Text style={styles.recommendationBullet}>•</Text>
+                  <Text style={styles.recommendationText}>
+                    <Text style={styles.recommendationLabel}>Cost Control:</Text> Review unused
+                    licenses to reduce unnecessary spending
+                  </Text>
+                </View>
+                <View style={styles.recommendationItem}>
+                  <Text style={styles.recommendationBullet}>•</Text>
+                  <Text style={styles.recommendationText}>
+                    <Text style={styles.recommendationLabel}>Growth Planning:</Text> Ensure you have
+                    enough licenses for business expansion without overspending
+                  </Text>
+                </View>
+                <View style={styles.recommendationItem}>
+                  <Text style={styles.recommendationBullet}>•</Text>
+                  <Text style={styles.recommendationText}>
+                    <Text style={styles.recommendationLabel}>Regular Reviews:</Text> Conduct
+                    quarterly reviews to maintain cost-effective license allocation
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={styles.footer}>
-            <Text
-              style={styles.pageNumber}
-              render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-            />
-          </View>
+            <View style={styles.footer}>
+              <Text
+                style={styles.pageNumber}
+                render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+              />
+            </View>
           </Page>
         </>
       )}
@@ -1169,167 +1171,167 @@ const ExecutiveReportDocument = ({
               saves <Text style={{ fontWeight: "bold" }}>millions in recovery</Text>
             </Text>
           </Page>
-        <Page size="A4" style={styles.page}>
-          <View style={styles.pageHeader}>
-            <View style={styles.pageHeaderContent}>
-              <Text style={styles.pageTitle}>Device Management</Text>
-              <Text style={styles.pageSubtitle}>
-                Device compliance status and management overview
+          <Page size="A4" style={styles.page}>
+            <View style={styles.pageHeader}>
+              <View style={styles.pageHeaderContent}>
+                <Text style={styles.pageTitle}>Device Management</Text>
+                <Text style={styles.pageSubtitle}>
+                  Device compliance status and management overview
+                </Text>
+              </View>
+              {brandingSettings?.logo && (
+                <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+              )}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.bodyText}>
+                Managing employee devices is essential for protecting your business data and
+                maintaining productivity. This analysis shows which devices meet your security
+                standards and identifies any that may need attention to prevent data breaches or
+                operational disruptions.
               </Text>
             </View>
-            {brandingSettings?.logo && (
-              <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-            )}
-          </View>
 
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
-              Managing employee devices is essential for protecting your business data and
-              maintaining productivity. This analysis shows which devices meet your security
-              standards and identifies any that may need attention to prevent data breaches or
-              operational disruptions.
-            </Text>
-          </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Device Compliance Overview</Text>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Device Compliance Overview</Text>
-
-            <View style={styles.statsGrid}>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>{deviceData.length}</Text>
-                <Text style={styles.statLabel}>Total Devices</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>
-                  {
-                    deviceData.filter(
-                      (device) =>
-                        device.complianceState === "Compliant" ||
-                        device.ComplianceState === "Compliant"
-                    ).length
-                  }
-                </Text>
-                <Text style={styles.statLabel}>Compliant</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>
-                  {
-                    deviceData.filter(
-                      (device) =>
-                        device.complianceState !== "Compliant" &&
-                        device.ComplianceState !== "Compliant"
-                    ).length
-                  }
-                </Text>
-                <Text style={styles.statLabel}>Non-Compliant</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>
-                  {Math.round(
-                    (deviceData.filter(
-                      (device) =>
-                        device.complianceState === "Compliant" ||
-                        device.ComplianceState === "Compliant"
-                    ).length /
-                      deviceData.length) *
-                      100
-                  )}
-                  %
-                </Text>
-                <Text style={styles.statLabel}>Compliance Rate</Text>
+              <View style={styles.statsGrid}>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>{deviceData.length}</Text>
+                  <Text style={styles.statLabel}>Total Devices</Text>
+                </View>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>
+                    {
+                      deviceData.filter(
+                        (device) =>
+                          device.complianceState === "Compliant" ||
+                          device.ComplianceState === "Compliant"
+                      ).length
+                    }
+                  </Text>
+                  <Text style={styles.statLabel}>Compliant</Text>
+                </View>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>
+                    {
+                      deviceData.filter(
+                        (device) =>
+                          device.complianceState !== "Compliant" &&
+                          device.ComplianceState !== "Compliant"
+                      ).length
+                    }
+                  </Text>
+                  <Text style={styles.statLabel}>Non-Compliant</Text>
+                </View>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>
+                    {Math.round(
+                      (deviceData.filter(
+                        (device) =>
+                          device.complianceState === "Compliant" ||
+                          device.ComplianceState === "Compliant"
+                      ).length /
+                        deviceData.length) *
+                        100
+                    )}
+                    %
+                  </Text>
+                  <Text style={styles.statLabel}>Compliance Rate</Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Device Management Summary</Text>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Device Management Summary</Text>
 
-            <View style={styles.controlsTable}>
-              <View style={styles.tableHeader}>
-                <Text style={[styles.headerCell, { width: 120 }]}>Device Name</Text>
-                <Text style={[styles.headerCell, { width: 70 }]}>OS</Text>
-                <Text style={[styles.headerCell, { width: 70 }]}>Compliance</Text>
-                <Text style={[styles.headerCell, { flex: 1 }]}>Last Sync</Text>
-              </View>
+              <View style={styles.controlsTable}>
+                <View style={styles.tableHeader}>
+                  <Text style={[styles.headerCell, { width: 120 }]}>Device Name</Text>
+                  <Text style={[styles.headerCell, { width: 70 }]}>OS</Text>
+                  <Text style={[styles.headerCell, { width: 70 }]}>Compliance</Text>
+                  <Text style={[styles.headerCell, { flex: 1 }]}>Last Sync</Text>
+                </View>
 
-              {deviceData.slice(0, 8).map((device, index) => {
-                const lastSync = device.lastSyncDateTime
-                  ? new Date(device.lastSyncDateTime).toLocaleDateString()
-                  : "N/A";
-                return (
-                  <View key={index} style={styles.tableRow}>
-                    <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
-                      {device.deviceName || "N/A"}
-                    </Text>
-                    <Text style={[styles.cellName, { width: 70, fontSize: 7 }]}>
-                      {device.operatingSystem || "N/A"}
-                    </Text>
-                    <View style={[styles.cellStatus, { width: 70, marginLeft: 0 }]}>
-                      <Text
-                        style={[
-                          styles.statusText,
-                          device.complianceState === "compliant"
-                            ? styles.statusCompliant
-                            : styles.statusReview,
-                        ]}
-                      >
-                        {device.complianceState || "Unknown"}
+                {deviceData.slice(0, 8).map((device, index) => {
+                  const lastSync = device.lastSyncDateTime
+                    ? new Date(device.lastSyncDateTime).toLocaleDateString()
+                    : "N/A";
+                  return (
+                    <View key={index} style={styles.tableRow}>
+                      <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
+                        {device.deviceName || "N/A"}
                       </Text>
+                      <Text style={[styles.cellName, { width: 70, fontSize: 7 }]}>
+                        {device.operatingSystem || "N/A"}
+                      </Text>
+                      <View style={[styles.cellStatus, { width: 70, marginLeft: 0 }]}>
+                        <Text
+                          style={[
+                            styles.statusText,
+                            device.complianceState === "compliant"
+                              ? styles.statusCompliant
+                              : styles.statusReview,
+                          ]}
+                        >
+                          {device.complianceState || "Unknown"}
+                        </Text>
+                      </View>
+                      <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>{lastSync}</Text>
                     </View>
-                    <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>{lastSync}</Text>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Device Insights</Text>
-
-            <View style={styles.statsGrid}>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>
-                  {deviceData.filter((device) => device.operatingSystem === "Windows").length}
-                </Text>
-                <Text style={styles.statLabel}>Windows Devices</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>
-                  {deviceData.filter((device) => device.operatingSystem === "iOS").length}
-                </Text>
-                <Text style={styles.statLabel}>iOS Devices</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>
-                  {deviceData.filter((device) => device.operatingSystem === "Android").length}
-                </Text>
-                <Text style={styles.statLabel}>Android Devices</Text>
-              </View>
-              <View style={styles.statCard}>
-                <Text style={styles.statNumber}>
-                  {deviceData.filter((device) => device.isEncrypted === true).length}
-                </Text>
-                <Text style={styles.statLabel}>Encrypted</Text>
+                  );
+                })}
               </View>
             </View>
-          </View>
 
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Device Management Recommendations</Text>
-            <Text style={styles.infoText}>
-              Keep devices updated and secure to protect business data. Regularly check that all
-              employee devices meet security standards and address any issues promptly. Consider
-              automated policies to maintain consistent security across all devices and conduct
-              regular reviews to identify potential risks.
-            </Text>
-          </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Device Insights</Text>
 
-          <View style={styles.footer}>
-            <Text
-              style={styles.pageNumber}
-              render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-            />
-          </View>
+              <View style={styles.statsGrid}>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>
+                    {deviceData.filter((device) => device.operatingSystem === "Windows").length}
+                  </Text>
+                  <Text style={styles.statLabel}>Windows Devices</Text>
+                </View>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>
+                    {deviceData.filter((device) => device.operatingSystem === "iOS").length}
+                  </Text>
+                  <Text style={styles.statLabel}>iOS Devices</Text>
+                </View>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>
+                    {deviceData.filter((device) => device.operatingSystem === "Android").length}
+                  </Text>
+                  <Text style={styles.statLabel}>Android Devices</Text>
+                </View>
+                <View style={styles.statCard}>
+                  <Text style={styles.statNumber}>
+                    {deviceData.filter((device) => device.isEncrypted === true).length}
+                  </Text>
+                  <Text style={styles.statLabel}>Encrypted</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Device Management Recommendations</Text>
+              <Text style={styles.infoText}>
+                Keep devices updated and secure to protect business data. Regularly check that all
+                employee devices meet security standards and address any issues promptly. Consider
+                automated policies to maintain consistent security across all devices and conduct
+                regular reviews to identify potential risks.
+              </Text>
+            </View>
+
+            <View style={styles.footer}>
+              <Text
+                style={styles.pageNumber}
+                render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+              />
+            </View>
           </Page>
         </>
       )}
@@ -1380,8 +1382,8 @@ const ExecutiveReportDocument = ({
               <Text style={styles.bodyText}>
                 These policies work like intelligent security guards, making decisions based on who
                 is trying to access what, from where, and when. For example, accessing email from
-                the office might be seamless, but accessing it from an unusual location might require
-                additional verification. This approach protects your data while minimizing
+                the office might be seamless, but accessing it from an unusual location might
+                require additional verification. This approach protects your data while minimizing
                 disruption to daily work.
               </Text>
             </View>
@@ -1467,10 +1469,7 @@ const ExecutiveReportDocument = ({
                 </View>
                 <View style={styles.statCard}>
                   <Text style={styles.statNumber}>
-                    {
-                      conditionalAccessData.filter((policy) => policy.state === "enabled")
-                        .length
-                    }
+                    {conditionalAccessData.filter((policy) => policy.state === "enabled").length}
                   </Text>
                   <Text style={styles.statLabel}>Enabled</Text>
                 </View>
@@ -1512,10 +1511,7 @@ const ExecutiveReportDocument = ({
                   <Text style={styles.recommendationBullet}>•</Text>
                   <Text style={styles.recommendationText}>
                     <Text style={styles.recommendationLabel}>Enforcement Status:</Text>{" "}
-                    {
-                      conditionalAccessData.filter((policy) => policy.state === "enabled")
-                        .length
-                    }{" "}
+                    {conditionalAccessData.filter((policy) => policy.state === "enabled").length}{" "}
                     policies actively enforced
                   </Text>
                 </View>
@@ -1589,7 +1585,7 @@ export const ExecutiveReportButton = (props) => {
     },
     queryKey: `licenses-report-${settings.currentTenant}`,
   });
-
+  console.log(secureScore);
   // Get real device data
   const deviceData = ApiGetCall({
     url: "/api/ListDevices",
@@ -1609,9 +1605,17 @@ export const ExecutiveReportButton = (props) => {
   });
 
   // Check if all data is loaded and successful
-  const isDataLoading = secureScore.isFetching || licenseData.isFetching || deviceData.isFetching || conditionalAccessData.isFetching;
-  const hasAllDataLoaded = secureScore.isSuccess && licenseData.isSuccess && deviceData.isSuccess && conditionalAccessData.isSuccess;
-  
+  const isDataLoading =
+    secureScore.isFetching ||
+    licenseData.isFetching ||
+    deviceData.isFetching ||
+    conditionalAccessData.isFetching;
+  const hasAllDataLoaded =
+    secureScore.isSuccess &&
+    licenseData.isSuccess &&
+    deviceData.isSuccess &&
+    conditionalAccessData.isSuccess;
+
   // Only show button when all data is available
   const shouldShowButton = hasAllDataLoaded && !isDataLoading;
 
