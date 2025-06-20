@@ -1,5 +1,4 @@
 import { Box, Container } from "@mui/material";
-import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippDomainCards } from "../../../../components/CippCards/CippDomainCards";
 
