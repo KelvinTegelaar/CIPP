@@ -857,7 +857,6 @@ const ExecutiveReportDocument = ({
 
       {/* SECURITY CONTROLS - Only show if standards data is available */}
       {(() => {
-        console.log("Checking security controls rendering:", securityControls?.length);
         return securityControls && securityControls.length > 0;
       })() && (
         <Page size="A4" style={styles.page}>
