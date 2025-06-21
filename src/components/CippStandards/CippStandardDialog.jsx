@@ -28,6 +28,7 @@ import { Add, Sort, Clear, FilterList, ExpandMore, ExpandLess } from "@mui/icons
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { debounce } from "lodash";
 import { Virtuoso } from "react-virtuoso";
+import ReactMarkdown from "react-markdown";
 
 // Memoized Standard Card component to prevent unnecessary re-renders
 const StandardCard = memo(
@@ -131,9 +132,42 @@ const StandardCard = memo(
                 <Typography variant="subtitle2" sx={{ mt: 2 }}>
                   Description:
                 </Typography>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  {standard.helpText}
-                </Typography>
+                <Box
+                  sx={{
+                    // Style markdown links to match CIPP theme
+                    "& a": {
+                      color: (theme) => theme.palette.primary.main,
+                      textDecoration: "underline",
+                      "&:hover": {
+                        textDecoration: "none",
+                      },
+                    },
+                    color: "text.secondary",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.43,
+                    mb: 2,
+                  }}
+                >
+                  <ReactMarkdown
+                    components={{
+                      // Make links open in new tab with security attributes
+                      a: ({ href, children, ...props }) => (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          {...props}
+                        >
+                          {children}
+                        </a>
+                      ),
+                      // Convert paragraphs to spans to avoid unwanted spacing
+                      p: ({ children }) => <span>{children}</span>,
+                    }}
+                  >
+                    {standard.helpText}
+                  </ReactMarkdown>
+                </Box>
               </>
             )}
             <Typography variant="subtitle2" sx={{ mt: 2 }}>
