@@ -41,6 +41,7 @@ import GDAPRoles from "/src/data/GDAPRoles";
 import timezoneList from "/src/data/timezoneList";
 import standards from "/src/data/standards.json";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import ReactMarkdown from "react-markdown";
 
 const getAvailableActions = (disabledFeatures) => {
   const allActions = [
@@ -675,9 +676,42 @@ const CippStandardAccordion = ({
                           sx={{ mr: 1 }}
                         />
                       </Stack>
-                      <Typography variant="body2" color="textSecondary" sx={{ mr: 1 }}>
-                        {standard.helpText}
-                      </Typography>
+                      <Box
+                        sx={{
+                          // Style markdown links to match CIPP theme
+                          "& a": {
+                            color: (theme) => theme.palette.primary.main,
+                            textDecoration: "underline",
+                            "&:hover": {
+                              textDecoration: "none",
+                            },
+                          },
+                          color: "text.secondary",
+                          fontSize: "0.875rem",
+                          lineHeight: 1.43,
+                          mr: 1,
+                        }}
+                      >
+                        <ReactMarkdown
+                          components={{
+                            // Make links open in new tab with security attributes
+                            a: ({ href, children, ...props }) => (
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                {...props}
+                              >
+                                {children}
+                              </a>
+                            ),
+                            // Convert paragraphs to spans to avoid unwanted spacing
+                            p: ({ children }) => <span>{children}</span>,
+                          }}
+                        >
+                          {standard.helpText}
+                        </ReactMarkdown>
+                      </Box>
                     </Stack>
                   </Stack>
                   <Stack direction="row" alignItems="center" spacing={1}>

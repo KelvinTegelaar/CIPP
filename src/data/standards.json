@@ -1026,7 +1026,7 @@
   {
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS", "Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
+    "tag": ["Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
     "helpText": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
     "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "executiveText": "Automatically identifies and removes inactive devices that haven't connected to company systems for a specified period, reducing security risks from abandoned or lost devices. This maintains a clean device inventory and prevents potential unauthorized access through dormant device registrations.",
@@ -1798,7 +1798,7 @@
   {
     "name": "standards.AutoAddProxy",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [],
     "helpText": "Automatically adds all available domains as a proxy address.",
     "docsDescription": "Automatically finds all available domain names in the tenant, and tries to add proxy addresses based on the user's UPN to each of these.",
     "executiveText": "Automatically creates email addresses for employees across all company domains, ensuring they can receive emails sent to any of the organization's domain names. This improves email delivery reliability and maintains consistent communication channels across different business units or brands.",
@@ -2095,7 +2095,7 @@
   {
     "name": "standards.DisableResourceMailbox",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "NIST CSF 2.0 (PR.AA-01)"],
+    "tag": ["NIST CSF 2.0 (PR.AA-01)"],
     "helpText": "Blocks login for all accounts that are marked as a resource mailbox and does not have a license assigned. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
     "docsDescription": "Resource mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for resource mailboxes. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
     "executiveText": "Prevents direct login to resource mailbox accounts (like conference rooms or equipment), ensuring they can only be managed through proper administrative channels. This security measure eliminates potential unauthorized access to resource scheduling systems while maintaining proper booking functionality.",
@@ -2105,7 +2105,7 @@
     "impactColour": "warning",
     "addedDate": "2025-06-01",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": ["Microsoft", "CIPP"]
   },
   {
     "name": "standards.EXODisableAutoForwarding",
@@ -2283,7 +2283,6 @@
     "name": "standards.AntiPhishPolicy",
     "cat": "Defender Standards",
     "tag": [
-      "CIS",
       "mdo_safeattachments",
       "mdo_highconfidencespamaction",
       "mdo_highconfidencephishaction",
