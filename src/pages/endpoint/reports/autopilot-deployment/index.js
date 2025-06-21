@@ -87,36 +87,6 @@ const Page = () => {
       value: [{ id: "deploymentState", value: "success" }],
       type: "column",
     },
-    {
-      filterName: "In Progress Deployments",
-      value: [{ id: "deploymentState", value: "inProgress" }],
-      type: "column",
-    },
-    {
-      filterName: "Device Setup Failed",
-      value: [{ id: "deviceSetupStatus", value: "failed" }],
-      type: "column",
-    },
-    {
-      filterName: "Account Setup Failed",
-      value: [{ id: "accountSetupStatus", value: "failed" }],
-      type: "column",
-    },
-    {
-      filterName: "Enrollment Completed",
-      value: [{ id: "enrollmentState", value: "enrolled" }],
-      type: "column",
-    },
-    {
-      filterName: "Self-Deploying Mode",
-      value: [{ id: "enrollmentType", value: "azureADJoinedWithoutAutopilotProfile" }],
-      type: "column",
-    },
-    {
-      filterName: "User-Driven Mode",
-      value: [{ id: "enrollmentType", value: "azureADJoinedWithAutopilotProfile" }],
-      type: "column",
-    },
   ];
 
   return (
