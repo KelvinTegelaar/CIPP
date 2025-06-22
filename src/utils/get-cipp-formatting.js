@@ -645,7 +645,17 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
-  const durationArray = ["autoExtendDuration"];
+  // ISO 8601 Duration Formatting
+  // Add property names here to automatically format ISO 8601 duration strings (e.g., "PT1H23M30S")
+  // into human-readable format (e.g., "1 hour 23 minutes 30 seconds") across all CIPP tables.
+  // This works for any API response property that contains ISO 8601 duration format.
+  const durationArray = [
+    "autoExtendDuration",        // GDAP page
+    "deploymentDuration",        // AutoPilot deployments
+    "deploymentTotalDuration",   // AutoPilot deployments
+    "deviceSetupDuration",       // AutoPilot deployments
+    "accountSetupDuration"       // AutoPilot deployments
+  ];
   if (durationArray.includes(cellName)) {
     isoDuration.setLocales(
       {
