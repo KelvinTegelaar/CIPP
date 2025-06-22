@@ -25,33 +25,6 @@ import { getCippError } from "../../utils/get-cipp-error";
 import { Box } from "@mui/system";
 import { useSettings } from "../../hooks/use-settings";
 import { isEqual } from "lodash"; // Import lodash for deep comparison
-import { formatDuration, isISO8601Duration } from "../../utils/formatDuration";
-
-// Utility function to recursively format ISO 8601 durations in data objects
-const formatDurationsInData = (data) => {
-  if (!data || typeof data !== 'object') {
-    return data;
-  }
-
-  if (Array.isArray(data)) {
-    return data.map(formatDurationsInData);
-  }
-
-  const formattedObj = { ...data };
-  
-  for (const [key, value] of Object.entries(formattedObj)) {
-    if (typeof value === 'string' && isISO8601Duration(value)) {
-      const formatted = formatDuration(value);
-      if (formatted !== null) {
-        formattedObj[key] = formatted;
-      }
-    } else if (typeof value === 'object' && value !== null) {
-      formattedObj[key] = formatDurationsInData(value);
-    }
-  }
-  
-  return formattedObj;
-};
 
 export const CippDataTable = (props) => {
   const {
@@ -114,10 +87,8 @@ export const CippDataTable = (props) => {
 
   useEffect(() => {
     if (Array.isArray(data) && !api?.url) {
-      // Format any ISO 8601 duration strings in the data
-      const formattedData = formatDurationsInData(data);
-      if (!isEqual(formattedData, usedData)) {
-        setUsedData(formattedData);
+      if (!isEqual(data, usedData)) {
+        setUsedData(data);
       }
     }
   }, [data, api?.url, usedData]);
@@ -157,9 +128,7 @@ export const CippDataTable = (props) => {
         return nestedData !== undefined ? nestedData : [];
       });
       
-      // Format any ISO 8601 duration strings in the data
-      const formattedResults = formatDurationsInData(combinedResults);
-      setUsedData(formattedResults);
+      setUsedData(combinedResults);
     }
   }, [
     getRequestData.isSuccess,

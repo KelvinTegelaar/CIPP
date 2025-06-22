@@ -645,7 +645,13 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
-  const durationArray = ["autoExtendDuration"];
+  const durationArray = [
+    "autoExtendDuration",
+    "deploymentDuration",
+    "deploymentTotalDuration",
+    "deviceSetupDuration",
+    "accountSetupDuration"
+  ];
   if (durationArray.includes(cellName)) {
     isoDuration.setLocales(
       {
