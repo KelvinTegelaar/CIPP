@@ -12,13 +12,13 @@ const Page = () => {
   const actions = [
     {
       label: "View included Rooms",
-      link: `/email/resources/management/room-lists/list/view?roomAddress=[PrimarySmtpAddress]`,
+      link: `/email/resources/management/room-lists/list/view?roomAddress=[Guid]`,
       color: "info",
       icon: <Visibility />,
     },
     {
       label: "Edit Room List",
-      link: "/identity/administration/groups/edit?groupId=[PrimarySmtpAddress]&groupType=[groupType]",
+      link: "/email/resources/management/room-lists/edit?groupId=[PrimarySmtpAddress]",
       multiPost: false,
       icon: <Edit />,
       color: "success",
