@@ -11,19 +11,12 @@ const Page = () => {
 
   const actions = [
     {
-      label: "View included Rooms",
-      link: `/email/resources/management/room-lists/list/view?roomAddress=[Guid]`,
-      color: "info",
-      icon: <Visibility />,
-    },
-    {
       label: "Edit Room List",
       link: "/email/resources/management/room-lists/edit?groupId=[PrimarySmtpAddress]",
       multiPost: false,
       icon: <Edit />,
       color: "success",
     },
-
     {
       label: "Delete Room List",
       type: "POST",
@@ -32,7 +25,7 @@ const Page = () => {
       data: {
         id: "Guid",
         displayName: "DisplayName",
-        GroupType: "groupType",
+        GroupType: "!Distribution List",
       },
       confirmText: "Are you sure you want to delete this room list?",
       multiPost: false,
