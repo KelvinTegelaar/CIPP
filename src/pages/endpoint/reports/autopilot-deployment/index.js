@@ -92,7 +92,13 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListAutopilotDeployments"
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        endpoint: "deviceManagement/autopilotEvents",
+        $orderBy: "enrollmentStartDateTime desc",
+        $top: 999,
+      }}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
