@@ -17,6 +17,7 @@ const EditRoomList = () => {
   const [groupIdReady, setGroupIdReady] = useState(false);
   const [showMembershipTable, setShowMembershipTable] = useState(false);
   const [combinedData, setCombinedData] = useState([]);
+  const [originalAllowExternal, setOriginalAllowExternal] = useState(null);
   const tenantFilter = useSettings().currentTenant;
 
   const groupInfo = ApiGetCall({
@@ -65,12 +66,16 @@ const EditRoomList = () => {
         ];
         setCombinedData(combinedData);
 
+        // Store original allowExternal value for comparison
+        const allowExternalValue = groupInfo?.data?.allowExternal;
+        setOriginalAllowExternal(allowExternalValue);
+
         // Reset the form with all values
         formControl.reset({
           tenantFilter: tenantFilter,
           mail: group.PrimarySmtpAddress || group.mail,
           mailNickname: group.Alias || group.mailNickname || "",
-          allowExternal: groupInfo?.data?.allowExternal,
+          allowExternal: allowExternalValue,
           displayName: group.DisplayName || group.displayName,
           description: group.Description || group.description || "",
           groupId: group.Guid || group.id,
@@ -94,6 +99,14 @@ const EditRoomList = () => {
         formPageType="Edit"
         backButtonTitle="Room Lists"
         postUrl="/api/EditRoomList"
+        customDataformatter={(values) => {
+          // Only include allowExternal if it has changed from the original value
+          const modifiedValues = { ...values };
+          if (originalAllowExternal !== null && values.allowExternal === originalAllowExternal) {
+            delete modifiedValues.allowExternal;
+          }
+          return modifiedValues;
+        }}
         titleButton={
           <>
             <Button
@@ -202,13 +215,40 @@ const EditRoomList = () => {
               </Grid>
 
               <Grid size={{ xs: 12 }}>
-                <CippFormUserSelector
-                  formControl={formControl}
+                <CippFormComponent
+                  type="autoComplete"
                   name="AddOwner"
                   label="Add Owners"
+                  formControl={formControl}
                   multiple={true}
+                  creatable={false}
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
+                  api={{
+                    url: "/api/ListUsers",
+                    labelField: (user) => `${user.displayName || 'Unknown'} (${user.userPrincipalName || user.mail || 'No email'})`,
+                    valueField: "userPrincipalName",
+                    addedField: {
+                      id: "id",
+                    },
+                    queryKey: `users-${tenantFilter}`,
+                    showRefresh: true,
+                    dataFilter: (users) => {
+                      // Get current owner userPrincipalNames to filter out
+                      const owners = Array.isArray(groupInfo.data?.owners) ? groupInfo.data.owners : [];
+                      const currentOwnerEmails = owners.map(o => o.userPrincipalName).filter(Boolean);
+                      
+                      // Filter out users that are already owners
+                      // users here have been transformed to {label, value, addedFields} format
+                      const filteredUsers = users.filter(user => {
+                        const userEmail = user.value; // userPrincipalName is in the value field
+                        const isAlreadyOwner = currentOwnerEmails.includes(userEmail);
+                        return !isAlreadyOwner;
+                      });
+                      
+                      return filteredUsers;
+                    }
+                  }}
                 />
               </Grid>
 
