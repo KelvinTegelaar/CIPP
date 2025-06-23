@@ -1833,7 +1833,7 @@
   {
     "name": "standards.AntiSpamSafeList",
     "cat": "Defender Standards",
-    "tag": [],
+    "tag": ["CIS M365 5.0 (2.1.13)"],
     "helpText": "Sets the anti-spam connection filter policy option 'safe list' in Defender.",
     "docsDescription": "Sets [Microsoft's built-in 'safe list'](https://learn.microsoft.com/en-us/powershell/module/exchange/set-hostedconnectionfilterpolicy?view=exchange-ps#-enablesafelist) in the anti-spam connection filter policy, rather than setting a custom safe/block list of IPs.",
     "executiveText": "Enables Microsoft's pre-approved list of trusted email servers to improve email delivery from legitimate sources while maintaining spam protection. This reduces false positives where legitimate emails might be blocked while still protecting against spam and malicious emails.",
@@ -1847,7 +1847,6 @@
     "label": "Set Anti-Spam Connection Filter Safe List",
     "impact": "Medium Impact",
     "impactColour": "info",
-    "tag": ["CIS M365 5.0 (2.1.13)"],
     "addedDate": "2025-02-15",
     "powershellEquivalent": "Set-HostedConnectionFilterPolicy \"Default\" -EnableSafeList $true",
     "recommendedBy": []
