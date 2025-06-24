@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useSettings } from "../../../../hooks/use-settings";
+import { Divider } from "@mui/material";
+import { Grid } from "@mui/system";
 
 const AddContact = () => {
   const tenantDomain = useSettings().currentTenant;
