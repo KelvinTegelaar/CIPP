@@ -22,9 +22,15 @@ import {
   Stack,
   Divider,
   Collapse,
+  ToggleButton,
+  ToggleButtonGroup,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Add, Sort, Clear, FilterList, ExpandMore, ExpandLess } from "@mui/icons-material";
+import { Add, Sort, Clear, FilterList, ExpandMore, ExpandLess, ViewModule, ViewList } from "@mui/icons-material";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { debounce } from "lodash";
 import { Virtuoso } from "react-virtuoso";
@@ -341,6 +347,193 @@ const VirtualizedStandardGrid = memo(({ items, renderItem }) => {
 
 VirtualizedStandardGrid.displayName = "VirtualizedStandardGrid";
 
+// Compact List View component for standards
+const CompactStandardList = memo(({ items, selectedStandards, handleToggleSingleStandard, handleAddClick, isButtonDisabled }) => {
+  return (
+    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      {items.map(({ standard, category }) => {
+        const isSelected = !!selectedStandards[standard.name];
+        
+        const isNewStandard = (dateAdded) => {
+          if (!dateAdded) return false;
+          const currentDate = new Date();
+          const addedDate = new Date(dateAdded);
+          return differenceInDays(currentDate, addedDate) <= 30;
+        };
+
+        const handleToggle = () => {
+          handleToggleSingleStandard(standard.name);
+        };
+
+        return (
+          <ListItem
+            key={standard.name}
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 1,
+              mb: 1,
+              bgcolor: 'background.paper',
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
+              ...(isNewStandard(standard.addedDate) && {
+                borderColor: 'success.main',
+                borderWidth: '2px',
+              })
+            }}
+          >
+            <ListItemText
+              primary={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                    {standard.label}
+                  </Typography>
+                  {isNewStandard(standard.addedDate) && (
+                    <Chip
+                      label="New"
+                      size="small"
+                      color="success"
+                      sx={{ fontSize: '0.7rem', height: 20, fontWeight: 'bold' }}
+                    />
+                  )}
+                  <Chip label={category} size="small" color="primary" />
+                  <Chip
+                    label={standard.impact}
+                    size="small"
+                    color={
+                      standard.impact === "High Impact"
+                        ? "error"
+                        : standard.impact === "Medium Impact"
+                        ? "warning"
+                        : "info"
+                    }
+                  />
+                </Box>
+              }
+              secondary={
+                <Box>
+                  {standard.helpText && (
+                    <Box
+                      sx={{
+                        mb: 1,
+                        "& a": {
+                          color: (theme) => theme.palette.primary.main,
+                          textDecoration: "underline",
+                          "&:hover": {
+                            textDecoration: "none",
+                          },
+                        },
+                        color: "text.secondary",
+                        fontSize: "0.875rem",
+                        lineHeight: 1.43,
+                      }}
+                    >
+                      <ReactMarkdown
+                        components={{
+                          a: ({ href, children, ...props }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              {...props}
+                            >
+                              {children}
+                            </a>
+                          ),
+                          p: ({ children }) => (
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                mb: 0,
+                              }}
+                            >
+                              {children}
+                            </Typography>
+                          ),
+                        }}
+                      >
+                        {standard.helpText}
+                      </ReactMarkdown>
+                    </Box>
+                  )}
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+                    {standard.tag?.filter((tag) => !tag.toLowerCase().includes("impact")).length > 0 && (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {standard.tag
+                          .filter((tag) => !tag.toLowerCase().includes("impact"))
+                          .slice(0, 3) // Show only first 3 tags to save space
+                          .map((tag, idx) => (
+                            <Chip
+                              key={idx}
+                              label={tag}
+                              size="small"
+                              color="info"
+                              variant="outlined"
+                              sx={{ fontSize: '0.7rem', height: 20 }}
+                            />
+                          ))}
+                        {standard.tag.filter((tag) => !tag.toLowerCase().includes("impact")).length > 3 && (
+                          <Typography variant="caption" color="text.secondary">
+                            +{standard.tag.filter((tag) => !tag.toLowerCase().includes("impact")).length - 3} more
+                          </Typography>
+                        )}
+                      </Box>
+                    )}
+                    {standard.recommendedBy?.length > 0 && (
+                      <Typography variant="caption" color="text.secondary">
+                        • Recommended by: {standard.recommendedBy.join(", ")}
+                      </Typography>
+                    )}
+                    {standard.addedDate && (
+                      <Typography variant="caption" color="text.secondary">
+                        • Added: {standard.addedDate}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              }
+            />
+            <ListItemSecondaryAction>
+              {standard.multiple ? (
+                <IconButton
+                  color="primary"
+                  disabled={isButtonDisabled}
+                  onClick={() => handleAddClick(standard.name)}
+                  sx={{ mr: 1 }}
+                >
+                  <Add />
+                </IconButton>
+              ) : (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={isSelected}
+                      onChange={handleToggle}
+                      color="primary"
+                      size="small"
+                    />
+                  }
+                  label=""
+                  sx={{ mr: 1 }}
+                />
+              )}
+            </ListItemSecondaryAction>
+          </ListItem>
+        );
+      })}
+    </List>
+  );
+});
+
+CompactStandardList.displayName = "CompactStandardList";
+
 const CippStandardDialog = ({
   dialogOpen,
   handleCloseDialog,
@@ -354,6 +547,7 @@ const CippStandardDialog = ({
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const [localSearchQuery, setLocalSearchQuery] = useState("");
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [viewMode, setViewMode] = useState("card"); // "card" or "list"
   
   // Enhanced filtering and sorting state
   const [sortBy, setSortBy] = useState("addedDate"); // Default sort by date added
@@ -623,6 +817,7 @@ const CippStandardDialog = ({
     setShowOnlyNew(false);
     setSortBy("addedDate");
     setSortOrder("desc");
+    setViewMode("card"); // Reset to card view
     handleSearchQueryChange("");
   }, [handleSearchQueryChange]);
 
@@ -634,6 +829,7 @@ const CippStandardDialog = ({
     setSelectedRecommendedBy([]);
     setSelectedTagFrameworks([]);
     setShowOnlyNew(false);
+    setViewMode("card"); // Reset to card view
     handleSearchQueryChange(""); // Clear parent search state
     handleCloseDialog();
   }, [handleCloseDialog, handleSearchQueryChange]);
@@ -738,6 +934,32 @@ const CippStandardDialog = ({
             placeholder="Search by name, description, or tags..."
             sx={{ mb: 3 }}
           />
+
+          {/* View Toggle Controls */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="subtitle2" color="text.secondary">
+              View Mode:
+            </Typography>
+            <ToggleButtonGroup
+              value={viewMode}
+              exclusive
+              onChange={(e, newViewMode) => {
+                if (newViewMode !== null) {
+                  setViewMode(newViewMode);
+                }
+              }}
+              size="small"
+            >
+              <ToggleButton value="card" aria-label="card view">
+                <ViewModule sx={{ mr: 1 }} />
+                Cards
+              </ToggleButton>
+              <ToggleButton value="list" aria-label="list view">
+                <ViewList sx={{ mr: 1 }} />
+                List
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
 
           {/* Filter Controls Section */}
           <Box sx={{ mb: 2 }}>
@@ -1050,7 +1272,19 @@ const CippStandardDialog = ({
             <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
               Showing {processedItems.length} standard{processedItems.length !== 1 ? 's' : ''}
             </Typography>
-          <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
+            {viewMode === "card" ? (
+              <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
+            ) : (
+              <Box sx={{ maxHeight: "60vh", overflow: "auto" }}>
+                <CompactStandardList
+                  items={processedItems}
+                  selectedStandards={selectedStandards}
+                  handleToggleSingleStandard={handleToggleSingleStandard}
+                  handleAddClick={handleAddClick}
+                  isButtonDisabled={isButtonDisabled}
+                />
+              </Box>
+            )}
           </Box>
         )}
       </DialogContent>
