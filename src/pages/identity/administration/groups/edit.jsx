@@ -18,6 +18,7 @@ const EditGroup = () => {
   const [groupIdReady, setGroupIdReady] = useState(false);
   const [showMembershipTable, setShowMembershipTable] = useState(false);
   const [combinedData, setCombinedData] = useState([]);
+  const [initialValues, setInitialValues] = useState({});
   const tenantFilter = useSettings().currentTenant;
 
   const groupInfo = ApiGetCall({
@@ -65,8 +66,8 @@ const EditGroup = () => {
         ];
         setCombinedData(combinedData);
 
-        // Reset the form with all values
-        formControl.reset({
+        // Create initial values object
+        const formValues = {
           tenantFilter: tenantFilter,
           mail: group.mail,
           mailNickname: group.mailNickname || "",
@@ -103,10 +104,36 @@ const EditGroup = () => {
           RemoveOwner: [],
           AddContact: [],
           RemoveContact: [],
+        };
+
+        // Store initial values for comparison
+        setInitialValues({
+          allowExternal: groupInfo?.data?.allowExternal,
+          sendCopies: groupInfo?.data?.sendCopies,
         });
+
+        // Reset the form with all values
+        formControl.reset(formValues);
       }
     }
   }, [groupInfo.isSuccess, router.query, groupInfo.isFetching]);
+
+  // Custom data formatter to only send changed values
+  const customDataFormatter = (formData) => {
+    const cleanedData = { ...formData };
+
+    // Only include allowExternal if it has changed from the initial value
+    if (formData.allowExternal === initialValues.allowExternal) {
+      delete cleanedData.allowExternal;
+    }
+
+    // Only include sendCopies if it has changed from the initial value
+    if (formData.sendCopies === initialValues.sendCopies) {
+      delete cleanedData.sendCopies;
+    }
+
+    return cleanedData;
+  };
 
   return (
     <>
@@ -117,6 +144,7 @@ const EditGroup = () => {
         formPageType="Edit"
         backButtonTitle="Group Overview"
         postUrl="/api/EditGroup"
+        customDataformatter={customDataFormatter}
         titleButton={
           <>
             <Button
