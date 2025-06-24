@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography, Alert } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
@@ -130,6 +130,11 @@ const EditGroup = () => {
           </>
         }
       >
+        {groupInfo.isSuccess && groupInfo.data?.groupInfo?.onPremisesSyncEnabled && (
+          <Alert severity="error" sx={{ mb: 1 }}>
+            This group is synced from on-premises Active Directory. Changes should be made in the on-premises environment instead.
+          </Alert>
+        )}
         {showMembershipTable ? (
           <Box sx={{ my: 2 }}>
             <CippDataTable
