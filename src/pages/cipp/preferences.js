@@ -261,6 +261,16 @@ const Page = () => {
                             />
                           ),
                         },
+                        {
+                          label: "Clear Immutable ID",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.ClearImmutableId"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
                       ]}
                     />
                   </Stack>
