@@ -979,17 +979,13 @@ const Page = () => {
         api={permissionsApiConfig}
         row={graphUserRequest.data?.[0]}
         allowResubmit={true}
-        defaultvalues={{
-          permissions: {
-            AutoMap: true,
-          },
-        }}
       >
         {({ formHook }) => (
           <CippMailboxPermissionsDialog
             formHook={formHook}
             combinedOptions={combinedOptions}
             isUserGroupLoading={isUserGroupLoading}
+            defaultAutoMap={true}
           />
         )}
       </CippApiDialog>
