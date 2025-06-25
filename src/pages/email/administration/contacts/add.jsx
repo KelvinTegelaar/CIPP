@@ -4,6 +4,7 @@ import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
+import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 
 const AddContact = () => {
   const tenantDomain = useSettings().currentTenant;
