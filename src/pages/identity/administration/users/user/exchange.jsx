@@ -181,8 +181,7 @@ const Page = () => {
     customDataformatter: (row, action, data) => {
       const permissions = [];
       const { permissions: permissionValues } = data;
-      // Always default to true for FullAccess permissions unless explicitly disabled
-      const autoMap = permissionValues?.AddFullAccess ? permissionValues.AutoMap !== false : true;
+      const autoMap = permissionValues.AutoMap === undefined ? true : permissionValues.AutoMap;
 
       // Build permissions array based on form values
       if (permissionValues?.AddFullAccess) {
