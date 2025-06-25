@@ -669,13 +669,15 @@ const Page = () => {
       type: "POST",
       icon: <PlayArrow />,
       url: "/api/ExecSetMailboxRule",
-      data: {
-        ruleId: "Identity",
-        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-        ruleName: "Name",
-        Enable: true,
+      customDataformatter: (row, action, formData) => {
+        return {
+          ruleId: row?.Identity,
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+          ruleName: row?.Name,
+          Enable: true,
+        };
       },
-      condition: (row) => !row.Enabled,
+      condition: (row) => row && !row.Enabled,
       confirmText: "Are you sure you want to enable this mailbox rule?",
       multiPost: false,
     },
@@ -684,13 +686,15 @@ const Page = () => {
       type: "POST",
       icon: <Block />,
       url: "/api/ExecSetMailboxRule",
-      data: {
-        ruleId: "Identity",
-        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-        ruleName: "Name",
-        Disable: true,
+      customDataformatter: (row, action, formData) => {
+        return {
+          ruleId: row?.Identity,
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+          ruleName: row?.Name,
+          Disable: true,
+        };
       },
-      condition: (row) => row.Enabled,
+      condition: (row) => row && row.Enabled,
       confirmText: "Are you sure you want to disable this mailbox rule?",
       multiPost: false,
     },
@@ -699,10 +703,12 @@ const Page = () => {
       type: "POST",
       icon: <Delete />,
       url: "/api/ExecRemoveMailboxRule",
-      data: {
-        ruleId: "Identity",
-        ruleName: "Name",
-        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+      customDataformatter: (row, action, formData) => {
+        return {
+          ruleId: row?.Identity,
+          ruleName: row?.Name,
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+        };
       },
       confirmText: "Are you sure you want to remove this mailbox rule?",
       multiPost: false,
@@ -754,7 +760,50 @@ const Page = () => {
                 cardSx={{ p: 0, m: -2 }}
                 title="Rule Details"
                 propertyItems={properties}
-                actionItems={mailboxRuleActions}
+                actionItems={[
+                  {
+                    label: "Enable Mailbox Rule",
+                    type: "POST",
+                    icon: <PlayArrow />,
+                    url: "/api/ExecSetMailboxRule",
+                    data: {
+                      ruleId: data?.Identity,
+                      userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                      ruleName: data?.Name,
+                      Enable: true,
+                    },
+                    confirmText: "Are you sure you want to enable this mailbox rule?",
+                    multiPost: false,
+                  },
+                  {
+                    label: "Disable Mailbox Rule",
+                    type: "POST",
+                    icon: <Block />,
+                    url: "/api/ExecSetMailboxRule",
+                    data: {
+                      ruleId: data?.Identity,
+                      userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                      ruleName: data?.Name,
+                      Disable: true,
+                    },
+                    confirmText: "Are you sure you want to disable this mailbox rule?",
+                    multiPost: false,
+                  },
+                  {
+                    label: "Remove Mailbox Rule",
+                    type: "POST",
+                    icon: <Delete />,
+                    url: "/api/ExecRemoveMailboxRule",
+                    data: {
+                      ruleId: data?.Identity,
+                      ruleName: data?.Name,
+                      userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                    },
+                    confirmText: "Are you sure you want to remove this mailbox rule?",
+                    multiPost: false,
+                    relatedQueryKeys: `MailboxRules-${userId}`,
+                  },
+                ]}
               />
             );
           },
@@ -777,7 +826,7 @@ const Page = () => {
       confirmText: "Are you sure you want to make this the primary proxy address?",
       multiPost: false,
       relatedQueryKeys: `ListUsers-${userId}`,
-      condition: (row) => !row.Type === "Primary",
+      condition: (row) => row && row.Type !== "Primary",
     },
     {
       label: "Remove Proxy Address",
@@ -792,7 +841,7 @@ const Page = () => {
       confirmText: "Are you sure you want to remove this proxy address?",
       multiPost: false,
       relatedQueryKeys: `ListUsers-${userId}`,
-      condition: (row) => !row.Type === "Primary",
+      condition: (row) => row && row.Type !== "Primary",
     },
   ];
 
