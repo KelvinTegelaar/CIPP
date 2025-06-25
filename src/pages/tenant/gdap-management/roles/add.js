@@ -243,7 +243,7 @@ const Page = () => {
               </ul>
             </Alert>
             <Grid container spacing={2} alignItems="center">
-              <Grid item size={{ md: 5, xs: 12 }}>
+              <Grid size={{ md: 5, xs: 12 }}>
                 <CippFormComponent
                   formControl={formControl}
                   name="selectedGroup"
@@ -260,14 +260,14 @@ const Page = () => {
                   sortOptions={true}
                 />
               </Grid>
-              <Grid item>
+              <Grid>
                 <Box sx={{ my: "auto" }}>
                   <SvgIcon>
                     <SyncAlt />
                   </SvgIcon>
                 </Box>
               </Grid>
-              <Grid item size={{ md: 5, xs: 12 }}>
+              <Grid size={{ md: 5, xs: 12 }}>
                 <CippFormComponent
                   formControl={formControl}
                   name="selectedRole"
@@ -284,7 +284,7 @@ const Page = () => {
                   sortOptions={true}
                 />
               </Grid>
-              <Grid item size={{ md: 1, xs: 12 }}>
+              <Grid size={{ md: 1, xs: 12 }}>
                 <Tooltip title="Add Mapping">
                   <Button size="small" onClick={handleAddMapping} variant="contained">
                     <SvgIcon fontSize="small">

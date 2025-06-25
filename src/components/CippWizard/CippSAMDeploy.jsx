@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Stack, Box, CircularProgress, Link } from "@mui/material";
+import { Alert, Stack, Box, Link } from "@mui/material";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { ApiPostCall } from "../../api/ApiCall";
