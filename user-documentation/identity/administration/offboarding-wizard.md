@@ -45,6 +45,7 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | Convert to Shared Mailbox                                      | Converts the user's mailbox to a shared mailbox                                                                                     |
 | Hide from Global Address List                                  | Hides the user from the Global Address List                                                                                         |
 | Cancel all calendar invites                                    |                                                                                                                                     |
+| Remove user's mailbox permissions                              | Removes all the offboarded user's permissons to all other mailboxes                                                                 |
 | Revoke all sessions                                            | Revokes all active sessions of the user                                                                                             |
 | Remove all Mobile Devices                                      | Removes all mobile devices associated with the user                                                                                 |
 | Remove all Rules                                               | Removes all rules associated with the user                                                                                          |
