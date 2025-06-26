@@ -124,20 +124,14 @@ const EditGroup = () => {
   const customDataFormatter = (formData) => {
     const cleanedData = { ...formData };
 
-    // Only include allowExternal if it has changed from the initial value
-    if (formData.allowExternal === initialValues.allowExternal) {
-      delete cleanedData.allowExternal;
-    }
+    // Properties that should only be sent if they've changed from initial values
+    const changeDetectionProperties = ["allowExternal", "sendCopies", "hideFromOutlookClients"];
 
-    // Only include sendCopies if it has changed from the initial value
-    if (formData.sendCopies === initialValues.sendCopies) {
-      delete cleanedData.sendCopies;
-    }
-
-    // Only include hideFromOutlookClients if it has changed from the initial value
-    if (formData.hideFromOutlookClients === initialValues.hideFromOutlookClients) {
-      delete cleanedData.hideFromOutlookClients;
-    }
+    changeDetectionProperties.forEach((property) => {
+      if (formData[property] === initialValues[property]) {
+        delete cleanedData[property];
+      }
+    });
 
     return cleanedData;
   };
