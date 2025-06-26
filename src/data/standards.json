@@ -3564,8 +3564,8 @@
   {
     "name": "standards.SPDirectSharing",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.7)", "CISA (MS.SPO.1.4v1)"],
-    "helpText": "Ensure default link sharing is set to Direct in SharePoint and OneDrive",
+    "tag": [],
+    "helpText": "This standard has been deprecated in favor of the Default Sharing Link standard. ",
     "executiveText": "Configures SharePoint and OneDrive to share files directly with specific people rather than creating anonymous links, improving security by ensuring only intended recipients can access shared documents. This reduces the risk of accidental data exposure through link sharing.",
     "addedComponent": [],
     "label": "Default sharing to Direct users",
