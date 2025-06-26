@@ -73,6 +73,7 @@ const EditGroup = () => {
           mailNickname: group.mailNickname || "",
           allowExternal: groupInfo?.data?.allowExternal,
           sendCopies: groupInfo?.data?.sendCopies,
+          hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
           displayName: group.displayName,
           description: group.description || "",
           membershipRules: group.membershipRule || "",
@@ -110,6 +111,7 @@ const EditGroup = () => {
         setInitialValues({
           allowExternal: groupInfo?.data?.allowExternal,
           sendCopies: groupInfo?.data?.sendCopies,
+          hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
         });
 
         // Reset the form with all values
@@ -130,6 +132,11 @@ const EditGroup = () => {
     // Only include sendCopies if it has changed from the initial value
     if (formData.sendCopies === initialValues.sendCopies) {
       delete cleanedData.sendCopies;
+    }
+
+    // Only include hideFromOutlookClients if it has changed from the initial value
+    if (formData.hideFromOutlookClients === initialValues.hideFromOutlookClients) {
+      delete cleanedData.hideFromOutlookClients;
     }
 
     return cleanedData;
@@ -353,6 +360,19 @@ const EditGroup = () => {
                     type="switch"
                     label="Send Copies of team emails and events to team members inboxes"
                     name="sendCopies"
+                    formControl={formControl}
+                    isFetching={groupInfo.isFetching}
+                    disabled={groupInfo.isFetching}
+                  />
+                </Grid>
+              )}
+
+              {groupType === "Microsoft 365" && (
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    label="Hide group mailbox from Outlook"
+                    name="hideFromOutlookClients"
                     formControl={formControl}
                     isFetching={groupInfo.isFetching}
                     disabled={groupInfo.isFetching}
