@@ -303,7 +303,6 @@ const CippSchedulerForm = (props) => {
             key={idx}
           >
             <Grid
-              item
               size={{ md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize, xs: 12 }}
             >
               {param.Type === "System.Boolean" ||
