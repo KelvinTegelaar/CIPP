@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Divider, Button } from "@mui/material";
+import { Divider, Button, Alert } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
@@ -110,9 +110,6 @@ const ApplicationDeploymentForm = () => {
             validators={{ required: "Please select an application type" }}
           />
         </Grid>
-
-        <Divider sx={{ my: 2 }} />
-
         {/* Tenant Selector */}
         <Grid size={{ xs: 12 }}>
           <CippFormTenantSelector
@@ -124,8 +121,9 @@ const ApplicationDeploymentForm = () => {
             validators={{ required: "At least one tenant must be selected" }}
           />
         </Grid>
-
-        <Divider sx={{ my: 2 }} />
+        <Grid size={{ xs: 12 }}>
+          <Divider sx={{ my: 2 }} />
+        </Grid>
         <CippFormCondition
           formControl={formControl}
           field="appType.value"
@@ -138,17 +136,36 @@ const ApplicationDeploymentForm = () => {
               label="Select MSP Tool"
               name="rmmname"
               options={[
-                { value: "datto", label: "Datto RMM" },
-                { value: "syncro", label: "Syncro RMM" },
-                { value: "huntress", label: "Huntress" },
-                { value: "automate", label: "CW Automate" },
-                { value: "cwcommand", label: "CW Command" },
+                { value: "datto", label: "Datto RMM", isSponsor: false },
+                { value: "syncro", label: "Syncro RMM", isSponsor: true },
+                { value: "huntress", label: "Huntress", isSponsor: true },
+                {
+                  value: "automate",
+                  label: "CW Automate",
+                  isSponsor: false,
+                },
+                {
+                  value: "cwcommand",
+                  label: "CW Command",
+                  isSponsor: false,
+                },
               ]}
               formControl={formControl}
               multiple={false}
               validators={{ required: "Please select an MSP Tool" }}
             />
           </Grid>
+          <CippFormCondition
+            field="rmmname.isSponsor"
+            compareType="is"
+            compareValue={false}
+            formControl={formControl}
+          >
+            <Alert severity="info" sx={{ mb: 2 }}>
+              This is a community contribution and is not covered under a vendor sponsorship. Please
+              join our Discord community for assistance with this MSP App.
+            </Alert>
+          </CippFormCondition>
           <Grid size={{ md: 6, xs: 12 }}>
             <CippFormComponent
               type="textField"

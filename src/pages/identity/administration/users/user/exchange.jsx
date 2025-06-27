@@ -16,7 +16,7 @@ import {
   AlternateEmail,
   PersonAdd,
   Block,
-  PlayArrow
+  PlayArrow,
 } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
@@ -100,7 +100,7 @@ const Page = () => {
   });
 
   const groupsList = ApiGetCall({
-    url: "/api/ListGraphRequest", 
+    url: "/api/ListGraphRequest",
     data: {
       Endpoint: `groups`,
       tenantFilter: userSettingsDefaults.currentTenant,
@@ -115,27 +115,27 @@ const Page = () => {
     // Handle undefined/null cases first
     if (!userIdentifier) {
       return {
-        type: 'Unknown',
-        displayName: 'Unknown User'
+        type: "Unknown",
+        displayName: "Unknown User",
       };
     }
 
     // Handle special built-in cases
-    if (userIdentifier === 'Default' || userIdentifier === 'Anonymous') {
+    if (userIdentifier === "Default" || userIdentifier === "Anonymous") {
       return {
-        type: 'System',
-        displayName: userIdentifier
+        type: "System",
+        displayName: userIdentifier,
       };
     }
 
     // Check if it's a group - handle Exchange's different naming patterns
-    const matchingGroup = groupsList?.data?.Results?.find(group => {
+    const matchingGroup = groupsList?.data?.Results?.find((group) => {
       // Ensure group properties exist before comparison
       if (!group) return false;
-      
+
       return (
         // Exact match on mail address
-        (group.mail && group.mail === userIdentifier) || 
+        (group.mail && group.mail === userIdentifier) ||
         // Exact match on display name
         (group.displayName && group.displayName === userIdentifier) ||
         // Partial match - permission identifier starts with group display name (handles timestamps)
@@ -145,15 +145,15 @@ const Page = () => {
 
     if (matchingGroup) {
       return {
-        type: 'Group',
-        displayName: matchingGroup.displayName  // Use clean name from Graph API
+        type: "Group",
+        displayName: matchingGroup.displayName, // Use clean name from Graph API
       };
     }
 
     // If not a system entity or group, assume it's a user
     return {
-      type: 'User',
-      displayName: userIdentifier  // Keep original for users
+      type: "User",
+      displayName: userIdentifier, // Keep original for users
     };
   };
 
@@ -281,10 +281,10 @@ const Page = () => {
       const forwardingAddress = currentSettings.ForwardingAddress;
       const forwardingSmtpAddress = currentSettings.MailboxActionsData?.ForwardingSmtpAddress;
       const forwardAndDeliver = currentSettings.ForwardAndDeliver;
-      
+
       let forwardingType = "disabled";
       let cleanAddress = "";
-      
+
       if (forwardingSmtpAddress) {
         // External forwarding
         forwardingType = "ExternalAddress";
@@ -294,11 +294,11 @@ const Page = () => {
         forwardingType = "internalAddress";
         cleanAddress = forwardingAddress;
       }
-      
+
       // Set form values
       formControl.setValue("forwarding.forwardOption", forwardingType);
       formControl.setValue("forwarding.KeepCopy", forwardAndDeliver === true);
-      
+
       if (forwardingType === "internalAddress") {
         formControl.setValue("forwarding.ForwardInternal", cleanAddress);
         formControl.setValue("forwarding.ForwardExternal", "");
@@ -314,43 +314,73 @@ const Page = () => {
 
   const title = graphUserRequest.isSuccess ? graphUserRequest.data?.[0]?.displayName : "Loading...";
 
-  // Combine users and groups into a single options array
-  const combinedOptions = useMemo(() => {
+  // Create options array for mailbox permissions (no system users)
+  const mailboxPermissionOptions = useMemo(() => {
     const options = [];
-  
-    // Add special system users for calendar permissions
-    options.push({
-      value: 'Default',
-      label: 'Default',
-      type: 'system'
-    });
-  
+
     // Add users
     if (usersList?.data?.Results) {
       usersList.data.Results.forEach((user) => {
         options.push({
           value: user.userPrincipalName,
           label: `${user.displayName} (${user.userPrincipalName})`,
-          type: 'user'
+          type: "user",
         });
       });
     }
-  
+
     // Add mail-enabled security groups
     if (groupsList?.data?.Results) {
       groupsList.data.Results.forEach((group) => {
         options.push({
           value: group.mail,
           label: `${group.displayName} (${group.mail})`,
-          type: 'group'
+          type: "group",
         });
       });
     }
-  
+
+    // Sort alphabetically by label
+    return options.sort((a, b) => a.label.localeCompare(b.label));
+  }, [usersList?.data?.Results, groupsList?.data?.Results]);
+
+  // Create options array for calendar permissions (includes system users)
+  const calendarPermissionOptions = useMemo(() => {
+    const options = [];
+
+    // Add special system users for calendar permissions
+    options.push({
+      value: "Default",
+      label: "Default",
+      type: "system",
+    });
+
+    // Add users
+    if (usersList?.data?.Results) {
+      usersList.data.Results.forEach((user) => {
+        options.push({
+          value: user.userPrincipalName,
+          label: `${user.displayName} (${user.userPrincipalName})`,
+          type: "user",
+        });
+      });
+    }
+
+    // Add mail-enabled security groups
+    if (groupsList?.data?.Results) {
+      groupsList.data.Results.forEach((group) => {
+        options.push({
+          value: group.mail,
+          label: `${group.displayName} (${group.mail})`,
+          type: "group",
+        });
+      });
+    }
+
     // Sort alphabetically by label, but keep system users at the top
     return options.sort((a, b) => {
-      if (a.type === 'system' && b.type !== 'system') return -1;
-      if (b.type === 'system' && a.type !== 'system') return 1;
+      if (a.type === "system" && b.type !== "system") return -1;
+      if (b.type === "system" && a.type !== "system") return 1;
       return a.label.localeCompare(b.label);
     });
   }, [usersList?.data?.Results, groupsList?.data?.Results]);
@@ -409,10 +439,11 @@ const Page = () => {
           row.forEach((item) => {
             // Safely extract original user identifier
             const originalUser = item?._raw?.User || item?.User;
-            if (originalUser) {  // Only add if we have a valid user
+            if (originalUser) {
+              // Only add if we have a valid user
               permissions.push({
-                UserID: originalUser,  // Use original identifier for API calls
-                PermissionLevel: item?.AccessRights || 'Unknown',
+                UserID: originalUser, // Use original identifier for API calls
+                PermissionLevel: item?.AccessRights || "Unknown",
                 Modification: "Remove",
               });
             }
@@ -420,10 +451,11 @@ const Page = () => {
         } else {
           // Safely extract original user identifier
           const originalUser = row?._raw?.User || row?.User;
-          if (originalUser) {  // Only add if we have a valid user
+          if (originalUser) {
+            // Only add if we have a valid user
             permissions.push({
-              UserID: originalUser,  // Use original identifier for API calls
-              PermissionLevel: row?.AccessRights || 'Unknown',
+              UserID: originalUser, // Use original identifier for API calls
+              PermissionLevel: row?.AccessRights || "Unknown",
               Modification: "Remove",
             });
           }
@@ -478,7 +510,7 @@ const Page = () => {
             const userIdentifier = permission?.User;
             const permissionInfo = getPermissionInfo(permission.User, groupsList);
             return {
-              User: permissionInfo.displayName,  // Show clean name
+              User: permissionInfo.displayName, // Show clean name
               AccessRights: permission.AccessRights,
               Type: permissionInfo.type,
               _raw: permission,
@@ -507,7 +539,7 @@ const Page = () => {
                   },
                   {
                     label: "Access Rights",
-                    value: data?.AccessRights || 'Unknown',
+                    value: data?.AccessRights || "Unknown",
                   },
                 ]}
                 actionItems={mailboxPermissionActions}
@@ -558,8 +590,8 @@ const Page = () => {
             const permissionInfo = getPermissionInfo(permission.User, groupsList);
             return {
               User: permissionInfo.displayName,
-              AccessRights: permission?.AccessRights?.join(", ") || 'Unknown',
-              FolderName: permission?.FolderName || 'Unknown',
+              AccessRights: permission?.AccessRights?.join(", ") || "Unknown",
+              FolderName: permission?.FolderName || "Unknown",
               Type: permissionInfo.type,
               _raw: permission,
             };
@@ -579,7 +611,7 @@ const Page = () => {
                 row.forEach((item) => {
                   const originalUser = item._raw ? item._raw.User : item.User;
                   permissions.push({
-                    UserID: originalUser,  // Use original identifier for API calls
+                    UserID: originalUser, // Use original identifier for API calls
                     PermissionLevel: item.AccessRights,
                     FolderName: item.FolderName,
                     Modification: "Remove",
@@ -588,7 +620,7 @@ const Page = () => {
               } else {
                 const originalUser = row._raw ? row._raw.User : row.User;
                 permissions.push({
-                  UserID: originalUser,  // Use original identifier for API calls
+                  UserID: originalUser, // Use original identifier for API calls
                   PermissionLevel: row.AccessRights,
                   FolderName: row.FolderName,
                   Modification: "Remove",
@@ -643,7 +675,7 @@ const Page = () => {
                       tenantFilter: userSettingsDefaults.currentTenant,
                       permissions: [
                         {
-                          UserID: originalUser,  // Use original identifier for API calls
+                          UserID: originalUser, // Use original identifier for API calls
                           PermissionLevel: data.AccessRights,
                           FolderName: data.FolderName,
                           Modification: "Remove",
@@ -669,13 +701,15 @@ const Page = () => {
       type: "POST",
       icon: <PlayArrow />,
       url: "/api/ExecSetMailboxRule",
-      data: {
-        ruleId: "Identity",
-        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-        ruleName: "Name",
-        Enable: true,
+      customDataformatter: (row, action, formData) => {
+        return {
+          ruleId: row?.Identity,
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+          ruleName: row?.Name,
+          Enable: true,
+        };
       },
-      condition: (row) => !row.Enabled,
+      condition: (row) => row && !row.Enabled,
       confirmText: "Are you sure you want to enable this mailbox rule?",
       multiPost: false,
     },
@@ -684,13 +718,15 @@ const Page = () => {
       type: "POST",
       icon: <Block />,
       url: "/api/ExecSetMailboxRule",
-      data: {
-        ruleId: "Identity",
-        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
-        ruleName: "Name",
-        Disable: true,
+      customDataformatter: (row, action, formData) => {
+        return {
+          ruleId: row?.Identity,
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+          ruleName: row?.Name,
+          Disable: true,
+        };
       },
-      condition: (row) => row.Enabled,
+      condition: (row) => row && row.Enabled,
       confirmText: "Are you sure you want to disable this mailbox rule?",
       multiPost: false,
     },
@@ -699,10 +735,12 @@ const Page = () => {
       type: "POST",
       icon: <Delete />,
       url: "/api/ExecRemoveMailboxRule",
-      data: {
-        ruleId: "Identity",
-        ruleName: "Name",
-        userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+      customDataformatter: (row, action, formData) => {
+        return {
+          ruleId: row?.Identity,
+          ruleName: row?.Name,
+          userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+        };
       },
       confirmText: "Are you sure you want to remove this mailbox rule?",
       multiPost: false,
@@ -754,7 +792,50 @@ const Page = () => {
                 cardSx={{ p: 0, m: -2 }}
                 title="Rule Details"
                 propertyItems={properties}
-                actionItems={mailboxRuleActions}
+                actionItems={[
+                  {
+                    label: "Enable Mailbox Rule",
+                    type: "POST",
+                    icon: <PlayArrow />,
+                    url: "/api/ExecSetMailboxRule",
+                    data: {
+                      ruleId: data?.Identity,
+                      userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                      ruleName: data?.Name,
+                      Enable: true,
+                    },
+                    confirmText: "Are you sure you want to enable this mailbox rule?",
+                    multiPost: false,
+                  },
+                  {
+                    label: "Disable Mailbox Rule",
+                    type: "POST",
+                    icon: <Block />,
+                    url: "/api/ExecSetMailboxRule",
+                    data: {
+                      ruleId: data?.Identity,
+                      userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                      ruleName: data?.Name,
+                      Disable: true,
+                    },
+                    confirmText: "Are you sure you want to disable this mailbox rule?",
+                    multiPost: false,
+                  },
+                  {
+                    label: "Remove Mailbox Rule",
+                    type: "POST",
+                    icon: <Delete />,
+                    url: "/api/ExecRemoveMailboxRule",
+                    data: {
+                      ruleId: data?.Identity,
+                      ruleName: data?.Name,
+                      userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                    },
+                    confirmText: "Are you sure you want to remove this mailbox rule?",
+                    multiPost: false,
+                    relatedQueryKeys: `MailboxRules-${userId}`,
+                  },
+                ]}
               />
             );
           },
@@ -777,7 +858,7 @@ const Page = () => {
       confirmText: "Are you sure you want to make this the primary proxy address?",
       multiPost: false,
       relatedQueryKeys: `ListUsers-${userId}`,
-      condition: (row) => !row.Type === "Primary",
+      condition: (row) => row && row.Type !== "Primary",
     },
     {
       label: "Remove Proxy Address",
@@ -792,7 +873,7 @@ const Page = () => {
       confirmText: "Are you sure you want to remove this proxy address?",
       multiPost: false,
       relatedQueryKeys: `ListUsers-${userId}`,
-      condition: (row) => !row.Type === "Primary",
+      condition: (row) => row && row.Type !== "Primary",
     },
   ];
 
@@ -979,17 +1060,13 @@ const Page = () => {
         api={permissionsApiConfig}
         row={graphUserRequest.data?.[0]}
         allowResubmit={true}
-        defaultvalues={{
-          permissions: {
-            AutoMap: true,
-          },
-        }}
       >
         {({ formHook }) => (
           <CippMailboxPermissionsDialog
             formHook={formHook}
-            combinedOptions={combinedOptions}
+            combinedOptions={mailboxPermissionOptions}
             isUserGroupLoading={isUserGroupLoading}
+            defaultAutoMap={true}
           />
         )}
       </CippApiDialog>
@@ -1004,7 +1081,7 @@ const Page = () => {
         {({ formHook }) => (
           <CippCalendarPermissionsDialog
             formHook={formHook}
-            combinedOptions={combinedOptions}
+            combinedOptions={calendarPermissionOptions}
             isUserGroupLoading={isUserGroupLoading}
           />
         )}
