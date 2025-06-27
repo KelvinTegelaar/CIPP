@@ -4,7 +4,7 @@ import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import CippJsonView from "../CippFormPages/CippJSONView";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../api/ApiCall";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWatch } from "react-hook-form";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
@@ -59,7 +59,7 @@ export const CippIntunePolicy = (props) => {
         />
         <CippJsonView object={JSONData} type="intune" />
 
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="radio"
             name="AssignTo"
@@ -79,7 +79,7 @@ export const CippIntunePolicy = (props) => {
           compareType="is"
           compareValue="customGroup"
         >
-          <Grid item size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <CippFormComponent
               type="textField"
               label="Custom Group Names separated by comma. Wildcards (*) are allowed"

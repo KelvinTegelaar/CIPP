@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, Button } from "@mui/material";
 import { CippDataTable } from "./CippDataTable";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
-import { getCippFormatting } from "../../utils/get-cipp-formatting";
 const CippDataTableButton = ({ data, title, tableTitle = "Data" }) => {
   const [openDialogs, setOpenDialogs] = useState([]);
 

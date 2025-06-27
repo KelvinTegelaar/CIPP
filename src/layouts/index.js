@@ -12,10 +12,9 @@ import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
 import { Box, Container, Grid } from "@mui/system";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
-import Page from "../pages/onboarding";
+import Page from "../pages/onboardingv2";
 import { useDialog } from "../hooks/use-dialog";
 import { nativeMenuItems } from "/src/layouts/config";
-import { keepPreviousData } from "@tanstack/react-query";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -31,13 +30,9 @@ const useMobileNav = () => {
     }
   }, [open]);
 
-  useEffect(
-    () => {
-      handlePathnameChange();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pathname]
-  );
+  useEffect(() => {
+    handlePathnameChange();
+  }, [pathname]);
 
   const handleOpen = useCallback(() => {
     setOpen(true);
@@ -144,13 +139,11 @@ export const Layout = (props) => {
   const userSettingsAPI = ApiGetCall({
     url: "/api/ListUserSettings",
     queryKey: "userSettings",
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    keepPreviousData: true,
   });
 
   useEffect(() => {
     if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
+      console.log("User Settings API Data:", userSettingsAPI.data);
       //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
       if (userSettingsAPI.data.offboardingDefaults?.user) {
         delete userSettingsAPI.data.offboardingDefaults.user;
@@ -275,7 +268,7 @@ export const Layout = (props) => {
             <Box sx={{ flexGrow: 1, py: 4 }}>
               <Container maxWidth={false}>
                 <Grid container spacing={3}>
-                  <Grid item size={6}>
+                  <Grid size={6}>
                     <CippImageCard
                       title="Not supported"
                       imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
