@@ -65,7 +65,7 @@ export const CippWizardOffboarding = (props) => {
               />
               <CippFormComponent
                 name="removePermissions"
-                label="Remove users mailbox permissions"
+                label="Remove user's mailbox permissions"
                 type="switch"
                 formControl={formControl}
               />
