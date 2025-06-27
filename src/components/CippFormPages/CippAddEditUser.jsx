@@ -254,6 +254,24 @@ const CippAddEditUser = (props) => {
         <CippFormComponent
           type="textField"
           fullWidth
+          label="City"
+          name="city"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid size={{ md: 6, xs: 12 }}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
+          label="State/Province"
+          name="state"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid size={{ md: 6, xs: 12 }}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
           label="Postal Code"
           name="postalCode"
           formControl={formControl}
@@ -265,15 +283,6 @@ const CippAddEditUser = (props) => {
           fullWidth
           label="Country"
           name="country"
-          formControl={formControl}
-        />
-      </Grid>
-      <Grid size={{ md: 6, xs: 12 }}>
-        <CippFormComponent
-          type="textField"
-          fullWidth
-          label="City"
-          name="city"
           formControl={formControl}
         />
       </Grid>

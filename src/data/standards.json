@@ -1026,7 +1026,7 @@
   {
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS", "Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
+    "tag": ["Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
     "helpText": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
     "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "executiveText": "Automatically identifies and removes inactive devices that haven't connected to company systems for a specified period, reducing security risks from abandoned or lost devices. This maintains a clean device inventory and prevents potential unauthorized access through dormant device registrations.",
@@ -1798,7 +1798,7 @@
   {
     "name": "standards.AutoAddProxy",
     "cat": "Exchange Standards",
-    "tag": ["CIS"],
+    "tag": [],
     "helpText": "Automatically adds all available domains as a proxy address.",
     "docsDescription": "Automatically finds all available domain names in the tenant, and tries to add proxy addresses based on the user's UPN to each of these.",
     "executiveText": "Automatically creates email addresses for employees across all company domains, ensuring they can receive emails sent to any of the organization's domain names. This improves email delivery reliability and maintains consistent communication channels across different business units or brands.",
@@ -1833,7 +1833,7 @@
   {
     "name": "standards.AntiSpamSafeList",
     "cat": "Defender Standards",
-    "tag": [],
+    "tag": ["CIS M365 5.0 (2.1.13)"],
     "helpText": "Sets the anti-spam connection filter policy option 'safe list' in Defender.",
     "docsDescription": "Sets [Microsoft's built-in 'safe list'](https://learn.microsoft.com/en-us/powershell/module/exchange/set-hostedconnectionfilterpolicy?view=exchange-ps#-enablesafelist) in the anti-spam connection filter policy, rather than setting a custom safe/block list of IPs.",
     "executiveText": "Enables Microsoft's pre-approved list of trusted email servers to improve email delivery from legitimate sources while maintaining spam protection. This reduces false positives where legitimate emails might be blocked while still protecting against spam and malicious emails.",
@@ -1847,7 +1847,6 @@
     "label": "Set Anti-Spam Connection Filter Safe List",
     "impact": "Medium Impact",
     "impactColour": "info",
-    "tag": ["CIS M365 5.0 (2.1.13)"],
     "addedDate": "2025-02-15",
     "powershellEquivalent": "Set-HostedConnectionFilterPolicy \"Default\" -EnableSafeList $true",
     "recommendedBy": []
@@ -2095,7 +2094,7 @@
   {
     "name": "standards.DisableResourceMailbox",
     "cat": "Exchange Standards",
-    "tag": ["CIS", "NIST CSF 2.0 (PR.AA-01)"],
+    "tag": ["NIST CSF 2.0 (PR.AA-01)"],
     "helpText": "Blocks login for all accounts that are marked as a resource mailbox and does not have a license assigned. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
     "docsDescription": "Resource mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for resource mailboxes. Accounts that are synced from on-premises AD are excluded, as account state is managed in the on-premises AD.",
     "executiveText": "Prevents direct login to resource mailbox accounts (like conference rooms or equipment), ensuring they can only be managed through proper administrative channels. This security measure eliminates potential unauthorized access to resource scheduling systems while maintaining proper booking functionality.",
@@ -2105,7 +2104,7 @@
     "impactColour": "warning",
     "addedDate": "2025-06-01",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
-    "recommendedBy": ["CIS", "CIPP"]
+    "recommendedBy": ["Microsoft", "CIPP"]
   },
   {
     "name": "standards.EXODisableAutoForwarding",
@@ -2283,7 +2282,6 @@
     "name": "standards.AntiPhishPolicy",
     "cat": "Defender Standards",
     "tag": [
-      "CIS",
       "mdo_safeattachments",
       "mdo_highconfidencespamaction",
       "mdo_highconfidencephishaction",
@@ -3808,7 +3806,7 @@
   {
     "name": "standards.unmanagedSync",
     "cat": "SharePoint Standards",
-    "tag": [],
+    "tag": ["CIS M365 5.0 (7.2.3)", "CISA (MS.SPO.2.1v1)", "NIST CSF 2.0 (PR.AA-05)"],
     "helpText": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect.",
     "docsDescription": "Entra P1 required. Block or limit access to SharePoint and OneDrive content from unmanaged devices (those not hybrid AD joined or compliant in Intune). These controls rely on Microsoft Entra Conditional Access policies and can take up to 24 hours to take effect. 0 = Allow Access, 1 = Allow limited, web-only access, 2 = Block access. All information about this can be found in Microsofts documentation [here.](https://learn.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices)",
     "executiveText": "Restricts access to company files from personal or unmanaged devices, ensuring corporate data can only be accessed from properly secured and monitored devices. This critical security control prevents data leaks while allowing controlled access through web browsers when necessary.",
@@ -3837,8 +3835,7 @@
     "impactColour": "danger",
     "addedDate": "2025-06-13",
     "powershellEquivalent": "Set-SPOTenant -ConditionalAccessPolicy AllowFullAccess | AllowLimitedAccess | BlockAccess",
-    "recommendedBy": ["CIS"],
-    "tag": ["CIS M365 5.0 (7.2.3)", "CISA (MS.SPO.2.1v1)", "NIST CSF 2.0 (PR.AA-05)"]
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.sharingDomainRestriction",
