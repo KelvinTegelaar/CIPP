@@ -1,12 +1,23 @@
 import { Box, Stack } from "@mui/material";
+import { useEffect } from "react";
 import CippFormComponent from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
 
-const CippMailboxPermissionsDialog = ({ formHook, combinedOptions, isUserGroupLoading }) => {
+const CippMailboxPermissionsDialog = ({ 
+  formHook, 
+  combinedOptions, 
+  isUserGroupLoading, 
+  defaultAutoMap = false 
+}) => {
   const fullAccess = useWatch({
     control: formHook.control,
     name: "permissions.AddFullAccess",
   });
+
+  // Set the default AutoMap value when component mounts
+  useEffect(() => {
+    formHook.setValue("permissions.AutoMap", defaultAutoMap);
+  }, [formHook, defaultAutoMap]);
 
   return (
     <Stack spacing={2} sx={{ mt: 1 }}>
