@@ -3,7 +3,7 @@ import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardCon
 import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
 import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
 import { useSettings } from "../../../../hooks/use-settings";
-import { CippWizardCSVImport } from "../../../../components/CippWizard/CippWizardCSVImport";
+import { CippWizardAutopilotImport } from "../../../../components/CippWizard/CippWizardAutopilotImport";
 import { CippWizardBulkOptions } from "../../../../components/CippWizard/CippWizardBulkOptions";
 import { CippWizardAutopilotOptions } from "../../../../components/CippWizard/CippWizardAutopilotOptions";
 
@@ -21,7 +21,7 @@ const Page = () => {
     {
       title: "Step 2",
       description: "Device Import",
-      component: CippWizardCSVImport,
+      component: CippWizardAutopilotImport,
       componentProps: {
         name: "autopilotData",
         fields: [
