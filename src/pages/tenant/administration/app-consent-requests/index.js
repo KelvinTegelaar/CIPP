@@ -3,20 +3,10 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Visibility, CheckCircle, ExpandMore } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "/src/hooks/use-settings";
-
-const simpleColumns = [
-  "Tenant",
-  "CippStatus",
-  "appDisplayName",
-  "requestUser",
-  "requestReason",
-  "requestStatus",
-  "requestDate",
-];
 
 const apiUrl = "/api/ListAppConsentRequests";
 const pageTitle = "App Consent Requests";
@@ -28,6 +18,56 @@ const Page = () => {
       requestStatus: "All",
     },
   });
+
+  const actions = [
+    {
+      label: "Review in Entra",
+      link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AccessRequests`,
+      color: "info",
+      icon: <Visibility />,
+      target: "_blank",
+      external: true,
+    },
+    {
+      label: "Approve in Entra",
+      link: "[consentUrl]",
+      color: "info",
+      icon: <CheckCircle />,
+      target: "_blank",
+      external: true,
+    },
+  ];
+
+  const simpleColumns = [
+    "requestUser", // Requester
+    "appDisplayName", // Application Name
+    "appId", // Application ID
+    "requestReason", // Reason
+    "requestStatus", // Status
+    "reviewedBy", // Reviewed by
+    "reviewedJustification", // Reviewed Reason
+  ];
+
+  const filters = [
+    {
+      filterName: "Pending requests",
+      value: [{ id: "requestStatus", value: "InProgress" }],
+      type: "column",
+    },
+  ];
+
+  const offCanvas = {
+    extendedInfoFields: [
+      "requestUser", // Requester
+      "appDisplayName", // Application Name
+      "appId", // Application ID
+      "requestReason", // Reason
+      "requestStatus", // Status
+      "reviewedBy", // Reviewed by
+      "reviewedJustification", // Reviewed Reason
+    ],
+    actions: actions,
+  };
 
   const [expanded, setExpanded] = useState(false); // Accordion state
   const [filterParams, setFilterParams] = useState({}); // Dynamic filter params
@@ -49,7 +89,7 @@ const Page = () => {
       // FIXME: This tableFilter does nothing. It does not change the table data at all, like the code makes it seem like it should. -Bobby
       tableFilter={
         <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<ExpandMore />}>
             <Typography>Filters</Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -86,45 +126,13 @@ const Page = () => {
       title={pageTitle}
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
-      filters={[
-        // Filter for showing only pending requests
-        {
-          filterName: "Pending requests",
-          value: [{ id: "requestStatus", value: "InProgress" }],
-          type: "column",
-        },
-      ]}
+      filters={filters}
       queryKey={`AppConsentRequests-${JSON.stringify(filterParams)}-${tenantFilter}`}
       apiData={{
         ...filterParams,
       }}
-      offCanvas={{
-        extendedInfoFields: [
-          "requestUser", // Requester
-          "appDisplayName", // Application Name
-          "appId", // Application ID
-          "requestReason", // Reason
-          "requestStatus", // Status
-          "reviewedBy", // Reviewed by
-          "reviewedJustification", // Reviewed Reason
-        ],
-      }}
-      actions={[
-        {
-          label: "Review in Entra",
-          link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AccessRequests`,
-          color: "info",
-          target: "_blank",
-          external: true,
-        },
-        {
-          label: "Approve in Entra",
-          link: "[consentUrl]",
-          color: "info",
-          target: "_blank",
-          external: true,
-        },
-      ]}
+      offCanvas={offCanvas}
+      actions={actions}
     />
   );
 };
