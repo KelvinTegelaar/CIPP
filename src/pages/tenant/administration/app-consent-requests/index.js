@@ -93,12 +93,23 @@ const Page = () => {
     "requestStatus", // Status
     "reviewedBy", // Reviewed by
     "reviewedJustification", // Reviewed Reason
+    "consentUrl", // Consent URL
   ];
 
   const filters = [
     {
       filterName: "Pending requests",
       value: [{ id: "requestStatus", value: "InProgress" }],
+      type: "column",
+    },
+    {
+      filterName: "Expired requests",
+      value: [{ id: "requestStatus", value: "Expired" }],
+      type: "column",
+    },
+    {
+      filterName: "Completed requests",
+      value: [{ id: "requestStatus", value: "Completed" }],
       type: "column",
     },
   ];
@@ -112,6 +123,7 @@ const Page = () => {
       "requestStatus", // Status
       "reviewedBy", // Reviewed by
       "reviewedJustification", // Reviewed Reason
+      "consentUrl", // Consent URL
     ],
     actions: actions,
   };
