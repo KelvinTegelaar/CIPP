@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+import {
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  SvgIcon,
+  Stack,
+} from "@mui/material";
 import { Grid } from "@mui/system";
-import { Visibility, CheckCircle, ExpandMore } from "@mui/icons-material";
+import { Visibility, CheckCircle, ExpandMore, Security } from "@mui/icons-material";
+import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "/src/hooks/use-settings";
@@ -18,6 +27,44 @@ const Page = () => {
       requestStatus: "All",
     },
   });
+
+  const [expanded, setExpanded] = useState(false); // Accordion state
+  const [filterEnabled, setFilterEnabled] = useState(false); // State for filter toggle
+  const [requestStatus, setRequestStatus] = useState(null); // State for request status filter
+  const [requestStatusLabel, setRequestStatusLabel] = useState(null); // State for displaying filter label
+
+  const onSubmit = (data) => {
+    // Handle the case where requestStatus could be an object {label, value} or a string
+    const statusValue =
+      typeof data.requestStatus === "object" && data.requestStatus?.value
+        ? data.requestStatus.value
+        : data.requestStatus;
+    const statusLabel =
+      typeof data.requestStatus === "object" && data.requestStatus?.label
+        ? data.requestStatus.label
+        : data.requestStatus;
+
+    // Check if any filter is applied
+    const hasFilter = statusValue !== "All";
+    setFilterEnabled(hasFilter);
+
+    // Set request status filter if not "All"
+    setRequestStatus(hasFilter ? statusValue : null);
+    setRequestStatusLabel(hasFilter ? statusLabel : null);
+
+    // Close the accordion after applying filters
+    setExpanded(false);
+  };
+
+  const clearFilters = () => {
+    formControl.reset({
+      requestStatus: "All",
+    });
+    setFilterEnabled(false);
+    setRequestStatus(null);
+    setRequestStatusLabel(null);
+    setExpanded(false); // Close the accordion when clearing filters
+  };
 
   const actions = [
     {
@@ -69,28 +116,28 @@ const Page = () => {
     actions: actions,
   };
 
-  const [expanded, setExpanded] = useState(false); // Accordion state
-  const [filterParams, setFilterParams] = useState({}); // Dynamic filter params
-
-  const onSubmit = (data) => {
-    // Handle filter application logic
-    const { requestStatus } = data;
-    const filters = {};
-
-    if (requestStatus !== "All") {
-      filters.requestStatus = requestStatus;
-    }
-
-    setFilterParams(filters);
-  };
-
   return (
     <CippTablePage
-      // FIXME: This tableFilter does nothing. It does not change the table data at all, like the code makes it seem like it should. -Bobby
       tableFilter={
         <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography>Filters</Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <SvgIcon>
+                <FunnelIcon />
+              </SvgIcon>
+              <Typography variant="h6">
+                App Consent Request Filters
+                {filterEnabled ? (
+                  <span style={{ fontSize: "0.8em", marginLeft: "10px", fontWeight: "normal" }}>
+                    ({requestStatusLabel && <>Status: {requestStatusLabel}</>})
+                  </span>
+                ) : (
+                  <span style={{ fontSize: "0.8em", marginLeft: "10px", fontWeight: "normal" }}>
+                    (No filters applied)
+                  </span>
+                )}
+              </Typography>
+            </Stack>
           </AccordionSummary>
           <AccordionDetails>
             <form onSubmit={formControl.handleSubmit(onSubmit)}>
@@ -112,11 +159,34 @@ const Page = () => {
                   />
                 </Grid>
 
-                {/* Submit Button */}
+                {/* Action Buttons */}
                 <Grid size={{ xs: 12 }}>
-                  <Button type="submit" variant="contained" color="primary">
-                    Apply Filters
-                  </Button>
+                  <Stack direction="row" spacing={2}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      startIcon={
+                        <SvgIcon>
+                          <FunnelIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Apply Filters
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={
+                        <SvgIcon>
+                          <XMarkIcon />
+                        </SvgIcon>
+                      }
+                      onClick={clearFilters}
+                    >
+                      Clear Filters
+                    </Button>
+                  </Stack>
                 </Grid>
               </Grid>
             </form>
@@ -127,9 +197,10 @@ const Page = () => {
       apiUrl={apiUrl}
       simpleColumns={simpleColumns}
       filters={filters}
-      queryKey={`AppConsentRequests-${JSON.stringify(filterParams)}-${tenantFilter}`}
+      queryKey={`AppConsentRequests-${requestStatus}-${filterEnabled}-${tenantFilter}`}
       apiData={{
-        ...filterParams,
+        RequestStatus: requestStatus, // Pass request status filter from state
+        Filter: filterEnabled, // Pass filter toggle state
       }}
       offCanvas={offCanvas}
       actions={actions}
