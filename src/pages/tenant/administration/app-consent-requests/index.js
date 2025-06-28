@@ -24,14 +24,14 @@ const Page = () => {
   const tenantFilter = useSettings().currentTenant;
   const formControl = useForm({
     defaultValues: {
-      requestStatus: "All",
+      requestStatus: "InProgress",
     },
   });
 
-  const [expanded, setExpanded] = useState(false); // Accordion state
-  const [filterEnabled, setFilterEnabled] = useState(false); // State for filter toggle
-  const [requestStatus, setRequestStatus] = useState(null); // State for request status filter
-  const [requestStatusLabel, setRequestStatusLabel] = useState(null); // State for displaying filter label
+  const [expanded, setExpanded] = useState(true); // Accordion state - start expanded since we have a default filter
+  const [filterEnabled, setFilterEnabled] = useState(true); // State for filter toggle - start with filter enabled
+  const [requestStatus, setRequestStatus] = useState("InProgress"); // State for request status filter - default to InProgress
+  const [requestStatusLabel, setRequestStatusLabel] = useState("Pending"); // State for displaying filter label - default label
 
   const onSubmit = (data) => {
     // Handle the case where requestStatus could be an object {label, value} or a string
