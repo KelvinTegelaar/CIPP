@@ -118,7 +118,7 @@ const Page = () => {
       };
 
       const response = await fetch("/api/EditIntuneScript", {
-        method: "PATCH",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(patchData),
       });
