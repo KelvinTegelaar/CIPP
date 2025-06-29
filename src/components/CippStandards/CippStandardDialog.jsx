@@ -935,260 +935,206 @@ const CippStandardDialog = ({
             sx={{ mb: 3 }}
           />
 
-          {/* View Toggle Controls */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="subtitle2" color="text.secondary">
-              View Mode:
-            </Typography>
-            <ToggleButtonGroup
-              value={viewMode}
-              exclusive
-              onChange={(e, newViewMode) => {
-                if (newViewMode !== null) {
-                  setViewMode(newViewMode);
-                }
-              }}
-              size="small"
-            >
-              <ToggleButton value="card" aria-label="card view">
-                <ViewModule sx={{ mr: 1 }} />
-                Cards
-              </ToggleButton>
-              <ToggleButton value="list" aria-label="list view">
-                <ViewList sx={{ mr: 1 }} />
-                List
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
-
-          {/* Filter Controls Section */}
+          {/* Unified Controls Section */}
           <Box sx={{ mb: 2 }}>
             {/* Clickable header bar */}
-            <Box 
+            <Box
               onClick={() => setFiltersExpanded(!filtersExpanded)}
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between', 
-                mb: 2,
-                p: 1,
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                py: 0.75,
+                px: 1,
                 borderRadius: 1,
                 cursor: 'pointer',
                 bgcolor: 'action.hover',
+                border: '1px solid',
+                borderColor: 'divider',
                 '&:hover': {
                   bgcolor: 'action.selected'
                 }
               }}
             >
-              <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                Sort & Filter Options
-              </Typography>
-              {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
-            </Box>
-
-            {/* Compact summary when collapsed */}
-            {!filtersExpanded && (
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 1, 
-                py: 0.5,
-                px: 1,
-                bgcolor: 'action.hover',
-                borderRadius: 0.5,
-                mb: 1
-              }}>
-                <Typography variant="caption" color="text.secondary">
-                  Sorted by <strong>{sortBy === 'addedDate' ? 'Date Added' : 'Name'}</strong> ({sortOrder === 'desc' ? 'Desc' : 'Asc'})
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <FilterList sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 'medium' }}>
+                  View, Sort & Filter Options
                 </Typography>
-                {activeFiltersCount > 0 && (
-                  <>
-                    <Typography variant="caption" color="text.secondary">
-                      • <strong>{activeFiltersCount}</strong> filter{activeFiltersCount !== 1 ? 's' : ''}
-                    </Typography>
-                    <Button
-                      variant="text"
-                      size="small"
-                      onClick={clearAllFilters}
-                      sx={{ 
-                        ml: 'auto', 
-                        minWidth: 'auto', 
-                        px: 1, 
-                        py: 0.25,
-                        fontSize: '0.75rem',
-                        height: 'auto'
-                      }}
-                    >
-                      Clear
-                    </Button>
-                  </>
+                {!filtersExpanded && (
+                  <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                    ({viewMode === 'card' ? 'Card' : 'List'} • {sortBy === 'addedDate' ? 'Date' : 'Name'} {sortOrder === 'desc' ? '↓' : '↑'}{activeFiltersCount > 0 ? ` • ${activeFiltersCount} filter${activeFiltersCount !== 1 ? 's' : ''}` : ''})
+                  </Typography>
                 )}
               </Box>
-            )}
+              {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
+            </Box>
             
-            {/* Collapsible filter controls */}
+            {/* Single line controls when expanded */}
             <Collapse in={filtersExpanded}>
-              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-                {/* Sort Controls Card */}
-                <Box sx={{ 
-                  display: 'flex', 
-                  gap: 2, 
-                  alignItems: 'center',
-                  p: 2,
-                  bgcolor: 'action.hover',
-                  borderRadius: 1,
-                  border: '1px solid',
-                  borderColor: 'divider'
-                }}>
-                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'bold', minWidth: 'fit-content' }}>
-                    SORT:
-                  </Typography>
-                  <FormControl sx={{ minWidth: 140 }}>
-                    <InputLabel>Sort By</InputLabel>
-                    <Select
-                      value={sortBy}
-                      label="Sort By"
-                      onChange={(e) => setSortBy(e.target.value)}
-                      sx={{ height: 45 }}
-                    >
-                      <MenuItem value="label">Name</MenuItem>
-                      <MenuItem value="addedDate">Date Added</MenuItem>
-                    </Select>
-                  </FormControl>
-                  
-                  <FormControl sx={{ minWidth: 120 }}>
-                    <InputLabel>Order</InputLabel>
-                    <Select
-                      value={sortOrder}
-                      label="Order"
-                      onChange={(e) => setSortOrder(e.target.value)}
-                      sx={{ height: 45 }}
-                    >
-                      <MenuItem value="asc">Ascending</MenuItem>
-                      <MenuItem value="desc">Descending</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-
-                {/* Filter Controls Card */}
-                <Box sx={{ 
-                  display: 'flex', 
-                  gap: 2, 
-                  alignItems: 'center',
-                  p: 2,
-                  bgcolor: 'action.hover',
-                  borderRadius: 1,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  flex: 1
-                }}>
-                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'bold', minWidth: 'fit-content' }}>
-                    FILTER:
-                  </Typography>
-                  <FormControl sx={{ minWidth: 160 }}>
-                    <InputLabel>Categories</InputLabel>
-                    <Select
-                      multiple
-                      value={selectedCategories}
-                      label="Categories"
-                      onChange={(e) => setSelectedCategories(e.target.value)}
-                      sx={{ height: 45 }}
-                      renderValue={(selected) => 
-                        selected.length === 0 ? "All Categories" : `${selected.length} selected`
-                      }
-                    >
-                      {allCategories.map((category) => (
-                        <MenuItem key={category} value={category}>
-                          {category}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <FormControl sx={{ minWidth: 120 }}>
-                    <InputLabel>Impact</InputLabel>
-                    <Select
-                      multiple
-                      value={selectedImpacts}
-                      label="Impact"
-                      onChange={(e) => setSelectedImpacts(e.target.value)}
-                      sx={{ height: 45 }}
-                      renderValue={(selected) => 
-                        selected.length === 0 ? "All Impacts" : `${selected.length} selected`
-                      }
-                    >
-                      {allImpacts.map((impact) => (
-                        <MenuItem key={impact} value={impact}>
-                          {impact}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <FormControl sx={{ minWidth: 160 }}>
-                    <InputLabel>Recommended By</InputLabel>
-                    <Select
-                      multiple
-                      value={selectedRecommendedBy}
-                      label="Recommended By"
-                      onChange={(e) => setSelectedRecommendedBy(e.target.value)}
-                      sx={{ height: 45 }}
-                      renderValue={(selected) => 
-                        selected.length === 0 ? "All Recommendations" : `${selected.length} selected`
-                      }
-                    >
-                      {allRecommendedBy.map((rec) => (
-                        <MenuItem key={rec} value={rec}>
-                          {rec}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <FormControl sx={{ minWidth: 160 }}>
-                    <InputLabel>Compliance Tags</InputLabel>
-                    <Select
-                      multiple
-                      value={selectedTagFrameworks}
-                      label="Compliance Tags"
-                      onChange={(e) => setSelectedTagFrameworks(e.target.value)}
-                      sx={{ height: 45 }}
-                      renderValue={(selected) => 
-                        selected.length === 0 ? "All Tags" : `${selected.length} selected`
-                      }
-                    >
-                      {allTagFrameworks.map((framework) => (
-                        <MenuItem key={framework} value={framework}>
-                          {framework}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  {/* New Standards Toggle */}
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={showOnlyNew}
-                        onChange={(e) => setShowOnlyNew(e.target.checked)}
-                      />
+              <Box sx={{
+                display: 'flex',
+                gap: 2,
+                alignItems: 'center',
+                p: 2,
+                bgcolor: 'background.paper',
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'divider',
+                mt: 1,
+                flexWrap: 'wrap'
+              }}>
+                {/* View Mode */}
+                <ToggleButtonGroup
+                  value={viewMode}
+                  exclusive
+                  onChange={(e, newViewMode) => {
+                    if (newViewMode !== null) {
+                      setViewMode(newViewMode);
                     }
-                    label="New (30 days)"
-                    sx={{ ml: 1 }}
-                  />
+                  }}
+                >
+                  <ToggleButton value="card" aria-label="card view">
+                    <ViewModule sx={{ mr: 1 }} />
+                    Cards
+                  </ToggleButton>
+                  <ToggleButton value="list" aria-label="list view">
+                    <ViewList sx={{ mr: 1 }} />
+                    List
+                  </ToggleButton>
+                </ToggleButtonGroup>
 
-                  {/* Clear All Filters Button */}
-                  {activeFiltersCount > 0 && (
-                    <Button
-                      variant="outlined"
-                      startIcon={<Clear />}
-                      onClick={clearAllFilters}
-                      sx={{ ml: 'auto', height: 45 }}
-                    >
-                      Clear All ({activeFiltersCount})
-                    </Button>
-                  )}
-                </Box>
+                {/* Sort Controls */}
+                <FormControl sx={{ minWidth: 140 }}>
+                  <InputLabel>Sort By</InputLabel>
+                  <Select
+                    value={sortBy}
+                    label="Sort By"
+                    onChange={(e) => setSortBy(e.target.value)}
+                    sx={{ height: 45 }}
+                  >
+                    <MenuItem value="label">Name</MenuItem>
+                    <MenuItem value="addedDate">Date Added</MenuItem>
+                  </Select>
+                </FormControl>
+                
+                <FormControl sx={{ minWidth: 120 }}>
+                  <InputLabel>Order</InputLabel>
+                  <Select
+                    value={sortOrder}
+                    label="Order"
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    sx={{ height: 45 }}
+                  >
+                    <MenuItem value="asc">Ascending</MenuItem>
+                    <MenuItem value="desc">Descending</MenuItem>
+                  </Select>
+                </FormControl>
+
+                {/* Filter Controls */}
+                <FormControl sx={{ minWidth: 160 }}>
+                  <InputLabel>Categories</InputLabel>
+                  <Select
+                    multiple
+                    value={selectedCategories}
+                    label="Categories"
+                    onChange={(e) => setSelectedCategories(e.target.value)}
+                    sx={{ height: 45 }}
+                    renderValue={(selected) =>
+                      selected.length === 0 ? "All Categories" : `${selected.length} selected`
+                    }
+                  >
+                    {allCategories.map((category) => (
+                      <MenuItem key={category} value={category}>
+                        {category}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl sx={{ minWidth: 120 }}>
+                  <InputLabel>Impact</InputLabel>
+                  <Select
+                    multiple
+                    value={selectedImpacts}
+                    label="Impact"
+                    onChange={(e) => setSelectedImpacts(e.target.value)}
+                    sx={{ height: 45 }}
+                    renderValue={(selected) =>
+                      selected.length === 0 ? "All Impacts" : `${selected.length} selected`
+                    }
+                  >
+                    {allImpacts.map((impact) => (
+                      <MenuItem key={impact} value={impact}>
+                        {impact}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl sx={{ minWidth: 160 }}>
+                  <InputLabel>Recommended By</InputLabel>
+                  <Select
+                    multiple
+                    value={selectedRecommendedBy}
+                    label="Recommended By"
+                    onChange={(e) => setSelectedRecommendedBy(e.target.value)}
+                    sx={{ height: 45 }}
+                    renderValue={(selected) =>
+                      selected.length === 0 ? "All Recommendations" : `${selected.length} selected`
+                    }
+                  >
+                    {allRecommendedBy.map((rec) => (
+                      <MenuItem key={rec} value={rec}>
+                        {rec}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl sx={{ minWidth: 160 }}>
+                  <InputLabel>Compliance Tags</InputLabel>
+                  <Select
+                    multiple
+                    value={selectedTagFrameworks}
+                    label="Compliance Tags"
+                    onChange={(e) => setSelectedTagFrameworks(e.target.value)}
+                    sx={{ height: 45 }}
+                    renderValue={(selected) =>
+                      selected.length === 0 ? "All Tags" : `${selected.length} selected`
+                    }
+                  >
+                    {allTagFrameworks.map((framework) => (
+                      <MenuItem key={framework} value={framework}>
+                        {framework}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* New Standards Toggle */}
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showOnlyNew}
+                      onChange={(e) => setShowOnlyNew(e.target.checked)}
+                    />
+                  }
+                  label="New (30 days)"
+                  sx={{ ml: 1 }}
+                />
+
+                {/* Clear Button */}
+                {activeFiltersCount > 0 && (
+                  <Button
+                    variant="outlined"
+                    startIcon={<Clear />}
+                    onClick={clearAllFilters}
+                    sx={{ ml: 'auto', height: 45 }}
+                  >
+                    Clear All ({activeFiltersCount})
+                  </Button>
+                )}
               </Box>
             </Collapse>
           </Box>
