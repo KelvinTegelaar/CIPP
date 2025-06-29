@@ -535,7 +535,6 @@
     "cat": "Entra (AAD) Standards",
     "tag": [
       "CIS M365 5.0 (2.3.1)",
-      "CIS M365 5.0 (5.2.3.2)",
       "EIDSCA.AM03",
       "EIDSCA.AM04",
       "EIDSCA.AM06",
@@ -722,6 +721,28 @@
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgDomain",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.CustomBannedPasswordList",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["CIS M365 5.0 (5.2.3.2)"],
+    "helpText": "**Requires Entra ID P1.** Updates and enables the Entra ID custom banned password list with the supplied words. Enter words separated by commas or semicolons. Each word must be 4-16 characters long. Maximum 1,000 words allowed.",
+    "docsDescription": "Updates and enables the Entra ID custom banned password list with the supplied words. This supplements the global banned password list maintained by Microsoft. The custom list is limited to 1,000 key base terms of 4-16 characters each. Entra ID will [block variations and common substitutions](https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-configure-custom-password-protection#configure-custom-banned-passwords) of these words in user passwords. [How are passwords evaluated?](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-password-ban-bad#score-calculation)",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.CustomBannedPasswordList.BannedWords",
+        "label": "Banned Words",
+        "placeholder": "Banned words separated by commas or semicolons",
+        "required": true
+      }
+    ],
+    "label": "Set Entra ID Custom Banned Password List",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-06-28",
+    "powershellEquivalent": "Get-MgBetaDirectorySetting, New-MgBetaDirectorySetting, Update-MgBetaDirectorySetting",
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.ExternalMFATrusted",
