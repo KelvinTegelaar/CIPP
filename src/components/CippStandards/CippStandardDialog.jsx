@@ -131,7 +131,6 @@ const StandardCard = memo(
               height: "100%",
               flex: 1,
               position: "relative",
-              m: 0,
               ...(isNewStandard(standard.addedDate) && {
                 border: "2px solid",
                 borderColor: "success.main",
@@ -355,7 +354,7 @@ VirtualizedStandardGrid.displayName = "VirtualizedStandardGrid";
 const CompactStandardList = memo(
   ({ items, selectedStandards, handleToggleSingleStandard, handleAddClick, isButtonDisabled }) => {
     return (
-      <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+      <List sx={{ width: "98%", bgcolor: "background.paper" }}>
         {items.map(({ standard, category }) => {
           const isSelected = !!selectedStandards[standard.name];
 
@@ -967,7 +966,16 @@ const CippStandardDialog = ({
       }}
     >
       <DialogTitle>Select a Standard to Add</DialogTitle>
-      <DialogContent sx={{ backgroundColor: "background.default", pb: 1, flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <DialogContent
+        sx={{
+          backgroundColor: "background.default",
+          pb: 1,
+          flex: 1,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {/* Search and Filter Controls */}
         <Box sx={{ mt: 2, mb: 3 }}>
           {/* Search Box */}
