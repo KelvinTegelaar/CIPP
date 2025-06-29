@@ -325,7 +325,7 @@ const VirtualizedStandardGrid = memo(({ items, renderItem }) => {
 
   return (
     <Virtuoso
-      style={{ height: "60vh", width: "100%" }}
+      style={{ height: "calc(90vh - 300px)", width: "100%" }}
       totalCount={rows.length}
       overscan={5}
       defaultItemHeight={320} // Provide estimated row height for better virtualization
@@ -563,7 +563,7 @@ const CippStandardDialog = ({
   const [selectedRecommendedBy, setSelectedRecommendedBy] = useState([]);
   const [selectedTagFrameworks, setSelectedTagFrameworks] = useState([]);
   const [showOnlyNew, setShowOnlyNew] = useState(false); // Show only standards added in last 30 days
-  const [filtersExpanded, setFiltersExpanded] = useState(true); // Control filter section collapse/expand
+  const [filtersExpanded, setFiltersExpanded] = useState(false); // Control filter section collapse/expand
 
   // Auto-adjust sort order when sort type changes
   useEffect(() => {
@@ -961,11 +961,13 @@ const CippStandardDialog = ({
         sx: {
           minWidth: "720px",
           maxHeight: "90vh",
+          display: "flex",
+          flexDirection: "column",
         },
       }}
     >
       <DialogTitle>Select a Standard to Add</DialogTitle>
-      <DialogContent sx={{ backgroundColor: "background.default", pb: 1 }}>
+      <DialogContent sx={{ backgroundColor: "background.default", pb: 1, flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
         {/* Search and Filter Controls */}
         <Box sx={{ mt: 2, mb: 3 }}>
           {/* Search Box */}
@@ -1272,14 +1274,16 @@ const CippStandardDialog = ({
             </Typography>
           </Box>
         ) : (
-          <Box>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 2, flexShrink: 0 }}>
               Showing {processedItems.length} standard{processedItems.length !== 1 ? "s" : ""}
             </Typography>
             {viewMode === "card" ? (
-              <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
+              <Box sx={{ flex: 1, minHeight: 0, height: "100%" }}>
+                <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
+              </Box>
             ) : (
-              <Box sx={{ maxHeight: "60vh", overflow: "auto" }}>
+              <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
                 <CompactStandardList
                   items={processedItems}
                   selectedStandards={selectedStandards}
