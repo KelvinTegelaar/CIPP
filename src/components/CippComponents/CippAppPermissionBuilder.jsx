@@ -821,7 +821,6 @@ const CippAppPermissionBuilder = ({
                 </Grid>
               </Grid>
               <Grid
-                item
                 size={12}
                 sx={{
                   mt: createServicePrincipal.isSuccess || createServicePrincipal.isPending ? 3 : 0,
