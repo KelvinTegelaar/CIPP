@@ -1,4 +1,3 @@
-import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
@@ -31,7 +30,9 @@ export const CippFormUserSelector = ({
         dataKey: "Results",
         labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
         valueField: valueField ? valueField : "id",
-        queryKey: `ListUsers-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
+        queryKey: `ListUsers-${currentTenant?.value ? currentTenant.value : selectedTenant}-${
+          select ? select : "default"
+        }`,
         data: {
           Endpoint: "users",
           manualPagination: true,

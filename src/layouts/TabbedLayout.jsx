@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from "next/navigation";
-import { Box, Container, Divider, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Divider, Stack, Tab, Tabs } from "@mui/material";
 
 export const TabbedLayout = (props) => {
   const { tabOptions, children } = props;

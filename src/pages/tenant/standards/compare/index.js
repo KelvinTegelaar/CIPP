@@ -39,6 +39,7 @@ import { useDialog } from "../../../../hooks/use-dialog";
 import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
 import { ClockIcon } from "@heroicons/react/24/outline";
+import ReactMarkdown from "react-markdown";
 
 const Page = () => {
   const router = useRouter();
@@ -181,7 +182,12 @@ const Page = () => {
               // The standard should be reportable if there's an action with value === 'Report'
               const actions = standardConfig?.action ?? [];
               const reportingEnabled =
-                actions.filter((action) => action?.value === "Report").length > 0;
+                //if actions contains Report or Remediate, case insensitive, then we good.
+                actions.filter(
+                  (action) =>
+                    action?.value.toLowerCase() === "report" ||
+                    action?.value.toLowerCase() === "remediate"
+                ).length > 0;
 
               // Find the tenant's value for this standard
               const currentTenantStandard = currentTenantData.find(
@@ -428,7 +434,7 @@ const Page = () => {
           <>
             {[1, 2, 3].map((item) => (
               <Grid container spacing={3} key={item} sx={{ mb: 4 }}>
-                <Grid item size={12}>
+                <Grid size={12}>
                   <Stack
                     direction="row"
                     justifyContent="space-between"
@@ -443,7 +449,7 @@ const Page = () => {
                   </Stack>
                 </Grid>
 
-                <Grid item size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Card sx={{ height: "100%" }}>
                     <Stack
                       direction="row"
@@ -472,7 +478,7 @@ const Page = () => {
                   </Card>
                 </Grid>
 
-                <Grid item size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Card sx={{ height: "100%" }}>
                     <Stack
                       direction="row"
@@ -641,7 +647,7 @@ const Page = () => {
 
                 {filteredGroupedStandards[category].map((standard, index) => (
                   <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
-                    <Grid item size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                         <Stack
                           direction="row"
@@ -784,7 +790,7 @@ const Page = () => {
                       </Card>
                     </Grid>
 
-                    <Grid item size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                         <Stack
                           direction="row"
@@ -1020,7 +1026,7 @@ const Page = () => {
                     </Grid>
 
                     {standard.complianceDetails && (
-                      <Grid item size={12}>
+                      <Grid size={12}>
                         <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
                           <Stack direction="row" alignItems="flex-start" spacing={2} sx={{ p: 3 }}>
                             <Box
@@ -1033,7 +1039,44 @@ const Page = () => {
                             >
                               <Info />
                             </Box>
-                            <Typography variant="body2">{standard.complianceDetails}</Typography>
+                            <Box
+                              sx={{
+                                // Style markdown links to match CIPP theme
+                                "& a": {
+                                  color: (theme) => theme.palette.primary.main,
+                                  textDecoration: "underline",
+                                  "&:hover": {
+                                    textDecoration: "none",
+                                  },
+                                },
+                                fontSize: "0.875rem", 
+                                lineHeight: 1.43,     
+                                "& p": {
+                                  my: 0,
+                                },
+                                flex: 1,
+                              }}
+                            >
+                              <ReactMarkdown
+                                components={{
+                                  // Make links open in new tab with security attributes
+                                  a: ({ href, children, ...props }) => (
+                                    <a
+                                      href={href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      {...props}
+                                    >
+                                      {children}
+                                    </a>
+                                  ),
+                                  // Convert paragraphs to spans to avoid unwanted spacing
+                                  p: ({ children }) => <span>{children}</span>,
+                                }}
+                              >
+                                {standard.complianceDetails}
+                              </ReactMarkdown>
+                            </Box>
                           </Stack>
                         </Card>
                       </Grid>

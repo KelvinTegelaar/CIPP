@@ -1,12 +1,10 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "/src/hooks/use-settings";
 import { Grid, darken, lighten, styled } from "@mui/system";
-import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";

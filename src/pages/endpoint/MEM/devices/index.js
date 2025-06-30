@@ -320,6 +320,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl="/api/ListDevices"
       actions={actions}
+      queryKey={`MEMDevices-${tenantFilter}`}
       offCanvas={offCanvas}
       simpleColumns={[
         "deviceName",

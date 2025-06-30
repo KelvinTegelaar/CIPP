@@ -27,6 +27,7 @@ export const CippApiDialog = (props) => {
     dialogAfterEffect,
     allowResubmit = false,
     children,
+    defaultvalues,
     ...other
   } = props;
   const router = useRouter();
@@ -38,12 +39,17 @@ export const CippApiDialog = (props) => {
   if (mdDown) {
     other.fullScreen = true;
   }
+
+  const formHook = useForm({
+    defaultValues: defaultvalues || {}
+  });
+
   useEffect(() => {
     if (createDialog.open) {
       setIsFormSubmitted(false);
-      formHook.reset();
+      formHook.reset(defaultvalues || {});
     }
-  }, [createDialog.open]);
+  }, [createDialog.open, defaultvalues]);
 
   const [getRequestInfo, setGetRequestInfo] = useState({
     url: "",
@@ -193,7 +199,6 @@ export const CippApiDialog = (props) => {
     }
   }, [actionPostRequest.isSuccess, actionGetRequest.isSuccess]);
 
-  const formHook = useForm();
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
 

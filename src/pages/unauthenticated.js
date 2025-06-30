@@ -50,7 +50,7 @@ const Page = () => {
               alignItems="center" // Center vertically
               sx={{ height: "100%" }} // Ensure the container takes full height
             >
-              <Grid item size={{ md: 6, xs: 12 }}>
+              <Grid size={{ md: 6, xs: 12 }}>
                 {(orgData.isSuccess || swaStatus.isSuccess) && Array.isArray(userRoles) && (
                   <CippImageCard
                     isFetching={false}
