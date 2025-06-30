@@ -199,7 +199,9 @@ const AppApprovalTemplateForm = ({
                   },
                   dataFilter: (data) => {
                     return data.filter(
-                      (item) => item.addedFields?.signInAudience === "AzureADMultipleOrgs"
+                      (item) =>
+                        item.addedFields?.signInAudience === "AzureADMultipleOrgs" ||
+                        item.addedFields?.signInAudience === "AzureADandPersonalMicrosoftAccount "
                     );
                   },
                   showRefresh: true,
