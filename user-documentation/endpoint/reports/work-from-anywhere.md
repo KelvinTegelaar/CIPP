@@ -6,7 +6,7 @@ This report will pull from the Intune device management statistics to report on 
 This can be useful to determine if your Intune managed devices are eligible to upgrade to Windows 11!
 {% endhint %}
 
-### Table Columns
+### Table Details
 
 The properties returned are for the Graph resource type `userExperienceAnalyticsWorkFromAnywhereDevice`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-userexperienceanalyticsworkfromanywheredevice?view=graph-rest-1.0#properties).
 

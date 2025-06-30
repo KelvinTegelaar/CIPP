@@ -19,7 +19,7 @@ This page will allow you to set all of the necessary properties to create a sing
    * Use "Copy properties from another user" dropdown to pre-fill fields
 
 {% hint style="info" %}
-When using the **Copy properties from another user** dropdown, the specific fields that get copied are: `givenName`, `surname`, `jobTitle`, `department`, `streetAddress`, `postalCode`, `companyName`, `mobilePhone`, `businessPhones`, `usageLocation`
+When using the **Copy properties from another user** dropdown, the specific fields that get copied are: `id`, `userPrincipalName`, `displayName`, `givenName`, `surname`, `mailNickname`, `jobTitle`, `department`, `streetAddress`, `city`, `state`, `postalCode`, `companyName`, `mobilePhone`, `businessPhones`, `usageLocation`, `office`
 {% endhint %}
 
 ## Available Settings
@@ -52,7 +52,7 @@ When the [sherweb.md](../../../cipp/integrations/sherweb.md "mention")integratio
 ### Contact Information
 
 1. **Professional Details:** `Job Title`, `Department`, `Company Name`
-2. **Contact Details:** `Street Address`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
+2. **Contact Details:** `Street Address`, `City`, `State/Province`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
 3. **Management:** `Set Manager` (select from existing users), `Copy groups from another user`
 4. **Custom Attributes**
    * Custom attributes can be configured in **Preferences > General Settings**
