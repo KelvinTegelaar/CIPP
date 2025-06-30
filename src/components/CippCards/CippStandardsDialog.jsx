@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import _ from "lodash";
 import {
   Dialog,
   DialogTitle,
@@ -144,7 +145,9 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
         },
       }}
     >
-      <DialogTitle sx={{ m: 0, p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <DialogTitle
+        sx={{ m: 0, p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}
+      >
         <Typography variant="h6">Standards Configuration</Typography>
         <IconButton
           aria-label="close"
@@ -163,8 +166,8 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
               Showing standards configuration for tenant: <strong>{currentTenant}</strong>
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Total templates applied: <strong>{applicableTemplates.length}</strong> | 
-              Total standards: <strong>{Object.keys(combinedStandards).length}</strong>
+              Total templates applied: <strong>{applicableTemplates.length}</strong> | Total
+              standards: <strong>{Object.keys(combinedStandards).length}</strong>
             </Typography>
           </Box>
 
@@ -178,19 +181,28 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                 borderRadius: 2,
                 boxShadow: "none",
                 border: (theme) => `1px solid ${theme.palette.divider}`,
-                '&:before': { display: 'none' },
+                "&:before": { display: "none" },
               }}
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`${category}-content`}
                 id={`${category}-header`}
-                sx={{ minHeight: 48, '& .MuiAccordionSummary-content': { alignItems: 'center', m: 0 } }}
+                sx={{
+                  minHeight: 48,
+                  "& .MuiAccordionSummary-content": { alignItems: "center", m: 0 },
+                }}
               >
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <SvgIcon color="primary">{getCategoryIcon(category)}</SvgIcon>
-                  <Typography variant="subtitle1" fontWeight={600}>{category}</Typography>
-                  <Chip label={`${categoryStandards.length} standards`} size="small" variant="outlined" />
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {category}
+                  </Typography>
+                  <Chip
+                    label={`${categoryStandards.length} standards`}
+                    size="small"
+                    variant="outlined"
+                  />
                 </Stack>
               </AccordionSummary>
               <AccordionDetails sx={{ pt: 1, pb: 2 }}>
@@ -198,7 +210,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                   {categoryStandards.map(({ key, config, info }) => (
                     <Grid item xs={12} md={6} key={key}>
                       <Card variant="outlined" sx={{ height: "100%", mb: 1, p: 0 }}>
-                        <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                        <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
                           <Stack spacing={1}>
                             <Box>
                               <Typography variant="subtitle2" fontWeight="bold">
@@ -239,7 +251,8 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                       color={
                                         action.value?.toLowerCase() === "remediate"
                                           ? "error"
-                                          : action.value?.toLowerCase() === "alert" || action.value?.toLowerCase() === "warn"
+                                          : action.value?.toLowerCase() === "alert" ||
+                                            action.value?.toLowerCase() === "warn"
                                           ? "warning"
                                           : "info"
                                       }
@@ -252,31 +265,33 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                                 )}
                               </Stack>
                             </Box>
-                            {config.standards && Object.keys(config.standards).length > 0 && (
-                              <Box>
-                                <Typography variant="caption" fontWeight="bold" gutterBottom>
-                                  Configuration:
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary" sx={{ fontFamily: "monospace" }}>
-                                  {JSON.stringify(config.standards, null, 2)}
-                                </Typography>
-                              </Box>
-                            )}
+
                             {info.addedComponent && info.addedComponent.length > 0 && (
                               <Box>
                                 <Typography variant="caption" fontWeight="bold" gutterBottom>
-                                  Required Fields:
+                                  Fields:
                                 </Typography>
                                 <Stack spacing={0.5}>
-                                  {info.addedComponent.map((component, index) => (
-                                    <Chip
-                                      key={index}
-                                      label={`${component.label}${component.required !== false ? " (Required)" : " (Optional)"}`}
-                                      size="small"
-                                      variant="outlined"
-                                      color={component.required !== false ? "error" : "default"}
-                                    />
-                                  ))}
+                                  {info.addedComponent.map((component, index) => {
+                                    const componentValue = _.get(config, component.name);
+                                    const displayValue =
+                                      componentValue?.label || componentValue || "N/A";
+                                    return (
+                                      <Box
+                                        key={index}
+                                        sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
+                                      >
+                                        <Typography variant="caption" color="text.secondary">
+                                          {component.label || component.name}:
+                                        </Typography>
+                                        <Chip
+                                          label={displayValue}
+                                          size="small"
+                                          variant="outlined"
+                                        />
+                                      </Box>
+                                    );
+                                  })}
                                 </Stack>
                               </Box>
                             )}
@@ -296,7 +311,8 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
                 No standards configured for this tenant
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Standards templates may not be applied to this tenant or no standards are currently active.
+                Standards templates may not be applied to this tenant or no standards are currently
+                active.
               </Typography>
             </Box>
           )}
@@ -307,4 +323,4 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
       </DialogActions>
     </Dialog>
   );
-}; 
+};
