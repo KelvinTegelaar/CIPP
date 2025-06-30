@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { Controller, useFormState } from "react-hook-form";
-import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
+import { DateTimePicker } from "@mui/x-date-pickers";
 import CSVReader from "../CSVReader";
 import get from "lodash/get";
 import {
@@ -26,14 +26,78 @@ import {
 } from "mui-tiptap";
 import StarterKit from "@tiptap/starter-kit";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import React from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { AccessTime } from "@mui/icons-material";
 
 // Helper function to convert bracket notation to dot notation
 // Improved to correctly handle nested bracket notations
 const convertBracketsToDots = (name) => {
   if (!name) return "";
-  return name.replace(/\[(\d+)\]/g, ".$1"); // Replace [0] with .0
+  return name.replace(/\[(\d+)\]/g, ".$1");
+};
+
+// Helper function to check if dependent field conditions are met
+const isDependentFieldReady = (dependsOn, formValues) => {
+  if (!dependsOn) return true;
+  
+  if (Array.isArray(dependsOn)) {
+    return dependsOn.every(field => {
+      const value = formValues[field];
+      return value && value !== '' && value !== null && value !== undefined;
+    });
+  }
+  
+  const value = formValues[dependsOn];
+  return value && value !== '' && value !== null && value !== undefined;
+};
+
+// Helper function to resolve dynamic API configuration
+const resolveDynamicApiConfig = (api, formValues) => {
+  if (!api) return null;
+  
+  const resolvedConfig = { ...api };
+  
+  // Handle dynamic data function
+  if (typeof api.data === 'function') {
+    const resolvedData = api.data(formValues);
+    if (!resolvedData) return null; // Don't make API call if function returns null
+    resolvedConfig.data = resolvedData;
+  } else if (api.data && typeof api.data === 'object') {
+    // Handle string references in data object
+    const resolvedData = { ...api.data };
+    Object.keys(resolvedData).forEach(key => {
+      const value = resolvedData[key];
+      if (typeof value === 'string' && formValues[value]) {
+        const formValue = formValues[value];
+        if (formValue && typeof formValue === 'object' && formValue.value) {
+          resolvedData[key] = formValue.value;
+        } else if (formValue && typeof formValue === 'object' && formValue.addedFields) {
+          resolvedData[key] = formValue.addedFields;
+        } else {
+          resolvedData[key] = formValue;
+        }
+      }
+    });
+    resolvedConfig.data = resolvedData;
+  }
+  
+  // Handle dynamic query key
+  if (typeof api.queryKey === 'function') {
+    const resolvedQueryKey = api.queryKey(formValues);
+    if (!resolvedQueryKey) return null;
+    resolvedConfig.queryKey = resolvedQueryKey;
+  } else if (typeof api.queryKey === 'string') {
+    // Replace placeholder patterns like {fieldName}
+    resolvedConfig.queryKey = api.queryKey.replace(/\{(\w+)\}/g, (match, fieldName) => {
+      const value = formValues[fieldName];
+      if (value && typeof value === 'object' && value.value) {
+        return value.value;
+      }
+      return value || match;
+    });
+  }
+  
+  return resolvedConfig;
 };
 
 const MemoizedCippAutoComplete = React.memo((props) => {
@@ -45,19 +109,47 @@ export const CippFormComponent = (props) => {
     validators,
     formControl,
     type = "textField",
-    name, // The name that may have bracket notation
+    name,
     label,
-    labelLocation = "behind", // Default location for switches
+    labelLocation = "behind",
     defaultValue,
     helperText,
+    dependsOn, // New prop for dependent fields
+    api, // API configuration that might be dynamic
     ...other
   } = props;
+  
   const { errors } = useFormState({ control: formControl.control });
   // Convert the name from bracket notation to dot notation
   const convertedName = convertBracketsToDots(name);
+  
+  // Watch all form values for dependent field logic
+  const watchedValues = formControl?.watch ? formControl.watch() : {};
+  
+  // Check if this field should be visible based on dependencies
+  const shouldShowField = useMemo(() => {
+    return isDependentFieldReady(dependsOn, watchedValues);
+  }, [dependsOn, watchedValues]);
+  
+  // Resolve dynamic API configuration for autoComplete fields
+  const [dynamicApiConfig, setDynamicApiConfig] = useState(null);
+  
+  useEffect(() => {
+    if (type === "autoComplete" && api && shouldShowField) {
+      const resolved = resolveDynamicApiConfig(api, watchedValues);
+      setDynamicApiConfig(resolved);
+    } else if (type === "autoComplete" && !shouldShowField) {
+      setDynamicApiConfig(null);
+    }
+  }, [type, api, shouldShowField, watchedValues]);
+
+  // Don't render field if dependencies aren't met
+  if (!shouldShowField) {
+    return null;
+  }
 
   const renderSwitchWithLabel = (element) => {
-    if (!label) return element; // No label for the switch if label prop is not provided
+    if (!label) return element;
 
     if (labelLocation === "above") {
       return (
@@ -270,6 +362,7 @@ export const CippFormComponent = (props) => {
               render={({ field }) => (
                 <MemoizedCippAutoComplete
                   {...other}
+                  api={dynamicApiConfig || api} // Use dynamic config if available
                   isFetching={other.isFetching}
                   variant="filled"
                   defaultValue={field.value}
@@ -298,6 +391,7 @@ export const CippFormComponent = (props) => {
               render={({ field }) => (
                 <MemoizedCippAutoComplete
                   {...other}
+                  api={dynamicApiConfig || api} // Use dynamic config if available
                   isFetching={other.isFetching}
                   variant="filled"
                   defaultValue={field.value}
@@ -427,18 +521,18 @@ export const CippFormComponent = (props) => {
                           : ["year", "month", "day", "hours", "minutes"]
                       }
                       label={label}
-                      value={field.value ? new Date(field.value * 1000) : null} // Convert Unix timestamp to Date object
+                      value={field.value ? new Date(field.value * 1000) : null}
                       onChange={(date) => {
                         if (date) {
-                          const unixTimestamp = Math.floor(date.getTime() / 1000); // Convert to Unix timestamp
-                          field.onChange(unixTimestamp); // Pass the Unix timestamp to the form
+                          const unixTimestamp = Math.floor(date.getTime() / 1000);
+                          field.onChange(unixTimestamp);
                         } else {
-                          field.onChange(null); // Handle the case where no date is selected
+                          field.onChange(null);
                         }
                       }}
                       ampm={false}
                       minutesStep={15}
-                      inputFormat="yyyy/MM/dd HH:mm" // Display format
+                      inputFormat="yyyy/MM/dd HH:mm"
                       renderInput={(inputProps) => (
                         <TextField
                           {...inputProps}
@@ -470,7 +564,7 @@ export const CippFormComponent = (props) => {
                       minWidth: '42px',
                       padding: '8px 12px',
                       alignSelf: 'flex-end',
-                      marginBottom: '0px', // Adjust to align with input field
+                      marginBottom: '0px',
                     }}
                     title="Set to current date and time"
                   >
