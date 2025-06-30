@@ -1,8 +1,8 @@
 # Table of contents
 
-* [☕ CIPP Documentation](README.md)
+* [CIPP Documentation](README.md)
 
-## 🦸 Setup
+## Setup
 
 * [Setting Up CIPP](setup/self-hosting-guide/README.md)
   * [Prerequisites](setup/self-hosting-guide/index.md)
@@ -31,13 +31,13 @@
   * [Professional Onboarding Services](setup/resources/professional-onboarding-services.md)
   * [Sponsor Quick Start](setup/resources/sponsor-quick-start.md)
 
-## 🙋 User Documentation
+## User Documentation
 
 * [Shared Features](user-documentation/shared-features/README.md)
   * [Menu Bar](user-documentation/shared-features/menu-bar/README.md)
     * [Tenant Select](user-documentation/shared-features/menu-bar/tenant-select.md)
     * [Display Mode](user-documentation/shared-features/menu-bar/display-mode.md)
-    * [🔍 Search](user-documentation/shared-features/menu-bar/search.md)
+    * [Search](user-documentation/shared-features/menu-bar/search.md)
     * [Bookmarks](user-documentation/shared-features/menu-bar/bookmarks.md)
     * [User Preferences](user-documentation/shared-features/menu-bar/user-settings.md)
   * [Table Features](user-documentation/shared-features/table-features.md)
@@ -183,6 +183,7 @@
   * [Reports](user-documentation/endpoint/reports/README.md)
     * [Analytics Device Score](user-documentation/endpoint/reports/analyticsdevicescore.md)
     * [Work from Anywhere](user-documentation/endpoint/reports/work-from-anywhere.md)
+    * [Autopilot Deployments](user-documentation/endpoint/reports/autopilot-deployment.md)
 * [Teams & SharePoint](user-documentation/teams-share/README.md)
   * [OneDrive](user-documentation/teams-share/list.md)
   * [SharePoint](user-documentation/teams-share/list-sharepoint/README.md)
@@ -306,7 +307,7 @@
     * [Timers](user-documentation/cipp/advanced/timers.md)
     * [Table Maintenance](user-documentation/cipp/advanced/table-maintenance.md)
 
-## 📂 Troubleshooting
+## Troubleshooting
 
 * [Error Codes](troubleshooting/troubleshooting.md)
 * [Troubleshooting Instructions](troubleshooting/troubleshooting-instructions/README.md)
@@ -314,14 +315,14 @@
 * [Frequently Asked Questions](troubleshooting/frequently-asked-questions/README.md)
   * [I Got a "Potential Phishing page detected" Alert. What Do I Do With That?](troubleshooting/frequently-asked-questions/i-got-a-potential-phishing-page-detected-alert.-what-do-i-do-with-that.md)
 
-## 🔐 Security
+## Security
 
 * [CIPP Security and Compliance](security/cipp-security-and-compliance/README.md)
   * [Security Policy](security/security-policy.md)
   * [Security Reports](security/cipp-security-and-compliance/security-reports.md)
 * [CIPP Community Vulnerability Disclosure Policy](security/cipp-community-vulnerability-disclosure-policy.md)
 
-## 👩‍💻 👩💻 Dev Documentation
+## 👩‍💻 Dev Documentation
 
 * [CIPP Dev Guide](dev-documentation/cipp-dev-guide/README.md)
   * [Setting Up for Local Development](dev-documentation/cipp-dev-guide/setting-up-for-local-development.md)
@@ -332,16 +333,20 @@
 * [Contributing to the Code](dev-documentation/contributing-to-the-code.md)
 * [Contributing to the Documentation](dev-documentation/contributing-to-the-documentation.md)
 
-## ⚙️ API Documentation
+## API Documentation
 
 * [Setup & Authentication](api-documentation/setup-and-authentication.md)
 * [Endpoints](api-documentation/endpoints.md)
 
-## 🧰 MSP Adoption Toolkit
+## MSP Adoption Toolkit
 
 * [Building a CIPP Business Case](msp-adoption-toolkit/msp-adoption-toolkit-building-a-cipp-business-case.md)
 
-## ☕ Sip & CIPP
+***
+
+* [Why CIPP Doesn't Do Demos](why-cipp-doesnt-do-demos.md)
+
+## Sip & CIPP
 
 * [Conditional Access](sip-and-cipp/conditional-access.md)
 * [Autopilot & Intune](sip-and-cipp/autopilot-and-intune.md)

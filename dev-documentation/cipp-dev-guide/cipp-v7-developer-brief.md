@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # CIPP v7 Developer Brief
 
 If you already have a working development environment for the previous v6 setup, transitioning to the new interface should be relatively seamless with some adjustments. Let’s dive into what you need to know.&#x20;
