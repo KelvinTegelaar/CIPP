@@ -12,25 +12,25 @@ The Offboarding Wizard is an interactive guide that streamlines the process of o
 
 {% stepper %}
 {% step %}
-### Tenant Selection
+#### Tenant Selection
 
 Select the tenant from which you want to offboard a user. Only one tenant can be selected at a time.
 {% endstep %}
 
 {% step %}
-### User Selection
+#### User Selection
 
 Choose the user to be offboarded from the tenant. The selection is made from a dropdown menu that displays all users from the selected tenant.
 {% endstep %}
 
 {% step %}
-### Offboarding Options
+#### Offboarding Options
 
 Choose from a variety of offboarding options to apply to the user. These options are detailed in the sections below.
 {% endstep %}
 
 {% step %}
-### Confirmation
+#### Confirmation
 
 Review your selections and confirm to apply the offboarding process.
 {% endstep %}
@@ -84,8 +84,6 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | PSA                        | Enable this to send a notification to your configured PSA in CIPP notifications settings            |
 
 ***
-
-
 
 ### Feature Requests / Ideas
 
