@@ -14,6 +14,7 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 const Page = () => {
   const settings = useSettings();
+
   const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
 
   const auth = ApiGetCall({
@@ -32,8 +33,6 @@ const Page = () => {
     { value: "officeLocation", label: "officeLocation" },
     { value: "otherMails", label: "otherMails" },
     { value: "showInAddressList", label: "showInAddressList" },
-    { value: "state", label: "state" },
-    { value: "city", label: "city" },
     { value: "sponsor", label: "sponsor" },
   ];
 

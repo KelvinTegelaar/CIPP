@@ -29,9 +29,15 @@ export const CippSettingsSideBar = (props) => {
     relatedQueryKeys: "userSettings",
   });
   const handleSaveChanges = () => {
+    const settings = formcontrol.getValues();
+
+    if (settings?.offboardingDefaults?.keepCopy) {
+      delete settings.offboardingDefaults.keepCopy;
+    }
+
     const shippedValues = {
       user: formcontrol.getValues("user").value,
-      currentSettings: formcontrol.getValues(),
+      currentSettings: settings,
     };
     saveSettingsPost.mutate({ url: "/api/ExecUserSettings", data: shippedValues });
   };
