@@ -29,10 +29,11 @@ export const CippSettingsSideBar = (props) => {
     relatedQueryKeys: "userSettings",
   });
   const handleSaveChanges = () => {
-    const settings = formcontrol.getValues();
+    const settings = { ...formcontrol.getValues() };
 
     if (settings?.offboardingDefaults?.keepCopy) {
-      delete settings.offboardingDefaults.keepCopy;
+      const { keepCopy, ...remainingDefaults } = settings.offboardingDefaults;
+      settings.offboardingDefaults = remainingDefaults;
     }
 
     const shippedValues = {
