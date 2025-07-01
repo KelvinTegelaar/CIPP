@@ -2,7 +2,7 @@
 description: Welcome to the CyberDrain Improved Partner Portal (CIPP) User Documentation
 ---
 
-# ☕ CIPP Documentation
+# CIPP Documentation
 
 ## Introduction
 
@@ -32,7 +32,7 @@ We hope this documentation serves as a valuable resource as you explore and util
 
 ## Our Sponsors
 
-<div><figure><img src=".gitbook/assets/ninjaone.svg" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/ImmyBot.png" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/halo.svg" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/Huntress.png" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/oit.png" alt=""><figcaption></figcaption></figure></div>
+<div><figure><img src=".gitbook/assets/ninjaone.svg" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/ImmyBot.png" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/halo.svg" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/Huntress.png" alt=""><figcaption></figcaption></figure></div>
 
-<div align="left"><figure><img src=".gitbook/assets/Compliance-Risk-Scorecard-logo.png.webp" alt="" width="229"><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/gorelo.svg" alt="" width="179"><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src=".gitbook/assets/Compliance-Risk-Scorecard-logo.png.webp" alt="" width="229"><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/gorelo.svg" alt="" width="179"><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/oit.png" alt=""><figcaption></figcaption></figure> <figure><img src=".gitbook/assets/hudu-logo-dark.svg" alt=""><figcaption></figcaption></figure></div>
 
