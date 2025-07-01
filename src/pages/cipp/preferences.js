@@ -14,8 +14,14 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 const Page = () => {
   const settings = useSettings();
+  const cleanedSettings = { ...settings };
 
-  const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
+  if (cleanedSettings.offboardingDefaults?.keepCopy) {
+    delete cleanedSettings.offboardingDefaults.keepCopy;
+    settings.handleUpdate(cleanedSettings);
+  }
+
+  const formcontrol = useForm({ mode: "onChange", defaultValues: cleanedSettings });
 
   const auth = ApiGetCall({
     url: "/api/me",
