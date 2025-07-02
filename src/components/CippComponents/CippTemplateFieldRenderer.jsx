@@ -13,6 +13,7 @@ const CippTemplateFieldRenderer = ({
   // Default blacklisted fields with wildcard support
   const defaultBlacklistedFields = [
     "id",
+    "isAssigned",
     "createdDateTime",
     "modifiedDateTime",
     "@odata.*",
