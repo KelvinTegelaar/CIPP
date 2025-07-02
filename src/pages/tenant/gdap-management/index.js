@@ -1,22 +1,19 @@
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
-import { Box, Container } from "@mui/system";
+import { Container } from "@mui/system";
 import { Grid } from "@mui/system";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
 import { ApiPostCall, ApiGetCallWithPagination } from "../../../api/ApiCall";
 import {
   Add,
   AdminPanelSettings,
-  Group,
   HourglassBottom,
   Layers,
   SupervisorAccount,
 } from "@mui/icons-material";
 import CippPermissionCheck from "../../../components/CippSettings/CippPermissionCheck";
-import { Alert, Button, Step, StepLabel, Stepper, SvgIcon, Typography } from "@mui/material";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { WizardSteps } from "/src/components/CippWizard/wizard-steps";
@@ -129,7 +126,7 @@ const Page = () => {
                 icon: <Layers />,
                 data:
                   roleTemplates.data?.pages
-                    ?.map((page) => page?.Results.length)
+                    ?.map((page) => page?.Results?.length)
                     .reduce((a, b) => a + b, 0) ?? 0,
                 name: "Role Templates",
               },

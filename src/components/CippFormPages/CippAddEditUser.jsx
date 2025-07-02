@@ -9,7 +9,7 @@ import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useWatch } from "react-hook-form";
-import { use, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 
 const CippAddEditUser = (props) => {
@@ -64,7 +64,7 @@ const CippAddEditUser = (props) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -73,7 +73,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -82,7 +82,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -91,7 +91,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -103,14 +103,14 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormDomainSelector
           formControl={formControl}
           name="primDomain"
           label="Primary Domain name"
         />
       </Grid>
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -123,10 +123,10 @@ const CippAddEditUser = (props) => {
         />
       </Grid>
 
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <Typography variant="h6">Settings</Typography>
       </Grid>
-      <Grid item size={{ xs: 6 }}>
+      <Grid size={{ xs: 6 }}>
         <CippFormComponent
           type="switch"
           label="Create password manually"
@@ -139,7 +139,7 @@ const CippAddEditUser = (props) => {
           compareType="is"
           compareValue={true}
         >
-          <Grid item size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <CippFormComponent
               type="password"
               fullWidth
@@ -150,7 +150,7 @@ const CippAddEditUser = (props) => {
           </Grid>
         </CippFormCondition>
       </Grid>
-      <Grid item size={{ xs: 6 }}>
+      <Grid size={{ xs: 6 }}>
         <CippFormComponent
           type="switch"
           label="Require password change at next logon"
@@ -158,7 +158,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="autoComplete"
           label="Usage Location"
@@ -172,7 +172,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormLicenseSelector label="Licenses" name="licenses" formControl={formControl} />
       </Grid>
       {integrationSettings?.data?.Sherweb?.Enabled === true && (
@@ -184,7 +184,7 @@ const CippAddEditUser = (props) => {
             compareValue="(0 available)"
             labelCompare={true}
           >
-            <Grid item size={{ xs: 6 }}>
+            <Grid size={{ xs: 6 }}>
               <CippFormComponent
                 type="switch"
                 label="0 Licences available. Purchase new licence?"
@@ -198,14 +198,14 @@ const CippAddEditUser = (props) => {
               compareType="is"
               compareValue={true}
             >
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Alert severity="info">
                   This will Purchase a new Sherweb License for the user, according to the terms and
                   conditions with Sherweb. When the license becomes available, CIPP will assign the
                   license to this user.
                 </Alert>
               </Grid>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   api={{
@@ -224,7 +224,7 @@ const CippAddEditUser = (props) => {
           </CippFormCondition>
         </>
       )}
-      <Grid item size={{ xs: 6 }}>
+      <Grid size={{ xs: 6 }}>
         <CippFormComponent
           type="switch"
           label="Remove all licenses"
@@ -232,7 +232,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -241,7 +241,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -250,25 +250,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
-        <CippFormComponent
-          type="textField"
-          fullWidth
-          label="Postal Code"
-          name="postalCode"
-          formControl={formControl}
-        />
-      </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
-        <CippFormComponent
-          type="textField"
-          fullWidth
-          label="Country"
-          name="country"
-          formControl={formControl}
-        />
-      </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -277,7 +259,34 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
+          label="State/Province"
+          name="state"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid size={{ md: 6, xs: 12 }}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
+          label="Postal Code"
+          name="postalCode"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid size={{ md: 6, xs: 12 }}>
+        <CippFormComponent
+          type="textField"
+          fullWidth
+          label="Country"
+          name="country"
+          formControl={formControl}
+        />
+      </Grid>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -286,7 +295,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -295,7 +304,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -304,7 +313,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -313,7 +322,7 @@ const CippAddEditUser = (props) => {
           formControl={formControl}
         />
       </Grid>
-      <Grid item size={{ md: 6, xs: 12 }}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
           fullWidth
@@ -325,7 +334,7 @@ const CippAddEditUser = (props) => {
       {userSettingsDefaults?.userAttributes
         ?.filter((attribute) => attribute.value !== "sponsor")
         .map((attribute, idx) => (
-          <Grid item size={{ xs: 6 }} key={idx}>
+          <Grid size={{ xs: 6 }} key={idx}>
             <CippFormComponent
               type="textField"
               fullWidth
@@ -337,7 +346,7 @@ const CippAddEditUser = (props) => {
         ))}
 
       {/* Set Manager */}
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormUserSelector
           formControl={formControl}
           name="setManager"
@@ -347,7 +356,7 @@ const CippAddEditUser = (props) => {
         />
       </Grid>
       {userSettingsDefaults?.userAttributes?.some((attribute) => attribute.value === "sponsor") && (
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormUserSelector
             formControl={formControl}
             name="setSponsor"
@@ -357,7 +366,7 @@ const CippAddEditUser = (props) => {
           />
         </Grid>
       )}
-      <Grid item size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <CippFormUserSelector
           formControl={formControl}
           name="copyFrom"
@@ -366,7 +375,7 @@ const CippAddEditUser = (props) => {
         />
       </Grid>
       {formType === "edit" && (
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Add to Groups"
@@ -384,7 +393,7 @@ const CippAddEditUser = (props) => {
         </Grid>
       )}
       {formType === "edit" && (
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Remove from Groups"
@@ -403,7 +412,7 @@ const CippAddEditUser = (props) => {
       )}
       {/* Schedule User Creation */}
       {formType === "add" && (
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Schedule user creation"
@@ -416,7 +425,7 @@ const CippAddEditUser = (props) => {
             compareType="is"
             compareValue={true}
           >
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <label>Scheduled creation Date</label>
               <CippFormComponent
                 type="datePicker"
@@ -424,7 +433,7 @@ const CippAddEditUser = (props) => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 label="Send results to Webhook"

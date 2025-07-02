@@ -162,7 +162,7 @@ const CippIntegrationSettings = ({ children }) => {
                 mb: 3,
               }}
             >
-              <Grid item size={{ md: 4, xs: 12 }}>
+              <Grid size={{ md: 4, xs: 12 }}>
                 <Box sx={{ my: "auto" }}>
                   <CippFormTenantSelector
                     formControl={formControl}
@@ -174,14 +174,14 @@ const CippIntegrationSettings = ({ children }) => {
                   />
                 </Box>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Box sx={{ my: "auto" }}>
                   <SvgIcon>
                     <SyncAlt />
                   </SvgIcon>
                 </Box>
               </Grid>
-              <Grid item size={{ md: 4, xs: 12 }}>
+              <Grid size={{ md: 4, xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
                   fullWidth
@@ -200,7 +200,7 @@ const CippIntegrationSettings = ({ children }) => {
                   sortOptions={true}
                 />
               </Grid>
-              <Grid item>
+              <Grid>
                 <Stack direction={"row"} spacing={1}>
                   <Tooltip title="Add Mapping">
                     <Button size="small" onClick={() => handleAddItem()} variant="contained">
@@ -263,17 +263,17 @@ const CippIntegrationSettings = ({ children }) => {
           {mappings.isLoading && (
             <Box>
               <Grid container spacing={3}>
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Box>
                     <Skeleton variant="rectangular" height={60} />
                   </Box>
                 </Grid>
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Box>
                     <Skeleton variant="rectangular" height={60} />
                   </Box>
                 </Grid>
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Box>
                     <Skeleton variant="rectangular" height={300} />
                   </Box>
@@ -283,7 +283,7 @@ const CippIntegrationSettings = ({ children }) => {
           )}
           {mappings.isSuccess && !extension && (
             <Grid container spacing={3}>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Box sx={{ p: 3 }}>
                   <Box sx={{ textAlign: "center" }}>Extension not found</Box>
                 </Box>

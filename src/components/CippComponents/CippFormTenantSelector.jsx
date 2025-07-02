@@ -89,6 +89,7 @@ export const CippFormTenantSelector = ({
           {includeGroups ? <GroupItems>{params.children}</GroupItems> : params.children}
         </li>
       )}
+      isFetching={tenantList.isFetching || tenantGroupList.isFetching}
       {...other}
     />
   );

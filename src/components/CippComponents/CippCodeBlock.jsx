@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
