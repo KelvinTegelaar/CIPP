@@ -17,7 +17,7 @@ export const nativeMenuItems = [
         <HomeIcon />
       </SvgIcon>
     ),
-    permissions: ["CIPP.Core.Read"],
+    permissions: ["CIPP.Core.Read", "CIPP.Core.ReadWrite"],
   },
   {
     title: "Identity Management",

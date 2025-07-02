@@ -93,6 +93,7 @@ export const Layout = (props) => {
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
+      const userPermissions = currentRole.data?.permissions;
       if (!userRoles) {
         setMenuItems([]);
         setHideSidebar(true);
@@ -101,12 +102,24 @@ export const Layout = (props) => {
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
+            // role
             if (item.roles && item.roles.length > 0) {
               const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
               if (!hasRole) {
                 return null;
               }
             }
+
+            // Check permission
+            if (item.permissions && item.permissions.length > 0) {
+              const hasPermission = userPermissions?.some((perm) =>
+                item.permissions.includes(perm)
+              );
+              if (!hasPermission) {
+                return null;
+              }
+            }
+            // check sub-items
             if (item.items && item.items.length > 0) {
               const filteredSubItems = filterItemsByRole(item.items).filter(Boolean);
               return { ...item, items: filteredSubItems };
