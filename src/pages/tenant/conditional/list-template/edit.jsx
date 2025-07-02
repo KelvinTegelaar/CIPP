@@ -37,130 +37,86 @@ const EditCATemplate = () => {
     }
   }, [templateQuery.isSuccess, templateQuery.data, GUID]);
 
-  // Custom data formatter to only send changes
+  // Custom data formatter to convert autoComplete objects to values
   const customDataFormatter = (values) => {
-    console.log("=== CUSTOM DATA FORMATTER ===");
+    // Recursively extract values from autoComplete objects and fix @odata issues
+    const extractValues = (obj) => {
+      if (!obj) return obj;
 
-    if (!originalData) {
-      console.log("No originalData, returning GUID only");
-      return { GUID };
-    }
-
-    const changes = {};
-
-    // Extract value from autoComplete objects and clean @odata properties
-    const extractValue = (val) => {
-      if (val && typeof val === "object" && val.hasOwnProperty("value")) {
-        return val.value;
+      // If this is an autoComplete object with label/value, return just the value
+      if (
+        obj &&
+        typeof obj === "object" &&
+        obj.hasOwnProperty("value") &&
+        obj.hasOwnProperty("label")
+      ) {
+        return obj.value;
       }
-      return val;
-    };
 
-    // Remove @odata properties that get added by form components
-    const cleanODataProperties = (obj) => {
-      if (!obj || typeof obj !== "object") return obj;
-
+      // If it's an array, process each item
       if (Array.isArray(obj)) {
-        return obj.map((item) => cleanODataProperties(item));
+        return obj.map((item) => extractValues(item));
       }
 
-      const cleaned = {};
-      Object.keys(obj).forEach((key) => {
-        // Skip @odata properties that are empty or just contain empty strings
-        if (
-          key.includes("@odata") &&
-          (obj[key] === null ||
-            obj[key] === undefined ||
-            (typeof obj[key] === "object" && Object.values(obj[key]).every((v) => v === "")))
-        ) {
-          return;
-        }
-        cleaned[key] = cleanODataProperties(obj[key]);
-      });
+      // If it's an object, process each property
+      if (typeof obj === "object") {
+        const result = {};
+        Object.keys(obj).forEach((key) => {
+          const value = extractValues(obj[key]);
 
-      return cleaned;
-    };
-
-    // Deep comparison function
-    const isEqual = (a, b) => {
-      // Extract values from autoComplete objects and clean @odata properties
-      const valA = cleanODataProperties(extractValue(a));
-      const valB = cleanODataProperties(extractValue(b));
-
-      if (valA === valB) return true;
-      if (valA == null || valB == null) return valA === valB;
-      if (typeof valA !== typeof valB) return false;
-
-      if (typeof valA === "object") {
-        if (Array.isArray(valA) !== Array.isArray(valB)) return false;
-
-        if (Array.isArray(valA)) {
-          if (valA.length !== valB.length) return false;
-          return valA.every((item, index) => isEqual(item, valB[index]));
-        }
-
-        const keysA = Object.keys(valA);
-        const keysB = Object.keys(valB);
-        if (keysA.length !== keysB.length) return false;
-
-        return keysA.every((key) => isEqual(valA[key], valB[key]));
+          // Handle @odata objects created by React Hook Form's dot notation interpretation
+          if (key.endsWith("@odata") && value && typeof value === "object") {
+            // Convert @odata objects back to dot notation properties
+            Object.keys(value).forEach((odataKey) => {
+              // Always try to restore the original @odata property, regardless of form value
+              const baseKey = key.replace("@odata", "");
+              const originalKey = `${baseKey}@odata.${odataKey}`;
+              const originalValue = getOriginalValueByPath(originalData, originalKey);
+              if (originalValue !== undefined) {
+                result[originalKey] = originalValue;
+              }
+            });
+          } else {
+            result[key] = value;
+          }
+        });
+        return result;
       }
 
-      return false;
+      // For primitive values, return as-is
+      return obj;
     };
 
-    // Get the original value for comparison, handling nested paths
-    const getOriginalValue = (path) => {
+    // Helper function to get original value by dot-notation path
+    const getOriginalValueByPath = (obj, path) => {
       const keys = path.split(".");
-      let value = originalData;
+      let current = obj;
       for (const key of keys) {
-        if (value && typeof value === "object") {
-          value = value[key];
+        if (current && typeof current === "object" && key in current) {
+          current = current[key];
         } else {
           return undefined;
         }
       }
-      return value;
+      return current;
     };
 
-    // Compare each field and only include changes
-    Object.keys(values).forEach((key) => {
-      const originalValue = getOriginalValue(key);
-      const currentValue = values[key];
+    // Extract values from the entire form data and include GUID
+    const processedValues = extractValues(values);
 
-      console.log(`\n--- Comparing field: ${key} ---`);
-      console.log("Original:", JSON.stringify(originalValue, null, 2));
-      console.log("Current:", JSON.stringify(currentValue, null, 2));
-
-      const areEqual = isEqual(currentValue, originalValue);
-      console.log(`Are equal: ${areEqual}`);
-
-      if (!areEqual) {
-        console.log(`Field ${key} has changed - including in payload`);
-        // Store the extracted value, not the autoComplete object
-        changes[key] = extractValue(currentValue);
-      } else {
-        console.log(`Field ${key} unchanged - skipping`);
-      }
-    });
-
-    const result = {
+    return {
       GUID,
-      ...changes,
+      ...processedValues,
     };
-
-    console.log(`Sending ${Object.keys(changes).length} changed fields:`, Object.keys(changes));
-    console.log("Final payload:", result);
-    return result;
   };
 
   return (
     <CippFormPage
       title={` ${templateData?.displayName || "Unnamed Template"}`}
       formControl={formControl}
-      queryKey={`CATemplate-${GUID}`}
+      queryKey={[`CATemplate-${GUID}`, "CATemplates"]}
       backButtonTitle="Conditional Access Templates"
-      postUrl="/api/EditCATemplate"
+      postUrl="/api/ExecEditTemplate?type=CATemplate"
       customDataformatter={customDataFormatter}
       formPageType="Edit"
     >
