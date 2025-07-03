@@ -17,6 +17,7 @@ import {
   MailLock,
   SettingsEthernet,
   CalendarMonth,
+  Email,
 } from "@mui/icons-material";
 
 export const CippExchangeActions = () => {
@@ -45,40 +46,28 @@ export const CippExchangeActions = () => {
       icon: <PhonelinkLock />,
     },
     {
-      label: "Convert to User Mailbox",
+      label: "Convert Mailbox",
       type: "POST",
+      icon: <Email />,
       url: "/api/ExecConvertMailbox",
-      icon: <Person />,
-      data: {
-        ID: "UPN",
-        MailboxType: "!Regular",
-      },
-      confirmText: "Are you sure you want to convert [UPN] to a user mailbox?",
-      condition: (row) => row.recipientTypeDetails !== "UserMailbox",
-    },
-    {
-      label: "Convert to Shared Mailbox",
-      type: "POST",
-      icon: <MailOutline />,
-      url: "/api/ExecConvertMailbox",
-      data: {
-        ID: "UPN",
-        MailboxType: "!Shared",
-      },
-      confirmText: "Are you sure you want to convert [UPN] to a shared mailbox?",
-      condition: (row) => row.recipientTypeDetails !== "SharedMailbox",
-    },
-    {
-      label: "Convert to Room Mailbox",
-      type: "POST",
-      url: "/api/ExecConvertMailbox",
-      icon: <Room />,
-      data: {
-        ID: "UPN",
-        MailboxType: "!Room",
-      },
-      confirmText: "Are you sure you want to convert [UPN] to a room mailbox?",
-      condition: (row) => row.recipientTypeDetails !== "RoomMailbox",
+      data: { ID: "userPrincipalName" },
+      fields: [
+        {
+          type: "radio",
+          name: "MailboxType",
+          label: "Mailbox Type",
+          options: [
+            { label: "User Mailbox", value: "Regular" },
+            { label: "Shared Mailbox", value: "Shared" },
+            { label: "Room Mailbox", value: "Room" },
+            { label: "Equipment Mailbox", value: "Equipment" },
+          ],
+          validators: { required: "Please select a mailbox type" },
+        },
+      ],
+      confirmText:
+        "Pick the type of mailbox you want to convert [UPN] of mailbox type [recipientTypeDetails] to:",
+      multiPost: false,
     },
     {
       //tested
@@ -216,6 +205,7 @@ export const CippExchangeActions = () => {
           name: "locale",
           type: "textField",
           placeholder: "e.g. en-US",
+          validators: { required: "Please enter a locale" },
         },
       ],
     },
@@ -254,6 +244,7 @@ export const CippExchangeActions = () => {
           name: "quota",
           type: "textField",
           placeholder: "e.g. 1000MB, 10GB,1TB",
+          validators: { required: "Please enter a quota" },
         },
       ],
     },
@@ -273,6 +264,7 @@ export const CippExchangeActions = () => {
           name: "quota",
           type: "textField",
           placeholder: "e.g. 1000MB, 10GB,1TB",
+          validators: { required: "Please enter a quota" },
         },
       ],
     },
@@ -289,6 +281,7 @@ export const CippExchangeActions = () => {
           name: "quota",
           type: "textField",
           placeholder: "e.g. 1000MB, 10GB,1TB",
+          validators: { required: "Please enter a quota" },
         },
       ],
     },
@@ -299,7 +292,9 @@ export const CippExchangeActions = () => {
       data: { UPN: "UPN" },
       confirmText: "Configure calendar processing settings for [UPN]",
       icon: <CalendarMonth />,
-      condition: (row) => row.recipientTypeDetails === "RoomMailbox" || row.recipientTypeDetails === "EquipmentMailbox",
+      condition: (row) =>
+        row.recipientTypeDetails === "RoomMailbox" ||
+        row.recipientTypeDetails === "EquipmentMailbox",
       fields: [
         {
           label: "Automatically Process Meeting Requests",
