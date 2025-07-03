@@ -101,6 +101,10 @@ const Page = () => {
 
   // Track form changes
   useEffect(() => {
+    // Compare the current form values with the initial values to check for real changes
+    const currentValues = formControl.getValues();
+    const initialValues = initialStandardsRef.current;
+
     if (
       formState.isDirty ||
       JSON.stringify(selectedStandards) !== JSON.stringify(initialStandardsRef.current)
@@ -109,7 +113,7 @@ const Page = () => {
     } else {
       setHasUnsavedChanges(false);
     }
-  }, [formState.isDirty, selectedStandards]);
+  }, [formState.isDirty, selectedStandards, formControl]);
 
   useEffect(() => {
     if (router.query.id) {
@@ -328,41 +332,49 @@ const Page = () => {
             </Stack>
           </Stack>
 
-          <Grid container spacing={3}>
-            {/* Left Column for Accordions */}
-            <Grid size={{ xs: 12, lg: 4 }}>
-              <CippStandardsSideBar
-                title="Standard Template Setup"
-                subtitle="Follow the steps to configure the Standard"
-                createDialog={createDialog}
-                steps={steps}
-                actions={actions}
-                formControl={formControl}
-                selectedStandards={selectedStandards}
-                edit={editMode}
-                updatedAt={updatedAt}
-                onSaveSuccess={() => setHasUnsavedChanges(false)}
-              />
+          <Box sx={{ flexGrow: 1, height: "calc(100vh - 270px)", overflow: "hidden" }}>
+            <Grid container spacing={3} sx={{ height: "100%" }}>
+              {/* Left Column for Accordions */}
+              <Grid size={{ xs: 12, lg: 4 }} sx={{ height: "100%", overflow: "auto", pr: 1 }}>
+                <CippStandardsSideBar
+                  title="Standard Template Setup"
+                  subtitle="Follow the steps to configure the Standard"
+                  createDialog={createDialog}
+                  steps={steps}
+                  actions={actions}
+                  formControl={formControl}
+                  selectedStandards={selectedStandards}
+                  edit={editMode}
+                  updatedAt={updatedAt}
+                  onSaveSuccess={() => {
+                    // Reset unsaved changes flag
+                    setHasUnsavedChanges(false);
+                    // Update reference for future change detection
+                    initialStandardsRef.current = { ...selectedStandards };
+                  }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, lg: 8 }} sx={{ height: "100%", overflow: "auto", pr: 1 }}>
+                <Stack spacing={3}>
+                  {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
+                  {existingTemplate.isLoading ? (
+                    <Skeleton variant="rectangular" height="700px" />
+                  ) : (
+                    <CippStandardAccordion
+                      standards={standards}
+                      selectedStandards={selectedStandards} // Render only the relevant standards
+                      expanded={expanded}
+                      handleAccordionToggle={handleAccordionToggle}
+                      handleRemoveStandard={handleRemoveStandard}
+                      handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
+                      formControl={formControl}
+                      editMode={editMode}
+                    />
+                  )}
+                </Stack>
+              </Grid>
             </Grid>
-            <Grid size={{ xs: 12, lg: 8 }}>
-              <Stack spacing={3}>
-                {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
-                {existingTemplate.isLoading ? (
-                  <Skeleton variant="rectangular" height="700px" />
-                ) : (
-                  <CippStandardAccordion
-                    standards={standards}
-                    selectedStandards={selectedStandards} // Render only the relevant standards
-                    expanded={expanded}
-                    handleAccordionToggle={handleAccordionToggle}
-                    handleRemoveStandard={handleRemoveStandard}
-                    handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
-                    formControl={formControl}
-                  />
-                )}
-              </Stack>
-            </Grid>
-          </Grid>
+          </Box>
         </Stack>
 
         {/* Only render the dialog when it's needed */}

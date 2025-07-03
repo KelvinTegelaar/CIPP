@@ -186,6 +186,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? "Password hidden" : <CippCopyToClipBoard text={data} type="password" />;
   }
 
+  // Handle hardware hash fields
+  const hardwareHashFields = ["hardwareHash", "Hardware Hash"];
+  if (hardwareHashFields.includes(cellName) || cellNameLower.includes("hardware")) {
+    if (typeof data === "string" && data.length > 15) {
+      return isText ? data : `${data.substring(0, 15)}...`;
+    }
+    return isText ? data : data;
+  }
+
   if (cellName === "RepeatsEvery") {
     //convert 1d to "Every 1 day", 1w to "Every 1 week" etc.
     const match = data.match(/(\d+)([a-zA-Z]+)/);
@@ -636,7 +645,17 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
-  const durationArray = ["autoExtendDuration"];
+  // ISO 8601 Duration Formatting
+  // Add property names here to automatically format ISO 8601 duration strings (e.g., "PT1H23M30S")
+  // into human-readable format (e.g., "1 hour 23 minutes 30 seconds") across all CIPP tables.
+  // This works for any API response property that contains ISO 8601 duration format.
+  const durationArray = [
+    "autoExtendDuration",        // GDAP page (/tenant/gdap-management/relationships)
+    "deploymentDuration",        // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+    "deploymentTotalDuration",   // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+    "deviceSetupDuration",       // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+    "accountSetupDuration"       // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+  ];
   if (durationArray.includes(cellName)) {
     isoDuration.setLocales(
       {

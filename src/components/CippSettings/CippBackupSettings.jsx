@@ -32,7 +32,7 @@ const CippBackupSettings = () => {
 
   return (
     <>
-      <CippButtonCard title="Backup" cardSx={{ height: "100%" }} CardButton={<BackupButtons />}>
+      <CippButtonCard title="Backup" cardSx={{ display: "flex", flexDirection: "column", height: "100%" }} CardButton={<BackupButtons />}>
         <Typography variant="body2">
           Manage the system configuration backups for CIPP. This will not include authentication
           information or extension configuration. You can also set an automated daily backup

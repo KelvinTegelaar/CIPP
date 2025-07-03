@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { Box, Container, Stack, Button, SvgIcon, Typography, Card } from "@mui/material";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import Head from "next/head";
 import { CippHead } from "../CippComponents/CippHead";
 const CippPageCard = (props) => {
   const {

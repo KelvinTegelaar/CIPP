@@ -3,7 +3,6 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { AddBox, RocketLaunch, Delete, GitHub, Edit } from "@mui/icons-material";
 import Link from "next/link";
-import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
@@ -110,7 +109,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListGroupTemplates"
-      queryKey="GroupTemplatesList"
+      queryKey="ListGroupTemplates"
       tenantInTitle={false}
       actions={actions}
       cardButton={

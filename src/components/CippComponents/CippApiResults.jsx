@@ -20,7 +20,6 @@ import React from "react";
 import { CippTableDialog } from "./CippTableDialog";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { useDialog } from "../../hooks/use-dialog";
-import { useRouter } from "next/router";
 
 const extractAllResults = (data) => {
   const results = [];
