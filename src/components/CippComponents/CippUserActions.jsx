@@ -117,6 +117,7 @@ export const CippUserActions = () => {
           ],
           multiple: false,
           creatable: false,
+          validators: { required: "Please select an MFA state" },
         },
       ],
       confirmText: "Are you sure you want to set per-user MFA for these users?",
@@ -131,18 +132,16 @@ export const CippUserActions = () => {
       data: { ID: "userPrincipalName" },
       fields: [
         {
-          type: "autoComplete",
+          type: "radio",
           name: "MailboxType",
-          label: "Convert To",
+          label: "Mailbox Type",
           options: [
             { label: "Shared Mailbox", value: "Shared" },
             { label: "User Mailbox", value: "Regular" },
             { label: "Room Mailbox", value: "Room" },
             { label: "Equipment Mailbox", value: "Equipment" },
           ],
-          multiple: false,
-          creatable: false,
-          required: true,
+          validators: { required: "Please select a mailbox type" },
         },
       ],
       confirmText: "Pick the type of mailbox you want to convert this user to:",
@@ -225,6 +224,7 @@ export const CippUserActions = () => {
           label: "Select a group to add the user to",
           multiple: false,
           creatable: false,
+          validators: { required: "Please select a group" },
           api: {
             url: "/api/ListGroups",
             labelField: "displayName",
@@ -258,7 +258,7 @@ export const CippUserActions = () => {
             { label: "Remove Licenses", value: "Remove" },
             { label: "Replace Licenses", value: "Replace" },
           ],
-          required: true,
+          validators: { required: "Please select a license operation" },
         },
         {
           type: "switch",
@@ -321,6 +321,7 @@ export const CippUserActions = () => {
           label: "Select a Site",
           multiple: false,
           creatable: true,
+          validators: { required: "Please select or enter a SharePoint site URL" },
           api: {
             url: "/api/ListSites",
             data: { type: "SharePointSiteUsage", URLOnly: true },
@@ -348,7 +349,7 @@ export const CippUserActions = () => {
             { label: "Enabled", value: true },
             { label: "Disabled", value: false },
           ],
-          required: true,
+          validators: { required: "Please select a sign-in state" },
         },
       ],
       confirmText: "Are you sure you want to set the sign-in state for this user?",
@@ -390,6 +391,7 @@ export const CippUserActions = () => {
           ],
           multiple: false,
           creatable: false,
+          validators: { required: "Please select a password policy" },
         },
       ],
       confirmText:
