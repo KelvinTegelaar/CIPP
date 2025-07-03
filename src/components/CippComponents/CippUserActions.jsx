@@ -1,7 +1,6 @@
 import { EyeIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import {
   Archive,
-  Block,
   Clear,
   CloudDone,
   Edit,
@@ -9,7 +8,6 @@ import {
   ForwardToInbox,
   GroupAdd,
   LockClock,
-  LockOpen,
   LockPerson,
   LockReset,
   MeetingRoom,
@@ -336,37 +334,24 @@ export const CippUserActions = () => {
       multiPost: false,
     },
     {
-      label: "Block Sign In",
+      label: "Set Sign In State",
       type: "POST",
-      icon: <Block />,
+      icon: <LockPerson />,
       url: "/api/ExecDisableUser",
       data: { ID: "id" },
-      confirmText: "Are you sure you want to block the sign-in for this user?",
-      multiPost: false,
-      condition: (row) => row.accountEnabled,
-    },
-    {
-      label: "Unblock Sign In",
-      type: "POST",
-      icon: <LockOpen />,
-      url: "/api/ExecDisableUser",
-      data: { ID: "id", Enable: true },
-      confirmText: "Are you sure you want to unblock sign-in for this user?",
-      multiPost: false,
-      condition: (row) => !row.accountEnabled,
-    },
-    {
-      label: "Reset Password (Must Change)",
-      type: "POST",
-      icon: <LockReset />,
-      url: "/api/ExecResetPass",
-      data: {
-        MustChange: true,
-        ID: "userPrincipalName",
-        displayName: "displayName",
-      },
-      confirmText:
-        "Are you sure you want to reset the password for this user? The user must change their password at next logon.",
+      fields: [
+        {
+          type: "radio",
+          name: "Enable",
+          label: "Sign In State",
+          options: [
+            { label: "Enabled", value: true },
+            { label: "Disabled", value: false },
+          ],
+          required: true,
+        },
+      ],
+      confirmText: "Are you sure you want to set the sign-in state for this user?",
       multiPost: false,
     },
     {
@@ -375,10 +360,16 @@ export const CippUserActions = () => {
       icon: <LockReset />,
       url: "/api/ExecResetPass",
       data: {
-        MustChange: false,
         ID: "userPrincipalName",
         displayName: "displayName",
       },
+      fields: [
+        {
+          type: "switch",
+          name: "MustChange",
+          label: "Must Change Password at Next Logon",
+        },
+      ],
       confirmText: "Are you sure you want to reset the password for this user?",
       multiPost: false,
     },
