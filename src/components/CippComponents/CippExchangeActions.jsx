@@ -92,30 +92,27 @@ export const CippExchangeActions = () => {
       condition: (row) => row.ArchiveGuid !== "00000000-0000-0000-0000-000000000000",
     },
     {
-      label: "Hide from Global Address List",
-      type: "POST",
-      url: "/api/ExecHideFromGAL",
-      icon: <VisibilityOff />,
-      data: {
-        ID: "UPN",
-        HidefromGAL: true,
-      },
-      confirmText:
-        "Are you sure you want to hide [UPN] from the global address list? This will not work if the user is AD Synced.",
-      condition: (row) => row.HiddenFromAddressListsEnabled === false,
-    },
-    {
-      label: "Unhide from Global Address List",
+      label: "Set Global Address List visibility",
       type: "POST",
       url: "/api/ExecHideFromGAL",
       icon: <Visibility />,
       data: {
         ID: "UPN",
-        HidefromGAL: false,
       },
+      fields: [
+        {
+          type: "radio",
+          name: "HidefromGAL",
+          label: "Global Address List visibility",
+          options: [
+            { label: "Hidden", value: true },
+            { label: "Shown", value: false },
+          ],
+          validators: { required: "Please select a global address list state" },
+        },
+      ],
       confirmText:
-        "Are you sure you want to unhide [UPN] from the global address list? This will not work if the user is AD Synced.",
-      condition: (row) => row.HiddenFromAddressListsEnabled === true,
+        "Are you sure you want to set the global address list state for [UPN]? Changes can take up to 72 hours to take effect.",
     },
     {
       label: "Start Managed Folder Assistant",
@@ -138,22 +135,24 @@ export const CippExchangeActions = () => {
       multiPost: false,
     },
     {
-      label: "Copy Sent Items to for Delegated Mailboxes",
+      label: "Set Copy Sent Items for Delegated Mailboxes",
       type: "POST",
-      url: "/api/ExecCopyForSent",
-      data: { ID: "UPN", MessageCopyForSentAsEnabled: true },
-      confirmText: "Are you sure you want to enable Copy Sent Items on [UPN]?",
       icon: <MailOutline />,
-      condition: (row) => row.MessageCopyForSentAsEnabled === false,
-    },
-    {
-      label: "Disable Copy Sent Items for Delegated Mailboxes",
-      type: "POST",
       url: "/api/ExecCopyForSent",
-      data: { ID: "UPN", MessageCopyForSentAsEnabled: false },
-      confirmText: "Are you sure you want to disable Copy Sent Items on [UPN]?",
-      icon: <MailOutline />,
-      condition: (row) => row.MessageCopyForSentAsEnabled === true,
+      data: { ID: "UPN" },
+      fields: [
+        {
+          type: "radio",
+          name: "MessageCopyForSentAsEnabled",
+          label: "Copy Sent Items",
+          options: [
+            { label: "Enabled", value: true },
+            { label: "Disabled", value: false },
+          ],
+          validators: { required: "Please select a copy sent items state" },
+        },
+      ],
+      confirmText: "Are you sure you want to set Copy Sent Items for [UPN]?",
     },
     {
       label: "Set Litigation Hold",
