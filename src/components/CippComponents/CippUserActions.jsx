@@ -126,21 +126,28 @@ export const CippUserActions = () => {
     },
     {
       //tested
-      label: "Convert to Shared Mailbox",
+      label: "Convert Mailbox",
       type: "POST",
       icon: <Email />,
       url: "/api/ExecConvertMailbox",
-      data: { ID: "userPrincipalName", MailboxType: "!Shared" },
-      confirmText: "Are you sure you want to convert this user to a shared mailbox?",
-      multiPost: false,
-    },
-    {
-      label: "Convert to User Mailbox",
-      type: "POST",
-      icon: <Email />,
-      url: "/api/ExecConvertMailbox",
-      data: { ID: "userPrincipalName", MailboxType: "!Regular" },
-      confirmText: "Are you sure you want to convert this user to a user mailbox?",
+      data: { ID: "userPrincipalName" },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "MailboxType",
+          label: "Convert To",
+          options: [
+            { label: "Shared Mailbox", value: "Shared" },
+            { label: "User Mailbox", value: "Regular" },
+            { label: "Room Mailbox", value: "Room" },
+            { label: "Equipment Mailbox", value: "Equipment" },
+          ],
+          multiple: false,
+          creatable: false,
+          required: true,
+        },
+      ],
+      confirmText: "Pick the type of mailbox you want to convert this user to:",
       multiPost: false,
     },
     {
