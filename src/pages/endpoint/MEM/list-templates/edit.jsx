@@ -1,5 +1,4 @@
-import React from "react";
-import { Alert, Box, Typography } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
@@ -49,7 +48,7 @@ const EditIntuneTemplate = () => {
         const result = {};
         Object.keys(obj).forEach((key) => {
           const value = extractValues(obj[key]);
-          
+
           // Handle @odata objects created by React Hook Form's dot notation interpretation
           if (key.endsWith("@odata") && value && typeof value === "object") {
             // Convert @odata objects back to dot notation properties
