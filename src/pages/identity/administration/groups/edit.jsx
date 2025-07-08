@@ -311,8 +311,12 @@ const EditGroup = () => {
                       ?.filter((m) => m?.["@odata.type"] !== "#microsoft.graph.orgContact")
                       ?.map((m) => ({
                         label: `${m.displayName} (${m.userPrincipalName})`,
-                        value: m.userPrincipalName,
-                        addedFields: { id: m.id },
+                        value: m.id,
+                        addedFields: {
+                          userPrincipalName: m.userPrincipalName,
+                          displayName: m.displayName,
+                          id: m.id,
+                        },
                       })) || []
                   }
                 />
@@ -330,8 +334,12 @@ const EditGroup = () => {
                   options={
                     groupInfo.data?.owners?.map((o) => ({
                       label: `${o.displayName} (${o.userPrincipalName})`,
-                      value: o.userPrincipalName,
-                      addedFields: { id: o.id },
+                      value: o.id,
+                      addedFields: {
+                        userPrincipalName: o.userPrincipalName,
+                        displayName: o.displayName,
+                        id: o.id,
+                      },
                     })) || []
                   }
                 />

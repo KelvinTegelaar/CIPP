@@ -196,18 +196,22 @@ export const CippUserActions = () => {
           row
             .map((r) => ({
               label: r.displayName,
-              value: r.userPrincipalName,
+              value: r.id,
               addedFields: {
                 id: r.id,
+                userPrincipalName: r.userPrincipalName,
+                displayName: r.displayName,
               },
             }))
             .forEach((r) => addMember.push(r));
         } else {
           addMember.push({
             label: row.displayName,
-            value: row.userPrincipalName,
+            value: row.id,
             addedFields: {
               id: row.id,
+              userPrincipalName: row.userPrincipalName,
+              displayName: row.displayName,
             },
           });
         }
@@ -240,6 +244,7 @@ export const CippUserActions = () => {
       ],
       confirmText: "Are you sure you want to add [userPrincipalName] to this group?",
       multiPost: true,
+      allowResubmit: true,
     },
     {
       label: "Manage Licenses",
