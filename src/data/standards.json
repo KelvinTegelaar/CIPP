@@ -462,7 +462,7 @@
     "label": "Complete Authentication Methods Policy Migration",
     "impact": "Medium Impact",
     "impactColour": "warning",
-    "addedDate": "2025-01-08",
+    "addedDate": "2025-07-07",
     "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicy",
     "recommendedBy": ["CIPP"]
   },
