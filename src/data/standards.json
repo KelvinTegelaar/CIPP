@@ -452,6 +452,21 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AuthMethodsPolicyMigration",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Completes the migration of authentication methods policy to the new format",
+    "docsDescription": "Sets the authentication methods policy migration state to complete. This is required when migrating from legacy authentication policies to the new unified authentication methods policy.",
+    "executiveText": "Completes the transition from legacy authentication policies to Microsoft's modern unified authentication methods policy, ensuring the organization benefits from the latest security features and management capabilities. This migration enables enhanced security controls and simplified policy management.",
+    "addedComponent": [],
+    "label": "Complete Authentication Methods Policy Migration",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-01-08",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicy",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AppDeploy",
     "cat": "Entra (AAD) Standards",
     "tag": [],
