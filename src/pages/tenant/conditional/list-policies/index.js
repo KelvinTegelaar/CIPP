@@ -111,6 +111,17 @@ const Page = () => {
         },
       ],
     },
+    {
+      label: "Add service provider exception to policy",
+      type: "POST",
+      url: "/api/ExecCAServiceExclusion",
+      data: {
+        GUID: "id",
+      },
+      confirmText: "Are you sure you want to add the service provider exception to this policy?",
+      icon: <DeleteIcon />,
+      color: "warning",
+    }
   ];
 
   // Off-canvas configuration
