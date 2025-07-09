@@ -15,7 +15,7 @@
   * [Self-hosted API Setup](setup/self-hosting-guide/self-hosted-api-setup.md)
 * [Configuring CIPP](setup/installation/README.md)
   * [Creating the CIPP Service Account](setup/installation/creating-the-cipp-service-account-gdap-ready.md)
-  * [Conditional Access Best Practices](setup/installation/conditionalaccess.md)
+  * [Conditional Access Configuration](setup/installation/conditionalaccess.md)
   * [Adding Users and Managing Roles](setup/installation/roles.md)
   * [Executing the Setup Wizard](setup/installation/executing-the-setup-wizard.md)
   * [Tenant Onboarding](setup/installation/gdap-invite-wizard.md)
