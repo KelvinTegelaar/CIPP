@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { Alert, Button, Dialog, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -75,6 +75,7 @@ export const Layout = (props) => {
   const [userSettingsComplete, setUserSettingsComplete] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState([]);
   const [menuItems, setMenuItems] = useState(nativeMenuItems);
+  const lastUserSettingsUpdate = useRef(null);
   const currentTenant = settings?.currentTenant;
   const currentRole = ApiGetCall({
     url: "/api/me",
@@ -92,6 +93,7 @@ export const Layout = (props) => {
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
+      const userPermissions = currentRole.data?.permissions;
       if (!userRoles) {
         setMenuItems([]);
         setHideSidebar(true);
@@ -100,12 +102,24 @@ export const Layout = (props) => {
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
+            // role
             if (item.roles && item.roles.length > 0) {
               const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
               if (!hasRole) {
                 return null;
               }
             }
+
+            // Check permission
+            if (item.permissions && item.permissions.length > 0) {
+              const hasPermission = userPermissions?.some((perm) =>
+                item.permissions.includes(perm)
+              );
+              if (!hasPermission) {
+                return null;
+              }
+            }
+            // check sub-items
             if (item.items && item.items.length > 0) {
               const filteredSubItems = filterItemsByRole(item.items).filter(Boolean);
               return { ...item, items: filteredSubItems };
@@ -142,33 +156,42 @@ export const Layout = (props) => {
   });
 
   useEffect(() => {
-    if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
-      console.log("User Settings API Data:", userSettingsAPI.data);
-      //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
-      if (userSettingsAPI.data.offboardingDefaults?.user) {
-        delete userSettingsAPI.data.offboardingDefaults.user;
-      }
-      if (userSettingsAPI?.data?.currentTheme) {
-        delete userSettingsAPI.data.currentTheme;
-      }
-      // get current devtools settings
-      var showDevtools = settings.showDevtools;
-      // get current bookmarks
-      var bookmarks = settings.bookmarks;
+    if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching) {
+      // Only update if the data has actually changed (using dataUpdatedAt as a proxy)
+      const dataUpdatedAt = userSettingsAPI.dataUpdatedAt;
+      if (dataUpdatedAt && dataUpdatedAt !== lastUserSettingsUpdate.current) {
+        console.log("User Settings API Data:", userSettingsAPI.data);
+        //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
+        if (userSettingsAPI.data.offboardingDefaults?.user) {
+          delete userSettingsAPI.data.offboardingDefaults.user;
+        }
+        if (userSettingsAPI.data.offboardingDefaults?.keepCopy) {
+          delete userSettingsAPI.data.offboardingDefaults.keepCopy;
+        }
+        if (userSettingsAPI?.data?.currentTheme) {
+          delete userSettingsAPI.data.currentTheme;
+        }
+        // get current devtools settings
+        var showDevtools = settings.showDevtools;
+        // get current bookmarks
+        var bookmarks = settings.bookmarks;
 
-      settings.handleUpdate({
-        ...userSettingsAPI.data,
-        bookmarks,
-        showDevtools,
-      });
-      setUserSettingsComplete(true);
+        settings.handleUpdate({
+          ...userSettingsAPI.data,
+          bookmarks,
+          showDevtools,
+        });
+
+        // Track this update and set completion status
+        lastUserSettingsUpdate.current = dataUpdatedAt;
+        setUserSettingsComplete(true);
+      }
     }
   }, [
     userSettingsAPI.isSuccess,
     userSettingsAPI.data,
     userSettingsAPI.isFetching,
-    userSettingsComplete,
-    settings,
+    userSettingsAPI.dataUpdatedAt,
   ]);
 
   const version = ApiGetCall({

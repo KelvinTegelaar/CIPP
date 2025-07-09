@@ -161,13 +161,19 @@ const CippSchedulerForm = (props) => {
   useEffect(() => {
     if (advancedParameters === true) {
       var schedulerValues = formControl.getValues("parameters");
-      Object.keys(schedulerValues).forEach((key) => {
-        if (schedulerValues[key] === "" || schedulerValues[key] === null) {
-          delete schedulerValues[key];
-        }
-      });
-      const jsonString = JSON.stringify(schedulerValues, null, 2);
-      formControl.setValue("RawJsonParameters", jsonString);
+      // Add null check to prevent error when no command is selected
+      if (schedulerValues && typeof schedulerValues === "object") {
+        Object.keys(schedulerValues).forEach((key) => {
+          if (schedulerValues[key] === "" || schedulerValues[key] === null) {
+            delete schedulerValues[key];
+          }
+        });
+        const jsonString = JSON.stringify(schedulerValues, null, 2);
+        formControl.setValue("RawJsonParameters", jsonString);
+      } else {
+        // If no parameters, set empty object
+        formControl.setValue("RawJsonParameters", "{}");
+      }
     }
   }, [advancedParameters]);
 
@@ -303,7 +309,6 @@ const CippSchedulerForm = (props) => {
             key={idx}
           >
             <Grid
-              item
               size={{ md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize, xs: 12 }}
             >
               {param.Type === "System.Boolean" ||

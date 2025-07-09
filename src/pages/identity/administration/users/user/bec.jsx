@@ -312,7 +312,7 @@ const Page = () => {
                     becPollingCall.data.NewRules.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.NewRules.map((rule) => (
+                          {becPollingCall.data.NewRules.map((rule, index) => (
                             <PropertyListItem key={index} label={rule.Name} value={rule.Description} />
                           ))}
                         </PropertyList>
@@ -352,7 +352,7 @@ const Page = () => {
                     becPollingCall.data.NewUsers.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.NewUsers.map((user) => (
+                          {becPollingCall.data.NewUsers.map((user, index) => (
                             <PropertyListItem
                               key={index}
                               label={user.userPrincipalName}
