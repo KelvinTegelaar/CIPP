@@ -206,8 +206,8 @@ const ScheduledTaskDetails = ({ data }) => {
                             },
                           }}
                         >
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            {getCippFormatting(result.TenantName || result.Tenant, 'Tenant')}
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            {getCippFormatting(result.TenantName || result.Tenant, "Tenant")}
                           </Box>
                           <Chip
                             size="small"
@@ -218,7 +218,7 @@ const ScheduledTaskDetails = ({ data }) => {
                           />
                         </AccordionSummary>
                         <AccordionDetails>
-                          {result.Results === "null" ? (
+                          {result.Results === "null" || !result.Results ? (
                             <Typography color="text.secondary">No data available</Typography>
                           ) : Array.isArray(result.Results) ? (
                             <CippDataTable

@@ -102,7 +102,7 @@ const CippSchedulerForm = (props) => {
             value: task.TenantGroupInfo.value,
             label: task.TenantGroupInfo.label,
             type: "Group",
-            addedFields: task.TenantGroupInfo
+            addedFields: task.TenantGroupInfo,
           };
         } else {
           // Handle regular tenant
@@ -114,7 +114,7 @@ const CippSchedulerForm = (props) => {
               value: tenantFilter.defaultDomainName,
               label: `${tenantFilter.displayName} (${tenantFilter.defaultDomainName})`,
               type: "Tenant",
-              addedFields: tenantFilter
+              addedFields: tenantFilter,
             };
           }
         }
