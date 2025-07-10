@@ -269,6 +269,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   if (
     cellName === "tenantFilter" ||
     cellName === "Tenant" ||
+    cellName === "Tenants" ||
     cellName === "AllowedTenants" ||
     cellName === "BlockedTenants"
   ) {
