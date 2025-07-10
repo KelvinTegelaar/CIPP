@@ -304,10 +304,27 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             })
           );
     } else {
+      const itemText = data?.label ? data.label : data;
+      let icon = null;
+
+      if (data?.type === "Group") {
+        icon = (
+          <SvgIcon sx={{ ml: 0.25 }}>
+            <GroupOutlined />
+          </SvgIcon>
+        );
+      } else {
+        icon = (
+          <SvgIcon sx={{ ml: 0.25 }}>
+            <BuildingOfficeIcon />
+          </SvgIcon>
+        );
+      }
+
       return isText ? (
-        data
+        itemText
       ) : (
-        <CippCopyToClipBoard text={data?.label ? data?.label : data} type="chip" />
+        <CippCopyToClipBoard text={itemText} type="chip" icon={icon} />
       );
     }
   }
