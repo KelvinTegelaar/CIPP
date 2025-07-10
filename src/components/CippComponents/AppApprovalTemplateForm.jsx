@@ -201,7 +201,7 @@ const AppApprovalTemplateForm = ({
                     return data.filter(
                       (item) =>
                         item.addedFields?.signInAudience === "AzureADMultipleOrgs" ||
-                        item.addedFields?.signInAudience === "AzureADandPersonalMicrosoftAccount "
+                        item.addedFields?.signInAudience === "AzureADandPersonalMicrosoftAccount"
                     );
                   },
                   showRefresh: true,
