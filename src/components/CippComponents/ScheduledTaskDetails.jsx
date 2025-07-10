@@ -206,7 +206,9 @@ const ScheduledTaskDetails = ({ data }) => {
                             },
                           }}
                         >
-                          <Typography>{result.TenantName || result.Tenant}</Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            {getCippFormatting(result.TenantName || result.Tenant, 'Tenant')}
+                          </Box>
                           <Chip
                             size="small"
                             color="info"

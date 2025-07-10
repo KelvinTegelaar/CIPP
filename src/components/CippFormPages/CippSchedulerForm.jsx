@@ -92,9 +92,32 @@ const CippSchedulerForm = (props) => {
 
       // Find tenantFilter in tenantList, and create a label/value pair for the autocomplete
       if (tenantList.isSuccess) {
-        const tenantFilter = tenantList.data.find(
-          (tenant) => tenant.defaultDomainName === task?.Tenant
-        );
+        let tenantFilter = null;
+        let tenantFilterForForm = null;
+
+        // Check if the task has a tenant group
+        if (task?.TenantGroupInfo) {
+          // Handle tenant group
+          tenantFilterForForm = {
+            value: task.TenantGroupInfo.value,
+            label: task.TenantGroupInfo.label,
+            type: "Group",
+            addedFields: task.TenantGroupInfo
+          };
+        } else {
+          // Handle regular tenant
+          tenantFilter = tenantList.data.find(
+            (tenant) => tenant.defaultDomainName === task?.Tenant
+          );
+          if (tenantFilter) {
+            tenantFilterForForm = {
+              value: tenantFilter.defaultDomainName,
+              label: `${tenantFilter.displayName} (${tenantFilter.defaultDomainName})`,
+              type: "Tenant",
+              addedFields: tenantFilter
+            };
+          }
+        }
         if (commands.isSuccess) {
           const command = commands.data.find((command) => command.Function === task.Command);
 
@@ -128,10 +151,7 @@ const CippSchedulerForm = (props) => {
           }
 
           const ResetParams = {
-            tenantFilter: {
-              value: tenantFilter?.defaultDomainName,
-              label: `${tenantFilter?.displayName} (${tenantFilter?.defaultDomainName})`,
-            },
+            tenantFilter: tenantFilterForForm,
             RowKey: router.query.Clone ? null : task.RowKey,
             Name: router.query.Clone ? `${task.Name} (Clone)` : task?.Name,
             command: { label: task.Command, value: task.Command, addedFields: commandForForm },
@@ -191,6 +211,7 @@ const CippSchedulerForm = (props) => {
             formControl={formControl}
             type="single"
             allTenants={true}
+            includeGroups={true}
           />
         </Grid>
 
