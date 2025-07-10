@@ -51,7 +51,7 @@ const EditRoomList = () => {
         // Create combined data for the table
         const owners = Array.isArray(groupInfo.data?.owners) ? groupInfo.data.owners : [];
         const members = Array.isArray(groupInfo.data?.members) ? groupInfo.data.members : [];
-        
+
         const combinedData = [
           ...owners.map((o) => ({
             type: "Owner",
@@ -95,7 +95,9 @@ const EditRoomList = () => {
       <CippFormPage
         formControl={formControl}
         queryKey={[`ListRoomLists-${groupId}`]}
-        title={`Room List: ${groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName || ""}`}
+        title={`Room List: ${
+          groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName || ""
+        }`}
         formPageType="Edit"
         backButtonTitle="Room Lists"
         postUrl="/api/EditRoomList"
@@ -186,7 +188,10 @@ const EditRoomList = () => {
                   disabled={groupInfo.isFetching}
                   api={{
                     url: "/api/ListRooms",
-                    labelField: (room) => `${room.displayName || 'Unknown'} (${room.mail || room.userPrincipalName || 'No email'})`,
+                    labelField: (room) =>
+                      `${room.displayName || "Unknown"} (${
+                        room.mail || room.userPrincipalName || "No email"
+                      })`,
                     valueField: "mail",
                     addedField: {
                       roomType: "bookingType",
@@ -197,19 +202,23 @@ const EditRoomList = () => {
                     showRefresh: true,
                     dataFilter: (rooms) => {
                       // Get current member emails to filter out
-                      const members = Array.isArray(groupInfo.data?.members) ? groupInfo.data.members : [];
-                      const currentMemberEmails = members.map(m => m.mail || m.userPrincipalName).filter(Boolean);
-                      
+                      const members = Array.isArray(groupInfo.data?.members)
+                        ? groupInfo.data.members
+                        : [];
+                      const currentMemberEmails = members
+                        .map((m) => m.mail || m.userPrincipalName)
+                        .filter(Boolean);
+
                       // Filter out rooms that are already members
                       // rooms here have been transformed to {label, value, addedFields} format
-                      const filteredRooms = rooms.filter(room => {
+                      const filteredRooms = rooms.filter((room) => {
                         const roomEmail = room.value; // email is in the value field
                         const isAlreadyMember = currentMemberEmails.includes(roomEmail);
                         return !isAlreadyMember;
                       });
-                      
+
                       return filteredRooms;
-                    }
+                    },
                   }}
                 />
               </Grid>
@@ -226,7 +235,10 @@ const EditRoomList = () => {
                   disabled={groupInfo.isFetching}
                   api={{
                     url: "/api/ListUsers",
-                    labelField: (user) => `${user.displayName || 'Unknown'} (${user.userPrincipalName || user.mail || 'No email'})`,
+                    labelField: (user) =>
+                      `${user.displayName || "Unknown"} (${
+                        user.userPrincipalName || user.mail || "No email"
+                      })`,
                     valueField: "userPrincipalName",
                     addedField: {
                       id: "id",
@@ -235,19 +247,23 @@ const EditRoomList = () => {
                     showRefresh: true,
                     dataFilter: (users) => {
                       // Get current owner userPrincipalNames to filter out
-                      const owners = Array.isArray(groupInfo.data?.owners) ? groupInfo.data.owners : [];
-                      const currentOwnerEmails = owners.map(o => o.userPrincipalName).filter(Boolean);
-                      
+                      const owners = Array.isArray(groupInfo.data?.owners)
+                        ? groupInfo.data.owners
+                        : [];
+                      const currentOwnerEmails = owners
+                        .map((o) => o.userPrincipalName)
+                        .filter(Boolean);
+
                       // Filter out users that are already owners
                       // users here have been transformed to {label, value, addedFields} format
-                      const filteredUsers = users.filter(user => {
+                      const filteredUsers = users.filter((user) => {
                         const userEmail = user.value; // userPrincipalName is in the value field
                         const isAlreadyOwner = currentOwnerEmails.includes(userEmail);
                         return !isAlreadyOwner;
                       });
-                      
+
                       return filteredUsers;
-                    }
+                    },
                   }}
                 />
               </Grid>
@@ -267,9 +283,11 @@ const EditRoomList = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   options={
-                    Array.isArray(groupInfo.data?.members) 
+                    Array.isArray(groupInfo.data?.members)
                       ? groupInfo.data.members.map((m) => ({
-                          label: `${m.DisplayName || m.displayName || 'Unknown'} (${m.PrimarySmtpAddress || m.userPrincipalName || m.mail})`,
+                          label: `${m.DisplayName || m.displayName || "Unknown"} (${
+                            m.PrimarySmtpAddress || m.userPrincipalName || m.mail
+                          })`,
                           value: m.PrimarySmtpAddress || m.userPrincipalName || m.mail,
                           addedFields: { id: m.ExternalDirectoryObjectId || m.id },
                         }))
@@ -288,7 +306,7 @@ const EditRoomList = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   options={
-                    Array.isArray(groupInfo.data?.owners) 
+                    Array.isArray(groupInfo.data?.owners)
                       ? groupInfo.data.owners.map((o) => ({
                           label: `${o.displayName} (${o.userPrincipalName})`,
                           value: o.userPrincipalName,
@@ -324,4 +342,4 @@ const EditRoomList = () => {
 
 EditRoomList.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default EditRoomList; 
+export default EditRoomList;
