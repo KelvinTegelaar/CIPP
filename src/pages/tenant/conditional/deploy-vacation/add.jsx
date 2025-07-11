@@ -31,7 +31,7 @@ const Page = () => {
         customDataformatter={(values) => {
           const shippedValues = {
             tenantFilter: tenantDomain,
-            UserId: values.UserId?.value,
+            Users: values.Users,
             PolicyId: values.PolicyId?.value,
             StartDate: values.startDate,
             EndDate: values.endDate,
@@ -55,8 +55,12 @@ const Page = () => {
               <CippFormUserSelector
                 label={`Users in ${tenantDomain}`}
                 formControl={formControl}
-                name="UserId"
-                multiple={false}
+                name="Users"
+                multiple={true}
+                addedField={{
+                  userPrincipalName: "userPrincipalName",
+                  displayName: "displayName",
+                }}
                 validators={{ required: "Picking a user is required" }}
                 required={true}
               />
