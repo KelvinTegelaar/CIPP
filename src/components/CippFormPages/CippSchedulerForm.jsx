@@ -107,7 +107,9 @@ const CippSchedulerForm = (props) => {
         } else {
           // Handle regular tenant
           tenantFilter = tenantList.data.find(
-            (tenant) => tenant.defaultDomainName === task?.Tenant
+            (tenant) =>
+              tenant.defaultDomainName === task?.Tenant.value ||
+              tenant.defaultDomainName === task?.Tenant
           );
           if (tenantFilter) {
             tenantFilterForForm = {
@@ -150,6 +152,32 @@ const CippSchedulerForm = (props) => {
             task.ScheduledTime = Math.floor(new Date(task.ScheduledTime).getTime() / 1000);
           }
 
+          // Check if any parameter values are complex objects that can't be represented as simple form fields
+          const hasComplexObjects =
+            task.Parameters && typeof task.Parameters === "object"
+              ? Object.values(task.Parameters).some((value) => {
+                  // Check for arrays
+                  if (Array.isArray(value)) return true;
+                  // Check for objects (but not null)
+                  if (value !== null && typeof value === "object") return true;
+                  // Check for stringified objects that contain [object Object]
+                  if (typeof value === "string" && value.includes("[object Object]")) return true;
+                  // Check for stringified JSON arrays/objects
+                  if (
+                    typeof value === "string" &&
+                    (value.trim().startsWith("[") || value.trim().startsWith("{"))
+                  ) {
+                    try {
+                      const parsed = JSON.parse(value);
+                      return typeof parsed === "object";
+                    } catch {
+                      return false;
+                    }
+                  }
+                  return false;
+                })
+              : false;
+
           const ResetParams = {
             tenantFilter: tenantFilterForForm,
             RowKey: router.query.Clone ? null : task.RowKey,
@@ -159,10 +187,17 @@ const CippSchedulerForm = (props) => {
             Recurrence: recurrence,
             parameters: task.Parameters,
             postExecution: postExecution,
-            // Show advanced parameters if RawJsonParameters exist OR if it's a system command with no defined parameters
+            // Show advanced parameters if:
+            // 1. RawJsonParameters exist
+            // 2. It's a system command with no defined parameters
+            // 3. Any parameter contains complex objects (arrays, objects, etc.)
             advancedParameters: task.RawJsonParameters
               ? true
-              : !commandForForm?.Parameters || commandForForm.Parameters.length === 0,
+              : hasComplexObjects ||
+                !commandForForm?.Parameters ||
+                commandForForm.Parameters.length === 0,
+            // Set the RawJsonParameters if they exist
+            RawJsonParameters: task.RawJsonParameters || "",
           };
           formControl.reset(ResetParams);
         }
@@ -180,22 +215,50 @@ const CippSchedulerForm = (props) => {
 
   useEffect(() => {
     if (advancedParameters === true) {
-      var schedulerValues = formControl.getValues("parameters");
-      // Add null check to prevent error when no command is selected
-      if (schedulerValues && typeof schedulerValues === "object") {
-        Object.keys(schedulerValues).forEach((key) => {
-          if (schedulerValues[key] === "" || schedulerValues[key] === null) {
-            delete schedulerValues[key];
+      // Check if we're editing an existing task and it has RawJsonParameters
+      const currentRawJsonParameters = formControl.getValues("RawJsonParameters");
+
+      // If we already have raw JSON parameters (from editing existing task), use those
+      if (
+        currentRawJsonParameters &&
+        currentRawJsonParameters.trim() !== "" &&
+        currentRawJsonParameters !== "{}"
+      ) {
+        // Already populated from existing task, no need to overwrite
+        return;
+      }
+
+      // Get the original task parameters if we're editing (to preserve complex objects)
+      let parametersToUse = null;
+      if (router.query.id && scheduledTaskList.isSuccess) {
+        const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+        if (task?.Parameters) {
+          parametersToUse = task.Parameters;
+        }
+      }
+
+      // If we don't have original task parameters, use current form parameters
+      if (!parametersToUse) {
+        parametersToUse = formControl.getValues("parameters");
+      }
+
+      // Add null check to prevent error when no parameters exist
+      if (parametersToUse && typeof parametersToUse === "object") {
+        // Create a clean copy for JSON
+        const cleanParams = { ...parametersToUse };
+        Object.keys(cleanParams).forEach((key) => {
+          if (cleanParams[key] === "" || cleanParams[key] === null) {
+            delete cleanParams[key];
           }
         });
-        const jsonString = JSON.stringify(schedulerValues, null, 2);
+        const jsonString = JSON.stringify(cleanParams, null, 2);
         formControl.setValue("RawJsonParameters", jsonString);
       } else {
         // If no parameters, set empty object
         formControl.setValue("RawJsonParameters", "{}");
       }
     }
-  }, [advancedParameters]);
+  }, [advancedParameters, router.query.id, scheduledTaskList.isSuccess]);
 
   const gridSize = fullWidth ? 12 : 4; // Adjust size based on fullWidth prop
 
@@ -212,6 +275,7 @@ const CippSchedulerForm = (props) => {
             type="single"
             allTenants={true}
             includeGroups={true}
+            required={true}
           />
         </Grid>
 
@@ -398,7 +462,14 @@ const CippSchedulerForm = (props) => {
               }}
               formControl={formControl}
               multiline
-              rows={4}
+              rows={6}
+              maxRows={30}
+              sx={{
+                "& .MuiInputBase-root": {
+                  overflow: "auto",
+                  minHeight: "200px",
+                },
+              }}
               placeholder={`Enter a JSON object`}
             />
           </Grid>

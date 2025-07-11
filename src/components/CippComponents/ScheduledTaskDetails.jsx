@@ -20,6 +20,8 @@ import { ExpandMore, Sync, Search, Close } from "@mui/icons-material";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
+import { ActionsMenu } from "/src/components/actions-menu";
+import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
 
 const ScheduledTaskDetails = ({ data }) => {
   const [taskDetails, setTaskDetails] = useState(null);
@@ -78,8 +80,18 @@ const ScheduledTaskDetails = ({ data }) => {
 
   return (
     <>
+      {" "}
       <Stack spacing={2}>
-        <Typography variant="h5">{taskDetails?.Task?.Name}</Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="h5">{taskDetails?.Task?.Name}</Typography>
+          <Box>
+            <ActionsMenu
+              actions={CippScheduledTaskActions()}
+              data={data}
+              disabled={taskDetailResults.isLoading}
+            />
+          </Box>
+        </Stack>
         <CippPropertyListCard
           actionButton={
             <Tooltip title="Refresh">
