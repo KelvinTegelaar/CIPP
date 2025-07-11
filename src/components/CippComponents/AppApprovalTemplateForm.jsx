@@ -78,6 +78,14 @@ const AppApprovalTemplateForm = ({
               ...(templateData[0].GalleryInformation || {}),
             },
           });
+        } else if (appType === "ApplicationManifest") {
+          // For Application Manifest, load the manifest JSON
+          if (templateData[0].ApplicationManifest) {
+            formControl.setValue(
+              "applicationManifest",
+              JSON.stringify(templateData[0].ApplicationManifest, null, 2)
+            );
+          }
         } else {
           formControl.setValue("appId", {
             label: `${templateData[0].AppName || "Unknown"} (${templateData[0].AppId})`,
@@ -342,10 +350,18 @@ const AppApprovalTemplateForm = ({
             <>
               <Alert severity="info">
                 App approval templates allow you to define an application with its permissions that
-                can be deployed to multiple tenants. You can select either an existing multi-tenant
-                Enterprise Application or deploy from the Microsoft Gallery. If your Enterprise App
-                is not listed, check the Supported account types in the App Registration properties
-                in Entra.
+                can be deployed to multiple tenants. Choose from three template types:
+                <br />
+                <br />
+                <strong>• Enterprise Application:</strong> Deploy existing multi-tenant apps from
+                your tenant. Requires "Multiple organizations" or "Personal Microsoft accounts" in
+                App Registration settings.
+                <br />
+                <strong>• Gallery Template:</strong> Deploy pre-configured applications from
+                Microsoft's Enterprise Application Gallery with standard permissions.
+                <br />
+                <strong>• Application Manifest:</strong> Deploy custom applications using JSON
+                manifests. For security, only single-tenant apps (AzureADMyOrg) are supported.
               </Alert>
               <CippFormComponent
                 formControl={formControl}
