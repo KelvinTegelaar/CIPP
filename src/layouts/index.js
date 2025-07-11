@@ -179,7 +179,6 @@ export const Layout = (props) => {
       // Only update if the data has actually changed (using dataUpdatedAt as a proxy)
       const dataUpdatedAt = userSettingsAPI.dataUpdatedAt;
       if (dataUpdatedAt && dataUpdatedAt !== lastUserSettingsUpdate.current) {
-        console.log("User Settings API Data:", userSettingsAPI.data);
         //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
         if (userSettingsAPI.data.offboardingDefaults?.user) {
           delete userSettingsAPI.data.offboardingDefaults.user;
