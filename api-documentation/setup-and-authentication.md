@@ -4,6 +4,10 @@ description: API Authentication
 
 # Setup & Authentication
 
+## Setup
+
+Before being able to utilize the CIPP API, you need to first configure an API client via [cipp-api.md](../user-documentation/cipp/integrations/cipp-api.md "mention"). Once that is completed, come back to this page. You'll need the integration page still open to reference the necessary fields below for authentication.
+
 ## Authentication
 
 CIPP uses OAuth authentication to be able to connect to the API using your Application ID and Secret. You can use the PowerShell example below to connect to the API:
@@ -28,7 +32,7 @@ Invoke-RestMethod -Uri "$CIPPAPIUrl/api/ListLogs" -Method GET -Headers $AuthHead
 ```
 
 {% hint style="info" %}
-If you are making an OAuth connection with any 3rd party service, make use of the copyable fields on the [cipp-api.md](../user-documentation/cipp/integrations/cipp-api.md "mention")integration page indicated by a blue outline. You will also need the API Scope, get this from the CIPP-API Clients table by clicking the Actions three dots for the row you are configuring and selecting `Copy API Scope`.
+If you are making an OAuth connection with any 3rd party service, make use of the copyable fields on the [cipp-api.md](../user-documentation/cipp/integrations/cipp-api.md "mention") integration page indicated by a blue outline. You will also need the API Scope, get this from the CIPP-API Clients table by clicking the Actions three dots for the row you are configuring and selecting `Copy API Scope`.
 {% endhint %}
 
 ### Time and Rate Limits
