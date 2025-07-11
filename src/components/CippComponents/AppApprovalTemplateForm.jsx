@@ -251,12 +251,6 @@ const AppApprovalTemplateForm = ({
           applicationManifest.signInAudience &&
           applicationManifest.signInAudience !== "AzureADMyOrg"
         ) {
-          console.error(
-            "Application Manifest validation failed: signInAudience must be null, undefined, or 'AzureADMyOrg'"
-          );
-          alert(
-            "Error: Application Manifest signInAudience must be null, undefined, or 'AzureADMyOrg' for security reasons."
-          );
           return; // Don't submit if validation fails
         }
 
@@ -477,7 +471,7 @@ const AppApprovalTemplateForm = ({
                   type="textField"
                   multiline
                   rows={10}
-                  helperText="Paste your application manifest JSON here. For security reasons, signInAudience must be 'AzureADMyOrg' or not specified."
+                  helperText="Paste your application manifest JSON here. Use the 'Microsoft Graph App Manifest' format. For security reasons, signInAudience must be 'AzureADMyOrg' or not specified."
                   validators={{
                     required: "Application manifest is required",
                     validate: (value) => {
