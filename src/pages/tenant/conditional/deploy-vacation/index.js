@@ -45,6 +45,7 @@ const Page = () => {
         "ScheduledTime",
         "ExecutedTime",
         "Parameters.ExclusionType",
+        "Parameters.Users",
         "Parameters.UserName",
         "Parameters.PolicyId",
       ]}
@@ -53,6 +54,7 @@ const Page = () => {
           "Name",
           "TaskState",
           "ScheduledTime",
+          "Parameters.Users",
           "Parameters.UserName",
           "Parameters.PolicyId",
           "Tenant",
