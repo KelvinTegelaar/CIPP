@@ -11,7 +11,7 @@ import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 export const CippWizardAppApproval = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
 
-  // Watch for the selected template to access permissions
+  // Watch for the selected template to access permissions and type
   const selectedTemplate = useWatch({
     control: formControl.control,
     name: "selectedTemplate",
@@ -56,6 +56,9 @@ export const CippWizardAppApproval = (props) => {
               addedField: {
                 AppId: "AppId",
                 AppName: "AppName",
+                AppType: "AppType",
+                GalleryTemplateId: "GalleryTemplateId",
+                GalleryInformation: "GalleryInformation",
                 PermissionSetId: "PermissionSetId",
                 PermissionSetName: "PermissionSetName",
                 Permissions: "Permissions",
@@ -76,18 +79,59 @@ export const CippWizardAppApproval = (props) => {
                   { label: "App Name", value: selectedTemplate.addedFields.AppName },
                   { label: "App ID", value: selectedTemplate.addedFields.AppId },
                   {
+                    label: "Template Type",
+                    value:
+                      (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                      "GalleryTemplate"
+                        ? "Gallery Template"
+                        : "Enterprise App",
+                  },
+                  {
                     label: "Permission Set",
-                    value: selectedTemplate.addedFields.PermissionSetName,
+                    value:
+                      (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                      "GalleryTemplate"
+                        ? "Auto-Consent"
+                        : selectedTemplate.addedFields.PermissionSetName,
                   },
                 ]}
                 title="Template Details"
               />
-              <CippPermissionPreview
-                permissions={selectedTemplate.addedFields.Permissions}
-                title="Template Permissions"
-                maxHeight={500}
-                showAppIds={true}
-              />
+              {(selectedTemplate.addedFields.AppType || "EnterpriseApp") === "EnterpriseApp" ? (
+                <CippPermissionPreview
+                  permissions={selectedTemplate.addedFields.Permissions}
+                  title="Template Permissions"
+                  maxHeight={500}
+                  showAppIds={true}
+                />
+              ) : (
+                <CippPermissionPreview
+                  permissions={null}
+                  title="Gallery Template Info"
+                  maxHeight={500}
+                  showAppIds={true}
+                  galleryTemplate={{
+                    label: selectedTemplate.addedFields.AppName,
+                    value:
+                      selectedTemplate.addedFields.GalleryTemplateId ||
+                      selectedTemplate.addedFields.AppId,
+                    addedFields: {
+                      displayName: selectedTemplate.addedFields.AppName,
+                      applicationId: selectedTemplate.addedFields.AppId,
+                      // Use saved gallery information if available, otherwise provide defaults
+                      ...(selectedTemplate.addedFields.GalleryInformation || {
+                        description: `Gallery template for ${
+                          selectedTemplate.addedFields.AppName || "application"
+                        }`,
+                        publisher: "Microsoft Gallery",
+                        categories: ["Application"],
+                        supportedSingleSignOnModes: ["saml", "password", "oidc"],
+                        supportedProvisioningTypes: ["sync"],
+                      }),
+                    },
+                  }}
+                />
+              )}
             </Stack>
           )}
         </Stack>

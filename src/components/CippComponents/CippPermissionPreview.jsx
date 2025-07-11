@@ -23,6 +23,7 @@ const CippPermissionPreview = ({
   isLoading = false,
   maxHeight = "100%",
   showAppIds = true,
+  galleryTemplate = null,
 }) => {
   const [selectedPermissionTab, setSelectedPermissionTab] = useState(0);
   const [servicePrincipalDetails, setServicePrincipalDetails] = useState({});
@@ -115,7 +116,6 @@ const CippPermissionPreview = ({
 
   // Better checks for permissions object to prevent rendering errors
   if (isLoading || loadingDetails) {
-
     return (
       <>
         <Typography variant="subtitle1">{title}</Typography>
@@ -124,11 +124,159 @@ const CippPermissionPreview = ({
     );
   }
 
-  if (!permissions) {
+  if (!permissions && !galleryTemplate) {
     return (
       <Alert severity="info">
         Select a template with permissions to see what will be consented.
       </Alert>
+    );
+  }
+
+  // If we have gallery template data, show that instead of permissions
+  if (galleryTemplate) {
+    return (
+      <Stack spacing={2}>
+        <Typography variant="subtitle1">{title}</Typography>
+        <Box sx={{ height: "100%", overflow: "auto", maxHeight }}>
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              borderLeftWidth: 4,
+              borderLeftColor: "primary.main",
+            }}
+          >
+            {/* App Logo and Name */}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+              {galleryTemplate.addedFields?.logoUrl && (
+                <Box sx={{ mr: 2 }}>
+                  <img
+                    src={galleryTemplate.addedFields.logoUrl}
+                    alt={galleryTemplate.addedFields?.displayName || galleryTemplate.label}
+                    style={{
+                      width: 48,
+                      height: 48,
+                      objectFit: "contain",
+                      borderRadius: 4,
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+                </Box>
+              )}
+              <Box>
+                <Typography variant="h6" fontWeight="bold">
+                  {galleryTemplate.addedFields?.displayName || galleryTemplate.label}
+                </Typography>
+                {galleryTemplate.addedFields?.publisher && (
+                  <Typography variant="body2" color="text.secondary">
+                    by {galleryTemplate.addedFields.publisher}
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+
+            {/* Description */}
+            {galleryTemplate.addedFields?.description && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.primary">
+                  {galleryTemplate.addedFields.description}
+                </Typography>
+              </Box>
+            )}
+
+            {/* Categories */}
+            {galleryTemplate.addedFields?.categories &&
+              galleryTemplate.addedFields.categories.length > 0 && (
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                    Categories:
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {galleryTemplate.addedFields.categories.map((category, idx) => (
+                      <Chip
+                        key={idx}
+                        label={category}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+
+            {/* SSO Modes */}
+            {galleryTemplate.addedFields?.supportedSingleSignOnModes &&
+              galleryTemplate.addedFields.supportedSingleSignOnModes.length > 0 && (
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                    Supported SSO Modes:
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {galleryTemplate.addedFields.supportedSingleSignOnModes.map((mode, idx) => (
+                      <Chip
+                        key={idx}
+                        label={mode}
+                        size="small"
+                        variant="outlined"
+                        color="secondary"
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+
+            {/* Provisioning Types */}
+            {galleryTemplate.addedFields?.supportedProvisioningTypes &&
+              galleryTemplate.addedFields.supportedProvisioningTypes.length > 0 && (
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                    Supported Provisioning:
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {galleryTemplate.addedFields.supportedProvisioningTypes.map((type, idx) => (
+                      <Chip key={idx} label={type} size="small" variant="outlined" color="info" />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+
+            {/* Home Page URL */}
+            {galleryTemplate.addedFields?.homePageUrl && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                  Home Page:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  component="a"
+                  href={galleryTemplate.addedFields.homePageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ color: "primary.main", textDecoration: "none" }}
+                >
+                  {galleryTemplate.addedFields.homePageUrl}
+                </Typography>
+              </Box>
+            )}
+
+            {/* Template ID */}
+            <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
+              <Typography variant="caption" color="text.secondary">
+                Template ID: {galleryTemplate.value}
+              </Typography>
+            </Box>
+
+            {/* Auto-consent note */}
+            <Alert severity="info" sx={{ mt: 2 }}>
+              Gallery templates will automatically consent to the required permissions defined in
+              the template's app registration. No manual permission configuration needed.
+            </Alert>
+          </Paper>
+        </Box>
+      </Stack>
     );
   }
 
