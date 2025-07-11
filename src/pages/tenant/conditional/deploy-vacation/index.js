@@ -40,6 +40,7 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       simpleColumns={[
+        "Tenant",
         "Name",
         "TaskState",
         "ScheduledTime",
@@ -47,7 +48,6 @@ const Page = () => {
         "Parameters.ExclusionType",
         "Parameters.Users",
         "Parameters.UserName",
-        "Parameters.PolicyId",
       ]}
       offCanvas={{
         extendedInfoFields: [
