@@ -23,7 +23,7 @@ import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
 import { ActionsMenu } from "/src/components/actions-menu";
 import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
 
-const ScheduledTaskDetails = ({ data }) => {
+const ScheduledTaskDetails = ({ data, showActions = true }) => {
   const [taskDetails, setTaskDetails] = useState(null);
   const [expanded, setExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -80,17 +80,20 @@ const ScheduledTaskDetails = ({ data }) => {
 
   return (
     <>
-      {" "}
       <Stack spacing={2}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h5">{taskDetails?.Task?.Name}</Typography>
-          <Box>
-            <ActionsMenu
-              actions={CippScheduledTaskActions()}
-              data={data}
-              disabled={taskDetailResults.isLoading}
-            />
-          </Box>
+          <Typography variant="h5">
+            {taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name}
+          </Typography>
+          {showActions && (
+            <Box>
+              <ActionsMenu
+                actions={CippScheduledTaskActions()}
+                data={taskDetails?.Task}
+                disabled={taskDetailResults.isLoading}
+              />
+            </Box>
+          )}
         </Stack>
         <CippPropertyListCard
           actionButton={

@@ -508,8 +508,10 @@ const CippSchedulerForm = (props) => {
             {router.query.id ? "Edit" : "Add"} Schedule
           </Button>
         </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippApiResults apiObject={postCall} />
+        </Grid>
       </Grid>
-      <CippApiResults apiObject={postCall} />
     </>
   );
 };

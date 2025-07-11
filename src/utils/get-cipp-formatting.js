@@ -321,11 +321,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         );
       }
 
-      return isText ? (
-        itemText
-      ) : (
-        <CippCopyToClipBoard text={itemText} type="chip" icon={icon} />
-      );
+      return isText ? itemText : <CippCopyToClipBoard text={itemText} type="chip" icon={icon} />;
     }
   }
 
