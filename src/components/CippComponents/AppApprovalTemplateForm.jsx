@@ -468,7 +468,12 @@ const AppApprovalTemplateForm = ({
                       try {
                         const manifest = JSON.parse(value);
 
-                        // Validate signInAudience
+                        // Check for minimum required property
+                        if (!manifest.displayName) {
+                          return "Application manifest must include a 'displayName' property";
+                        }
+
+                        // Validate signInAudience if present
                         if (manifest.signInAudience && manifest.signInAudience !== "AzureADMyOrg") {
                           return "signInAudience must be null, undefined, or 'AzureADMyOrg' for security reasons";
                         }
