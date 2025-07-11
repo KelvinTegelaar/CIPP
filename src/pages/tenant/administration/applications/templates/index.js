@@ -99,10 +99,18 @@ const Page = () => {
       // Default to EnterpriseApp for backward compatibility with older templates
       const appType = row.AppType || "EnterpriseApp";
 
+      // Determine the title based on app type
+      let title = "Permission Preview";
+      if (appType === "GalleryTemplate") {
+        title = "Gallery Template Info";
+      } else if (appType === "ApplicationManifest") {
+        title = "Application Manifest";
+      }
+
       return (
         <CippPermissionPreview
           permissions={appType === "EnterpriseApp" ? row.Permissions : null}
-          title={appType === "GalleryTemplate" ? "Gallery Template Info" : "Permission Preview"}
+          title={title}
           galleryTemplate={
             appType === "GalleryTemplate"
               ? {
@@ -123,7 +131,8 @@ const Page = () => {
                 }
               : null
           }
-          maxHeight="400px"
+          applicationManifest={appType === "ApplicationManifest" ? row.ApplicationManifest : null}
+          maxHeight="800px"
           showAppIds={true}
         />
       );
@@ -143,7 +152,13 @@ const Page = () => {
       formatter: (row) => {
         // Default to EnterpriseApp for backward compatibility with older templates
         const appType = row.AppType || "EnterpriseApp";
-        return appType === "GalleryTemplate" ? "Gallery Template" : "Enterprise App";
+        if (appType === "GalleryTemplate") {
+          return "Gallery Template";
+        } else if (appType === "ApplicationManifest") {
+          return "Application Manifest";
+        } else {
+          return "Enterprise App";
+        }
       },
     },
     {
@@ -163,7 +178,13 @@ const Page = () => {
       formatter: (row) => {
         // Default to EnterpriseApp for backward compatibility with older templates
         const appType = row.AppType || "EnterpriseApp";
-        return appType === "GalleryTemplate" ? "Auto-Consent" : row.PermissionSetName || "-";
+        if (appType === "GalleryTemplate") {
+          return "Auto-Consent";
+        } else if (appType === "ApplicationManifest") {
+          return "Manifest-Defined";
+        } else {
+          return row.PermissionSetName || "-";
+        }
       },
     },
     {

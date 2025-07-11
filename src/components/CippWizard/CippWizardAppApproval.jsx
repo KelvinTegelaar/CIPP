@@ -62,6 +62,7 @@ export const CippWizardAppApproval = (props) => {
                 PermissionSetId: "PermissionSetId",
                 PermissionSetName: "PermissionSetName",
                 Permissions: "Permissions",
+                ApplicationManifest: "ApplicationManifest",
               },
               showRefresh: true,
             }}
@@ -84,6 +85,9 @@ export const CippWizardAppApproval = (props) => {
                       (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
                       "GalleryTemplate"
                         ? "Gallery Template"
+                        : (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                          "ApplicationManifest"
+                        ? "Application Manifest"
                         : "Enterprise App",
                   },
                   {
@@ -92,6 +96,9 @@ export const CippWizardAppApproval = (props) => {
                       (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
                       "GalleryTemplate"
                         ? "Auto-Consent"
+                        : (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                          "ApplicationManifest"
+                        ? "Defined in Manifest"
                         : selectedTemplate.addedFields.PermissionSetName,
                   },
                 ]}
@@ -103,6 +110,15 @@ export const CippWizardAppApproval = (props) => {
                   title="Template Permissions"
                   maxHeight={500}
                   showAppIds={true}
+                />
+              ) : (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                "ApplicationManifest" ? (
+                <CippPermissionPreview
+                  permissions={null}
+                  title="Application Manifest"
+                  maxHeight={500}
+                  showAppIds={false}
+                  applicationManifest={selectedTemplate.addedFields.ApplicationManifest}
                 />
               ) : (
                 <CippPermissionPreview

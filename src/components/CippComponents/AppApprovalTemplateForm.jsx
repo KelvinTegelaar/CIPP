@@ -31,6 +31,12 @@ const AppApprovalTemplateForm = ({
     name: "galleryTemplateId",
   });
 
+  // Watch for application manifest changes
+  const selectedApplicationManifest = useWatch({
+    control: formControl?.control,
+    name: "applicationManifest",
+  });
+
   // Watch for app selection changes to update template name
   const selectedApp = useWatch({
     control: formControl?.control,
@@ -54,7 +60,11 @@ const AppApprovalTemplateForm = ({
         // Set app type based on whether it's a gallery template, defaulting to EnterpriseApp for backward compatibility
         const appType =
           templateData[0].AppType ||
-          (templateData[0].GalleryTemplateId ? "GalleryTemplate" : "EnterpriseApp");
+          (templateData[0].GalleryTemplateId
+            ? "GalleryTemplate"
+            : templateData[0].ApplicationManifest
+            ? "ApplicationManifest"
+            : "EnterpriseApp");
         formControl.setValue("appType", appType);
 
         if (appType === "GalleryTemplate") {
@@ -105,7 +115,11 @@ const AppApprovalTemplateForm = ({
         // Set app type based on whether it's a gallery template, defaulting to EnterpriseApp for backward compatibility
         const appType =
           templateData[0].AppType ||
-          (templateData[0].GalleryTemplateId ? "GalleryTemplate" : "EnterpriseApp");
+          (templateData[0].GalleryTemplateId
+            ? "GalleryTemplate"
+            : templateData[0].ApplicationManifest
+            ? "ApplicationManifest"
+            : "EnterpriseApp");
         formControl.setValue("appType", appType);
 
         if (appType === "GalleryTemplate") {
@@ -119,6 +133,14 @@ const AppApprovalTemplateForm = ({
               ...(templateData[0].GalleryInformation || {}),
             },
           });
+        } else if (appType === "ApplicationManifest") {
+          // For Application Manifest, load the manifest JSON
+          if (templateData[0].ApplicationManifest) {
+            formControl.setValue(
+              "applicationManifest",
+              JSON.stringify(templateData[0].ApplicationManifest, null, 2)
+            );
+          }
         } else {
           formControl.setValue("appId", {
             label: `${templateData[0].AppName || "Unknown"} (${templateData[0].AppId})`,
@@ -143,7 +165,7 @@ const AppApprovalTemplateForm = ({
           setSelectedPermissionSet(permissionSetValue);
           setPermissionsLoaded(true);
         } else {
-          // For Gallery Templates, no permission set needed
+          // For Gallery Templates and Application Manifests, no permission set needed
           setSelectedPermissionSet(null);
           setPermissionsLoaded(false);
         }
@@ -205,13 +227,42 @@ const AppApprovalTemplateForm = ({
 
   // Handle form submission
   const handleSubmit = (data) => {
-    let appDisplayName, appId, galleryTemplateId;
+    let appDisplayName, appId, galleryTemplateId, applicationManifest;
 
     if (data.appType === "GalleryTemplate") {
       appDisplayName =
         data.galleryTemplateId?.addedFields?.displayName || data.galleryTemplateId?.label;
       appId = data.galleryTemplateId?.addedFields?.applicationId;
       galleryTemplateId = data.galleryTemplateId?.value;
+    } else if (data.appType === "ApplicationManifest") {
+      try {
+        applicationManifest = JSON.parse(data.applicationManifest);
+
+        // Validate signInAudience - only allow null/undefined or "AzureADMyOrg"
+        if (
+          applicationManifest.signInAudience &&
+          applicationManifest.signInAudience !== "AzureADMyOrg"
+        ) {
+          console.error(
+            "Application Manifest validation failed: signInAudience must be null, undefined, or 'AzureADMyOrg'"
+          );
+          alert(
+            "Error: Application Manifest signInAudience must be null, undefined, or 'AzureADMyOrg' for security reasons."
+          );
+          return; // Don't submit if validation fails
+        }
+
+        // Extract app name from manifest
+        appDisplayName =
+          applicationManifest.displayName ||
+          applicationManifest.appDisplayName ||
+          "Custom Application";
+        // Application ID will be generated during deployment for manifests
+        appId = null;
+      } catch (error) {
+        console.error("Failed to parse application manifest:", error);
+        return; // Don't submit if manifest is invalid
+      }
     } else {
       appDisplayName =
         data.appId?.addedFields?.displayName ||
@@ -239,6 +290,12 @@ const AppApprovalTemplateForm = ({
       payload.GalleryInformation = selectedGalleryTemplate?.addedFields || {};
     }
 
+    // For Application Manifests, store the manifest data
+    if (data.appType === "ApplicationManifest") {
+      payload.Permissions = null; // Permissions defined in manifest
+      payload.ApplicationManifest = applicationManifest;
+    }
+
     if (isEditing && !isCopy && templateData?.[0]?.TemplateId) {
       payload.TemplateId = templateData[0].TemplateId;
     }
@@ -250,6 +307,7 @@ const AppApprovalTemplateForm = ({
       appId: data.appId,
       galleryTemplateId: data.galleryTemplateId,
       permissionSetId: data.permissionSetId,
+      applicationManifest: data.applicationManifest,
     };
 
     onSubmit(payload);
@@ -265,6 +323,9 @@ const AppApprovalTemplateForm = ({
           shouldDirty: false,
         });
         formControl.setValue("permissionSetId", currentValues.permissionSetId, {
+          shouldDirty: false,
+        });
+        formControl.setValue("applicationManifest", currentValues.applicationManifest, {
           shouldDirty: false,
         });
       }, 100);
@@ -302,8 +363,8 @@ const AppApprovalTemplateForm = ({
                 options={[
                   { label: "Enterprise Application", value: "EnterpriseApp" },
                   { label: "Gallery Template", value: "GalleryTemplate" },
+                  { label: "Application Manifest", value: "ApplicationManifest" },
                 ]}
-                multiple={false}
                 creatable={false}
                 required={true}
                 validators={{ required: "Application type is required" }}
@@ -387,6 +448,39 @@ const AppApprovalTemplateForm = ({
                   validators={{ required: "Gallery template is required" }}
                 />
               </CippFormCondition>
+              <CippFormCondition
+                field="appType"
+                compareType="is"
+                compareValue="ApplicationManifest"
+                formControl={formControl}
+              >
+                <CippFormComponent
+                  formControl={formControl}
+                  name="applicationManifest"
+                  label="Application Manifest (JSON)"
+                  type="textField"
+                  multiline
+                  rows={10}
+                  helperText="Paste your application manifest JSON here. For security reasons, signInAudience must be 'AzureADMyOrg' or not specified."
+                  validators={{
+                    required: "Application manifest is required",
+                    validate: (value) => {
+                      try {
+                        const manifest = JSON.parse(value);
+
+                        // Validate signInAudience
+                        if (manifest.signInAudience && manifest.signInAudience !== "AzureADMyOrg") {
+                          return "signInAudience must be null, undefined, or 'AzureADMyOrg' for security reasons";
+                        }
+
+                        return true;
+                      } catch (e) {
+                        return "Invalid JSON format";
+                      }
+                    },
+                  }}
+                />
+              </CippFormCondition>
 
               <CippFormCondition
                 field="appType"
@@ -436,15 +530,30 @@ const AppApprovalTemplateForm = ({
       <Grid size={{ xs: 12, sm: 6 }}>
         <CippPermissionPreview
           permissions={
-            selectedAppType === "GalleryTemplate"
-              ? null // Gallery templates will auto-handle permissions
+            selectedAppType === "GalleryTemplate" || selectedAppType === "ApplicationManifest"
+              ? null // Gallery templates and Application Manifests will handle permissions differently
               : selectedPermissionSet?.addedFields?.Permissions
           }
           isLoading={templateLoading}
           title={
-            selectedAppType === "GalleryTemplate" ? "Gallery Template Info" : "Permission Preview"
+            selectedAppType === "GalleryTemplate"
+              ? "Gallery Template Info"
+              : selectedAppType === "ApplicationManifest"
+              ? "Application Manifest"
+              : "Permission Preview"
           }
           galleryTemplate={selectedAppType === "GalleryTemplate" ? selectedGalleryTemplate : null}
+          applicationManifest={
+            selectedAppType === "ApplicationManifest" && selectedApplicationManifest
+              ? (() => {
+                  try {
+                    return JSON.parse(selectedApplicationManifest);
+                  } catch (e) {
+                    return null; // Return null if JSON is invalid
+                  }
+                })()
+              : null
+          }
         />
       </Grid>
     </Grid>
