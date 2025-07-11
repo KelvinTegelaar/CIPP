@@ -343,7 +343,6 @@ export const CippFormComponent = (props) => {
                   <RichTextEditor
                     {...other}
                     ref={field.ref}
-                    key={field.value ? "edit" : ""}
                     extensions={[StarterKit]}
                     content={field.value || ""}
                     onUpdate={({ editor }) => {
@@ -432,7 +431,7 @@ export const CippFormComponent = (props) => {
               control={formControl.control}
               rules={validators}
               render={({ field }) => (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Box sx={{ flexGrow: 1 }}>
                     <DateTimePicker
                       slotProps={{ textField: { fullWidth: true } }}
@@ -481,11 +480,11 @@ export const CippFormComponent = (props) => {
                       field.onChange(unixTimestamp);
                     }}
                     sx={{
-                      height: '42px',
-                      minWidth: '42px',
-                      padding: '8px 12px',
-                      alignSelf: 'flex-end',
-                      marginBottom: '0px', // Adjust to align with input field
+                      height: "42px",
+                      minWidth: "42px",
+                      padding: "8px 12px",
+                      alignSelf: "flex-end",
+                      marginBottom: "0px", // Adjust to align with input field
                     }}
                     title="Set to current date and time"
                   >
