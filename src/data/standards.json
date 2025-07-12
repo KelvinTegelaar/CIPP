@@ -1076,7 +1076,7 @@
     "disabledFeatures": {
       "report": false,
       "warn": false,
-      "remediate": true
+      "remediate": false
     },
     "label": "Cleanup stale Entra devices",
     "impact": "High Impact",
