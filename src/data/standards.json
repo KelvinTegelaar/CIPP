@@ -3185,13 +3185,13 @@
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": [],
-    "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement, retired devices are removed from Intune after the specified number of days.",
+    "helpText": "A value between 31 and 365 is supported. retired devices are removed from Intune after the specified number of days.",
     "executiveText": "Automatically removes inactive devices from management after a specified period, helping maintain a clean device inventory and reducing security risks from abandoned or lost devices. This policy ensures that only actively used corporate devices remain in the management system.",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.intuneDeviceRetirementDays.days",
-        "label": "Maximum days (0 equals disabled)"
+        "label": "Maximum days"
       }
     ],
     "label": "Set inactive device retirement days",
