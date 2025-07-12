@@ -109,7 +109,6 @@ const Page = () => {
         },
       ],
       customDataformatter: (row, action, formData) => {
-        console.log("Creating template from app registration:", row, formData);
         const propertiesToRemove = [
           "appId",
           "id",
@@ -118,6 +117,8 @@ const Page = () => {
           "servicePrincipalLockConfiguration",
           "identifierUris",
           "applicationIdUris",
+          "Tenant",
+          "CippStatus",
         ];
 
         const cleanManifest = { ...row };
