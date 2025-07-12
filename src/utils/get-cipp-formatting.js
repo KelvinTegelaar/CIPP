@@ -167,6 +167,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     "LastOccurrence",
     "NotBefore",
     "NotAfter",
+    "latestDataCollection",
   ];
 
   const matchDateTime = /[dD]ate[tT]ime/;
@@ -195,6 +196,14 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? data : data;
   }
 
+  if (cellName === "alignmentScore") {
+    // Handle alignment score, return a percentage with a label
+    return isText ? (
+      `${data}%`
+    ) : (
+      <LinearProgressWithLabel colourLevels={true} variant="determinate" value={data} />
+    );
+  }
   if (cellName === "RepeatsEvery") {
     //convert 1d to "Every 1 day", 1w to "Every 1 week" etc.
     const match = data.match(/(\d+)([a-zA-Z]+)/);
