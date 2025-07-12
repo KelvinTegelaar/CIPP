@@ -10,6 +10,7 @@ import {
   RadioGroup,
   Button,
   Box,
+  Input,
 } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { Controller, useFormState } from "react-hook-form";
@@ -27,7 +28,7 @@ import {
 import StarterKit from "@tiptap/starter-kit";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import React from "react";
-import { AccessTime } from "@mui/icons-material";
+import { CloudUpload } from "@mui/icons-material";
 
 // Helper function to convert bracket notation to dot notation
 // Improved to correctly handle nested bracket notations
@@ -497,6 +498,71 @@ export const CippFormComponent = (props) => {
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}
           </Typography>
+        </>
+      );
+
+    case "file":
+      return (
+        <>
+          <div>
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              rules={validators}
+              render={({ field }) => (
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    {label}
+                  </Typography>
+                  <Box
+                    sx={{
+                      border: "2px dashed #ccc",
+                      borderRadius: 2,
+                      p: 3,
+                      textAlign: "center",
+                      cursor: "pointer",
+                      "&:hover": {
+                        borderColor: "primary.main",
+                        backgroundColor: "rgba(0, 0, 0, 0.02)",
+                      },
+                    }}
+                    onClick={() => document.getElementById(`file-input-${convertedName}`).click()}
+                  >
+                    <CloudUpload sx={{ fontSize: 40, color: "grey.500", mb: 1 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      {field.value ? field.value.name : "Click to upload file or drag and drop"}
+                    </Typography>
+                    {field.value && (
+                      <Typography variant="caption" color="text.secondary">
+                        Size: {(field.value.size / 1024).toFixed(2)} KB
+                      </Typography>
+                    )}
+                  </Box>
+                  <Input
+                    id={`file-input-${convertedName}`}
+                    type="file"
+                    sx={{ display: "none" }}
+                    inputProps={{ ...other }}
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      field.onChange(file);
+                      if (other.onChange) {
+                        other.onChange(file);
+                      }
+                    }}
+                  />
+                </Box>
+              )}
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {get(errors, convertedName, {})?.message}
+          </Typography>
+          {helperText && (
+            <Typography variant="subtitle3" color="text.secondary">
+              {helperText}
+            </Typography>
+          )}
         </>
       );
 
