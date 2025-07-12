@@ -330,7 +330,10 @@ export const CippFormComponent = (props) => {
         </>
       );
 
-    case "richText":
+    case "richText": {
+      const editorInstanceRef = React.useRef(null);
+      const hasSetInitialValue = React.useRef(false);
+
       return (
         <>
           <div>
@@ -338,29 +341,48 @@ export const CippFormComponent = (props) => {
               name={convertedName}
               control={formControl.control}
               rules={validators}
-              render={({ field }) => (
-                <>
-                  <Typography variant="subtitle2">{label}</Typography>
-                  <RichTextEditor
-                    {...other}
-                    ref={field.ref}
-                    extensions={[StarterKit]}
-                    content={field.value || ""}
-                    onUpdate={({ editor }) => {
-                      field.onChange(editor.getHTML());
-                    }}
-                    label={label}
-                    renderControls={() => (
-                      <MenuControlsContainer>
-                        <MenuSelectHeading />
-                        <MenuDivider />
-                        <MenuButtonBold />
-                        <MenuButtonItalic />
-                      </MenuControlsContainer>
-                    )}
-                  />
-                </>
-              )}
+              render={({ field }) => {
+                const { value, onChange, ref } = field;
+
+                // Set content only once on first render
+                React.useEffect(() => {
+                  if (
+                    editorInstanceRef.current &&
+                    !hasSetInitialValue.current &&
+                    typeof value === "string"
+                  ) {
+                    editorInstanceRef.current.commands.setContent(value || "", false);
+                    hasSetInitialValue.current = true;
+                  }
+                }, [value]);
+
+                return (
+                  <>
+                    <Typography variant="subtitle2">{label}</Typography>
+                    <RichTextEditor
+                      {...other}
+                      ref={ref}
+                      extensions={[StarterKit]}
+                      content="" // do not preload content
+                      onCreate={({ editor }) => {
+                        editorInstanceRef.current = editor;
+                      }}
+                      onUpdate={({ editor }) => {
+                        onChange(editor.getHTML());
+                      }}
+                      label={label}
+                      renderControls={() => (
+                        <MenuControlsContainer>
+                          <MenuSelectHeading />
+                          <MenuDivider />
+                          <MenuButtonBold />
+                          <MenuButtonItalic />
+                        </MenuControlsContainer>
+                      )}
+                    />
+                  </>
+                );
+              }}
             />
           </div>
           <Typography variant="subtitle3" color="error">
@@ -368,7 +390,7 @@ export const CippFormComponent = (props) => {
           </Typography>
         </>
       );
-
+    }
     case "CSVReader":
       const remapData = (data, nameToCSVMapping) => {
         if (nameToCSVMapping && data) {
