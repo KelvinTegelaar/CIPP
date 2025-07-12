@@ -205,8 +205,13 @@ export const nativeMenuItems = [
         ],
         items: [
           {
-            title: "Standards",
+            title: "Standard Templates",
             path: "/tenant/standards/list-standards",
+            permissions: ["Tenant.Standards.*"],
+          },
+          {
+            title: "Tenant Alignment",
+            path: "/tenant/standards/tenant-alignment",
             permissions: ["Tenant.Standards.*"],
           },
           {

@@ -904,8 +904,13 @@ const ExecutiveReportDocument = ({
                   </Text>
                   <Text style={[styles.cellDesc, { width: 80, marginLeft: 8, fontSize: 6 }]}>
                     {(() => {
-                      if (typeof control.tags === 'object') {
-                        console.log('DEBUG: control.tags is an object:', control.tags, 'for control:', control.name);
+                      if (typeof control.tags === "object") {
+                        console.log(
+                          "DEBUG: control.tags is an object:",
+                          control.tags,
+                          "for control:",
+                          control.name
+                        );
                       }
                       return control.tags;
                     })()}
@@ -1274,8 +1279,13 @@ const ExecutiveReportDocument = ({
                     <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
                       {(() => {
                         const licenseValue = license.License || license.license || "N/A";
-                        if (typeof licenseValue === 'object') {
-                          console.log('DEBUG: license name is an object:', licenseValue, 'full license:', license);
+                        if (typeof licenseValue === "object") {
+                          console.log(
+                            "DEBUG: license name is an object:",
+                            licenseValue,
+                            "full license:",
+                            license
+                          );
                         }
                         return licenseValue;
                       })()}
@@ -1288,8 +1298,13 @@ const ExecutiveReportDocument = ({
                     >
                       {(() => {
                         const countUsed = license.CountUsed || license.countUsed || "0";
-                        if (typeof countUsed === 'object') {
-                          console.log('DEBUG: license.CountUsed is an object:', countUsed, 'full license:', license);
+                        if (typeof countUsed === "object") {
+                          console.log(
+                            "DEBUG: license.CountUsed is an object:",
+                            countUsed,
+                            "full license:",
+                            license
+                          );
                         }
                         return countUsed;
                       })()}
@@ -1298,9 +1313,15 @@ const ExecutiveReportDocument = ({
                       style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}
                     >
                       {(() => {
-                        const countAvailable = license.CountAvailable || license.countAvailable || "0";
-                        if (typeof countAvailable === 'object') {
-                          console.log('DEBUG: license.CountAvailable is an object:', countAvailable, 'full license:', license);
+                        const countAvailable =
+                          license.CountAvailable || license.countAvailable || "0";
+                        if (typeof countAvailable === "object") {
+                          console.log(
+                            "DEBUG: license.CountAvailable is an object:",
+                            countAvailable,
+                            "full license:",
+                            license
+                          );
                         }
                         return countAvailable;
                       })()}
@@ -1313,8 +1334,13 @@ const ExecutiveReportDocument = ({
                     >
                       {(() => {
                         const totalLicenses = license.TotalLicenses || license.totalLicenses || "0";
-                        if (typeof totalLicenses === 'object') {
-                          console.log('DEBUG: license.TotalLicenses is an object:', totalLicenses, 'full license:', license);
+                        if (typeof totalLicenses === "object") {
+                          console.log(
+                            "DEBUG: license.TotalLicenses is an object:",
+                            totalLicenses,
+                            "full license:",
+                            license
+                          );
                         }
                         return totalLicenses;
                       })()}
@@ -1480,8 +1506,13 @@ const ExecutiveReportDocument = ({
                       <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
                         {(() => {
                           const deviceName = device.deviceName || "N/A";
-                          if (typeof deviceName === 'object') {
-                            console.log('DEBUG: device.deviceName is an object:', deviceName, 'full device:', device);
+                          if (typeof deviceName === "object") {
+                            console.log(
+                              "DEBUG: device.deviceName is an object:",
+                              deviceName,
+                              "full device:",
+                              device
+                            );
                           }
                           return deviceName;
                         })()}
@@ -1489,8 +1520,13 @@ const ExecutiveReportDocument = ({
                       <Text style={[styles.cellName, { width: 70, fontSize: 7 }]}>
                         {(() => {
                           const operatingSystem = device.operatingSystem || "N/A";
-                          if (typeof operatingSystem === 'object') {
-                            console.log('DEBUG: device.operatingSystem is an object:', operatingSystem, 'full device:', device);
+                          if (typeof operatingSystem === "object") {
+                            console.log(
+                              "DEBUG: device.operatingSystem is an object:",
+                              operatingSystem,
+                              "full device:",
+                              device
+                            );
                           }
                           return operatingSystem;
                         })()}
@@ -1506,8 +1542,13 @@ const ExecutiveReportDocument = ({
                         >
                           {(() => {
                             const complianceState = device.complianceState || "Unknown";
-                            if (typeof complianceState === 'object') {
-                              console.log('DEBUG: device.complianceState is an object:', complianceState, 'full device:', device);
+                            if (typeof complianceState === "object") {
+                              console.log(
+                                "DEBUG: device.complianceState is an object:",
+                                complianceState,
+                                "full device:",
+                                device
+                              );
                             }
                             return complianceState;
                           })()}
@@ -1680,8 +1721,13 @@ const ExecutiveReportDocument = ({
                         <Text style={[styles.cellName, { width: 140, fontSize: 7, marginLeft: 0 }]}>
                           {(() => {
                             const displayName = policy.displayName || "N/A";
-                            if (typeof displayName === 'object') {
-                              console.log('DEBUG: policy.displayName is an object:', displayName, 'full policy:', policy);
+                            if (typeof displayName === "object") {
+                              console.log(
+                                "DEBUG: policy.displayName is an object:",
+                                displayName,
+                                "full policy:",
+                                policy
+                              );
                             }
                             return displayName;
                           })()}
@@ -1694,8 +1740,13 @@ const ExecutiveReportDocument = ({
                         <Text style={[styles.cellName, { width: 80, fontSize: 7 }]}>
                           {(() => {
                             const includeApplications = policy.includeApplications || "All";
-                            if (typeof includeApplications === 'object') {
-                              console.log('DEBUG: policy.includeApplications is an object:', includeApplications, 'full policy:', policy);
+                            if (typeof includeApplications === "object") {
+                              console.log(
+                                "DEBUG: policy.includeApplications is an object:",
+                                includeApplications,
+                                "full policy:",
+                                policy
+                              );
                             }
                             return includeApplications;
                           })()}
