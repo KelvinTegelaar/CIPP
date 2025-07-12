@@ -136,7 +136,7 @@ const Page = () => {
         };
       },
       confirmText: "Are you sure you want to create a template from this app registration?",
-      condition: () => canWriteApplication,
+      condition: (row) => canWriteApplication && row.signInAudience === "AzureADMyOrg",
     },
     {
       icon: <Delete />,
