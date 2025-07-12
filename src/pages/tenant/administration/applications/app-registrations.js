@@ -4,7 +4,8 @@ import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent.jsx";
 import { CertificateCredentialRemovalForm } from "/src/components/CippComponents/CertificateCredentialRemovalForm.jsx";
-import { Launch, Delete, Edit, Key, Security, Block, CheckCircle } from "@mui/icons-material";
+import CippPermissionPreview from "/src/components/CippComponents/CippPermissionPreview.jsx";
+import { Launch, Delete, Edit, Key, Security, Block, CheckCircle, Save } from "@mui/icons-material";
 import { usePermissions } from "/src/hooks/use-permissions.js";
 import tabOptions from "./tabOptions";
 
@@ -89,6 +90,53 @@ const Page = () => {
       condition: (row) => canWriteApplication && row?.keyCredentials?.length > 0,
     },
     {
+      icon: <Save />,
+      label: "Create Template from App Registration",
+      type: "POST",
+      color: "success",
+      multiPost: false,
+      url: "/api/ExecAppApprovalTemplate",
+      fields: [
+        {
+          label: "Template Name",
+          name: "TemplateName",
+          type: "textField",
+          placeholder: "Enter a name for the template",
+          required: true,
+          validators: {
+            required: { value: true, message: "Template name is required" },
+          },
+        },
+      ],
+      customDataformatter: (row, action, formData) => {
+        console.log("Creating template from app registration:", row, formData);
+        const propertiesToRemove = [
+          "appId",
+          "id",
+          "createdDateTime",
+          "publisherDomain",
+          "servicePrincipalLockConfiguration",
+          "identifierUris",
+          "applicationIdUris",
+        ];
+
+        const cleanManifest = { ...row };
+        propertiesToRemove.forEach((prop) => {
+          delete cleanManifest[prop];
+        });
+
+        return {
+          Action: "Save",
+          TemplateName: formData.TemplateName,
+          AppType: "ApplicationManifest",
+          AppName: row.displayName || row.appId,
+          ApplicationManifest: cleanManifest,
+        };
+      },
+      confirmText: "Are you sure you want to create a template from this app registration?",
+      condition: () => canWriteApplication,
+    },
+    {
       icon: <Delete />,
       label: "Delete App Registration",
       type: "POST",
@@ -115,13 +163,20 @@ const Page = () => {
       "signInAudience",
       "disabledByMicrosoftStatus",
       "replyUrls",
-      "requiredResourceAccess",
-      "web",
-      "api",
       "passwordCredentials",
       "keyCredentials",
     ],
     actions: actions,
+    children: (row) => {
+      return (
+        <CippPermissionPreview
+          applicationManifest={row}
+          title="Application Manifest"
+          maxHeight="800px"
+          showAppIds={true}
+        />
+      );
+    },
   };
 
   const simpleColumns = [
@@ -137,8 +192,6 @@ const Page = () => {
 
   const apiParams = {
     Endpoint: "applications",
-    $select:
-      "id,appId,displayName,createdDateTime,signInAudience,disabledByMicrosoftStatus,web,api,requiredResourceAccess,publisherDomain,replyUrls,passwordCredentials,keyCredentials",
     $count: true,
     $top: 999,
   };
