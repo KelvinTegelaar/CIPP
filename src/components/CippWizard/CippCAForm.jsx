@@ -82,6 +82,13 @@ export const CippCAForm = (props) => {
           label="Overwrite Existing Policy"
           formControl={formControl}
         />
+
+        <CippFormComponent
+          type="switch"
+          name="DisableSD"
+          label="Disable Security Defaults if enabled when creating policy"
+          formControl={formControl}
+        />
       </Stack>
       <CippWizardStepButtons
         currentStep={currentStep}

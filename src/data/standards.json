@@ -4686,6 +4686,11 @@
             "label": "Set to report only"
           }
         ]
+      },
+      {
+        "type": "switch",
+        "name": "DisableSD",
+        "label": "Disable Security Defaults when deploying policy"
       }
     ]
   },

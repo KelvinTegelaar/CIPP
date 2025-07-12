@@ -685,7 +685,6 @@ const ExecutiveReportDocument = ({
             standardDef.tag && Array.isArray(standardDef.tag) && standardDef.tag.length > 0
               ? standardDef.tag.slice(0, 2).join(", ") // Show first 2 tags
               : "No tags";
-
           processedStandards.push({
             name: standardDef.label,
             description:
@@ -904,7 +903,12 @@ const ExecutiveReportDocument = ({
                     {control.description}
                   </Text>
                   <Text style={[styles.cellDesc, { width: 80, marginLeft: 8, fontSize: 6 }]}>
-                    {control.tags}
+                    {(() => {
+                      if (typeof control.tags === 'object') {
+                        console.log('DEBUG: control.tags is an object:', control.tags, 'for control:', control.name);
+                      }
+                      return control.tags;
+                    })()}
                   </Text>
                   <View style={[styles.cellStatus, { width: 60, marginLeft: 8 }]}>
                     <Text style={getBadgeStyle(control.status)}>{control.status}</Text>
@@ -1268,7 +1272,13 @@ const ExecutiveReportDocument = ({
                 {licensingData.map((license, index) => (
                   <View key={index} style={styles.tableRow}>
                     <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
-                      {license.License || license.license || "N/A"}
+                      {(() => {
+                        const licenseValue = license.License || license.license || "N/A";
+                        if (typeof licenseValue === 'object') {
+                          console.log('DEBUG: license name is an object:', licenseValue, 'full license:', license);
+                        }
+                        return licenseValue;
+                      })()}
                     </Text>
                     <Text
                       style={[
@@ -1276,12 +1286,24 @@ const ExecutiveReportDocument = ({
                         { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
                       ]}
                     >
-                      {license.CountUsed || license.countUsed || "0"}
+                      {(() => {
+                        const countUsed = license.CountUsed || license.countUsed || "0";
+                        if (typeof countUsed === 'object') {
+                          console.log('DEBUG: license.CountUsed is an object:', countUsed, 'full license:', license);
+                        }
+                        return countUsed;
+                      })()}
                     </Text>
                     <Text
                       style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}
                     >
-                      {license.CountAvailable || license.countAvailable || "0"}
+                      {(() => {
+                        const countAvailable = license.CountAvailable || license.countAvailable || "0";
+                        if (typeof countAvailable === 'object') {
+                          console.log('DEBUG: license.CountAvailable is an object:', countAvailable, 'full license:', license);
+                        }
+                        return countAvailable;
+                      })()}
                     </Text>
                     <Text
                       style={[
@@ -1289,7 +1311,13 @@ const ExecutiveReportDocument = ({
                         { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
                       ]}
                     >
-                      {license.TotalLicenses || license.totalLicenses || "0"}
+                      {(() => {
+                        const totalLicenses = license.TotalLicenses || license.totalLicenses || "0";
+                        if (typeof totalLicenses === 'object') {
+                          console.log('DEBUG: license.TotalLicenses is an object:', totalLicenses, 'full license:', license);
+                        }
+                        return totalLicenses;
+                      })()}
                     </Text>
                   </View>
                 ))}
@@ -1450,10 +1478,22 @@ const ExecutiveReportDocument = ({
                   return (
                     <View key={index} style={styles.tableRow}>
                       <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
-                        {device.deviceName || "N/A"}
+                        {(() => {
+                          const deviceName = device.deviceName || "N/A";
+                          if (typeof deviceName === 'object') {
+                            console.log('DEBUG: device.deviceName is an object:', deviceName, 'full device:', device);
+                          }
+                          return deviceName;
+                        })()}
                       </Text>
                       <Text style={[styles.cellName, { width: 70, fontSize: 7 }]}>
-                        {device.operatingSystem || "N/A"}
+                        {(() => {
+                          const operatingSystem = device.operatingSystem || "N/A";
+                          if (typeof operatingSystem === 'object') {
+                            console.log('DEBUG: device.operatingSystem is an object:', operatingSystem, 'full device:', device);
+                          }
+                          return operatingSystem;
+                        })()}
                       </Text>
                       <View style={[styles.cellStatus, { width: 70, marginLeft: 0 }]}>
                         <Text
@@ -1464,7 +1504,13 @@ const ExecutiveReportDocument = ({
                               : styles.statusReview,
                           ]}
                         >
-                          {device.complianceState || "Unknown"}
+                          {(() => {
+                            const complianceState = device.complianceState || "Unknown";
+                            if (typeof complianceState === 'object') {
+                              console.log('DEBUG: device.complianceState is an object:', complianceState, 'full device:', device);
+                            }
+                            return complianceState;
+                          })()}
                         </Text>
                       </View>
                       <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>{lastSync}</Text>
@@ -1632,7 +1678,13 @@ const ExecutiveReportDocument = ({
                     return (
                       <View key={index} style={styles.tableRow}>
                         <Text style={[styles.cellName, { width: 140, fontSize: 7, marginLeft: 0 }]}>
-                          {policy.displayName || "N/A"}
+                          {(() => {
+                            const displayName = policy.displayName || "N/A";
+                            if (typeof displayName === 'object') {
+                              console.log('DEBUG: policy.displayName is an object:', displayName, 'full policy:', policy);
+                            }
+                            return displayName;
+                          })()}
                         </Text>
                         <View style={[styles.cellStatus, { width: 80, marginLeft: 0 }]}>
                           <Text style={[styles.statusText, getStateStyle(policy.state)]}>
@@ -1640,7 +1692,13 @@ const ExecutiveReportDocument = ({
                           </Text>
                         </View>
                         <Text style={[styles.cellName, { width: 80, fontSize: 7 }]}>
-                          {policy.includeApplications || "All"}
+                          {(() => {
+                            const includeApplications = policy.includeApplications || "All";
+                            if (typeof includeApplications === 'object') {
+                              console.log('DEBUG: policy.includeApplications is an object:', includeApplications, 'full policy:', policy);
+                            }
+                            return includeApplications;
+                          })()}
                         </Text>
                         <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>
                           {getControlsText(policy)}
