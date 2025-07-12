@@ -113,6 +113,7 @@ const Page = () => {
           "appId",
           "id",
           "createdDateTime",
+          "deletedDateTime",
           "publisherDomain",
           "servicePrincipalLockConfiguration",
           "identifierUris",
