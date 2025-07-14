@@ -31,7 +31,10 @@ Setting this same standard to "Remediate" changes the clients configuration, and
 
 Standards are merged based on their specificity and creation date:
 
-* **Specificity:** Standards applied to a specific tenant always override more general standards (like those set for 'All Tenants'). For instance, if an 'All Tenants' standard enables TOTP but you need it disabled for one tenant, creating and applying a tenant-specific standard will disable TOTP for that tenant.
+* **Specificity:** Standards applied via a more specific targeting method will always override more general standards (like those set for 'All Tenants'). For instance, if an 'All Tenants' standard enables TOTP but you need it disabled for one tenant, creating and applying a tenant-specific standard will disable TOTP for that tenant. The priority order is:
+  * Individual tenant, which overrides tenant group and All Tenants
+  * Tenant group, which overrides All Tenants
+  * All Tenants, which is the lowest priority
 * **Creation Date:** When two standards conflict at the same specificity level (e.g., both tenant-specific), the standard created most recently takes precedence. For example, if you create a tenant-specific standard enabling TOTP and later create another tenant-specific standard disabling TOTP, the more recently created standard (disabling TOTP) will be applied.
 
 {% hint style="warning" %}

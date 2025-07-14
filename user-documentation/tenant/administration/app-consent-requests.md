@@ -7,6 +7,10 @@ This page shows all the app consent requests that have been made in the tenant.
 To not miss any requests, it is recommended to set up the Scripted CIPP Alert `Alert on new apps in the application approval list`.
 {% endhint %}
 
+### App Consent Request Table Filters
+
+This will allow you to modify the Request Status types displayed in the table below. Options are `All`, `Pending`, `Expired`, and `Completed`.
+
 ### Table Details
 
 The properties returned are for the Graph resource type `appConsentRequest`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/appconsentrequest?view=graph-rest-1.0#properties).

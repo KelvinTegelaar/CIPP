@@ -8,7 +8,7 @@ The properties returned are for the Graph resource type `application`. For more 
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View App Registration</td><td>Opens the app registration in the Entra portal</td><td>true</td></tr><tr><td>View API Permissions</td><td>Opens the API permissions for the app registration in the Entra portal</td><td>true</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View App Registration</td><td>Opens the app registration in the Entra portal</td><td>false</td></tr><tr><td>View API Permissions</td><td>Opens the API permissions for the app registration in the Entra portal</td><td>false</td></tr><tr><td>Remove Password Credentials</td><td>Removes the password credentials from the selected app registration(s), if applicable</td><td>true</td></tr><tr><td>Remove Certificate Credentials</td><td>Removes the certificate credentials from the selected app registration(s), if applicable</td><td>true</td></tr><tr><td>Create Template from App Registration</td><td></td><td>true</td></tr><tr><td>Delete App Registration</td><td></td><td>true</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

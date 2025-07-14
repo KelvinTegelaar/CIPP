@@ -59,7 +59,19 @@ Once all other steps are completed and all tenants show configured, click the "S
 On both the add and edit standards template page, you will see options for how to filter the standards list added to the template. This is helpful for those templates that contain a lot of standards.
 
 * Search: A search box at the top will allow you to do keyword searches for standards
-* Filter toggles: You can toggle between "All", "Configured", and "Unconfigured" standards for your display view.
+
+#### View, Sort, and Filter Options
+
+| Option          | Description                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| View            | With options for Cards and List, this will toggle how the table is presented to you                                                       |
+| Sort By         | This will present you with options for which attribute to sort the view by. Options are Name or Date Added                                |
+| Order           | This will alter the direction the selected "Sort By" is displayed. Options are "Ascending" and "Descending"                               |
+| Categories      | This will allow you to pick from the CIPP Standards categories to display only those you wish to review.                                  |
+| Impact          | This will allow you to pick from the CIPP defined standards Impact to display only those you wish to review.                              |
+| Recommended By  | This will allow you to pick from the different organizations that recommend tenant settings to display only those you wish to review.     |
+| Compliance Tags | This will allow you to pick from the different compliance frameworks to display only those you wish to review.                            |
+| New (30 days)   | This toggle will allow you to display only those standards that have been recently added to CIPP for easy adoption of the latest updates. |
 
 ***
 

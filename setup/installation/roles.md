@@ -62,8 +62,8 @@ Set up Custom Roles by following these steps:
 * Select a Custom Role from the list or start typing to create a new one if you do not yet have any.
   * Please ensure that your custom role is entirely in lowercase and does not contain spaces or special characters.
 * Optionally select a Entra group this role will be mapped to. Adding an Entra group allows all users in this group to access CIPP.
-* For Allowed Tenants select a subset of tenants to manage or AllTenants.
-  * If AllTenants is selected, you can block a subset of tenants using Blocked Tenants.
+* For Allowed Tenants select a subset of tenants to manage, tenant groups, or AllTenants.
+  * If AllTenants is selected, you can block a subset of tenants or tenant groups using Blocked Tenants.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
   * To find out which API endpoints are affected by these selections, click on the Info button.
 
