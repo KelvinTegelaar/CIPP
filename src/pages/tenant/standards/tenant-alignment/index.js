@@ -27,7 +27,6 @@ const Page = () => {
         "alignmentScore",
         "LicenseMissingPercentage",
         "combinedAlignmentScore",
-        "latestDataCollection",
       ]}
       queryKey="listTenantAlignment"
     />
