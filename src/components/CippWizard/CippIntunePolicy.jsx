@@ -103,7 +103,7 @@ export const CippIntunePolicy = (props) => {
               return null;
             }
             return uniquePlaceholders.map((placeholder) => (
-              <Grid key={placeholder} item size={{ xs: 6 }}>
+              <Grid key={placeholder} size={{ xs: 6 }}>
                 {selectedTenants.map((tenant, idx) => (
                   <CippFormComponent
                     key={`${tenant.value}-${placeholder}-${idx}`}
