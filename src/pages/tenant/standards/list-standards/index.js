@@ -130,7 +130,7 @@ const Page = () => {
     <div>
       {oldStandards.isSuccess && oldStandards.data.length !== 0 && (
         <Grid container spacing={2}>
-          <Grid container item spacing={2}>
+          <Grid container spacing={2}>
             <Alert
               severity="warning"
               style={{ display: "flex", alignItems: "center", width: "100%" }}
