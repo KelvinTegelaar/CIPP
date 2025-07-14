@@ -196,16 +196,20 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? data : data;
   }
 
-  if (
-    cellName === "alignmentScore" ||
-    cellName === "LicenseMissingPercentage" ||
-    cellName === "combinedAlignmentScore"
-  ) {
+  if (cellName === "alignmentScore" || cellName === "combinedAlignmentScore") {
     // Handle alignment score, return a percentage with a label
     return isText ? (
       `${data}%`
     ) : (
       <LinearProgressWithLabel colourLevels={true} variant="determinate" value={data} />
+    );
+  }
+
+  if (cellName === "LicenseMissingPercentage") {
+    return isText ? (
+      `${data}%`
+    ) : (
+      <LinearProgressWithLabel colourLevels={"flipped"} variant="determinate" value={data} />
     );
   }
   if (cellName === "RepeatsEvery") {

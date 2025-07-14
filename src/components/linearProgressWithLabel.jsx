@@ -9,14 +9,31 @@ export const LinearProgressWithLabel = (props) => {
       return undefined; // Use default MUI color
     }
 
-    if (value >= 0 && value < 25) {
-      return colourLevels.level0to25 || "#f44336"; // Default red
-    } else if (value >= 25 && value < 50) {
-      return colourLevels.level25to50 || "#ff9800"; // Default orange
-    } else if (value >= 50 && value < 75) {
-      return colourLevels.level50to75 || "#ffeb3b"; // Default yellow
-    } else if (value >= 75 && value <= 100) {
-      return colourLevels.level75to100 || "#4caf50"; // Default green
+    // Check if flipped mode is enabled
+    const isFlipped = colourLevels === 'flipped' || colourLevels.flipped === true;
+
+    if (isFlipped) {
+      // Flipped color order: green -> yellow -> orange -> red
+      if (value >= 0 && value < 25) {
+        return "#4caf50"; // Green for low values when flipped
+      } else if (value >= 25 && value < 50) {
+        return "#ffeb3b"; // Yellow
+      } else if (value >= 50 && value < 75) {
+        return "#ff9800"; // Orange
+      } else if (value >= 75 && value <= 100) {
+        return "#f44336"; // Red for high values when flipped
+      }
+    } else {
+      // Normal color order: red -> orange -> yellow -> green
+      if (value >= 0 && value < 25) {
+        return colourLevels.level0to25 || "#f44336"; // Default red
+      } else if (value >= 25 && value < 50) {
+        return colourLevels.level25to50 || "#ff9800"; // Default orange
+      } else if (value >= 50 && value < 75) {
+        return colourLevels.level50to75 || "#ffeb3b"; // Default yellow
+      } else if (value >= 75 && value <= 100) {
+        return colourLevels.level75to100 || "#4caf50"; // Default green
+      }
     }
 
     return undefined; // Fallback to default
