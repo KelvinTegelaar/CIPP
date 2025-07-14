@@ -352,7 +352,7 @@ const Page = () => {
                     becPollingCall.data.NewUsers.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.NewUsers.map((user) => (
+                          {becPollingCall.data.NewUsers.map((user, index) => (
                             <PropertyListItem
                               key={index}
                               label={user.userPrincipalName}
