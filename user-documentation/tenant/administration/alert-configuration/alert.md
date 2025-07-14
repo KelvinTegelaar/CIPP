@@ -69,6 +69,7 @@ Within CIPP, there are two types of alerts:
 * Alert when Tenant External Recipient Rate Limit exceeds X %
 * Alert on domains with low security score
 * Alert on new risky users (P2 License Required)
+* Alert on low tenant alignment percentage
 
 ### Available Template Audit Log Alerts
 

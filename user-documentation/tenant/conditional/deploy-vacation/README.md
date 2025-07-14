@@ -16,7 +16,7 @@ This table will display relevant information for previously scheduled vacations.
 
 ### Table Actions
 
-<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Cancel Vacation Mode</td><td>Opens a modal to cancel the reamining tasks on the schedule vacation</td><td>false</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>View Task Details</td><td>Opens the <a data-mention href="../../../tools/scheduler/task.md">task.md</a> to the selected vacation mode task.</td><td>false</td></tr><tr><td>Cancel Vacation Mode</td><td>Opens a modal to cancel the remaining tasks on the schedule vacation</td><td>false</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

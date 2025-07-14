@@ -28,6 +28,7 @@
 
 * Let people outside the organization email the group - If selected, it allows external senders to send emails to the group.
 * Send Copies of team emails and events to team members inboxes - If selected, it enables sending copies of team emails and events to the inboxes of team members.
+* Hide group mailbox from Outlook - If selected, it will hide the mailbox from the Global Address List
 
 ***
 
