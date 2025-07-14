@@ -239,8 +239,8 @@ const App = (props) => {
       id: "documentation",
       icon: <AutoStories />,
       name: "Check the Documentation",
-      href: `https://docs.cipp.app/user-documentation/${pathname}`,
-      onClick: () => window.open(`https://docs.cipp.app/user-documentation/${pathname}`, "_blank"),
+      href: `https://docs.cipp.app/user-documentation${pathname}`,
+      onClick: () => window.open(`https://docs.cipp.app/user-documentation${pathname}`, "_blank"),
     },
   ];
 

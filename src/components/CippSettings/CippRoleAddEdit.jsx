@@ -149,27 +149,61 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         (role) => role.RowKey === selectedRole
       );
 
+      // Process allowed tenants - handle both groups and tenant IDs
       var newAllowedTenants = [];
-      currentPermissions?.AllowedTenants.map((tenant) => {
-        var tenantInfo = tenants.find((t) => t.customerId === tenant);
-        var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
-        if (tenantInfo?.displayName) {
+      currentPermissions?.AllowedTenants?.forEach((item) => {
+        if (typeof item === "object" && item.type === "Group") {
+          // Handle group objects
           newAllowedTenants.push({
-            label: label,
-            value: tenantInfo.defaultDomainName,
+            label: item.label,
+            value: item.value,
+            type: "Group",
           });
+        } else {
+          // Handle tenant customer IDs (legacy format)
+          var tenantInfo = tenants.find((t) => t.customerId === item);
+          if (tenantInfo?.displayName) {
+            var label = `${tenantInfo.displayName} (${tenantInfo.defaultDomainName})`;
+            newAllowedTenants.push({
+              label: label,
+              value: tenantInfo.defaultDomainName,
+              type: "Tenant",
+              addedFields: {
+                defaultDomainName: tenantInfo.defaultDomainName,
+                displayName: tenantInfo.displayName,
+                customerId: tenantInfo.customerId,
+              },
+            });
+          }
         }
       });
 
+      // Process blocked tenants - handle both groups and tenant IDs
       var newBlockedTenants = [];
-      currentPermissions?.BlockedTenants.map((tenant) => {
-        var tenantInfo = tenants.find((t) => t.customerId === tenant);
-        var label = `${tenantInfo?.displayName} (${tenantInfo?.defaultDomainName})`;
-        if (tenantInfo?.displayName) {
+      currentPermissions?.BlockedTenants?.forEach((item) => {
+        if (typeof item === "object" && item.type === "Group") {
+          // Handle group objects
           newBlockedTenants.push({
-            label: label,
-            value: tenantInfo.defaultDomainName,
+            label: item.label,
+            value: item.value,
+            type: "Group",
           });
+        } else {
+          // Handle tenant customer IDs (legacy format)
+          var tenantInfo = tenants.find((t) => t.customerId === item);
+          if (tenantInfo?.displayName) {
+            var label = `${tenantInfo.displayName} (${tenantInfo.defaultDomainName})`;
+            newBlockedTenants.push({
+              label: label,
+              value: tenantInfo.defaultDomainName,
+              type: "Tenant",
+              addedFields: {
+                defaultDomainName: tenantInfo.defaultDomainName,
+                displayName: tenantInfo.displayName,
+                customerId: tenantInfo.customerId,
+              },
+            });
+          }
         }
       });
 
@@ -245,22 +279,44 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   const handleSubmit = () => {
     let values = formControl.getValues();
-    var allowedTenantIds = [];
 
-    selectedTenant.map((tenant) => {
-      var tenant = tenants.find((t) => t.defaultDomainName === tenant?.value);
-      if (tenant?.customerId) {
-        allowedTenantIds.push(tenant.customerId);
-      }
-    });
+    // Process allowed tenants - preserve groups and convert tenants to IDs
+    const processedAllowedTenants =
+      selectedTenant
+        ?.map((tenant) => {
+          if (tenant.type === "Group") {
+            // Keep groups as-is for backend processing
+            return {
+              type: "Group",
+              value: tenant.value,
+              label: tenant.label,
+            };
+          } else {
+            // Convert tenant domain names to customer IDs
+            const tenantInfo = tenants.find((t) => t.defaultDomainName === tenant.value);
+            return tenantInfo?.customerId;
+          }
+        })
+        .filter(Boolean) || [];
 
-    var blockedTenantIds = [];
-    blockedTenants.map((tenant) => {
-      var tenant = tenants.find((t) => t.defaultDomainName === tenant?.value);
-      if (tenant?.customerId) {
-        blockedTenantIds.push(tenant.customerId);
-      }
-    });
+    // Process blocked tenants - preserve groups and convert tenants to IDs
+    const processedBlockedTenants =
+      blockedTenants
+        ?.map((tenant) => {
+          if (tenant.type === "Group") {
+            // Keep groups as-is for backend processing
+            return {
+              type: "Group",
+              value: tenant.value,
+              label: tenant.label,
+            };
+          } else {
+            // Convert tenant domain names to customer IDs
+            const tenantInfo = tenants.find((t) => t.defaultDomainName === tenant.value);
+            return tenantInfo?.customerId;
+          }
+        })
+        .filter(Boolean) || [];
 
     updatePermissions.mutate({
       url: "/api/ExecCustomRole?Action=AddUpdate",
@@ -268,8 +324,8 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         RoleName: values?.["RoleName"],
         Permissions: selectedPermissions,
         EntraGroup: selectedEntraGroup,
-        AllowedTenants: allowedTenantIds,
-        BlockedTenants: blockedTenantIds,
+        AllowedTenants: processedAllowedTenants,
+        BlockedTenants: processedBlockedTenants,
       },
     });
   };
@@ -420,6 +476,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   allTenants={true}
                   name="allowedTenants"
                   fullWidth={true}
+                  includeGroups={true}
                 />
                 {allTenantSelected && blockedTenants?.length == 0 && (
                   <Alert color="warning">
@@ -437,6 +494,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                     allTenants={false}
                     name="blockedTenants"
                     fullWidth={true}
+                    includeGroups={true}
                   />
                 </Box>
               )}

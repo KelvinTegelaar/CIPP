@@ -9,7 +9,7 @@ import {
   Visibility as VisibilityIcon,
   Edit as EditIcon,
 } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import Link from "next/link";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 
@@ -111,12 +111,25 @@ const Page = () => {
         },
       ],
     },
+    {
+      label: "Add service provider exception to policy",
+      type: "POST",
+      url: "/api/ExecCAServiceExclusion",
+      data: {
+        GUID: "id",
+      },
+      confirmText: "Are you sure you want to add the service provider exception to this policy?",
+      icon: <DeleteIcon />,
+      color: "warning",
+    },
   ];
 
   // Off-canvas configuration
   const offCanvas = {
     children: (row) => (
-      <CippJsonView object={JSON.parse(row?.rawjson ? row.rawjson : null)} defaultOpen={true} />
+      <Box sx={{ pt: 4 }}>
+        <CippJsonView object={JSON.parse(row?.rawjson ? row.rawjson : null)} defaultOpen={true} />
+      </Box>
     ),
     size: "xl",
   };
