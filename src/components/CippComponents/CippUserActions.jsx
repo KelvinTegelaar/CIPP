@@ -1,7 +1,6 @@
 import { EyeIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 import {
   Archive,
-  Block,
   Clear,
   CloudDone,
   Edit,
@@ -9,7 +8,6 @@ import {
   ForwardToInbox,
   GroupAdd,
   LockClock,
-  LockOpen,
   LockPerson,
   LockReset,
   MeetingRoom,
@@ -20,10 +18,18 @@ import {
   PhonelinkSetup,
   Shortcut,
 } from "@mui/icons-material";
+import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 import { useSettings } from "/src/hooks/use-settings.js";
+import { usePermissions } from "../../hooks/use-permissions";
 
 export const CippUserActions = () => {
   const tenant = useSettings().currentTenant;
+
+  const { checkPermissions } = usePermissions();
+  const canWriteUser = checkPermissions(["Identity.User.ReadWrite"]);
+  const canWriteMailbox = checkPermissions(["Exchange.Mailbox.ReadWrite"]);
+  const canWriteGroup = checkPermissions(["Identity.Group.ReadWrite"]);
+
   return [
     {
       //tested
@@ -40,6 +46,7 @@ export const CippUserActions = () => {
       icon: <Edit />,
       color: "success",
       target: "_self",
+      condition: () => canWriteUser,
     },
     {
       //tested
@@ -62,22 +69,23 @@ export const CippUserActions = () => {
           type: "number",
           name: "lifetimeInMinutes",
           label: "Lifetime (Minutes)",
-          placeholder: "Leave blank for default"
+          placeholder: "Leave blank for default",
         },
         {
           type: "switch",
           name: "isUsableOnce",
-          label: "One-time use only"
+          label: "One-time use only",
         },
         {
           type: "datePicker",
           name: "startDateTime",
           label: "Start Date/Time (leave blank for immediate)",
-          dateTimeType: "datetime"
-        }
+          dateTimeType: "datetime",
+        },
       ],
       confirmText: "Are you sure you want to create a Temporary Access Password?",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
       //tested
@@ -88,6 +96,7 @@ export const CippUserActions = () => {
       data: { ID: "userPrincipalName" },
       confirmText: "Are you sure you want to reset MFA for this user?",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
       //tested
@@ -118,29 +127,37 @@ export const CippUserActions = () => {
           ],
           multiple: false,
           creatable: false,
+          validators: { required: "Please select an MFA state" },
         },
       ],
       confirmText: "Are you sure you want to set per-user MFA for these users?",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
       //tested
-      label: "Convert to Shared Mailbox",
+      label: "Convert Mailbox",
       type: "POST",
       icon: <Email />,
       url: "/api/ExecConvertMailbox",
-      data: { ID: "userPrincipalName", MailboxType: "!Shared" },
-      confirmText: "Are you sure you want to convert this user to a shared mailbox?",
+      data: { ID: "userPrincipalName" },
+      fields: [
+        {
+          type: "radio",
+          name: "MailboxType",
+          label: "Mailbox Type",
+          options: [
+            { label: "User Mailbox", value: "Regular" },
+            { label: "Shared Mailbox", value: "Shared" },
+            { label: "Room Mailbox", value: "Room" },
+            { label: "Equipment Mailbox", value: "Equipment" },
+          ],
+          validators: { required: "Please select a mailbox type" },
+        },
+      ],
+      confirmText: "Pick the type of mailbox you want to convert [userPrincipalName] to:",
       multiPost: false,
-    },
-    {
-      label: "Convert to User Mailbox",
-      type: "POST",
-      icon: <Email />,
-      url: "/api/ExecConvertMailbox",
-      data: { ID: "userPrincipalName", MailboxType: "!Regular" },
-      confirmText: "Are you sure you want to convert this user to a user mailbox?",
-      multiPost: false,
+      condition: () => canWriteMailbox,
     },
     {
       //tested
@@ -149,8 +166,9 @@ export const CippUserActions = () => {
       icon: <Archive />,
       url: "/api/ExecEnableArchive",
       data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to enable the online archive for this user?",
+      confirmText: "Are you sure you want to enable the online archive for [userPrincipalName]?",
       multiPost: false,
+      condition: (row) => canWriteMailbox,
     },
     {
       //tested
@@ -166,6 +184,7 @@ export const CippUserActions = () => {
       fields: [{ type: "richText", name: "input", label: "Out of Office Message" }],
       confirmText: "Are you sure you want to set the out of office?",
       multiPost: false,
+      condition: () => canWriteMailbox,
     },
 
     {
@@ -177,8 +196,9 @@ export const CippUserActions = () => {
         userId: "userPrincipalName",
         AutoReplyState: { value: "Disabled" },
       },
-      confirmText: "Are you sure you want to disable the out of office?",
+      confirmText: "Are you sure you want to disable the out of office for [userPrincipalName]?",
       multiPost: false,
+      condition: () => canWriteMailbox,
     },
     {
       label: "Add to Group",
@@ -191,18 +211,22 @@ export const CippUserActions = () => {
           row
             .map((r) => ({
               label: r.displayName,
-              value: r.userPrincipalName,
+              value: r.id,
               addedFields: {
                 id: r.id,
+                userPrincipalName: r.userPrincipalName,
+                displayName: r.displayName,
               },
             }))
             .forEach((r) => addMember.push(r));
         } else {
           addMember.push({
             label: row.displayName,
-            value: row.userPrincipalName,
+            value: row.id,
             addedFields: {
               id: row.id,
+              userPrincipalName: row.userPrincipalName,
+              displayName: row.displayName,
             },
           });
         }
@@ -219,6 +243,7 @@ export const CippUserActions = () => {
           label: "Select a group to add the user to",
           multiple: false,
           creatable: false,
+          validators: { required: "Please select a group" },
           api: {
             url: "/api/ListGroups",
             labelField: "displayName",
@@ -232,8 +257,10 @@ export const CippUserActions = () => {
           },
         },
       ],
-      confirmText: "Are you sure you want to add the user to this group?",
+      confirmText: "Are you sure you want to add [userPrincipalName] to this group?",
       multiPost: true,
+      allowResubmit: true,
+      condition: () => canWriteGroup,
     },
     {
       label: "Manage Licenses",
@@ -252,7 +279,7 @@ export const CippUserActions = () => {
             { label: "Remove Licenses", value: "Remove" },
             { label: "Replace Licenses", value: "Replace" },
           ],
-          required: true,
+          validators: { required: "Please select a license operation" },
         },
         {
           type: "switch",
@@ -267,7 +294,8 @@ export const CippUserActions = () => {
           creatable: false,
           api: {
             url: "/api/ListLicenses",
-            labelField: "skuPartNumber",
+            labelField: (option) =>
+              `${getCippLicenseTranslation([option])} (${option?.availableUnits} available)`,
             valueField: "skuId",
             queryKey: `licenses-${tenant}`,
           },
@@ -275,6 +303,7 @@ export const CippUserActions = () => {
       ],
       confirmText: "Are you sure you want to manage licenses for the selected users?",
       multiPost: true,
+      condition: () => canWriteUser,
     },
     {
       label: "Disable Email Forwarding",
@@ -286,8 +315,9 @@ export const CippUserActions = () => {
         userid: "userPrincipalName",
         ForwardOption: "!disabled",
       },
-      confirmText: "Are you sure you want to disable forwarding of this user's emails?",
+      confirmText: "Are you sure you want to disable forwarding of [userPrincipalName]'s emails?",
       multiPost: false,
+      condition: () => canWriteMailbox,
     },
     {
       label: "Pre-provision OneDrive",
@@ -297,6 +327,7 @@ export const CippUserActions = () => {
       data: { UserPrincipalName: "userPrincipalName" },
       confirmText: "Are you sure you want to pre-provision OneDrive for this user?",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
       label: "Add OneDrive Shortcut",
@@ -314,6 +345,7 @@ export const CippUserActions = () => {
           label: "Select a Site",
           multiple: false,
           creatable: true,
+          validators: { required: "Please select or enter a SharePoint site URL" },
           api: {
             url: "/api/ListSites",
             data: { type: "SharePointSiteUsage", URLOnly: true },
@@ -325,40 +357,29 @@ export const CippUserActions = () => {
       ],
       confirmText: "Select a SharePoint site to create a shortcut for:",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
-      label: "Block Sign In",
+      label: "Set Sign In State",
       type: "POST",
-      icon: <Block />,
+      icon: <LockPerson />,
       url: "/api/ExecDisableUser",
       data: { ID: "id" },
-      confirmText: "Are you sure you want to block the sign-in for this user?",
+      fields: [
+        {
+          type: "radio",
+          name: "Enable",
+          label: "Sign In State",
+          options: [
+            { label: "Enabled", value: true },
+            { label: "Disabled", value: false },
+          ],
+          validators: { required: "Please select a sign-in state" },
+        },
+      ],
+      confirmText: "Are you sure you want to set the sign-in state for [userPrincipalName]?",
       multiPost: false,
-      condition: (row) => row.accountEnabled,
-    },
-    {
-      label: "Unblock Sign In",
-      type: "POST",
-      icon: <LockOpen />,
-      url: "/api/ExecDisableUser",
-      data: { ID: "id", Enable: true },
-      confirmText: "Are you sure you want to unblock sign-in for this user?",
-      multiPost: false,
-      condition: (row) => !row.accountEnabled,
-    },
-    {
-      label: "Reset Password (Must Change)",
-      type: "POST",
-      icon: <LockReset />,
-      url: "/api/ExecResetPass",
-      data: {
-        MustChange: true,
-        ID: "userPrincipalName",
-        displayName: "displayName",
-      },
-      confirmText:
-        "Are you sure you want to reset the password for this user? The user must change their password at next logon.",
-      multiPost: false,
+      condition: () => canWriteUser,
     },
     {
       label: "Reset Password",
@@ -366,35 +387,42 @@ export const CippUserActions = () => {
       icon: <LockReset />,
       url: "/api/ExecResetPass",
       data: {
-        MustChange: false,
         ID: "userPrincipalName",
         displayName: "displayName",
       },
-      confirmText: "Are you sure you want to reset the password for this user?",
+      fields: [
+        {
+          type: "switch",
+          name: "MustChange",
+          label: "Must Change Password at Next Logon",
+        },
+      ],
+      confirmText: "Are you sure you want to reset the password for [userPrincipalName]?",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
-      label: "Set Password Never Expires",
+      label: "Set Password Expiration",
       type: "POST",
       icon: <LockClock />,
       url: "/api/ExecPasswordNeverExpires",
       data: { userId: "id", userPrincipalName: "userPrincipalName" },
       fields: [
         {
-          type: "autoComplete",
+          type: "radio",
           name: "PasswordPolicy",
           label: "Password Policy",
           options: [
             { label: "Disable Password Expiration", value: "DisablePasswordExpiration" },
             { label: "Enable Password Expiration", value: "None" },
           ],
-          multiple: false,
-          creatable: false,
+          validators: { required: "Please select a password policy" },
         },
       ],
       confirmText:
-        "Set Password Never Expires state for this user. If the password of the user is older than the set expiration date of the organization, the user will be prompted to change their password at their next login.",
+        "Set Password Never Expires state for [userPrincipalName]. If the password of the user is older than the set expiration date of the organization, the user will be prompted to change their password at their next login.",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
       label: "Clear Immutable ID",
@@ -404,9 +432,9 @@ export const CippUserActions = () => {
       data: {
         ID: "id",
       },
-      confirmText: "Are you sure you want to clear the Immutable ID for this user?",
+      confirmText: "Are you sure you want to clear the Immutable ID for [userPrincipalName]?",
       multiPost: false,
-      condition: (row) => !row.onPremisesSyncEnabled && row?.onPremisesImmutableId,
+      condition: (row) => !row.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
     },
     {
       label: "Revoke all user sessions",
@@ -414,8 +442,9 @@ export const CippUserActions = () => {
       icon: <PersonOff />,
       url: "/api/ExecRevokeSessions",
       data: { ID: "id", Username: "userPrincipalName" },
-      confirmText: "Are you sure you want to revoke all sessions for this user?",
+      confirmText: "Are you sure you want to revoke all sessions for [userPrincipalName]?",
       multiPost: false,
+      condition: () => canWriteUser,
     },
     {
       label: "Delete User",
@@ -423,8 +452,9 @@ export const CippUserActions = () => {
       icon: <TrashIcon />,
       url: "/api/RemoveUser",
       data: { ID: "id", userPrincipalName: "userPrincipalName" },
-      confirmText: "Are you sure you want to delete this user?",
+      confirmText: "Are you sure you want to delete [userPrincipalName]?",
       multiPost: false,
+      condition: () => canWriteUser,
     },
   ];
 };
