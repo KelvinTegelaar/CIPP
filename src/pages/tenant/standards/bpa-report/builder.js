@@ -255,7 +255,6 @@ const Page = () => {
           <Grid container spacing={2}>
             {blockCards.map((block, index) => (
               <Grid
-                item
                 size={{ md: layoutMode === "Table" ? 12 : 4, sm: layoutMode === "Table" ? 12 : 6, xs: 10 }}
                 key={block.id}
               >
