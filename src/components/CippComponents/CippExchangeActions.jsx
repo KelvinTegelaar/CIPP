@@ -50,7 +50,7 @@ export const CippExchangeActions = () => {
       type: "POST",
       icon: <Email />,
       url: "/api/ExecConvertMailbox",
-      data: { ID: "userPrincipalName" },
+      data: { ID: "UPN" },
       fields: [
         {
           type: "radio",
