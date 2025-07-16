@@ -12,6 +12,10 @@ For standards templates that include a lot of configured standards, you can use 
 Standards must have "Report" or "Remediate" enabled for the report to function. If you do not have "Report" enabled, you should see an error `Reporting is disabled for this standard in the template configuration.` display in the information box.
 {% endhint %}
 
+### Known Issues
+
+* There is currently a limitation with Conditional Access standards due to the complexity of the comparison the standard settings and the Conditional Access response object. We hope to resolve this in a future update.
+
 ***
 
 {% include "../../../.gitbook/includes/feature-request.md" %}

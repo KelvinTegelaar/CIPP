@@ -17,6 +17,10 @@ This page will allow you to get a snapshot overview of your tenants and their al
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Tenant Report</td><td>Opens <a data-mention href="compare.md">compare.md</a> for the selected standards template.</td><td>false</td></tr></tbody></table>
 
+### Known Issues
+
+* There is currently a limitation with Conditional Access standards due to the complexity of the comparison the standard settings and the Conditional Access response object. We hope to resolve this in a future update.
+
 ***
 
 {% include "../../../.gitbook/includes/feature-request.md" %}
