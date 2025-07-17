@@ -20,6 +20,7 @@ This page will allow you to get a snapshot overview of your tenants and their al
 ### Known Issues
 
 * There is currently a limitation with Conditional Access standards due to the complexity of the comparison the standard settings and the Conditional Access response object. We hope to resolve this in a future update.
+* There is currently a limitation with standards applied to tenant groups that will not display in the chart. We hope to resolve this in a future update.
 
 ***
 
