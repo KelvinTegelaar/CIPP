@@ -296,7 +296,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         ? data.join(", ")
         : renderChipList(
             data.map((item, key) => {
-              const itemText = item?.label ? item.label : item;
+              const itemText = item?.label !== undefined ? item.label : item;
               let icon = null;
 
               if (item?.type === "Group") {
@@ -321,7 +321,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             })
           );
     } else {
-      const itemText = data?.label ? data.label : data;
+      const itemText = data?.label !== undefined ? data.label : data;
       let icon = null;
 
       if (data?.type === "Group") {
@@ -337,7 +337,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
           </SvgIcon>
         );
       }
-
+      console.log("itemText", itemText, "icon", icon);
       return isText ? itemText : <CippCopyToClipBoard text={itemText} type="chip" icon={icon} />;
     }
   }
