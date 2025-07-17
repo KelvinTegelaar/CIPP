@@ -4475,7 +4475,7 @@
         "label": "Languages",
         "api": {
           "url": "/languageList.json",
-          "labelField": "language",
+          "labelField": "languageTag",
           "valueField": "tag"
         }
       },
