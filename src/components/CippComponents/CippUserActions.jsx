@@ -114,7 +114,7 @@ export const CippUserActions = () => {
       type: "POST",
       icon: <LockPerson />,
       url: "/api/ExecPerUserMFA",
-      data: { userId: "userPrincipalName" },
+      data: { userId: "userPrincipalName", tenantFilter: "Tenant" },
       fields: [
         {
           type: "autoComplete",
