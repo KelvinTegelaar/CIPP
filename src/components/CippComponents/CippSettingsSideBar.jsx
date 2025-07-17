@@ -29,9 +29,38 @@ export const CippSettingsSideBar = (props) => {
     relatedQueryKeys: "userSettings",
   });
   const handleSaveChanges = () => {
+    const formValues = formcontrol.getValues();
+
+    // Only include the specific form fields from preferences.js to avoid unmapped data
+    const currentSettings = {
+      // General Settings
+      usageLocation: formValues.usageLocation,
+      tablePageSize: formValues.tablePageSize,
+      userAttributes: formValues.userAttributes,
+
+      // Offboarding Defaults
+      offboardingDefaults: {
+        ConvertToShared: formValues.offboardingDefaults?.ConvertToShared,
+        RemoveGroups: formValues.offboardingDefaults?.RemoveGroups,
+        HideFromGAL: formValues.offboardingDefaults?.HideFromGAL,
+        RemoveLicenses: formValues.offboardingDefaults?.RemoveLicenses,
+        removeCalendarInvites: formValues.offboardingDefaults?.removeCalendarInvites,
+        RevokeSessions: formValues.offboardingDefaults?.RevokeSessions,
+        removePermissions: formValues.offboardingDefaults?.removePermissions,
+        RemoveRules: formValues.offboardingDefaults?.RemoveRules,
+        ResetPass: formValues.offboardingDefaults?.ResetPass,
+        KeepCopy: formValues.offboardingDefaults?.KeepCopy,
+        DeleteUser: formValues.offboardingDefaults?.DeleteUser,
+        RemoveMobile: formValues.offboardingDefaults?.RemoveMobile,
+        DisableSignIn: formValues.offboardingDefaults?.DisableSignIn,
+        RemoveMFADevices: formValues.offboardingDefaults?.RemoveMFADevices,
+        ClearImmutableId: formValues.offboardingDefaults?.ClearImmutableId,
+      },
+    };
+
     const shippedValues = {
       user: formcontrol.getValues("user").value,
-      currentSettings: formcontrol.getValues(),
+      currentSettings: currentSettings,
     };
     saveSettingsPost.mutate({ url: "/api/ExecUserSettings", data: shippedValues });
   };
