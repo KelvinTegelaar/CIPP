@@ -2896,6 +2896,94 @@
     "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
   },
   {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "CDS_CUSTOMER_INSIGHTS_BASE",
+    "Service_Plan_Id": "d04ca659-b119-4a92-b8fc-3ede584a9d65",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Cust Insights BASE"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "CDS_CUSTOMER_INSIGHTS_COMBINED_BASE",
+    "Service_Plan_Id": "d66ee5da-07d5-49d6-a1d8-45662c3f37be",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Customer Insights Combined Base"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "DYN365_CUSTOMER_INSIGHTS_JOURNEYS_BASE",
+    "Service_Plan_Id": "1720c3f7-7da3-4a11-8324-92aad283eb68",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Insights Journeys"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "Forms_Pro_Marketing_App",
+    "Service_Plan_Id": "22b657cf-0a9e-467b-8a91-5e31f21bc570",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Dynamics 365 Customer Voice for Marketing Application"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Journeys T3 Interacted People",
+    "String_Id": "Dynamics_365_Customer_Insights_Journeys_T3_Interacted_People",
+    "GUID": "05735051-46c0-4c84-9107-bb13d77d0b88",
+    "Service_Plan_Name": "CDS_CUSTOMER_INSIGHTS_JOURNEYS_ADD-ON",
+    "Service_Plan_Id": "2f2e81a6-15de-4041-9f33-73c06fed3801",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Customer Insights Journeys add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Journeys T3 Interacted People",
+    "String_Id": "Dynamics_365_Customer_Insights_Journeys_T3_Interacted_People",
+    "GUID": "05735051-46c0-4c84-9107-bb13d77d0b88",
+    "Service_Plan_Name": "DYN365_MARKETING_50K_CONTACT_ADDON",
+    "Service_Plan_Id": "e626a4ec-1ba2-409e-bf75-9bc0bc30cca7",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing 50K Addnl Contacts"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Journeys T3 Interacted People",
+    "String_Id": "Dynamics_365_Customer_Insights_Journeys_T3_Interacted_People",
+    "GUID": "05735051-46c0-4c84-9107-bb13d77d0b88",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights User License",
+    "String_Id": "Dynamics_365_Customer_Insights_User_License",
+    "GUID": "12b5a442-a6f2-49e4-868b-2d7408c2356f",
+    "Service_Plan_Name": "DYN365_MARKETING_MSE_USER",
+    "Service_Plan_Id": "2824c69a-1ac5-4397-8592-eae51cb8b581",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing MSE User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights User License",
+    "String_Id": "Dynamics_365_Customer_Insights_User_License",
+    "GUID": "12b5a442-a6f2-49e4-868b-2d7408c2356f",
+    "Service_Plan_Name": "DYN365_MARKETING_USER",
+    "Service_Plan_Id": "5d7a6abc-eebd-46ab-96e1-e4a2f54a2248",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing USL"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights User License",
+    "String_Id": "Dynamics_365_Customer_Insights_User_License",
+    "GUID": "12b5a442-a6f2-49e4-868b-2d7408c2356f",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
     "Product_Display_Name": "Dynamics 365 for Customer Service Chat",
     "String_Id": "DYN365_CS_CHAT",
     "GUID": "7d7af6c2-0be6-46df-84d1-c181b0272909",
@@ -3443,6 +3531,22 @@
     "Product_Display_Name": "Dynamics 365 for Marketing Additional Application",
     "String_Id": "DYN365_MARKETING_APPLICATION_ADDON",
     "GUID": "99c5688b-6c75-4496-876f-07f0fbd69add",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Marketing Addnl Contacts Tier 1",
+    "String_Id": "DYN365_MARKETING_CONTACT_ADDON",
+    "GUID": "fc4581aa-6b1f-459d-95b6-84bd49d6f843",
+    "Service_Plan_Name": "DYN365_MARKETING_CONTACT_ADDON",
+    "Service_Plan_Id": "18db5075-2c70-408d-a82b-929059d782af",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing Additional Contacts Tier 1"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Marketing Addnl Contacts Tier 1",
+    "String_Id": "DYN365_MARKETING_CONTACT_ADDON",
+    "GUID": "fc4581aa-6b1f-459d-95b6-84bd49d6f843",
     "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
     "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
     "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
@@ -29462,6 +29566,22 @@
     "Service_Plan_Name": "INTUNE_A_GOV",
     "Service_Plan_Id": "d216f254-796f-4dab-bbfa-710686e646b9",
     "Service_Plans_Included_Friendly_Names": "Microsoft Intune G"
+  },
+  {
+    "Product_Display_Name": "Microsoft Intune Plan 1 A VL",
+    "String_Id": "INTUNE_A_VL",
+    "GUID": "99fc2803-fa72-42d3-ae78-b055e177d275",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Microsoft Intune Plan 1 A VL",
+    "String_Id": "INTUNE_A_VL",
+    "GUID": "99fc2803-fa72-42d3-ae78-b055e177d275",
+    "Service_Plan_Name": "INTUNE_A_VL",
+    "Service_Plan_Id": "3e170737-c728-4eae-bbb9-3f3360f7184c",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune Plan 1"
   },
   {
     "Product_Display_Name": "Microsoft Intune Plan 1 A VL_USGOV_GCCHIGH",
