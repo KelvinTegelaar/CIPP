@@ -256,11 +256,7 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/tenant/reports",
-        permissions: [
-          "Tenant.Administration.*",
-          "Scheduler.Billing.*",
-          "Tenant.Application.*",
-        ],
+        permissions: ["Tenant.Administration.*", "Scheduler.Billing.*", "Tenant.Application.*"],
         items: [
           {
             title: "Licence Report",
@@ -270,9 +266,7 @@ export const nativeMenuItems = [
           {
             title: "Sherweb Licence Report",
             path: "/tenant/reports/list-csp-licenses",
-            permissions: [
-              "Tenant.Directory.*"
-            ],
+            permissions: ["Tenant.Directory.*"],
           },
           {
             title: "Consented Applications",
@@ -478,10 +472,7 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/endpoint/reports",
-        permissions: [
-          "Endpoint.Device.*",
-          "Endpoint.Autopilot.*",
-        ],
+        permissions: ["Endpoint.Device.*", "Endpoint.Autopilot.*"],
         items: [
           {
             title: "Analytics Device Score",
@@ -709,6 +700,11 @@ export const nativeMenuItems = [
           {
             title: "Mailbox Statistics",
             path: "/email/reports/mailbox-statistics",
+            permissions: ["Exchange.Mailbox.*"],
+          },
+          {
+            title: "Mailbox Activity",
+            path: "/email/reports/mailbox-activity",
             permissions: ["Exchange.Mailbox.*"],
           },
           {
