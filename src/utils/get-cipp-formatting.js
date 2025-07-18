@@ -337,7 +337,6 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
           </SvgIcon>
         );
       }
-      console.log("itemText", itemText, "icon", icon);
       return isText ? itemText : <CippCopyToClipBoard text={itemText} type="chip" icon={icon} />;
     }
   }
