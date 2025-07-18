@@ -84,7 +84,7 @@ Performance issues in CIPP are not expected. If your performance appears impacte
 
 If users in your organization have not accessed CIPP in a while, the Static Web App will put itself into a sleep state to save on resource usage. It's normal to see an initial 15-20 second delay on the first results being called from the CIPP-API backend. This is sometimes known as a cold start.
 
-If you want to avoid cold starts, it's possible to utilize the [Broken link](broken-reference "mention") and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `/PublicPing` every 3-5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making. The `/PublicPing` endpoint does not require the full authentication setup for the API.
+If you want to avoid cold starts, it's possible to utilize the [Broken link](broken-reference "mention") and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `https://<cippurl>/api/PublicPing` every 3-5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making. The `/PublicPing` endpoint does not require the full authentication setup for the API.
 
 Self-hosted clients should see minimal impact to their overall costs.
 
