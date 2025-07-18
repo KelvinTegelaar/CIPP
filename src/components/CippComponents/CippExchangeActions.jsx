@@ -1,4 +1,6 @@
-﻿import { TrashIcon, MagnifyingGlassIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
+﻿// Complete CippExchangeActions with corrected bulk permissions
+
+import { TrashIcon, MagnifyingGlassIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
 import {
   Archive,
   MailOutline,
@@ -17,11 +19,151 @@ import {
   MailLock,
   SettingsEthernet,
   CalendarMonth,
+  Email,
+  PersonAdd,
 } from "@mui/icons-material";
+import { useSettings } from "/src/hooks/use-settings.js";
+import { useMemo } from "react";
 
 export const CippExchangeActions = () => {
-  // const tenant = useSettings().currentTenant;
+  const tenant = useSettings().currentTenant;
+  
+  // Memoized API configuration for all user selection fields
+  const userApiConfig = useMemo(() => ({
+    url: "/api/ListGraphRequest",
+    dataKey: "Results",
+    labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+    valueField: "userPrincipalName",
+    queryKey: `users-${tenant}`,
+    data: {
+      Endpoint: "users",
+      tenantFilter: tenant,
+      $select: "id,displayName,userPrincipalName,mail",
+      $top: 999,
+    },
+  }), [tenant]);
+
   return [
+    {
+      label: "Bulk Add Mailbox Permissions",
+      type: "POST",
+      url: "/api/ExecModifyMBPerms",
+      icon: <PersonAdd />,
+      data: {
+        userID: "UPN", // Keep this mapping for multiPost
+      },
+      confirmText: "Add the specified permissions to selected mailboxes?",
+      multiPost: false, // Changed to true - each mailbox gets its own API call
+      fields: [
+        {
+          type: "autoComplete",
+          name: "fullAccessUser",
+          label: "Add Full Access User",
+          multiple: true,
+          creatable: false,
+          api: userApiConfig,
+        },
+        {
+          type: "switch",
+          name: "autoMap",
+          label: "Enable Automapping",
+          defaultValue: true,
+          labelLocation: "behind",
+        },
+        {
+          type: "autoComplete",
+          name: "sendAsUser",
+          label: "Add Send As User",
+          multiple: true,
+          creatable: false,
+          api: userApiConfig,
+        },
+        {
+          type: "autoComplete",
+          name: "sendOnBehalfUser",
+          label: "Add Send On Behalf User",
+          multiple: true,
+          creatable: false,
+          api: userApiConfig,
+        },
+      ],
+      customDataformatter: (() => {
+        let callIndex = 0; // Counter to track which mailbox we're processing
+        
+        return (row, action, formData) => {
+          // Debug logging to see what's happening with multiPost: true
+          console.log("MultiPost row data:", row);
+          console.log("MultiPost form data:", formData);
+          console.log("Current call index:", callIndex);
+          
+          const permissions = [];
+          const autoMap = formData.autoMap === undefined ? true : formData.autoMap;
+
+          // Add type: "user" to match working format
+          const addTypeToUsers = (users) => {
+            return users.map(user => ({
+              ...user,
+              type: "user"
+            }));
+          };
+
+          // Handle FullAccess - formData.fullAccessUser is an array since multiple: true
+          if (formData.fullAccessUser && formData.fullAccessUser.length > 0) {
+            permissions.push({
+              UserID: addTypeToUsers(formData.fullAccessUser),
+              PermissionLevel: "FullAccess",
+              Modification: "Add",
+              AutoMap: autoMap,
+            });
+          }
+
+          // Handle SendAs - formData.sendAsUser is an array since multiple: true  
+          if (formData.sendAsUser && formData.sendAsUser.length > 0) {
+            permissions.push({
+              UserID: addTypeToUsers(formData.sendAsUser),
+              PermissionLevel: "SendAs", 
+              Modification: "Add",
+            });
+          }
+
+          // Handle SendOnBehalf - formData.sendOnBehalfUser is an array since multiple: true
+          if (formData.sendOnBehalfUser && formData.sendOnBehalfUser.length > 0) {
+            permissions.push({
+              UserID: addTypeToUsers(formData.sendOnBehalfUser),
+              PermissionLevel: "SendOnBehalf",
+              Modification: "Add", 
+            });
+          }
+
+          // Get the current mailbox based on the call index
+          let currentMailbox;
+          if (Array.isArray(row) && row.length > callIndex) {
+            currentMailbox = row[callIndex];
+            console.log("Processing mailbox:", currentMailbox);
+          } else {
+            currentMailbox = row; // Fallback for single mailbox
+          }
+          
+          // Increment counter for next call
+          callIndex++;
+          
+          // Reset counter if we've processed all mailboxes (for subsequent actions)
+          if (Array.isArray(row) && callIndex >= row.length) {
+            callIndex = 0;
+          }
+
+          const result = {
+            userID: currentMailbox?.UPN || currentMailbox?.userPrincipalName || currentMailbox?.primarySmtpAddress || "MISSING_USER_ID",
+            tenantFilter: tenant,
+            permissions: permissions,
+          };
+          
+          console.log("CustomDataformatter result:", result);
+          return result;
+        };
+      })(),
+      color: "primary",
+    },
     {
       label: "Edit permissions",
       link: "/identity/administration/users/user/exchange?userId=[ExternalDirectoryObjectId]",
@@ -81,7 +223,6 @@ export const CippExchangeActions = () => {
       condition: (row) => row.recipientTypeDetails !== "RoomMailbox",
     },
     {
-      //tested
       label: "Enable Online Archive",
       type: "POST",
       icon: <Archive />,
