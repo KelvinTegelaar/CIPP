@@ -34,6 +34,10 @@ Go to **Application Settings** → click **Run Backup**.
 {% stepper %}
 {% step %}
 **Go to** CIPP's [Management Portal](https://management.cipp.app/) and log in with the GitHub account you used to sponsor.
+
+{% hint style="warning" %}
+NOTE: If you sponsor with an organization GitHub account, please send in a message to helpdesk@cyberdrain.com with your personal GitHub username so that we can manually add that user to the portal. You cannot log in to the management portal with organization accounts.
+{% endhint %}
 {% endstep %}
 
 {% step %}
@@ -104,6 +108,6 @@ Wait for the restore to complete—CIPP will import your original configuration 
 
 ### That’s It!
 
-Your instance and settings now live in the fully managed, **CyberDrain-hosted** version of CIPP.&#x20;
+Your instance and settings now live in the fully managed, **CyberDrain-hosted** version of CIPP.
 
 Congratulations on a smooth migration! Enjoy your new, hosted CIPP with automatic updates and support.
