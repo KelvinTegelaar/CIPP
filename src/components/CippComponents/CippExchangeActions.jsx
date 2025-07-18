@@ -50,10 +50,13 @@ export const CippExchangeActions = () => {
       url: "/api/ExecModifyMBPerms",
       icon: <PersonAdd />,
       data: {
-        userID: "UPN", // Keep this mapping for multiPost
+        userID: "UPN", // This maps the selected mailbox to userID
       },
       confirmText: "Add the specified permissions to selected mailboxes?",
-      multiPost: false, // Changed to true - each mailbox gets its own API call
+      multiPost: false, // Single bulk request
+      data: {
+        // Don't map individual fields here since we're handling all data in customDataformatter
+      },
       fields: [
         {
           type: "autoComplete",
@@ -87,15 +90,16 @@ export const CippExchangeActions = () => {
           api: userApiConfig,
         },
       ],
-      customDataformatter: (() => {
-        let callIndex = 0; // Counter to track which mailbox we're processing
+      customDataformatter: (rows, action, formData) => {
+        console.log("All selected rows:", rows);
+        console.log("Form data:", formData);
         
-        return (row, action, formData) => {
-          // Debug logging to see what's happening with multiPost: true
-          console.log("MultiPost row data:", row);
-          console.log("MultiPost form data:", formData);
-          console.log("Current call index:", callIndex);
-          
+        // Ensure rows is an array - this should contain ALL selected mailboxes
+        const mailboxArray = Array.isArray(rows) ? rows : [rows];
+        console.log("Processing mailboxes count:", mailboxArray.length);
+        
+        // Create bulk request array - one object per mailbox
+        const bulkRequestData = mailboxArray.map(mailbox => {
           const permissions = [];
           const autoMap = formData.autoMap === undefined ? true : formData.autoMap;
 
@@ -135,33 +139,21 @@ export const CippExchangeActions = () => {
             });
           }
 
-          // Get the current mailbox based on the call index
-          let currentMailbox;
-          if (Array.isArray(row) && row.length > callIndex) {
-            currentMailbox = row[callIndex];
-            console.log("Processing mailbox:", currentMailbox);
-          } else {
-            currentMailbox = row; // Fallback for single mailbox
-          }
-          
-          // Increment counter for next call
-          callIndex++;
-          
-          // Reset counter if we've processed all mailboxes (for subsequent actions)
-          if (Array.isArray(row) && callIndex >= row.length) {
-            callIndex = 0;
-          }
-
-          const result = {
-            userID: currentMailbox?.UPN || currentMailbox?.userPrincipalName || currentMailbox?.primarySmtpAddress || "MISSING_USER_ID",
+          return {
+            userID: mailbox.UPN || mailbox.userPrincipalName || mailbox.primarySmtpAddress,
             tenantFilter: tenant,
             permissions: permissions,
           };
-          
-          console.log("CustomDataformatter result:", result);
-          return result;
+        });
+        
+        console.log("Final bulk request data:", bulkRequestData);
+        console.log("Mailbox requests count:", bulkRequestData.length);
+        
+        return { 
+          mailboxRequests: bulkRequestData,
+          tenantFilter: tenant // Also include tenant at top level
         };
-      })(),
+      },
       color: "primary",
     },
     {
