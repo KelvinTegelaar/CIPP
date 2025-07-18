@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Button, Divider, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useWatch } from "react-hook-form";
@@ -66,7 +65,11 @@ const CippSchedulerForm = (props) => {
   const router = useRouter();
   const scheduledTaskList = ApiGetCall({
     url: "/api/ListScheduledItems",
-    queryKey: "ListScheduledItems-Edit",
+    queryKey: "ListScheduledItems-Edit-" + router.query.id,
+    waiting: !!router.query.id,
+    data: {
+      Id: router.query.id,
+    },
   });
 
   const tenantList = ApiGetCall({
@@ -76,20 +79,71 @@ const CippSchedulerForm = (props) => {
   useEffect(() => {
     if (scheduledTaskList.isSuccess && router.query.id) {
       const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+
+      // Early return if task is not found
+      if (!task) {
+        console.warn(`Task with RowKey ${router.query.id} not found`);
+        return;
+      }
+
       const postExecution = task?.postExecution?.split(",").map((item) => {
         return { label: item, value: item };
       });
 
       // Find tenantFilter in tenantList, and create a label/value pair for the autocomplete
       if (tenantList.isSuccess) {
-        const tenantFilter = tenantList.data.find(
-          (tenant) => tenant.defaultDomainName === task?.Tenant
-        );
+        let tenantFilter = null;
+        let tenantFilterForForm = null;
+
+        // Check if the task has a tenant group
+        if (task?.TenantGroupInfo) {
+          // Handle tenant group
+          tenantFilterForForm = {
+            value: task.TenantGroupInfo.value,
+            label: task.TenantGroupInfo.label,
+            type: "Group",
+            addedFields: task.TenantGroupInfo,
+          };
+        } else {
+          // Handle regular tenant
+          tenantFilter = tenantList.data.find(
+            (tenant) =>
+              tenant.defaultDomainName === task?.Tenant.value ||
+              tenant.defaultDomainName === task?.Tenant
+          );
+          if (tenantFilter) {
+            tenantFilterForForm = {
+              value: tenantFilter.defaultDomainName,
+              label: `${tenantFilter.displayName} (${tenantFilter.defaultDomainName})`,
+              type: "Tenant",
+              addedFields: tenantFilter,
+            };
+          }
+        }
         if (commands.isSuccess) {
           const command = commands.data.find((command) => command.Function === task.Command);
+
+          // If command is not found in the list, create a placeholder command entry
+          let commandForForm = command;
+          if (!command && task.Command) {
+            commandForForm = {
+              Function: task.Command,
+              Parameters: [],
+              // Add minimal required structure for system jobs
+            };
+          }
+
           var recurrence = recurrenceOptions.find(
             (option) => option.value === task.Recurrence || option.label === task.Recurrence
           );
+
+          // If recurrence is not found in predefined options, create a custom option
+          if (!recurrence && task.Recurrence) {
+            recurrence = {
+              value: task.Recurrence,
+              label: `${task.Recurrence}`,
+            };
+          }
 
           // if scheduledtime type is a date, convert to unixtime
           if (typeof task.ScheduledTime === "date") {
@@ -98,19 +152,52 @@ const CippSchedulerForm = (props) => {
             task.ScheduledTime = Math.floor(new Date(task.ScheduledTime).getTime() / 1000);
           }
 
+          // Check if any parameter values are complex objects that can't be represented as simple form fields
+          const hasComplexObjects =
+            task.Parameters && typeof task.Parameters === "object"
+              ? Object.values(task.Parameters).some((value) => {
+                  // Check for arrays
+                  if (Array.isArray(value)) return true;
+                  // Check for objects (but not null)
+                  if (value !== null && typeof value === "object") return true;
+                  // Check for stringified objects that contain [object Object]
+                  if (typeof value === "string" && value.includes("[object Object]")) return true;
+                  // Check for stringified JSON arrays/objects
+                  if (
+                    typeof value === "string" &&
+                    (value.trim().startsWith("[") || value.trim().startsWith("{"))
+                  ) {
+                    try {
+                      const parsed = JSON.parse(value);
+                      return typeof parsed === "object";
+                    } catch {
+                      return false;
+                    }
+                  }
+                  return false;
+                })
+              : false;
+
           const ResetParams = {
-            tenantFilter: {
-              value: tenantFilter?.defaultDomainName,
-              label: `${tenantFilter?.displayName} (${tenantFilter?.defaultDomainName})`,
-            },
+            tenantFilter: tenantFilterForForm,
             RowKey: router.query.Clone ? null : task.RowKey,
             Name: router.query.Clone ? `${task.Name} (Clone)` : task?.Name,
-            command: { label: task.Command, value: task.Command, addedFields: command },
+            command: { label: task.Command, value: task.Command, addedFields: commandForForm },
             ScheduledTime: task.ScheduledTime,
             Recurrence: recurrence,
             parameters: task.Parameters,
             postExecution: postExecution,
-            advancedParameters: task.RawJsonParameters ? true : false,
+            // Show advanced parameters if:
+            // 1. RawJsonParameters exist
+            // 2. It's a system command with no defined parameters
+            // 3. Any parameter contains complex objects (arrays, objects, etc.)
+            advancedParameters: task.RawJsonParameters
+              ? true
+              : hasComplexObjects ||
+                !commandForForm?.Parameters ||
+                commandForForm.Parameters.length === 0,
+            // Set the RawJsonParameters if they exist
+            RawJsonParameters: task.RawJsonParameters || "",
           };
           formControl.reset(ResetParams);
         }
@@ -128,16 +215,50 @@ const CippSchedulerForm = (props) => {
 
   useEffect(() => {
     if (advancedParameters === true) {
-      var schedulerValues = formControl.getValues("parameters");
-      Object.keys(schedulerValues).forEach((key) => {
-        if (schedulerValues[key] === "" || schedulerValues[key] === null) {
-          delete schedulerValues[key];
+      // Check if we're editing an existing task and it has RawJsonParameters
+      const currentRawJsonParameters = formControl.getValues("RawJsonParameters");
+
+      // If we already have raw JSON parameters (from editing existing task), use those
+      if (
+        currentRawJsonParameters &&
+        currentRawJsonParameters.trim() !== "" &&
+        currentRawJsonParameters !== "{}"
+      ) {
+        // Already populated from existing task, no need to overwrite
+        return;
+      }
+
+      // Get the original task parameters if we're editing (to preserve complex objects)
+      let parametersToUse = null;
+      if (router.query.id && scheduledTaskList.isSuccess) {
+        const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+        if (task?.Parameters) {
+          parametersToUse = task.Parameters;
         }
-      });
-      const jsonString = JSON.stringify(schedulerValues, null, 2);
-      formControl.setValue("RawJsonParameters", jsonString);
+      }
+
+      // If we don't have original task parameters, use current form parameters
+      if (!parametersToUse) {
+        parametersToUse = formControl.getValues("parameters");
+      }
+
+      // Add null check to prevent error when no parameters exist
+      if (parametersToUse && typeof parametersToUse === "object") {
+        // Create a clean copy for JSON
+        const cleanParams = { ...parametersToUse };
+        Object.keys(cleanParams).forEach((key) => {
+          if (cleanParams[key] === "" || cleanParams[key] === null) {
+            delete cleanParams[key];
+          }
+        });
+        const jsonString = JSON.stringify(cleanParams, null, 2);
+        formControl.setValue("RawJsonParameters", jsonString);
+      } else {
+        // If no parameters, set empty object
+        formControl.setValue("RawJsonParameters", "{}");
+      }
     }
-  }, [advancedParameters]);
+  }, [advancedParameters, router.query.id, scheduledTaskList.isSuccess]);
 
   const gridSize = fullWidth ? 12 : 4; // Adjust size based on fullWidth prop
 
@@ -147,16 +268,18 @@ const CippSchedulerForm = (props) => {
         {(scheduledTaskList.isFetching || tenantList.isLoading || commands.isLoading) && (
           <Skeleton width={"100%"} />
         )}
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormTenantSelector
             label="Select a Tenant"
             formControl={formControl}
             type="single"
             allTenants={true}
+            includeGroups={true}
+            required={true}
           />
         </Grid>
 
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="textField"
             name="Name"
@@ -165,7 +288,7 @@ const CippSchedulerForm = (props) => {
           />
         </Grid>
 
-        <Grid item size={{ md: gridSize, xs: 12 }}>
+        <Grid size={{ md: gridSize, xs: 12 }}>
           <CippFormComponent
             name="command"
             type="autoComplete"
@@ -175,15 +298,33 @@ const CippSchedulerForm = (props) => {
             required={true}
             formControl={formControl}
             isFetching={commands.isFetching}
-            options={
-              commands.data?.map((command) => {
-                return {
-                  label: command.Function,
-                  value: command.Function,
-                  addedFields: command,
-                };
-              }) || []
-            }
+            options={(() => {
+              const baseOptions =
+                commands.data?.map((command) => {
+                  return {
+                    label: command.Function,
+                    value: command.Function,
+                    addedFields: command,
+                  };
+                }) || [];
+
+              // If we're editing a task and the command isn't in the base options, add it
+              if (router.query.id && scheduledTaskList.isSuccess) {
+                const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+                if (task?.Command && !baseOptions.find((opt) => opt.value === task.Command)) {
+                  baseOptions.unshift({
+                    label: task.Command,
+                    value: task.Command,
+                    addedFields: {
+                      Function: task.Command,
+                      Parameters: [],
+                    },
+                  });
+                }
+              }
+
+              return baseOptions;
+            })()}
             validators={{
               validate: (value) => {
                 if (!value) {
@@ -194,7 +335,7 @@ const CippSchedulerForm = (props) => {
             }}
           />
         </Grid>
-        <Grid item size={{ md: gridSize, xs: 12 }}>
+        <Grid size={{ md: gridSize, xs: 12 }}>
           <CippFormComponent
             type="datePicker"
             name="ScheduledTime"
@@ -206,19 +347,35 @@ const CippSchedulerForm = (props) => {
             }}
           />
         </Grid>
-        <Grid item size={{ md: gridSize, xs: 12 }}>
+        <Grid size={{ md: gridSize, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             name="Recurrence"
             label="Recurrence"
             formControl={formControl}
-            options={recurrenceOptions}
+            options={(() => {
+              let options = [...recurrenceOptions];
+
+              // If we're editing a task and the recurrence isn't in the base options, add it
+              if (router.query.id && scheduledTaskList.isSuccess) {
+                const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+                if (task?.Recurrence && !options.find((opt) => opt.value === task.Recurrence)) {
+                  options.push({
+                    value: task.Recurrence,
+                    label: `Custom: ${task.Recurrence}`,
+                  });
+                }
+              }
+
+              return options;
+            })()}
             multiple={false}
             disableClearable={true}
+            creatable={true}
           />
         </Grid>
         {selectedCommand?.addedFields?.Synopsis && (
-          <Grid item size={{ md: 12, xs: 12 }}>
+          <Grid size={{ md: 12, xs: 12 }}>
             <Box sx={{ my: 1 }}>
               <Typography variant="h6">PowerShell Command:</Typography>
               <Typography variant="body2" color={"text.secondary"}>
@@ -234,11 +391,10 @@ const CippSchedulerForm = (props) => {
             compareType="isNot"
             compareValue={true}
             formControl={formControl}
+            key={idx}
           >
             <Grid
-              item
               size={{ md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize, xs: 12 }}
-              key={idx}
             >
               {param.Type === "System.Boolean" ||
               param.Type === "System.Management.Automation.SwitchParameter" ? (
@@ -279,10 +435,10 @@ const CippSchedulerForm = (props) => {
             </Grid>
           </CippFormCondition>
         ))}
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <Divider />
         </Grid>
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="switch"
             name="advancedParameters"
@@ -296,7 +452,7 @@ const CippSchedulerForm = (props) => {
           compareValue={true}
           formControl={formControl}
         >
-          <Grid item size={{ md: 12, xs: 12 }}>
+          <Grid size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="textField"
               name="RawJsonParameters"
@@ -306,12 +462,19 @@ const CippSchedulerForm = (props) => {
               }}
               formControl={formControl}
               multiline
-              rows={4}
+              rows={6}
+              maxRows={30}
+              sx={{
+                "& .MuiInputBase-root": {
+                  overflow: "auto",
+                  minHeight: "200px",
+                },
+              }}
               placeholder={`Enter a JSON object`}
             />
           </Grid>
         </CippFormCondition>
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             name="postExecution"
@@ -326,7 +489,7 @@ const CippSchedulerForm = (props) => {
             ]}
           />
         </Grid>
-        <Grid item size={{ xs: 12 }} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+        <Grid size={{ xs: 12 }} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
           <Button
             onClick={() => {
               formControl.trigger();
@@ -345,8 +508,10 @@ const CippSchedulerForm = (props) => {
             {router.query.id ? "Edit" : "Add"} Schedule
           </Button>
         </Grid>
+        <Grid size={{ xs: 12 }}>
+          <CippApiResults apiObject={postCall} />
+        </Grid>
       </Grid>
-      <CippApiResults apiObject={postCall} />
     </>
   );
 };

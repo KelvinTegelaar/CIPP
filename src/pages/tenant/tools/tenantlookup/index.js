@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography, CircularProgress, Skeleton, Link } from "@mui/material";
+import { Box, Button, Container, Typography, Skeleton, Link } from "@mui/material";
 import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
@@ -26,13 +26,13 @@ const Page = () => {
     >
       <Container maxWidth={false}>
         <Grid container spacing={3}>
-          <Grid item size={{ xs: 4 }}>
+          <Grid size={{ xs: 4 }}>
             <CippButtonCard
               title="Tenant lookup"
               cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
             >
               <Grid container spacing={2}>
-                <Grid item size={{ xs: 8 }}>
+                <Grid size={{ xs: 8 }}>
                   <CippFormComponent
                     formControl={formControl}
                     name="domain"
@@ -41,7 +41,7 @@ const Page = () => {
                     required
                   />
                 </Grid>
-                <Grid item size={{ xs: 4 }}>
+                <Grid size={{ xs: 4 }}>
                   <Button
                     type="submit"
                     onClick={() => getTenant.refetch()}
@@ -57,20 +57,20 @@ const Page = () => {
 
           {/* Results Card */}
           {getTenant.isFetching ? (
-            <Grid item size={{ xs: 8 }}>
+            <Grid size={{ xs: 8 }}>
               <CippButtonCard title="Fetching Results">
                 <Grid container spacing={2}>
-                  <Grid item size={{ xs: 12 }} textAlign="center">
+                  <Grid size={{ xs: 12 }} textAlign="center">
                     <Skeleton width={"100%"} />
                   </Grid>
                 </Grid>
               </CippButtonCard>
             </Grid>
           ) : getTenant.data ? (
-            <Grid item size={{ xs: 8 }}>
+            <Grid size={{ xs: 8 }}>
               <CippButtonCard title="Tenant Lookup Results">
                 <Grid container spacing={2}>
-                  <Grid item size={{ xs: 6 }}>
+                  <Grid size={{ xs: 6 }}>
                     <Typography variant="body1">
                       <strong>Tenant Name:</strong> {domain}
                     </Typography>
@@ -88,13 +88,13 @@ const Page = () => {
                         : "N/A"}
                     </Typography>
                   </Grid>
-                  <Grid item size={{ xs: 6 }}>
+                  <Grid size={{ xs: 6 }}>
                     <Typography variant="body1">
                       <strong>domains:</strong>
                     </Typography>
                     <Typography variant="body1">
-                      {getTenant.data?.Domains?.map((domain) => (
-                        <li>
+                      {getTenant.data?.Domains?.map((domain, index) => (
+                        <li key={index}>
                           <Link href={`https://${domain}`} target="_blank">
                             {domain}
                           </Link>

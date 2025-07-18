@@ -1,4 +1,4 @@
-import { Close, Download, Help } from "@mui/icons-material";
+import { Close, Download, Help, ExpandMore, ExpandLess } from "@mui/icons-material";
 import {
   Alert,
   CircularProgress,
@@ -16,11 +16,11 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { getCippError } from "../../utils/get-cipp-error";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { CippDocsLookup } from "./CippDocsLookup";
+import { CippCodeBlock } from "./CippCodeBlock";
 import React from "react";
 import { CippTableDialog } from "./CippTableDialog";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { useDialog } from "../../hooks/use-dialog";
-import { useRouter } from "next/router";
 
 const extractAllResults = (data) => {
   const results = [];
@@ -44,12 +44,14 @@ const extractAllResults = (data) => {
       const copyField = item.copyField || "";
       const severity =
         typeof item.state === "string" ? item.state : getSeverity(item) ? "error" : "success";
+      const details = item.details || null;
 
       if (text) {
         return {
           text,
           copyField,
           severity,
+          details,
           ...item,
         };
       }
@@ -124,6 +126,7 @@ export const CippApiResults = (props) => {
   const [errorVisible, setErrorVisible] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState(false);
   const [finalResults, setFinalResults] = useState([]);
+  const [showDetails, setShowDetails] = useState({});
   const tableDialog = useDialog();
   const pageTitle = `${document.title} - Results`;
   const correctResultObj = useMemo(() => {
@@ -193,6 +196,10 @@ export const CippApiResults = (props) => {
 
   const handleCloseResult = useCallback((id) => {
     setFinalResults((prev) => prev.map((r) => (r.id === id ? { ...r, visible: false } : r)));
+  }, []);
+
+  const toggleDetails = useCallback((id) => {
+    setShowDetails((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
   const handleDownloadCsv = useCallback(() => {
@@ -273,7 +280,21 @@ export const CippApiResults = (props) => {
             <React.Fragment key={resultObj.id}>
               <Collapse in={resultObj.visible} unmountOnExit>
                 <Alert
-                  sx={alertSx}
+                  sx={{
+                    ...alertSx,
+                    display: "flex",
+                    width: "100%",
+                    "& .MuiAlert-message": {
+                      width: "100%",
+                      flex: "1 1 auto",
+                      minWidth: 0, // Allows content to shrink
+                    },
+                    "& .MuiAlert-action": {
+                      flex: "0 0 auto",
+                      alignSelf: "flex-start",
+                      marginLeft: "auto",
+                    },
+                  }}
                   variant="filled"
                   severity={resultObj.severity || "success"}
                   action={
@@ -308,7 +329,29 @@ export const CippApiResults = (props) => {
                           Get Help
                         </Button>
                       )}
-                      <CippCopyToClipBoard text={resultObj.copyField || resultObj.text} />
+                      <CippCopyToClipBoard
+                        color="inherit"
+                        text={resultObj.copyField || resultObj.text}
+                      />
+
+                      {resultObj.details && (
+                        <Tooltip
+                          title={showDetails[resultObj.id] ? "Hide Details" : "Show Details"}
+                        >
+                          <IconButton
+                            size="small"
+                            color="inherit"
+                            onClick={() => toggleDetails(resultObj.id)}
+                            aria-label={showDetails[resultObj.id] ? "Hide Details" : "Show Details"}
+                          >
+                            {showDetails[resultObj.id] ? (
+                              <ExpandLess fontSize="inherit" />
+                            ) : (
+                              <ExpandMore fontSize="inherit" />
+                            )}
+                          </IconButton>
+                        </Tooltip>
+                      )}
 
                       <IconButton
                         aria-label="close"
@@ -321,7 +364,25 @@ export const CippApiResults = (props) => {
                     </>
                   }
                 >
-                  {resultObj.text}
+                  <Box sx={{ width: "100%" }}>
+                    <Typography variant="body2">{resultObj.text}</Typography>
+                    {resultObj.details && (
+                      <Collapse in={showDetails[resultObj.id]}>
+                        <Box mt={2} sx={{ width: "100%" }}>
+                          <CippCodeBlock
+                            code={
+                              typeof resultObj.details === "string"
+                                ? resultObj.details
+                                : JSON.stringify(resultObj.details, null, 2)
+                            }
+                            language={typeof resultObj.details === "object" ? "json" : "text"}
+                            showLineNumbers={false}
+                            type="syntax"
+                          />
+                        </Box>
+                      </Collapse>
+                    )}
+                  </Box>
                 </Alert>
               </Collapse>
             </React.Fragment>

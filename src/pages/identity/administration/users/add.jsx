@@ -56,7 +56,7 @@ const Page = () => {
             label="Copy properties from another user"
             multiple={false}
             select={
-              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
             }
             addedField={{
               groupType: "calculatedGroupType",
@@ -69,6 +69,8 @@ const Page = () => {
               jobTitle: "jobTitle",
               department: "department",
               streetAddress: "streetAddress",
+              city: "city",
+              state: "state",
               postalCode: "postalCode",
               companyName: "companyName",
               mobilePhone: "mobilePhone",

@@ -204,7 +204,6 @@ CippBannerListCard.propTypes = {
       actionButton: PropTypes.element,
       propertyItems: PropTypes.array,
       table: PropTypes.object,
-      actionButton: PropTypes.element,
       isFetching: PropTypes.bool,
       children: PropTypes.node,
       cardLabelBoxActions: PropTypes.element,

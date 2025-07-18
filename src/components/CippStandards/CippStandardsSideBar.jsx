@@ -64,11 +64,24 @@ const CippStandardsSideBar = ({
   formControl,
   createDialog,
   edit,
+  onSaveSuccess,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [savedItem, setSavedItem] = useState(null);
   const dialogAfterEffect = (id) => {
     setSavedItem(id);
+    
+    // Reset form's dirty state to prevent unsaved changes warning
+    if (formControl && formControl.reset) {
+      // Get current values and reset the form with them to clear dirty state
+      const currentValues = formControl.getValues();
+      formControl.reset(currentValues);
+    }
+    
+    // Call the onSaveSuccess callback if provided
+    if (typeof onSaveSuccess === "function") {
+      onSaveSuccess();
+    }
   };
 
   const watchForm = useWatch({ control: formControl.control });
@@ -276,6 +289,7 @@ CippStandardsSideBar.propTypes = {
   ).isRequired,
   updatedAt: PropTypes.string,
   formControl: PropTypes.object.isRequired,
+  onSaveSuccess: PropTypes.func,
 };
 
 export default CippStandardsSideBar;

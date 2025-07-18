@@ -1,24 +1,24 @@
 import React from "react";
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { useSettings } from "/src/hooks/use-settings";
 import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
+import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 
 const Page = () => {
-  const userSettingsDefaults = useSettings();
-  const tenantDomain = userSettingsDefaults?.currentTenant;
-
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
-      tenantFilter: tenantDomain,
       vacation: true,
     },
   });
+
+  // Watch the selected tenant to update dependent fields
+  const selectedTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
+  const tenantDomain = selectedTenant?.value || selectedTenant;
 
   return (
     <>
@@ -30,8 +30,8 @@ const Page = () => {
         postUrl="/api/ExecCAExclusion"
         customDataformatter={(values) => {
           const shippedValues = {
-            tenantFilter: tenantDomain,
-            UserId: values.UserId?.value,
+            tenantFilter: values.tenantFilter?.value || values.tenantFilter,
+            Users: values.Users,
             PolicyId: values.PolicyId?.value,
             StartDate: values.startDate,
             EndDate: values.endDate,
@@ -40,40 +40,64 @@ const Page = () => {
           return shippedValues;
         }}
       >
-        <Box sx={{ my: 2 }}>
+        <Stack spacing={3} sx={{ my: 2 }}>
           <Typography variant="body1" sx={{ mb: 2 }}>
             Vacation mode adds scheduled tasks to add and remove users from Conditional Access (CA)
             exclusions for a specific period of time. Select the CA policy and the date range.
           </Typography>
           <Grid container spacing={2}>
-            <Grid item size={{ xs: 12 }}>
-              <Divider sx={{ my: 2 }} />
+            <Grid size={{ xs: 12 }}>
+              <CippFormTenantSelector
+                label="Select Tenant"
+                formControl={formControl}
+                type="single"
+                allTenants={true}
+                required={true}
+                preselectedEnabled={true}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Divider />
             </Grid>
 
             {/* User Selector */}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormUserSelector
-                label={`Users in ${tenantDomain}`}
+                label={tenantDomain ? `Users in ${tenantDomain}` : "Select a tenant first"}
                 formControl={formControl}
-                name="UserId"
-                multiple={false}
+                name="Users"
+                multiple={true}
+                addedField={{
+                  userPrincipalName: "userPrincipalName",
+                  displayName: "displayName",
+                }}
                 validators={{ required: "Picking a user is required" }}
                 required={true}
+                disabled={!tenantDomain}
               />
             </Grid>
 
             {/* Conditional Access Policy Selector */}
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="autoComplete"
-                label={`Conditional Access Policies in ${tenantDomain}`}
+                label={
+                  tenantDomain
+                    ? `Conditional Access Policies in ${tenantDomain}`
+                    : "Select a tenant first"
+                }
                 name="PolicyId"
-                api={{
-                  queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
-                  url: "/api/ListConditionalAccessPolicies",
-                  labelField: (option) => `${option.displayName}`,
-                  valueField: "id",
-                }}
+                api={
+                  tenantDomain
+                    ? {
+                        queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
+                        url: "/api/ListConditionalAccessPolicies",
+                        data: { tenantFilter: tenantDomain },
+                        labelField: (option) => `${option.displayName}`,
+                        valueField: "id",
+                      }
+                    : null
+                }
                 multiple={false}
                 formControl={formControl}
                 validators={{
@@ -85,11 +109,12 @@ const Page = () => {
                   },
                 }}
                 required={true}
+                disabled={!tenantDomain}
               />
             </Grid>
 
             {/* Start Date Picker */}
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 label="Scheduled Start Date"
@@ -109,7 +134,7 @@ const Page = () => {
             </Grid>
 
             {/* End Date Picker */}
-            <Grid item size={{ md: 6, xs: 12 }}>
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
                 type="datePicker"
                 label="Scheduled End Date"
@@ -132,7 +157,7 @@ const Page = () => {
               />
             </Grid>
           </Grid>
-        </Box>
+        </Stack>
       </CippFormPage>
     </>
   );

@@ -14,7 +14,14 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 const Page = () => {
   const settings = useSettings();
-  const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
+  const cleanedSettings = { ...settings };
+
+  if (cleanedSettings.offboardingDefaults?.keepCopy) {
+    delete cleanedSettings.offboardingDefaults.keepCopy;
+    settings.handleUpdate(cleanedSettings);
+  }
+
+  const formcontrol = useForm({ mode: "onChange", defaultValues: cleanedSettings });
 
   const auth = ApiGetCall({
     url: "/api/me",
@@ -32,8 +39,6 @@ const Page = () => {
     { value: "officeLocation", label: "officeLocation" },
     { value: "otherMails", label: "otherMails" },
     { value: "showInAddressList", label: "showInAddressList" },
-    { value: "state", label: "state" },
-    { value: "city", label: "city" },
     { value: "sponsor", label: "sponsor" },
   ];
 
@@ -216,7 +221,7 @@ const Page = () => {
                           value: (
                             <CippFormComponent
                               type="switch"
-                              name="offboardingDefaults.keepCopy"
+                              name="offboardingDefaults.KeepCopy"
                               formControl={formcontrol}
                             />
                           ),
@@ -257,6 +262,16 @@ const Page = () => {
                             <CippFormComponent
                               type="switch"
                               name="offboardingDefaults.RemoveMFADevices"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Clear Immutable ID",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.ClearImmutableId"
                               formControl={formcontrol}
                             />
                           ),

@@ -519,7 +519,6 @@ function CippJsonView({
               ?.filter((data) => data !== null && data !== undefined)
               .map((data, index) => (
                 <Grid
-                  item
                   size={{ sm: type === "intune" ? 12 : 3, xs: 12 }}
                   key={index}
                   sx={{

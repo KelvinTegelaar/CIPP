@@ -56,6 +56,15 @@
     "recommendedRunInterval": "4h"
   },
   {
+    "name": "OneDriveQuota",
+    "label": "Alert on % OneDrive quota used",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Enter quota percentage (default: 90)",
+    "inputName": "OneDriveQuota",
+    "recommendedRunInterval": "4h"
+  },
+  {
     "name": "ExpiringLicenses",
     "label": "Alert on licenses expiring in 30 days",
     "recommendedRunInterval": "7d"
@@ -84,6 +93,16 @@
     "name": "DefenderIncidents",
     "label": "Alert on new Defender Incidents found",
     "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "Vulnerabilities",
+    "label": "Alert on vulnerabilities older than X hours",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert on vulnerabilities first seen more than X hours ago (default: 24)",
+    "inputName": "AgeInHours",
+    "recommendedRunInterval": "4h",
+    "description": "Monitors for software vulnerabilities that were first discovered more than the specified number of hours ago. This helps identify lingering vulnerabilities that may have been missed or not yet remediated. Requires Defender for Endpoint/Business."
   },
   {
     "name": "UnusedLicenses",
@@ -168,5 +187,37 @@
     "inputName": "TERRLThreshold",
     "recommendedRunInterval": "1h",
     "description": "Monitors tenant outbound email volume against Microsoft's TERRL limits. Tenant data is updated every hour."
+  },
+  {
+    "name": "LowDomainScore",
+    "label": "Alert on domains with low security score",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert when score is below % (default: 70)",
+    "inputName": "InputValue",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors domain security scores from the DomainAnalyser and alerts when scores fall below the specified threshold."
+  },
+  {
+    "name": "GlobalAdminNoAltEmail",
+    "label": "Alert on Global Admin accounts without alternate email address",
+    "recommendedRunInterval": "7d",
+    "description": "Monitors Global Admin accounts and alerts when they don't have an alternate email address set, which is important for password recovery of key accounts."
+  },
+  {
+    "name": "NewRiskyUsers",
+    "label": "Alert on new risky users (P2 License Required)",
+    "recommendedRunInterval": "30m",
+    "description": "Monitors for new risky users in the tenant. Risky users are defined as users who have performed actions that are considered risky, such as password resets, MFA failures, or suspicious activity."
+  },
+  {
+    "name": "LowTenantAlignment",
+    "label": "Alert on low tenant alignment percentage",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Alert when alignment is below % (default: 99)",
+    "inputName": "InputValue",
+    "recommendedRunInterval": "1d",
+    "description": "Monitors tenant alignment scores against standards templates and alerts when the alignment percentage falls below the specified threshold. This helps ensure compliance across all managed tenants."
   }
 ]

@@ -24,7 +24,7 @@ const Page = () => {
       >
         {currentTenant === "AllTenants" && (
           <Grid container spacing={2}>
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippImageCard
                 title="Not supported"
                 imageUrl="/assets/illustrations/undraw_website_ij0l.svg"

@@ -4,12 +4,9 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ApiPostCall, ApiGetCall } from "/src/api/ApiCall";
 import {
-  Box,
   Button,
   Stack,
   CardContent,
-  Typography,
-  Divider,
   CardActions,
   Skeleton,
 } from "@mui/material";

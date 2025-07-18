@@ -21,6 +21,7 @@ const CippFormPage = (props) => {
   const {
     title,
     backButtonTitle,
+    titleButton,
     formPageType = "Add",
     children,
     queryKey,
@@ -118,11 +119,14 @@ const CippFormPage = (props) => {
                   </div>
                 )}
 
-                <div>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                >
                   <Typography variant="h4">
                     {!hidePageType && <>{formPageType} - </>}
                     {title}
                   </Typography>
+                  {titleButton && titleButton}
                 </div>
               </Stack>
             )}

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
 import CippAppPermissionBuilder from "/src/components/CippComponents/CippAppPermissionBuilder";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
-import { Alert, CardContent, Skeleton, Stack, Typography, Button, Box } from "@mui/material";
+import { Alert, CardContent, Stack, Typography, Button, Box } from "@mui/material";
 import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
 import { useEffect, useState } from "react";
 import { CopyAll } from "@mui/icons-material";

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { Alert, Button, Dialog, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -15,7 +15,6 @@ import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboardingv2";
 import { useDialog } from "../hooks/use-dialog";
 import { nativeMenuItems } from "/src/layouts/config";
-import { keepPreviousData } from "@tanstack/react-query";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -31,13 +30,9 @@ const useMobileNav = () => {
     }
   }, [open]);
 
-  useEffect(
-    () => {
-      handlePathnameChange();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pathname]
-  );
+  useEffect(() => {
+    handlePathnameChange();
+  }, [pathname]);
 
   const handleOpen = useCallback(() => {
     setOpen(true);
@@ -80,11 +75,8 @@ export const Layout = (props) => {
   const [userSettingsComplete, setUserSettingsComplete] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState([]);
   const [menuItems, setMenuItems] = useState(nativeMenuItems);
+  const lastUserSettingsUpdate = useRef(null);
   const currentTenant = settings?.currentTenant;
-  const currentRole = ApiGetCall({
-    url: "/api/me",
-    queryKey: "authmecipp",
-  });
   const [hideSidebar, setHideSidebar] = useState(false);
 
   const swaStatus = ApiGetCall({
@@ -94,9 +86,16 @@ export const Layout = (props) => {
     refetchOnWindowFocus: true,
   });
 
+  const currentRole = ApiGetCall({
+    url: "/api/me",
+    queryKey: "authmecipp",
+    waiting: !swaStatus.isSuccess || swaStatus.data?.clientPrincipal === null,
+  });
+
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
+      const userPermissions = currentRole.data?.permissions;
       if (!userRoles) {
         setMenuItems([]);
         setHideSidebar(true);
@@ -105,12 +104,41 @@ export const Layout = (props) => {
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
+            // role
             if (item.roles && item.roles.length > 0) {
               const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
               if (!hasRole) {
                 return null;
               }
             }
+
+            // Check permission with pattern matching support
+            if (item.permissions && item.permissions.length > 0) {
+              const hasPermission = userPermissions?.some((userPerm) => {
+                return item.permissions.some((requiredPerm) => {
+                  // Exact match
+                  if (userPerm === requiredPerm) {
+                    return true;
+                  }
+
+                  // Pattern matching - check if required permission contains wildcards
+                  if (requiredPerm.includes("*")) {
+                    // Convert wildcard pattern to regex
+                    const regexPattern = requiredPerm
+                      .replace(/\./g, "\\.") // Escape dots
+                      .replace(/\*/g, ".*"); // Convert * to .*
+                    const regex = new RegExp(`^${regexPattern}$`);
+                    return regex.test(userPerm);
+                  }
+
+                  return false;
+                });
+              });
+              if (!hasPermission) {
+                return null;
+              }
+            }
+            // check sub-items
             if (item.items && item.items.length > 0) {
               const filteredSubItems = filterItemsByRole(item.items).filter(Boolean);
               return { ...item, items: filteredSubItems };
@@ -144,38 +172,44 @@ export const Layout = (props) => {
   const userSettingsAPI = ApiGetCall({
     url: "/api/ListUserSettings",
     queryKey: "userSettings",
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    keepPreviousData: true,
   });
 
   useEffect(() => {
-    if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
-      //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
-      if (userSettingsAPI.data.offboardingDefaults?.user) {
-        delete userSettingsAPI.data.offboardingDefaults.user;
-      }
-      if (userSettingsAPI?.data?.currentTheme) {
-        delete userSettingsAPI.data.currentTheme;
-      }
-      // get current devtools settings
-      var showDevtools = settings.showDevtools;
-      // get current bookmarks
-      var bookmarks = settings.bookmarks;
+    if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching) {
+      // Only update if the data has actually changed (using dataUpdatedAt as a proxy)
+      const dataUpdatedAt = userSettingsAPI.dataUpdatedAt;
+      if (dataUpdatedAt && dataUpdatedAt !== lastUserSettingsUpdate.current) {
+        //if userSettingsAPI.data contains offboardingDefaults.user, delete that specific key.
+        if (userSettingsAPI.data.offboardingDefaults?.user) {
+          delete userSettingsAPI.data.offboardingDefaults.user;
+        }
+        if (userSettingsAPI.data.offboardingDefaults?.keepCopy) {
+          delete userSettingsAPI.data.offboardingDefaults.keepCopy;
+        }
+        if (userSettingsAPI?.data?.currentTheme) {
+          delete userSettingsAPI.data.currentTheme;
+        }
+        // get current devtools settings
+        var showDevtools = settings.showDevtools;
+        // get current bookmarks
+        var bookmarks = settings.bookmarks;
 
-      settings.handleUpdate({
-        ...userSettingsAPI.data,
-        bookmarks,
-        showDevtools,
-      });
-      setUserSettingsComplete(true);
+        settings.handleUpdate({
+          ...userSettingsAPI.data,
+          bookmarks,
+          showDevtools,
+        });
+
+        // Track this update and set completion status
+        lastUserSettingsUpdate.current = dataUpdatedAt;
+        setUserSettingsComplete(true);
+      }
     }
   }, [
     userSettingsAPI.isSuccess,
     userSettingsAPI.data,
     userSettingsAPI.isFetching,
-    userSettingsComplete,
-    settings,
+    userSettingsAPI.dataUpdatedAt,
   ]);
 
   const version = ApiGetCall({
@@ -275,7 +309,7 @@ export const Layout = (props) => {
             <Box sx={{ flexGrow: 1, py: 4 }}>
               <Container maxWidth={false}>
                 <Grid container spacing={3}>
-                  <Grid item size={6}>
+                  <Grid size={6}>
                     <CippImageCard
                       title="Not supported"
                       imageUrl="/assets/illustrations/undraw_website_ij0l.svg"

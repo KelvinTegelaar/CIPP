@@ -1,10 +1,9 @@
-import { Stack, Typography, Alert, Box } from "@mui/material";
+import { Stack, Alert } from "@mui/material";
 import CippWizardStepButtons from "./CippWizardStepButtons";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { getCippValidator } from "../../utils/get-cipp-validator";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
-import { useEffect } from "react";
 import CippPermissionPreview from "../CippComponents/CippPermissionPreview";
 import { useWatch } from "react-hook-form";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
@@ -12,7 +11,7 @@ import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 export const CippWizardAppApproval = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
 
-  // Watch for the selected template to access permissions
+  // Watch for the selected template to access permissions and type
   const selectedTemplate = useWatch({
     control: formControl.control,
     name: "selectedTemplate",
@@ -57,9 +56,13 @@ export const CippWizardAppApproval = (props) => {
               addedField: {
                 AppId: "AppId",
                 AppName: "AppName",
+                AppType: "AppType",
+                GalleryTemplateId: "GalleryTemplateId",
+                GalleryInformation: "GalleryInformation",
                 PermissionSetId: "PermissionSetId",
                 PermissionSetName: "PermissionSetName",
                 Permissions: "Permissions",
+                ApplicationManifest: "ApplicationManifest",
               },
               showRefresh: true,
             }}
@@ -77,18 +80,74 @@ export const CippWizardAppApproval = (props) => {
                   { label: "App Name", value: selectedTemplate.addedFields.AppName },
                   { label: "App ID", value: selectedTemplate.addedFields.AppId },
                   {
+                    label: "Template Type",
+                    value:
+                      (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                      "GalleryTemplate"
+                        ? "Gallery Template"
+                        : (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                          "ApplicationManifest"
+                        ? "Application Manifest"
+                        : "Enterprise App",
+                  },
+                  {
                     label: "Permission Set",
-                    value: selectedTemplate.addedFields.PermissionSetName,
+                    value:
+                      (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                      "GalleryTemplate"
+                        ? "Auto-Consent"
+                        : (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                          "ApplicationManifest"
+                        ? "Defined in Manifest"
+                        : selectedTemplate.addedFields.PermissionSetName,
                   },
                 ]}
                 title="Template Details"
               />
-              <CippPermissionPreview
-                permissions={selectedTemplate.addedFields.Permissions}
-                title="Template Permissions"
-                maxHeight={500}
-                showAppIds={true}
-              />
+              {(selectedTemplate.addedFields.AppType || "EnterpriseApp") === "EnterpriseApp" ? (
+                <CippPermissionPreview
+                  permissions={selectedTemplate.addedFields.Permissions}
+                  title="Template Permissions"
+                  maxHeight={500}
+                  showAppIds={true}
+                />
+              ) : (selectedTemplate.addedFields.AppType || "EnterpriseApp") ===
+                "ApplicationManifest" ? (
+                <CippPermissionPreview
+                  permissions={null}
+                  title="Application Manifest"
+                  maxHeight={500}
+                  showAppIds={false}
+                  applicationManifest={selectedTemplate.addedFields.ApplicationManifest}
+                />
+              ) : (
+                <CippPermissionPreview
+                  permissions={null}
+                  title="Gallery Template Info"
+                  maxHeight={500}
+                  showAppIds={true}
+                  galleryTemplate={{
+                    label: selectedTemplate.addedFields.AppName,
+                    value:
+                      selectedTemplate.addedFields.GalleryTemplateId ||
+                      selectedTemplate.addedFields.AppId,
+                    addedFields: {
+                      displayName: selectedTemplate.addedFields.AppName,
+                      applicationId: selectedTemplate.addedFields.AppId,
+                      // Use saved gallery information if available, otherwise provide defaults
+                      ...(selectedTemplate.addedFields.GalleryInformation || {
+                        description: `Gallery template for ${
+                          selectedTemplate.addedFields.AppName || "application"
+                        }`,
+                        publisher: "Microsoft Gallery",
+                        categories: ["Application"],
+                        supportedSingleSignOnModes: ["saml", "password", "oidc"],
+                        supportedProvisioningTypes: ["sync"],
+                      }),
+                    },
+                  }}
+                />
+              )}
             </Stack>
           )}
         </Stack>

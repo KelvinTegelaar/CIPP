@@ -4,12 +4,12 @@ import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Mail, Forward, Fingerprint, Launch } from "@mui/icons-material";
+import { Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import { Box, Stack, Typography, Button, CircularProgress } from "@mui/material";
+import { Box, Stack, Typography, Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import countryList from "/src/data/countryList";
@@ -108,7 +108,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Form Section */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippButtonCard
                 title={"Test Conditional Access Policy"}
                 CardButton={
@@ -242,7 +242,7 @@ const Page = () => {
                 </form>
               </CippButtonCard>
             </Grid>
-            <Grid item size={{ md: 8, xs: 12 }}>
+            <Grid size={{ md: 8, xs: 12 }}>
               <CippDataTable
                 queryKey={`ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`}
                 title={"CA Test Results"}

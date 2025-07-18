@@ -59,7 +59,7 @@ const Page = () => {
       queryKey={["execPartnerMode", "TenantSelector"]}
     >
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
             The configuration settings below should only be modified by a super admin. Super admins
             can configure what tenant mode CIPP operates in. See{" "}
@@ -73,7 +73,7 @@ const Page = () => {
             for more information on how to configure these modes and what they mean.
           </Typography>
         </Grid>
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="radio"
             name="TenantMode"

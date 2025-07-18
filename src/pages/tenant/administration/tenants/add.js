@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import CippWizardPage from "../../../../components/CippWizard/CippWizardPage.jsx";
 import { CippWizardOptionsList } from "../../../../components/CippWizard/CippWizardOptionsList.jsx";
 import { CippAddTenantForm } from "../../../../components/CippWizard/CippAddTenantForm.jsx";
-import { BuildingOfficeIcon, CloudIcon } from "@heroicons/react/24/outline";
+import { BuildingOfficeIcon } from "@heroicons/react/24/outline";
 import CippWizardConfirmation from "../../../../components/CippWizard/CippWizardConfirmation.jsx";
 
 const Page = () => {

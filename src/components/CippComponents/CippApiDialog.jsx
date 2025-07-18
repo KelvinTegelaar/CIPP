@@ -12,7 +12,7 @@ import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import React, { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
 
@@ -27,6 +27,7 @@ export const CippApiDialog = (props) => {
     dialogAfterEffect,
     allowResubmit = false,
     children,
+    defaultvalues,
     ...other
   } = props;
   const router = useRouter();
@@ -38,12 +39,21 @@ export const CippApiDialog = (props) => {
   if (mdDown) {
     other.fullScreen = true;
   }
+
+  const formHook = useForm({
+    defaultValues: defaultvalues || {},
+    mode: "onChange", // Enable real-time validation
+  });
+
+  // Get form state for validation
+  const { isValid } = useFormState({ control: formHook.control });
+
   useEffect(() => {
     if (createDialog.open) {
       setIsFormSubmitted(false);
-      formHook.reset();
+      formHook.reset(defaultvalues || {});
     }
-  }, [createDialog.open]);
+  }, [createDialog.open, defaultvalues]);
 
   const [getRequestInfo, setGetRequestInfo] = useState({
     url: "",
@@ -193,7 +203,6 @@ export const CippApiDialog = (props) => {
     }
   }, [actionPostRequest.isSuccess, actionGetRequest.isSuccess]);
 
-  const formHook = useForm();
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
 
@@ -352,7 +361,7 @@ export const CippApiDialog = (props) => {
               <Button
                 variant="contained"
                 type="submit"
-                disabled={isFormSubmitted && !allowResubmit}
+                disabled={!isValid || (isFormSubmitted && !allowResubmit)}
               >
                 {isFormSubmitted && allowResubmit ? "Reconfirm" : "Confirm"}
               </Button>

@@ -89,12 +89,10 @@ export function useSecureScore() {
           (secureScoreData.currentScore / secureScoreData.maxScore) * 100
         ),
         percentageVsAllTenants: Math.round(
-          (secureScoreData.averageComparativeScores?.[0]?.averageScore / secureScoreData.maxScore) *
-            100
+          secureScoreData.averageComparativeScores?.[0]?.averageScore
         ),
         percentageVsSimilar: Math.round(
-          (secureScoreData.averageComparativeScores?.[1]?.averageScore / secureScoreData.maxScore) *
-            100
+          secureScoreData.averageComparativeScores?.[1]?.averageScore
         ),
         controlScores: updatedControlScores,
       });

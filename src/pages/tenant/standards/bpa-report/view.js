@@ -133,7 +133,7 @@ const Page = () => {
               </Button>
             </Stack>
             <Grid container spacing={2}>
-              <Grid item size={{ md: 4, sm: 6, xs: 10 }}>
+              <Grid size={{ md: 4, sm: 6, xs: 10 }}>
                 <Typography variant="h4" gutterBottom>
                   {pageTitle}
                 </Typography>
@@ -144,7 +144,7 @@ const Page = () => {
 
           <Grid container spacing={2}>
             {currentTenant === "AllTenants" && layoutMode !== "Table" ? (
-              <Grid item size={{ md: 4, sm: 6, xs: 10 }}>
+              <Grid size={{ md: 4, sm: 6, xs: 10 }}>
                 <CippImageCard
                   title="Not supported"
                   imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
@@ -157,7 +157,6 @@ const Page = () => {
               <>
                 {blockCards.map((block, index) => (
                   <Grid
-                    item
                     size={{ md: layoutMode === "Table" ? 12 : 4, sm: layoutMode === "Table" ? 12 : 6, xs: 10 }}
                     key={block.name}
                   >

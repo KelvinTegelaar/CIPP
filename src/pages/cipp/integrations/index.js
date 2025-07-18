@@ -67,7 +67,7 @@ const Page = () => {
           }
 
           return (
-            <Grid item size={{ md: 6, sm: 12, xl: 3 }} key={extension.id}>
+            <Grid size={{ md: 6, sm: 12, xl: 3 }} key={extension.id}>
               <CardActionArea
                 component={Link}
                 sx={{

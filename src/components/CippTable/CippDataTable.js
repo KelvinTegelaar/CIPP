@@ -12,7 +12,7 @@ import {
 import { ResourceUnavailable } from "../resource-unavailable";
 import { ResourceError } from "../resource-error";
 import { Scrollbar } from "../scrollbar";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
@@ -210,6 +210,81 @@ export const CippDataTable = (props) => {
         top: table.getState().isFullScreen ? 64 : undefined,
       },
     }),
+    // Add global styles to target the specific filter components
+    enableColumnFilterModes: true,
+    muiTableHeadCellProps: {
+      sx: {
+        // Target the filter row cells
+        '& .MuiTableCell-root': {
+          padding: '8px 16px',
+        },
+        // Target the Autocomplete component in filter cells
+        '& .MuiAutocomplete-root': {
+          width: '100%',
+        },
+        // Force the tags container to be single line with ellipsis
+        '& .MuiAutocomplete-root .MuiInputBase-root': {
+          height: '40px !important',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          display: 'flex',
+          flexWrap: 'nowrap',
+        },
+        // Target the tags container specifically
+        '& .MuiAutocomplete-root .MuiInputBase-root .MuiInputBase-input': {
+          height: '24px',
+          minHeight: '24px',
+          maxHeight: '24px',
+        },
+        // Target regular input fields (not in Autocomplete)
+        '& .MuiInputBase-root': {
+          height: '40px !important',
+        },
+        // Ensure all input fields have consistent styling
+        '& .MuiInputBase-input': {
+          height: '24px',
+          minHeight: '24px',
+          maxHeight: '24px',
+        },
+        // Target the specific chip class mentioned
+        '& .MuiChip-label.MuiChip-labelMedium': {
+          maxWidth: '80px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          padding: '0 4px',
+        },
+        // Make chips smaller overall and add title attribute for tooltip
+        '& .MuiChip-root': {
+          height: '24px',
+          maxHeight: '24px',
+          // This adds a tooltip effect using the browser's native tooltip
+          '&::before': {
+            content: 'attr(data-label)',
+            display: 'none',
+          },
+          '&:hover::before': {
+            display: 'block',
+            position: 'absolute',
+            top: '-25px',
+            left: '0',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            color: 'white',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+            zIndex: 9999,
+          },
+        },
+      },
+    },
+    // Initialize the filter chips with data attributes for tooltips
+    initialState: {
+      columnFilters: columnFilters,
+      columnVisibility: columnVisibility,
+    },
     columns: memoizedColumns,
     data: memoizedData ?? [],
     state: {

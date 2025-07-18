@@ -28,6 +28,7 @@ const Page = () => {
         title="Groups"
         backButtonTitle="Group Overview"
         postUrl="/api/AddGroup"
+        resetForm={true}
       >
         <Box sx={{ my: 2 }}>
           <CippAddGroupForm formControl={formControl} />

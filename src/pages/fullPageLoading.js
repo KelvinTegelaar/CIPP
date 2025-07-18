@@ -17,7 +17,7 @@ const FullPageLoading = () => {
         <Container maxWidth={false}>
           <Stack spacing={6}>
             <Grid container spacing={3}>
-              <Grid item style={{ display: "flex" }} size={{ md: 6, xs: 12 }}></Grid>
+              <Grid style={{ display: "flex" }} size={{ md: 6, xs: 12 }}></Grid>
               Loading... #Todo: Make pretty, make it obey user settings for theme.
             </Grid>
           </Stack>

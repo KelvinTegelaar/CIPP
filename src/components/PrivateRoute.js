@@ -4,12 +4,6 @@ import LoadingPage from "../pages/loading.js";
 import ApiOfflinePage from "../pages/api-offline.js";
 
 export const PrivateRoute = ({ children, routeType }) => {
-  const apiRoles = ApiGetCall({
-    url: "/api/me",
-    queryKey: "authmecipp",
-    retry: 2, // Reduced retry count to show offline message sooner
-  });
-
   const session = ApiGetCall({
     url: "/.auth/me",
     queryKey: "authmeswa",
@@ -17,8 +11,19 @@ export const PrivateRoute = ({ children, routeType }) => {
     staleTime: 120000, // 2 minutes
   });
 
+  const apiRoles = ApiGetCall({
+    url: "/api/me",
+    queryKey: "authmecipp",
+    retry: 2, // Reduced retry count to show offline message sooner
+    waiting: !session.isSuccess || session.data?.clientPrincipal === null,
+  });
+
   // Check if the session is still loading before determining authentication status
-  if (session.isLoading || apiRoles.isLoading) {
+  if (
+    session.isLoading ||
+    apiRoles.isLoading ||
+    (apiRoles.isFetching && (apiRoles.data === null || apiRoles.data === undefined))
+  ) {
     return <LoadingPage />;
   }
 

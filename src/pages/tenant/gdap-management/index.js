@@ -59,7 +59,7 @@ const Page = () => {
       // check templates for CIPP Defaults
       if (
         roleTemplates?.data?.pages?.[0].Results?.length > 0 &&
-        roleTemplates?.data?.pages?.[0].Results?.find((t) => t.TemplateId === "CIPP Defaults")
+        roleTemplates?.data?.pages?.[0].Results?.find((t) => t?.TemplateId === "CIPP Defaults")
       ) {
         promptCreateDefaults = false;
       }

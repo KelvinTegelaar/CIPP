@@ -95,7 +95,7 @@ export const CippOffCanvas = (props) => {
           sx={{ overflowY: "auto", maxHeight: "100%", display: "flex", flexDirection: "column" }}
         >
           <Grid container spacing={1}>
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               {extendedInfo.length > 0 && (
                 <CippPropertyListCard
                   isFetching={isFetching}
@@ -108,7 +108,7 @@ export const CippOffCanvas = (props) => {
                 />
               )}
             </Grid>
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <Box sx={{ m: 2 }}>
                 {typeof children === "function" ? children(extendedData) : children}
               </Box>

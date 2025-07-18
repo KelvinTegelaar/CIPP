@@ -1,5 +1,5 @@
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { Sync } from "@mui/icons-material";
+import { Plumbing, Sync } from "@mui/icons-material";
 
 export const CippTenantResults = (props) => {
   const { importReport = false } = props;
@@ -28,6 +28,9 @@ export const CippTenantResults = (props) => {
                 "LastRun",
                 "GraphTest",
                 "ExchangeTest",
+                "OrgManagementRepairNeeeded",
+                "OrgManagementRoles",
+                "OrgManagementRolesMissing",
               ],
             }}
           />
@@ -53,6 +56,15 @@ export const CippTenantResults = (props) => {
               confirmText: "Execute the access check for the selected tenant(s)?",
               relatedQueryKeys: "ExecAccessChecks-Tenants",
               multiPost: false,
+            },
+            {
+              label: "Repair Exchange Roles",
+              type: "POST",
+              url: "/api/ExecExchangeRoleRepair",
+              data: { TenantId: "TenantId" },
+              icon: <Plumbing />,
+              confirmText: "Repair Exchange roles for [TenantName]?",
+              condition: (row) => row.OrgManagementRepairNeeded === true,
             },
           ]}
           simpleColumns={[

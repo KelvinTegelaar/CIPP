@@ -1,6 +1,6 @@
 import { useSettings } from "../../hooks/use-settings";
 import { Button, Card, CardHeader, Divider, CardContent, SvgIcon } from "@mui/material";
-import { CodeBracketIcon, CogIcon } from "@heroicons/react/24/outline";
+import { CodeBracketIcon } from "@heroicons/react/24/outline";
 
 export const CippDevOptions = () => {
   const settings = useSettings();
