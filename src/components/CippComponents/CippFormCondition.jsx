@@ -45,10 +45,15 @@ export const CippFormCondition = (props) => {
 
   if (propertyName && propertyName !== "value") {
     watchedValue = get(watcher, propertyName);
-    compareTargetValue = get(compareValue, propertyName);
+    // Only extract from compareValue if it's an object, otherwise use as-is
+    if (typeof compareValue === "object" && compareValue !== null) {
+      compareTargetValue = get(compareValue, propertyName);
+    } else {
+      compareTargetValue = compareValue;
+    }
   }
 
-  /*console.log("CippFormCondition: ", {
+  console.log("CippFormCondition: ", {
     watcher,
     watchedValue,
     compareTargetValue,
@@ -57,7 +62,7 @@ export const CippFormCondition = (props) => {
     action,
     field,
     propertyName,
-  });*/
+  });
 
   // Function to recursively extract field names from child components
   const extractFieldNames = (children) => {
@@ -156,9 +161,19 @@ export const CippFormCondition = (props) => {
           )
         );
       case "valueEq":
-        return Array.isArray(watcher) && watcher.some((item) => item?.value === compareValue);
+        if (Array.isArray(watcher)) {
+          return watcher.some((item) => item?.value === compareValue);
+        } else if (typeof watcher === "object" && watcher !== null) {
+          return watcher?.value === compareValue;
+        }
+        return false;
       case "valueNotEq":
-        return Array.isArray(watcher) && watcher.some((item) => item?.value !== compareValue);
+        if (Array.isArray(watcher)) {
+          return watcher.some((item) => item?.value !== compareValue);
+        } else if (typeof watcher === "object" && watcher !== null) {
+          return watcher?.value !== compareValue;
+        }
+        return false;
       case "valueContains":
         return (
           Array.isArray(watcher) &&
