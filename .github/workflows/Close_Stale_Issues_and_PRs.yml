@@ -13,6 +13,6 @@ jobs:
           stale-issue-message: 'This issue is stale because it has been open 10 days with no activity. We will close this issue soon. If you want this feature implemented you can contribute it. See: https://docs.cipp.app/dev-documentation/contributing-to-the-code . Please notify the team if you are working on this yourself.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
           stale-issue-label: 'no-activity'
-          exempt-issue-labels: 'planned'
+          exempt-issue-labels: 'planned,bug,roadmap'
           days-before-stale: 9
-          days-before-close: 14
+          days-before-close: 5
