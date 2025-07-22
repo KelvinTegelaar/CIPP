@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { ApiGetCall } from "/src/api/ApiCall";
 import {
   Box,
@@ -17,6 +18,7 @@ import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
+import tabOptions from "./tabOptions.json";
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { Grid } from "@mui/system";
 import { OpenInNew } from "@mui/icons-material";
@@ -203,6 +205,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+);
 
 export default Page;
