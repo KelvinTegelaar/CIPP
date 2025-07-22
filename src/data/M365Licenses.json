@@ -168,6 +168,14 @@
     "Service_Plans_Included_Friendly_Names": "OneDrive for Business (Clipchamp)"
   },
   {
+    "Product_Display_Name": "Clipchamp Premium Add-on",
+    "String_Id": "Clipchamp_Premium_Add_on",
+    "GUID": "4b2c20e4-939d-4bf4-9dd8-6870240cfe19",
+    "Service_Plan_Name": "CLIPCHAMP_PREMIUM",
+    "Service_Plan_Id": "430b908f-78e1-4812-b045-cf83320e7d5d",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Clipchamp Premium"
+  },
+  {
     "Product_Display_Name": "Microsoft 365 Audio Conferencing",
     "String_Id": "MCOMEETADV",
     "GUID": "0c266dff-15dd-4b49-8397-2bb16070ed52",
@@ -2888,6 +2896,94 @@
     "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365"
   },
   {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "CDS_CUSTOMER_INSIGHTS_BASE",
+    "Service_Plan_Id": "d04ca659-b119-4a92-b8fc-3ede584a9d65",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Cust Insights BASE"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "CDS_CUSTOMER_INSIGHTS_COMBINED_BASE",
+    "Service_Plan_Id": "d66ee5da-07d5-49d6-a1d8-45662c3f37be",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Customer Insights Combined Base"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "DYN365_CUSTOMER_INSIGHTS_JOURNEYS_BASE",
+    "Service_Plan_Id": "1720c3f7-7da3-4a11-8324-92aad283eb68",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Customer Insights Journeys"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "Forms_Pro_Marketing_App",
+    "Service_Plan_Id": "22b657cf-0a9e-467b-8a91-5e31f21bc570",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Dynamics 365 Customer Voice for Marketing Application"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Attach",
+    "String_Id": "Dynamics_365_Customer_Insights_Attach_New",
+    "GUID": "ff22b8d4-5073-4b24-ba45-84ad5d9b6642",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Journeys T3 Interacted People",
+    "String_Id": "Dynamics_365_Customer_Insights_Journeys_T3_Interacted_People",
+    "GUID": "05735051-46c0-4c84-9107-bb13d77d0b88",
+    "Service_Plan_Name": "CDS_CUSTOMER_INSIGHTS_JOURNEYS_ADD-ON",
+    "Service_Plan_Id": "2f2e81a6-15de-4041-9f33-73c06fed3801",
+    "Service_Plans_Included_Friendly_Names": "Dataverse for Customer Insights Journeys add-on"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Journeys T3 Interacted People",
+    "String_Id": "Dynamics_365_Customer_Insights_Journeys_T3_Interacted_People",
+    "GUID": "05735051-46c0-4c84-9107-bb13d77d0b88",
+    "Service_Plan_Name": "DYN365_MARKETING_50K_CONTACT_ADDON",
+    "Service_Plan_Id": "e626a4ec-1ba2-409e-bf75-9bc0bc30cca7",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing 50K Addnl Contacts"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights Journeys T3 Interacted People",
+    "String_Id": "Dynamics_365_Customer_Insights_Journeys_T3_Interacted_People",
+    "GUID": "05735051-46c0-4c84-9107-bb13d77d0b88",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights User License",
+    "String_Id": "Dynamics_365_Customer_Insights_User_License",
+    "GUID": "12b5a442-a6f2-49e4-868b-2d7408c2356f",
+    "Service_Plan_Name": "DYN365_MARKETING_MSE_USER",
+    "Service_Plan_Id": "2824c69a-1ac5-4397-8592-eae51cb8b581",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing MSE User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights User License",
+    "String_Id": "Dynamics_365_Customer_Insights_User_License",
+    "GUID": "12b5a442-a6f2-49e4-868b-2d7408c2356f",
+    "Service_Plan_Name": "DYN365_MARKETING_USER",
+    "Service_Plan_Id": "5d7a6abc-eebd-46ab-96e1-e4a2f54a2248",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing USL"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Customer Insights User License",
+    "String_Id": "Dynamics_365_Customer_Insights_User_License",
+    "GUID": "12b5a442-a6f2-49e4-868b-2d7408c2356f",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
     "Product_Display_Name": "Dynamics 365 for Customer Service Chat",
     "String_Id": "DYN365_CS_CHAT",
     "GUID": "7d7af6c2-0be6-46df-84d1-c181b0272909",
@@ -3352,6 +3448,62 @@
     "Service_Plans_Included_Friendly_Names": "Power Automate for Dynamics 365 Mixed Reality"
   },
   {
+    "Product_Display_Name": "Dynamics 365 Human Resources Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_HUMAN_RESOURCES_ATTACH",
+    "GUID": "83c489a4-94b6-4dcc-9fdc-ff9b107a4621",
+    "Service_Plan_Name": "Forms_Pro_Talent",
+    "Service_Plan_Id": "1c4ae475-5608-43fa-b3f7-d20e07cf24b4",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Dynamics 365 Customer Voice for Talent"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Human Resources Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_HUMAN_RESOURCES_ATTACH",
+    "GUID": "83c489a4-94b6-4dcc-9fdc-ff9b107a4621",
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Human Resources Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_HUMAN_RESOURCES_ATTACH",
+    "GUID": "83c489a4-94b6-4dcc-9fdc-ff9b107a4621",
+    "Service_Plan_Name": "D365_HR_SELF_SERVICE_OPS",
+    "Service_Plan_Id": "835b837b-63c1-410e-bf6b-bdef201ad129",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Human Resource Self Service"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Human Resources Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_HUMAN_RESOURCES_ATTACH",
+    "GUID": "83c489a4-94b6-4dcc-9fdc-ff9b107a4621",
+    "Service_Plan_Name": "D365_HR_OPS",
+    "Service_Plan_Id": "8b21a5dc-5485-49ed-a2d4-0e772c830f6d",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Human Resources"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Human Resources Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_HUMAN_RESOURCES_ATTACH",
+    "GUID": "83c489a4-94b6-4dcc-9fdc-ff9b107a4621",
+    "Service_Plan_Name": "D365_HR_Attach",
+    "Service_Plan_Id": "3219525a-4064-45ec-9c35-a33ea6b39a49",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Human Resources Attach"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Human Resources Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_HUMAN_RESOURCES_ATTACH",
+    "GUID": "83c489a4-94b6-4dcc-9fdc-ff9b107a4621",
+    "Service_Plan_Name": "D365_HR_ATTACH_OPS",
+    "Service_Plan_Id": "90d8cb62-e98a-4639-8342-8c7d2c8215ba",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 Human Resources Attach License"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 Human Resources Attach to Qualifying Dynamics 365 Base Offer",
+    "String_Id": "DYN365_HUMAN_RESOURCES_ATTACH",
+    "GUID": "83c489a4-94b6-4dcc-9fdc-ff9b107a4621",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
     "Product_Display_Name": "Dynamics 365 Hybrid Connector",
     "String_Id": "CRM_HYBRIDCONNECTOR",
     "GUID": "de176c31-616d-4eae-829a-718918d7ec23",
@@ -3379,6 +3531,22 @@
     "Product_Display_Name": "Dynamics 365 for Marketing Additional Application",
     "String_Id": "DYN365_MARKETING_APPLICATION_ADDON",
     "GUID": "99c5688b-6c75-4496-876f-07f0fbd69add",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Marketing Addnl Contacts Tier 1",
+    "String_Id": "DYN365_MARKETING_CONTACT_ADDON",
+    "GUID": "fc4581aa-6b1f-459d-95b6-84bd49d6f843",
+    "Service_Plan_Name": "DYN365_MARKETING_CONTACT_ADDON",
+    "Service_Plan_Id": "18db5075-2c70-408d-a82b-929059d782af",
+    "Service_Plans_Included_Friendly_Names": "Dynamics 365 for Marketing Additional Contacts Tier 1"
+  },
+  {
+    "Product_Display_Name": "Dynamics 365 for Marketing Addnl Contacts Tier 1",
+    "String_Id": "DYN365_MARKETING_CONTACT_ADDON",
+    "GUID": "fc4581aa-6b1f-459d-95b6-84bd49d6f843",
     "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
     "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
     "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
@@ -7744,15 +7912,15 @@
     "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "AAD_BASIC_EDU",
     "Service_Plan_Id": "1d0f309f-fdf9-4b2a-9ae7-9c48b91f1426",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID Basic for Education"
+    "Service_Plans_Included_Friendly_Names": "Azure Active Directory Basic for Education"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "RMS_S_ENTERPRISE",
@@ -7760,7 +7928,7 @@
     "Service_Plans_Included_Friendly_Names": "Azure Rights Management"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "CDS_O365_P3",
@@ -7768,7 +7936,7 @@
     "Service_Plans_Included_Friendly_Names": "Common Data Service for Teams"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "LOCKBOX_ENTERPRISE",
@@ -7776,7 +7944,15 @@
     "Service_Plans_Included_Friendly_Names": "Customer Lockbox"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "CustomerLockboxA_Enterprise",
+    "Service_Plan_Id": "3ec18638-bd4c-4d3b-8905-479ed636b83e",
+    "Service_Plans_Included_Friendly_Names": "Customer Lockbox (A)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MIP_S_Exchange",
@@ -7784,7 +7960,15 @@
     "Service_Plans_Included_Friendly_Names": "Data Classification in Microsoft 365"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "COMMON_DEFENDER_PLATFORM_FOR_OFFICE",
+    "Service_Plan_Id": "a312bdeb-1e21-40d0-84b1-0e73f128144f",
+    "Service_Plans_Included_Friendly_Names": "Defender Platform for Office 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "EducationAnalyticsP1",
@@ -7792,7 +7976,7 @@
     "Service_Plans_Included_Friendly_Names": "Education Analytics"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "EXCHANGE_S_ENTERPRISE",
@@ -7800,7 +7984,15 @@
     "Service_Plans_Included_Friendly_Names": "Exchange Online (Plan 2)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_SEARCH_INDEX",
+    "Service_Plan_Id": "a6520331-d7d4-4276-95f5-15c0933bc757",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors Search with Index"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "INFORMATION_BARRIERS",
@@ -7808,7 +8000,7 @@
     "Service_Plans_Included_Friendly_Names": "Information Barriers"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "Content_Explorer",
@@ -7816,7 +8008,7 @@
     "Service_Plans_Included_Friendly_Names": "Information Protection and Governance Analytics - Premium"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "ContentExplorer_Standard",
@@ -7824,7 +8016,7 @@
     "Service_Plans_Included_Friendly_Names": "Information Protection and Governance Analytics – Standard"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MIP_S_CLP2",
@@ -7832,7 +8024,7 @@
     "Service_Plans_Included_Friendly_Names": "Information Protection for Office 365 - Premium"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MIP_S_CLP1",
@@ -7840,7 +8032,7 @@
     "Service_Plans_Included_Friendly_Names": "Information Protection for Office 365 - Standard"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "M365_ADVANCED_AUDITING",
@@ -7848,15 +8040,15 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Advanced Auditing"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "OFFICESUBSCRIPTION",
     "Service_Plan_Id": "43de0ff5-c92c-492b-9116-175376d08c38",
-    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Apps for Enterprise"
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Apps for enterprise"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MCOMEETADV",
@@ -7864,7 +8056,15 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Audio Conferencing"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "M365_AUDIT_PLATFORM",
+    "Service_Plan_Id": "f6de4823-28fa-440b-b886-4783fa86ddba",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Audit Platform"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MICROSOFT_COMMUNICATION_COMPLIANCE",
@@ -7872,7 +8072,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Communication Compliance"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MTP",
@@ -7880,7 +8080,15 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Defender"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "M365_LIGHTHOUSE_CUSTOMER_PLAN1",
+    "Service_Plan_Id": "6f23d6a9-adbf-481c-8538-b4c095654487",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Lighthouse (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MCOEV",
@@ -7888,7 +8096,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Phone System"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MICROSOFTBOOKINGS",
@@ -7896,7 +8104,15 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Bookings"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "CLIPCHAMP",
+    "Service_Plan_Id": "a1ace008-72f3-4ea0-8dac-33b3a23a2472",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Clipchamp"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "COMMUNICATIONS_DLP",
@@ -7904,7 +8120,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Communications DLP"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "CUSTOMER_KEY",
@@ -7912,15 +8128,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Customer Key"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
-    "String_Id": "M365EDU_A5_FACULTY",
-    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
-    "Service_Plan_Name": "DATA_INVESTIGATIONS",
-    "Service_Plan_Id": "46129a58-a698-46f0-aa5b-17f6586297d9",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Data Investigations"
-  },
-  {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "ATP_ENTERPRISE",
@@ -7928,7 +8136,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 1)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "THREAT_INTELLIGENCE",
@@ -7936,7 +8144,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Office 365 (Plan 2)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "EXCEL_PREMIUM",
@@ -7944,7 +8152,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Excel Advanced Analytics"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "OFFICE_FORMS_PLAN_3",
@@ -7952,7 +8160,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Forms (Plan 3)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "INFO_GOVERNANCE",
@@ -7960,7 +8168,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Information Governance"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "INSIDER_RISK",
@@ -7968,7 +8176,15 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Insider Risk Management"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT",
+    "Service_Plan_Id": "9d0c4ee5-e4a1-4625-ab39-d82b619b1a34",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Insider Risk Management - Exchange"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "KAIZALA_STANDALONE",
@@ -7976,7 +8192,15 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Kaizala Pro"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "MICROSOFT_LOOP",
+    "Service_Plan_Id": "c4b8c31a-fb44-4c65-9837-a21f55fcabda",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Loop"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "ML_CLASSIFICATION",
@@ -7984,7 +8208,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft ML-Based Classification"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "EXCHANGE_ANALYTICS",
@@ -7992,7 +8216,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft MyAnalytics (Full)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "PROJECTWORKMANAGEMENT",
@@ -8000,7 +8224,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Planner"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "RECORDS_MANAGEMENT",
@@ -8008,7 +8232,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Records Management"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MICROSOFT_SEARCH",
@@ -8016,7 +8240,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Search"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "Deskless",
@@ -8024,7 +8248,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft StaffHub"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "STREAM_O365_E5",
@@ -8032,7 +8256,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Stream for Office 365 E5"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "TEAMS1",
@@ -8040,7 +8264,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Teams"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MINECRAFT_EDUCATION_EDITION",
@@ -8048,7 +8272,7 @@
     "Service_Plans_Included_Friendly_Names": "Minecraft Education Edition"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "INTUNE_O365",
@@ -8056,7 +8280,7 @@
     "Service_Plans_Included_Friendly_Names": "Mobile Device Management for Office 365"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "Nucleus",
@@ -8064,7 +8288,7 @@
     "Service_Plans_Included_Friendly_Names": "Nucleus"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "EQUIVIO_ANALYTICS",
@@ -8072,7 +8296,7 @@
     "Service_Plans_Included_Friendly_Names": "Office 365 Advanced eDiscovery"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "ADALLOM_S_O365",
@@ -8080,7 +8304,7 @@
     "Service_Plans_Included_Friendly_Names": "Office 365 Cloud App Security"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "PAM_ENTERPRISE",
@@ -8088,7 +8312,7 @@
     "Service_Plans_Included_Friendly_Names": "Office 365 Privileged Access Management"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "SAFEDOCS",
@@ -8096,7 +8320,7 @@
     "Service_Plans_Included_Friendly_Names": "Office 365 SafeDocs"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "SHAREPOINTWAC_EDU",
@@ -8104,7 +8328,7 @@
     "Service_Plans_Included_Friendly_Names": "Office for the Web for Education"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "POWERAPPS_O365_P3",
@@ -8112,7 +8336,7 @@
     "Service_Plans_Included_Friendly_Names": "Power Apps for Office 365 (Plan 3)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "BI_AZURE_P2",
@@ -8120,7 +8344,7 @@
     "Service_Plans_Included_Friendly_Names": "Power BI Pro"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "PREMIUM_ENCRYPTION",
@@ -8128,7 +8352,7 @@
     "Service_Plans_Included_Friendly_Names": "Premium Encryption in Office 365"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "PROJECT_O365_P3",
@@ -8136,23 +8360,39 @@
     "Service_Plans_Included_Friendly_Names": "Project for Office (Plan E5)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "PURVIEW_DISCOVERY",
+    "Service_Plan_Id": "c948ea65-2053-4a5a-8a62-9eaaaf11b522",
+    "Service_Plans_Included_Friendly_Names": "Purview Discovery"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "Bing_Chat_Enterprise",
+    "Service_Plan_Id": "0d0c0d31-fae7-41f2-b909-eaf4d7f26dba",
+    "Service_Plans_Included_Friendly_Names": "RETIRED - Commercial data protection for Microsoft Copilot"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "COMMUNICATIONS_COMPLIANCE",
     "Service_Plan_Id": "41fcdd7d-4733-4863-9cf4-c65b83ce2df4",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Communications Compliance"
+    "Service_Plans_Included_Friendly_Names": "RETIRED - Microsoft Communications Compliance"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
-    "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT",
-    "Service_Plan_Id": "9d0c4ee5-e4a1-4625-ab39-d82b619b1a34",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Insider Risk Management"
+    "Service_Plan_Name": "DATA_INVESTIGATIONS",
+    "Service_Plan_Id": "46129a58-a698-46f0-aa5b-17f6586297d9",
+    "Service_Plans_Included_Friendly_Names": "Retired - Microsoft Data Investigations"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "SCHOOL_DATA_SYNC_P2",
@@ -8160,7 +8400,7 @@
     "Service_Plans_Included_Friendly_Names": "School Data Sync (Plan 2)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "SHAREPOINTENTERPRISE_EDU",
@@ -8168,7 +8408,7 @@
     "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 2) for Education"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MCOSTANDARD",
@@ -8176,7 +8416,7 @@
     "Service_Plans_Included_Friendly_Names": "Skype for Business Online (Plan 2)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "SWAY",
@@ -8184,7 +8424,7 @@
     "Service_Plans_Included_Friendly_Names": "Sway"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "BPOS_S_TODO_3",
@@ -8192,7 +8432,7 @@
     "Service_Plans_Included_Friendly_Names": "To-Do (Plan 3)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "VIVA_LEARNING_SEEDED",
@@ -8200,7 +8440,7 @@
     "Service_Plans_Included_Friendly_Names": "Viva Learning Seeded"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "WHITEBOARD_PLAN3",
@@ -8208,7 +8448,7 @@
     "Service_Plans_Included_Friendly_Names": "Whiteboard (Plan 3)"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "YAMMER_EDU",
@@ -8216,7 +8456,7 @@
     "Service_Plans_Included_Friendly_Names": "Yammer for Academic"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "WINDEFATP",
@@ -8224,7 +8464,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Endpoint"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MICROSOFTENDPOINTDLP",
@@ -8232,7 +8472,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Endpoint DLP"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "UNIVERSAL_PRINT_01",
@@ -8240,7 +8480,7 @@
     "Service_Plans_Included_Friendly_Names": "Universal Print"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "Virtualization Rights for Windows 10 (E3/E5+VDA)",
@@ -8248,7 +8488,7 @@
     "Service_Plans_Included_Friendly_Names": "Windows 10/11 Enterprise"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "WINDOWSUPDATEFORBUSINESS_DEPLOYMENTSERVICE",
@@ -8256,23 +8496,7 @@
     "Service_Plans_Included_Friendly_Names": "Windows Update for Business Deployment Service"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
-    "String_Id": "M365EDU_A5_FACULTY",
-    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
-    "Service_Plan_Name": "AAD_PREMIUM",
-    "Service_Plan_Id": "41781fb2-bc02-4b7c-bd55-b576c07bb09d",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P1"
-  },
-  {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
-    "String_Id": "M365EDU_A5_FACULTY",
-    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
-    "Service_Plan_Name": "AAD_PREMIUM_P2",
-    "Service_Plan_Id": "eec0eb4f-6444-4f95-aba0-50c24d67f998",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P2"
-  },
-  {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "RMS_S_PREMIUM",
@@ -8280,7 +8504,7 @@
     "Service_Plans_Included_Friendly_Names": "Azure Information Protection Premium P1"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "RMS_S_PREMIUM2",
@@ -8288,7 +8512,7 @@
     "Service_Plans_Included_Friendly_Names": "Azure Information Protection Premium P2"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "DYN365_CDS_O365_P3",
@@ -8296,7 +8520,15 @@
     "Service_Plans_Included_Friendly_Names": "Common Data Service"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "Intune_ServiceNow",
+    "Service_Plan_Id": "3eeb8536-fecf-41bf-a3f8-d6f17a9f3efc",
+    "Service_Plans_Included_Friendly_Names": "Intune ServiceNow Integration"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "MFA_PREMIUM",
@@ -8304,7 +8536,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Azure Multi-Factor Authentication"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "ADALLOM_S_STANDALONE",
@@ -8312,7 +8544,7 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Cloud Apps"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "ATA",
@@ -8320,23 +8552,39 @@
     "Service_Plans_Included_Friendly_Names": "Microsoft Defender for Identity"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "AAD_PREMIUM",
+    "Service_Plan_Id": "41781fb2-bc02-4b7c-bd55-b576c07bb09d",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P1"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "AAD_PREMIUM_P2",
+    "Service_Plan_Id": "eec0eb4f-6444-4f95-aba0-50c24d67f998",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P2"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "INTUNE_A",
     "Service_Plan_Id": "c1ec4a95-1f05-45b3-a911-aa3fa01094f5",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Intune"
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune Plan 1"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "INTUNE_EDU",
     "Service_Plan_Id": "da24caf9-af8e-485c-b7c8-e73336da2693",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Intune for Education"
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune Plan 1 for Education"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "FLOW_O365_P3",
@@ -8344,7 +8592,7 @@
     "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
   },
   {
-    "Product_Display_Name": "Microsoft 365 A5 for Faculty",
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
     "String_Id": "M365EDU_A5_FACULTY",
     "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
     "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_O365_P3",
@@ -8352,12 +8600,20 @@
     "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Office 365"
   },
   {
+    "Product_Display_Name": "Microsoft 365 A5 for faculty",
+    "String_Id": "M365EDU_A5_FACULTY",
+    "GUID": "e97c048c-37a4-45fb-ab50-922fbf07a370",
+    "Service_Plan_Name": "REMOTE_HELP",
+    "Service_Plan_Id": "a4c6cf29-1168-4076-ba5c-e8fe0e62b17e",
+    "Service_Plans_Included_Friendly_Names": "Remote help"
+  },
+  {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "AAD_BASIC_EDU",
     "Service_Plan_Id": "1d0f309f-fdf9-4b2a-9ae7-9c48b91f1426",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID Basic for Education"
+    "Service_Plans_Included_Friendly_Names": "Azure Active Directory Basic for Education"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8387,9 +8643,25 @@
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "CustomerLockboxA_Enterprise",
+    "Service_Plan_Id": "3ec18638-bd4c-4d3b-8905-479ed636b83e",
+    "Service_Plans_Included_Friendly_Names": "Customer Lockbox (A)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "MIP_S_Exchange",
     "Service_Plan_Id": "cd31b152-6326-4d1b-ae1b-997b625182e6",
     "Service_Plans_Included_Friendly_Names": "Data Classification in Microsoft 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "COMMON_DEFENDER_PLATFORM_FOR_OFFICE",
+    "Service_Plan_Id": "a312bdeb-1e21-40d0-84b1-0e73f128144f",
+    "Service_Plans_Included_Friendly_Names": "Defender Platform for Office 365"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8406,6 +8678,14 @@
     "Service_Plan_Name": "EXCHANGE_S_ENTERPRISE",
     "Service_Plan_Id": "efb87545-963c-4e0d-99df-69c6916d9eb0",
     "Service_Plans_Included_Friendly_Names": "Exchange Online (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_SEARCH_INDEX",
+    "Service_Plan_Id": "a6520331-d7d4-4276-95f5-15c0933bc757",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors Search with Index"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8461,7 +8741,7 @@
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "OFFICESUBSCRIPTION",
     "Service_Plan_Id": "43de0ff5-c92c-492b-9116-175376d08c38",
-    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Apps for Enterprise"
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Apps for enterprise"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8470,6 +8750,14 @@
     "Service_Plan_Name": "MCOMEETADV",
     "Service_Plan_Id": "3e26ee1f-8a5f-4d52-aee2-b81ce45c8f40",
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Audio Conferencing"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "M365_AUDIT_PLATFORM",
+    "Service_Plan_Id": "f6de4823-28fa-440b-b886-4783fa86ddba",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Audit Platform"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8491,6 +8779,14 @@
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "M365_LIGHTHOUSE_CUSTOMER_PLAN1",
+    "Service_Plan_Id": "6f23d6a9-adbf-481c-8538-b4c095654487",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Lighthouse (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "MCOEV",
     "Service_Plan_Id": "4828c8ec-dc2e-4779-b502-87ac9ce28ab7",
     "Service_Plans_Included_Friendly_Names": "Microsoft 365 Phone System"
@@ -8507,6 +8803,14 @@
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "CLIPCHAMP",
+    "Service_Plan_Id": "a1ace008-72f3-4ea0-8dac-33b3a23a2472",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Clipchamp"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "COMMUNICATIONS_DLP",
     "Service_Plan_Id": "6dc145d6-95dd-4191-b9c3-185575ee6f6b",
     "Service_Plans_Included_Friendly_Names": "Microsoft Communications DLP"
@@ -8518,14 +8822,6 @@
     "Service_Plan_Name": "CUSTOMER_KEY",
     "Service_Plan_Id": "6db1f1db-2b46-403f-be40-e39395f08dbb",
     "Service_Plans_Included_Friendly_Names": "Microsoft Customer Key"
-  },
-  {
-    "Product_Display_Name": "Microsoft 365 A5 for Students",
-    "String_Id": "M365EDU_A5_STUDENT",
-    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
-    "Service_Plan_Name": "DATA_INVESTIGATIONS",
-    "Service_Plan_Id": "46129a58-a698-46f0-aa5b-17f6586297d9",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Data Investigations"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8579,9 +8875,25 @@
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT",
+    "Service_Plan_Id": "9d0c4ee5-e4a1-4625-ab39-d82b619b1a34",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Insider Risk Management - Exchange"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "KAIZALA_STANDALONE",
     "Service_Plan_Id": "0898bdbb-73b0-471a-81e5-20f1fe4dd66e",
     "Service_Plans_Included_Friendly_Names": "Microsoft Kaizala Pro"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "MICROSOFT_LOOP",
+    "Service_Plan_Id": "c4b8c31a-fb44-4c65-9837-a21f55fcabda",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Loop"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8734,6 +9046,22 @@
     "Service_Plan_Name": "PROJECT_O365_P3",
     "Service_Plan_Id": "b21a6b06-1988-436e-a07b-51ec6d9f52ad",
     "Service_Plans_Included_Friendly_Names": "Project for Office (Plan E5)"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "PURVIEW_DISCOVERY",
+    "Service_Plan_Id": "c948ea65-2053-4a5a-8a62-9eaaaf11b522",
+    "Service_Plans_Included_Friendly_Names": "Purview Discovery"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "Bing_Chat_Enterprise",
+    "Service_Plan_Id": "0d0c0d31-fae7-41f2-b909-eaf4d7f26dba",
+    "Service_Plans_Included_Friendly_Names": "RETIRED - Commercial data protection for Microsoft Copilot"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8747,9 +9075,9 @@
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
-    "Service_Plan_Name": "INSIDER_RISK_MANAGEMENT",
-    "Service_Plan_Id": "9d0c4ee5-e4a1-4625-ab39-d82b619b1a34",
-    "Service_Plans_Included_Friendly_Names": "RETIRED - Microsoft Insider Risk Management"
+    "Service_Plan_Name": "DATA_INVESTIGATIONS",
+    "Service_Plan_Id": "46129a58-a698-46f0-aa5b-17f6586297d9",
+    "Service_Plans_Included_Friendly_Names": "Retired - Microsoft Data Investigations"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8851,22 +9179,6 @@
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
-    "Service_Plan_Name": "AAD_PREMIUM",
-    "Service_Plan_Id": "41781fb2-bc02-4b7c-bd55-b576c07bb09d",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P1"
-  },
-  {
-    "Product_Display_Name": "Microsoft 365 A5 for Students",
-    "String_Id": "M365EDU_A5_STUDENT",
-    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
-    "Service_Plan_Name": "AAD_PREMIUM_P2",
-    "Service_Plan_Id": "eec0eb4f-6444-4f95-aba0-50c24d67f998",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P2"
-  },
-  {
-    "Product_Display_Name": "Microsoft 365 A5 for Students",
-    "String_Id": "M365EDU_A5_STUDENT",
-    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "RMS_S_PREMIUM",
     "Service_Plan_Id": "6c57d4b6-3b23-47a5-9bc9-69f17b4947b3",
     "Service_Plans_Included_Friendly_Names": "Azure Information Protection Premium P1"
@@ -8886,6 +9198,14 @@
     "Service_Plan_Name": "DYN365_CDS_O365_P3",
     "Service_Plan_Id": "28b0fa46-c39a-4188-89e2-58e979a6b014",
     "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "Intune_ServiceNow",
+    "Service_Plan_Id": "3eeb8536-fecf-41bf-a3f8-d6f17a9f3efc",
+    "Service_Plans_Included_Friendly_Names": "Intune ServiceNow Integration"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8915,9 +9235,25 @@
     "Product_Display_Name": "Microsoft 365 A5 for Students",
     "String_Id": "M365EDU_A5_STUDENT",
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "AAD_PREMIUM",
+    "Service_Plan_Id": "41781fb2-bc02-4b7c-bd55-b576c07bb09d",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P1"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "AAD_PREMIUM_P2",
+    "Service_Plan_Id": "eec0eb4f-6444-4f95-aba0-50c24d67f998",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID P2"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "INTUNE_A",
     "Service_Plan_Id": "c1ec4a95-1f05-45b3-a911-aa3fa01094f5",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Intune"
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune Plan 1"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8925,7 +9261,7 @@
     "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
     "Service_Plan_Name": "INTUNE_EDU",
     "Service_Plan_Id": "da24caf9-af8e-485c-b7c8-e73336da2693",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Intune for Education"
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune Plan 1 for Education"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for Students",
@@ -8942,6 +9278,14 @@
     "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_O365_P3",
     "Service_Plan_Id": "ded3d325-1bdc-453e-8432-5bac26d7a014",
     "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Office 365"
+  },
+  {
+    "Product_Display_Name": "Microsoft 365 A5 for Students",
+    "String_Id": "M365EDU_A5_STUDENT",
+    "GUID": "46c119d4-0379-4a9d-85e4-97c66d3f909e",
+    "Service_Plan_Name": "REMOTE_HELP",
+    "Service_Plan_Id": "a4c6cf29-1168-4076-ba5c-e8fe0e62b17e",
+    "Service_Plans_Included_Friendly_Names": "Remote help"
   },
   {
     "Product_Display_Name": "Microsoft 365 A5 for students use benefit",
@@ -29072,6 +29416,38 @@
     "Service_Plans_Included_Friendly_Names": "Entra Identity Governance"
   },
   {
+    "Product_Display_Name": "Microsoft Entra Suite Add-on for Microsoft Entra ID P2",
+    "String_Id": "Microsoft_Entra_Suite_Step_Up_for_Microsoft_Entra_ID_P2",
+    "GUID": "2ef3064c-c95c-426c-96dd-9ffeaa2f2c37",
+    "Service_Plan_Name": "Entra_Premium_Internet_Access",
+    "Service_Plan_Id": "8d23cb83-ab07-418f-8517-d7aca77307dc",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra Internet Access"
+  },
+  {
+    "Product_Display_Name": "Microsoft Entra Suite Add-on for Microsoft Entra ID P2",
+    "String_Id": "Microsoft_Entra_Suite_Step_Up_for_Microsoft_Entra_ID_P2",
+    "GUID": "2ef3064c-c95c-426c-96dd-9ffeaa2f2c37",
+    "Service_Plan_Name": "Entra_Premium_Private_Access",
+    "Service_Plan_Id": "f057aab1-b184-49b2-85c0-881b02a405c5",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra Private Access"
+  },
+  {
+    "Product_Display_Name": "Microsoft Entra Suite Add-on for Microsoft Entra ID P2",
+    "String_Id": "Microsoft_Entra_Suite_Step_Up_for_Microsoft_Entra_ID_P2",
+    "GUID": "2ef3064c-c95c-426c-96dd-9ffeaa2f2c37",
+    "Service_Plan_Name": "Verifiable_Credentials_Service_Request",
+    "Service_Plan_Id": "aae826b7-14cd-4691-8178-2b312f7072ea",
+    "Service_Plans_Included_Friendly_Names": "Verifiable Credentials Service Request"
+  },
+  {
+    "Product_Display_Name": "Microsoft Entra Suite Add-on for Microsoft Entra ID P2",
+    "String_Id": "Microsoft_Entra_Suite_Step_Up_for_Microsoft_Entra_ID_P2",
+    "GUID": "2ef3064c-c95c-426c-96dd-9ffeaa2f2c37",
+    "Service_Plan_Name": "Entra_Identity_Governance",
+    "Service_Plan_Id": "e866a266-3cff-43a3-acca-0c90a7e00c8b",
+    "Service_Plans_Included_Friendly_Names": "Entra Identity Governance"
+  },
+  {
     "Product_Display_Name": "Microsoft Fabric (Free)",
     "String_Id": "POWER_BI_STANDARD",
     "GUID": "a403ebcc-fae0-4ca2-8c8c-7a907fd6c235",
@@ -29086,6 +29462,14 @@
     "Service_Plan_Name": "BI_AZURE_P0",
     "Service_Plan_Id": "2049e525-b859-401b-b2a0-e0a31c4b1fe4",
     "Service_Plans_Included_Friendly_Names": "Power BI (free)"
+  },
+  {
+    "Product_Display_Name": "Microsoft Fabric (Free)",
+    "String_Id": "POWER_BI_STANDARD",
+    "GUID": "a403ebcc-fae0-4ca2-8c8c-7a907fd6c235",
+    "Service_Plan_Name": "PURVIEW_DISCOVERY",
+    "Service_Plan_Id": "c948ea65-2053-4a5a-8a62-9eaaaf11b522",
+    "Service_Plans_Included_Friendly_Names": "Purview Discovery"
   },
   {
     "Product_Display_Name": "Microsoft Fabric (Free) for faculty",
@@ -29126,6 +29510,14 @@
     "Service_Plan_Name": "IT_ACADEMY_AD",
     "Service_Plan_Id": "d736def0-1fde-43f0-a5be-e3f8b2de6e41",
     "Service_Plans_Included_Friendly_Names": "MS IMAGINE ACADEMY"
+  },
+  {
+    "Product_Display_Name": "Microsoft Intune Advanced Analytics",
+    "String_Id": "Microsoft_Intune_Advanced_Analytics",
+    "GUID": "5e36d0d4-e9e5-4052-aba0-0257465c9b86",
+    "Service_Plan_Name": "Intune_AdvancedEA",
+    "Service_Plan_Id": "2a4baa0e-5e99-4c38-b1f2-6864960f1bd1",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune Advanced Analytics"
   },
   {
     "Product_Display_Name": "Microsoft Intune Device",
@@ -29174,6 +29566,22 @@
     "Service_Plan_Name": "INTUNE_A_GOV",
     "Service_Plan_Id": "d216f254-796f-4dab-bbfa-710686e646b9",
     "Service_Plans_Included_Friendly_Names": "Microsoft Intune G"
+  },
+  {
+    "Product_Display_Name": "Microsoft Intune Plan 1 A VL",
+    "String_Id": "INTUNE_A_VL",
+    "GUID": "99fc2803-fa72-42d3-ae78-b055e177d275",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Microsoft Intune Plan 1 A VL",
+    "String_Id": "INTUNE_A_VL",
+    "GUID": "99fc2803-fa72-42d3-ae78-b055e177d275",
+    "Service_Plan_Name": "INTUNE_A_VL",
+    "Service_Plan_Id": "3e170737-c728-4eae-bbb9-3f3360f7184c",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Intune Plan 1"
   },
   {
     "Product_Display_Name": "Microsoft Intune Plan 1 A VL_USGOV_GCCHIGH",
@@ -29571,6 +29979,38 @@
     "Product_Display_Name": "Microsoft Sustainability Manager Premium",
     "String_Id": "Microsoft_Sustainability_Manager_Premium",
     "GUID": "aecb477b-2f56-4e38-b711-b752c24fc19b",
+    "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
+    "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
+    "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Microsoft Sustainability Manager Premium USL Plus",
+    "String_Id": "MICROSOFT_SUSTAINABILITY_MANAGER_PREMIUM_USL_ADDON",
+    "GUID": "9d576ffb-dd32-4c33-91ee-91625b61424a",
+    "Service_Plan_Name": "MCS_BIZAPPS_CLOUD_FOR_SUSTAINABILITY_USL_PLUS",
+    "Service_Plan_Id": "beaf5b5c-d11c-4417-b5cb-cd9f9e6719b0",
+    "Service_Plans_Included_Friendly_Names": "MCS - BizApps Cloud for Sustainability USL Plus"
+  },
+  {
+    "Product_Display_Name": "Microsoft Sustainability Manager Premium USL Plus",
+    "String_Id": "MICROSOFT_SUSTAINABILITY_MANAGER_PREMIUM_USL_ADDON",
+    "GUID": "9d576ffb-dd32-4c33-91ee-91625b61424a",
+    "Service_Plan_Name": "POWER_APPS_FOR_MCS_USL_PLUS",
+    "Service_Plan_Id": "c5502fe7-406d-442a-827f-4948b821ba08",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Cloud for Sustainability USL Plus"
+  },
+  {
+    "Product_Display_Name": "Microsoft Sustainability Manager Premium USL Plus",
+    "String_Id": "MICROSOFT_SUSTAINABILITY_MANAGER_PREMIUM_USL_ADDON",
+    "GUID": "9d576ffb-dd32-4c33-91ee-91625b61424a",
+    "Service_Plan_Name": "POWER_AUTOMATE_FOR_MCS_USL_PLUS",
+    "Service_Plan_Id": "1c22bb50-96fb-49e5-baa6-195cab19eee2",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Cloud for Sustainability USL Plus"
+  },
+  {
+    "Product_Display_Name": "Microsoft Sustainability Manager Premium USL Plus",
+    "String_Id": "MICROSOFT_SUSTAINABILITY_MANAGER_PREMIUM_USL_ADDON",
+    "GUID": "9d576ffb-dd32-4c33-91ee-91625b61424a",
     "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
     "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
     "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
@@ -30477,7 +30917,7 @@
     "GUID": "c25e2b36-e161-4946-bef2-69239729f690",
     "Service_Plan_Name": "AAD_BASIC_EDU",
     "Service_Plan_Id": "1d0f309f-fdf9-4b2a-9ae7-9c48b91f1426",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID Basic for Education"
+    "Service_Plans_Included_Friendly_Names": "Azure Active Directory Basic for Education"
   },
   {
     "Product_Display_Name": "Microsoft Teams Rooms Pro for EDU",
@@ -30518,6 +30958,14 @@
     "Service_Plan_Name": "MCOSTANDARD",
     "Service_Plan_Id": "0feaeb32-d00e-4d66-bd5a-43b5b83db82c",
     "Service_Plans_Included_Friendly_Names": "Skype for Business Online (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Rooms Pro for EDU",
+    "String_Id": "Microsoft_Teams_Rooms_Pro_FAC",
+    "GUID": "c25e2b36-e161-4946-bef2-69239729f690",
+    "Service_Plan_Name": "Teams_Rooms_Pro",
+    "Service_Plan_Id": "0374d34c-6be4-4dbb-b3f0-26105db0b28a",
+    "Service_Plans_Included_Friendly_Names": "Teams Rooms Pro"
   },
   {
     "Product_Display_Name": "Microsoft Teams Rooms Pro for EDU",
@@ -30566,6 +31014,14 @@
     "Service_Plan_Name": "INTUNE_A",
     "Service_Plan_Id": "c1ec4a95-1f05-45b3-a911-aa3fa01094f5",
     "Service_Plans_Included_Friendly_Names": "Microsoft Intune Plan 1"
+  },
+  {
+    "Product_Display_Name": "Microsoft Teams Rooms Pro for EDU",
+    "String_Id": "Microsoft_Teams_Rooms_Pro_FAC",
+    "GUID": "c25e2b36-e161-4946-bef2-69239729f690",
+    "Service_Plan_Name": "SPECIALTY_DEVICES",
+    "Service_Plan_Id": "cfce7ae3-4b41-4438-999c-c0e91f3b7fb9",
+    "Service_Plans_Included_Friendly_Names": "Specialty devices"
   },
   {
     "Product_Display_Name": "Microsoft Teams Rooms Pro for GCC",
@@ -31325,15 +31781,15 @@
     "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
     "Service_Plan_Name": "AAD_BASIC_EDU",
     "Service_Plan_Id": "1d0f309f-fdf9-4b2a-9ae7-9c48b91f1426",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID Basic for Education"
+    "Service_Plans_Included_Friendly_Names": "Azure Active Directory Basic for Education"
   },
   {
     "Product_Display_Name": "Office 365 A1 for faculty",
     "String_Id": "STANDARDWOFFPACK_FACULTY",
     "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
-    "Service_Plan_Name": "DYN365_CDS_O365_P1",
-    "Service_Plan_Id": "40b010bb-0b69-4654-ac5e-ba161433f4b4",
-    "Service_Plans_Included_Friendly_Names": "Common Data Service - O365 P1"
+    "Service_Plan_Name": "RMS_S_ENTERPRISE",
+    "Service_Plan_Id": "bea4c11e-220a-4e6d-8eb8-8ea15d019f90",
+    "Service_Plans_Included_Friendly_Names": "Azure Rights Management"
   },
   {
     "Product_Display_Name": "Office 365 A1 for faculty",
@@ -31363,9 +31819,9 @@
     "Product_Display_Name": "Office 365 A1 for faculty",
     "String_Id": "STANDARDWOFFPACK_FACULTY",
     "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
-    "Service_Plan_Name": "RMS_S_ENTERPRISE",
-    "Service_Plan_Id": "bea4c11e-220a-4e6d-8eb8-8ea15d019f90",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Microsoft Entra Rights"
+    "Service_Plan_Name": "M365_LIGHTHOUSE_CUSTOMER_PLAN1",
+    "Service_Plan_Id": "6f23d6a9-adbf-481c-8538-b4c095654487",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Lighthouse (Plan 1)"
   },
   {
     "Product_Display_Name": "Office 365 A1 for faculty",
@@ -31381,7 +31837,7 @@
     "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
     "Service_Plan_Name": "KAIZALA_O365_P2",
     "Service_Plan_Id": "54fc630f-5a40-48ee-8965-af0503c1386e",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Kaizala Pro Plan 2"
+    "Service_Plans_Included_Friendly_Names": "Microsoft Kaizala Pro"
   },
   {
     "Product_Display_Name": "Office 365 A1 for faculty",
@@ -31459,25 +31915,17 @@
     "Product_Display_Name": "Office 365 A1 for faculty",
     "String_Id": "STANDARDWOFFPACK_FACULTY",
     "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
-    "Service_Plan_Name": "POWERAPPS_O365_P2",
-    "Service_Plan_Id": "c68f8d98-5534-41c8-bf36-22fa496fa792",
-    "Service_Plans_Included_Friendly_Names": "Power Apps for Office 365"
-  },
-  {
-    "Product_Display_Name": "Office 365 A1 for faculty",
-    "String_Id": "STANDARDWOFFPACK_FACULTY",
-    "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
-    "Service_Plan_Name": "FLOW_O365_P2",
-    "Service_Plan_Id": "76846ad7-7776-4c40-a281-a386362dd1b9",
-    "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
-  },
-  {
-    "Product_Display_Name": "Office 365 A1 for faculty",
-    "String_Id": "STANDARDWOFFPACK_FACULTY",
-    "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
     "Service_Plan_Name": "PROJECT_O365_P1",
     "Service_Plan_Id": "a55dfd10-0864-46d9-a3cd-da5991a3e0e2",
     "Service_Plans_Included_Friendly_Names": "Project for Office (Plan E1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for faculty",
+    "String_Id": "STANDARDWOFFPACK_FACULTY",
+    "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
+    "Service_Plan_Name": "Bing_Chat_Enterprise",
+    "Service_Plan_Id": "0d0c0d31-fae7-41f2-b909-eaf4d7f26dba",
+    "Service_Plans_Included_Friendly_Names": "RETIRED - Commercial data protection for Microsoft Copilot"
   },
   {
     "Product_Display_Name": "Office 365 A1 for faculty",
@@ -31542,6 +31990,30 @@
     "Service_Plan_Name": "YAMMER_EDU",
     "Service_Plan_Id": "2078e8df-cff6-4290-98cb-5408261a760a",
     "Service_Plans_Included_Friendly_Names": "Yammer for Academic"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for faculty",
+    "String_Id": "STANDARDWOFFPACK_FACULTY",
+    "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
+    "Service_Plan_Name": "DYN365_CDS_O365_P1",
+    "Service_Plan_Id": "40b010bb-0b69-4654-ac5e-ba161433f4b4",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for faculty",
+    "String_Id": "STANDARDWOFFPACK_FACULTY",
+    "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
+    "Service_Plan_Name": "POWERAPPS_O365_P2",
+    "Service_Plan_Id": "c68f8d98-5534-41c8-bf36-22fa496fa792",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Office 365"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for faculty",
+    "String_Id": "STANDARDWOFFPACK_FACULTY",
+    "GUID": "94763226-9b3c-4e75-a931-5c89701abe66",
+    "Service_Plan_Name": "FLOW_O365_P2",
+    "Service_Plan_Id": "76846ad7-7776-4c40-a281-a386362dd1b9",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
   },
   {
     "Product_Display_Name": "Office 365 A1 Plus for faculty",
@@ -31765,15 +32237,15 @@
     "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
     "Service_Plan_Name": "AAD_BASIC_EDU",
     "Service_Plan_Id": "1d0f309f-fdf9-4b2a-9ae7-9c48b91f1426",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Entra ID Basic for Education"
+    "Service_Plans_Included_Friendly_Names": "Azure Active Directory Basic for Education"
   },
   {
     "Product_Display_Name": "Office 365 A1 for students",
     "String_Id": "STANDARDWOFFPACK_STUDENT",
     "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
-    "Service_Plan_Name": "DYN365_CDS_O365_P1",
-    "Service_Plan_Id": "40b010bb-0b69-4654-ac5e-ba161433f4b4",
-    "Service_Plans_Included_Friendly_Names": "Common Data Service - O365 P1"
+    "Service_Plan_Name": "RMS_S_ENTERPRISE",
+    "Service_Plan_Id": "bea4c11e-220a-4e6d-8eb8-8ea15d019f90",
+    "Service_Plans_Included_Friendly_Names": "Azure Rights Management"
   },
   {
     "Product_Display_Name": "Office 365 A1 for students",
@@ -31803,9 +32275,9 @@
     "Product_Display_Name": "Office 365 A1 for students",
     "String_Id": "STANDARDWOFFPACK_STUDENT",
     "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
-    "Service_Plan_Name": "RMS_S_ENTERPRISE",
-    "Service_Plan_Id": "bea4c11e-220a-4e6d-8eb8-8ea15d019f90",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Microsoft Entra Rights"
+    "Service_Plan_Name": "M365_LIGHTHOUSE_CUSTOMER_PLAN1",
+    "Service_Plan_Id": "6f23d6a9-adbf-481c-8538-b4c095654487",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Lighthouse (Plan 1)"
   },
   {
     "Product_Display_Name": "Office 365 A1 for students",
@@ -31821,7 +32293,7 @@
     "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
     "Service_Plan_Name": "KAIZALA_O365_P2",
     "Service_Plan_Id": "54fc630f-5a40-48ee-8965-af0503c1386e",
-    "Service_Plans_Included_Friendly_Names": "Microsoft Kaizala Pro Plan 2"
+    "Service_Plans_Included_Friendly_Names": "Microsoft Kaizala Pro"
   },
   {
     "Product_Display_Name": "Office 365 A1 for students",
@@ -31891,25 +32363,17 @@
     "Product_Display_Name": "Office 365 A1 for students",
     "String_Id": "STANDARDWOFFPACK_STUDENT",
     "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
-    "Service_Plan_Name": "POWERAPPS_O365_P2",
-    "Service_Plan_Id": "c68f8d98-5534-41c8-bf36-22fa496fa792",
-    "Service_Plans_Included_Friendly_Names": "Power Apps for Office 365"
-  },
-  {
-    "Product_Display_Name": "Office 365 A1 for students",
-    "String_Id": "STANDARDWOFFPACK_STUDENT",
-    "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
-    "Service_Plan_Name": "FLOW_O365_P2",
-    "Service_Plan_Id": "76846ad7-7776-4c40-a281-a386362dd1b9",
-    "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
-  },
-  {
-    "Product_Display_Name": "Office 365 A1 for students",
-    "String_Id": "STANDARDWOFFPACK_STUDENT",
-    "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
     "Service_Plan_Name": "PROJECT_O365_P1",
     "Service_Plan_Id": "a55dfd10-0864-46d9-a3cd-da5991a3e0e2",
     "Service_Plans_Included_Friendly_Names": "Project for Office (Plan E1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for students",
+    "String_Id": "STANDARDWOFFPACK_STUDENT",
+    "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
+    "Service_Plan_Name": "Bing_Chat_Enterprise",
+    "Service_Plan_Id": "0d0c0d31-fae7-41f2-b909-eaf4d7f26dba",
+    "Service_Plans_Included_Friendly_Names": "RETIRED - Commercial data protection for Microsoft Copilot"
   },
   {
     "Product_Display_Name": "Office 365 A1 for students",
@@ -31966,6 +32430,30 @@
     "Service_Plan_Name": "YAMMER_EDU",
     "Service_Plan_Id": "2078e8df-cff6-4290-98cb-5408261a760a",
     "Service_Plans_Included_Friendly_Names": "Yammer for Academic"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for students",
+    "String_Id": "STANDARDWOFFPACK_STUDENT",
+    "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
+    "Service_Plan_Name": "DYN365_CDS_O365_P1",
+    "Service_Plan_Id": "40b010bb-0b69-4654-ac5e-ba161433f4b4",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for students",
+    "String_Id": "STANDARDWOFFPACK_STUDENT",
+    "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
+    "Service_Plan_Name": "POWERAPPS_O365_P2",
+    "Service_Plan_Id": "c68f8d98-5534-41c8-bf36-22fa496fa792",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Office 365"
+  },
+  {
+    "Product_Display_Name": "Office 365 A1 for students",
+    "String_Id": "STANDARDWOFFPACK_STUDENT",
+    "GUID": "314c4481-f395-4525-be8b-2ec4bb1e9d91",
+    "Service_Plan_Name": "FLOW_O365_P2",
+    "Service_Plan_Id": "76846ad7-7776-4c40-a281-a386362dd1b9",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
   },
   {
     "Product_Display_Name": "Office 365 A1 Plus for students",
@@ -40483,9 +40971,9 @@
     "Product_Display_Name": "Power Apps Premium",
     "String_Id": "POWERAPPS_PER_USER",
     "GUID": "b30411f5-fea1-4a59-9ad9-3db7c7ead579",
-    "Service_Plan_Name": "DYN365_CDS_P2",
-    "Service_Plan_Id": "6ea4c1ef-c259-46df-bce2-943342cd3cb2",
-    "Service_Plans_Included_Friendly_Names": "Common Data Service - P2"
+    "Service_Plan_Name": "Power_Pages_Internal_User",
+    "Service_Plan_Id": "60bf28f9-2b70-4522-96f7-335f5e06c941",
+    "Service_Plans_Included_Friendly_Names": "Power Pages Internal User"
   },
   {
     "Product_Display_Name": "Power Apps Premium",
@@ -40494,6 +40982,30 @@
     "Service_Plan_Name": "EXCHANGE_S_FOUNDATION",
     "Service_Plan_Id": "113feb6c-3fe4-4440-bddc-54d774bf0318",
     "Service_Plans_Included_Friendly_Names": "Exchange Foundation"
+  },
+  {
+    "Product_Display_Name": "Power Apps Premium",
+    "String_Id": "POWERAPPS_PER_USER",
+    "GUID": "b30411f5-fea1-4a59-9ad9-3db7c7ead579",
+    "Service_Plan_Name": "CDSAICAPACITY_PERUSER_NEW",
+    "Service_Plan_Id": "74d93933-6f22-436e-9441-66d205435abb",
+    "Service_Plans_Included_Friendly_Names": "AI Builder capacity Per User add-on"
+  },
+  {
+    "Product_Display_Name": "Power Apps Premium",
+    "String_Id": "POWERAPPS_PER_USER",
+    "GUID": "b30411f5-fea1-4a59-9ad9-3db7c7ead579",
+    "Service_Plan_Name": "DYN365_CDS_P2",
+    "Service_Plan_Id": "6ea4c1ef-c259-46df-bce2-943342cd3cb2",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Power Apps Premium",
+    "String_Id": "POWERAPPS_PER_USER",
+    "GUID": "b30411f5-fea1-4a59-9ad9-3db7c7ead579",
+    "Service_Plan_Name": "CDSAICAPACITY_PERUSER",
+    "Service_Plan_Id": "91f50f7b-2204-4803-acac-5cf5668b8b39",
+    "Service_Plans_Included_Friendly_Names": "DO NOT USE - AI Builder capacity Per User add-on"
   },
   {
     "Product_Display_Name": "Power Apps Premium",
@@ -41046,6 +41558,22 @@
     "Service_Plan_Name": "BI_AZURE_P3",
     "Service_Plan_Id": "0bf3c642-7bb5-4ccc-884e-59d09df0266c",
     "Service_Plans_Included_Friendly_Names": "Power BI Premium Per User"
+  },
+  {
+    "Product_Display_Name": "Power BI Premium Per User Add-On for Faculty",
+    "String_Id": "PBI_PREMIUM_PER_USER_ADDON_FACULTY",
+    "GUID": "c05b235f-be75-4029-8851-6a4170758eef",
+    "Service_Plan_Name": "BI_AZURE_P3",
+    "Service_Plan_Id": "0bf3c642-7bb5-4ccc-884e-59d09df0266c",
+    "Service_Plans_Included_Friendly_Names": "Power BI Premium Per User"
+  },
+  {
+    "Product_Display_Name": "Power BI Premium Per User Add-On for Faculty",
+    "String_Id": "PBI_PREMIUM_PER_USER_ADDON_FACULTY",
+    "GUID": "c05b235f-be75-4029-8851-6a4170758eef",
+    "Service_Plan_Name": "PURVIEW_DISCOVERY",
+    "Service_Plan_Id": "c948ea65-2053-4a5a-8a62-9eaaaf11b522",
+    "Service_Plans_Included_Friendly_Names": "Purview Discovery"
   },
   {
     "Product_Display_Name": "Power BI Premium Per User Add-On for GCC",
@@ -43414,6 +43942,70 @@
     "Service_Plan_Name": "TEAMSPRO_WEBINAR",
     "Service_Plan_Id": "78b58230-ec7e-4309-913c-93a45cc4735b",
     "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Webinar"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "MICROSOFT_ECDN",
+    "Service_Plan_Id": "85704d55-2e73-47ee-93b4-4b8ea14db92b",
+    "Service_Plans_Included_Friendly_Names": "Microsoft eCDN"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "TEAMSPRO_MGMT",
+    "Service_Plan_Id": "0504111f-feb8-4a3c-992a-70280f9a2869",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Intelligent"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "TEAMSPRO_CUST",
+    "Service_Plan_Id": "cc8c0802-a325-43df-8cba-995d0c6cb373",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Personalized"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "TEAMSPRO_PROTECTION",
+    "Service_Plan_Id": "f8b44f54-18bb-46a3-9658-44ab58712968",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Secure"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "TEAMSPRO_VIRTUALAPPT",
+    "Service_Plan_Id": "9104f592-f2a7-4f77-904c-ca5a5715883f",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Virtual Appointment"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "MCO_VIRTUAL_APPT",
+    "Service_Plan_Id": "711413d0-b36e-4cd4-93db-0a50a4ab7ea3",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Virtual Appointments"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "TEAMSPRO_WEBINAR",
+    "Service_Plan_Id": "78b58230-ec7e-4309-913c-93a45cc4735b",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Teams Premium Webinar"
+  },
+  {
+    "Product_Display_Name": "Teams Premium for Faculty",
+    "String_Id": "Teams_Premium_for_Faculty",
+    "GUID": "960a972f-d017-4a17-8f64-b42c8035bc7d",
+    "Service_Plan_Name": "QUEUES_APP",
+    "Service_Plan_Id": "ab2d4fb5-f80a-4bf1-a11d-7f1da254041b",
+    "Service_Plans_Included_Friendly_Names": "Queues app for Microsoft Teams"
   },
   {
     "Product_Display_Name": "Teams Rooms Premium",

@@ -452,6 +452,21 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AuthMethodsPolicyMigration",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Completes the migration of authentication methods policy to the new format",
+    "docsDescription": "Sets the authentication methods policy migration state to complete. This is required when migrating from legacy authentication policies to the new unified authentication methods policy.",
+    "executiveText": "Completes the transition from legacy authentication policies to Microsoft's modern unified authentication methods policy, ensuring the organization benefits from the latest security features and management capabilities. This migration enables enhanced security controls and simplified policy management.",
+    "addedComponent": [],
+    "label": "Complete Authentication Methods Policy Migration",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-07-07",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicy",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.AppDeploy",
     "cat": "Entra (AAD) Standards",
     "tag": [],
@@ -535,7 +550,6 @@
     "cat": "Entra (AAD) Standards",
     "tag": [
       "CIS M365 5.0 (2.3.1)",
-      "CIS M365 5.0 (5.2.3.2)",
       "EIDSCA.AM03",
       "EIDSCA.AM04",
       "EIDSCA.AM06",
@@ -722,6 +736,28 @@
     "addedDate": "2021-11-16",
     "powershellEquivalent": "Update-MgDomain",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.CustomBannedPasswordList",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["CIS M365 5.0 (5.2.3.2)"],
+    "helpText": "**Requires Entra ID P1.** Updates and enables the Entra ID custom banned password list with the supplied words. Enter words separated by commas or semicolons. Each word must be 4-16 characters long. Maximum 1,000 words allowed.",
+    "docsDescription": "Updates and enables the Entra ID custom banned password list with the supplied words. This supplements the global banned password list maintained by Microsoft. The custom list is limited to 1,000 key base terms of 4-16 characters each. Entra ID will [block variations and common substitutions](https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-configure-custom-password-protection#configure-custom-banned-passwords) of these words in user passwords. [How are passwords evaluated?](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-password-ban-bad#score-calculation)",
+    "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.CustomBannedPasswordList.BannedWords",
+        "label": "Banned Words",
+        "placeholder": "Banned words separated by commas or semicolons",
+        "required": true
+      }
+    ],
+    "label": "Set Entra ID Custom Banned Password List",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-06-28",
+    "powershellEquivalent": "Get-MgBetaDirectorySetting, New-MgBetaDirectorySetting, Update-MgBetaDirectorySetting",
+    "recommendedBy": ["CIS"]
   },
   {
     "name": "standards.ExternalMFATrusted",
@@ -1040,7 +1076,7 @@
     "disabledFeatures": {
       "report": false,
       "warn": false,
-      "remediate": true
+      "remediate": false
     },
     "label": "Cleanup stale Entra devices",
     "impact": "High Impact",
@@ -3149,13 +3185,13 @@
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": [],
-    "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement, retired devices are removed from Intune after the specified number of days.",
+    "helpText": "A value between 31 and 365 is supported. retired devices are removed from Intune after the specified number of days.",
     "executiveText": "Automatically removes inactive devices from management after a specified period, helping maintain a clean device inventory and reducing security risks from abandoned or lost devices. This policy ensures that only actively used corporate devices remain in the management system.",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.intuneDeviceRetirementDays.days",
-        "label": "Maximum days (0 equals disabled)"
+        "label": "Maximum days"
       }
     ],
     "label": "Set inactive device retirement days",
@@ -3564,8 +3600,8 @@
   {
     "name": "standards.SPDirectSharing",
     "cat": "SharePoint Standards",
-    "tag": ["CIS M365 5.0 (7.2.7)", "CISA (MS.SPO.1.4v1)"],
-    "helpText": "Ensure default link sharing is set to Direct in SharePoint and OneDrive",
+    "tag": [],
+    "helpText": "This standard has been deprecated in favor of the Default Sharing Link standard. ",
     "executiveText": "Configures SharePoint and OneDrive to share files directly with specific people rather than creating anonymous links, improving security by ensuring only intended recipients can access shared documents. This reduces the risk of accidental data exposure through link sharing.",
     "addedComponent": [],
     "label": "Default sharing to Direct users",
@@ -3613,6 +3649,40 @@
     "impactColour": "warning",
     "addedDate": "2024-07-09",
     "powershellEquivalent": "Set-SPOTenant -EmailAttestationRequired $true -EmailAttestationReAuthDays 15",
+    "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.DefaultSharingLink",
+    "cat": "SharePoint Standards",
+    "tag": ["CIS M365 5.0 (7.2.7)", "CIS M365 5.0 (7.2.11)", "CISA (MS.SPO.1.4v1)"],
+    "helpText": "Configure the SharePoint default sharing link type and permission. This setting controls both the type of sharing link created by default and the permission level assigned to those links.",
+    "docsDescription": "Sets the default sharing link type (Direct or Internal) and permission (View) in SharePoint and OneDrive. Direct sharing means links only work for specific people, while Internal sharing means links work for anyone in the organization. Setting the view permission as the default ensures that users must deliberately select the edit permission when sharing a link, reducing the risk of unintentionally granting edit privileges.",
+    "executiveText": "Configures SharePoint default sharing links to implement the principle of least privilege for document sharing. This security measure reduces the risk of accidental data modification while maintaining collaboration functionality, requiring users to explicitly select Edit permissions when necessary. The sharing type setting controls whether links are restricted to specific recipients or available to the entire organization. This reduces the risk of accidental data exposure through link sharing.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "required": true,
+        "label": "Default Sharing Link Type",
+        "name": "standards.DefaultSharingLink.SharingLinkType",
+        "options": [
+          {
+            "label": "Direct - Only the people the user specifies",
+            "value": "Direct"
+          },
+          {
+            "label": "Internal - Only people in your organization",
+            "value": "Internal"
+          }
+        ]
+      }
+    ],
+    "label": "Set Default Sharing Link Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-06-13",
+    "powershellEquivalent": "Set-SPOTenant -DefaultSharingLinkType [Direct|Internal] -DefaultLinkPermission View",
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
@@ -4405,7 +4475,7 @@
         "label": "Languages",
         "api": {
           "url": "/languageList.json",
-          "labelField": "language",
+          "labelField": "languageTag",
           "valueField": "tag"
         }
       },
@@ -4616,6 +4686,11 @@
             "label": "Set to report only"
           }
         ]
+      },
+      {
+        "type": "switch",
+        "name": "DisableSD",
+        "label": "Disable Security Defaults when deploying policy"
       }
     ]
   },
