@@ -8,6 +8,7 @@ import {
   IconButton,
   Typography,
   CircularProgress,
+  Alert,
 } from "@mui/material";
 import { PropertyList } from "/src/components/property-list";
 import { PropertyListItem } from "/src/components/property-list-item";
@@ -59,6 +60,11 @@ export const CippExchangeInfoCard = (props) => {
           </Stack>
         }
       />
+      {exchangeData?.BlockedForSpam ? (
+        <Alert severity="warning" sx={{ mx: 2, mt: 2, mb: 2 }}>
+          This mailbox is currently blocked for spam.
+        </Alert>
+      ) : null}
       <Divider />
       <PropertyList>
         <PropertyListItem
