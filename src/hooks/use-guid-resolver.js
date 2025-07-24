@@ -98,8 +98,9 @@ const findGuids = (obj, guidsSet = new Set(), partnerGuidsMap = new Map()) => {
   return { guidsSet, partnerGuidsMap };
 };
 
-export const useGuidResolver = () => {
+export const useGuidResolver = (manualTenant = null) => {
   const tenantFilter = useSettings().currentTenant;
+  const activeTenant = manualTenant || tenantFilter;
 
   // GUID resolution state
   const [guidMapping, setGuidMapping] = useState({});
@@ -195,7 +196,7 @@ export const useGuidResolver = () => {
               directoryObjectsMutation.mutate({
                 url: "/api/ListDirectoryObjects",
                 data: {
-                  tenantFilter: tenantFilter,
+                  tenantFilter: activeTenant,
                   ids: guidsToSend,
                   $select: "id,displayName,userPrincipalName,mail",
                 },
@@ -249,7 +250,7 @@ export const useGuidResolver = () => {
         setIsLoadingGuids(false);
       }
     },
-    [guidMapping, tenantFilter] // Only depend on guidMapping and tenantFilter
+    [guidMapping, activeTenant] // Only depend on guidMapping and activeTenant
   );
 
   return {

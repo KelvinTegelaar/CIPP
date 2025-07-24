@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { EyeIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import CippAuditLogDetails from "/src/components/CippComponents/CippAuditLogDetails.jsx";
-import tabOptions from "./tabOptions.json";
+import { Button, SvgIcon } from "@mui/material";
 
 const searchResultsColumns = [
   "createdDateTime",
@@ -41,6 +40,10 @@ const Page = () => {
 
   const pageTitle = searchName ? `${searchName}` : `Search Results - ${searchId}`;
 
+  const handleBackClick = () => {
+    router.push("/tenant/administration/audit-logs/searches");
+  };
+
   // Define offcanvas configuration with larger size for audit log details
   const offcanvas = {
     title: "Audit Log Details",
@@ -51,6 +54,20 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
+      cardButton={
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleBackClick}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <ArrowLeftIcon />
+            </SvgIcon>
+          }
+        >
+          Back to Searches
+        </Button>
+      }
       apiUrl="/api/ListAuditLogSearches"
       apiDataKey="Results"
       simpleColumns={searchResultsColumns}
@@ -65,10 +82,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;

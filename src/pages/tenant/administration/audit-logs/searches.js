@@ -12,6 +12,7 @@ import { Grid } from "@mui/system";
 import { Add } from "@mui/icons-material";
 import { useDialog } from "/src/hooks/use-dialog";
 import tabOptions from "./tabOptions.json";
+import { useSettings } from "/src/hooks/use-settings";
 
 const simpleColumns = ["displayName", "status", "filterStartDateTime", "filterEndDateTime"];
 
@@ -41,6 +42,7 @@ const actions = [
 
 const Page = () => {
   const createSearchDialog = useDialog();
+  const currentTenant = useSettings().currentTenant;
 
   const filterControl = useForm({
     mode: "onChange",
@@ -460,7 +462,9 @@ const Page = () => {
         apiUrl={apiUrlWithFilters}
         apiDataKey="Results"
         simpleColumns={simpleColumns}
-        queryKey="AuditLogSearches"
+        queryKey={`AuditLogSearches-${filterControl.getValues().StatusFilter?.value || "All"}-${
+          filterControl.getValues().DateFilter?.value || "AllTime"
+        }-${currentTenant}`}
         actions={actions}
         cardButton={
           <Button
