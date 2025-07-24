@@ -4,7 +4,7 @@
 
 Deploying Conditional Access is possible in two ways; using the deploy conditional access wizard to deploy a single policy, or using the CIPP standards to deploy a template that will automatically redeploy if any changes are made.
 
-Using the Deploy Conditional access Wizard you can change several settings in the policy such as the way usernames are replaced, the method used to deploy the state, and which exclusions are in place.
+Using the Deploy Conditional access Wizard you can change several settings in the policy such as the way usernames are replaced, the method used to deploy the state, and which exclusions are in place. When using templates from other tenants into a new tenant, make sure yo select the correct replacement method, e.g. "Replace IDs with Display Names".
 
 When using a standard, you also are able to select these options; however the replacement mode used will always be "Replace IDs with Display Names" to prevent the policy from not working on other tenants.
 
