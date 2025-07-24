@@ -49,9 +49,21 @@ const CippAuditLogDetails = ({ row }) => {
     const guidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi;
     const partnerUpnRegex = /user_([0-9a-f]{32})@([^@]+\.onmicrosoft\.com)/gi;
 
-    const hasGuids = guidRegex.test(str);
-    partnerUpnRegex.lastIndex = 0; // Reset regex state
-    const hasUpns = partnerUpnRegex.test(str);
+    let hasGuids = guidRegex.test(str);
+
+    // Reset regex state and check for partner UPNs
+    partnerUpnRegex.lastIndex = 0;
+    let hasUpns = false;
+    let match;
+
+    // Need to extract and check if the GUIDs from UPNs are in the pending state
+    while ((match = partnerUpnRegex.exec(str)) !== null) {
+      const hexId = match[1];
+      if (hexId && hexId.length === 32) {
+        hasUpns = true;
+        break; // At least one UPN pattern found
+      }
+    }
 
     // If we have unresolved GUIDs or UPNs and are currently loading
     if ((hasGuids || hasUpns) && isLoadingGuids) {
@@ -322,7 +334,7 @@ const CippAuditLogDetails = ({ row }) => {
   const auditDataItems = row?.auditData ? convertToPropertyItems(row.auditData) : [];
 
   return (
-    <Stack spacing={3} sx={{ p: 2 }}>
+    <Stack spacing={3}>
       <CippPropertyListCard
         title="Audit Log Details"
         propertyItems={mainLogItems}

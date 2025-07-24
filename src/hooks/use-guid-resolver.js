@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { useSettings } from "/src/hooks/use-settings";
 
@@ -64,21 +64,32 @@ const findGuids = (obj, guidsSet = new Set(), partnerGuidsMap = new Map()) => {
   if (!obj) return { guidsSet, partnerGuidsMap };
 
   if (typeof obj === "string") {
+    // First, extract object IDs from partner tenant UPNs to track which GUIDs belong to partners
+    const partnerObjectIds = extractObjectIdFromPartnerUPN(obj);
+    const partnerGuids = new Set();
+
+    partnerObjectIds.forEach(({ guid, tenantDomain }) => {
+      if (!partnerGuidsMap.has(tenantDomain)) {
+        partnerGuidsMap.set(tenantDomain, new Set());
+      }
+      partnerGuidsMap.get(tenantDomain).add(guid);
+      partnerGuids.add(guid); // Track this GUID as belonging to a partner
+    });
+
     // Check if the entire string is a GUID
     if (isGuid(obj)) {
-      guidsSet.add(obj);
+      // Only add to main guidsSet if it's not a partner GUID
+      if (!partnerGuids.has(obj)) {
+        guidsSet.add(obj);
+      }
     } else {
       // Extract GUIDs embedded within longer strings
       const embeddedGuids = extractGuidsFromString(obj);
-      embeddedGuids.forEach((guid) => guidsSet.add(guid));
-
-      // Extract object IDs from partner tenant UPNs
-      const partnerObjectIds = extractObjectIdFromPartnerUPN(obj);
-      partnerObjectIds.forEach(({ guid, tenantDomain }) => {
-        if (!partnerGuidsMap.has(tenantDomain)) {
-          partnerGuidsMap.set(tenantDomain, new Set());
+      embeddedGuids.forEach((guid) => {
+        // Only add to main guidsSet if it's not a partner GUID
+        if (!partnerGuids.has(guid)) {
+          guidsSet.add(guid);
         }
-        partnerGuidsMap.get(tenantDomain).add(guid);
       });
     }
   } else if (Array.isArray(obj)) {
@@ -170,11 +181,64 @@ export const useGuidResolver = (manualTenant = null) => {
   const pendingGuidsRef = useRef([]);
   const pendingPartnerGuidsRef = useRef(new Map()); // Map of tenantDomain -> Set of GUIDs
   const lastRequestTimeRef = useRef(0);
+  const lastPartnerRequestTimeRef = useRef(0); // Separate timing for partner tenant calls
+  const rateLimitBackoffRef = useRef(2000); // Default backoff time in milliseconds
+  const rateLimitTimeoutRef = useRef(null); // For tracking retry timeouts
+
+  // Helper function to retry API call with the correct backoff
+  const retryApiCallWithBackoff = useCallback((apiCall, url, data, retryDelay = null) => {
+    // Clear any existing timeout
+    if (rateLimitTimeoutRef.current) {
+      clearTimeout(rateLimitTimeoutRef.current);
+    }
+
+    // Use specified delay or current backoff time
+    const delay = retryDelay || rateLimitBackoffRef.current;
+
+    // Set timeout to retry
+    rateLimitTimeoutRef.current = setTimeout(() => {
+      apiCall.mutate({ url, data });
+      rateLimitTimeoutRef.current = null;
+    }, delay);
+
+    // Increase backoff for future retries (up to a reasonable limit)
+    rateLimitBackoffRef.current = Math.min(rateLimitBackoffRef.current * 1.5, 10000);
+  }, []);
 
   // Setup API call for directory objects resolution
   const directoryObjectsMutation = ApiPostCall({
     relatedQueryKeys: ["directoryObjects"],
     onResult: (data) => {
+      // Handle rate limit error
+      if (data && data.statusCode === 429) {
+        console.log("Rate limit hit on directory objects lookup, retrying...");
+
+        // Extract retry time from message if available
+        let retryAfterSeconds = 2;
+        if (data.message && typeof data.message === "string") {
+          const match = data.message.match(/Try again in (\d+) seconds/i);
+          if (match && match[1]) {
+            retryAfterSeconds = parseInt(match[1], 10) || 2;
+          }
+        }
+
+        // Retry with the specified delay (convert to milliseconds)
+        retryApiCallWithBackoff(
+          directoryObjectsMutation,
+          "/api/ListDirectoryObjects",
+          {
+            tenantFilter: activeTenant,
+            ids: pendingGuidsRef.current,
+            $select: "id,displayName,userPrincipalName,mail",
+          },
+          retryAfterSeconds * 1000
+        );
+        return;
+      }
+
+      // Reset backoff time on successful request
+      rateLimitBackoffRef.current = 2000;
+
       if (data && Array.isArray(data.value)) {
         const newDisplayMapping = {};
         const newUpnMapping = {};
@@ -216,6 +280,44 @@ export const useGuidResolver = (manualTenant = null) => {
   const partnerDirectoryObjectsMutation = ApiPostCall({
     relatedQueryKeys: ["partnerDirectoryObjects"],
     onResult: (data) => {
+      // Handle rate limit error
+      if (data && data.statusCode === 429) {
+        console.log("Rate limit hit on partner directory objects lookup, retrying...");
+
+        // Extract retry time from message if available
+        let retryAfterSeconds = 2;
+        if (data.message && typeof data.message === "string") {
+          const match = data.message.match(/Try again in (\d+) seconds/i);
+          if (match && match[1]) {
+            retryAfterSeconds = parseInt(match[1], 10) || 2;
+          }
+        }
+
+        // We need to preserve the current tenant domain for retry
+        const currentTenantEntries = [...pendingPartnerGuidsRef.current.entries()];
+
+        if (currentTenantEntries.length > 0) {
+          const [tenantDomain, guidsSet] = currentTenantEntries[0];
+          const guidsToRetry = Array.from(guidsSet);
+
+          // Retry with the specified delay (convert to milliseconds)
+          retryApiCallWithBackoff(
+            partnerDirectoryObjectsMutation,
+            "/api/ListDirectoryObjects",
+            {
+              tenantFilter: tenantDomain,
+              ids: guidsToRetry,
+              $select: "id,displayName,userPrincipalName,mail",
+            },
+            retryAfterSeconds * 1000
+          );
+        }
+        return;
+      }
+
+      // Reset backoff time on successful request
+      rateLimitBackoffRef.current = 2000;
+
       if (data && Array.isArray(data.value)) {
         const newDisplayMapping = {};
         const newUpnMapping = {};
@@ -243,14 +345,12 @@ export const useGuidResolver = (manualTenant = null) => {
         setIsLoadingGuids(false);
       }
     },
-  });
-
-  // Function to handle resolving GUIDs
+  }); // Function to handle resolving GUIDs
   const resolveGuids = useCallback(
     (objectToScan) => {
       const { guidsSet, partnerGuidsMap } = findGuids(objectToScan);
 
-      // Handle regular GUIDs (current tenant)
+      // Handle regular GUIDs (current tenant) - these should NOT include partner tenant GUIDs
       if (guidsSet.size > 0) {
         const guidsArray = Array.from(guidsSet);
         const notResolvedGuids = guidsArray.filter(
@@ -258,13 +358,14 @@ export const useGuidResolver = (manualTenant = null) => {
         );
 
         if (notResolvedGuids.length > 0) {
+          // Merge new GUIDs with existing pending GUIDs without duplicates
           const allPendingGuids = [...new Set([...pendingGuidsRef.current, ...notResolvedGuids])];
           pendingGuidsRef.current = allPendingGuids;
           setIsLoadingGuids(true);
 
-          // Implement throttling - only send a new request every 2 seconds
+          // Make API call for primary tenant GUIDs
           const now = Date.now();
-          if (now - lastRequestTimeRef.current >= 2000) {
+          if (!rateLimitTimeoutRef.current && now - lastRequestTimeRef.current >= 2000) {
             lastRequestTimeRef.current = now;
 
             // Only send a maximum of 1000 GUIDs per request
@@ -272,6 +373,9 @@ export const useGuidResolver = (manualTenant = null) => {
             const guidsToSend = allPendingGuids.slice(0, batchSize);
 
             if (guidsToSend.length > 0) {
+              console.log(
+                `Sending primary tenant request for ${guidsToSend.length} GUIDs in tenant ${activeTenant}`
+              );
               directoryObjectsMutation.mutate({
                 url: "/api/ListDirectoryObjects",
                 data: {
@@ -287,7 +391,7 @@ export const useGuidResolver = (manualTenant = null) => {
         }
       }
 
-      // Handle partner tenant GUIDs
+      // Handle partner tenant GUIDs separately
       if (partnerGuidsMap.size > 0) {
         partnerGuidsMap.forEach((guids, tenantDomain) => {
           const guidsArray = Array.from(guids);
@@ -306,19 +410,28 @@ export const useGuidResolver = (manualTenant = null) => {
 
             setIsLoadingGuids(true);
 
-            // Make API call for partner tenant
-            const batchSize = 1000;
-            const guidsToSend = notResolvedGuids.slice(0, batchSize);
+            // Make API call for partner tenant - with separate timing from primary tenant
+            const now = Date.now();
+            if (!rateLimitTimeoutRef.current && now - lastPartnerRequestTimeRef.current >= 2000) {
+              lastPartnerRequestTimeRef.current = now;
 
-            if (guidsToSend.length > 0) {
-              partnerDirectoryObjectsMutation.mutate({
-                url: "/api/ListDirectoryObjects",
-                data: {
-                  tenantFilter: tenantDomain,
-                  ids: guidsToSend,
-                  $select: "id,displayName,userPrincipalName,mail",
-                },
-              });
+              // Only send a maximum of 1000 GUIDs per request
+              const batchSize = 1000;
+              const guidsToSend = notResolvedGuids.slice(0, batchSize);
+
+              if (guidsToSend.length > 0) {
+                console.log(
+                  `Sending partner tenant request for ${guidsToSend.length} GUIDs in tenant ${tenantDomain}`
+                );
+                partnerDirectoryObjectsMutation.mutate({
+                  url: "/api/ListDirectoryObjects",
+                  data: {
+                    tenantFilter: tenantDomain,
+                    ids: guidsToSend,
+                    $select: "id,displayName,userPrincipalName,mail",
+                  },
+                });
+              }
             }
           }
         });
@@ -329,7 +442,7 @@ export const useGuidResolver = (manualTenant = null) => {
         setIsLoadingGuids(false);
       }
     },
-    [guidMapping, activeTenant] // Only depend on guidMapping and activeTenant
+    [guidMapping, activeTenant, directoryObjectsMutation, partnerDirectoryObjectsMutation]
   );
 
   // Create a memoized version of the string replacement function
@@ -337,6 +450,16 @@ export const useGuidResolver = (manualTenant = null) => {
     (str) => replaceGuidsAndUpnsInString(str, guidMapping, upnMapping, isLoadingGuids),
     [guidMapping, upnMapping, isLoadingGuids]
   );
+
+  // Cleanup function to clear any pending timeouts when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (rateLimitTimeoutRef.current) {
+        clearTimeout(rateLimitTimeoutRef.current);
+        rateLimitTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   return {
     guidMapping,
