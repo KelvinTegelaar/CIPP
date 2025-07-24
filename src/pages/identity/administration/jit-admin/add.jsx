@@ -28,6 +28,7 @@ const Page = () => {
                 formControl={formControl}
                 type="single"
                 allTenants={false}
+                preselectedEnabled={true}
               />
             </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
