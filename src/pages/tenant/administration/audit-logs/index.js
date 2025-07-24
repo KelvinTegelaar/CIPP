@@ -20,7 +20,7 @@ import tabOptions from "./tabOptions.json";
 
 // Saved Logs Configuration
 const savedLogsColumns = ["Timestamp", "Tenant", "Title", "Actions"];
-const savedLogsApiUrl = "/api/ListAuditLogSearches";
+const savedLogsApiUrl = "/api/ListAuditLogs";
 const savedLogsActions = [
   {
     label: "View Log",
@@ -48,6 +48,7 @@ const Page = () => {
   const [endDate, setEndDate] = useState(null);
 
   const onSubmit = (data) => {
+    console.log("Form Data:", data);
     if (data.dateFilter === "relative") {
       setRelativeTime(`${data.Time}${data.Interval.value}`);
       setStartDate(null);
@@ -61,7 +62,7 @@ const Page = () => {
 
   // API parameters for saved logs
   const apiParams = {
-    Days: relativeTime ? parseInt(relativeTime) : 7,
+    RelativeTime: relativeTime ? relativeTime : "7d",
     ...(startDate && { StartDate: startDate }),
     ...(endDate && { EndDate: endDate }),
   };
