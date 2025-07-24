@@ -7,38 +7,37 @@ import { useGuidResolver } from "/src/hooks/use-guid-resolver";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 
 const CippAuditLogDetails = ({ row }) => {
-  const { guidMapping, isLoadingGuids, resolveGuids, isGuid } = useGuidResolver();
+  const {
+    guidMapping,
+    upnMapping,
+    isLoadingGuids,
+    resolveGuids,
+    isGuid,
+    replaceGuidsAndUpnsInString,
+  } = useGuidResolver();
 
+  // Use effect for initial scan to resolve GUIDs and special UPNs
   useEffect(() => {
     if (row) {
+      // Scan the main row data
       resolveGuids(row);
+
+      // Scan audit data if present
       if (row.auditData) {
         resolveGuids(row.auditData);
       }
     }
   }, [row?.id, resolveGuids]); // Dependencies for when to resolve GUIDs
 
-  // Function to replace GUIDs in strings with resolved names
+  // Function to replace GUIDs and special UPNs in strings with resolved names
   const replaceGuidsInString = (str) => {
     if (typeof str !== "string") return str;
 
-    const guidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi;
-    const guidsInString = str.match(guidRegex) || [];
+    // Use the hook's helper function to replace both GUIDs and special UPNs
+    const { result, hasResolvedNames } = replaceGuidsAndUpnsInString(str);
 
-    if (guidsInString.length === 0) return str;
-
-    let result = str;
-    let hasResolvedGuids = false;
-
-    guidsInString.forEach((guid) => {
-      if (guidMapping[guid]) {
-        result = result.replace(new RegExp(guid, "gi"), guidMapping[guid]);
-        hasResolvedGuids = true;
-      }
-    });
-
-    // If we have resolved GUIDs, return a tooltip showing original and resolved
-    if (hasResolvedGuids) {
+    // If we have resolved names, return a tooltip showing original and resolved
+    if (hasResolvedNames) {
       return (
         <Tooltip title={`Original: ${str}`} placement="top">
           <span>{result}</span>
@@ -46,8 +45,16 @@ const CippAuditLogDetails = ({ row }) => {
       );
     }
 
-    // If we have unresolved GUIDs and currently loading
-    if (guidsInString.length > 0 && isLoadingGuids) {
+    // Check for GUIDs and special UPNs to see if we should show loading state
+    const guidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi;
+    const partnerUpnRegex = /user_([0-9a-f]{32})@([^@]+\.onmicrosoft\.com)/gi;
+
+    const hasGuids = guidRegex.test(str);
+    partnerUpnRegex.lastIndex = 0; // Reset regex state
+    const hasUpns = partnerUpnRegex.test(str);
+
+    // If we have unresolved GUIDs or UPNs and are currently loading
+    if ((hasGuids || hasUpns) && isLoadingGuids) {
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
           <CircularProgress size={16} sx={{ mr: 1 }} />
@@ -76,6 +83,12 @@ const CippAuditLogDetails = ({ row }) => {
         // Handle different value types
         if (typeof value === "string" && isGuid(value)) {
           // Handle pure GUID strings
+          displayValue = renderGuidValue(value);
+        } else if (
+          typeof value === "string" &&
+          value.match(/^user_[0-9a-f]{32}@[^@]+\.onmicrosoft\.com$/i)
+        ) {
+          // Handle special partner UPN format as direct values
           displayValue = renderGuidValue(value);
         } else if (
           key.toLowerCase().includes("clientip") &&
@@ -122,26 +135,66 @@ const CippAuditLogDetails = ({ row }) => {
 
   // Render GUID values with proper resolution states
   const renderGuidValue = (guidValue) => {
+    // Handle standard GUIDs directly
     if (guidMapping[guidValue]) {
       return (
         <Tooltip title={`GUID: ${guidValue}`} placement="top">
           <span>{guidMapping[guidValue]}</span>
         </Tooltip>
       );
-    } else if (isLoadingGuids) {
+    }
+
+    // Special handling for partner UPN format (user_<guid_no_dashes>@partnertenant.onmicrosoft.com)
+    const partnerUpnRegex = /^user_([0-9a-f]{32})@([^@]+\.onmicrosoft\.com)$/i;
+    const upnMatch = typeof guidValue === "string" ? guidValue.match(partnerUpnRegex) : null;
+
+    if (upnMatch) {
+      const hexId = upnMatch[1];
+      if (hexId && hexId.length === 32) {
+        const guid = [
+          hexId.slice(0, 8),
+          hexId.slice(8, 12),
+          hexId.slice(12, 16),
+          hexId.slice(16, 20),
+          hexId.slice(20, 32),
+        ].join("-");
+
+        // For partner UPN format, use the actual UPN if available, otherwise fall back to display name
+        if (upnMapping && upnMapping[guid]) {
+          return (
+            <Tooltip title={`Original UPN: ${guidValue}`} placement="top">
+              <span>{upnMapping[guid]}</span>
+            </Tooltip>
+          );
+        } else if (guidMapping[guid]) {
+          return (
+            <Tooltip title={`UPN: ${guidValue}`} placement="top">
+              <span>{guidMapping[guid]}</span>
+            </Tooltip>
+          );
+        }
+      }
+    }
+
+    // Loading state
+    if (isLoadingGuids) {
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
           <CircularProgress size={16} sx={{ mr: 1 }} />
           <span>{guidValue}</span>
         </div>
       );
-    } else {
-      return (
-        <Tooltip title="This GUID could not be resolved to a directory object name" placement="top">
-          <span style={{ fontFamily: "monospace", fontSize: "0.9em" }}>{guidValue}</span>
-        </Tooltip>
-      );
     }
+
+    // Fallback for unresolved values
+    return (
+      <Tooltip
+        title="This identifier could not be resolved to a directory object name"
+        placement="top"
+      >
+        <span style={{ fontFamily: "monospace", fontSize: "0.9em" }}>{guidValue}</span>
+      </Tooltip>
+    );
   };
 
   // Recursively render nested objects and arrays with GUID expansion

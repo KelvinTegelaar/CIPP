@@ -98,12 +98,71 @@ const findGuids = (obj, guidsSet = new Set(), partnerGuidsMap = new Map()) => {
   return { guidsSet, partnerGuidsMap };
 };
 
+// Helper function to replace GUIDs and special UPNs in a string with resolved names
+const replaceGuidsAndUpnsInString = (str, guidMapping, upnMapping, isLoadingGuids) => {
+  if (typeof str !== "string") return { result: str, hasResolvedNames: false };
+
+  let result = str;
+  let hasResolvedNames = false;
+
+  // Replace standard GUIDs
+  const guidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi;
+  const guidsInString = str.match(guidRegex) || [];
+
+  guidsInString.forEach((guid) => {
+    if (guidMapping[guid]) {
+      result = result.replace(new RegExp(guid, "gi"), guidMapping[guid]);
+      hasResolvedNames = true;
+    }
+  });
+
+  // Replace partner UPNs (user_<guid_no_dashes>@partnertenant.onmicrosoft.com)
+  const partnerUpnRegex = /user_([0-9a-f]{32})@([^@]+\.onmicrosoft\.com)/gi;
+  let match;
+
+  // We need to clone the string to reset the regex lastIndex
+  const strForMatching = String(str);
+
+  while ((match = partnerUpnRegex.exec(strForMatching)) !== null) {
+    const fullMatch = match[0]; // The complete UPN
+    const hexId = match[1];
+
+    if (hexId.length === 32) {
+      const guid = [
+        hexId.slice(0, 8),
+        hexId.slice(8, 12),
+        hexId.slice(12, 16),
+        hexId.slice(16, 20),
+        hexId.slice(20, 32),
+      ].join("-");
+
+      // For partner UPN format, use the actual UPN if available, otherwise fall back to display name
+      if (upnMapping[guid]) {
+        result = result.replace(
+          new RegExp(fullMatch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+          upnMapping[guid]
+        );
+        hasResolvedNames = true;
+      } else if (guidMapping[guid]) {
+        result = result.replace(
+          new RegExp(fullMatch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+          guidMapping[guid]
+        );
+        hasResolvedNames = true;
+      }
+    }
+  }
+
+  return { result, hasResolvedNames };
+};
+
 export const useGuidResolver = (manualTenant = null) => {
   const tenantFilter = useSettings().currentTenant;
   const activeTenant = manualTenant || tenantFilter;
 
   // GUID resolution state
   const [guidMapping, setGuidMapping] = useState({});
+  const [upnMapping, setUpnMapping] = useState({}); // New mapping specifically for UPNs
   const [isLoadingGuids, setIsLoadingGuids] = useState(false);
 
   // Use refs for values that shouldn't trigger re-renders but need to persist
@@ -117,12 +176,21 @@ export const useGuidResolver = (manualTenant = null) => {
     relatedQueryKeys: ["directoryObjects"],
     onResult: (data) => {
       if (data && Array.isArray(data.value)) {
-        const newMapping = {};
+        const newDisplayMapping = {};
+        const newUpnMapping = {};
 
         // Process the returned results
         data.value.forEach((item) => {
-          if (item.id && (item.displayName || item.userPrincipalName || item.mail)) {
-            newMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
+          if (item.id) {
+            // For display purposes, prefer displayName > userPrincipalName > mail
+            if (item.displayName || item.userPrincipalName || item.mail) {
+              newDisplayMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
+            }
+
+            // For UPN replacement, specifically store the UPN when available
+            if (item.userPrincipalName) {
+              newUpnMapping[item.id] = item.userPrincipalName;
+            }
           }
         });
 
@@ -136,7 +204,8 @@ export const useGuidResolver = (manualTenant = null) => {
           notReturned.forEach((guid) => notFoundGuidsRef.current.add(guid));
         }
 
-        setGuidMapping((prevMapping) => ({ ...prevMapping, ...newMapping }));
+        setGuidMapping((prevMapping) => ({ ...prevMapping, ...newDisplayMapping }));
+        setUpnMapping((prevMapping) => ({ ...prevMapping, ...newUpnMapping }));
         pendingGuidsRef.current = [];
         setIsLoadingGuids(false);
       }
@@ -148,16 +217,26 @@ export const useGuidResolver = (manualTenant = null) => {
     relatedQueryKeys: ["partnerDirectoryObjects"],
     onResult: (data) => {
       if (data && Array.isArray(data.value)) {
-        const newMapping = {};
+        const newDisplayMapping = {};
+        const newUpnMapping = {};
 
         // Process the returned results
         data.value.forEach((item) => {
-          if (item.id && (item.displayName || item.userPrincipalName || item.mail)) {
-            newMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
+          if (item.id) {
+            // For display purposes, prefer displayName > userPrincipalName > mail
+            if (item.displayName || item.userPrincipalName || item.mail) {
+              newDisplayMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
+            }
+
+            // For UPN replacement, specifically store the UPN when available
+            if (item.userPrincipalName) {
+              newUpnMapping[item.id] = item.userPrincipalName;
+            }
           }
         });
 
-        setGuidMapping((prevMapping) => ({ ...prevMapping, ...newMapping }));
+        setGuidMapping((prevMapping) => ({ ...prevMapping, ...newDisplayMapping }));
+        setUpnMapping((prevMapping) => ({ ...prevMapping, ...newUpnMapping }));
 
         // Clear processed partner GUIDs
         pendingPartnerGuidsRef.current = new Map();
@@ -253,11 +332,19 @@ export const useGuidResolver = (manualTenant = null) => {
     [guidMapping, activeTenant] // Only depend on guidMapping and activeTenant
   );
 
+  // Create a memoized version of the string replacement function
+  const replaceGuidsAndUpnsInStringMemoized = useCallback(
+    (str) => replaceGuidsAndUpnsInString(str, guidMapping, upnMapping, isLoadingGuids),
+    [guidMapping, upnMapping, isLoadingGuids]
+  );
+
   return {
     guidMapping,
+    upnMapping,
     isLoadingGuids,
     resolveGuids,
     isGuid,
     extractObjectIdFromPartnerUPN,
+    replaceGuidsAndUpnsInString: replaceGuidsAndUpnsInStringMemoized,
   };
 };
