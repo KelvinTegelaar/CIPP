@@ -56,7 +56,6 @@ const Page = () => {
       title={pageTitle}
       cardButton={
         <Button
-          variant="outlined"
           color="primary"
           onClick={handleBackClick}
           startIcon={

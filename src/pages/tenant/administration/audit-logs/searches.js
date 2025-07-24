@@ -26,18 +26,6 @@ const actions = [
     color: "primary",
     icon: <EyeIcon />,
   },
-  {
-    label: "Delete Search",
-    type: "POST",
-    url: "/api/ExecAuditLogSearch",
-    data: {
-      Action: "Delete",
-      SearchId: "Id",
-    },
-    confirmText: "Are you sure you want to delete this audit log search?",
-    color: "danger",
-    icon: <TrashIcon />,
-  },
 ];
 
 const Page = () => {
@@ -77,17 +65,25 @@ const Page = () => {
   // Create Search Dialog Configuration
   const createSearchFields = [
     {
+      type: "textField",
+      name: "DisplayName",
+      label: "Search Name",
+    },
+    {
       type: "autoComplete",
       name: "TenantFilter",
       label: "Tenant",
       multiple: false,
+      creatable: false,
       api: {
         url: "/api/ListTenants?AllTenantSelector=false",
-        dataKey: "Results",
         labelField: (option) => `${option.displayName} (${option.defaultDomainName})`,
         valueField: "defaultDomainName",
-        validators: { required: "Please select a tenant" },
+        queryKey: "ListTenants-FormnotAllTenants",
+        excludeTenantFilter: true,
       },
+      validators: { validate: (value) => !!value?.value || "Please select a tenant" },
+      required: true,
     },
     {
       type: "datePicker",
@@ -95,6 +91,7 @@ const Page = () => {
       label: "Start Date & Time",
       dateTimeType: "datetime-local",
       validators: { required: "Start time is required" },
+      required: true,
     },
     {
       type: "datePicker",
@@ -102,68 +99,74 @@ const Page = () => {
       label: "End Date & Time",
       dateTimeType: "datetime-local",
       validators: { required: "End time is required" },
-    },
-    {
-      type: "autoComplete",
-      name: "RecordTypeFilters",
-      label: "Record Types",
-      multiple: true,
-      options: [
-        { label: "Exchange Admin", value: "exchangeAdmin" },
-        { label: "Exchange Item", value: "exchangeItem" },
-        { label: "Exchange Item Group", value: "exchangeItemGroup" },
-        { label: "SharePoint", value: "sharePoint" },
-        { label: "SharePoint File Operation", value: "sharePointFileOperation" },
-        { label: "SharePoint Sharing Operation", value: "sharePointSharingOperation" },
-        { label: "SharePoint List Operation", value: "sharePointListOperation" },
-        { label: "OneDrive", value: "oneDrive" },
-        { label: "Azure Active Directory", value: "azureActiveDirectory" },
-        { label: "Azure AD Account Logon", value: "azureActiveDirectoryAccountLogon" },
-        { label: "Azure AD STS Logon", value: "azureActiveDirectoryStsLogon" },
-        { label: "Microsoft Teams", value: "microsoftTeams" },
-        { label: "Microsoft Teams Admin", value: "microsoftTeamsAdmin" },
-        { label: "Microsoft Teams Analytics", value: "microsoftTeamsAnalytics" },
-        { label: "Microsoft Teams Device", value: "microsoftTeamsDevice" },
-        { label: "Microsoft Teams Shifts", value: "microsoftTeamsShifts" },
-        { label: "Power BI Audit", value: "powerBIAudit" },
-        { label: "Power BI DLP", value: "powerBIDlp" },
-        { label: "Microsoft Flow", value: "microsoftFlow" },
-        { label: "Microsoft Forms", value: "microsoftForms" },
-        { label: "Microsoft Stream", value: "microsoftStream" },
-        { label: "Threat Intelligence", value: "threatIntelligence" },
-        { label: "Threat Intelligence URL", value: "threatIntelligenceUrl" },
-        { label: "Threat Intelligence ATP Content", value: "threatIntelligenceAtpContent" },
-        { label: "Security & Compliance Alerts", value: "securityComplianceAlerts" },
-        { label: "Security & Compliance Insights", value: "securityComplianceInsights" },
-        { label: "Security & Compliance RBAC", value: "securityComplianceRBAC" },
-        { label: "Compliance DLP SharePoint", value: "complianceDLPSharePoint" },
-        { label: "Compliance DLP Exchange", value: "complianceDLPExchange" },
-        { label: "Compliance DLP Endpoint", value: "complianceDLPEndpoint" },
-        { label: "Data Governance", value: "dataGovernance" },
-        { label: "MIP Label", value: "mipLabel" },
-        { label: "Label Content Explorer", value: "labelContentExplorer" },
-        { label: "Information Worker Protection", value: "informationWorkerProtection" },
-        { label: "Workplace Analytics", value: "workplaceAnalytics" },
-        { label: "Power Apps App", value: "powerAppsApp" },
-        { label: "Power Apps Plan", value: "powerAppsPlan" },
-      ],
+      required: true,
     },
     {
       type: "autoComplete",
       name: "ServiceFilters",
       label: "Services",
       multiple: true,
+      creatable: false,
       options: [
-        { label: "Exchange Online", value: "Exchange" },
-        { label: "SharePoint Online", value: "SharePoint" },
-        { label: "OneDrive for Business", value: "OneDrive" },
         { label: "Azure Active Directory", value: "AzureActiveDirectory" },
-        { label: "Microsoft Teams", value: "MicrosoftTeams" },
-        { label: "Power BI", value: "PowerBI" },
-        { label: "Microsoft Flow", value: "MicrosoftFlow" },
         { label: "Dynamics 365", value: "CRM" },
-        { label: "Yammer", value: "Yammer" },
+        { label: "Exchange Online", value: "Exchange" },
+        { label: "Microsoft Flow", value: "MicrosoftFlow" },
+        { label: "Microsoft Teams", value: "MicrosoftTeams" },
+        { label: "OneDrive for Business", value: "OneDrive" },
+        { label: "Power BI", value: "PowerBI" },
         { label: "Security & Compliance", value: "ThreatIntelligence" },
+        { label: "SharePoint Online", value: "SharePoint" },
+        { label: "Yammer", value: "Yammer" },
+      ],
+      validators: {
+        validate: (values) => values?.length > 0 || "Please select at least one service",
+      },
+    },
+    {
+      type: "autoComplete",
+      name: "RecordTypeFilters",
+      label: "Record Types",
+      multiple: true,
+      creatable: false,
+      options: [
+        { label: "Azure Active Directory", value: "azureActiveDirectory" },
+        { label: "Azure AD Account Logon", value: "azureActiveDirectoryAccountLogon" },
+        { label: "Azure AD STS Logon", value: "azureActiveDirectoryStsLogon" },
+        { label: "Compliance DLP Endpoint", value: "complianceDLPEndpoint" },
+        { label: "Compliance DLP Exchange", value: "complianceDLPExchange" },
+        { label: "Compliance DLP SharePoint", value: "complianceDLPSharePoint" },
+        { label: "Data Governance", value: "dataGovernance" },
+        { label: "Exchange Admin", value: "exchangeAdmin" },
+        { label: "Exchange Item", value: "exchangeItem" },
+        { label: "Exchange Item Group", value: "exchangeItemGroup" },
+        { label: "Information Worker Protection", value: "informationWorkerProtection" },
+        { label: "Label Content Explorer", value: "labelContentExplorer" },
+        { label: "Microsoft Flow", value: "microsoftFlow" },
+        { label: "Microsoft Forms", value: "microsoftForms" },
+        { label: "Microsoft Stream", value: "microsoftStream" },
+        { label: "Microsoft Teams", value: "microsoftTeams" },
+        { label: "Microsoft Teams Admin", value: "microsoftTeamsAdmin" },
+        { label: "Microsoft Teams Analytics", value: "microsoftTeamsAnalytics" },
+        { label: "Microsoft Teams Device", value: "microsoftTeamsDevice" },
+        { label: "Microsoft Teams Shifts", value: "microsoftTeamsShifts" },
+        { label: "MIP Label", value: "mipLabel" },
+        { label: "OneDrive", value: "oneDrive" },
+        { label: "Power Apps App", value: "powerAppsApp" },
+        { label: "Power Apps Plan", value: "powerAppsPlan" },
+        { label: "Power BI Audit", value: "powerBIAudit" },
+        { label: "Power BI DLP", value: "powerBIDlp" },
+        { label: "Security & Compliance Alerts", value: "securityComplianceAlerts" },
+        { label: "Security & Compliance Insights", value: "securityComplianceInsights" },
+        { label: "Security & Compliance RBAC", value: "securityComplianceRBAC" },
+        { label: "SharePoint", value: "sharePoint" },
+        { label: "SharePoint File Operation", value: "sharePointFileOperation" },
+        { label: "SharePoint List Operation", value: "sharePointListOperation" },
+        { label: "SharePoint Sharing Operation", value: "sharePointSharingOperation" },
+        { label: "Threat Intelligence", value: "threatIntelligence" },
+        { label: "Threat Intelligence ATP Content", value: "threatIntelligenceAtpContent" },
+        { label: "Threat Intelligence URL", value: "threatIntelligenceUrl" },
+        { label: "Workplace Analytics", value: "workplaceAnalytics" },
       ],
     },
     {
@@ -328,9 +331,10 @@ const Page = () => {
     confirmText:
       "Create this audit log search? This may take several minutes to hours to complete.",
     relatedQueryKeys: ["AuditLogSearches"],
-    customDataformatter: (data) => {
+    allowResubmit: true,
+    customDataformatter: (row, action, data) => {
       const formattedData = { ...data };
-
+      console.log("Formatted Data:", formattedData);
       // Extract value from TenantFilter autocomplete object
       if (formattedData.TenantFilter?.value) {
         formattedData.TenantFilter = formattedData.TenantFilter.value;
@@ -467,11 +471,7 @@ const Page = () => {
         }-${currentTenant}`}
         actions={actions}
         cardButton={
-          <Button
-            onClick={() => createSearchDialog.handleOpen()}
-            startIcon={<Add />}
-            variant="contained"
-          >
+          <Button onClick={() => createSearchDialog.handleOpen()} startIcon={<Add />}>
             New Search
           </Button>
         }
