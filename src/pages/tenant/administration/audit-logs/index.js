@@ -48,7 +48,6 @@ const Page = () => {
   const [endDate, setEndDate] = useState(null);
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
     if (data.dateFilter === "relative") {
       setRelativeTime(`${data.Time}${data.Interval.value}`);
       setStartDate(null);
