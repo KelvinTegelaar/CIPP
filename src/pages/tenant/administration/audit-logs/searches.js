@@ -7,9 +7,9 @@ import { Button, Accordion, AccordionSummary, AccordionDetails, Typography } fro
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { EyeIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon } from "@heroicons/react/24/outline";
 import { Grid } from "@mui/system";
-import { Add } from "@mui/icons-material";
+import { Add, ManageSearch } from "@mui/icons-material";
 import { useDialog } from "/src/hooks/use-dialog";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "/src/hooks/use-settings";
@@ -25,6 +25,18 @@ const actions = [
     link: "/tenant/administration/audit-logs/search-results?id=[id]&name=[displayName]",
     color: "primary",
     icon: <EyeIcon />,
+  },
+  {
+    label: "Process Logs",
+    url: "/api/ExecAuditLogSearch",
+    confirmText:
+      "Process these logs? Note: This will only alert on logs that match your Alert Configuration rules.",
+    type: "POST",
+    data: {
+      Action: "ProcessLogs",
+      SearchId: "id",
+    },
+    icon: <ManageSearch />,
   },
 ];
 
