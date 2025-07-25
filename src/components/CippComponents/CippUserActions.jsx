@@ -17,6 +17,7 @@ import {
   PhonelinkLock,
   PhonelinkSetup,
   Shortcut,
+  EditAttributes,
 } from "@mui/icons-material";
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 import { useSettings } from "/src/hooks/use-settings.js";
@@ -454,6 +455,28 @@ export const CippUserActions = () => {
       data: { ID: "id", userPrincipalName: "userPrincipalName" },
       confirmText: "Are you sure you want to delete [userPrincipalName]?",
       multiPost: false,
+      condition: () => canWriteUser,
+    },
+    {
+      label: "Patch Users",
+      icon: <EditAttributes />,
+      multiPost: true,
+      noConfirm: true,
+      customFunction: (users, action, formData) => {
+        // Handle both single user and multiple users
+        const userData = Array.isArray(users) ? users : [users];
+        
+        // Store users in session storage to avoid URL length limits
+        sessionStorage.setItem('patchWizardUsers', JSON.stringify(userData));
+        
+        // Use Next.js router for internal navigation
+        import('next/router').then(({ default: router }) => {
+          router.push('/identity/administration/users/patch-wizard');
+        }).catch(() => {
+          // Fallback to window.location if router is not available
+          window.location.href = '/identity/administration/users/patch-wizard';
+        });
+      },
       condition: () => canWriteUser,
     },
   ];
