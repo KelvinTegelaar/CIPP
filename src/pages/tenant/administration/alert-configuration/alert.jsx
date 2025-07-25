@@ -470,6 +470,18 @@ const AlertWizard = () => {
                                   formControl={formControl}
                                   label="Select property"
                                   options={getAuditLogSchema(logbookWatcher?.value)}
+                                  creatable={true}
+                                  onCreateOption={(option) => {
+                                    const propertyName = option.label || option;
+
+                                    // Return the option with String type for immediate use
+                                    const newOption = {
+                                      label: propertyName,
+                                      value: "String", // Always set to String for custom properties
+                                    };
+
+                                    return newOption;
+                                  }}
                                 />
                               </Grid>
                               <Grid size={4}>
