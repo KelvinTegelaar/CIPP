@@ -263,15 +263,49 @@ export const useGuidResolver = (manualTenant = null) => {
         const returnedGuids = new Set(data.value.map((item) => item.id));
         const notReturned = [...processedGuids].filter((guid) => !returnedGuids.has(guid));
 
-        // Add them to the notFoundGuids set
+        // Add unresolved GUIDs to partner tenant fallback lookup
         if (notReturned.length > 0) {
-          notReturned.forEach((guid) => notFoundGuidsRef.current.add(guid));
+          console.log(
+            `${notReturned.length} GUIDs not resolved by primary tenant, trying partner tenant lookup`
+          );
+
+          // Add to partner lookup with the current tenant as fallback
+          if (!pendingPartnerGuidsRef.current.has(activeTenant)) {
+            pendingPartnerGuidsRef.current.set(activeTenant, new Set());
+          }
+          notReturned.forEach((guid) => {
+            pendingPartnerGuidsRef.current.get(activeTenant).add(guid);
+          });
+
+          // Trigger partner lookup immediately for fallback
+          const now = Date.now();
+          if (!rateLimitTimeoutRef.current && now - lastPartnerRequestTimeRef.current >= 2000) {
+            lastPartnerRequestTimeRef.current = now;
+
+            // Use partner tenant API for unresolved GUIDs
+            console.log(
+              `Sending partner fallback request for ${notReturned.length} GUIDs in tenant ${activeTenant}`
+            );
+            partnerDirectoryObjectsMutation.mutate({
+              url: "/api/ListDirectoryObjects",
+              data: {
+                tenantFilter: activeTenant,
+                ids: notReturned,
+                $select: "id,displayName,userPrincipalName,mail",
+                partnerLookup: true, // Flag to indicate this is a partner lookup
+              },
+            });
+          }
         }
 
         setGuidMapping((prevMapping) => ({ ...prevMapping, ...newDisplayMapping }));
         setUpnMapping((prevMapping) => ({ ...prevMapping, ...newUpnMapping }));
         pendingGuidsRef.current = [];
-        setIsLoadingGuids(false);
+
+        // Only set loading to false if we don't have pending partner lookups
+        if (notReturned.length === 0) {
+          setIsLoadingGuids(false);
+        }
       }
     },
   });
@@ -325,9 +359,9 @@ export const useGuidResolver = (manualTenant = null) => {
         // Process the returned results
         data.value.forEach((item) => {
           if (item.id) {
-            // For display purposes, prefer displayName > userPrincipalName > mail
-            if (item.displayName || item.userPrincipalName || item.mail) {
-              newDisplayMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
+            // For display purposes, prefer userPrincipalName > mail > DisplayName
+            if (item.userPrincipalName || item.mail || item.displayName) {
+              newDisplayMapping[item.id] = item.userPrincipalName || item.mail || item.displayName;
             }
 
             // For UPN replacement, specifically store the UPN when available
@@ -336,6 +370,22 @@ export const useGuidResolver = (manualTenant = null) => {
             }
           }
         });
+
+        // Find GUIDs that were sent but not returned in the partner lookup
+        const allPendingPartnerGuids = new Set();
+        pendingPartnerGuidsRef.current.forEach((guidsSet) => {
+          guidsSet.forEach((guid) => allPendingPartnerGuids.add(guid));
+        });
+
+        const returnedGuids = new Set(data.value.map((item) => item.id));
+        const stillNotFound = [...allPendingPartnerGuids].filter(
+          (guid) => !returnedGuids.has(guid)
+        );
+
+        // Add truly unresolved GUIDs to notFoundGuids
+        if (stillNotFound.length > 0) {
+          stillNotFound.forEach((guid) => notFoundGuidsRef.current.add(guid));
+        }
 
         setGuidMapping((prevMapping) => ({ ...prevMapping, ...newDisplayMapping }));
         setUpnMapping((prevMapping) => ({ ...prevMapping, ...newUpnMapping }));
