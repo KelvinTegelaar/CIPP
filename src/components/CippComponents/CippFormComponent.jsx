@@ -318,7 +318,6 @@ export const CippFormComponent = (props) => {
                   defaultValue={field.value}
                   label={label}
                   onChange={(value) => field.onChange(value)}
-                  helperText={helperText}
                 />
               )}
             />
