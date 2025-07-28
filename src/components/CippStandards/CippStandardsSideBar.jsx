@@ -65,6 +65,7 @@ const CippStandardsSideBar = ({
   createDialog,
   edit,
   onSaveSuccess,
+  isDriftMode = false,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [savedItem, setSavedItem] = useState(null);
@@ -136,6 +137,15 @@ const CippStandardsSideBar = ({
       <Divider />
       <CardContent>
         <Stack spacing={2}>
+          {/* Hidden field to mark drift templates */}
+          {isDriftMode && (
+            <CippFormComponent
+              type="hidden"
+              name="isDriftTemplate"
+              formControl={formControl}
+              defaultValue={true}
+            />
+          )}
           <CippFormComponent
             type="textField"
             name="templateName"
@@ -153,80 +163,90 @@ const CippStandardsSideBar = ({
             placeholder="Enter a description for the template"
             fullWidth
           />
-          <Divider />
-          <CippFormTenantSelector
-            allTenants={true}
-            label="Included Tenants"
-            formControl={formControl}
-            required={true}
-            includeGroups={true}
-          />
-          {watchForm.tenantFilter?.some(
-            (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
-          ) && (
+          {/* Hide tenant selector and schedule options in drift mode */}
+          {!isDriftMode && (
             <>
               <Divider />
               <CippFormTenantSelector
-                label="Excluded Tenants"
-                name="excludedTenants"
-                allTenants={false}
+                allTenants={true}
+                label="Included Tenants"
                 formControl={formControl}
+                required={true}
                 includeGroups={true}
               />
-            </>
-          )}
-          {updatedAt.date && (
-            <>
+              {watchForm.tenantFilter?.some(
+                (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
+              ) && (
+                <>
+                  <Divider />
+                  <CippFormTenantSelector
+                    label="Excluded Tenants"
+                    name="excludedTenants"
+                    allTenants={false}
+                    formControl={formControl}
+                    includeGroups={true}
+                  />
+                </>
+              )}
+              {updatedAt.date && (
+                <>
+                  <Typography
+                    sx={{
+                      color: "text.secondary",
+                      display: "block",
+                    }}
+                    variant="caption"
+                  >
+                    Last Updated <ReactTimeAgo date={updatedAt?.date} /> by {updatedAt?.user}
+                  </Typography>
+                </>
+              )}
+              <CippFormComponent
+                type="switch"
+                name="runManually"
+                label="Do not run on schedule"
+                formControl={formControl}
+                placeholder="Enter a name for the template"
+                fullWidth
+              />
               <Typography
                 sx={{
                   color: "text.secondary",
-                  display: "block",
                 }}
                 variant="caption"
               >
-                Last Updated <ReactTimeAgo date={updatedAt?.date} /> by {updatedAt?.user}
+                This setting allows you to create this template and run it only by using "Run Now".
               </Typography>
             </>
           )}
-          <CippFormComponent
-            type="switch"
-            name="runManually"
-            label="Do not run on schedule"
-            formControl={formControl}
-            placeholder="Enter a name for the template"
-            fullWidth
-          />
-          <Typography
-            sx={{
-              color: "text.secondary",
-            }}
-            variant="caption"
-          >
-            This setting allows you to create this template and run it only by using "Run Now".
-          </Typography>
         </Stack>
       </CardContent>
-      <Divider />
-      <CardContent>
-        <Timeline
-          sx={{
-            [`& .${timelineItemClasses.root}:before`]: {
-              flex: 0,
-              p: 0,
-            },
-          }}
-        >
-          {steps.map((step, index) => (
-            <TimelineItem key={index}>
-              <TimelineSeparator>
-                <StyledTimelineDot complete={stepsStatus[`step${index + 1}`]} />
-                {index < steps.length - 1 && <StyledTimelineConnector />}
-              </TimelineSeparator>
-              <StyledTimelineContent>{step}</StyledTimelineContent>
-            </TimelineItem>
-          ))}
-        </Timeline>
-      </CardContent>
+      {/* Hide timeline/ticker in drift mode */}
+      {!isDriftMode && (
+        <>
+          <Divider />
+          <CardContent>
+            <Timeline
+              sx={{
+                [`& .${timelineItemClasses.root}:before`]: {
+                  flex: 0,
+                  p: 0,
+                },
+              }}
+            >
+              {steps.map((step, index) => (
+                <TimelineItem key={index}>
+                  <TimelineSeparator>
+                    <StyledTimelineDot complete={stepsStatus[`step${index + 1}`]} />
+                    {index < steps.length - 1 && <StyledTimelineConnector />}
+                  </TimelineSeparator>
+                  <StyledTimelineContent>{step}</StyledTimelineContent>
+                </TimelineItem>
+              ))}
+            </Timeline>
+          </CardContent>
+        </>
+      )}
       <Divider />
       <ActionList>
         {actions.map((action, index) => (
@@ -247,7 +267,9 @@ const CippStandardsSideBar = ({
         createDialog={createDialog}
         title="Add Standard"
         api={{
-          confirmText: watchForm.runManually
+          confirmText: isDriftMode
+            ? "This template will only run after assigning it through the Drift Template setup wizard"
+            : watchForm.runManually
             ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
             : "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
           url: "/api/AddStandardsTemplate",
@@ -262,6 +284,8 @@ const CippStandardsSideBar = ({
             ...(edit ? { GUID: "GUID" } : {}),
             ...(savedItem ? { GUID: savedItem } : {}),
             runManually: "runManually",
+            isDriftTemplate: "isDriftTemplate",
+            ...(isDriftMode ? { type: "drift" } : {}),
           },
         }}
         row={formControl.getValues()}
