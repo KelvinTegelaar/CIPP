@@ -458,7 +458,7 @@ export const CippUserActions = () => {
       condition: () => canWriteUser,
     },
     {
-      label: "Patch Users",
+      label: "Edit Properties",
       icon: <EditAttributes />,
       multiPost: true,
       noConfirm: true,
