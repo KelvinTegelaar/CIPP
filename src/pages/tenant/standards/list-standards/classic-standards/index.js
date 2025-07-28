@@ -30,7 +30,7 @@ const Page = () => {
     {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
-      link: "/tenant/standards/template?id=[GUID]",
+      link: "/tenant/standards/template?id=[GUID]&type=[type]",
       icon: <Edit />,
       color: "success",
       target: "_self",

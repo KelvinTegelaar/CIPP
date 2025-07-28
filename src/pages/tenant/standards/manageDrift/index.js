@@ -48,10 +48,13 @@ const ManageDriftPage = () => {
     queryKey: `TenantDrift-${tenantFilter}`,
   });
 
-  // API call for available standards (for What If dropdown)
+  // API call for available drift templates (for What If dropdown)
   const standardsApi = ApiGetCall({
-    url: "/api/ListStandards",
-    queryKey: "ListStandards-drift",
+    url: "/api/listStandardTemplates",
+    data: {
+      type: "drift"
+    },
+    queryKey: "ListDriftTemplates",
   });
 
   // API call for standards comparison (when templateId is available)
@@ -455,10 +458,10 @@ const ManageDriftPage = () => {
     },
   ];
 
-  // Process standards data for "What If" dropdown
-  const availableStandards = (standardsApi.data || []).map((standard) => ({
-    id: standard.GUID || standard.id || standard.name,
-    name: standard.displayName || standard.name || "Unknown Standard",
+  // Process drift templates data for "What If" dropdown
+  const availableStandards = (standardsApi.data || []).map((template) => ({
+    id: template.GUID || template.id || template.templateName,
+    name: template.templateName || template.displayName || "Unknown Template",
   }));
 
   // Add action buttons to each deviation item
