@@ -71,6 +71,8 @@ export const CippAutoComplete = (props) => {
     removeOptions = [],
     sortOptions = false,
     preselectedValue,
+    groupBy,
+    renderGroup,
     ...other
   } = props;
 
@@ -367,6 +369,8 @@ export const CippAutoComplete = (props) => {
           )}
         </Stack>
       )}
+      groupBy={groupBy}
+      renderGroup={renderGroup}
       {...other}
     />
   );
