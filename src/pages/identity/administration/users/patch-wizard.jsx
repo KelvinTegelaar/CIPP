@@ -19,7 +19,9 @@ import {
   ListItemText,
   Button,
   Switch,
-  FormControlLabel
+  FormControlLabel,
+  IconButton,
+  Tooltip
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippWizardStepButtons } from "/src/components/CippWizard/CippWizardStepButtons";
@@ -29,6 +31,8 @@ import { getCippTranslation } from "/src/utils/get-cipp-translation";
 import { getCippFormatting } from "/src/utils/get-cipp-formatting";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
+import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { Delete } from "@mui/icons-material";
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
@@ -104,43 +108,82 @@ const PATCHABLE_PROPERTIES = [
   }
 ];
 
-// Step 1: Display users to be patched
+// Step 1: Display users to be updated
 const UsersDisplayStep = (props) => {
-  const { onNextStep, onPreviousStep, formControl, currentStep, users } = props;
+  const { onNextStep, onPreviousStep, formControl, currentStep, users, onUsersChange } = props;
+
+  const handleRemoveUser = (userToRemove) => {
+    const updatedUsers = users.filter(user => user.id !== userToRemove.id);
+    onUsersChange(updatedUsers);
+  };
+
+  // Clean user data without circular references
+  const tableData = users?.map(user => ({
+    id: user.id,
+    displayName: user.displayName,
+    userPrincipalName: user.userPrincipalName,
+    jobTitle: user.jobTitle,
+    department: user.department,
+    // Only include serializable properties
+  })) || [];
+
+  const columns = [
+    "displayName",
+    "userPrincipalName", 
+    "jobTitle",
+    "department"
+  ];
+
+  // Define actions separately to avoid circular references
+  const rowActions = [
+    {
+      label: "Remove from List",
+      icon: <Delete />,
+      color: "error",
+      customFunction: (user) => handleRemoveUser(user),
+      noConfirm: true,
+    }
+  ];
 
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Users to be updated</Typography>
         <Typography color="text.secondary" variant="body2">
-          The following users will be updated with the properties you select in the next step.
+          The following users will be updated with the properties you select in the next step. You can remove users from this list if needed.
         </Typography>
       </Stack>
       
-      <Card variant="outlined">
-        <CardContent>
-          <Stack spacing={2}>
-            <Typography variant="h6">Selected Users ({users?.length || 0})</Typography>
-            <Grid container spacing={1}>
-              {users?.map((user, index) => (
-                <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Chip 
-                    label={user.displayName || user.userPrincipalName} 
-                    variant="outlined" 
-                    size="small"
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </Stack>
-        </CardContent>
-      </Card>
+      {users && users.length > 0 ? (
+        <CippDataTable
+          title={`Selected Users (${users.length})`}
+          data={tableData}
+          simpleColumns={columns}
+          actions={rowActions}
+          disableFullScreenToggle={true}
+          disableColumnFilters={true}
+          disableColumnActions={true}
+          disablePagination={true}
+          disableRowSelection={true}
+          disableExport={true}
+          disableTopToolbar={users.length <= 5} // Hide toolbar for small lists
+        />
+      ) : (
+        <Card variant="outlined">
+          <CardContent>
+            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
+              No users selected. Please go back and select users from the main table.
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
 
       <CippWizardStepButtons
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}
-        onNextStep={onNextStep}
+        onNextStep={users && users.length > 0 ? onNextStep : undefined}
         formControl={formControl}
+        noNextButton={!users || users.length === 0}
       />
     </Stack>
   );
@@ -304,7 +347,7 @@ const PropertySelectionStep = (props) => {
       {selectedProperties.length > 0 && (
         <Card variant="outlined">
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2 }}>Property Values</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Properties to update</Typography>
             <Stack spacing={2}>
               {selectedProperties.map(renderPropertyInput)}
             </Stack>
@@ -334,6 +377,12 @@ const ConfirmationStep = (props) => {
   });
 
   const handleSubmit = () => {
+    // Validate that we still have users to patch
+    if (!users || users.length === 0) {
+      console.error('No users to patch');
+      return;
+    }
+
     // Create bulk request data
     const patchData = users.map(user => {
       const userData = { 
@@ -352,66 +401,85 @@ const ConfirmationStep = (props) => {
     patchUsersApi.mutate({ 
       url: "/api/PatchUser", 
       data: patchData,
-      bulkRequest: true
     });
   };
+
+  // Clean user data for table display
+  const tableData = users?.map(user => ({
+    id: user.id,
+    displayName: user.displayName,
+    userPrincipalName: user.userPrincipalName,
+    jobTitle: user.jobTitle,
+    department: user.department,
+  })) || [];
+
+  const columns = [
+    "displayName",
+    "userPrincipalName", 
+    "jobTitle",
+    "department"
+  ];
 
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
-        <Typography variant="h6">Confirm Patch Operation</Typography>
+        <Typography variant="h6">Confirm User Updates</Typography>
         <Typography color="text.secondary" variant="body2">
-          Review the users and properties that will be updated, then click Submit to apply the changes.
+          Review the users that will be updated with {selectedProperties.length} selected {selectedProperties.length === 1 ? 'property' : 'properties'}, then click Submit to apply the changes.
         </Typography>
       </Stack>
 
-      <Card variant="outlined">
-        <Grid container spacing={3}>
-          <Grid size={{ md: 6, xs: 12 }}>
-            <PropertyList>
-              <PropertyListItem
-                label="Users to Patch"
-                value={`${users?.length || 0} users`}
-              />
-              <PropertyListItem
-                label="Properties to Modify"
-                value={`${selectedProperties.length} properties`}
-              />
-            </PropertyList>
-          </Grid>
-          <Grid size={{ md: 6, xs: 12 }}>
-            <PropertyList>
+      {/* Properties to be updated */}
+      {selectedProperties.length > 0 && (
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 2 }}>Properties to Update</Typography>
+            <Stack spacing={1}>
               {selectedProperties.map(propName => {
                 const property = PATCHABLE_PROPERTIES.find(p => p.property === propName);
+                const value = propertyValues[propName];
+                const displayValue = property?.type === 'boolean' 
+                  ? (value ? 'Yes' : 'No')
+                  : (value || 'Not set');
+                
                 return (
-                  <PropertyListItem
-                    key={propName}
-                    label={property?.label || propName}
-                    value={propertyValues[propName] || 'Not set'}
-                  />
+                  <Box key={propName} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'medium', minWidth: 'fit-content' }}>
+                      {property?.label || propName}:
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+                      {displayValue}
+                    </Typography>
+                  </Box>
                 );
               })}
-            </PropertyList>
-          </Grid>
-        </Grid>
-      </Card>
+            </Stack>
+          </CardContent>
+        </Card>
+      )}
 
-      <Card variant="outlined">
-        <CardContent>
-          <Typography variant="h6" sx={{ mb: 2 }}>Users to be Modified</Typography>
-          <Grid container spacing={1}>
-            {users?.map((user, index) => (
-              <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Chip 
-                  label={user.displayName || user.userPrincipalName} 
-                  variant="outlined" 
-                  size="small"
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
+      {users && users.length > 0 ? (
+        <CippDataTable
+          title={`Users to Update (${users.length})`}
+          data={tableData}
+          simpleColumns={columns}
+          disableFullScreenToggle={true}
+          disableColumnFilters={true}
+          disableColumnActions={true}
+          disablePagination={true}
+          disableRowSelection={true}
+          disableExport={true}
+          disableTopToolbar={users.length <= 5}
+        />
+      ) : (
+        <Card variant="outlined">
+          <CardContent>
+            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
+              No users to update. Please go back and select users.
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
 
       <CippApiResults apiObject={patchUsersApi} />
       
@@ -431,7 +499,7 @@ const ConfirmationStep = (props) => {
           size="large" 
           type="button" 
           variant="contained" 
-          disabled={patchUsersApi.isPending || selectedProperties.length === 0}
+          disabled={patchUsersApi.isPending || selectedProperties.length === 0 || !users || users.length === 0}
           onClick={handleSubmit}
         >
           {patchUsersApi.isSuccess ? "Resubmit" : "Submit"}
@@ -474,6 +542,7 @@ const Page = () => {
       component: UsersDisplayStep,
       componentProps: {
         users: users,
+        onUsersChange: setUsers,
       },
     },
     {
