@@ -3,74 +3,60 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import Link from "next/link";
-import { CopyAll, Delete, PlayArrow, Add, Edit, GitHub, Download } from "@mui/icons-material";
+import { Delete, Add } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "./tabOptions.json";
 
 const Page = () => {
-  const pageTitle = "Drift Templates";
+  const pageTitle = "Standard & Drift Alignment";
+
   const actions = [
+    {
+      label: "View Tenant Report",
+      link: "/tenant/standards/compare?tenantFilter=[tenantFilter]&templateId=[standardId]",
+      icon: <EyeIcon />,
+      color: "info",
+      target: "_self",
+    },
     {
       label: "Manage Drift",
       link: "/tenant/standards/manageDrift?templateId=[standardId]&tenantFilter=[tenantFilter]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",
-    },
-    {
-      label: "Remove assigned Drift Standard",
-      type: "POST",
-      url: "/api/RemoveStandardTemplate",
-      icon: <Delete />,
-      data: {
-        ID: "standardId",
-      },
-      confirmText:
-        "Are you sure you want to remove the assigned Drift Standard? This does not undo any customizations or applied policies.",
-      multiPost: false,
+      condition: (row) => row.standardType === "drift",
     },
     {
       label: "Remove Drift Customization",
       type: "POST",
-      url: "/api/RemoveStandardTemplate",
+      url: "/api/ExecUpdateDriftDeviation",
       icon: <Delete />,
       data: {
-        ID: "standardId",
+        RemoveDriftCustomization: "true",
+        tenantFilter: "tenantFilter",
       },
       confirmText:
         "Are you sure you want to remove all drift customizations? This resets the Drift Standard to the default template, and will generate alerts for the drifted items.",
       multiPost: false,
+      condition: (row) => row.standardType === "drift",
     },
   ];
 
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListTenantDrift"
+      apiUrl="/api/ListTenantAlignment"
       tenantInTitle={false}
-      cardButton={
-        <>
-          <Button component={Link} href="/tenant/standards/template?type=drift" startIcon={<Add />}>
-            Create Drift Template
-          </Button>
-          <Button
-            component={Link}
-            href="/tenant/standards/list-standards/apply-drift-template"
-            startIcon={<PlayArrow />}
-          >
-            Apply Drift Template
-          </Button>
-        </>
-      }
       actions={actions}
       simpleColumns={[
         "tenantFilter",
         "standardName",
+        "standardType",
         "alignmentScore",
-        "acceptedDeviations",
-        "currentDeviations",
+        "LicenseMissingPercentage",
+        "combinedAlignmentScore",
       ]}
-      queryKey="ListTenantDrift"
+      queryKey="listTenantAlignment"
     />
   );
 };

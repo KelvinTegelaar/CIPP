@@ -24,7 +24,9 @@ import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useSettings } from "/src/hooks/use-settings";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
+import { useDialog } from "/src/hooks/use-dialog";
 import tabOptions from "./tabOptions.json";
+import standardsData from "/src/data/standards.json";
 
 const ManageDriftPage = () => {
   const router = useRouter();
@@ -34,8 +36,8 @@ const ManageDriftPage = () => {
   const [anchorEl, setAnchorEl] = useState({});
   const [bulkActionsAnchorEl, setBulkActionsAnchorEl] = useState(null);
   const [whatIfAnchorEl, setWhatIfAnchorEl] = useState(null);
-  const [apiDialogOpen, setApiDialogOpen] = useState(false);
-  const [apiData, setApiData] = useState({});
+  const createDialog = useDialog();
+  const [actionData, setActionData] = useState({ data: {}, ready: false });
 
   // API calls for drift data
   const driftApi = ApiGetCall({
@@ -67,46 +69,67 @@ const ManageDriftPage = () => {
   // Process drift data for chart - filter by current tenant and aggregate
   const rawDriftData = driftApi.data || [];
   const tenantDriftData = Array.isArray(rawDriftData)
-    ? rawDriftData.filter(item => item.tenantFilter === tenantFilter)
+    ? rawDriftData.filter((item) => item.tenantFilter === tenantFilter)
     : [];
-  
+
   // Aggregate data across all standards for this tenant
-  const processedDriftData = tenantDriftData.reduce((acc, item) => {
-    acc.acceptedDeviationsCount += item.acceptedDeviationsCount || 0;
-    acc.currentDeviationsCount += item.currentDeviationsCount || 0;
-    acc.alignedCount += item.alignedCount || 0;
-    acc.customerSpecificDeviations += item.customerSpecificDeviations || 0;
-    
-    // Collect all current deviations
-    if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
-      acc.currentDeviations.push(...item.currentDeviations.filter(dev => dev !== null));
+  const processedDriftData = tenantDriftData.reduce(
+    (acc, item) => {
+      acc.acceptedDeviationsCount += item.acceptedDeviationsCount || 0;
+      acc.currentDeviationsCount += item.currentDeviationsCount || 0;
+      acc.alignedCount += item.alignedCount || 0;
+      acc.customerSpecificDeviations += item.customerSpecificDeviationsCount || 0;
+
+      // Collect all current deviations
+      if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
+        acc.currentDeviations.push(...item.currentDeviations.filter((dev) => dev !== null));
+      }
+
+      // Collect accepted deviations
+      if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
+        acc.acceptedDeviations.push(...item.acceptedDeviations.filter((dev) => dev !== null));
+      }
+
+      // Collect customer specific deviations
+      if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
+        acc.customerSpecificDeviationsList.push(
+          ...item.customerSpecificDeviations.filter((dev) => dev !== null)
+        );
+      }
+
+      // Use the latest data collection timestamp
+      if (
+        item.latestDataCollection &&
+        (!acc.latestDataCollection ||
+          new Date(item.latestDataCollection) > new Date(acc.latestDataCollection))
+      ) {
+        acc.latestDataCollection = item.latestDataCollection;
+      }
+
+      return acc;
+    },
+    {
+      acceptedDeviationsCount: 0,
+      currentDeviationsCount: 0,
+      alignedCount: 0,
+      customerSpecificDeviations: 0,
+      currentDeviations: [],
+      acceptedDeviations: [],
+      customerSpecificDeviationsList: [],
+      latestDataCollection: null,
     }
-    
-    // Use the latest data collection timestamp
-    if (item.latestDataCollection && (!acc.latestDataCollection || new Date(item.latestDataCollection) > new Date(acc.latestDataCollection))) {
-      acc.latestDataCollection = item.latestDataCollection;
-    }
-    
-    return acc;
-  }, {
-    acceptedDeviationsCount: 0,
-    currentDeviationsCount: 0,
-    alignedCount: 0,
-    customerSpecificDeviations: 0,
-    currentDeviations: [],
-    latestDataCollection: null
-  });
+  );
 
   const chartLabels = [
+    "Aligned Policies",
     "Accepted Deviations",
     "Current Deviations",
-    "Aligned Policies",
     "Customer Specific Deviations",
   ];
   const chartSeries = [
+    processedDriftData.alignedCount || 0,
     processedDriftData.acceptedDeviationsCount || 0,
     processedDriftData.currentDeviationsCount || 0,
-    processedDriftData.alignedCount || 0,
     processedDriftData.customerSpecificDeviations || 0,
   ];
 
@@ -156,29 +179,89 @@ const ManageDriftPage = () => {
     }
   };
 
-  const deviationItems = (processedDriftData.currentDeviations || []).map((deviation, index) => ({
-    id: index + 1,
-    cardLabelBox: {
-      cardLabelBoxHeader: getDeviationIcon(deviation.state),
-    },
-    text: deviation.standardName || "Unknown Standard",
-    subtext: deviation.standardDescription || "No description available",
-    statusColor: getDeviationColor(deviation.state),
-    statusText: getDeviationStatusText(deviation.state),
-    propertyItems: [
-      { label: "Standard Name", value: deviation.standardName || "N/A" },
-      { label: "Description", value: deviation.standardDescription || "N/A" },
-      { label: "Expected Value", value: deviation.expectedValue || "N/A" },
-      { label: "Current Value", value: deviation.receivedValue || "N/A" },
-      { label: "Status", value: getDeviationStatusText(deviation.state) },
-      {
-        label: "Last Updated",
-        value: processedDriftData.latestDataCollection
-          ? new Date(processedDriftData.latestDataCollection).toLocaleString()
-          : "N/A",
-      },
-    ].filter((item) => item.value !== "N/A"), // Filter out N/A values
-  }));
+  // Helper function to get pretty name from standards.json
+  const getStandardPrettyName = (standardName) => {
+    if (!standardName) return "Unknown Standard";
+
+    // Find the standard in standards.json by name
+    const standard = standardsData.find((s) => s.name === standardName);
+    if (standard && standard.label) {
+      return standard.label;
+    }
+
+    // If not found in standards.json, try using standardDisplayName from the deviation object
+    // This will be handled in the createDeviationItems function
+    return null;
+  };
+
+  // Helper function to get description from standards.json
+  const getStandardDescription = (standardName) => {
+    if (!standardName) return null;
+
+    // Find the standard in standards.json by name
+    const standard = standardsData.find((s) => s.name === standardName);
+    if (standard) {
+      return standard.helpText || standard.docsDescription || standard.executiveText || null;
+    }
+
+    return null;
+  };
+
+  // Helper function to create deviation items
+  const createDeviationItems = (deviations, statusOverride = null) => {
+    return (deviations || []).map((deviation, index) => {
+      // Get pretty name from standards.json first, then fallback to standardDisplayName, then raw name
+      const prettyName =
+        getStandardPrettyName(deviation.standardName) ||
+        deviation.standardDisplayName ||
+        deviation.standardName ||
+        "Unknown Standard";
+
+      // Get description from standards.json first, then fallback to standardDescription from deviation
+      const description = getStandardDescription(deviation.standardName) ||
+                         deviation.standardDescription ||
+                         "No description available";
+
+      return {
+        id: index + 1,
+        cardLabelBox: {
+          cardLabelBoxHeader: getDeviationIcon(
+            statusOverride || deviation.Status || deviation.state
+          ),
+        },
+        text: prettyName,
+        subtext: description,
+        statusColor: getDeviationColor(statusOverride || deviation.Status || deviation.state),
+        statusText: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
+        propertyItems: [
+          { label: "Standard Name", value: prettyName },
+          { label: "Description", value: description },
+          { label: "Expected Value", value: deviation.expectedValue || "N/A" },
+          { label: "Current Value", value: deviation.receivedValue || "N/A" },
+          {
+            label: "Status",
+            value: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
+          },
+          {
+            label: "Last Updated",
+            value: processedDriftData.latestDataCollection
+              ? new Date(processedDriftData.latestDataCollection).toLocaleString()
+              : "N/A",
+          },
+        ].filter((item) => item.value !== "N/A" && item.value !== "No description available"), // Filter out N/A values and empty descriptions
+      };
+    });
+  };
+
+  const deviationItems = createDeviationItems(processedDriftData.currentDeviations);
+  const acceptedDeviationItems = createDeviationItems(
+    processedDriftData.acceptedDeviations,
+    "accepted"
+  );
+  const customerSpecificDeviationItems = createDeviationItems(
+    processedDriftData.customerSpecificDeviationsList,
+    "customerspecific"
+  );
 
   const handleMenuClick = (event, itemId) => {
     setAnchorEl((prev) => ({ ...prev, [itemId]: event.currentTarget }));
@@ -188,86 +271,147 @@ const ManageDriftPage = () => {
     setAnchorEl((prev) => ({ ...prev, [itemId]: null }));
   };
 
-
   const handleAction = (action, itemId) => {
     const deviation = processedDriftData.currentDeviations[itemId - 1];
     if (!deviation) return;
 
     let status;
+    let actionText;
     switch (action) {
       case "accept-customer-specific":
         status = "CustomerSpecific";
+        actionText = "accept as customer specific";
         break;
       case "accept":
         status = "Accepted";
+        actionText = "accept";
         break;
       case "bring-into-standard":
         status = "Accepted";
+        actionText = "bring into standard";
         break;
       case "deny-remove":
         status = "Denied";
+        actionText = "deny and remove";
         break;
       default:
         return;
     }
 
-    // Use CippApiDialog for the API call
-    const apiData = {
-      url: `/api/ExecUpdateDriftDeviation?TenantFilter=${tenantFilter}`,
+    // Set action data for CippApiDialog
+    setActionData({
       data: {
-        deviations: [{
-          standardName: deviation.standardName,
-          status: status,
-        }],
+        deviations: [
+          {
+            standardName: deviation.standardName,
+            status: status,
+          },
+        ],
+        TenantFilter: tenantFilter,
       },
-    };
+      action: {
+        text: actionText,
+        type: "single",
+      },
+      ready: true,
+    });
 
-    // Set the API data for CippApiDialog
-    setApiData(apiData);
-    setApiDialogOpen(true);
-
+    createDialog.handleOpen();
     handleMenuClose(itemId);
   };
 
+  const handleDeviationAction = (action, deviation) => {
+    if (!deviation) return;
+
+    let status;
+    let actionText;
+    switch (action) {
+      case "accept-customer-specific":
+        status = "CustomerSpecific";
+        actionText = "accept as customer specific";
+        break;
+      case "accept":
+        status = "Accepted";
+        actionText = "accept";
+        break;
+      case "deny":
+        status = "Denied";
+        actionText = "deny";
+        break;
+      default:
+        return;
+    }
+
+    // Set action data for CippApiDialog
+    setActionData({
+      data: {
+        deviations: [
+          {
+            standardName: deviation.text, // Use the text field which contains standardName
+            status: status,
+          },
+        ],
+        TenantFilter: tenantFilter,
+      },
+      action: {
+        text: actionText,
+        type: "single",
+      },
+      ready: true,
+    });
+
+    createDialog.handleOpen();
+  };
+
   const handleBulkAction = (action) => {
-    if (!processedDriftData.currentDeviations || processedDriftData.currentDeviations.length === 0) {
+    if (
+      !processedDriftData.currentDeviations ||
+      processedDriftData.currentDeviations.length === 0
+    ) {
       setBulkActionsAnchorEl(null);
       return;
     }
 
     let status;
+    let actionText;
     switch (action) {
       case "accept-all-customer-specific":
         status = "CustomerSpecific";
+        actionText = "accept all deviations as customer specific";
         break;
       case "accept-all":
         status = "Accepted";
+        actionText = "accept all deviations";
         break;
       case "deny-all":
         status = "Denied";
+        actionText = "deny all deviations";
         break;
       default:
         setBulkActionsAnchorEl(null);
         return;
     }
 
-    const deviations = processedDriftData.currentDeviations.map(deviation => ({
+    const deviations = processedDriftData.currentDeviations.map((deviation) => ({
       standardName: deviation.standardName,
       status: status,
     }));
 
-    // Use CippApiDialog for the API call
-    const apiData = {
-      url: `/api/ExecUpdateDriftDeviation?TenantFilter=${tenantFilter}`,
+    // Set action data for CippApiDialog
+    setActionData({
       data: {
         deviations: deviations,
+        TenantFilter: tenantFilter,
       },
-    };
+      action: {
+        text: actionText,
+        type: "bulk",
+        count: deviations.length,
+      },
+      ready: true,
+    });
 
-    // Set the API data for CippApiDialog
-    setApiData(apiData);
-    setApiDialogOpen(true);
-
+    createDialog.handleOpen();
     setBulkActionsAnchorEl(null);
   };
 
@@ -275,6 +419,24 @@ const ManageDriftPage = () => {
     console.log(`What If Analysis with standard: ${standardId}`);
     // Here you would implement the what-if analysis
     setWhatIfAnchorEl(null);
+  };
+
+  const handleRemoveDriftCustomization = () => {
+    // Set action data for CippApiDialog
+    setActionData({
+      data: {
+        RemoveDriftCustomization: true,
+        TenantFilter: tenantFilter,
+      },
+      action: {
+        text: "remove all drift customizations",
+        type: "reset",
+      },
+      ready: true,
+    });
+
+    createDialog.handleOpen();
+    setBulkActionsAnchorEl(null);
   };
 
   // Actions for the ActionsMenu
@@ -338,6 +500,68 @@ const ManageDriftPage = () => {
     ),
   }));
 
+  // Add action buttons to accepted deviation items
+  const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => ({
+    ...item,
+    actionButton: (
+      <>
+        <Button
+          variant="outlined"
+          endIcon={<ExpandMore />}
+          onClick={(e) => handleMenuClick(e, `accepted-${item.id}`)}
+          size="small"
+        >
+          Actions
+        </Button>
+        <Menu
+          anchorEl={anchorEl[`accepted-${item.id}`]}
+          open={Boolean(anchorEl[`accepted-${item.id}`])}
+          onClose={() => handleMenuClose(`accepted-${item.id}`)}
+        >
+          <MenuItem onClick={() => handleDeviationAction("deny", item)}>
+            <Block sx={{ mr: 1, color: "error.main" }} />
+            Deny
+          </MenuItem>
+          <MenuItem onClick={() => handleDeviationAction("accept-customer-specific", item)}>
+            <CheckCircle sx={{ mr: 1, color: "info.main" }} />
+            Accept - Customer Specific
+          </MenuItem>
+        </Menu>
+      </>
+    ),
+  }));
+
+  // Add action buttons to customer specific deviation items
+  const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => ({
+    ...item,
+    actionButton: (
+      <>
+        <Button
+          variant="outlined"
+          endIcon={<ExpandMore />}
+          onClick={(e) => handleMenuClick(e, `customer-${item.id}`)}
+          size="small"
+        >
+          Actions
+        </Button>
+        <Menu
+          anchorEl={anchorEl[`customer-${item.id}`]}
+          open={Boolean(anchorEl[`customer-${item.id}`])}
+          onClose={() => handleMenuClose(`customer-${item.id}`)}
+        >
+          <MenuItem onClick={() => handleDeviationAction("deny", item)}>
+            <Block sx={{ mr: 1, color: "error.main" }} />
+            Deny
+          </MenuItem>
+          <MenuItem onClick={() => handleDeviationAction("accept", item)}>
+            <Check sx={{ mr: 1, color: "success.main" }} />
+            Accept
+          </MenuItem>
+        </Menu>
+      </>
+    ),
+  }));
+
   const title = "Manage Drift";
   const subtitle = [
     {
@@ -373,80 +597,136 @@ const ManageDriftPage = () => {
           {/* Right side - Deviation Management */}
           <Grid size={{ xs: 12, md: 8 }}>
             <Stack spacing={3}>
-              {/* Header with bulk actions */}
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6">Current Deviations</Typography>
-                <Box display="flex" gap={1}>
-                  {/* Bulk Actions Dropdown */}
-                  <Button
-                    variant="outlined"
-                    endIcon={<ExpandMore />}
-                    onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
-                    size="small"
-                  >
-                    Bulk Actions
-                  </Button>
-                  <Menu
-                    anchorEl={bulkActionsAnchorEl}
-                    open={Boolean(bulkActionsAnchorEl)}
-                    onClose={() => setBulkActionsAnchorEl(null)}
-                  >
-                    <MenuItem onClick={() => handleBulkAction("accept-all-customer-specific")}>
-                      <CheckBox sx={{ mr: 1, color: "success.main" }} />
-                      Accept All Deviations - Customer Specific
-                    </MenuItem>
-                    <MenuItem onClick={() => handleBulkAction("accept-all")}>
-                      <Check sx={{ mr: 1, color: "info.main" }} />
-                      Accept All Deviations
-                    </MenuItem>
-                    <MenuItem onClick={() => handleBulkAction("deny-all")}>
-                      <Cancel sx={{ mr: 1, color: "error.main" }} />
-                      Deny All Deviations
-                    </MenuItem>
-                  </Menu>
-
-                  {/* What If Button */}
-                  <Button
-                    variant="outlined"
-                    endIcon={<ExpandMore />}
-                    onClick={(e) => setWhatIfAnchorEl(e.currentTarget)}
-                    size="small"
-                    startIcon={<Science />}
-                  >
-                    What If
-                  </Button>
-                  <Menu
-                    anchorEl={whatIfAnchorEl}
-                    open={Boolean(whatIfAnchorEl)}
-                    onClose={() => setWhatIfAnchorEl(null)}
-                  >
-                    {availableStandards.map((standard) => (
-                      <MenuItem key={standard.id} onClick={() => handleWhatIfAction(standard.id)}>
-                        <Science sx={{ mr: 1, color: "primary.main" }} />
-                        {standard.name}
+              {/* Current Deviations Section */}
+              <Box>
+                {/* Header with bulk actions */}
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <Typography variant="h6">Current Deviations</Typography>
+                  <Box display="flex" gap={1}>
+                    {/* Bulk Actions Dropdown */}
+                    <Button
+                      variant="outlined"
+                      endIcon={<ExpandMore />}
+                      onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
+                      size="small"
+                    >
+                      Bulk Actions
+                    </Button>
+                    <Menu
+                      anchorEl={bulkActionsAnchorEl}
+                      open={Boolean(bulkActionsAnchorEl)}
+                      onClose={() => setBulkActionsAnchorEl(null)}
+                    >
+                      <MenuItem onClick={() => handleBulkAction("accept-all-customer-specific")}>
+                        <CheckBox sx={{ mr: 1, color: "success.main" }} />
+                        Accept All Deviations - Customer Specific
                       </MenuItem>
-                    ))}
-                  </Menu>
+                      <MenuItem onClick={() => handleBulkAction("accept-all")}>
+                        <Check sx={{ mr: 1, color: "info.main" }} />
+                        Accept All Deviations
+                      </MenuItem>
+                      <MenuItem onClick={() => handleBulkAction("deny-all")}>
+                        <Cancel sx={{ mr: 1, color: "error.main" }} />
+                        Deny All Deviations
+                      </MenuItem>
+                      <MenuItem onClick={handleRemoveDriftCustomization}>
+                        <Block sx={{ mr: 1, color: "warning.main" }} />
+                        Remove Drift Customization
+                      </MenuItem>
+                    </Menu>
+
+                    {/* What If Button */}
+                    <Button
+                      variant="outlined"
+                      endIcon={<ExpandMore />}
+                      onClick={(e) => setWhatIfAnchorEl(e.currentTarget)}
+                      size="small"
+                      startIcon={<Science />}
+                    >
+                      What If
+                    </Button>
+                    <Menu
+                      anchorEl={whatIfAnchorEl}
+                      open={Boolean(whatIfAnchorEl)}
+                      onClose={() => setWhatIfAnchorEl(null)}
+                    >
+                      {availableStandards.map((standard) => (
+                        <MenuItem key={standard.id} onClick={() => handleWhatIfAction(standard.id)}>
+                          <Science sx={{ mr: 1, color: "primary.main" }} />
+                          {standard.name}
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </Box>
                 </Box>
+                <CippBannerListCard
+                  items={deviationItemsWithActions}
+                  isCollapsible={true}
+                  isFetching={driftApi.isFetching}
+                />
               </Box>
-              <CippBannerListCard
-                items={deviationItemsWithActions}
-                isCollapsible={true}
-                isFetching={driftApi.isFetching}
-              />
+
+              {/* Accepted Deviations Section */}
+              {acceptedDeviationItemsWithActions.length > 0 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    Accepted Deviations
+                  </Typography>
+                  <CippBannerListCard
+                    items={acceptedDeviationItemsWithActions}
+                    isCollapsible={true}
+                    isFetching={driftApi.isFetching}
+                  />
+                </Box>
+              )}
+
+              {/* Customer Specific Deviations Section */}
+              {customerSpecificDeviationItemsWithActions.length > 0 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    Accepted Deviations - Customer Specific
+                  </Typography>
+                  <CippBannerListCard
+                    items={customerSpecificDeviationItemsWithActions}
+                    isCollapsible={true}
+                    isFetching={driftApi.isFetching}
+                  />
+                </Box>
+              )}
             </Stack>
           </Grid>
         </Grid>
       </Box>
-      <CippApiDialog
-        open={apiDialogOpen}
-        onClose={() => setApiDialogOpen(false)}
-        data={apiData}
-        onSuccess={() => {
-          driftApi.refetch();
-          setApiDialogOpen(false);
-        }}
-      />
+      {actionData.ready && (
+        <CippApiDialog
+          createDialog={createDialog}
+          title="Confirmation"
+          api={{
+            url: "/api/ExecUpdateDriftDeviation",
+            type: "POST",
+            data: {
+              deviations: "deviations",
+              TenantFilter: "TenantFilter",
+            },
+            confirmText: `Are you sure you'd like to ${actionData.action?.text || "update"} ${
+              actionData.action?.type === "single"
+                ? "this deviation"
+                : actionData.action?.type === "bulk"
+                ? `these ${actionData.action?.count || 0} deviations`
+                : actionData.action?.type === "reset"
+                ? "for this tenant"
+                : "this deviation"
+            }?`,
+          }}
+          row={actionData.data}
+          relatedQueryKeys={[`TenantDrift-${tenantFilter}`]}
+        />
+      )}
     </HeaderedTabbedLayout>
   );
 };

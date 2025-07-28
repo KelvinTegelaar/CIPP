@@ -18,7 +18,7 @@ const Page = () => {
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
-  const pageTitle = "Standard Templates";
+  const pageTitle = "Templates";
   const actions = [
     {
       label: "View Tenant Report",
@@ -163,14 +163,20 @@ const Page = () => {
       apiUrl="/api/listStandardTemplates"
       tenantInTitle={false}
       cardButton={
-        <Button component={Link} href="../template" startIcon={<AddBox />}>
-          Add Template
-        </Button>
+        <>
+          <Button component={Link} href="../template" startIcon={<AddBox />} sx={{ mr: 1 }}>
+            Add Template
+          </Button>
+          <Button component={Link} href="../template?type=drift" startIcon={<AddBox />}>
+            Create Drift Template
+          </Button>
+        </>
       }
       actions={actions}
       tableFilter={tableFilter}
       simpleColumns={[
         "templateName",
+        "type",
         "tenantFilter",
         "excludedTenants",
         "updatedAt",

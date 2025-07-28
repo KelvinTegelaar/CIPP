@@ -107,6 +107,12 @@ const CippStandardAccordion = ({
     control: formControl.control,
   });
 
+  // Watch all trackDrift values for all standards at once
+  const allTrackDriftValues = useWatch({
+    control: formControl.control,
+    name: Object.keys(selectedStandards).map(standardName => `${standardName}.trackDrift`)
+  });
+
   // Handle drift mode automatic action setting
   useEffect(() => {
     if (isDriftMode && selectedStandards) {

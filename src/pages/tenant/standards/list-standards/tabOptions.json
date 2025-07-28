@@ -1,18 +1,10 @@
 [
   {
-    "label": "Drift Alignment",
+    "label": "Standard & Drift Alignment",
     "path": "/tenant/standards/list-standards"
   },
   {
-    "label": "Classic Standard Alignment",
-    "path": "/tenant/standards/list-standards/classic-standard-alignment"
-  },
-  {
-    "label": "Drift Templates",
-    "path": "/tenant/standards/list-standards/drift-templates"
-  },
-  {
-    "label": "Classic Templates",
+    "label": "Templates",
     "path": "/tenant/standards/list-standards/classic-standards"
   }
 ]

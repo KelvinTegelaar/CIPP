@@ -163,31 +163,53 @@ const CippStandardsSideBar = ({
             placeholder="Enter a description for the template"
             fullWidth
           />
-          {/* Hide tenant selector and schedule options in drift mode */}
-          {!isDriftMode && (
+          <Divider />
+          <CippFormTenantSelector
+            allTenants={true}
+            label="Included Tenants"
+            formControl={formControl}
+            required={true}
+            includeGroups={true}
+          />
+          {watchForm.tenantFilter?.some(
+            (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
+          ) && (
             <>
               <Divider />
               <CippFormTenantSelector
-                allTenants={true}
-                label="Included Tenants"
+                label="Excluded Tenants"
+                name="excludedTenants"
+                allTenants={false}
                 formControl={formControl}
-                required={true}
                 includeGroups={true}
               />
-              {watchForm.tenantFilter?.some(
-                (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
-              ) && (
-                <>
-                  <Divider />
-                  <CippFormTenantSelector
-                    label="Excluded Tenants"
-                    name="excludedTenants"
-                    allTenants={false}
-                    formControl={formControl}
-                    includeGroups={true}
-                  />
-                </>
-              )}
+            </>
+          )}
+          {/* Drift-specific fields */}
+          {isDriftMode && (
+            <>
+              <Divider />
+              <CippFormComponent
+                type="textField"
+                name="driftAlertWebhook"
+                label="Drift Alert Webhook"
+                formControl={formControl}
+                placeholder="Enter webhook URL for drift alerts"
+                fullWidth
+              />
+              <CippFormComponent
+                type="textField"
+                name="driftAlertEmail"
+                label="Drift Alert Email"
+                formControl={formControl}
+                placeholder="Enter email address for drift alerts"
+                fullWidth
+              />
+            </>
+          )}
+          {/* Hide schedule options in drift mode */}
+          {!isDriftMode && (
+            <>
               {updatedAt.date && (
                 <>
                   <Typography
@@ -285,7 +307,11 @@ const CippStandardsSideBar = ({
             ...(savedItem ? { GUID: savedItem } : {}),
             runManually: "runManually",
             isDriftTemplate: "isDriftTemplate",
-            ...(isDriftMode ? { type: "drift" } : {}),
+            ...(isDriftMode ? {
+              type: "drift",
+              driftAlertWebhook: "driftAlertWebhook",
+              driftAlertEmail: "driftAlertEmail"
+            } : {}),
           },
         }}
         row={formControl.getValues()}
