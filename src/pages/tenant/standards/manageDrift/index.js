@@ -13,8 +13,9 @@ import {
   Policy,
   Error,
   Info,
+  FactCheck,
 } from "@mui/icons-material";
-import { Box, Stack, Typography, Button, Menu, MenuItem } from "@mui/material";
+import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon, IconButton, Tooltip } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useState } from "react";
 import { CippChartCard } from "/src/components/CippCards/CippChartCard";
@@ -565,12 +566,59 @@ const ManageDriftPage = () => {
     ),
   }));
 
+  // Calculate compliance metrics for badges
+  const totalPolicies = processedDriftData.alignedCount +
+                       processedDriftData.currentDeviationsCount +
+                       processedDriftData.acceptedDeviationsCount +
+                       processedDriftData.customerSpecificDeviations;
+  
+  const compliancePercentage = totalPolicies > 0
+    ? Math.round((processedDriftData.alignedCount / totalPolicies) * 100)
+    : 0;
+  
+  const missingLicensePercentage = 0; // This would need to be calculated from actual license data
+  const combinedScore = compliancePercentage + missingLicensePercentage;
+
   const title = "Manage Drift";
   const subtitle = [
     {
       icon: <Policy />,
       text: `Template ID: ${templateId || "Loading..."}`,
     },
+    // Add compliance badges when data is available
+    ...(totalPolicies > 0 ? [
+      {
+        component: (
+          <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
+            <Chip
+              icon={
+                <SvgIcon fontSize="small">
+                  <FactCheck />
+                </SvgIcon>
+              }
+              label={`${compliancePercentage}% Compliant`}
+              variant="outlined"
+              size="small"
+              color={
+                compliancePercentage === 100
+                  ? "success"
+                  : compliancePercentage >= 50
+                  ? "warning"
+                  : "error"
+              }
+            />
+            <Chip
+              label={`${combinedScore}% Combined Score`}
+              variant="outlined"
+              size="small"
+              color={
+                combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
+              }
+            />
+          </Stack>
+        ),
+      },
+    ] : []),
   ];
 
   return (
@@ -585,125 +633,151 @@ const ManageDriftPage = () => {
     >
       <CippHead title="Manage Drift" />
       <Box sx={{ py: 2 }}>
-        <Grid container spacing={3}>
-          {/* Left side - Chart */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <CippChartCard
-              title="Drift Overview"
-              chartType="donut"
-              chartSeries={chartSeries}
-              labels={chartLabels}
-              isFetching={driftApi.isFetching}
-            />
-          </Grid>
+        {/* Check if there's no drift data */}
+        {!driftApi.isFetching && (!rawDriftData || rawDriftData.length === 0 || tenantDriftData.length === 0) ? (
+          <Box sx={{ textAlign: "center", py: 8 }}>
+            <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
+              No Drift Data Available
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+              This standard does not have any drift entries, or it is not a drift compatible standard.
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              To enable drift monitoring for this tenant, please ensure:
+            </Typography>
+            <Box component="ul" sx={{ textAlign: "left", display: "inline-block", mt: 2 }}>
+              <Typography component="li" variant="body2" color="text.secondary">
+                A drift template has been created and assigned to this tenant
+              </Typography>
+              <Typography component="li" variant="body2" color="text.secondary">
+                The standard is configured for drift monitoring
+              </Typography>
+              <Typography component="li" variant="body2" color="text.secondary">
+                Drift data collection has been completed for this tenant
+              </Typography>
+            </Box>
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {/* Left side - Chart */}
+            <Grid size={{ xs: 12, md: 4 }}>
+              <CippChartCard
+                title="Drift Overview"
+                chartType="donut"
+                chartSeries={chartSeries}
+                labels={chartLabels}
+                isFetching={driftApi.isFetching}
+              />
+            </Grid>
 
-          {/* Right side - Deviation Management */}
-          <Grid size={{ xs: 12, md: 8 }}>
-            <Stack spacing={3}>
-              {/* Current Deviations Section */}
-              <Box>
-                {/* Header with bulk actions */}
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mb: 2 }}
-                >
-                  <Typography variant="h6">Current Deviations</Typography>
-                  <Box display="flex" gap={1}>
-                    {/* Bulk Actions Dropdown */}
-                    <Button
-                      variant="outlined"
-                      endIcon={<ExpandMore />}
-                      onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
-                      size="small"
-                    >
-                      Bulk Actions
-                    </Button>
-                    <Menu
-                      anchorEl={bulkActionsAnchorEl}
-                      open={Boolean(bulkActionsAnchorEl)}
-                      onClose={() => setBulkActionsAnchorEl(null)}
-                    >
-                      <MenuItem onClick={() => handleBulkAction("accept-all-customer-specific")}>
-                        <CheckBox sx={{ mr: 1, color: "success.main" }} />
-                        Accept All Deviations - Customer Specific
-                      </MenuItem>
-                      <MenuItem onClick={() => handleBulkAction("accept-all")}>
-                        <Check sx={{ mr: 1, color: "info.main" }} />
-                        Accept All Deviations
-                      </MenuItem>
-                      <MenuItem onClick={() => handleBulkAction("deny-all")}>
-                        <Cancel sx={{ mr: 1, color: "error.main" }} />
-                        Deny All Deviations
-                      </MenuItem>
-                      <MenuItem onClick={handleRemoveDriftCustomization}>
-                        <Block sx={{ mr: 1, color: "warning.main" }} />
-                        Remove Drift Customization
-                      </MenuItem>
-                    </Menu>
-
-                    {/* What If Button */}
-                    <Button
-                      variant="outlined"
-                      endIcon={<ExpandMore />}
-                      onClick={(e) => setWhatIfAnchorEl(e.currentTarget)}
-                      size="small"
-                      startIcon={<Science />}
-                    >
-                      What If
-                    </Button>
-                    <Menu
-                      anchorEl={whatIfAnchorEl}
-                      open={Boolean(whatIfAnchorEl)}
-                      onClose={() => setWhatIfAnchorEl(null)}
-                    >
-                      {availableStandards.map((standard) => (
-                        <MenuItem key={standard.id} onClick={() => handleWhatIfAction(standard.id)}>
-                          <Science sx={{ mr: 1, color: "primary.main" }} />
-                          {standard.name}
+            {/* Right side - Deviation Management */}
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Stack spacing={3}>
+                {/* Current Deviations Section */}
+                <Box>
+                  {/* Header with bulk actions */}
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ mb: 2 }}
+                  >
+                    <Typography variant="h6">Current Deviations</Typography>
+                    <Box display="flex" gap={1}>
+                      {/* Bulk Actions Dropdown */}
+                      <Button
+                        variant="outlined"
+                        endIcon={<ExpandMore />}
+                        onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
+                        size="small"
+                      >
+                        Bulk Actions
+                      </Button>
+                      <Menu
+                        anchorEl={bulkActionsAnchorEl}
+                        open={Boolean(bulkActionsAnchorEl)}
+                        onClose={() => setBulkActionsAnchorEl(null)}
+                      >
+                        <MenuItem onClick={() => handleBulkAction("accept-all-customer-specific")}>
+                          <CheckBox sx={{ mr: 1, color: "success.main" }} />
+                          Accept All Deviations - Customer Specific
                         </MenuItem>
-                      ))}
-                    </Menu>
+                        <MenuItem onClick={() => handleBulkAction("accept-all")}>
+                          <Check sx={{ mr: 1, color: "info.main" }} />
+                          Accept All Deviations
+                        </MenuItem>
+                        <MenuItem onClick={() => handleBulkAction("deny-all")}>
+                          <Cancel sx={{ mr: 1, color: "error.main" }} />
+                          Deny All Deviations
+                        </MenuItem>
+                        <MenuItem onClick={handleRemoveDriftCustomization}>
+                          <Block sx={{ mr: 1, color: "warning.main" }} />
+                          Remove Drift Customization
+                        </MenuItem>
+                      </Menu>
+
+                      {/* What If Button */}
+                      <Button
+                        variant="outlined"
+                        endIcon={<ExpandMore />}
+                        onClick={(e) => setWhatIfAnchorEl(e.currentTarget)}
+                        size="small"
+                        startIcon={<Science />}
+                      >
+                        What If
+                      </Button>
+                      <Menu
+                        anchorEl={whatIfAnchorEl}
+                        open={Boolean(whatIfAnchorEl)}
+                        onClose={() => setWhatIfAnchorEl(null)}
+                      >
+                        {availableStandards.map((standard) => (
+                          <MenuItem key={standard.id} onClick={() => handleWhatIfAction(standard.id)}>
+                            <Science sx={{ mr: 1, color: "primary.main" }} />
+                            {standard.name}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </Box>
                   </Box>
-                </Box>
-                <CippBannerListCard
-                  items={deviationItemsWithActions}
-                  isCollapsible={true}
-                  isFetching={driftApi.isFetching}
-                />
-              </Box>
-
-              {/* Accepted Deviations Section */}
-              {acceptedDeviationItemsWithActions.length > 0 && (
-                <Box>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Accepted Deviations
-                  </Typography>
                   <CippBannerListCard
-                    items={acceptedDeviationItemsWithActions}
+                    items={deviationItemsWithActions}
                     isCollapsible={true}
                     isFetching={driftApi.isFetching}
                   />
                 </Box>
-              )}
 
-              {/* Customer Specific Deviations Section */}
-              {customerSpecificDeviationItemsWithActions.length > 0 && (
-                <Box>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Accepted Deviations - Customer Specific
-                  </Typography>
-                  <CippBannerListCard
-                    items={customerSpecificDeviationItemsWithActions}
-                    isCollapsible={true}
-                    isFetching={driftApi.isFetching}
-                  />
-                </Box>
-              )}
-            </Stack>
+                {/* Accepted Deviations Section */}
+                {acceptedDeviationItemsWithActions.length > 0 && (
+                  <Box>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                      Accepted Deviations
+                    </Typography>
+                    <CippBannerListCard
+                      items={acceptedDeviationItemsWithActions}
+                      isCollapsible={true}
+                      isFetching={driftApi.isFetching}
+                    />
+                  </Box>
+                )}
+
+                {/* Customer Specific Deviations Section */}
+                {customerSpecificDeviationItemsWithActions.length > 0 && (
+                  <Box>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                      Accepted Deviations - Customer Specific
+                    </Typography>
+                    <CippBannerListCard
+                      items={customerSpecificDeviationItemsWithActions}
+                      isCollapsible={true}
+                      isFetching={driftApi.isFetching}
+                    />
+                  </Box>
+                )}
+              </Stack>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Box>
       {actionData.ready && (
         <CippApiDialog

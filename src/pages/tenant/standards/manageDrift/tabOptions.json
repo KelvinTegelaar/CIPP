@@ -14,5 +14,9 @@
   {
     "label": "Recover Policies",
     "path": "/tenant/standards/manageDrift/recover-policies"
+  },
+  {
+    "label": "Tenant Report",
+    "path": "/tenant/standards/compare"
   }
 ]

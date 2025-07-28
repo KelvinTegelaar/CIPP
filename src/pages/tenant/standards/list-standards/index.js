@@ -13,7 +13,7 @@ const Page = () => {
   const actions = [
     {
       label: "View Tenant Report",
-      link: "/tenant/standards/compare?tenantFilter=[tenantFilter]&templateId=[standardId]",
+      link: "/tenant/standards/manageDrift/tenant-report?tenantFilter=[tenantFilter]&templateId=[standardId]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",
