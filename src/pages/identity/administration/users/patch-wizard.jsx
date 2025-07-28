@@ -1,34 +1,22 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
-import { 
-  Stack, 
-  Typography, 
-  Card, 
-  CardContent, 
-  Chip, 
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  OutlinedInput,
+import {
+  Stack,
+  Typography,
+  Card,
+  CardContent,
+  Chip,
   Box,
   TextField,
   Checkbox,
-  ListItemText,
   Button,
   Switch,
   FormControlLabel,
-  IconButton,
-  Tooltip
+  Autocomplete,
 } from "@mui/material";
-import { Grid } from "@mui/system";
 import { CippWizardStepButtons } from "/src/components/CippWizard/CippWizardStepButtons";
-import { PropertyList } from "/src/components/property-list";
-import { PropertyListItem } from "/src/components/property-list-item";
-import { getCippTranslation } from "/src/utils/get-cipp-translation";
-import { getCippFormatting } from "/src/utils/get-cipp-formatting";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
@@ -37,75 +25,75 @@ import { Delete } from "@mui/icons-material";
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
   {
-    "property": "city",
-    "label": "City",
-    "type": "string"
+    property: "city",
+    label: "City",
+    type: "string",
   },
   {
-    "property": "companyName",
-    "label": "Company Name",
-    "type": "string"
+    property: "companyName",
+    label: "Company Name",
+    type: "string",
   },
   {
-    "property": "country",
-    "label": "Country",
-    "type": "string"
+    property: "country",
+    label: "Country",
+    type: "string",
   },
   {
-    "property": "department",
-    "label": "Department",
-    "type": "string"
+    property: "department",
+    label: "Department",
+    type: "string",
   },
   {
-    "property": "employeeType",
-    "label": "Employee Type",
-    "type": "string"
+    property: "employeeType",
+    label: "Employee Type",
+    type: "string",
   },
   {
-    "property": "jobTitle",
-    "label": "Job Title",
-    "type": "string"
+    property: "jobTitle",
+    label: "Job Title",
+    type: "string",
   },
   {
-    "property": "officeLocation",
-    "label": "Office Location",
-    "type": "string"
+    property: "officeLocation",
+    label: "Office Location",
+    type: "string",
   },
   {
-    "property": "postalCode",
-    "label": "Postal Code",
-    "type": "string"
+    property: "postalCode",
+    label: "Postal Code",
+    type: "string",
   },
   {
-    "property": "preferredDataLocation",
-    "label": "Preferred Data Location",
-    "type": "string"
+    property: "preferredDataLocation",
+    label: "Preferred Data Location",
+    type: "string",
   },
   {
-    "property": "preferredLanguage",
-    "label": "Preferred Language",
-    "type": "string"
+    property: "preferredLanguage",
+    label: "Preferred Language",
+    type: "string",
   },
   {
-    "property": "showInAddressList",
-    "label": "Show in Address List",
-    "type": "boolean"
+    property: "showInAddressList",
+    label: "Show in Address List",
+    type: "boolean",
   },
   {
-    "property": "state",
-    "label": "State/Province",
-    "type": "string"
+    property: "state",
+    label: "State/Province",
+    type: "string",
   },
   {
-    "property": "streetAddress",
-    "label": "Street Address",
-    "type": "string"
+    property: "streetAddress",
+    label: "Street Address",
+    type: "string",
   },
   {
-    "property": "usageLocation",
-    "label": "Usage Location",
-    "type": "string"
-  }
+    property: "usageLocation",
+    label: "Usage Location",
+    type: "string",
+  },
 ];
 
 // Step 1: Display users to be updated
@@ -113,26 +101,22 @@ const UsersDisplayStep = (props) => {
   const { onNextStep, onPreviousStep, formControl, currentStep, users, onUsersChange } = props;
 
   const handleRemoveUser = (userToRemove) => {
-    const updatedUsers = users.filter(user => user.id !== userToRemove.id);
+    const updatedUsers = users.filter((user) => user.id !== userToRemove.id);
     onUsersChange(updatedUsers);
   };
 
   // Clean user data without circular references
-  const tableData = users?.map(user => ({
-    id: user.id,
-    displayName: user.displayName,
-    userPrincipalName: user.userPrincipalName,
-    jobTitle: user.jobTitle,
-    department: user.department,
-    // Only include serializable properties
-  })) || [];
+  const tableData =
+    users?.map((user) => ({
+      id: user.id,
+      displayName: user.displayName,
+      userPrincipalName: user.userPrincipalName,
+      jobTitle: user.jobTitle,
+      department: user.department,
+      // Only include serializable properties
+    })) || [];
 
-  const columns = [
-    "displayName",
-    "userPrincipalName", 
-    "jobTitle",
-    "department"
-  ];
+  const columns = ["displayName", "userPrincipalName", "jobTitle", "department"];
 
   // Define actions separately to avoid circular references
   const rowActions = [
@@ -142,7 +126,7 @@ const UsersDisplayStep = (props) => {
       color: "error",
       customFunction: (user) => handleRemoveUser(user),
       noConfirm: true,
-    }
+    },
   ];
 
   return (
@@ -150,10 +134,11 @@ const UsersDisplayStep = (props) => {
       <Stack spacing={1}>
         <Typography variant="h6">Users to be updated</Typography>
         <Typography color="text.secondary" variant="body2">
-          The following users will be updated with the properties you select in the next step. You can remove users from this list if needed.
+          The following users will be updated with the properties you select in the next step. You
+          can remove users from this list if needed.
         </Typography>
       </Stack>
-      
+
       {users && users.length > 0 ? (
         <CippDataTable
           title={`Selected Users (${users.length})`}
@@ -171,7 +156,7 @@ const UsersDisplayStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
+            <Typography color="text.secondary" variant="body2" sx={{ textAlign: "center", py: 2 }}>
               No users selected. Please go back and select users from the main table.
             </Typography>
           </CardContent>
@@ -198,44 +183,6 @@ const PropertySelectionStep = (props) => {
   formControl.register("selectedProperties", { required: true });
   formControl.register("propertyValues", { required: false });
 
-  const handlePropertyChange = (event) => {
-    const value = event.target.value;
-    setSelectedProperties(typeof value === 'string' ? value.split(',') : value);
-    formControl.setValue("selectedProperties", value);
-    
-    // Reset property values when selection changes
-    const currentValues = formControl.getValues("propertyValues") || {};
-    const newValues = {};
-    value.forEach(prop => {
-      if (currentValues[prop]) {
-        newValues[prop] = currentValues[prop];
-      }
-    });
-    formControl.setValue("propertyValues", newValues);
-    formControl.trigger();
-  };
-
-  const handleSelectAll = (event) => {
-    // Prevent the Select component from treating this as a regular selection
-    event.stopPropagation();
-    
-    const allSelected = selectedProperties.length === PATCHABLE_PROPERTIES.length;
-    const newSelection = allSelected ? [] : PATCHABLE_PROPERTIES.map(p => p.property);
-    setSelectedProperties(newSelection);
-    formControl.setValue("selectedProperties", newSelection);
-    
-    // Reset property values when selection changes
-    const currentValues = formControl.getValues("propertyValues") || {};
-    const newValues = {};
-    newSelection.forEach(prop => {
-      if (currentValues[prop]) {
-        newValues[prop] = currentValues[prop];
-      }
-    });
-    formControl.setValue("propertyValues", newValues);
-    formControl.trigger();
-  };
-
   const handlePropertyValueChange = (property, value) => {
     const currentValues = formControl.getValues("propertyValues") || {};
     const newValues = { ...currentValues, [property]: value };
@@ -244,7 +191,7 @@ const PropertySelectionStep = (props) => {
   };
 
   const renderPropertyInput = (propertyName) => {
-    const property = PATCHABLE_PROPERTIES.find(p => p.property === propertyName);
+    const property = PATCHABLE_PROPERTIES.find((p) => p.property === propertyName);
     const currentValue = formControl.getValues("propertyValues")?.[propertyName];
 
     if (property?.type === "boolean") {
@@ -262,22 +209,35 @@ const PropertySelectionStep = (props) => {
       );
     }
 
-    // Default to text input for string types
+    // Default to text input for string types with consistent styling
     return (
       <TextField
         key={propertyName}
         label={property?.label || propertyName}
         fullWidth
-        value={currentValue || ''}
+        value={currentValue || ""}
         onChange={(e) => handlePropertyValueChange(propertyName, e.target.value)}
         placeholder={`Enter new value for ${property?.label || propertyName}`}
         variant="filled"
+        size="small"
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+            sx: { transition: "none" },
+          },
+          input: {
+            notched: true,
+            sx: {
+              transition: "none",
+              "& .MuiOutlinedInput-notchedOutline": {
+                transition: "none",
+              },
+            },
+          },
+        }}
       />
     );
   };
-
-  const isAllSelected = selectedProperties.length === PATCHABLE_PROPERTIES.length;
-  const isIndeterminate = selectedProperties.length > 0 && selectedProperties.length < PATCHABLE_PROPERTIES.length;
 
   return (
     <Stack spacing={3}>
@@ -288,69 +248,132 @@ const PropertySelectionStep = (props) => {
         </Typography>
       </Stack>
 
-      <FormControl fullWidth>
-        <InputLabel>Properties to update</InputLabel>
-        <Select
-          multiple
-          value={selectedProperties}
-          onChange={handlePropertyChange}
-          variant="filled"
-          sx={{
-            '& .MuiSelect-select': {
-              minHeight: '40px', // Match theme standard
-              display: 'flex',
-              alignItems: 'center',
-            }
-          }}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.length === 0 ? (
-                <Typography color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  Select properties to update...
-                </Typography>
-              ) : (
-                selected.map((value) => {
-                  const prop = PATCHABLE_PROPERTIES.find(p => p.property === value);
-                  return <Chip key={value} label={prop?.label || value} size="small" />;
-                })
-              )}
-            </Box>
-          )}
-        >
-          <MenuItem 
-            onClick={handleSelectAll} 
-            sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
-            value="" // Empty value to prevent it from being selected as a property
-          >
-            <Checkbox 
-              checked={isAllSelected}
-              indeterminate={isIndeterminate}
-              onClick={handleSelectAll} // Also handle checkbox click
-            />
-            <ListItemText 
-              primary={
-                <Typography sx={{ fontWeight: 'bold' }}>
-                  Select All ({PATCHABLE_PROPERTIES.length} properties)
-                </Typography>
+      <Autocomplete
+        multiple
+        disableCloseOnSelect
+        options={[
+          {
+            property: "select-all",
+            label: `Select All (${PATCHABLE_PROPERTIES.length} properties)`,
+            isSelectAll: true,
+          },
+          ...PATCHABLE_PROPERTIES,
+        ]}
+        value={PATCHABLE_PROPERTIES.filter((prop) => selectedProperties.includes(prop.property))}
+        onChange={(event, newValue) => {
+          // Check if "Select All" was clicked
+          const selectAllOption = newValue.find((option) => option.isSelectAll);
+
+          if (selectAllOption) {
+            // If Select All is in the new value, select all properties
+            const allSelected = selectedProperties.length === PATCHABLE_PROPERTIES.length;
+            const newProperties = allSelected ? [] : PATCHABLE_PROPERTIES.map((p) => p.property);
+            setSelectedProperties(newProperties);
+            formControl.setValue("selectedProperties", newProperties);
+
+            // Reset property values when selection changes
+            const currentValues = formControl.getValues("propertyValues") || {};
+            const newValues = {};
+            newProperties.forEach((prop) => {
+              if (currentValues[prop]) {
+                newValues[prop] = currentValues[prop];
               }
-            />
-          </MenuItem>
-          {PATCHABLE_PROPERTIES.map((property) => (
-            <MenuItem key={property.property} value={property.property}>
-              <Checkbox checked={selectedProperties.indexOf(property.property) > -1} />
-              <ListItemText primary={property.label} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+            });
+            formControl.setValue("propertyValues", newValues);
+            formControl.trigger();
+          } else {
+            // Normal property selection
+            const newProperties = newValue
+              .filter((prop) => !prop.isSelectAll)
+              .map((prop) => prop.property);
+            setSelectedProperties(newProperties);
+            formControl.setValue("selectedProperties", newProperties);
+
+            // Reset property values when selection changes
+            const currentValues = formControl.getValues("propertyValues") || {};
+            const newValues = {};
+            newProperties.forEach((prop) => {
+              if (currentValues[prop]) {
+                newValues[prop] = currentValues[prop];
+              }
+            });
+            formControl.setValue("propertyValues", newValues);
+            formControl.trigger();
+          }
+        }}
+        getOptionLabel={(option) => option.label}
+        isOptionEqualToValue={(option, value) => option.property === value.property}
+        size="small"
+        renderOption={(props, option, { selected }) => {
+          const isAllSelected = selectedProperties.length === PATCHABLE_PROPERTIES.length;
+          const isIndeterminate =
+            selectedProperties.length > 0 &&
+            selectedProperties.length < PATCHABLE_PROPERTIES.length;
+
+          if (option.isSelectAll) {
+            return (
+              <li {...props} style={{ borderBottom: "1px solid #e0e0e0" }}>
+                <Checkbox
+                  checked={isAllSelected}
+                  indeterminate={isIndeterminate}
+                  style={{ marginRight: 8 }}
+                />
+                <Typography sx={{ fontWeight: "bold" }}>{option.label}</Typography>
+              </li>
+            );
+          }
+
+          return (
+            <li {...props}>
+              <Checkbox checked={selected} style={{ marginRight: 8 }} />
+              {option.label}
+            </li>
+          );
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Properties to update"
+            placeholder="Select properties to update..."
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+                sx: { transition: "none" },
+              },
+              input: {
+                ...params.InputProps,
+                notched: true,
+                sx: {
+                  transition: "none",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    transition: "none",
+                  },
+                },
+              },
+            }}
+          />
+        )}
+        renderTags={(value, getTagProps) =>
+          value
+            .filter((option) => !option.isSelectAll)
+            .map((option, index) => (
+              <Chip
+                {...getTagProps({ index })}
+                key={option.property}
+                label={option.label}
+                size="small"
+              />
+            ))
+        }
+      />
 
       {selectedProperties.length > 0 && (
         <Card variant="outlined">
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2 }}>Properties to update</Typography>
-            <Stack spacing={2}>
-              {selectedProperties.map(renderPropertyInput)}
-            </Stack>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Properties to update
+            </Typography>
+            <Stack spacing={2}>{selectedProperties.map(renderPropertyInput)}</Stack>
           </CardContent>
         </Card>
       )}
@@ -379,18 +402,18 @@ const ConfirmationStep = (props) => {
   const handleSubmit = () => {
     // Validate that we still have users to patch
     if (!users || users.length === 0) {
-      console.error('No users to patch');
+      console.error("No users to patch");
       return;
     }
 
     // Create bulk request data
-    const patchData = users.map(user => {
-      const userData = { 
+    const patchData = users.map((user) => {
+      const userData = {
         id: user.id,
-        tenantFilter: user.Tenant || user.tenantFilter
+        tenantFilter: user.Tenant || user.tenantFilter,
       };
-      selectedProperties.forEach(propName => {
-        if (propertyValues[propName] !== undefined && propertyValues[propName] !== '') {
+      selectedProperties.forEach((propName) => {
+        if (propertyValues[propName] !== undefined && propertyValues[propName] !== "") {
           userData[propName] = propertyValues[propName];
         }
       });
@@ -398,34 +421,32 @@ const ConfirmationStep = (props) => {
     });
 
     // Submit to API
-    patchUsersApi.mutate({ 
-      url: "/api/PatchUser", 
+    patchUsersApi.mutate({
+      url: "/api/PatchUser",
       data: patchData,
     });
   };
 
   // Clean user data for table display
-  const tableData = users?.map(user => ({
-    id: user.id,
-    displayName: user.displayName,
-    userPrincipalName: user.userPrincipalName,
-    jobTitle: user.jobTitle,
-    department: user.department,
-  })) || [];
+  const tableData =
+    users?.map((user) => ({
+      id: user.id,
+      displayName: user.displayName,
+      userPrincipalName: user.userPrincipalName,
+      jobTitle: user.jobTitle,
+      department: user.department,
+    })) || [];
 
-  const columns = [
-    "displayName",
-    "userPrincipalName", 
-    "jobTitle",
-    "department"
-  ];
+  const columns = ["displayName", "userPrincipalName", "jobTitle", "department"];
 
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Confirm User Updates</Typography>
         <Typography color="text.secondary" variant="body2">
-          Review the users that will be updated with {selectedProperties.length} selected {selectedProperties.length === 1 ? 'property' : 'properties'}, then click Submit to apply the changes.
+          Review the users that will be updated with {selectedProperties.length} selected{" "}
+          {selectedProperties.length === 1 ? "property" : "properties"}, then click Submit to apply
+          the changes.
         </Typography>
       </Stack>
 
@@ -433,18 +454,22 @@ const ConfirmationStep = (props) => {
       {selectedProperties.length > 0 && (
         <Card variant="outlined">
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2 }}>Properties to Update</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Properties to Update
+            </Typography>
             <Stack spacing={1}>
-              {selectedProperties.map(propName => {
-                const property = PATCHABLE_PROPERTIES.find(p => p.property === propName);
+              {selectedProperties.map((propName) => {
+                const property = PATCHABLE_PROPERTIES.find((p) => p.property === propName);
                 const value = propertyValues[propName];
-                const displayValue = property?.type === 'boolean' 
-                  ? (value ? 'Yes' : 'No')
-                  : (value || 'Not set');
-                
+                const displayValue =
+                  property?.type === "boolean" ? (value ? "Yes" : "No") : value || "Not set";
+
                 return (
-                  <Box key={propName} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 'medium', minWidth: 'fit-content' }}>
+                  <Box key={propName} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: "medium", minWidth: "fit-content" }}
+                    >
                       {property?.label || propName}:
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
@@ -474,7 +499,7 @@ const ConfirmationStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
+            <Typography color="text.secondary" variant="body2" sx={{ textAlign: "center", py: 2 }}>
               No users to update. Please go back and select users.
             </Typography>
           </CardContent>
@@ -482,7 +507,7 @@ const ConfirmationStep = (props) => {
       )}
 
       <CippApiResults apiObject={patchUsersApi} />
-      
+
       <Stack
         alignItems="center"
         direction="row"
@@ -495,11 +520,16 @@ const ConfirmationStep = (props) => {
             Back
           </Button>
         )}
-        <Button 
-          size="large" 
-          type="button" 
-          variant="contained" 
-          disabled={patchUsersApi.isPending || selectedProperties.length === 0 || !users || users.length === 0}
+        <Button
+          size="large"
+          type="button"
+          variant="contained"
+          disabled={
+            patchUsersApi.isPending ||
+            selectedProperties.length === 0 ||
+            !users ||
+            users.length === 0
+          }
           onClick={handleSubmit}
         >
           {patchUsersApi.isSuccess ? "Resubmit" : "Submit"}
@@ -521,16 +551,16 @@ const Page = () => {
         setUsers(Array.isArray(parsedUsers) ? parsedUsers : [parsedUsers]);
       } else {
         // Fallback to session storage
-        const storedUsers = sessionStorage.getItem('patchWizardUsers');
+        const storedUsers = sessionStorage.getItem("patchWizardUsers");
         if (storedUsers) {
           const parsedUsers = JSON.parse(storedUsers);
           setUsers(Array.isArray(parsedUsers) ? parsedUsers : [parsedUsers]);
           // Clear session storage after use
-          sessionStorage.removeItem('patchWizardUsers');
+          sessionStorage.removeItem("patchWizardUsers");
         }
       }
     } catch (error) {
-      console.error('Error parsing users data:', error);
+      console.error("Error parsing users data:", error);
       setUsers([]);
     }
   }, [router.query.users]);
@@ -546,7 +576,7 @@ const Page = () => {
       },
     },
     {
-      title: "Step 2", 
+      title: "Step 2",
       description: "Select Properties",
       component: PropertySelectionStep,
     },
