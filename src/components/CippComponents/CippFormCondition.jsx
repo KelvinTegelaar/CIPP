@@ -53,7 +53,7 @@ export const CippFormCondition = (props) => {
     }
   }
 
-  console.log("CippFormCondition: ", {
+  /*console.log("CippFormCondition: ", {
     watcher,
     watchedValue,
     compareTargetValue,
@@ -62,7 +62,7 @@ export const CippFormCondition = (props) => {
     action,
     field,
     propertyName,
-  });
+  });*/
 
   // Function to recursively extract field names from child components
   const extractFieldNames = (children) => {
