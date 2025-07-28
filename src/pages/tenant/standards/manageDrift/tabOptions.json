@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Manage Drift",
+    "path": "/tenant/standards/manageDrift"
+  },
+  {
+    "label": "Policies and Settings Deployed",
+    "path": "/tenant/standards/manageDrift/policies-deployed"
+  },
+  {
+    "label": "History",
+    "path": "/tenant/standards/manageDrift/history"
+  },
+  {
+    "label": "Recover Policies",
+    "path": "/tenant/standards/manageDrift/recover-policies"
+  }
+]
