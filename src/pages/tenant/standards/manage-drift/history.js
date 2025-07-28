@@ -7,7 +7,7 @@ import { CippChartCard } from "/src/components/CippCards/CippChartCard";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import { Policy } from "@mui/icons-material";
-import tabOptions from "/src/pages/tenant/standards/manageDrift/tabOptions.json";
+import tabOptions from "./tabOptions.json";
 
 const Page = () => {
   const router = useRouter();

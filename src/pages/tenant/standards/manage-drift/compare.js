@@ -41,7 +41,7 @@ import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
-import tabOptions from "../manageDrift/tabOptions.json";
+import tabOptions from "./tabOptions.json";
 
 const Page = () => {
   const router = useRouter();
