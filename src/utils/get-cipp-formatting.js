@@ -196,6 +196,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? data : data;
   }
 
+  // Handle log message field
+  const messageFields = ["Message"];
+  if (messageFields.includes(cellName)) {
+    if (typeof data === "string" && data.length > 15) {
+      return isText ? data : `${data.substring(0, 120)}...`;
+    }
+    return isText ? data : data;
+  }
+
   if (cellName === "alignmentScore" || cellName === "combinedAlignmentScore") {
     // Handle alignment score, return a percentage with a label
     return isText ? (
