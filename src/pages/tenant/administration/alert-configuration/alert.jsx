@@ -253,9 +253,13 @@ const AlertWizard = () => {
         recommendedOption.label += " (Recommended)";
       }
       setRecurrenceOptions(updatedRecurrenceOptions);
-      formControl.setValue("recurrence", recommendedOption);
+      
+      // Only set the recommended recurrence if we're NOT editing an existing alert
+      if (!editAlert) {
+        formControl.setValue("recurrence", recommendedOption);
+      }
     }
-  }, [commandValue]);
+  }, [commandValue, editAlert]);
 
   useEffect(() => {
     // Logic to handle template-based form updates when a preset is selected
