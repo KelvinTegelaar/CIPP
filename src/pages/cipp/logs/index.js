@@ -17,6 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const simpleColumns = [
   "DateTime",
@@ -33,6 +34,15 @@ const simpleColumns = [
 
 const apiUrl = "/api/Listlogs";
 const pageTitle = "Logbook Results";
+
+const actions = [
+  {
+    label: "View Log Entry",
+    link: "/cipp/logs/logentry?logentry=[RowKey]",
+    icon: <EyeIcon />,
+    color: "primary",
+  },
+];
 
 const Page = () => {
   const formControl = useForm({
@@ -303,6 +313,7 @@ const Page = () => {
         Severity: severity, // Pass severity filter from state
         Filter: filterEnabled, // Pass filter toggle state
       }}
+      actions={actions}
     />
   );
 };
