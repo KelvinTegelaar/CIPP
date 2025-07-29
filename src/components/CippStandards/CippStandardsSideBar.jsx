@@ -107,16 +107,16 @@ const CippStandardsSideBar = ({
   // Helper function to expand groups to their member tenants
   const expandGroupsToTenants = (tenants, groups) => {
     const expandedTenants = [];
-    
+
     tenants.forEach((tenant) => {
       const tenantValue = typeof tenant === "object" ? tenant.value : tenant;
       const tenantType = typeof tenant === "object" ? tenant.type : null;
-      
+
       if (tenantType === "Group") {
         // Find the group and add all its members
-        const group = groups?.find(g => g.Id === tenantValue);
+        const group = groups?.find((g) => g.Id === tenantValue);
         if (group && group.Members) {
-          group.Members.forEach(member => {
+          group.Members.forEach((member) => {
             expandedTenants.push(member.defaultDomainName);
           });
         }
@@ -125,7 +125,7 @@ const CippStandardsSideBar = ({
         expandedTenants.push(tenantValue);
       }
     });
-    
+
     return expandedTenants;
   };
 
@@ -271,6 +271,70 @@ const CippStandardsSideBar = ({
       <CardHeader title={title} />
       <Divider />
       <CardContent>
+        <Typography variant="h6" gutterBottom>
+          {isDriftMode ? "About Drift Templates" : "About Standard Templates"}
+        </Typography>
+        {isDriftMode ? (
+          <Stack spacing={2} sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              Drift templates provide continuous monitoring of tenant configurations to detect
+              unauthorized changes. Each tenant can only have one drift template applied at a time.
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Remediation Options:</strong>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              • <strong>Automatic Remediation:</strong> Immediately reverts unauthorized changes
+              back to the template configuration
+              <br />• <strong>Manual Remediation:</strong> Sends email notifications for review,
+              allowing you to accept or deny detected changes
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Key Features:</strong>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              • Monitors all security standards, Conditional Access policies, and Intune policies
+              <br />
+              • Detects changes made outside of CIPP
+              <br />
+              • Configurable webhook and email notifications
+              <br />• Granular control over deviation acceptance
+            </Typography>
+          </Stack>
+        ) : (
+          <Stack spacing={2} sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              Standard templates can be applied to multiple tenants and allow overlapping
+              configurations with intelligent merging based on specificity and timing.
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
+              <strong>Merge Priority (Specificity):</strong>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              1. <strong>Individual Tenant</strong> - Highest priority, overrides all others
+              <br />
+              2. <strong>Tenant Group</strong> - Overrides "All Tenants" settings
+              <br />
+              3. <strong>All Tenants</strong> - Lowest priority, default baseline
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
+              <strong>Conflict Resolution:</strong>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+              When multiple standards target the same scope (e.g., two tenant-specific templates),
+              the most recently created template takes precedence.
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
+              <strong>Example:</strong> An "All Tenants" template enables audit log retention for 90
+              days, but you need 365 days for one specific tenant. Create a tenant-specific template
+              with 365-day retention - it will override the global setting for that tenant only.
+            </Typography>
+          </Stack>
+        )}
+        <Divider />
         <Stack spacing={2}>
           {/* Hidden field to mark drift templates */}
           {isDriftMode && (
@@ -333,7 +397,7 @@ const CippStandardsSideBar = ({
                 name="driftAlertWebhook"
                 label="Drift Alert Webhook"
                 formControl={formControl}
-                placeholder="Enter webhook URL for drift alerts"
+                placeholder="Enter webhook URL for drift alerts. Leave blank to use the default webhook URL."
                 fullWidth
               />
               <CippFormComponent
@@ -341,7 +405,7 @@ const CippStandardsSideBar = ({
                 name="driftAlertEmail"
                 label="Drift Alert Email"
                 formControl={formControl}
-                placeholder="Enter email address for drift alerts"
+                placeholder="Enter email address for drift alerts. Leave blank to use the default email address."
                 fullWidth
               />
             </>
@@ -431,7 +495,7 @@ const CippStandardsSideBar = ({
         title="Add Standard"
         api={{
           confirmText: isDriftMode
-            ? "This template will only run after assigning it through the Drift Template setup wizard"
+            ? "This template will automatically run every 3 hours to detect drift. Are you sure you want to apply this Drift Template?"
             : watchForm.runManually
             ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
             : "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",

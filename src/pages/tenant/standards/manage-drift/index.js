@@ -16,7 +16,7 @@ import {
   FactCheck,
   PlayArrow,
 } from "@mui/icons-material";
-import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon, IconButton, Tooltip } from "@mui/material";
+import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useState } from "react";
 import { CippChartCard } from "/src/components/CippCards/CippChartCard";
@@ -54,7 +54,7 @@ const ManageDriftPage = () => {
   const standardsApi = ApiGetCall({
     url: "/api/listStandardTemplates",
     data: {
-      type: "drift"
+      type: "drift",
     },
     queryKey: "ListDriftTemplates",
   });
@@ -73,9 +73,11 @@ const ManageDriftPage = () => {
 
   // Process drift data for chart - filter by current tenant and aggregate
   const rawDriftData = driftApi.data || [];
+  console.log("Raw drift API data:", rawDriftData);
   const tenantDriftData = Array.isArray(rawDriftData)
     ? rawDriftData.filter((item) => item.tenantFilter === tenantFilter)
     : [];
+  console.log("Filtered tenant drift data:", tenantDriftData);
 
   // Aggregate data across all standards for this tenant
   const processedDriftData = tenantDriftData.reduce(
@@ -85,21 +87,54 @@ const ManageDriftPage = () => {
       acc.alignedCount += item.alignedCount || 0;
       acc.customerSpecificDeviations += item.customerSpecificDeviationsCount || 0;
 
-      // Collect all current deviations
-      if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
-        acc.currentDeviations.push(...item.currentDeviations.filter((dev) => dev !== null));
-      }
+      // Use allDeviations array which contains standardDisplayName for template policies
+      if (item.allDeviations && Array.isArray(item.allDeviations)) {
+        const allDeviations = item.allDeviations.filter((dev) => dev !== null);
 
-      // Collect accepted deviations
-      if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
-        acc.acceptedDeviations.push(...item.acceptedDeviations.filter((dev) => dev !== null));
-      }
-
-      // Collect customer specific deviations
-      if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
-        acc.customerSpecificDeviationsList.push(
-          ...item.customerSpecificDeviations.filter((dev) => dev !== null)
+        // Filter deviations by state/status
+        const currentDeviations = allDeviations.filter(
+          (d) => d.state === "current" || d.Status === "New" || (!d.state && !d.Status)
         );
+        const acceptedDeviations = allDeviations.filter(
+          (d) => d.state === "accepted" || d.Status === "Accepted"
+        );
+        const customerSpecificDeviations = allDeviations.filter(
+          (d) =>
+            d.state === "customerSpecific" ||
+            d.Status === "CustomerSpecific" ||
+            d.Status === "Customer Specific"
+        );
+        const deniedDeleteDeviations = allDeviations.filter(
+          (d) =>
+            d.state === "deniedDelete" ||
+            d.Status === "DeniedDelete" ||
+            d.Status === "Denied - Delete"
+        );
+        const deniedRemediateDeviations = allDeviations.filter(
+          (d) =>
+            d.state === "deniedRemediate" ||
+            d.Status === "DeniedRemediate" ||
+            d.Status === "Denied - Remediate"
+        );
+
+        acc.currentDeviations.push(...currentDeviations);
+        acc.acceptedDeviations.push(...acceptedDeviations);
+        acc.customerSpecificDeviationsList.push(...customerSpecificDeviations);
+        acc.deniedDeleteDeviationsList.push(...deniedDeleteDeviations);
+        acc.deniedRemediateDeviationsList.push(...deniedRemediateDeviations);
+      } else {
+        // Fallback to separate arrays if allDeviations is not available
+        if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
+          acc.currentDeviations.push(...item.currentDeviations.filter((dev) => dev !== null));
+        }
+        if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
+          acc.acceptedDeviations.push(...item.acceptedDeviations.filter((dev) => dev !== null));
+        }
+        if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
+          acc.customerSpecificDeviationsList.push(
+            ...item.customerSpecificDeviations.filter((dev) => dev !== null)
+          );
+        }
       }
 
       // Use the latest data collection timestamp
@@ -121,6 +156,8 @@ const ManageDriftPage = () => {
       currentDeviations: [],
       acceptedDeviations: [],
       customerSpecificDeviationsList: [],
+      deniedDeleteDeviationsList: [],
+      deniedRemediateDeviationsList: [],
       latestDataCollection: null,
     }
   );
@@ -145,6 +182,12 @@ const ManageDriftPage = () => {
         return <Warning color="warning" />;
       case "denied":
         return <Error color="error" />;
+      case "denieddelete":
+      case "denied - delete":
+        return <Block color="error" />;
+      case "deniedremediate":
+      case "denied - remediate":
+        return <Cancel color="error" />;
       case "accepted":
         return <CheckCircle color="success" />;
       case "customerspecific":
@@ -159,6 +202,12 @@ const ManageDriftPage = () => {
       case "current":
         return "warning.main";
       case "denied":
+        return "error.main";
+      case "denieddelete":
+      case "denied - delete":
+        return "error.main";
+      case "deniedremediate":
+      case "denied - remediate":
         return "error.main";
       case "accepted":
         return "success.main";
@@ -175,6 +224,12 @@ const ManageDriftPage = () => {
         return "Current Deviation";
       case "denied":
         return "Denied Deviation";
+      case "denieddelete":
+      case "denied - delete":
+        return "Denied - Delete";
+      case "deniedremediate":
+      case "denied - remediate":
+        return "Denied - Remediate";
       case "accepted":
         return "Accepted Deviation";
       case "customerspecific":
@@ -215,17 +270,19 @@ const ManageDriftPage = () => {
   // Helper function to create deviation items
   const createDeviationItems = (deviations, statusOverride = null) => {
     return (deviations || []).map((deviation, index) => {
-      // Get pretty name from standards.json first, then fallback to standardDisplayName, then raw name
+      // Prioritize standardDisplayName from drift data (which has user-friendly names for templates)
+      // then fallback to standards.json lookup, then raw name
       const prettyName =
-        getStandardPrettyName(deviation.standardName) ||
         deviation.standardDisplayName ||
+        getStandardPrettyName(deviation.standardName) ||
         deviation.standardName ||
         "Unknown Standard";
 
       // Get description from standards.json first, then fallback to standardDescription from deviation
-      const description = getStandardDescription(deviation.standardName) ||
-                         deviation.standardDescription ||
-                         "No description available";
+      const description =
+        getStandardDescription(deviation.standardName) ||
+        deviation.standardDescription ||
+        "No description available";
 
       return {
         id: index + 1,
@@ -238,6 +295,7 @@ const ManageDriftPage = () => {
         subtext: description,
         statusColor: getDeviationColor(statusOverride || deviation.Status || deviation.state),
         statusText: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
+        standardName: deviation.standardName, // Store the original standardName for action handlers
         propertyItems: [
           { label: "Standard Name", value: prettyName },
           { label: "Description", value: description },
@@ -267,6 +325,14 @@ const ManageDriftPage = () => {
     processedDriftData.customerSpecificDeviationsList,
     "customerspecific"
   );
+  const deniedDeleteDeviationItems = createDeviationItems(
+    processedDriftData.deniedDeleteDeviationsList,
+    "denieddelete"
+  );
+  const deniedRemediateDeviationItems = createDeviationItems(
+    processedDriftData.deniedRemediateDeviationsList,
+    "deniedremediate"
+  );
 
   const handleMenuClick = (event, itemId) => {
     setAnchorEl((prev) => ({ ...prev, [itemId]: event.currentTarget }));
@@ -291,13 +357,17 @@ const ManageDriftPage = () => {
         status = "Accepted";
         actionText = "accept";
         break;
-      case "bring-into-standard":
-        status = "Accepted";
-        actionText = "bring into standard";
-        break;
       case "deny-remove":
         status = "Denied";
         actionText = "deny and remove";
+        break;
+      case "deny-delete":
+        status = "DeniedDelete";
+        actionText = "deny and delete";
+        break;
+      case "deny-remediate":
+        status = "DeniedRemediate";
+        actionText = "deny and remediate to align with template";
         break;
       default:
         return;
@@ -343,6 +413,14 @@ const ManageDriftPage = () => {
         status = "Denied";
         actionText = "deny";
         break;
+      case "deny-delete":
+        status = "DeniedDelete";
+        actionText = "deny and delete";
+        break;
+      case "deny-remediate":
+        status = "DeniedRemediate";
+        actionText = "deny and remediate to align with template";
+        break;
       default:
         return;
     }
@@ -352,7 +430,7 @@ const ManageDriftPage = () => {
       data: {
         deviations: [
           {
-            standardName: deviation.text, // Use the text field which contains standardName
+            standardName: deviation.standardName, // Use the standardName from the original deviation data
             status: status,
           },
         ],
@@ -391,6 +469,14 @@ const ManageDriftPage = () => {
       case "deny-all":
         status = "Denied";
         actionText = "deny all deviations";
+        break;
+      case "deny-all-delete":
+        status = "DeniedDelete";
+        actionText = "deny all deviations and delete";
+        break;
+      case "deny-all-remediate":
+        status = "DeniedRemediate";
+        actionText = "deny all deviations and remediate to align with template";
         break;
       default:
         setBulkActionsAnchorEl(null);
@@ -458,31 +544,33 @@ const ManageDriftPage = () => {
         }
       },
     },
-    ...(templateId ? [
-      {
-        label: "Run Standard Now (Currently Selected Tenant only)",
-        type: "GET",
-        url: "/api/ExecStandardsRun",
-        icon: <PlayArrow />,
-        data: {
-          TemplateId: templateId,
-        },
-        confirmText: "Are you sure you want to force a run of this standard?",
-        multiPost: false,
-      },
-      {
-        label: "Run Standard Now (All Tenants in Template)",
-        type: "GET",
-        url: "/api/ExecStandardsRun",
-        icon: <PlayArrow />,
-        data: {
-          TemplateId: templateId,
-          tenantFilter: "allTenants",
-        },
-        confirmText: "Are you sure you want to force a run of this standard?",
-        multiPost: false,
-      },
-    ] : []),
+    ...(templateId
+      ? [
+          {
+            label: "Run Standard Now (Currently Selected Tenant only)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+          {
+            label: "Run Standard Now (All Tenants in Template)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+              tenantFilter: "allTenants",
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+        ]
+      : []),
   ];
 
   // Process drift templates data for "What If" dropdown
@@ -492,65 +580,159 @@ const ManageDriftPage = () => {
   }));
 
   // Add action buttons to each deviation item
-  const deviationItemsWithActions = deviationItems.map((item) => ({
-    ...item,
-    actionButton: (
-      <>
-        <Button
-          variant="outlined"
-          endIcon={<ExpandMore />}
-          onClick={(e) => handleMenuClick(e, item.id)}
-          size="small"
-        >
-          Actions
-        </Button>
-        <Menu
-          anchorEl={anchorEl[item.id]}
-          open={Boolean(anchorEl[item.id])}
-          onClose={() => handleMenuClose(item.id)}
-        >
-          <MenuItem onClick={() => handleAction("accept-customer-specific", item.id)}>
-            <CheckCircle sx={{ mr: 1, color: "success.main" }} />
-            Accept Deviation - Customer Specific
-          </MenuItem>
-          <MenuItem onClick={() => handleAction("accept", item.id)}>
-            <Check sx={{ mr: 1, color: "info.main" }} />
-            Accept Deviation
-          </MenuItem>
-          <MenuItem onClick={() => handleAction("bring-into-standard", item.id)}>
-            <Sync sx={{ mr: 1, color: "primary.main" }} />
-            Bring into Drift Standard
-          </MenuItem>
-          <MenuItem onClick={() => handleAction("deny-remove", item.id)}>
-            <Block sx={{ mr: 1, color: "error.main" }} />
-            Deny - Remove Policy
-          </MenuItem>
-        </Menu>
-      </>
-    ),
-  }));
+  const deviationItemsWithActions = deviationItems.map((item) => {
+    // Check if this is a template that supports delete action
+    const supportsDelete =
+      item.standardName === "ConditionalAccessTemplate" || item.standardName === "IntuneTemplate";
+
+    return {
+      ...item,
+      actionButton: (
+        <>
+          <Button
+            variant="outlined"
+            endIcon={<ExpandMore />}
+            onClick={(e) => handleMenuClick(e, item.id)}
+            size="small"
+          >
+            Actions
+          </Button>
+          <Menu
+            anchorEl={anchorEl[item.id]}
+            open={Boolean(anchorEl[item.id])}
+            onClose={() => handleMenuClose(item.id)}
+          >
+            <MenuItem onClick={() => handleAction("accept-customer-specific", item.id)}>
+              <CheckCircle sx={{ mr: 1, color: "success.main" }} />
+              Accept Deviation - Customer Specific
+            </MenuItem>
+            <MenuItem onClick={() => handleAction("accept", item.id)}>
+              <Check sx={{ mr: 1, color: "info.main" }} />
+              Accept Deviation
+            </MenuItem>
+            {supportsDelete && (
+              <MenuItem onClick={() => handleAction("deny-delete", item.id)}>
+                <Block sx={{ mr: 1, color: "error.main" }} />
+                Deny Deviation - Delete
+              </MenuItem>
+            )}
+            <MenuItem onClick={() => handleAction("deny-remediate", item.id)}>
+              <Cancel sx={{ mr: 1, color: "error.main" }} />
+              Deny Deviation - Remediate to align with template
+            </MenuItem>
+          </Menu>
+        </>
+      ),
+    };
+  });
 
   // Add action buttons to accepted deviation items
-  const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => ({
+  const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => {
+    // Check if this is a template that supports delete action
+    const supportsDelete =
+      item.standardName === "ConditionalAccessTemplate" || item.standardName === "IntuneTemplate";
+
+    return {
+      ...item,
+      actionButton: (
+        <>
+          <Button
+            variant="outlined"
+            endIcon={<ExpandMore />}
+            onClick={(e) => handleMenuClick(e, `accepted-${item.id}`)}
+            size="small"
+          >
+            Actions
+          </Button>
+          <Menu
+            anchorEl={anchorEl[`accepted-${item.id}`]}
+            open={Boolean(anchorEl[`accepted-${item.id}`])}
+            onClose={() => handleMenuClose(`accepted-${item.id}`)}
+          >
+            {supportsDelete && (
+              <MenuItem onClick={() => handleDeviationAction("deny-delete", item)}>
+                <Block sx={{ mr: 1, color: "error.main" }} />
+                Deny - Delete
+              </MenuItem>
+            )}
+            <MenuItem onClick={() => handleDeviationAction("deny-remediate", item)}>
+              <Cancel sx={{ mr: 1, color: "error.main" }} />
+              Deny - Remediate to align with template
+            </MenuItem>
+            <MenuItem onClick={() => handleDeviationAction("accept-customer-specific", item)}>
+              <CheckCircle sx={{ mr: 1, color: "info.main" }} />
+              Accept - Customer Specific
+            </MenuItem>
+          </Menu>
+        </>
+      ),
+    };
+  });
+
+  // Add action buttons to customer specific deviation items
+  const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => {
+    // Check if this is a template that supports delete action
+    const supportsDelete =
+      item.standardName === "ConditionalAccessTemplate" || item.standardName === "IntuneTemplate";
+
+    return {
+      ...item,
+      actionButton: (
+        <>
+          <Button
+            variant="outlined"
+            endIcon={<ExpandMore />}
+            onClick={(e) => handleMenuClick(e, `customer-${item.id}`)}
+            size="small"
+          >
+            Actions
+          </Button>
+          <Menu
+            anchorEl={anchorEl[`customer-${item.id}`]}
+            open={Boolean(anchorEl[`customer-${item.id}`])}
+            onClose={() => handleMenuClose(`customer-${item.id}`)}
+          >
+            {supportsDelete && (
+              <MenuItem onClick={() => handleDeviationAction("deny-delete", item)}>
+                <Block sx={{ mr: 1, color: "error.main" }} />
+                Deny - Delete
+              </MenuItem>
+            )}
+            <MenuItem onClick={() => handleDeviationAction("deny-remediate", item)}>
+              <Cancel sx={{ mr: 1, color: "error.main" }} />
+              Deny - Remediate to align with template
+            </MenuItem>
+            <MenuItem onClick={() => handleDeviationAction("accept", item)}>
+              <Check sx={{ mr: 1, color: "success.main" }} />
+              Accept
+            </MenuItem>
+          </Menu>
+        </>
+      ),
+    };
+  });
+
+  // Add action buttons to denied delete deviation items
+  const deniedDeleteDeviationItemsWithActions = deniedDeleteDeviationItems.map((item) => ({
     ...item,
     actionButton: (
       <>
         <Button
           variant="outlined"
           endIcon={<ExpandMore />}
-          onClick={(e) => handleMenuClick(e, `accepted-${item.id}`)}
+          onClick={(e) => handleMenuClick(e, `denied-delete-${item.id}`)}
           size="small"
         >
           Actions
         </Button>
         <Menu
-          anchorEl={anchorEl[`accepted-${item.id}`]}
-          open={Boolean(anchorEl[`accepted-${item.id}`])}
-          onClose={() => handleMenuClose(`accepted-${item.id}`)}
+          anchorEl={anchorEl[`denied-delete-${item.id}`]}
+          open={Boolean(anchorEl[`denied-delete-${item.id}`])}
+          onClose={() => handleMenuClose(`denied-delete-${item.id}`)}
         >
-          <MenuItem onClick={() => handleDeviationAction("deny", item)}>
-            <Block sx={{ mr: 1, color: "error.main" }} />
-            Deny
+          <MenuItem onClick={() => handleDeviationAction("accept", item)}>
+            <Check sx={{ mr: 1, color: "success.main" }} />
+            Accept
           </MenuItem>
           <MenuItem onClick={() => handleDeviationAction("accept-customer-specific", item)}>
             <CheckCircle sx={{ mr: 1, color: "info.main" }} />
@@ -561,31 +743,31 @@ const ManageDriftPage = () => {
     ),
   }));
 
-  // Add action buttons to customer specific deviation items
-  const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => ({
+  // Add action buttons to denied remediate deviation items
+  const deniedRemediateDeviationItemsWithActions = deniedRemediateDeviationItems.map((item) => ({
     ...item,
     actionButton: (
       <>
         <Button
           variant="outlined"
           endIcon={<ExpandMore />}
-          onClick={(e) => handleMenuClick(e, `customer-${item.id}`)}
+          onClick={(e) => handleMenuClick(e, `denied-remediate-${item.id}`)}
           size="small"
         >
           Actions
         </Button>
         <Menu
-          anchorEl={anchorEl[`customer-${item.id}`]}
-          open={Boolean(anchorEl[`customer-${item.id}`])}
-          onClose={() => handleMenuClose(`customer-${item.id}`)}
+          anchorEl={anchorEl[`denied-remediate-${item.id}`]}
+          open={Boolean(anchorEl[`denied-remediate-${item.id}`])}
+          onClose={() => handleMenuClose(`denied-remediate-${item.id}`)}
         >
-          <MenuItem onClick={() => handleDeviationAction("deny", item)}>
-            <Block sx={{ mr: 1, color: "error.main" }} />
-            Deny
-          </MenuItem>
           <MenuItem onClick={() => handleDeviationAction("accept", item)}>
             <Check sx={{ mr: 1, color: "success.main" }} />
             Accept
+          </MenuItem>
+          <MenuItem onClick={() => handleDeviationAction("accept-customer-specific", item)}>
+            <CheckCircle sx={{ mr: 1, color: "info.main" }} />
+            Accept - Customer Specific
           </MenuItem>
         </Menu>
       </>
@@ -593,15 +775,15 @@ const ManageDriftPage = () => {
   }));
 
   // Calculate compliance metrics for badges
-  const totalPolicies = processedDriftData.alignedCount +
-                       processedDriftData.currentDeviationsCount +
-                       processedDriftData.acceptedDeviationsCount +
-                       processedDriftData.customerSpecificDeviations;
-  
-  const compliancePercentage = totalPolicies > 0
-    ? Math.round((processedDriftData.alignedCount / totalPolicies) * 100)
-    : 0;
-  
+  const totalPolicies =
+    processedDriftData.alignedCount +
+    processedDriftData.currentDeviationsCount +
+    processedDriftData.acceptedDeviationsCount +
+    processedDriftData.customerSpecificDeviations;
+
+  const compliancePercentage =
+    totalPolicies > 0 ? Math.round((processedDriftData.alignedCount / totalPolicies) * 100) : 0;
+
   const missingLicensePercentage = 0; // This would need to be calculated from actual license data
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
@@ -612,39 +794,41 @@ const ManageDriftPage = () => {
       text: `Template ID: ${templateId || "Loading..."}`,
     },
     // Add compliance badges when data is available
-    ...(totalPolicies > 0 ? [
-      {
-        component: (
-          <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-            <Chip
-              icon={
-                <SvgIcon fontSize="small">
-                  <FactCheck />
-                </SvgIcon>
-              }
-              label={`${compliancePercentage}% Compliant`}
-              variant="outlined"
-              size="small"
-              color={
-                compliancePercentage === 100
-                  ? "success"
-                  : compliancePercentage >= 50
-                  ? "warning"
-                  : "error"
-              }
-            />
-            <Chip
-              label={`${combinedScore}% Combined Score`}
-              variant="outlined"
-              size="small"
-              color={
-                combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
-              }
-            />
-          </Stack>
-        ),
-      },
-    ] : []),
+    ...(totalPolicies > 0
+      ? [
+          {
+            component: (
+              <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
+                <Chip
+                  icon={
+                    <SvgIcon fontSize="small">
+                      <FactCheck />
+                    </SvgIcon>
+                  }
+                  label={`${compliancePercentage}% Compliant`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    compliancePercentage === 100
+                      ? "success"
+                      : compliancePercentage >= 50
+                      ? "warning"
+                      : "error"
+                  }
+                />
+                <Chip
+                  label={`${combinedScore}% Combined Score`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
+                  }
+                />
+              </Stack>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -660,13 +844,15 @@ const ManageDriftPage = () => {
       <CippHead title="Manage Drift" />
       <Box sx={{ py: 2 }}>
         {/* Check if there's no drift data */}
-        {!driftApi.isFetching && (!rawDriftData || rawDriftData.length === 0 || tenantDriftData.length === 0) ? (
+        {!driftApi.isFetching &&
+        (!rawDriftData || rawDriftData.length === 0 || tenantDriftData.length === 0) ? (
           <Box sx={{ textAlign: "center", py: 8 }}>
             <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
               No Drift Data Available
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              This standard does not have any drift entries, or it is not a drift compatible standard.
+              This standard does not have any drift entries, or it is not a drift compatible
+              standard.
             </Typography>
             <Typography variant="body2" color="text.secondary">
               To enable drift monitoring for this tenant, please ensure:
@@ -732,9 +918,20 @@ const ManageDriftPage = () => {
                           <Check sx={{ mr: 1, color: "info.main" }} />
                           Accept All Deviations
                         </MenuItem>
-                        <MenuItem onClick={() => handleBulkAction("deny-all")}>
+                        {/* Only show delete option if there are template deviations that support deletion */}
+                        {processedDriftData.currentDeviations.some(
+                          (deviation) =>
+                            deviation.standardName === "ConditionalAccessTemplate" ||
+                            deviation.standardName === "IntuneTemplate"
+                        ) && (
+                          <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
+                            <Block sx={{ mr: 1, color: "error.main" }} />
+                            Deny All Deviations - Delete
+                          </MenuItem>
+                        )}
+                        <MenuItem onClick={() => handleBulkAction("deny-all-remediate")}>
                           <Cancel sx={{ mr: 1, color: "error.main" }} />
-                          Deny All Deviations
+                          Deny All Deviations - Remediate to align with template
                         </MenuItem>
                         <MenuItem onClick={handleRemoveDriftCustomization}>
                           <Block sx={{ mr: 1, color: "warning.main" }} />
@@ -758,7 +955,10 @@ const ManageDriftPage = () => {
                         onClose={() => setWhatIfAnchorEl(null)}
                       >
                         {availableStandards.map((standard) => (
-                          <MenuItem key={standard.id} onClick={() => handleWhatIfAction(standard.id)}>
+                          <MenuItem
+                            key={standard.id}
+                            onClick={() => handleWhatIfAction(standard.id)}
+                          >
                             <Science sx={{ mr: 1, color: "primary.main" }} />
                             {standard.name}
                           </MenuItem>
@@ -795,6 +995,34 @@ const ManageDriftPage = () => {
                     </Typography>
                     <CippBannerListCard
                       items={customerSpecificDeviationItemsWithActions}
+                      isCollapsible={true}
+                      isFetching={driftApi.isFetching}
+                    />
+                  </Box>
+                )}
+
+                {/* Denied Delete Deviations Section */}
+                {deniedDeleteDeviationItemsWithActions.length > 0 && (
+                  <Box>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                      Denied Deviations - Delete
+                    </Typography>
+                    <CippBannerListCard
+                      items={deniedDeleteDeviationItemsWithActions}
+                      isCollapsible={true}
+                      isFetching={driftApi.isFetching}
+                    />
+                  </Box>
+                )}
+
+                {/* Denied Remediate Deviations Section */}
+                {deniedRemediateDeviationItemsWithActions.length > 0 && (
+                  <Box>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                      Denied Deviations - Remediate
+                    </Typography>
+                    <CippBannerListCard
+                      items={deniedRemediateDeviationItemsWithActions}
                       isCollapsible={true}
                       isFetching={driftApi.isFetching}
                     />

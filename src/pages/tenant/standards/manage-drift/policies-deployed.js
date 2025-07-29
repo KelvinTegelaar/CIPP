@@ -49,6 +49,17 @@ const PoliciesDeployedPage = () => {
     enabled: !!templateId && !!tenantFilter,
   });
 
+  // API call to get drift data for deviation statuses
+  const driftApi = ApiGetCall({
+    url: "/api/listTenantDrift",
+    data: {
+      tenantFilter: tenantFilter,
+      standardsId: templateId,
+    },
+    queryKey: `TenantDrift-${templateId}-${tenantFilter}`,
+    enabled: !!templateId && !!tenantFilter,
+  });
+
   // Find the current template from standards data
   const currentTemplate = (standardsApi.data || []).find(
     (template) => template.GUID === templateId
@@ -56,11 +67,78 @@ const PoliciesDeployedPage = () => {
   const templateStandards = currentTemplate?.standards || {};
   const comparisonData = comparisonApi.data?.[0] || {};
 
-  // Helper function to get status from comparison data
-  const getStatus = (standardKey) => {
+  // Helper function to get status from comparison data with deviation status
+  const getStatus = (standardKey, templateValue = null, templateType = null) => {
     const comparisonKey = `standards.${standardKey}`;
     const value = comparisonData[comparisonKey]?.Value;
-    return value === true ? "Deployed" : "Deviation";
+    
+    if (value === true) {
+      return "Deployed";
+    } else {
+      // Check if there's drift data for this standard to get the deviation status
+      const driftData = driftApi.data || [];
+      
+      // For templates, we need to match against the full template path
+      let searchKeys = [
+        standardKey,
+        `standards.${standardKey}`,
+      ];
+      
+      // Add template-specific search keys
+      if (templateValue && templateType) {
+        searchKeys.push(
+          `standards.${templateType}.${templateValue}`,
+          `${templateType}.${templateValue}`,
+          templateValue
+        );
+      }
+      
+      const deviation = driftData.find(item =>
+        searchKeys.some(key =>
+          item.standardName === key ||
+          item.policyName === key ||
+          item.standardName?.includes(key) ||
+          item.policyName?.includes(key)
+        )
+      );
+      
+      if (deviation && deviation.Status) {
+        return `Deviation - ${deviation.Status}`;
+      }
+      
+      return "Deviation - New";
+    }
+  };
+
+  // Helper function to get display name from drift data
+  const getDisplayNameFromDrift = (standardKey, templateValue = null, templateType = null) => {
+    const driftData = driftApi.data || [];
+    
+    // For templates, we need to match against the full template path
+    let searchKeys = [
+      standardKey,
+      `standards.${standardKey}`,
+    ];
+    
+    // Add template-specific search keys
+    if (templateValue && templateType) {
+      searchKeys.push(
+        `standards.${templateType}.${templateValue}`,
+        `${templateType}.${templateValue}`,
+        templateValue
+      );
+    }
+    
+    const deviation = driftData.find(item =>
+      searchKeys.some(key =>
+        item.standardName === key ||
+        item.policyName === key ||
+        item.standardName?.includes(key) ||
+        item.policyName?.includes(key)
+      )
+    );
+    
+    return deviation?.standardDisplayName || null;
   };
 
   // Helper function to get last refresh date
@@ -77,6 +155,34 @@ const PoliciesDeployedPage = () => {
     return standard?.label || standardKey.replace(/([A-Z])/g, " $1").trim();
   };
 
+  // Helper function to get template label from standards API data
+  const getTemplateLabel = (templateValue, templateType) => {
+    if (!templateValue || !currentTemplate) return "Unknown Template";
+    
+    // Search through all templates in the current template data
+    const allTemplates = currentTemplate.standards || {};
+    
+    // Look for the template in the specific type array
+    if (allTemplates[templateType] && Array.isArray(allTemplates[templateType])) {
+      const template = allTemplates[templateType].find(t => t.TemplateList?.value === templateValue);
+      if (template?.TemplateList?.label) {
+        return template.TemplateList.label;
+      }
+    }
+    
+    // If not found in the specific type, search through all template types
+    for (const [key, templates] of Object.entries(allTemplates)) {
+      if (Array.isArray(templates)) {
+        const template = templates.find(t => t.TemplateList?.value === templateValue);
+        if (template?.TemplateList?.label) {
+          return template.TemplateList.label;
+        }
+      }
+    }
+    
+    return "Unknown Template";
+  };
+
   // Process Security Standards (everything NOT IntuneTemplates or ConditionalAccessTemplates)
   const deployedStandards = Object.entries(templateStandards)
     .filter(([key]) => key !== "IntuneTemplate" && key !== "ConditionalAccessTemplate")
@@ -90,29 +196,41 @@ const PoliciesDeployedPage = () => {
     }));
 
   // Process Intune Templates
-  const intunePolices = (templateStandards.IntuneTemplate || []).map((template, index) => ({
-    id: index + 1,
-    name: template.TemplateList?.label || "Unknown Template",
-    category: "Intune Template",
-    platform: "Multi-Platform",
-    status: getStatus(`IntuneTemplate.${template.TemplateList?.value}`),
-    lastModified: getLastRefresh(`IntuneTemplate.${template.TemplateList?.value}`),
-    assignedGroups: template.AssignTo || "N/A",
-    templateValue: template.TemplateList?.value,
-  }));
+  const intunePolices = (templateStandards.IntuneTemplate || []).map((template, index) => {
+    const standardKey = `IntuneTemplate.${template.TemplateList?.value}`;
+    const driftDisplayName = getDisplayNameFromDrift(standardKey, template.TemplateList?.value, "IntuneTemplate");
+    const templateLabel = getTemplateLabel(template.TemplateList?.value, "IntuneTemplate");
+    
+    return {
+      id: index + 1,
+      name: driftDisplayName || `Intune - ${templateLabel}`,
+      category: "Intune Template",
+      platform: "Multi-Platform",
+      status: getStatus(standardKey, template.TemplateList?.value, "IntuneTemplate"),
+      lastModified: getLastRefresh(standardKey),
+      assignedGroups: template.AssignTo || "N/A",
+      templateValue: template.TemplateList?.value,
+    };
+  });
 
   // Process Conditional Access Templates
   const conditionalAccessPolicies = (templateStandards.ConditionalAccessTemplate || []).map(
-    (template, index) => ({
-      id: index + 1,
-      name: template.TemplateList?.label || "Unknown Policy",
-      state: template.state || "Unknown",
-      conditions: "Conditional Access Policy",
-      controls: "Access Control",
-      lastModified: getLastRefresh(`ConditionalAccessTemplate.${template.TemplateList?.value}`),
-      status: getStatus(`ConditionalAccessTemplate.${template.TemplateList?.value}`),
-      templateValue: template.TemplateList?.value,
-    })
+    (template, index) => {
+      const standardKey = `ConditionalAccessTemplate.${template.TemplateList?.value}`;
+      const driftDisplayName = getDisplayNameFromDrift(standardKey, template.TemplateList?.value, "ConditionalAccessTemplate");
+      const templateLabel = getTemplateLabel(template.TemplateList?.value, "ConditionalAccessTemplate");
+      
+      return {
+        id: index + 1,
+        name: driftDisplayName || `Conditional Access - ${templateLabel}`,
+        state: template.state || "Unknown",
+        conditions: "Conditional Access Policy",
+        controls: "Access Control",
+        lastModified: getLastRefresh(standardKey),
+        status: getStatus(standardKey, template.TemplateList?.value, "ConditionalAccessTemplate"),
+        templateValue: template.TemplateList?.value,
+      };
+    }
   );
   const actions = [
     {
@@ -122,6 +240,7 @@ const PoliciesDeployedPage = () => {
       customFunction: () => {
         standardsApi.refetch();
         comparisonApi.refetch();
+        driftApi.refetch();
       },
     },
   ];
@@ -160,7 +279,7 @@ const PoliciesDeployedPage = () => {
                 data={deployedStandards}
                 simpleColumns={["name", "category", "status", "lastModified"]}
                 noCard={true}
-                isFetching={standardsApi.isFetching || comparisonApi.isFetching}
+                isFetching={standardsApi.isFetching || comparisonApi.isFetching || driftApi.isFetching}
               />
             </AccordionDetails>
           </Accordion>
@@ -187,7 +306,7 @@ const PoliciesDeployedPage = () => {
                   "assignedGroups",
                 ]}
                 noCard={true}
-                isFetching={standardsApi.isFetching || comparisonApi.isFetching}
+                isFetching={standardsApi.isFetching || comparisonApi.isFetching || driftApi.isFetching}
               />
             </AccordionDetails>
           </Accordion>
@@ -214,7 +333,7 @@ const PoliciesDeployedPage = () => {
                   "lastModified",
                 ]}
                 noCard={true}
-                isFetching={standardsApi.isFetching || comparisonApi.isFetching}
+                isFetching={standardsApi.isFetching || comparisonApi.isFetching || driftApi.isFetching}
               />
             </AccordionDetails>
           </Accordion>
