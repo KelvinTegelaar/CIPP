@@ -2803,6 +2803,7 @@
     "cat": "Defender Standards",
     "tag": [],
     "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
+    "docsDescription": "This standard creates a Spam filter policy similar to the default strict policy, the following settings are configured to on by default: IncreaseScoreWithNumericIps, IncreaseScoreWithRedirectToOtherPort, MarkAsSpamEmptyMessages, MarkAsSpamJavaScriptInHtml, MarkAsSpamSpfRecordHardFail, MarkAsSpamFromAddressAuthFail, MarkAsSpamNdrBackscatter, MarkAsSpamBulkMail, InlineSafetyTipsEnabled, PhishZapEnabled, SpamZapEnabled",
     "addedComponent": [
       {
         "type": "number",
