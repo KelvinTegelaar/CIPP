@@ -21,6 +21,8 @@ import CippFormComponent from "/src/components/CippComponents/CippFormComponent"
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import ReactTimeAgo from "react-time-ago";
+import { Alert } from "@mui/material";
+import { ApiGetCall } from "../../api/ApiCall";
 
 const StyledTimelineDot = (props) => {
   const { complete } = props;
@@ -65,10 +67,13 @@ const CippStandardsSideBar = ({
   createDialog,
   edit,
   onSaveSuccess,
+  onDriftConflictChange,
   isDriftMode = false,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [savedItem, setSavedItem] = useState(null);
+  const [driftError, setDriftError] = useState("");
+
   const dialogAfterEffect = (id) => {
     setSavedItem(id);
 
@@ -86,6 +91,135 @@ const CippStandardsSideBar = ({
   };
 
   const watchForm = useWatch({ control: formControl.control });
+
+  // Use proper CIPP ApiGetCall for drift validation
+  const driftValidationApi = ApiGetCall({
+    url: "/api/ListTenantAlignment",
+    queryKey: "ListTenantAlignment-drift-validation",
+  });
+
+  // Get tenant groups for group membership validation
+  const tenantGroupsApi = ApiGetCall({
+    url: "/api/ListTenantGroups",
+    queryKey: "ListTenantGroups-drift-validation",
+  });
+
+  // Helper function to expand groups to their member tenants
+  const expandGroupsToTenants = (tenants, groups) => {
+    const expandedTenants = [];
+    
+    tenants.forEach((tenant) => {
+      const tenantValue = typeof tenant === "object" ? tenant.value : tenant;
+      const tenantType = typeof tenant === "object" ? tenant.type : null;
+      
+      if (tenantType === "Group") {
+        // Find the group and add all its members
+        const group = groups?.find(g => g.Id === tenantValue);
+        if (group && group.Members) {
+          group.Members.forEach(member => {
+            expandedTenants.push(member.defaultDomainName);
+          });
+        }
+      } else {
+        // Regular tenant
+        expandedTenants.push(tenantValue);
+      }
+    });
+    
+    return expandedTenants;
+  };
+
+  // Enhanced drift validation using CIPP patterns with group support
+  const validateDrift = async (tenants) => {
+    if (!isDriftMode || !tenants || tenants.length === 0) {
+      setDriftError("");
+      onDriftConflictChange?.(false);
+      return;
+    }
+
+    try {
+      // Wait for both APIs to load
+      if (!driftValidationApi.data || !tenantGroupsApi.data) {
+        return;
+      }
+
+      // Filter out current template if editing
+      const existingTemplates = driftValidationApi.data.filter((template) =>
+        edit ? template.GUID !== watchForm.GUID : true
+      );
+
+      // Get tenant groups data
+      const groups = tenantGroupsApi.data?.Results || [];
+
+      // Expand selected tenants (including group members)
+      const selectedTenantList = expandGroupsToTenants(tenants, groups);
+
+      // Simple conflict check
+      const conflicts = [];
+
+      // Filter for drift templates only and group by standardId
+      const driftTemplates = existingTemplates.filter(
+        (template) => template.standardType === "drift"
+      );
+      const uniqueTemplates = {};
+
+      driftTemplates.forEach((template) => {
+        if (!uniqueTemplates[template.standardId]) {
+          uniqueTemplates[template.standardId] = {
+            standardName: template.standardName,
+            tenants: [],
+          };
+        }
+        uniqueTemplates[template.standardId].tenants.push(template.tenantFilter);
+      });
+
+      // Check for conflicts with unique templates
+      for (const templateId in uniqueTemplates) {
+        const template = uniqueTemplates[templateId];
+        const templateTenants = template.tenants;
+
+        const hasConflict = selectedTenantList.some((selectedTenant) => {
+          // Check if any template tenant matches the selected tenant
+          return templateTenants.some((templateTenant) => {
+            if (selectedTenant === "AllTenants" || templateTenant === "AllTenants") {
+              return true;
+            }
+            return selectedTenant === templateTenant;
+          });
+        });
+
+        if (hasConflict) {
+          conflicts.push(template.standardName || "Unknown Template");
+        }
+      }
+
+      if (conflicts.length > 0) {
+        setDriftError(
+          `This template has tenants that are assigned to another Drift Template. You can only assign one Drift Template to each tenant. Please check the ${conflicts.join(
+            ", "
+          )} template.`
+        );
+        onDriftConflictChange?.(true);
+      } else {
+        setDriftError("");
+        onDriftConflictChange?.(false);
+      }
+    } catch (error) {
+      setDriftError("Error checking for conflicts" + (error.message ? `: ${error.message}` : ""));
+      onDriftConflictChange?.(true);
+    }
+  };
+
+  // Watch tenant changes
+  useEffect(() => {
+    if (!isDriftMode) return;
+
+    const timeoutId = setTimeout(() => {
+      validateDrift(watchForm.tenantFilter);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [watchForm.tenantFilter, isDriftMode, driftValidationApi.data, tenantGroupsApi.data]);
 
   useEffect(() => {
     const stepsStatus = {
@@ -131,6 +265,7 @@ const CippStandardsSideBar = ({
         return actionValue && (!Array.isArray(actionValue) || actionValue.length > 0);
       }),
   };
+
   return (
     <Card>
       <CardHeader title={title} />
@@ -171,6 +306,10 @@ const CippStandardsSideBar = ({
             required={true}
             includeGroups={true}
           />
+
+          {/* Show drift error */}
+          {isDriftMode && driftError && <Alert severity="error">{driftError}</Alert>}
+
           {watchForm.tenantFilter?.some(
             (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
           ) && (
@@ -278,7 +417,9 @@ const CippStandardsSideBar = ({
             label={action.label}
             onClick={action.handler}
             disabled={
-              !(watchForm.tenantFilter && watchForm.tenantFilter.length > 0) || currentStep < 3
+              !(watchForm.tenantFilter && watchForm.tenantFilter.length > 0) ||
+              currentStep < 3 ||
+              (isDriftMode && driftError)
             }
           />
         ))}
@@ -322,6 +463,8 @@ const CippStandardsSideBar = ({
           "listStandardTemplates",
           "listStandards",
           `listStandardTemplates-${watchForm.GUID}`,
+          "ListTenantAlignment-drift-validation",
+          "ListTenantGroups-drift-validation",
         ]}
       />
     </Card>
@@ -342,6 +485,7 @@ CippStandardsSideBar.propTypes = {
   updatedAt: PropTypes.string,
   formControl: PropTypes.object.isRequired,
   onSaveSuccess: PropTypes.func,
+  onDriftConflictChange: PropTypes.func,
 };
 
 export default CippStandardsSideBar;

@@ -29,6 +29,7 @@ const Page = () => {
   const [updatedAt, setUpdatedAt] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [hasDriftConflict, setHasDriftConflict] = useState(false);
   const initialStandardsRef = useRef({});
   
   // Check if this is drift mode
@@ -262,7 +263,7 @@ const Page = () => {
 
   // Determine if save button should be disabled based on configuration
   const isSaveDisabled = isDriftMode
-    ? currentStep < 3 // For drift mode, only require steps 1, 3, and 4 (skip tenant requirement)
+    ? currentStep < 3 || hasDriftConflict // For drift mode, only require steps 1, 3, and 4 (skip tenant requirement) and no drift conflicts
     : (!_.get(watchForm, "tenantFilter") ||
        !_.get(watchForm, "tenantFilter").length ||
        currentStep < 3);
@@ -361,6 +362,7 @@ const Page = () => {
                   edit={editMode}
                   updatedAt={updatedAt}
                   isDriftMode={isDriftMode}
+                  onDriftConflictChange={setHasDriftConflict}
                   onSaveSuccess={() => {
                     // Reset unsaved changes flag
                     setHasUnsavedChanges(false);

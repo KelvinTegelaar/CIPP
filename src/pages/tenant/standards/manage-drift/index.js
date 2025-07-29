@@ -14,6 +14,7 @@ import {
   Error,
   Info,
   FactCheck,
+  PlayArrow,
 } from "@mui/icons-material";
 import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon, IconButton, Tooltip } from "@mui/material";
 import { Grid } from "@mui/system";
@@ -457,6 +458,31 @@ const ManageDriftPage = () => {
         }
       },
     },
+    ...(templateId ? [
+      {
+        label: "Run Standard Now (Currently Selected Tenant only)",
+        type: "GET",
+        url: "/api/ExecStandardsRun",
+        icon: <PlayArrow />,
+        data: {
+          TemplateId: templateId,
+        },
+        confirmText: "Are you sure you want to force a run of this standard?",
+        multiPost: false,
+      },
+      {
+        label: "Run Standard Now (All Tenants in Template)",
+        type: "GET",
+        url: "/api/ExecStandardsRun",
+        icon: <PlayArrow />,
+        data: {
+          TemplateId: templateId,
+          tenantFilter: "allTenants",
+        },
+        confirmText: "Are you sure you want to force a run of this standard?",
+        multiPost: false,
+      },
+    ] : []),
   ];
 
   // Process drift templates data for "What If" dropdown

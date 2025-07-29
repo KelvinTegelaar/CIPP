@@ -110,7 +110,7 @@ const CippStandardAccordion = ({
   // Watch all trackDrift values for all standards at once
   const allTrackDriftValues = useWatch({
     control: formControl.control,
-    name: Object.keys(selectedStandards).map(standardName => `${standardName}.trackDrift`)
+    name: Object.keys(selectedStandards).map((standardName) => `${standardName}.trackDrift`),
   });
 
   // Handle drift mode automatic action setting
@@ -241,7 +241,6 @@ const CippStandardAccordion = ({
         return;
       }
 
-      console.log("Initializing configuration state from template values");
       const initial = {};
       const initialConfigured = {};
 
@@ -285,7 +284,6 @@ const CippStandardAccordion = ({
 
     // Update configured state right away
     const isConfigured = isStandardConfigured(standardName, standard, newValues);
-    console.log(`Saving standard ${standardName}, configured: ${isConfigured}`);
 
     setConfiguredState((prev) => ({
       ...prev,
@@ -575,8 +573,6 @@ const CippStandardAccordion = ({
             // Get current values and check if they differ from saved values
             const current = _.get(watchedValues, standardName);
             const saved = _.get(savedValues, standardName) || {};
-            console.log(`Current values for ${standardName}:`, current);
-            console.log(`Saved values for ${standardName}:`, saved);
 
             const hasUnsaved = !_.isEqual(current, saved);
 
@@ -628,8 +624,7 @@ const CippStandardAccordion = ({
 
                   // Get field value for validation using lodash's get to properly handle nested properties
                   const fieldValue = _.get(current, component.name);
-                  console.log(`Checking field: ${component.name}, value:`, fieldValue);
-                  console.log(current);
+
                   // Check if required field has a value based on its type and multiple property
                   if (component.type === "autoComplete" || component.type === "select") {
                     if (component.multiple) {
@@ -666,10 +661,6 @@ const CippStandardAccordion = ({
             // 2. All required fields are filled
             // 3. There are unsaved changes
             const canSave = hasAction && requiredFieldsFilled && hasUnsaved;
-
-            console.log(
-              `Standard: ${standardName}, Action Required: ${actionRequired}, Has Action: ${hasAction}, Required Fields Filled: ${requiredFieldsFilled}, Unsaved Changes: ${hasUnsaved}, Can Save: ${canSave}`
-            );
 
             return (
               <Card key={standardName} sx={{ mb: 2 }}>
