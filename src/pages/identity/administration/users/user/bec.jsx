@@ -1,9 +1,8 @@
-import React, { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { CheckCircle, Download, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -199,7 +198,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Remediation Card */}
-            <Grid item size={5}>
+            <Grid size={5}>
               <CippRemediationCard
                 userPrincipalName={userRequest.data[0].userPrincipalName}
                 userId={userRequest.data[0].id}
@@ -209,7 +208,7 @@ const Page = () => {
               />
             </Grid>
             {/* Check 1 Card with Loading */}
-            <Grid item size={7}>
+            <Grid size={7}>
               <CippButtonCard
                 variant="outlined"
                 isFetching={false}
@@ -240,7 +239,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Remediation Card */}
-            <Grid item size={5}>
+            <Grid size={5}>
               <CippRemediationCard
                 userPrincipalName={userRequest.data[0].userPrincipalName}
                 userId={userRequest.data[0].id}
@@ -250,7 +249,7 @@ const Page = () => {
               />
             </Grid>
             {/* All Steps */}
-            <Grid item size={7}>
+            <Grid size={7}>
               <Stack spacing={3}>
                 <CippButtonCard
                   variant="outlined"
@@ -313,8 +312,8 @@ const Page = () => {
                     becPollingCall.data.NewRules.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.NewRules.map((rule) => (
-                            <PropertyListItem label={rule.Name} value={rule.Description} />
+                          {becPollingCall.data.NewRules.map((rule, index) => (
+                            <PropertyListItem key={index} label={rule.Name} value={rule.Description} />
                           ))}
                         </PropertyList>
                       </Box>
@@ -353,8 +352,9 @@ const Page = () => {
                     becPollingCall.data.NewUsers.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.NewUsers.map((user) => (
+                          {becPollingCall.data.NewUsers.map((user, index) => (
                             <PropertyListItem
+                              key={index}
                               label={user.userPrincipalName}
                               value={user.createdDateTime}
                             />
@@ -396,8 +396,9 @@ const Page = () => {
                     becPollingCall.data.AddedApps.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.AddedApps.map((app) => (
+                          {becPollingCall.data.AddedApps.map((app, index) => (
                             <PropertyListItem
+                              key={index}
                               label={`${app.displayName} - ${app.appId}`}
                               value={app.createdDateTime}
                             />
@@ -439,8 +440,9 @@ const Page = () => {
                     becPollingCall.data.MailboxPermissionChanges.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.MailboxPermissionChanges.map((permission) => (
+                          {becPollingCall.data.MailboxPermissionChanges.map((permission, index) => (
                             <PropertyListItem
+                              key={index}
                               label={permission.UserKey}
                               value={`${permission.Operation} - ${permission.Permissions}`}
                             />
@@ -482,8 +484,9 @@ const Page = () => {
                     becPollingCall.data.MFADevices.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.MFADevices.map((permission) => (
+                          {becPollingCall.data.MFADevices.map((permission, index) => (
                             <PropertyListItem
+                              key={index}
                               label={permission["@odata.type"]}
                               value={`${permission.displayName} - Registered at ${permission.createdDateTime}`}
                             />
@@ -524,8 +527,9 @@ const Page = () => {
                     becPollingCall.data.ChangedPasswords.length > 0 && (
                       <Box mt={2}>
                         <PropertyList>
-                          {becPollingCall.data.ChangedPasswords.map((permission) => (
+                          {becPollingCall.data.ChangedPasswords.map((permission, index) => (
                             <PropertyListItem
+                              key={index}
                               label={permission.displayName}
                               value={`${permission.lastPasswordChangeDateTime}`}
                             />

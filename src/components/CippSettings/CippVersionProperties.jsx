@@ -1,4 +1,4 @@
-import { Box, Button, Skeleton, SvgIcon } from "@mui/material";
+import { Box, Button, SvgIcon } from "@mui/material";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { CheckCircle, SystemUpdateAlt, Warning } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";

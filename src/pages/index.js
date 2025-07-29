@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Box, Container, Button } from "@mui/material";
+import { Box, Container, Button, Card, CardContent, Tooltip } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippInfoBar } from "../components/CippCards/CippInfoBar";
 import { CippChartCard } from "../components/CippCards/CippChartCard";
@@ -13,10 +13,13 @@ import { BulkActionsMenu } from "../components/bulk-actions-menu.js";
 import { CippUniversalSearch } from "../components/CippCards/CippUniversalSearch.jsx";
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard.jsx";
+import { ExecutiveReportButton } from "../components/ExecutiveReportButton.js";
+import { CippStandardsDialog } from "../components/CippCards/CippStandardsDialog.jsx";
 
 const Page = () => {
   const { currentTenant } = useSettings();
   const [domainVisible, setDomainVisible] = useState(false);
+  const [standardsDialogOpen, setStandardsDialogOpen] = useState(false);
 
   const organization = ApiGetCall({
     url: "/api/ListOrg",
@@ -164,6 +167,13 @@ const Page = () => {
 
   const [PortalMenuItems, setPortalMenuItems] = useState([]);
 
+  const formatStorageSize = (sizeInMB) => {
+    if (sizeInMB >= 1024) {
+      return `${(sizeInMB / 1024).toFixed(2)}GB`;
+    }
+    return `${sizeInMB}MB`;
+  };
+
   useEffect(() => {
     if (currentTenantInfo.isSuccess) {
       const tenantLookup = currentTenantInfo.data?.find(
@@ -187,20 +197,40 @@ const Page = () => {
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Container maxWidth={false}>
           <Grid container spacing={3}>
-            <Grid item size={{ md: 12, xs: 12 }}>
-              <CippUniversalSearch />
+            <Grid size={{ md: 12, xs: 12 }}>
+              <Card>
+                <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
+                  <BulkActionsMenu
+                    buttonName="Portals"
+                    actions={PortalMenuItems}
+                    disabled={!currentTenantInfo.isSuccess}
+                  />
+                  <ExecutiveReportButton
+                    tenantName={organization.data?.displayName}
+                    tenantId={organization.data?.id}
+                    userStats={{
+                      licensedUsers: dashboard.data?.LicUsers || 0,
+                      unlicensedUsers: dashboard.data?.Users && dashboard.data?.LicUsers && GlobalAdminList.data?.Results && dashboard.data?.Guests
+                        ? dashboard.data?.Users - dashboard.data?.LicUsers - dashboard.data?.Guests - GlobalAdminList.data?.Results?.length
+                        : 0,
+                      guests: dashboard.data?.Guests || 0,
+                      globalAdmins: GlobalAdminList.data?.Results?.length || 0
+                    }}
+                    standardsData={standards.data}
+                    organizationData={organization.data}
+                    disabled={organization.isFetching || dashboard.isFetching}
+                  />
+                  <Box sx={{ flex: 1 }}>
+                    {/* TODO: Remove Card from inside CippUniversalSearch to avoid double border */}
+                    <CippUniversalSearch />
+                  </Box>
+                </CardContent>
+              </Card>
             </Grid>
-            <Grid item size={{ md: 12, xs: 12 }}>
-              <BulkActionsMenu
-                buttonName="Portals"
-                actions={PortalMenuItems}
-                disabled={!currentTenantInfo.isSuccess}
-              />
-            </Grid>
-            <Grid item size={{ md: 12, xs: 12 }}>
+            <Grid size={{ md: 12, xs: 12 }}>
               <CippInfoBar data={tenantInfo} isFetching={organization.isFetching} />
             </Grid>
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippChartCard
                 title="User Statistics"
                 isFetching={dashboard.isFetching || GlobalAdminList.isFetching}
@@ -225,17 +255,20 @@ const Page = () => {
               />
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
-              <CippChartCard
-                title="Standards Set"
-                isFetching={standards.isFetching}
-                chartType="bar"
-                chartSeries={[remediateCount, alertCount, reportCount]}
-                labels={["Remediation", "Alert", "Report"]}
-              />
+            <Grid size={{ md: 4, xs: 12 }}>
+              <Tooltip title="Click to view standards">
+                <CippChartCard
+                  title="Standards Set"
+                  isFetching={standards.isFetching}
+                  chartType="bar"
+                  chartSeries={[remediateCount, alertCount, reportCount]}
+                  labels={["Remediation", "Alert", "Report"]}
+                  onClick={() => setStandardsDialogOpen(true)}
+                />
+              </Tooltip>
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippChartCard
                 title="SharePoint Quota"
                 isFetching={sharepoint.isFetching}
@@ -245,16 +278,16 @@ const Page = () => {
                   Number(sharepoint.data?.GeoUsedStorageMB) || 0,
                 ]}
                 labels={[
-                  `Free (${
+                  `Free (${formatStorageSize(
                     sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB
-                  }MB)`,
-                  `Used (${Number(sharepoint.data?.GeoUsedStorageMB)}MB)`,
+                  )})`,
+                  `Used (${formatStorageSize(sharepoint.data?.GeoUsedStorageMB)})`,
                 ]}
               />
             </Grid>
 
             {/* Converted Domain Names to Property List */}
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippPropertyListCard
                 title="Domain Names"
                 showDivider={false}
@@ -276,7 +309,7 @@ const Page = () => {
               />
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippPropertyListCard
                 showDivider={false}
                 copyItems={true}
@@ -289,7 +322,7 @@ const Page = () => {
               />
             </Grid>
 
-            <Grid item size={{ md: 4, xs: 12 }}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippPropertyListCard
                 copyItems={true}
                 showDivider={false}
@@ -329,6 +362,13 @@ const Page = () => {
           </Grid>
         </Container>
       </Box>
+      
+      <CippStandardsDialog
+        open={standardsDialogOpen}
+        onClose={() => setStandardsDialogOpen(false)}
+        standardsData={standards.data}
+        currentTenant={currentTenant}
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { DeveloperMode, SevereCold, Sync, Tune, ViewColumn, MoreVert } from "@mui/icons-material";
+import { DeveloperMode, SevereCold, Sync, Tune, ViewColumn } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -74,8 +74,11 @@ export const CIPPTableToptoolbar = ({
   const handleActionMenuOpen = (event) => setActionMenuAnchor(event.currentTarget);
   const handleActionMenuClose = () => setActionMenuAnchor(null);
 
-  const getBulkActions = (actions) => {
-    return actions?.filter((action) => !action.link && !action?.hideBulk) || [];
+  const getBulkActions = (actions, selectedRows) => {
+    return actions?.filter((action) => !action.link && !action?.hideBulk)?.map(action => ({
+      ...action,
+      disabled: action.condition ? !selectedRows.every(row => action.condition(row.original)) : false
+    })) || [];
   };
 
   useEffect(() => {
@@ -364,7 +367,7 @@ export const CIPPTableToptoolbar = ({
               onClose={filterPopover.handleClose}
               MenuListProps={{ dense: true }}
             >
-              <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+              <MenuItem key="reset-filters" onClick={() => setTableFilter("", "reset", "")}>
                 <ListItemText primary="Reset all filters" />
               </MenuItem>
               {api?.url === "/api/ListGraphRequest" && (
@@ -490,7 +493,7 @@ export const CIPPTableToptoolbar = ({
                 <SevereCold />
               </Tooltip>
             )}
-            {actions && getBulkActions(actions).length > 0 && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
+            {actions && getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
               <>
                 <Button
                   onClick={popover.handleOpen}
@@ -525,10 +528,12 @@ export const CIPPTableToptoolbar = ({
                     vertical: "top",
                   }}
                 >
-                  {getBulkActions(actions).map((action, index) => (
+                  {getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
                     <MenuItem
                       key={index}
+                      disabled={action.disabled}
                       onClick={() => {
+                        if (action.disabled) return;
                         setActionData({
                           data: table.getSelectedRowModel().rows.map((row) => row.original),
                           action: action,

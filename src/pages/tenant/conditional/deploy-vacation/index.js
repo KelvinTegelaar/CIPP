@@ -4,9 +4,15 @@ import { Button } from "@mui/material";
 import { EventAvailable } from "@mui/icons-material";
 import Link from "next/link";
 import { Delete } from "@mui/icons-material";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const actions = [
+    {
+      label: "View Task Details",
+      link: "/cipp/scheduler/task?id=[RowKey]",
+      icon: <EyeIcon />,
+    },
     {
       label: "Cancel Vacation Mode",
       type: "POST",
@@ -34,18 +40,21 @@ const Page = () => {
       tenantInTitle={false}
       actions={actions}
       simpleColumns={[
+        "Tenant",
         "Name",
         "TaskState",
         "ScheduledTime",
+        "ExecutedTime",
         "Parameters.ExclusionType",
+        "Parameters.Users",
         "Parameters.UserName",
-        "Parameters.PolicyId",
       ]}
       offCanvas={{
         extendedInfoFields: [
           "Name",
           "TaskState",
           "ScheduledTime",
+          "Parameters.Users",
           "Parameters.UserName",
           "Parameters.PolicyId",
           "Tenant",
