@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Skeleton } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@mui/material";
 import { Grid } from "@mui/system";
 import dynamic from "next/dynamic";
 import { ApiPostCall } from "/src/api/ApiCall";
@@ -61,7 +61,7 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item size={{ xs: 12, sm: 8 }}>
+      <Grid size={{ xs: 12, sm: 8 }}>
         {geoLookup.isPending ? (
           <Skeleton variant="rectangular" height={400} />
         ) : (
@@ -78,7 +78,7 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
           </>
         )}
       </Grid>
-      <Grid item size={{ xs: 12, sm: 4 }}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <CippPropertyList
           propertyItems={properties}
           showDivider={false}

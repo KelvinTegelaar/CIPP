@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { Grid, Divider } from "@mui/material";
+import { useEffect } from "react";
+import { Divider } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
@@ -39,7 +40,7 @@ const AddPolicy = () => {
       postUrl="/api/AddQuarantinePolicy"
     >
       <Grid container spacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
@@ -53,7 +54,7 @@ const AddPolicy = () => {
         {/* <Divider sx={{ my: 2, width: "100%" }} /> */}
 
         {/* TemplateList, can be added later. But did not seem necessary with so few settings */}
-        {/* <Grid item xs={12} md={12}>
+        {/* <Grid xs={12} md={12}>
           <CippFormComponent
             type="autoComplete"
             label="Select a template (optional)"
@@ -71,7 +72,7 @@ const AddPolicy = () => {
         </Grid> */}
 
         <Divider sx={{ my: 2, width: "100%" }} />
-          <Grid item xs={6} >
+          <Grid xs={6} >
             <CippFormComponent
               type="textField"
               label="Policy Name"
@@ -96,7 +97,7 @@ const AddPolicy = () => {
             />
           </Grid>
 
-          <Grid item xs={2}>
+          <Grid xs={2}>
             
             <CippFormComponent
               type="switch"
@@ -123,7 +124,7 @@ const AddPolicy = () => {
               formControl={formControl}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid xs={4}>
             <CippFormComponent
               type="switch"
               label="Quarantine Notification"

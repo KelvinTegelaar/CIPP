@@ -130,25 +130,25 @@ const Page = () => {
     <div>
       {oldStandards.isSuccess && oldStandards.data.length !== 0 && (
         <Grid container spacing={2}>
-          <Grid container item spacing={2}>
+          <Grid container spacing={2}>
             <Alert
               severity="warning"
               style={{ display: "flex", alignItems: "center", width: "100%" }}
             >
-              <Grid item size={12}>
+              <Grid size={12}>
                 You have legacy standards available. Press the button to convert these standards to
                 the new format. This will create a new template for each standard you had, but will
                 disable the schedule. After conversion, please check the new templates to ensure
                 they are correct and re-enable the schedule.
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Button onClick={() => handleConversion()} variant={"contained"}>
                   Convert Legacy Standards
                 </Button>
               </Grid>
             </Alert>
           </Grid>
-          <Grid item size={8}>
+          <Grid size={8}>
             <CippApiResults apiObject={conversionApi} />
           </Grid>
         </Grid>

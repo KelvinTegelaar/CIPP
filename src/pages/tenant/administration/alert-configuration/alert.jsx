@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -106,12 +106,37 @@ const AlertWizard = () => {
           alert.RawAlert.PostExecution.split(",").includes(opt.value)
         );
 
-        // Create the reset object with all the form values
-        const resetObject = {
-          tenantFilter: {
+        // Create tenant filter object - handle both regular tenants and tenant groups
+        let tenantFilterForForm;
+        if (alert.RawAlert.TenantGroup) {
+          try {
+            const tenantGroupObject = JSON.parse(alert.RawAlert.TenantGroup);
+            tenantFilterForForm = {
+              value: tenantGroupObject.value,
+              label: tenantGroupObject.label,
+              type: "Group",
+              addedFields: tenantGroupObject,
+            };
+          } catch (error) {
+            console.error("Error parsing tenant group:", error);
+            // Fall back to regular tenant
+            tenantFilterForForm = {
+              value: alert.RawAlert.Tenant,
+              label: alert.RawAlert.Tenant,
+              type: "Tenant",
+            };
+          }
+        } else {
+          tenantFilterForForm = {
             value: alert.RawAlert.Tenant,
             label: alert.RawAlert.Tenant,
-          },
+            type: "Tenant",
+          };
+        }
+
+        // Create the reset object with all the form values
+        const resetObject = {
+          tenantFilter: tenantFilterForForm,
           excludedTenants: excludedTenantsFormatted,
           command: { value: usedCommand, label: usedCommand.label },
           recurrence: recurrenceOption,
@@ -260,9 +285,9 @@ const AlertWizard = () => {
 
     const postObject = {
       RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
-      tenantFilter: values.tenantFilter?.value,
+      tenantFilter: values.tenantFilter,
       excludedTenants: values.excludedTenants,
-      Name: `${values.tenantFilter.value}: ${values.command.label}`,
+      Name: `${values.tenantFilter?.label || values.tenantFilter?.value}: ${values.command.label}`,
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
       Parameters: getInputParams(),
       ScheduledTime: Math.floor(new Date().getTime() / 1000) + 60,
@@ -556,6 +581,7 @@ const AlertWizard = () => {
                                 multiple={false}
                                 formControl={formControl}
                                 label="Included Tenants for alert"
+                                includeGroups={true}
                                 validators={{
                                   required: { value: true, message: "This field is required" },
                                 }}
