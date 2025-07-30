@@ -27,6 +27,7 @@ import {
   Close,
   Search,
   FactCheck,
+  PlayArrow,
 } from "@mui/icons-material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import standards from "/src/data/standards.json";
@@ -549,8 +550,36 @@ const Page = () => {
       noConfirm: true,
       customFunction: () => {
         comparisonApi.refetch();
+        templateDetails.refetch();
       },
     },
+    ...(templateId
+      ? [
+          {
+            label: "Run Standard Now (Currently Selected Tenant only)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+          {
+            label: "Run Standard Now (All Tenants in Template)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+              tenantFilter: "allTenants",
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+        ]
+      : []),
   ];
 
   return (

@@ -6,7 +6,7 @@ import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
 import { CippChartCard } from "/src/components/CippCards/CippChartCard";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
-import { Policy } from "@mui/icons-material";
+import { Policy, Sync, PlayArrow } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
 
 const Page = () => {
@@ -70,6 +70,45 @@ const Page = () => {
     },
   ];
 
+  // Actions for the ActionsMenu
+  const actions = [
+    {
+      label: "Refresh Data",
+      icon: <Sync />,
+      noConfirm: true,
+      customFunction: () => {
+        driftHistoryData.refetch();
+      },
+    },
+    ...(templateId
+      ? [
+          {
+            label: "Run Standard Now (Currently Selected Tenant only)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+          {
+            label: "Run Standard Now (All Tenants in Template)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+              tenantFilter: "allTenants",
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+        ]
+      : []),
+  ];
+
   const title = "Manage Drift";
   const subtitle = [
     {
@@ -84,6 +123,9 @@ const Page = () => {
       title={title}
       subtitle={subtitle}
       backUrl="/tenant/standards/list-standards"
+      actions={actions}
+      actionsData={{}}
+      isFetching={driftHistoryData.isLoading}
     >
       <Box sx={{ py: 2 }}>
         <Stack spacing={4}>

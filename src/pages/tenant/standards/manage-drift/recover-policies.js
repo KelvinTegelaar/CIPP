@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
-import { Policy, Restore, ExpandMore } from "@mui/icons-material";
+import { Policy, Restore, ExpandMore, Sync, PlayArrow } from "@mui/icons-material";
 import {
   Box,
   Stack,
@@ -77,6 +77,45 @@ const RecoverPoliciesPage = () => {
     });
   };
 
+  // Actions for the ActionsMenu
+  const actions = [
+    {
+      label: "Refresh Data",
+      icon: <Sync />,
+      noConfirm: true,
+      customFunction: () => {
+        // Refresh any relevant data here
+      },
+    },
+    ...(templateId
+      ? [
+          {
+            label: "Run Standard Now (Currently Selected Tenant only)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+          {
+            label: "Run Standard Now (All Tenants in Template)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+              tenantFilter: "allTenants",
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+        ]
+      : []),
+  ];
+
   const title = "Manage Drift";
   const subtitle = [
     {
@@ -91,6 +130,9 @@ const RecoverPoliciesPage = () => {
       title={title}
       subtitle={subtitle}
       backUrl="/tenant/standards/list-standards"
+      actions={actions}
+      actionsData={{}}
+      isFetching={recoverApi.isPending}
     >
       <CippHead title="Recover Policies" />
       <Box sx={{ py: 2 }}>

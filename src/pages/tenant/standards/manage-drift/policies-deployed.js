@@ -8,6 +8,7 @@ import {
   Devices,
   ExpandMore,
   Sync,
+  PlayArrow,
 } from "@mui/icons-material";
 import {
   Box,
@@ -243,6 +244,33 @@ const PoliciesDeployedPage = () => {
         driftApi.refetch();
       },
     },
+    ...(templateId
+      ? [
+          {
+            label: "Run Standard Now (Currently Selected Tenant only)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+          {
+            label: "Run Standard Now (All Tenants in Template)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+              tenantFilter: "allTenants",
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+        ]
+      : []),
   ];
   const title = "Manage Drift";
   const subtitle = [
