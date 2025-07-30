@@ -85,7 +85,12 @@ export const CippBannerListCard = (props) => {
                     onClick={isCollapsible ? () => handleExpand(item.id) : undefined}
                   >
                     {/* Left Side: cardLabelBox */}
-                    <Stack direction="row" spacing={2} alignItems="center" sx={{ flex: 1, minWidth: 0 }}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      sx={{ flex: 1, minWidth: 0 }}
+                    >
                       <Box
                         sx={{
                           alignItems: "center",
@@ -116,9 +121,9 @@ export const CippBannerListCard = (props) => {
                           color="text.primary"
                           variant="h6"
                           sx={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           {item.text}
@@ -174,7 +179,7 @@ export const CippBannerListCard = (props) => {
                         {item?.propertyItems?.length > 0 && (
                           <CippPropertyListCard
                             propertyItems={item.propertyItems || []}
-                            layout="dual"
+                            layout={other.layout || "dual"}
                             isFetching={item.isFetching || false}
                           />
                         )}

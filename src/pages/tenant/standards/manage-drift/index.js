@@ -86,55 +86,22 @@ const ManageDriftPage = () => {
       acc.currentDeviationsCount += item.currentDeviationsCount || 0;
       acc.alignedCount += item.alignedCount || 0;
       acc.customerSpecificDeviations += item.customerSpecificDeviationsCount || 0;
+      acc.deniedDeviationsCount += item.deniedDeviationsCount || 0;
 
-      // Use allDeviations array which contains standardDisplayName for template policies
-      if (item.allDeviations && Array.isArray(item.allDeviations)) {
-        const allDeviations = item.allDeviations.filter((dev) => dev !== null);
-
-        // Filter deviations by state/status
-        const currentDeviations = allDeviations.filter(
-          (d) => d.state === "current" || d.Status === "New" || (!d.state && !d.Status)
+      // Use the API's direct arrays instead of filtering allDeviations
+      if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
+        acc.currentDeviations.push(...item.currentDeviations.filter((dev) => dev !== null));
+      }
+      if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
+        acc.acceptedDeviations.push(...item.acceptedDeviations.filter((dev) => dev !== null));
+      }
+      if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
+        acc.customerSpecificDeviationsList.push(
+          ...item.customerSpecificDeviations.filter((dev) => dev !== null)
         );
-        const acceptedDeviations = allDeviations.filter(
-          (d) => d.state === "accepted" || d.Status === "Accepted"
-        );
-        const customerSpecificDeviations = allDeviations.filter(
-          (d) =>
-            d.state === "customerSpecific" ||
-            d.Status === "CustomerSpecific" ||
-            d.Status === "Customer Specific"
-        );
-        const deniedDeleteDeviations = allDeviations.filter(
-          (d) =>
-            d.state === "deniedDelete" ||
-            d.Status === "DeniedDelete" ||
-            d.Status === "Denied - Delete"
-        );
-        const deniedRemediateDeviations = allDeviations.filter(
-          (d) =>
-            d.state === "deniedRemediate" ||
-            d.Status === "DeniedRemediate" ||
-            d.Status === "Denied - Remediate"
-        );
-
-        acc.currentDeviations.push(...currentDeviations);
-        acc.acceptedDeviations.push(...acceptedDeviations);
-        acc.customerSpecificDeviationsList.push(...customerSpecificDeviations);
-        acc.deniedDeleteDeviationsList.push(...deniedDeleteDeviations);
-        acc.deniedRemediateDeviationsList.push(...deniedRemediateDeviations);
-      } else {
-        // Fallback to separate arrays if allDeviations is not available
-        if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
-          acc.currentDeviations.push(...item.currentDeviations.filter((dev) => dev !== null));
-        }
-        if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
-          acc.acceptedDeviations.push(...item.acceptedDeviations.filter((dev) => dev !== null));
-        }
-        if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
-          acc.customerSpecificDeviationsList.push(
-            ...item.customerSpecificDeviations.filter((dev) => dev !== null)
-          );
-        }
+      }
+      if (item.deniedDeviations && Array.isArray(item.deniedDeviations)) {
+        acc.deniedDeviationsList.push(...item.deniedDeviations.filter((dev) => dev !== null));
       }
 
       // Use the latest data collection timestamp
@@ -153,11 +120,11 @@ const ManageDriftPage = () => {
       currentDeviationsCount: 0,
       alignedCount: 0,
       customerSpecificDeviations: 0,
+      deniedDeviationsCount: 0,
       currentDeviations: [],
       acceptedDeviations: [],
       customerSpecificDeviationsList: [],
-      deniedDeleteDeviationsList: [],
-      deniedRemediateDeviationsList: [],
+      deniedDeviationsList: [],
       latestDataCollection: null,
     }
   );
@@ -306,6 +273,14 @@ const ManageDriftPage = () => {
             value: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
           },
           {
+            label: "Reason",
+            value: deviation.Reason || "N/A",
+          },
+          {
+            label: "User",
+            value: deviation.lastChangedByUser || "N/A",
+          },
+          {
             label: "Last Updated",
             value: processedDriftData.latestDataCollection
               ? new Date(processedDriftData.latestDataCollection).toLocaleString()
@@ -325,13 +300,9 @@ const ManageDriftPage = () => {
     processedDriftData.customerSpecificDeviationsList,
     "customerspecific"
   );
-  const deniedDeleteDeviationItems = createDeviationItems(
-    processedDriftData.deniedDeleteDeviationsList,
-    "denieddelete"
-  );
-  const deniedRemediateDeviationItems = createDeviationItems(
-    processedDriftData.deniedRemediateDeviationsList,
-    "deniedremediate"
+  const deniedDeviationItems = createDeviationItems(
+    processedDriftData.deniedDeviationsList,
+    "denied"
   );
 
   const handleMenuClick = (event, itemId) => {
@@ -712,54 +683,23 @@ const ManageDriftPage = () => {
     };
   });
 
-  // Add action buttons to denied delete deviation items
-  const deniedDeleteDeviationItemsWithActions = deniedDeleteDeviationItems.map((item) => ({
+  // Add action buttons to denied deviation items
+  const deniedDeviationItemsWithActions = deniedDeviationItems.map((item) => ({
     ...item,
     actionButton: (
       <>
         <Button
           variant="outlined"
           endIcon={<ExpandMore />}
-          onClick={(e) => handleMenuClick(e, `denied-delete-${item.id}`)}
+          onClick={(e) => handleMenuClick(e, `denied-${item.id}`)}
           size="small"
         >
           Actions
         </Button>
         <Menu
-          anchorEl={anchorEl[`denied-delete-${item.id}`]}
-          open={Boolean(anchorEl[`denied-delete-${item.id}`])}
-          onClose={() => handleMenuClose(`denied-delete-${item.id}`)}
-        >
-          <MenuItem onClick={() => handleDeviationAction("accept", item)}>
-            <Check sx={{ mr: 1, color: "success.main" }} />
-            Accept
-          </MenuItem>
-          <MenuItem onClick={() => handleDeviationAction("accept-customer-specific", item)}>
-            <CheckCircle sx={{ mr: 1, color: "info.main" }} />
-            Accept - Customer Specific
-          </MenuItem>
-        </Menu>
-      </>
-    ),
-  }));
-
-  // Add action buttons to denied remediate deviation items
-  const deniedRemediateDeviationItemsWithActions = deniedRemediateDeviationItems.map((item) => ({
-    ...item,
-    actionButton: (
-      <>
-        <Button
-          variant="outlined"
-          endIcon={<ExpandMore />}
-          onClick={(e) => handleMenuClick(e, `denied-remediate-${item.id}`)}
-          size="small"
-        >
-          Actions
-        </Button>
-        <Menu
-          anchorEl={anchorEl[`denied-remediate-${item.id}`]}
-          open={Boolean(anchorEl[`denied-remediate-${item.id}`])}
-          onClose={() => handleMenuClose(`denied-remediate-${item.id}`)}
+          anchorEl={anchorEl[`denied-${item.id}`]}
+          open={Boolean(anchorEl[`denied-${item.id}`])}
+          onClose={() => handleMenuClose(`denied-${item.id}`)}
         >
           <MenuItem onClick={() => handleDeviationAction("accept", item)}>
             <Check sx={{ mr: 1, color: "success.main" }} />
@@ -939,16 +879,6 @@ const ManageDriftPage = () => {
                         </MenuItem>
                       </Menu>
 
-                      {/* What If Button */}
-                      <Button
-                        variant="outlined"
-                        endIcon={<ExpandMore />}
-                        onClick={(e) => setWhatIfAnchorEl(e.currentTarget)}
-                        size="small"
-                        startIcon={<Science />}
-                      >
-                        What If
-                      </Button>
                       <Menu
                         anchorEl={whatIfAnchorEl}
                         open={Boolean(whatIfAnchorEl)}
@@ -969,6 +899,7 @@ const ManageDriftPage = () => {
                   <CippBannerListCard
                     items={deviationItemsWithActions}
                     isCollapsible={true}
+                    layout={"single"}
                     isFetching={driftApi.isFetching}
                   />
                 </Box>
@@ -982,6 +913,7 @@ const ManageDriftPage = () => {
                     <CippBannerListCard
                       items={acceptedDeviationItemsWithActions}
                       isCollapsible={true}
+                      layout={"single"}
                       isFetching={driftApi.isFetching}
                     />
                   </Box>
@@ -996,34 +928,22 @@ const ManageDriftPage = () => {
                     <CippBannerListCard
                       items={customerSpecificDeviationItemsWithActions}
                       isCollapsible={true}
+                      layout={"single"}
                       isFetching={driftApi.isFetching}
                     />
                   </Box>
                 )}
 
-                {/* Denied Delete Deviations Section */}
-                {deniedDeleteDeviationItemsWithActions.length > 0 && (
+                {/* Denied Deviations Section */}
+                {deniedDeviationItemsWithActions.length > 0 && (
                   <Box>
                     <Typography variant="h6" sx={{ mb: 2 }}>
-                      Denied Deviations - Delete
+                      Denied Deviations
                     </Typography>
                     <CippBannerListCard
-                      items={deniedDeleteDeviationItemsWithActions}
+                      items={deniedDeviationItemsWithActions}
                       isCollapsible={true}
-                      isFetching={driftApi.isFetching}
-                    />
-                  </Box>
-                )}
-
-                {/* Denied Remediate Deviations Section */}
-                {deniedRemediateDeviationItemsWithActions.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Denied Deviations - Remediate
-                    </Typography>
-                    <CippBannerListCard
-                      items={deniedRemediateDeviationItemsWithActions}
-                      isCollapsible={true}
+                      layout={"single"}
                       isFetching={driftApi.isFetching}
                     />
                   </Box>
@@ -1037,6 +957,13 @@ const ManageDriftPage = () => {
         <CippApiDialog
           createDialog={createDialog}
           title="Confirmation"
+          fields={[
+            {
+              type: "textField",
+              name: "reason",
+              label: "Reason for change (Mandatory)",
+            },
+          ]}
           api={{
             url: "/api/ExecUpdateDriftDeviation",
             type: "POST",
