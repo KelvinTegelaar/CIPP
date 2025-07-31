@@ -191,7 +191,8 @@ const Page = () => {
         <Stack spacing={4}>
           <Typography variant="h6">Activity Timeline</Typography>
           <Typography variant="body1" color="text.secondary">
-            Historical timeline of system activities and events for the last {daysToLoad} days.
+            This timeline shows the history of actions taken on this tenant, by CIPP for the last{" "}
+            {daysToLoad} days.
           </Typography>
 
           {logsData.isLoading && (
