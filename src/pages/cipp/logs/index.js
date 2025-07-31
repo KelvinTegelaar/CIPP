@@ -190,7 +190,8 @@ const Page = () => {
                   <Alert severity="info">
                     Use the filters below to narrow down your logbook results. You can filter by
                     date range, username, and severity levels. By default, the logbook shows the
-                    current day based on UTC time. Your local time is {new Date().getTimezoneOffset() / -60} hours offset from UTC.
+                    current day based on UTC time. Your local time is{" "}
+                    {new Date().getTimezoneOffset() / -60} hours offset from UTC.
                   </Alert>
                 </Grid>
                 <Grid size={{ sm: 7, xs: 12 }}>
@@ -317,20 +318,6 @@ const Page = () => {
     />
   );
 };
-
-/* Comment to Developer:
- - The filter is inside an expandable Accordion. By default, the filter is collapsed.
- - The "Apply Filters" button sets the form data for date, username, and severity filters.
- - The "Clear Filters" button resets all filters and disables filtering.
- - Filters are automatically enabled when any filter parameter is set.
- - Form state is managed using react-hook-form, and the filter states are applied to the table.
- - Both StartDate and EndDate are passed to the API in 'YYYYMMDD' format.
- - The User parameter is passed directly as a string for username filtering.
- - The Severity parameter is passed as a comma-separated list of severity levels.
- - The Filter toggle is passed as a boolean and is automatically enabled when any filter is set.
- - A warning alert is displayed when the selected date range exceeds 10 days instead of enforcing
-   a strict limit. This helps users understand potential issues with large data sets.
-*/
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 

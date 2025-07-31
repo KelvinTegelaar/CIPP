@@ -144,8 +144,27 @@ const CippStandardsSideBar = ({
       }
 
       // Filter out current template if editing
-      const existingTemplates = driftValidationApi.data.filter((template) =>
-        edit ? template.GUID !== watchForm.GUID : true
+      console.log("Duplicate detection debug:", {
+        edit,
+        currentGUID: watchForm.GUID,
+        allTemplates: driftValidationApi.data?.map((t) => ({
+          GUID: t.GUID,
+          standardId: t.standardId,
+          standardName: t.standardName,
+        })),
+      });
+
+      const existingTemplates = driftValidationApi.data.filter((template) => {
+        const shouldInclude = edit && watchForm.GUID ? template.standardId !== watchForm.GUID : true;
+        console.log(
+          `Template ${template.standardId} (${template.standardName}): shouldInclude=${shouldInclude}, currentGUID=${watchForm.GUID}`
+        );
+        return shouldInclude;
+      });
+
+      console.log(
+        "Filtered templates:",
+        existingTemplates?.map((t) => ({ GUID: t.GUID, standardId: t.standardId, standardName: t.standardName }))
       );
 
       // Get tenant groups data
@@ -174,24 +193,44 @@ const CippStandardsSideBar = ({
       });
 
       // Check for conflicts with unique templates
+      console.log("Checking conflicts with unique templates:", uniqueTemplates);
+      console.log("Selected tenant list:", selectedTenantList);
+
       for (const templateId in uniqueTemplates) {
         const template = uniqueTemplates[templateId];
         const templateTenants = template.tenants;
 
+        console.log(
+          `Checking template ${templateId} (${template.standardName}) with tenants:`,
+          templateTenants
+        );
+
         const hasConflict = selectedTenantList.some((selectedTenant) => {
           // Check if any template tenant matches the selected tenant
-          return templateTenants.some((templateTenant) => {
+          const conflict = templateTenants.some((templateTenant) => {
             if (selectedTenant === "AllTenants" || templateTenant === "AllTenants") {
+              console.log(
+                `Conflict found: ${selectedTenant} vs ${templateTenant} (AllTenants match)`
+              );
               return true;
             }
-            return selectedTenant === templateTenant;
+            const match = selectedTenant === templateTenant;
+            if (match) {
+              console.log(`Conflict found: ${selectedTenant} vs ${templateTenant} (exact match)`);
+            }
+            return match;
           });
+          return conflict;
         });
+
+        console.log(`Template ${templateId} has conflict: ${hasConflict}`);
 
         if (hasConflict) {
           conflicts.push(template.standardName || "Unknown Template");
         }
       }
+
+      console.log("Final conflicts:", conflicts);
 
       if (conflicts.length > 0) {
         setDriftError(

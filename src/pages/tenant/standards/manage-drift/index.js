@@ -969,7 +969,6 @@ const ManageDriftPage = () => {
             type: "POST",
             data: {
               deviations: "deviations",
-              TenantFilter: "TenantFilter",
             },
             confirmText: `Are you sure you'd like to ${actionData.action?.text || "update"} ${
               actionData.action?.type === "single"
