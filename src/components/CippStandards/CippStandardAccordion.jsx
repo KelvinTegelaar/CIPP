@@ -135,10 +135,9 @@ const CippStandardAccordion = ({
 
         // Set default autoRemediate if not set
         if (currentValues.autoRemediate === undefined) {
-          formControl.setValue(`${standardName}.autoRemediate`, true);
+          formControl.setValue(`${standardName}.autoRemediate`, false);
           formControl.setValue(`${standardName}.action`, [
             { label: "Report", value: "Report" },
-            { label: "Remediate", value: "Remediate" },
           ]);
         }
       });
