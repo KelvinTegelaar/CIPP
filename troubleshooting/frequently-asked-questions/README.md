@@ -37,7 +37,7 @@ Vendor sponsorship pays for that development, training, and support. If you have
 
 Here's a couple of options for emails that you can send to licensing provider vendors. Modify these as you see fit for other vendors.
 
-### Email 1: You love CIPP and would switch distributors based on who we integrate with:
+#### Email 1: You love CIPP and would switch distributors based on who we integrate with:
 
 {% code overflow="wrap" %}
 ```
@@ -50,7 +50,7 @@ Regards,
 ```
 {% endcode %}
 
-### Email 2: You love CIPP and would like your distributor to integrate
+#### Email 2: You love CIPP and would like your distributor to integrate
 
 {% code overflow="wrap" %}
 ```
@@ -84,7 +84,7 @@ Performance issues in CIPP are not expected. If your performance appears impacte
 
 If users in your organization have not accessed CIPP in a while, the Static Web App will put itself into a sleep state to save on resource usage. It's normal to see an initial 15-20 second delay on the first results being called from the CIPP-API backend. This is sometimes known as a cold start.
 
-If you want to avoid cold starts, it's possible to utilize the [Broken link](broken-reference "mention") and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `https://<cippurl>/api/PublicPing` every 3-5 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making. The `/PublicPing` endpoint does not require the full authentication setup for the API.
+If you want to avoid cold starts, it's possible to utilize the [broken-reference](broken-reference/ "mention") and an RPA such as CIPP sponsor Rewst to make a basic call to keep activity on the function app. A basic call to `https://<cippurl>/api/PublicPing` every 3-4 minutes will complete quickly and ensure that your function app stays in a warm state. It is recommended that you limit your RPA cron to only during expected business hours to limit the number of additional function app calls you are making. The `/PublicPing` endpoint does not require the full authentication setup for the API.
 
 Self-hosted clients should see minimal impact to their overall costs.
 
@@ -115,13 +115,13 @@ Beginning with v7, CIPP relies on the tenant's name at the time a GDAP relations
 
 To have the new tenant's name show up in CIPP, you have two options
 
-### Establish a New Relationship
+#### Establish a New Relationship
 
 1. After renaming the tenant, create a new GDAP relationship. You can use the [gdap-invite-wizard.md](../../setup/installation/gdap-invite-wizard.md "mention")wizard to expedite this process.
 2. Terminate the old GDAP relationship. This can be accomplished by locating the old relationship on the GDAP [relationships](../../user-documentation/tenant/gdap-management/relationships/ "mention")page and selecting terminate relationship from the per-row actions or Bulk Actions with the row selected.
 3. Cleare your tenant cache from [settings](../../user-documentation/cipp/settings/ "mention").
 
-### Utilize the Tenant Alias Functionality
+#### Utilize the Tenant Alias Functionality
 
 CIPP can also set an alias via the [#properties](../../user-documentation/tenant/administration/tenants/edit.md#properties "mention") section of [edit.md](../../user-documentation/tenant/administration/tenants/edit.md "mention").
 
@@ -141,7 +141,7 @@ The CIPP alert "Alert on admins without any form of MFA" is based on checking a 
 
 Typically, this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
 
-Check the [#multi-factor-authentication-troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting "mention") details in the [Broken link](broken-reference "mention")section for more information.
+Check the [#multi-factor-authentication-troubleshooting](../troubleshooting.md#multi-factor-authentication-troubleshooting "mention") details in the [broken-reference](broken-reference/ "mention")section for more information.
 
 </details>
 
@@ -196,7 +196,7 @@ This error occurs because the user who authorized the CSP or Graph API connectio
 
 For more details, refer to:
 
-* [Broken link](broken-reference "mention")
+* [broken-reference](broken-reference/ "mention")
 
 </details>
 
@@ -207,11 +207,11 @@ For more details, refer to:
 1. **Perform a Permissions Check:**
    * Go to CIPP -> Settings -> [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention")
    * A Permissions Check will automatically run on page load
-2. Confirm the UserPrincipalName matches the expected service account.&#x20;
+2. Confirm the UserPrincipalName matches the expected service account.
 3. If not, go to the [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention") and select the option to "Refresh Tokens for existing application registration.
 4. Review the remaining [#permissions-check](../../user-documentation/cipp/settings/permissions.md#permissions-check "mention") output after replacing the incorrect account.
    * The refresh token matches key vault. This may take a little while to update after first changing the account due to caching.
-   * The user should be a service account.&#x20;
+   * The user should be a service account.
    * The user needs to be a member of the AdminAgents group.
    * The application has all the required permissions. If you have an error here, review [#im-getting-missing-permissions-errors-when-performing-the-permissions-check-on-my-cipp-sam-applicati](./#im-getting-missing-permissions-errors-when-performing-the-permissions-check-on-my-cipp-sam-applicati "mention")
 
@@ -264,7 +264,7 @@ No, CIPP can work with any M365 license in your partner tenant. For specific fea
 
 <summary>My usernames or sites are GUIDs or blank?</summary>
 
-Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" in [list-standards](../../user-documentation/tenant/standards/list-standards/ "mention").
+Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" in [classic-standards](../../user-documentation/tenant/standards/list-standards/classic-standards/ "mention").
 
 </details>
 
@@ -294,11 +294,11 @@ This permits users the ability to grant consent when access CIPP now.
 
 <summary>Can I replace the default branding with my own in CIPP?</summary>
 
-### For the CIPP application:
+#### For the CIPP application:
 
 No, CIPP's branding is compiled into the code. Additionally, the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.
 
-### For CIPP reports:
+#### For CIPP reports:
 
 Yes, please set up the [#branding-settings](../../user-documentation/cipp/settings/#branding-settings "mention") in [settings](../../user-documentation/cipp/settings/ "mention")
 

@@ -1,9 +1,7 @@
-# Deploy Custom Policy
+# Add Quarantine Policy
 
-This page will allow you to deploy a custom quarantine policy to tenant(s) or All Tenants.
+This page will allow you to configure and deploy a new quarantine policy to your tenants. Select the tenant(s), configure the options you want including release action preference, and click `Submit` to deploy the new quarantine policy.
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
+{% include "../../../../.gitbook/includes/feature-request.md" %}

@@ -53,7 +53,7 @@ Turning off **Remediate** prevents future fixes but doesn’t undo changes alrea
 ### Categories
 
 * Standards are grouped by categories, like security, compliance, or usability.
-* There are over 60 standards ([#available-standards](../../user-documentation/tenant/standards/list-standards/#available-standards "mention")), with more added regularly.
+* There are over 60 standards ([#available-standards](../../user-documentation/tenant/standards/list-standards/classic-standards/#available-standards "mention")), with more added regularly.
 
 ## Deploying Templates
 

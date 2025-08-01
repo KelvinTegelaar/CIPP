@@ -1,6 +1,6 @@
 # View Tenant Report
 
-When selected from the per-row actions on the [list-standards](list-standards/ "mention") page, this report will provide you with an outline of the tenant currently selected menu bar against the standard template. It will also display any tenant that is missing licensing for the standard.
+When selected from the per-row actions on the [classic-standards](list-standards/classic-standards/ "mention") page, this report will provide you with an outline of the tenant currently selected menu bar against the standard template. It will also display any tenant that is missing licensing for the standard.
 
 {% hint style="info" %}
 Note that the standard must be set to "Report" or "Remediate" for the system to collect the current settings from the tenant. Once report is set, it may take a couple of cycles for the orchestrator to correctly gather and apply any standards that are set to both Report and Remediate since the system will first Report before Remediate actions are taken.

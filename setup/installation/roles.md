@@ -66,6 +66,9 @@ Set up Custom Roles by following these steps:
   * If AllTenants is selected, you can block a subset of tenants or tenant groups using Blocked Tenants.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
   * To find out which API endpoints are affected by these selections, click on the Info button.
+* You must be sure to assign both the custom role and the base role `readonly` or `editor` to the users.&#x20;
+  * If using Entra ID groups, you can map the base role to a Entra group (eg. `CIPP readonly` mapped to `readonly`) and add the user to the base role Entra group and the custom role Entra group to properly manage permissions
+  * If using SWA role management (self-hosted) or management portal (CyberDrain hosted) be sure to add both roles to the user manually.
 
 {% hint style="info" %}
 If you are continuing to statically assign roles, the custom roles created in CIPP do not sync back to the SWA role management (self-hosted) or management portal (CyberDrain hosted). You will need to add the role to the invited user exactly how it appears in CIPP manually.
