@@ -328,10 +328,6 @@ const ManageDriftPage = () => {
         status = "Accepted";
         actionText = "accept";
         break;
-      case "deny-remove":
-        status = "Denied";
-        actionText = "deny and remove";
-        break;
       case "deny-delete":
         status = "DeniedDelete";
         actionText = "deny and delete";
@@ -554,7 +550,8 @@ const ManageDriftPage = () => {
   const deviationItemsWithActions = deviationItems.map((item) => {
     // Check if this is a template that supports delete action
     const supportsDelete =
-      item.standardName === "ConditionalAccessTemplate" || item.standardName === "IntuneTemplate";
+      item.standardName?.includes("ConditionalAccessTemplate") ||
+      item.standardName?.includes("IntuneTemplate");
 
     return {
       ...item,
@@ -584,7 +581,7 @@ const ManageDriftPage = () => {
             {supportsDelete && (
               <MenuItem onClick={() => handleAction("deny-delete", item.id)}>
                 <Block sx={{ mr: 1, color: "error.main" }} />
-                Deny Deviation - Delete
+                Deny Deviation - Delete Policy
               </MenuItem>
             )}
             <MenuItem onClick={() => handleAction("deny-remediate", item.id)}>
@@ -601,7 +598,8 @@ const ManageDriftPage = () => {
   const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => {
     // Check if this is a template that supports delete action
     const supportsDelete =
-      item.standardName === "ConditionalAccessTemplate" || item.standardName === "IntuneTemplate";
+      item.standardName?.includes("ConditionalAccessTemplate") ||
+      item.standardName?.includes("IntuneTemplate");
 
     return {
       ...item,
@@ -623,7 +621,7 @@ const ManageDriftPage = () => {
             {supportsDelete && (
               <MenuItem onClick={() => handleDeviationAction("deny-delete", item)}>
                 <Block sx={{ mr: 1, color: "error.main" }} />
-                Deny - Delete
+                Deny - Delete Policy
               </MenuItem>
             )}
             <MenuItem onClick={() => handleDeviationAction("deny-remediate", item)}>
@@ -644,7 +642,8 @@ const ManageDriftPage = () => {
   const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => {
     // Check if this is a template that supports delete action
     const supportsDelete =
-      item.standardName === "ConditionalAccessTemplate" || item.standardName === "IntuneTemplate";
+      item.standardName?.includes("ConditionalAccessTemplate") ||
+      item.standardName?.includes("IntuneTemplate");
 
     return {
       ...item,
@@ -861,8 +860,8 @@ const ManageDriftPage = () => {
                         {/* Only show delete option if there are template deviations that support deletion */}
                         {processedDriftData.currentDeviations.some(
                           (deviation) =>
-                            deviation.standardName === "ConditionalAccessTemplate" ||
-                            deviation.standardName === "IntuneTemplate"
+                            deviation.standardName?.includes("ConditionalAccessTemplate") ||
+                            deviation.standardName?.includes("IntuneTemplate")
                         ) && (
                           <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
                             <Block sx={{ mr: 1, color: "error.main" }} />
@@ -877,22 +876,6 @@ const ManageDriftPage = () => {
                           <Block sx={{ mr: 1, color: "warning.main" }} />
                           Remove Drift Customization
                         </MenuItem>
-                      </Menu>
-
-                      <Menu
-                        anchorEl={whatIfAnchorEl}
-                        open={Boolean(whatIfAnchorEl)}
-                        onClose={() => setWhatIfAnchorEl(null)}
-                      >
-                        {availableStandards.map((standard) => (
-                          <MenuItem
-                            key={standard.id}
-                            onClick={() => handleWhatIfAction(standard.id)}
-                          >
-                            <Science sx={{ mr: 1, color: "primary.main" }} />
-                            {standard.name}
-                          </MenuItem>
-                        ))}
                       </Menu>
                     </Box>
                   </Box>
