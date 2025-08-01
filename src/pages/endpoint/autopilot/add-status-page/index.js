@@ -1,6 +1,6 @@
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -40,6 +40,7 @@ const Page = () => {
             name="selectedTenants"
             type="multiple"
             allTenants={true}
+            preselectedEnabled={true}
             validators={{ required: "At least one tenant must be selected" }}
           />
         </Grid>

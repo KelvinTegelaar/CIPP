@@ -196,6 +196,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? data : data;
   }
 
+  // Handle log message field
+  const messageFields = ["Message"];
+  if (messageFields.includes(cellName)) {
+    if (typeof data === "string" && data.length > 120) {
+      return isText ? data : `${data.substring(0, 120)}...`;
+    }
+    return isText ? data : data;
+  }
+
   if (cellName === "alignmentScore" || cellName === "combinedAlignmentScore") {
     // Handle alignment score, return a percentage with a label
     return isText ? (
@@ -296,7 +305,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
         ? data.join(", ")
         : renderChipList(
             data.map((item, key) => {
-              const itemText = item?.label ? item.label : item;
+              const itemText = item?.label !== undefined ? item.label : item;
               let icon = null;
 
               if (item?.type === "Group") {
@@ -321,7 +330,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             })
           );
     } else {
-      const itemText = data?.label ? data.label : data;
+      const itemText = data?.label !== undefined ? data.label : data;
       let icon = null;
 
       if (data?.type === "Group") {
@@ -337,7 +346,6 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
           </SvgIcon>
         );
       }
-
       return isText ? itemText : <CippCopyToClipBoard text={itemText} type="chip" icon={icon} />;
     }
   }
@@ -358,6 +366,26 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             />
           ));
     }
+  }
+  if (cellName === "standardType") {
+    return isText ? (
+      data
+    ) : (
+      <Chip
+        variant="outlined"
+        label={data === "drift" ? "Drift Standard" : "Classic Standard"}
+        size="small"
+        color="info"
+      />
+    );
+  }
+
+  if (cellName === "type" && data === "drift") {
+    return isText ? (
+      "Drift Standard"
+    ) : (
+      <Chip variant="outlined" label="Drift Standard" size="small" color="info" />
+    );
   }
 
   if (cellName === "ClientId" || cellName === "role") {
