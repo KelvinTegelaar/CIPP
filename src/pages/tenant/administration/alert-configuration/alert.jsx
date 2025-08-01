@@ -84,8 +84,6 @@ const AlertWizard = () => {
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
 
-        //console.log(alert);
-
         // Create formatted excluded tenants array if it exists
         const excludedTenantsFormatted = Array.isArray(alert.excludedTenants)
           ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
@@ -176,14 +174,53 @@ const AlertWizard = () => {
           }))
         );
 
-        formControl.reset({
+        // Format conditions properly for form
+        const formattedConditions = alert.RawAlert.Conditions.map((condition) => {
+          const formattedCondition = {
+            Property: condition.Property,
+            Operator: condition.Operator,
+          };
+
+          // Handle Input based on Property type
+          if (condition.Property.value === "String") {
+            // For String type, we need to set both the nested value and the direct value
+            formattedCondition.Input = {
+              value: condition.Input.value,
+            };
+          } else {
+            // For List type, use the full Input object
+            formattedCondition.Input = condition.Input;
+          }
+
+          return formattedCondition;
+        });
+
+        const resetData = {
           RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
           tenantFilter: alert.RawAlert.Tenants,
-          excludedTenants: alert.excludedTenants,
+          excludedTenants: alert.excludedTenants?.filter((tenant) => tenant !== null) || [],
           Actions: alert.RawAlert.Actions,
-          conditions: alert.RawAlert.Conditions,
+          conditions: formattedConditions,
           logbook: foundLogbook,
-        });
+        };
+
+        formControl.reset(resetData);
+
+        // After reset, manually set the Input values to ensure they're properly registered
+        setTimeout(() => {
+          formattedConditions.forEach((condition, index) => {
+            if (condition.Property.value === "String") {
+              // For String properties, set the nested value path
+              formControl.setValue(`conditions.${index}.Input.value`, condition.Input.value);
+            } else {
+              // For List properties, set the direct Input value
+              formControl.setValue(`conditions.${index}.Input`, condition.Input);
+            }
+          });
+
+          // Trigger validation to ensure all fields are properly registered
+          formControl.trigger();
+        }, 100);
       }
     }
   }, [existingAlert.isSuccess, router, editAlert]);
@@ -216,9 +253,13 @@ const AlertWizard = () => {
         recommendedOption.label += " (Recommended)";
       }
       setRecurrenceOptions(updatedRecurrenceOptions);
-      formControl.setValue("recurrence", recommendedOption);
+      
+      // Only set the recommended recurrence if we're NOT editing an existing alert
+      if (!editAlert) {
+        formControl.setValue("recurrence", recommendedOption);
+      }
     }
-  }, [commandValue]);
+  }, [commandValue, editAlert]);
 
   useEffect(() => {
     // Logic to handle template-based form updates when a preset is selected
@@ -269,7 +310,7 @@ const AlertWizard = () => {
   };
 
   const handleAuditSubmit = (values) => {
-    values.conditions = values.conditions.filter((condition) => condition.Property);
+    values.conditions = values.conditions.filter((condition) => condition?.Property);
     apiRequest.mutate({ url: "/api/AddAlert", data: values });
   };
 
@@ -470,6 +511,18 @@ const AlertWizard = () => {
                                   formControl={formControl}
                                   label="Select property"
                                   options={getAuditLogSchema(logbookWatcher?.value)}
+                                  creatable={true}
+                                  onCreateOption={(option) => {
+                                    const propertyName = option.label || option;
+
+                                    // Return the option with String type for immediate use
+                                    const newOption = {
+                                      label: propertyName,
+                                      value: "String", // Always set to String for custom properties
+                                    };
+
+                                    return newOption;
+                                  }}
                                 />
                               </Grid>
                               <Grid size={4}>

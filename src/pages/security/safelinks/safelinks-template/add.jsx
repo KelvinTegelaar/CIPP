@@ -25,25 +25,26 @@ const DeploySafeLinksPolicyTemplate = () => {
       postUrl="/api/AddSafeLinksPolicyFromTemplate"
     >
       <Grid container spacing={2}>
-        <Grid size={{ xs:12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
             name="selectedTenants"
             type="multiple"
             allTenants={true}
+            preselectedEnabled={true}
             validators={{ required: "At least one tenant must be selected" }}
           />
         </Grid>
         <Divider sx={{ my: 2, width: "100%" }} />
-        <Grid size={{ xs:12, md:12 }}>
+        <Grid size={{ xs: 12, md: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Select a template"
             name="TemplateList"
             formControl={formControl}
             multiple={true}
-            creatable={false} 
+            creatable={false}
             api={{
               queryKey: `TemplateListSafeLinks`,
               labelField: "TemplateName",
