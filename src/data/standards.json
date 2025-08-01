@@ -2803,6 +2803,7 @@
     "cat": "Defender Standards",
     "tag": [],
     "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
+    "docsDescription": "This standard creates a Spam filter policy similar to the default strict policy, the following settings are configured to on by default: IncreaseScoreWithNumericIps, IncreaseScoreWithRedirectToOtherPort, MarkAsSpamEmptyMessages, MarkAsSpamJavaScriptInHtml, MarkAsSpamSpfRecordHardFail, MarkAsSpamFromAddressAuthFail, MarkAsSpamNdrBackscatter, MarkAsSpamBulkMail, InlineSafetyTipsEnabled, PhishZapEnabled, SpamZapEnabled",
     "addedComponent": [
       {
         "type": "number",
@@ -3534,6 +3535,33 @@
     "addedDate": "2022-06-15",
     "powershellEquivalent": "Update-MgBetaAdminSharePointSetting",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.SPFileRequests",
+    "cat": "SharePoint Standards",
+    "tag": [],
+    "helpText": "Enables or disables File Requests for SharePoint and OneDrive, allowing users to create secure upload-only links. Optionally sets the maximum number of days for the link to remain active before expiring.",
+    "docsDescription": "File Requests allow users to create secure upload-only share links where uploads are hidden from other people using the link. This creates a secure and private way for people to upload files to a folder. This feature is not enabled by default on new tenants and requires PowerShell configuration. This standard enables or disables this feature and optionally configures link expiration settings for both SharePoint and OneDrive.",
+    "executiveText": "Enables secure file upload functionality that allows external users to submit files directly to company folders without seeing other submissions or folder contents. This provides a professional and secure way to collect documents from clients, vendors, and partners while maintaining data privacy and security.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.SPFileRequests.state",
+        "label": "Enable File Requests"
+      },
+      {
+        "type": "number",
+        "name": "standards.SPFileRequests.expirationDays",
+        "label": "Link Expiration 1-730 Days (Optional)",
+        "required": false
+      }
+    ],
+    "label": "Set SharePoint and OneDrive File Requests",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-07-30",
+    "powershellEquivalent": "Set-SPOTenant -CoreRequestFilesLinkEnabled $true -OneDriveRequestFilesLinkEnabled $true -CoreRequestFilesLinkExpirationInDays 30 -OneDriveRequestFilesLinkExpirationInDays 30",
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.TenantDefaultTimezone",
