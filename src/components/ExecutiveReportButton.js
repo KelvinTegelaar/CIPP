@@ -1,6 +1,21 @@
-import React from "react";
-import { Button, Tooltip } from "@mui/material";
-import { PictureAsPdf } from "@mui/icons-material";
+import React, { useState, useMemo } from "react";
+import {
+  Button,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Box,
+  Typography,
+  FormControlLabel,
+  Switch,
+  Grid,
+  Paper,
+  IconButton,
+  Divider,
+} from "@mui/material";
+import { PictureAsPdf, Visibility, Download, Close, Settings } from "@mui/icons-material";
 import {
   Document,
   Page,
@@ -8,6 +23,7 @@ import {
   View,
   StyleSheet,
   PDFDownloadLink,
+  PDFViewer,
   Image,
   Svg,
   Path,
@@ -19,7 +35,7 @@ import { useSettings } from "../hooks/use-settings";
 import { useSecureScore } from "../hooks/use-securescore";
 import { ApiGetCall } from "../api/ApiCall";
 
-// PRODUCTION-GRADE PDF SYSTEM
+// PRODUCTION-GRADE PDF SYSTEM WITH CONDITIONAL RENDERING
 const ExecutiveReportDocument = ({
   tenantName,
   userStats,
@@ -29,6 +45,15 @@ const ExecutiveReportDocument = ({
   deviceData,
   conditionalAccessData,
   standardsCompareData,
+  sectionConfig = {
+    executiveSummary: true,
+    securityStandards: true,
+    secureScore: true,
+    licenseManagement: true,
+    deviceManagement: true,
+    conditionalAccess: true,
+    infographics: true,
+  },
 }) => {
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -774,95 +799,13 @@ const ExecutiveReportDocument = ({
       </Page>
 
       {/* EXECUTIVE SUMMARY - MODULAR COMPOSITION (FROST) */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.pageHeader}>
-          <View style={styles.pageHeaderContent}>
-            <Text style={styles.pageTitle}>Executive Summary</Text>
-            <Text style={styles.pageSubtitle}>
-              Strategic overview of your Microsoft 365 security posture
-            </Text>
-          </View>
-          {brandingSettings?.logo && (
-            <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-          )}
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.bodyText}>
-            This security assessment for{" "}
-            <Text style={{ fontWeight: "bold" }}>{tenantName || "your organization"}</Text> provides
-            a clear picture of your organization's cybersecurity posture and readiness against
-            modern threats. We've evaluated your current security measures against industry best
-            practices to identify strengths and opportunities for improvement.
-          </Text>
-
-          <Text style={styles.bodyText}>
-            Our assessment follows globally recognized security standards to ensure your
-            organization meets regulatory requirements and industry benchmarks. This approach helps
-            protect your business assets, maintain customer trust, and reduce operational risks from
-            cyber threats.
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Environment Overview</Text>
-
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{userStats?.licensedUsers || "0"}</Text>
-              <Text style={styles.statLabel}>Licensed Users</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{userStats?.unlicensedUsers || "0"}</Text>
-              <Text style={styles.statLabel}>Unlicensed Users</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{userStats?.guests || "0"}</Text>
-              <Text style={styles.statLabel}>Guest Users</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{userStats?.globalAdmins || "0"}</Text>
-              <Text style={styles.statLabel}>Global Admins</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text
-            style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-          />
-        </View>
-      </Page>
-
-      {/* STATISTIC PAGE 1 - CHAPTER SPLITTER */}
-      <Page size="A4" style={styles.statPage}>
-        <Image style={styles.statBackground} src="/reportImages/board.jpg" />
-        <View style={styles.statOverlay}>
-          <Text style={styles.statHighlight}>83%</Text>
-          <Text style={styles.statSubText}>
-            of organizations experienced{"\n"}
-            more than one <Text style={{ fontWeight: "bold" }}>cyberattack</Text>
-            {"\n"}
-            in the past year
-          </Text>
-        </View>
-        <Text style={styles.statFooterText}>
-          <Text style={{ fontWeight: "bold" }}>Proactive security</Text> prevents{"\n"}
-          <Text style={{ fontWeight: "bold" }}>repeated attacks</Text>
-        </Text>
-      </Page>
-
-      {/* SECURITY CONTROLS - Only show if standards data is available */}
-      {(() => {
-        return securityControls && securityControls.length > 0;
-      })() && (
+      {sectionConfig.executiveSummary && (
         <Page size="A4" style={styles.page}>
           <View style={styles.pageHeader}>
             <View style={styles.pageHeaderContent}>
-              <Text style={styles.pageTitle}>Security Standards Assessment</Text>
+              <Text style={styles.pageTitle}>Executive Summary</Text>
               <Text style={styles.pageSubtitle}>
-                Detailed evaluation of implemented security standards
+                Strategic overview of your Microsoft 365 security posture
               </Text>
             </View>
             {brandingSettings?.logo && (
@@ -872,88 +815,40 @@ const ExecutiveReportDocument = ({
 
           <View style={styles.section}>
             <Text style={styles.bodyText}>
-              Your security standards have been carefully evaluated against industry best practices
-              to protect your business from cyber threats while ensuring smooth daily operations.
-              These standards help maintain business continuity, protect sensitive data, and meet
-              regulatory requirements that are essential for your industry.
+              This security assessment for{" "}
+              <Text style={{ fontWeight: "bold" }}>{tenantName || "your organization"}</Text>{" "}
+              provides a clear picture of your organization's cybersecurity posture and readiness
+              against modern threats. We've evaluated your current security measures against
+              industry best practices to identify strengths and opportunities for improvement.
+            </Text>
+
+            <Text style={styles.bodyText}>
+              Our assessment follows globally recognized security standards to ensure your
+              organization meets regulatory requirements and industry benchmarks. This approach
+              helps protect your business assets, maintain customer trust, and reduce operational
+              risks from cyber threats.
             </Text>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Security Standards Status</Text>
+            <Text style={styles.sectionTitle}>Environment Overview</Text>
 
-            <View style={styles.controlsTable}>
-              <View style={styles.tableHeader}>
-                <Text style={[styles.headerCell, { width: 80 }]}>Standard</Text>
-                <Text style={[styles.headerCell, { flex: 1, marginLeft: 8 }]}>Description</Text>
-                <Text style={[styles.headerCell, { width: 80, marginLeft: 8 }]}>Tags</Text>
-                <Text
-                  style={[styles.headerCell, { width: 60, textAlign: "center", marginLeft: 8 }]}
-                >
-                  Status
-                </Text>
+            <View style={styles.statsGrid}>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>{userStats?.licensedUsers || "0"}</Text>
+                <Text style={styles.statLabel}>Licensed Users</Text>
               </View>
-
-              {securityControls.map((control, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <Text style={[styles.cellName, { width: 80, marginLeft: 0 }]}>
-                    {control.name}
-                  </Text>
-                  <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
-                    {control.description}
-                  </Text>
-                  <Text style={[styles.cellDesc, { width: 80, marginLeft: 8, fontSize: 6 }]}>
-                    {(() => {
-                      if (typeof control.tags === "object") {
-                        console.log(
-                          "DEBUG: control.tags is an object:",
-                          control.tags,
-                          "for control:",
-                          control.name
-                        );
-                      }
-                      return control.tags;
-                    })()}
-                  </Text>
-                  <View style={[styles.cellStatus, { width: 60, marginLeft: 8 }]}>
-                    <Text style={getBadgeStyle(control.status)}>{control.status}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Key Recommendations</Text>
-
-            <View style={styles.recommendationsList}>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Immediate Actions:</Text> Address
-                  standards marked as "Review" to enhance security posture
-                </Text>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>{userStats?.unlicensedUsers || "0"}</Text>
+                <Text style={styles.statLabel}>Unlicensed Users</Text>
               </View>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Compliance:</Text> Ensure all security
-                  standards are properly implemented and maintained
-                </Text>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>{userStats?.guests || "0"}</Text>
+                <Text style={styles.statLabel}>Guest Users</Text>
               </View>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Monitoring:</Text> Establish regular
-                  review cycles for all security standards
-                </Text>
-              </View>
-              <View style={styles.recommendationItem}>
-                <Text style={styles.recommendationBullet}>•</Text>
-                <Text style={styles.recommendationText}>
-                  <Text style={styles.recommendationLabel}>Training:</Text> Implement security
-                  awareness programs to reduce human risk factors
-                </Text>
+              <View style={styles.statCard}>
+                <Text style={styles.statNumber}>{userStats?.globalAdmins || "0"}</Text>
+                <Text style={styles.statLabel}>Global Admins</Text>
               </View>
             </View>
           </View>
@@ -967,284 +862,37 @@ const ExecutiveReportDocument = ({
         </Page>
       )}
 
-      {/* STATISTIC PAGE 2 - CHAPTER SPLITTER - Only show if secure score data is available */}
-      {secureScoreData && secureScoreData?.isSuccess && secureScoreData?.translatedData && (
+      {/* STATISTIC PAGE 1 - CHAPTER SPLITTER */}
+      {sectionConfig.infographics && (
         <Page size="A4" style={styles.statPage}>
-          <Image style={styles.statBackground} src="/reportImages/glasses.jpg" />
+          <Image style={styles.statBackground} src="/reportImages/board.jpg" />
           <View style={styles.statOverlay}>
-            <Text style={styles.statHighlight}>95%</Text>
+            <Text style={styles.statHighlight}>83%</Text>
             <Text style={styles.statSubText}>
-              of successful cyber attacks{"\n"}
-              could have been prevented with{"\n"}
-              <Text style={{ fontWeight: "bold" }}>proactive security measures</Text>
+              of organizations experienced{"\n"}
+              more than one <Text style={{ fontWeight: "bold" }}>cyberattack</Text>
+              {"\n"}
+              in the past year
             </Text>
           </View>
           <Text style={styles.statFooterText}>
-            Your <Text style={{ fontWeight: "bold" }}>security resilience</Text> is{"\n"}
-            our <Text style={{ fontWeight: "bold" }}>primary mission</Text>
+            <Text style={{ fontWeight: "bold" }}>Proactive security</Text> prevents{"\n"}
+            <Text style={{ fontWeight: "bold" }}>repeated attacks</Text>
           </Text>
         </Page>
       )}
 
-      {/* MICROSOFT SECURE SCORE - DEDICATED PAGE - Only show if secure score data is available */}
-      {secureScoreData && secureScoreData?.isSuccess && secureScoreData?.translatedData && (
-        <Page size="A4" style={styles.page}>
-          <View style={styles.pageHeader}>
-            <View style={styles.pageHeaderContent}>
-              <Text style={styles.pageTitle}>Microsoft Secure Score</Text>
-              <Text style={styles.pageSubtitle}>
-                Comprehensive security posture measurement and benchmarking
-              </Text>
-            </View>
-            {brandingSettings?.logo && (
-              <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
-            )}
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.bodyText}>
-              Microsoft Secure Score measures how well your organization is protected against cyber
-              threats. This score reflects the effectiveness of your current security measures and
-              helps identify areas where additional protection could strengthen your business
-              resilience.
-            </Text>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Score Comparison</Text>
-
-            <View style={styles.scoreGrid}>
-              <View style={styles.scoreCard}>
-                <Text style={styles.scoreNumber}>
-                  {secureScoreData?.translatedData?.currentScore || "N/A"}
-                </Text>
-                <Text style={styles.scoreLabel}>Current Score</Text>
-              </View>
-              <View style={styles.scoreCard}>
-                <Text style={styles.scoreNumber}>
-                  {secureScoreData?.translatedData?.maxScore || "N/A"}
-                </Text>
-                <Text style={styles.scoreLabel}>Max Score</Text>
-              </View>
-              <View style={styles.scoreCard}>
-                <Text style={styles.scoreNumber}>
-                  {secureScoreData?.translatedData?.percentageVsSimilar || "N/A"}%
-                </Text>
-                <Text style={styles.scoreLabel}>vs Similar Orgs</Text>
-              </View>
-              <View style={styles.scoreCard}>
-                <Text style={styles.scoreNumber}>
-                  {secureScoreData?.translatedData?.percentageVsAllTenants || "N/A"}%
-                </Text>
-                <Text style={styles.scoreLabel}>vs All Orgs</Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>7-Day Score Trend</Text>
-
-            <View style={styles.chartContainer}>
-              <Text style={styles.chartTitle}>Secure Score Progress</Text>
-              {secureScoreData?.secureScore?.data?.Results &&
-              secureScoreData.secureScore.data.Results.length > 0 ? (
-                <View style={styles.svgChartContainer}>
-                  <Svg style={styles.svgChart} viewBox="0 0 400 200">
-                    {/* Chart Background */}
-                    <Rect
-                      x="40"
-                      y="20"
-                      width="320"
-                      height="140"
-                      fill="#F7FAFC"
-                      stroke="#E2E8F0"
-                      strokeWidth="1"
-                    />
-
-                    {/* Chart Grid Lines */}
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <Line
-                        key={`grid-${i}`}
-                        x1="40"
-                        y1={20 + i * 35}
-                        x2="360"
-                        y2={20 + i * 35}
-                        stroke="#E2E8F0"
-                        strokeWidth="0.5"
-                      />
-                    ))}
-
-                    {/* Chart Data Points and Area */}
-                    {(() => {
-                      const data = secureScoreData.secureScore.data.Results.slice().reverse();
-                      const maxScore = secureScoreData?.translatedData?.maxScore || 100;
-                      const minScore = 0; // Always start from 0
-                      const scoreRange = maxScore; // Full range from 0 to max
-                      const chartWidth = 320;
-                      const chartHeight = 140;
-                      const pointSpacing = chartWidth / Math.max(data.length - 1, 1);
-
-                      // Generate path for area chart
-                      let pathData = `M 40 ${
-                        160 - (data[0].currentScore / scoreRange) * chartHeight
-                      }`;
-                      data.forEach((point, index) => {
-                        if (index > 0) {
-                          const x = 40 + index * pointSpacing;
-                          const y = 160 - (point.currentScore / scoreRange) * chartHeight;
-                          pathData += ` L ${x} ${y}`;
-                        }
-                      });
-                      pathData += ` L ${40 + (data.length - 1) * pointSpacing} 160 L 40 160 Z`;
-
-                      // Generate line path (without area fill)
-                      let lineData = `M 40 ${
-                        160 - (data[0].currentScore / scoreRange) * chartHeight
-                      }`;
-                      data.forEach((point, index) => {
-                        if (index > 0) {
-                          const x = 40 + index * pointSpacing;
-                          const y = 160 - (point.currentScore / scoreRange) * chartHeight;
-                          lineData += ` L ${x} ${y}`;
-                        }
-                      });
-
-                      return (
-                        <>
-                          {/* Area Fill */}
-                          <Path d={pathData} fill={brandColor} fillOpacity="0.3" />
-
-                          {/* Line */}
-                          <Path d={lineData} fill="none" stroke={brandColor} strokeWidth="2" />
-
-                          {/* Data Points */}
-                          {data.map((point, index) => {
-                            const x = 40 + index * pointSpacing;
-                            const y = 160 - (point.currentScore / scoreRange) * chartHeight;
-                            return <Circle key={index} cx={x} cy={y} r="3" fill={brandColor} />;
-                          })}
-
-                          {/* X-axis Labels */}
-                          {data.map((point, index) => {
-                            const x = 40 + index * pointSpacing;
-                            const date = new Date(point.createdDateTime);
-                            const label = date.toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                            });
-                            return (
-                              <Text
-                                key={`label-${index}`}
-                                x={x}
-                                y="180"
-                                textAnchor="middle"
-                                fontSize="8"
-                                fill="#4A5568"
-                              >
-                                {label}
-                              </Text>
-                            );
-                          })}
-
-                          {/* Y-axis Labels */}
-                          {[
-                            0,
-                            Math.round(maxScore * 0.25),
-                            Math.round(maxScore * 0.5),
-                            Math.round(maxScore * 0.75),
-                            maxScore,
-                          ].map((score, index) => (
-                            <Text
-                              key={`y-label-${index}`}
-                              x="35"
-                              y={165 - index * 35}
-                              textAnchor="end"
-                              fontSize="8"
-                              fill="#4A5568"
-                            >
-                              {score}
-                            </Text>
-                          ))}
-                        </>
-                      );
-                    })()}
-                  </Svg>
-
-                  <Text style={styles.chartSummaryText}>
-                    Current: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
-                    {secureScoreData?.translatedData?.maxScore || "N/A"}(
-                    {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%)
-                  </Text>
-                </View>
-              ) : (
-                <Text style={styles.chartData}>
-                  Current Score: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
-                  {secureScoreData?.translatedData?.maxScore || "N/A"}
-                  {"\n"}
-                  Achievement Rate: {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%
-                  {"\n"}
-                  Historical data not available
-                </Text>
-              )}
-            </View>
-          </View>
-
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>What Your Score Means</Text>
-            <Text style={styles.infoText}>
-              Your current score of {secureScoreData?.translatedData?.currentScore || "N/A"}{" "}
-              represents {secureScoreData?.translatedData?.percentageCurrent || "N/A"}% of the
-              maximum protection level available. This indicates how well your organization is
-              currently defended against common cyber threats and data breaches.
-            </Text>
-          </View>
-
-          <View style={styles.infoBox}>
-            <Text style={styles.infoTitle}>Why Scores Change</Text>
-            <Text style={styles.infoText}>
-              • Business growth and new employees may temporarily lower scores until security
-              measures are applied{"\n"}• Changes in software licenses can affect available security
-              features{"\n"}• New security threats require updated protections, which may impact
-              scores{"\n"}• Regular security improvements help maintain and increase your protection
-              level
-            </Text>
-          </View>
-
-          <View style={styles.footer}>
-            <Text
-              style={styles.pageNumber}
-              render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-            />
-          </View>
-        </Page>
-      )}
-
-      {/* LICENSING PAGE - Only show if license data is available */}
-      {licensingData && Array.isArray(licensingData) && licensingData.length > 0 && (
-        <>
-          {/* STATISTIC PAGE 3 - CHAPTER SPLITTER */}
-          <Page size="A4" style={styles.statPage}>
-            <Image style={styles.statBackground} src="/reportImages/working.jpg" />
-            <View style={styles.statOverlay}>
-              <Text style={styles.statMainText}>Every</Text>
-              <Text style={styles.statHighlight}>39</Text>
-              <Text style={styles.statMainText}>seconds</Text>
-              <Text style={styles.statSubText}>
-                a business falls victim to{"\n"}
-                <Text style={{ fontWeight: "bold" }}>ransomware attacks</Text>
-              </Text>
-            </View>
-            <Text style={styles.statFooterText}>
-              <Text style={{ fontWeight: "bold" }}>Proactive defense</Text> beats{"\n"}
-              <Text style={{ fontWeight: "bold" }}>reactive recovery</Text>
-            </Text>
-          </Page>
+      {/* SECURITY CONTROLS - Only show if standards data is available and enabled */}
+      {sectionConfig.securityStandards &&
+        (() => {
+          return securityControls && securityControls.length > 0;
+        })() && (
           <Page size="A4" style={styles.page}>
             <View style={styles.pageHeader}>
               <View style={styles.pageHeaderContent}>
-                <Text style={styles.pageTitle}>License Management</Text>
+                <Text style={styles.pageTitle}>Security Standards Assessment</Text>
                 <Text style={styles.pageSubtitle}>
-                  Microsoft 365 license allocation and utilization analysis
+                  Detailed evaluation of implemented security standards
                 </Text>
               </View>
               {brandingSettings?.logo && (
@@ -1254,132 +902,87 @@ const ExecutiveReportDocument = ({
 
             <View style={styles.section}>
               <Text style={styles.bodyText}>
-                Smart license management helps control costs while ensuring your team has the tools
-                they need to be productive. This analysis shows how your current licenses are being
-                used and identifies opportunities to optimize spending without compromising business
-                operations.
+                Your security standards have been carefully evaluated against industry best
+                practices to protect your business from cyber threats while ensuring smooth daily
+                operations. These standards help maintain business continuity, protect sensitive
+                data, and meet regulatory requirements that are essential for your industry.
               </Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>License Allocation Summary</Text>
+              <Text style={styles.sectionTitle}>Security Standards Status</Text>
 
               <View style={styles.controlsTable}>
                 <View style={styles.tableHeader}>
-                  <Text style={[styles.headerCell, { width: 200 }]}>License Type</Text>
-                  <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>Used</Text>
-                  <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>
-                    Available
+                  <Text style={[styles.headerCell, { width: 80 }]}>Standard</Text>
+                  <Text style={[styles.headerCell, { flex: 1, marginLeft: 8 }]}>Description</Text>
+                  <Text style={[styles.headerCell, { width: 80, marginLeft: 8 }]}>Tags</Text>
+                  <Text
+                    style={[styles.headerCell, { width: 60, textAlign: "center", marginLeft: 8 }]}
+                  >
+                    Status
                   </Text>
-                  <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>Total</Text>
                 </View>
 
-                {licensingData.map((license, index) => (
+                {securityControls.map((control, index) => (
                   <View key={index} style={styles.tableRow}>
-                    <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
+                    <Text style={[styles.cellName, { width: 80, marginLeft: 0 }]}>
+                      {control.name}
+                    </Text>
+                    <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
+                      {control.description}
+                    </Text>
+                    <Text style={[styles.cellDesc, { width: 80, marginLeft: 8, fontSize: 6 }]}>
                       {(() => {
-                        const licenseValue = license.License || license.license || "N/A";
-                        if (typeof licenseValue === "object") {
+                        if (typeof control.tags === "object") {
                           console.log(
-                            "DEBUG: license name is an object:",
-                            licenseValue,
-                            "full license:",
-                            license
+                            "DEBUG: control.tags is an object:",
+                            control.tags,
+                            "for control:",
+                            control.name
                           );
                         }
-                        return licenseValue;
+                        return control.tags;
                       })()}
                     </Text>
-                    <Text
-                      style={[
-                        styles.cellName,
-                        { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
-                      ]}
-                    >
-                      {(() => {
-                        const countUsed = license.CountUsed || license.countUsed || "0";
-                        if (typeof countUsed === "object") {
-                          console.log(
-                            "DEBUG: license.CountUsed is an object:",
-                            countUsed,
-                            "full license:",
-                            license
-                          );
-                        }
-                        return countUsed;
-                      })()}
-                    </Text>
-                    <Text
-                      style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}
-                    >
-                      {(() => {
-                        const countAvailable =
-                          license.CountAvailable || license.countAvailable || "0";
-                        if (typeof countAvailable === "object") {
-                          console.log(
-                            "DEBUG: license.CountAvailable is an object:",
-                            countAvailable,
-                            "full license:",
-                            license
-                          );
-                        }
-                        return countAvailable;
-                      })()}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.cellName,
-                        { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
-                      ]}
-                    >
-                      {(() => {
-                        const totalLicenses = license.TotalLicenses || license.totalLicenses || "0";
-                        if (typeof totalLicenses === "object") {
-                          console.log(
-                            "DEBUG: license.TotalLicenses is an object:",
-                            totalLicenses,
-                            "full license:",
-                            license
-                          );
-                        }
-                        return totalLicenses;
-                      })()}
-                    </Text>
+                    <View style={[styles.cellStatus, { width: 60, marginLeft: 8 }]}>
+                      <Text style={getBadgeStyle(control.status)}>{control.status}</Text>
+                    </View>
                   </View>
                 ))}
               </View>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>License Optimization Recommendations</Text>
+              <Text style={styles.sectionTitle}>Key Recommendations</Text>
 
               <View style={styles.recommendationsList}>
                 <View style={styles.recommendationItem}>
                   <Text style={styles.recommendationBullet}>•</Text>
                   <Text style={styles.recommendationText}>
-                    <Text style={styles.recommendationLabel}>Usage Monitoring:</Text> Track how
-                    licenses are being used to identify cost-saving opportunities
+                    <Text style={styles.recommendationLabel}>Immediate Actions:</Text> Address
+                    standards marked as "Review" to enhance security posture
                   </Text>
                 </View>
                 <View style={styles.recommendationItem}>
                   <Text style={styles.recommendationBullet}>•</Text>
                   <Text style={styles.recommendationText}>
-                    <Text style={styles.recommendationLabel}>Cost Control:</Text> Review unused
-                    licenses to reduce unnecessary spending
+                    <Text style={styles.recommendationLabel}>Compliance:</Text> Ensure all security
+                    standards are properly implemented and maintained
                   </Text>
                 </View>
                 <View style={styles.recommendationItem}>
                   <Text style={styles.recommendationBullet}>•</Text>
                   <Text style={styles.recommendationText}>
-                    <Text style={styles.recommendationLabel}>Growth Planning:</Text> Ensure you have
-                    enough licenses for business expansion without overspending
+                    <Text style={styles.recommendationLabel}>Monitoring:</Text> Establish regular
+                    review cycles for all security standards
                   </Text>
                 </View>
                 <View style={styles.recommendationItem}>
                   <Text style={styles.recommendationBullet}>•</Text>
                   <Text style={styles.recommendationText}>
-                    <Text style={styles.recommendationLabel}>Regular Reviews:</Text> Conduct
-                    quarterly reviews to maintain cost-effective license allocation
+                    <Text style={styles.recommendationLabel}>Training:</Text> Implement security
+                    awareness programs to reduce human risk factors
                   </Text>
                 </View>
               </View>
@@ -1392,34 +995,42 @@ const ExecutiveReportDocument = ({
               />
             </View>
           </Page>
-        </>
-      )}
+        )}
 
-      {/* DEVICES PAGE - Only show if device data is available */}
-      {deviceData && Array.isArray(deviceData) && deviceData.length > 0 && (
-        <>
-          {/* STATISTIC PAGE 4 - CHAPTER SPLITTER */}
+      {/* STATISTIC PAGE 2 - CHAPTER SPLITTER - Only show if secure score data is available and enabled */}
+      {sectionConfig.infographics &&
+        sectionConfig.secureScore &&
+        secureScoreData &&
+        secureScoreData?.isSuccess &&
+        secureScoreData?.translatedData && (
           <Page size="A4" style={styles.statPage}>
-            <Image style={styles.statBackground} src="/reportImages/laptop.jpg" />
+            <Image style={styles.statBackground} src="/reportImages/glasses.jpg" />
             <View style={styles.statOverlay}>
-              <Text style={styles.statHighlight}>$4.45M</Text>
+              <Text style={styles.statHighlight}>95%</Text>
               <Text style={styles.statSubText}>
-                average cost of a{"\n"}
-                <Text style={{ fontWeight: "bold" }}>data breach in 2024</Text>
+                of successful cyber attacks{"\n"}
+                could have been prevented with{"\n"}
+                <Text style={{ fontWeight: "bold" }}>proactive security measures</Text>
               </Text>
             </View>
             <Text style={styles.statFooterText}>
-              <Text style={{ fontWeight: "bold" }}>Investment in security</Text>
-              {"\n"}
-              saves <Text style={{ fontWeight: "bold" }}>millions in recovery</Text>
+              Your <Text style={{ fontWeight: "bold" }}>security resilience</Text> is{"\n"}
+              our <Text style={{ fontWeight: "bold" }}>primary mission</Text>
             </Text>
           </Page>
+        )}
+
+      {/* MICROSOFT SECURE SCORE - DEDICATED PAGE - Only show if secure score data is available and enabled */}
+      {sectionConfig.secureScore &&
+        secureScoreData &&
+        secureScoreData?.isSuccess &&
+        secureScoreData?.translatedData && (
           <Page size="A4" style={styles.page}>
             <View style={styles.pageHeader}>
               <View style={styles.pageHeaderContent}>
-                <Text style={styles.pageTitle}>Device Management</Text>
+                <Text style={styles.pageTitle}>Microsoft Secure Score</Text>
                 <Text style={styles.pageSubtitle}>
-                  Device compliance status and management overview
+                  Comprehensive security posture measurement and benchmarking
                 </Text>
               </View>
               {brandingSettings?.logo && (
@@ -1429,176 +1040,210 @@ const ExecutiveReportDocument = ({
 
             <View style={styles.section}>
               <Text style={styles.bodyText}>
-                Managing employee devices is essential for protecting your business data and
-                maintaining productivity. This analysis shows which devices meet your security
-                standards and identifies any that may need attention to prevent data breaches or
-                operational disruptions.
+                Microsoft Secure Score measures how well your organization is protected against
+                cyber threats. This score reflects the effectiveness of your current security
+                measures and helps identify areas where additional protection could strengthen your
+                business resilience.
               </Text>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Device Compliance Overview</Text>
+              <Text style={styles.sectionTitle}>Score Comparison</Text>
 
-              <View style={styles.statsGrid}>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>{deviceData.length}</Text>
-                  <Text style={styles.statLabel}>Total Devices</Text>
-                </View>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>
-                    {
-                      deviceData.filter(
-                        (device) =>
-                          device.complianceState === "compliant" ||
-                          device.ComplianceState === "compliant"
-                      ).length
-                    }
+              <View style={styles.scoreGrid}>
+                <View style={styles.scoreCard}>
+                  <Text style={styles.scoreNumber}>
+                    {secureScoreData?.translatedData?.currentScore || "N/A"}
                   </Text>
-                  <Text style={styles.statLabel}>Compliant</Text>
+                  <Text style={styles.scoreLabel}>Current Score</Text>
                 </View>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>
-                    {
-                      deviceData.filter(
-                        (device) =>
-                          device.complianceState !== "compliant" &&
-                          device.ComplianceState !== "compliant"
-                      ).length
-                    }
+                <View style={styles.scoreCard}>
+                  <Text style={styles.scoreNumber}>
+                    {secureScoreData?.translatedData?.maxScore || "N/A"}
                   </Text>
-                  <Text style={styles.statLabel}>Non-Compliant</Text>
+                  <Text style={styles.scoreLabel}>Max Score</Text>
                 </View>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>
-                    {Math.round(
-                      (deviceData.filter(
-                        (device) =>
-                          device.complianceState === "Compliant" ||
-                          device.ComplianceState === "Compliant"
-                      ).length /
-                        deviceData.length) *
-                        100
-                    )}
-                    %
+                <View style={styles.scoreCard}>
+                  <Text style={styles.scoreNumber}>
+                    {secureScoreData?.translatedData?.percentageVsSimilar || "N/A"}%
                   </Text>
-                  <Text style={styles.statLabel}>Compliance Rate</Text>
+                  <Text style={styles.scoreLabel}>vs Similar Orgs</Text>
+                </View>
+                <View style={styles.scoreCard}>
+                  <Text style={styles.scoreNumber}>
+                    {secureScoreData?.translatedData?.percentageVsAllTenants || "N/A"}%
+                  </Text>
+                  <Text style={styles.scoreLabel}>vs All Orgs</Text>
                 </View>
               </View>
             </View>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Device Management Summary</Text>
+              <Text style={styles.sectionTitle}>7-Day Score Trend</Text>
 
-              <View style={styles.controlsTable}>
-                <View style={styles.tableHeader}>
-                  <Text style={[styles.headerCell, { width: 120 }]}>Device Name</Text>
-                  <Text style={[styles.headerCell, { width: 70 }]}>OS</Text>
-                  <Text style={[styles.headerCell, { width: 70 }]}>Compliance</Text>
-                  <Text style={[styles.headerCell, { flex: 1 }]}>Last Sync</Text>
-                </View>
+              <View style={styles.chartContainer}>
+                <Text style={styles.chartTitle}>Secure Score Progress</Text>
+                {secureScoreData?.secureScore?.data?.Results &&
+                secureScoreData.secureScore.data.Results.length > 0 ? (
+                  <View style={styles.svgChartContainer}>
+                    <Svg style={styles.svgChart} viewBox="0 0 400 200">
+                      {/* Chart Background */}
+                      <Rect
+                        x="40"
+                        y="20"
+                        width="320"
+                        height="140"
+                        fill="#F7FAFC"
+                        stroke="#E2E8F0"
+                        strokeWidth="1"
+                      />
 
-                {deviceData.slice(0, 8).map((device, index) => {
-                  const lastSync = device.lastSyncDateTime
-                    ? new Date(device.lastSyncDateTime).toLocaleDateString()
-                    : "N/A";
-                  return (
-                    <View key={index} style={styles.tableRow}>
-                      <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
-                        {(() => {
-                          const deviceName = device.deviceName || "N/A";
-                          if (typeof deviceName === "object") {
-                            console.log(
-                              "DEBUG: device.deviceName is an object:",
-                              deviceName,
-                              "full device:",
-                              device
-                            );
+                      {/* Chart Grid Lines */}
+                      {[0, 1, 2, 3, 4].map((i) => (
+                        <Line
+                          key={`grid-${i}`}
+                          x1="40"
+                          y1={20 + i * 35}
+                          x2="360"
+                          y2={20 + i * 35}
+                          stroke="#E2E8F0"
+                          strokeWidth="0.5"
+                        />
+                      ))}
+
+                      {/* Chart Data Points and Area */}
+                      {(() => {
+                        const data = secureScoreData.secureScore.data.Results.slice().reverse();
+                        const maxScore = secureScoreData?.translatedData?.maxScore || 100;
+                        const minScore = 0; // Always start from 0
+                        const scoreRange = maxScore; // Full range from 0 to max
+                        const chartWidth = 320;
+                        const chartHeight = 140;
+                        const pointSpacing = chartWidth / Math.max(data.length - 1, 1);
+
+                        // Generate path for area chart
+                        let pathData = `M 40 ${
+                          160 - (data[0].currentScore / scoreRange) * chartHeight
+                        }`;
+                        data.forEach((point, index) => {
+                          if (index > 0) {
+                            const x = 40 + index * pointSpacing;
+                            const y = 160 - (point.currentScore / scoreRange) * chartHeight;
+                            pathData += ` L ${x} ${y}`;
                           }
-                          return deviceName;
-                        })()}
-                      </Text>
-                      <Text style={[styles.cellName, { width: 70, fontSize: 7 }]}>
-                        {(() => {
-                          const operatingSystem = device.operatingSystem || "N/A";
-                          if (typeof operatingSystem === "object") {
-                            console.log(
-                              "DEBUG: device.operatingSystem is an object:",
-                              operatingSystem,
-                              "full device:",
-                              device
-                            );
+                        });
+                        pathData += ` L ${40 + (data.length - 1) * pointSpacing} 160 L 40 160 Z`;
+
+                        // Generate line path (without area fill)
+                        let lineData = `M 40 ${
+                          160 - (data[0].currentScore / scoreRange) * chartHeight
+                        }`;
+                        data.forEach((point, index) => {
+                          if (index > 0) {
+                            const x = 40 + index * pointSpacing;
+                            const y = 160 - (point.currentScore / scoreRange) * chartHeight;
+                            lineData += ` L ${x} ${y}`;
                           }
-                          return operatingSystem;
-                        })()}
-                      </Text>
-                      <View style={[styles.cellStatus, { width: 70, marginLeft: 0 }]}>
-                        <Text
-                          style={[
-                            styles.statusText,
-                            device.complianceState === "compliant"
-                              ? styles.statusCompliant
-                              : styles.statusReview,
-                          ]}
-                        >
-                          {(() => {
-                            const complianceState = device.complianceState || "Unknown";
-                            if (typeof complianceState === "object") {
-                              console.log(
-                                "DEBUG: device.complianceState is an object:",
-                                complianceState,
-                                "full device:",
-                                device
+                        });
+
+                        return (
+                          <>
+                            {/* Area Fill */}
+                            <Path d={pathData} fill={brandColor} fillOpacity="0.3" />
+
+                            {/* Line */}
+                            <Path d={lineData} fill="none" stroke={brandColor} strokeWidth="2" />
+
+                            {/* Data Points */}
+                            {data.map((point, index) => {
+                              const x = 40 + index * pointSpacing;
+                              const y = 160 - (point.currentScore / scoreRange) * chartHeight;
+                              return <Circle key={index} cx={x} cy={y} r="3" fill={brandColor} />;
+                            })}
+
+                            {/* X-axis Labels */}
+                            {data.map((point, index) => {
+                              const x = 40 + index * pointSpacing;
+                              const date = new Date(point.createdDateTime);
+                              const label = date.toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              });
+                              return (
+                                <Text
+                                  key={`label-${index}`}
+                                  x={x}
+                                  y="180"
+                                  textAnchor="middle"
+                                  fontSize="8"
+                                  fill="#4A5568"
+                                >
+                                  {label}
+                                </Text>
                               );
-                            }
-                            return complianceState;
-                          })()}
-                        </Text>
-                      </View>
-                      <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>{lastSync}</Text>
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
+                            })}
 
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Device Insights</Text>
+                            {/* Y-axis Labels */}
+                            {[
+                              0,
+                              Math.round(maxScore * 0.25),
+                              Math.round(maxScore * 0.5),
+                              Math.round(maxScore * 0.75),
+                              maxScore,
+                            ].map((score, index) => (
+                              <Text
+                                key={`y-label-${index}`}
+                                x="35"
+                                y={165 - index * 35}
+                                textAnchor="end"
+                                fontSize="8"
+                                fill="#4A5568"
+                              >
+                                {score}
+                              </Text>
+                            ))}
+                          </>
+                        );
+                      })()}
+                    </Svg>
 
-              <View style={styles.statsGrid}>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>
-                    {deviceData.filter((device) => device.operatingSystem === "Windows").length}
+                    <Text style={styles.chartSummaryText}>
+                      Current: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
+                      {secureScoreData?.translatedData?.maxScore || "N/A"}(
+                      {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%)
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={styles.chartData}>
+                    Current Score: {secureScoreData?.translatedData?.currentScore || "N/A"} /{" "}
+                    {secureScoreData?.translatedData?.maxScore || "N/A"}
+                    {"\n"}
+                    Achievement Rate: {secureScoreData?.translatedData?.percentageCurrent || "N/A"}%
+                    {"\n"}
+                    Historical data not available
                   </Text>
-                  <Text style={styles.statLabel}>Windows Devices</Text>
-                </View>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>
-                    {deviceData.filter((device) => device.operatingSystem === "iOS").length}
-                  </Text>
-                  <Text style={styles.statLabel}>iOS Devices</Text>
-                </View>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>
-                    {deviceData.filter((device) => device.operatingSystem === "Android").length}
-                  </Text>
-                  <Text style={styles.statLabel}>Android Devices</Text>
-                </View>
-                <View style={styles.statCard}>
-                  <Text style={styles.statNumber}>
-                    {deviceData.filter((device) => device.isEncrypted === true).length}
-                  </Text>
-                  <Text style={styles.statLabel}>Encrypted</Text>
-                </View>
+                )}
               </View>
             </View>
 
             <View style={styles.infoBox}>
-              <Text style={styles.infoTitle}>Device Management Recommendations</Text>
+              <Text style={styles.infoTitle}>What Your Score Means</Text>
               <Text style={styles.infoText}>
-                Keep devices updated and secure to protect business data. Regularly check that all
-                employee devices meet security standards and address any issues promptly. Consider
-                automated policies to maintain consistent security across all devices and conduct
-                regular reviews to identify potential risks.
+                Your current score of {secureScoreData?.translatedData?.currentScore || "N/A"}{" "}
+                represents {secureScoreData?.translatedData?.percentageCurrent || "N/A"}% of the
+                maximum protection level available. This indicates how well your organization is
+                currently defended against common cyber threats and data breaches.
+              </Text>
+            </View>
+
+            <View style={styles.infoBox}>
+              <Text style={styles.infoTitle}>Why Scores Change</Text>
+              <Text style={styles.infoText}>
+                • Business growth and new employees may temporarily lower scores until security
+                measures are applied{"\n"}• Changes in software licenses can affect available
+                security features{"\n"}• New security threats require updated protections, which may
+                impact scores{"\n"}• Regular security improvements help maintain and increase your
+                protection level
               </Text>
             </View>
 
@@ -1609,30 +1254,440 @@ const ExecutiveReportDocument = ({
               />
             </View>
           </Page>
-        </>
-      )}
+        )}
+
+      {/* LICENSING PAGE - Only show if license data is available */}
+      {sectionConfig.licenseManagement &&
+        licensingData &&
+        Array.isArray(licensingData) &&
+        licensingData.length > 0 && (
+          <>
+            {/* STATISTIC PAGE 3 - CHAPTER SPLITTER */}
+            {sectionConfig.infographics && (
+              <Page size="A4" style={styles.statPage}>
+                <Image style={styles.statBackground} src="/reportImages/working.jpg" />
+                <View style={styles.statOverlay}>
+                  <Text style={styles.statMainText}>Every</Text>
+                  <Text style={styles.statHighlight}>39</Text>
+                  <Text style={styles.statMainText}>seconds</Text>
+                  <Text style={styles.statSubText}>
+                    a business falls victim to{"\n"}
+                    <Text style={{ fontWeight: "bold" }}>ransomware attacks</Text>
+                  </Text>
+                </View>
+                <Text style={styles.statFooterText}>
+                  <Text style={{ fontWeight: "bold" }}>Proactive defense</Text> beats{"\n"}
+                  <Text style={{ fontWeight: "bold" }}>reactive recovery</Text>
+                </Text>
+              </Page>
+            )}
+            <Page size="A4" style={styles.page}>
+              <View style={styles.pageHeader}>
+                <View style={styles.pageHeaderContent}>
+                  <Text style={styles.pageTitle}>License Management</Text>
+                  <Text style={styles.pageSubtitle}>
+                    Microsoft 365 license allocation and utilization analysis
+                  </Text>
+                </View>
+                {brandingSettings?.logo && (
+                  <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+                )}
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.bodyText}>
+                  Smart license management helps control costs while ensuring your team has the
+                  tools they need to be productive. This analysis shows how your current licenses
+                  are being used and identifies opportunities to optimize spending without
+                  compromising business operations.
+                </Text>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>License Allocation Summary</Text>
+
+                <View style={styles.controlsTable}>
+                  <View style={styles.tableHeader}>
+                    <Text style={[styles.headerCell, { width: 200 }]}>License Type</Text>
+                    <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>
+                      Used
+                    </Text>
+                    <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>
+                      Available
+                    </Text>
+                    <Text style={[styles.headerCell, { width: 60, textAlign: "center" }]}>
+                      Total
+                    </Text>
+                  </View>
+
+                  {licensingData.map((license, index) => (
+                    <View key={index} style={styles.tableRow}>
+                      <Text style={[styles.cellName, { width: 200, fontSize: 7, marginLeft: 0 }]}>
+                        {(() => {
+                          const licenseValue = license.License || license.license || "N/A";
+                          if (typeof licenseValue === "object") {
+                            console.log(
+                              "DEBUG: license name is an object:",
+                              licenseValue,
+                              "full license:",
+                              license
+                            );
+                          }
+                          return licenseValue;
+                        })()}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.cellName,
+                          { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
+                        ]}
+                      >
+                        {(() => {
+                          const countUsed = license.CountUsed || license.countUsed || "0";
+                          if (typeof countUsed === "object") {
+                            console.log(
+                              "DEBUG: license.CountUsed is an object:",
+                              countUsed,
+                              "full license:",
+                              license
+                            );
+                          }
+                          return countUsed;
+                        })()}
+                      </Text>
+                      <Text
+                        style={[styles.cellName, { width: 60, textAlign: "center", fontSize: 8 }]}
+                      >
+                        {(() => {
+                          const countAvailable =
+                            license.CountAvailable || license.countAvailable || "0";
+                          if (typeof countAvailable === "object") {
+                            console.log(
+                              "DEBUG: license.CountAvailable is an object:",
+                              countAvailable,
+                              "full license:",
+                              license
+                            );
+                          }
+                          return countAvailable;
+                        })()}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.cellName,
+                          { width: 60, textAlign: "center", fontSize: 8, fontWeight: "bold" },
+                        ]}
+                      >
+                        {(() => {
+                          const totalLicenses =
+                            license.TotalLicenses || license.totalLicenses || "0";
+                          if (typeof totalLicenses === "object") {
+                            console.log(
+                              "DEBUG: license.TotalLicenses is an object:",
+                              totalLicenses,
+                              "full license:",
+                              license
+                            );
+                          }
+                          return totalLicenses;
+                        })()}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>License Optimization Recommendations</Text>
+
+                <View style={styles.recommendationsList}>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Usage Monitoring:</Text> Track how
+                      licenses are being used to identify cost-saving opportunities
+                    </Text>
+                  </View>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Cost Control:</Text> Review unused
+                      licenses to reduce unnecessary spending
+                    </Text>
+                  </View>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Growth Planning:</Text> Ensure you
+                      have enough licenses for business expansion without overspending
+                    </Text>
+                  </View>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Regular Reviews:</Text> Conduct
+                      quarterly reviews to maintain cost-effective license allocation
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.footer}>
+                <Text
+                  style={styles.pageNumber}
+                  render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+                />
+              </View>
+            </Page>
+          </>
+        )}
+
+      {/* DEVICES PAGE - Only show if device data is available */}
+      {sectionConfig.deviceManagement &&
+        deviceData &&
+        Array.isArray(deviceData) &&
+        deviceData.length > 0 && (
+          <>
+            {/* STATISTIC PAGE 4 - CHAPTER SPLITTER */}
+            {sectionConfig.infographics && (
+              <Page size="A4" style={styles.statPage}>
+                <Image style={styles.statBackground} src="/reportImages/laptop.jpg" />
+                <View style={styles.statOverlay}>
+                  <Text style={styles.statHighlight}>$4.45M</Text>
+                  <Text style={styles.statSubText}>
+                    average cost of a{"\n"}
+                    <Text style={{ fontWeight: "bold" }}>data breach in 2024</Text>
+                  </Text>
+                </View>
+                <Text style={styles.statFooterText}>
+                  <Text style={{ fontWeight: "bold" }}>Investment in security</Text>
+                  {"\n"}
+                  saves <Text style={{ fontWeight: "bold" }}>millions in recovery</Text>
+                </Text>
+              </Page>
+            )}
+            <Page size="A4" style={styles.page}>
+              <View style={styles.pageHeader}>
+                <View style={styles.pageHeaderContent}>
+                  <Text style={styles.pageTitle}>Device Management</Text>
+                  <Text style={styles.pageSubtitle}>
+                    Device compliance status and management overview
+                  </Text>
+                </View>
+                {brandingSettings?.logo && (
+                  <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+                )}
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.bodyText}>
+                  Managing employee devices is essential for protecting your business data and
+                  maintaining productivity. This analysis shows which devices meet your security
+                  standards and identifies any that may need attention to prevent data breaches or
+                  operational disruptions.
+                </Text>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Device Compliance Overview</Text>
+
+                <View style={styles.statsGrid}>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>{deviceData.length}</Text>
+                    <Text style={styles.statLabel}>Total Devices</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {
+                        deviceData.filter(
+                          (device) =>
+                            device.complianceState === "compliant" ||
+                            device.ComplianceState === "compliant"
+                        ).length
+                      }
+                    </Text>
+                    <Text style={styles.statLabel}>Compliant</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {
+                        deviceData.filter(
+                          (device) =>
+                            device.complianceState !== "compliant" &&
+                            device.ComplianceState !== "compliant"
+                        ).length
+                      }
+                    </Text>
+                    <Text style={styles.statLabel}>Non-Compliant</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {Math.round(
+                        (deviceData.filter(
+                          (device) =>
+                            device.complianceState === "Compliant" ||
+                            device.ComplianceState === "Compliant"
+                        ).length /
+                          deviceData.length) *
+                          100
+                      )}
+                      %
+                    </Text>
+                    <Text style={styles.statLabel}>Compliance Rate</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Device Management Summary</Text>
+
+                <View style={styles.controlsTable}>
+                  <View style={styles.tableHeader}>
+                    <Text style={[styles.headerCell, { width: 120 }]}>Device Name</Text>
+                    <Text style={[styles.headerCell, { width: 70 }]}>OS</Text>
+                    <Text style={[styles.headerCell, { width: 70 }]}>Compliance</Text>
+                    <Text style={[styles.headerCell, { flex: 1 }]}>Last Sync</Text>
+                  </View>
+
+                  {deviceData.slice(0, 8).map((device, index) => {
+                    const lastSync = device.lastSyncDateTime
+                      ? new Date(device.lastSyncDateTime).toLocaleDateString()
+                      : "N/A";
+                    return (
+                      <View key={index} style={styles.tableRow}>
+                        <Text style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}>
+                          {(() => {
+                            const deviceName = device.deviceName || "N/A";
+                            if (typeof deviceName === "object") {
+                              console.log(
+                                "DEBUG: device.deviceName is an object:",
+                                deviceName,
+                                "full device:",
+                                device
+                              );
+                            }
+                            return deviceName;
+                          })()}
+                        </Text>
+                        <Text style={[styles.cellName, { width: 70, fontSize: 7 }]}>
+                          {(() => {
+                            const operatingSystem = device.operatingSystem || "N/A";
+                            if (typeof operatingSystem === "object") {
+                              console.log(
+                                "DEBUG: device.operatingSystem is an object:",
+                                operatingSystem,
+                                "full device:",
+                                device
+                              );
+                            }
+                            return operatingSystem;
+                          })()}
+                        </Text>
+                        <View style={[styles.cellStatus, { width: 70, marginLeft: 0 }]}>
+                          <Text
+                            style={[
+                              styles.statusText,
+                              device.complianceState === "compliant"
+                                ? styles.statusCompliant
+                                : styles.statusReview,
+                            ]}
+                          >
+                            {(() => {
+                              const complianceState = device.complianceState || "Unknown";
+                              if (typeof complianceState === "object") {
+                                console.log(
+                                  "DEBUG: device.complianceState is an object:",
+                                  complianceState,
+                                  "full device:",
+                                  device
+                                );
+                              }
+                              return complianceState;
+                            })()}
+                          </Text>
+                        </View>
+                        <Text style={[styles.cellName, { flex: 1, fontSize: 7 }]}>{lastSync}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Device Insights</Text>
+
+                <View style={styles.statsGrid}>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {deviceData.filter((device) => device.operatingSystem === "Windows").length}
+                    </Text>
+                    <Text style={styles.statLabel}>Windows Devices</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {deviceData.filter((device) => device.operatingSystem === "iOS").length}
+                    </Text>
+                    <Text style={styles.statLabel}>iOS Devices</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {deviceData.filter((device) => device.operatingSystem === "Android").length}
+                    </Text>
+                    <Text style={styles.statLabel}>Android Devices</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {deviceData.filter((device) => device.isEncrypted === true).length}
+                    </Text>
+                    <Text style={styles.statLabel}>Encrypted</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.infoBox}>
+                <Text style={styles.infoTitle}>Device Management Recommendations</Text>
+                <Text style={styles.infoText}>
+                  Keep devices updated and secure to protect business data. Regularly check that all
+                  employee devices meet security standards and address any issues promptly. Consider
+                  automated policies to maintain consistent security across all devices and conduct
+                  regular reviews to identify potential risks.
+                </Text>
+              </View>
+
+              <View style={styles.footer}>
+                <Text
+                  style={styles.pageNumber}
+                  render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+                />
+              </View>
+            </Page>
+          </>
+        )}
 
       {/* CONDITIONAL ACCESS POLICIES PAGE - Only show if data is available */}
-      {conditionalAccessData &&
+      {sectionConfig.conditionalAccess &&
+        conditionalAccessData &&
         Array.isArray(conditionalAccessData) &&
         conditionalAccessData.length > 0 && (
           <>
             {/* STATISTIC PAGE 5 - CHAPTER SPLITTER */}
-            <Page size="A4" style={styles.statPage}>
-              <Image style={styles.statBackground} src="/reportImages/city.jpg" />
-              <View style={styles.statOverlay}>
-                <Text style={styles.statHighlight}>277</Text>
-                <Text style={styles.statMainText}>days</Text>
-                <Text style={styles.statSubText}>
-                  average time to identify and{"\n"}
-                  contain a <Text style={{ fontWeight: "bold" }}>data breach</Text>
+            {sectionConfig.infographics && (
+              <Page size="A4" style={styles.statPage}>
+                <Image style={styles.statBackground} src="/reportImages/city.jpg" />
+                <View style={styles.statOverlay}>
+                  <Text style={styles.statHighlight}>277</Text>
+                  <Text style={styles.statMainText}>days</Text>
+                  <Text style={styles.statSubText}>
+                    average time to identify and{"\n"}
+                    contain a <Text style={{ fontWeight: "bold" }}>data breach</Text>
+                  </Text>
+                </View>
+                <Text style={styles.statFooterText}>
+                  <Text style={{ fontWeight: "bold" }}>Early detection</Text> minimizes{"\n"}
+                  <Text style={{ fontWeight: "bold" }}>business impact</Text>
                 </Text>
-              </View>
-              <Text style={styles.statFooterText}>
-                <Text style={{ fontWeight: "bold" }}>Early detection</Text> minimizes{"\n"}
-                <Text style={{ fontWeight: "bold" }}>business impact</Text>
-              </Text>
-            </Page>
+              </Page>
+            )}
             <Page size="A4" style={styles.page}>
               <View style={styles.pageHeader}>
                 <View style={styles.pageHeaderContent}>
@@ -1876,6 +1931,18 @@ export const ExecutiveReportButton = (props) => {
   const settings = useSettings();
   const brandingSettings = settings.customBranding;
 
+  // Preview state
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [sectionConfig, setSectionConfig] = useState({
+    executiveSummary: true,
+    securityStandards: true,
+    secureScore: true,
+    licenseManagement: true,
+    deviceManagement: true,
+    conditionalAccess: true,
+    infographics: true,
+  });
+
   // Get real secure score data
   const secureScore = useSecureScore();
 
@@ -1936,6 +2003,126 @@ export const ExecutiveReportButton = (props) => {
     new Date().toISOString().split("T")[0]
   }.pdf`;
 
+  // Memoize the document to prevent unnecessary re-renders
+  const reportDocument = useMemo(() => {
+    console.log("Creating report document with:", {
+      tenantName,
+      tenantId,
+      userStats,
+      standardsData,
+      organizationData,
+      brandingSettings,
+      secureScore: secureScore.isSuccess ? secureScore : null,
+      licensingData: licenseData.isSuccess ? licenseData?.data : null,
+      deviceData: deviceData.isSuccess ? deviceData?.data : null,
+      conditionalAccessData: conditionalAccessData.isSuccess ? conditionalAccessData?.data : null,
+      standardsCompareData: standardsCompareData.isSuccess ? standardsCompareData?.data : null,
+      sectionConfig,
+    });
+
+    try {
+      return (
+        <ExecutiveReportDocument
+          tenantName={tenantName}
+          tenantId={tenantId}
+          userStats={userStats}
+          standardsData={standardsData}
+          organizationData={organizationData}
+          brandingSettings={brandingSettings}
+          secureScoreData={secureScore.isSuccess ? secureScore : null}
+          licensingData={licenseData.isSuccess ? licenseData?.data : null}
+          deviceData={deviceData.isSuccess ? deviceData?.data : null}
+          conditionalAccessData={
+            conditionalAccessData.isSuccess ? conditionalAccessData?.data : null
+          }
+          standardsCompareData={standardsCompareData.isSuccess ? standardsCompareData?.data : null}
+          sectionConfig={sectionConfig}
+        />
+      );
+    } catch (error) {
+      console.error("Error creating ExecutiveReportDocument:", error);
+      return (
+        <Document>
+          <Page size="A4" style={{ padding: 40, fontFamily: "Helvetica" }}>
+            <Text style={{ fontSize: 14, color: "red" }}>
+              Error creating document: {error.message}
+            </Text>
+          </Page>
+        </Document>
+      );
+    }
+  }, [
+    tenantName,
+    tenantId,
+    userStats,
+    standardsData,
+    organizationData,
+    brandingSettings,
+    secureScore,
+    licenseData,
+    deviceData,
+    conditionalAccessData,
+    standardsCompareData,
+    sectionConfig,
+  ]);
+
+  // Handle section toggle
+  const handleSectionToggle = (sectionKey) => {
+    setSectionConfig((prev) => {
+      // Count currently enabled sections
+      const enabledSections = Object.values(prev).filter(Boolean).length;
+
+      // If trying to disable the last remaining section, prevent it
+      if (prev[sectionKey] && enabledSections === 1) {
+        return prev; // Don't change state
+      }
+
+      return {
+        ...prev,
+        [sectionKey]: !prev[sectionKey],
+      };
+    });
+  };
+
+  // Section configuration options
+  const sectionOptions = [
+    {
+      key: "executiveSummary",
+      label: "Executive Summary",
+      description: "High-level overview and statistics",
+    },
+    {
+      key: "securityStandards",
+      label: "Security Standards",
+      description: "Compliance assessment and standards evaluation",
+    },
+    {
+      key: "secureScore",
+      label: "Microsoft Secure Score",
+      description: "Security posture measurement and trends",
+    },
+    {
+      key: "licenseManagement",
+      label: "License Management",
+      description: "License allocation and optimization",
+    },
+    {
+      key: "deviceManagement",
+      label: "Device Management",
+      description: "Device compliance and insights",
+    },
+    {
+      key: "conditionalAccess",
+      label: "Conditional Access",
+      description: "Access control policies and analysis",
+    },
+    {
+      key: "infographics",
+      label: "Infographic Pages",
+      description: "Statistical pages with visual elements between sections",
+    },
+  ];
+
   // Don't render the button if data is not ready
   if (!shouldShowButton) {
     return (
@@ -1960,45 +2147,240 @@ export const ExecutiveReportButton = (props) => {
   }
 
   return (
-    <PDFDownloadLink
-      document={
-        <ExecutiveReportDocument
-          tenantName={tenantName}
-          tenantId={tenantId}
-          userStats={userStats}
-          standardsData={standardsData}
-          organizationData={organizationData}
-          brandingSettings={brandingSettings}
-          secureScoreData={secureScore.isSuccess ? secureScore : null}
-          licensingData={licenseData.isSuccess ? licenseData?.data : null}
-          deviceData={deviceData.isSuccess ? deviceData?.data : null}
-          conditionalAccessData={
-            conditionalAccessData.isSuccess ? conditionalAccessData?.data : null
-          }
-          standardsCompareData={standardsCompareData.isSuccess ? standardsCompareData?.data : null}
-        />
-      }
-      fileName={fileName}
-    >
-      {({ blob, url, loading, error }) => (
-        <Tooltip title="Generate Executive Report">
+    <>
+      {/* Main Executive Summary Button */}
+      <Tooltip title="Generate Executive Report with preview and configuration">
+        <Button
+          variant="contained"
+          startIcon={<PictureAsPdf />}
+          onClick={() => setPreviewOpen(true)}
+          sx={{
+            fontWeight: "bold",
+            textTransform: "none",
+            borderRadius: 2,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            transition: "all 0.2s ease-in-out",
+          }}
+          {...other}
+        >
+          Executive Summary
+        </Button>
+      </Tooltip>
+
+      {/* Combined Preview and Configuration Dialog */}
+      <Dialog
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        maxWidth="xl"
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            height: "95vh",
+            maxHeight: "95vh",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            pb: 1,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <Typography variant="h6" component="div">
+            Executive Report - {tenantName}
+          </Typography>
+          <IconButton onClick={() => setPreviewOpen(false)} size="small">
+            <Close />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent sx={{ p: 0, height: "100%", display: "flex" }}>
+          {/* Left Panel - Section Configuration */}
+          <Paper
+            sx={{
+              width: 320,
+              flexShrink: 0,
+              borderRadius: 0,
+              borderRight: "1px solid",
+              borderColor: "divider",
+              height: "100%",
+              overflow: "auto",
+            }}
+          >
+            <Box sx={{ p: 2 }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              >
+                <Settings size={20} />
+                Report Sections
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                Configure which sections to include in your executive report. Changes are reflected
+                in real-time.
+              </Typography>
+
+              <Grid container spacing={1.5}>
+                {sectionOptions.map((option) => (
+                  <Grid item xs={12} key={option.key}>
+                    <Paper
+                      sx={{
+                        p: 1.5,
+                        border: "1px solid",
+                        borderColor: sectionConfig[option.key] ? "primary.main" : "divider",
+                        bgcolor: sectionConfig[option.key] ? "primary.50" : "background.paper",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease-in-out",
+                        "&:hover": {
+                          borderColor: "primary.main",
+                          bgcolor: sectionConfig[option.key] ? "primary.100" : "primary.25",
+                        },
+                      }}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={sectionConfig[option.key]}
+                            onChange={(event) => {
+                              event.stopPropagation();
+                              handleSectionToggle(option.key);
+                            }}
+                            color="primary"
+                            size="small"
+                            disabled={
+                              // Disable if this is the last enabled section
+                              sectionConfig[option.key] &&
+                              Object.values(sectionConfig).filter(Boolean).length === 1
+                            }
+                          />
+                        }
+                        label={
+                          <Box onClick={() => handleSectionToggle(option.key)}>
+                            <Typography
+                              variant="subtitle2"
+                              fontWeight="bold"
+                              sx={{ fontSize: "0.875rem" }}
+                            >
+                              {option.label}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ fontSize: "0.75rem" }}
+                            >
+                              {option.description}
+                            </Typography>
+                          </Box>
+                        }
+                        sx={{ margin: 0, width: "100%" }}
+                      />
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
+
+              <Box sx={{ mt: 3, p: 2, bgcolor: "primary.50", borderRadius: 1 }}>
+                <Typography variant="caption" color="primary.main" fontWeight="bold">
+                  💡 Pro Tip
+                </Typography>
+                <Typography
+                  variant="caption"
+                  display="block"
+                  color="text.secondary"
+                  sx={{ mt: 0.5 }}
+                >
+                  Enable only the sections relevant to your audience to create focused, impactful
+                  reports. At least one section must be enabled.
+                </Typography>
+              </Box>
+            </Box>
+          </Paper>
+
+          {/* Right Panel - PDF Preview */}
+          <Box sx={{ flex: 1, height: "100%" }}>
+            <PDFViewer
+              key={JSON.stringify(sectionConfig)} // Force re-render when sections change
+              style={{
+                width: "100%",
+                height: "100%",
+                border: "none",
+              }}
+              showToolbar={true}
+            >
+              {reportDocument}
+            </PDFViewer>
+          </Box>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 2, borderTop: "1px solid", borderColor: "divider", gap: 1 }}>
+          <Box sx={{ flex: 1, display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="caption" color="text.secondary">
+              Sections enabled: {Object.values(sectionConfig).filter(Boolean).length} of{" "}
+              {sectionOptions.length}
+            </Typography>
+          </Box>
+
           <Button
             variant="contained"
-            startIcon={<PictureAsPdf />}
-            disabled={loading}
-            sx={{
-              fontWeight: "bold",
-              textTransform: "none",
-              borderRadius: 2,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              transition: "all 0.2s ease-in-out",
+            startIcon={<Download />}
+            disabled={!shouldShowButton}
+            sx={{ minWidth: 140 }}
+            onClick={() => {
+              // Create document dynamically when download is clicked
+              const downloadDocument = (
+                <ExecutiveReportDocument
+                  tenantName={tenantName}
+                  tenantId={tenantId}
+                  userStats={userStats}
+                  standardsData={standardsData}
+                  organizationData={organizationData}
+                  brandingSettings={brandingSettings}
+                  secureScoreData={secureScore.isSuccess ? secureScore : null}
+                  licensingData={licenseData.isSuccess ? licenseData?.data : null}
+                  deviceData={deviceData.isSuccess ? deviceData?.data : null}
+                  conditionalAccessData={
+                    conditionalAccessData.isSuccess ? conditionalAccessData?.data : null
+                  }
+                  standardsCompareData={
+                    standardsCompareData.isSuccess ? standardsCompareData?.data : null
+                  }
+                  sectionConfig={sectionConfig}
+                />
+              );
+
+              // Use react-pdf's pdf() function to generate and download
+              import("@react-pdf/renderer").then(({ pdf }) => {
+                pdf(downloadDocument)
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                  })
+                  .catch((error) => {
+                    console.error("Error generating PDF:", error);
+                  });
+              });
             }}
-            {...other}
           >
-            {loading ? "Generating..." : "Executive Report"}
+            Download PDF
           </Button>
-        </Tooltip>
-      )}
-    </PDFDownloadLink>
+
+          <Button onClick={() => setPreviewOpen(false)} variant="outlined">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
