@@ -39,6 +39,10 @@ Expanding the Logbook Filters section at the top of the page will present you wi
 | App Id    |                                                                                                                  |
 | Log Data  | Opens a second table to display information relevant to the logbook entry                                        |
 
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Details</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Log Entry</td><td>Opens the selected log entry to <a data-mention href="logentry.md">logentry.md</a></td><td>false</td></tr></tbody></table>
+
 ***
 
 ### Feature Requests / Ideas

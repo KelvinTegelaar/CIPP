@@ -39,6 +39,7 @@ Within CIPP, there are two types of alerts:
 
 * Alert on users without any form of MFA
 * Alert on admins without any form of MFA
+* Alert on license assignment errors - This will alert for any group-based license that fails to assign.
 * Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.
 * Alert on changed admin Passwords
 * Alert on licensed users that have not logged in for 90 days
