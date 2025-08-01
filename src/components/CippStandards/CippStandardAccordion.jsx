@@ -95,6 +95,7 @@ const CippStandardAccordion = ({
   handleAddMultipleStandard,
   formControl,
   editMode = false,
+  isDriftMode = false,
 }) => {
   const [configuredState, setConfiguredState] = useState({});
   const [filter, setFilter] = useState("all");
@@ -105,6 +106,43 @@ const CippStandardAccordion = ({
   const watchedValues = useWatch({
     control: formControl.control,
   });
+
+  // Watch all trackDrift values for all standards at once
+  const allTrackDriftValues = useWatch({
+    control: formControl.control,
+    name: Object.keys(selectedStandards).map((standardName) => `${standardName}.trackDrift`),
+  });
+
+  // Handle drift mode automatic action setting
+  useEffect(() => {
+    if (isDriftMode && selectedStandards) {
+      Object.keys(selectedStandards).forEach((standardName) => {
+        const currentValues = formControl.getValues(standardName) || {};
+        const autoRemediate = currentValues.autoRemediate;
+
+        // Set default action based on autoRemediate setting
+        const defaultAction = autoRemediate
+          ? [
+              { label: "Report", value: "Report" },
+              { label: "Remediate", value: "Remediate" },
+            ]
+          : [{ label: "Report", value: "Report" }];
+
+        // Only set if action is not already set
+        if (!currentValues.action) {
+          formControl.setValue(`${standardName}.action`, defaultAction);
+        }
+
+        // Set default autoRemediate if not set
+        if (currentValues.autoRemediate === undefined) {
+          formControl.setValue(`${standardName}.autoRemediate`, false);
+          formControl.setValue(`${standardName}.action`, [
+            { label: "Report", value: "Report" },
+          ]);
+        }
+      });
+    }
+  }, [isDriftMode, selectedStandards, formControl]);
 
   // Check if a standard is configured based on its values
   const isStandardConfigured = (standardName, standard, values) => {
@@ -202,7 +240,6 @@ const CippStandardAccordion = ({
         return;
       }
 
-      console.log("Initializing configuration state from template values");
       const initial = {};
       const initialConfigured = {};
 
@@ -246,7 +283,6 @@ const CippStandardAccordion = ({
 
     // Update configured state right away
     const isConfigured = isStandardConfigured(standardName, standard, newValues);
-    console.log(`Saving standard ${standardName}, configured: ${isConfigured}`);
 
     setConfiguredState((prev) => ({
       ...prev,
@@ -255,6 +291,19 @@ const CippStandardAccordion = ({
 
     // Collapse the accordion after saving
     handleAccordionToggle(null);
+  };
+
+  // Handle auto-remediate toggle in drift mode
+  const handleAutoRemediateChange = (standardName, value) => {
+    const action = value
+      ? [
+          { label: "Report", value: "Report" },
+          { label: "Remediate", value: "Remediate" },
+        ]
+      : [{ label: "Report", value: "Report" }];
+
+    formControl.setValue(`${standardName}.autoRemediate`, value);
+    formControl.setValue(`${standardName}.action`, action);
   };
 
   // Cancel changes for a standard
@@ -523,8 +572,6 @@ const CippStandardAccordion = ({
             // Get current values and check if they differ from saved values
             const current = _.get(watchedValues, standardName);
             const saved = _.get(savedValues, standardName) || {};
-            console.log(`Current values for ${standardName}:`, current);
-            console.log(`Saved values for ${standardName}:`, saved);
 
             const hasUnsaved = !_.isEqual(current, saved);
 
@@ -576,8 +623,7 @@ const CippStandardAccordion = ({
 
                   // Get field value for validation using lodash's get to properly handle nested properties
                   const fieldValue = _.get(current, component.name);
-                  console.log(`Checking field: ${component.name}, value:`, fieldValue);
-                  console.log(current);
+
                   // Check if required field has a value based on its type and multiple property
                   if (component.type === "autoComplete" || component.type === "select") {
                     if (component.multiple) {
@@ -615,10 +661,6 @@ const CippStandardAccordion = ({
             // 3. There are unsaved changes
             const canSave = hasAction && requiredFieldsFilled && hasUnsaved;
 
-            console.log(
-              `Standard: ${standardName}, Action Required: ${actionRequired}, Has Action: ${hasAction}, Required Fields Filled: ${requiredFieldsFilled}, Unsaved Changes: ${hasUnsaved}, Can Save: ${canSave}`
-            );
-
             return (
               <Card key={standardName} sx={{ mb: 2 }}>
                 <Stack
@@ -646,7 +688,8 @@ const CippStandardAccordion = ({
                     <Stack>
                       <Typography variant="h6">{accordionTitle}</Typography>
                       <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
-                        {selectedActions && selectedActions?.length > 0 && (
+                        {/* Hide action chips in drift mode */}
+                        {!isDriftMode && selectedActions && selectedActions?.length > 0 && (
                           <>
                             {selectedActions?.map((action, index) => (
                               <React.Fragment key={index}>
@@ -696,12 +739,7 @@ const CippStandardAccordion = ({
                           components={{
                             // Make links open in new tab with security attributes
                             a: ({ href, children, ...props }) => (
-                              <a
-                                href={href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                {...props}
-                              >
+                              <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
                                 {children}
                               </a>
                             ),
@@ -751,23 +789,27 @@ const CippStandardAccordion = ({
                 <Collapse in={isExpanded} unmountOnExit>
                   <Divider />
                   <Box sx={{ p: 3 }}>
-                    <Grid container spacing={2}>
-                      {/* Always show action field as it's required */}
-                      <Grid size={4}>
-                        <CippFormComponent
-                          type="autoComplete"
-                          name={`${standardName}.action`}
-                          formControl={formControl}
-                          label="Action"
-                          options={getAvailableActions(disabledFeatures)}
-                          multiple={true}
-                          fullWidth
-                        />
-                      </Grid>
+                    {isDriftMode ? (
+                      /* Drift mode layout - full width with slider first */
+                      <Grid container spacing={2}>
+                        {/* Auto-remediate switch takes full width and is first */}
+                        <Grid size={12}>
+                          <CippFormComponent
+                            type="switch"
+                            name={`${standardName}.autoRemediate`}
+                            formControl={formControl}
+                            label="Automatically remediate or deploy when drift is detected"
+                            defaultValue={true}
+                            onChange={(e) =>
+                              handleAutoRemediateChange(standardName, e.target.checked)
+                            }
+                            fullWidth
+                          />
+                        </Grid>
 
-                      {hasAddedComponents && (
-                        <Grid size={8}>
-                          <Grid container spacing={2}>
+                        {/* Additional components take full width */}
+                        {hasAddedComponents && (
+                          <>
                             {standard.addedComponent?.map((component, idx) =>
                               component?.condition ? (
                                 <CippFormCondition
@@ -794,10 +836,58 @@ const CippStandardAccordion = ({
                                 />
                               )
                             )}
-                          </Grid>
+                          </>
+                        )}
+                      </Grid>
+                    ) : (
+                      /* Standard mode layout - original grid layout */
+                      <Grid container spacing={2}>
+                        <Grid size={4}>
+                          <CippFormComponent
+                            type="autoComplete"
+                            name={`${standardName}.action`}
+                            formControl={formControl}
+                            label="Action"
+                            options={getAvailableActions(disabledFeatures)}
+                            multiple={true}
+                            fullWidth
+                          />
                         </Grid>
-                      )}
-                    </Grid>
+
+                        {hasAddedComponents && (
+                          <Grid size={8}>
+                            <Grid container spacing={2}>
+                              {standard.addedComponent?.map((component, idx) =>
+                                component?.condition ? (
+                                  <CippFormCondition
+                                    key={idx}
+                                    formControl={formControl}
+                                    field={`${standardName}.${component.condition.field}`}
+                                    compareType={component.condition.compareType}
+                                    compareValue={component.condition.compareValue}
+                                    propertyName={component.condition.propertyName || "value"}
+                                    action={component.condition.action || "hide"}
+                                  >
+                                    <CippAddedComponent
+                                      standardName={standardName}
+                                      component={component}
+                                      formControl={formControl}
+                                    />
+                                  </CippFormCondition>
+                                ) : (
+                                  <CippAddedComponent
+                                    key={idx}
+                                    standardName={standardName}
+                                    component={component}
+                                    formControl={formControl}
+                                  />
+                                )
+                              )}
+                            </Grid>
+                          </Grid>
+                        )}
+                      </Grid>
+                    )}
                   </Box>
                   <Divider sx={{ mt: 2 }} />
                   <Box sx={{ px: 3, py: 2 }}>
