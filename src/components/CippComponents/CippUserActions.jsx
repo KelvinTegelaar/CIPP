@@ -353,7 +353,7 @@ export const CippUserActions = () => {
             labelField: "webUrl",
             valueField: "webUrl",
             addedField: {
-              siteId: "siteId", // Fix: Use "siteId" not "id" based on API response
+              siteId: "siteId",
             },
             queryKey: `sharepointSites-${tenant}`,
           },
@@ -371,32 +371,24 @@ export const CippUserActions = () => {
             labelField: "name",
             valueField: "id",
             data: (formValues) => {
-              // More robust null checking
-              if (!formValues || !formValues.siteUrl) {
-                return null;
+              if (!formValues?.siteUrl?.addedFields?.siteId) {
+                return null; // This will prevent the API call
               }
               
-              const siteUrl = formValues.siteUrl;
-              const siteId = siteUrl?.addedFields?.siteId;
-              
-              if (!siteId) {
-                return null; // Don't make API call if site ID not available
-              }
+              const siteId = formValues.siteUrl.addedFields.siteId;
               
               return {
                 Endpoint: `sites/${siteId}/drives`,
-                $filter: "driveType eq 'documentLibrary'",
-                $select: "id,name,driveType",
+                $select: "id,name,driveType,webUrl",
               };
             },
             queryKey: (formValues) => {
-              // More robust query key generation
-              if (!formValues || !formValues.siteUrl) {
-                return `libraries-${tenant}-empty`;
+              if (!formValues?.siteUrl?.addedFields?.siteId) {
+                return null; // This will prevent caching issues
               }
               
-              const siteId = formValues.siteUrl?.addedFields?.siteId;
-              return siteId ? `libraries-${tenant}-${siteId}` : `libraries-${tenant}-no-site`;
+              const siteId = formValues.siteUrl.addedFields.siteId;
+              return `libraries-${tenant}-${siteId}`;
             },
           },
         },

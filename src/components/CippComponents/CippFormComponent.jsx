@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { Controller, useFormState } from "react-hook-form";
-import { DateTimePicker } from "@mui/x-date-pickers";
+import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
 import CSVReader from "../CSVReader";
 import get from "lodash/get";
 import {
@@ -27,15 +27,14 @@ import {
 } from "mui-tiptap";
 import StarterKit from "@tiptap/starter-kit";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { CloudUpload } from "@mui/icons-material";
 import React, { useMemo, useEffect, useState } from "react";
-import { AccessTime } from "@mui/icons-material";
+import { CloudUpload } from "@mui/icons-material";
 
 // Helper function to convert bracket notation to dot notation
 // Improved to correctly handle nested bracket notations
 const convertBracketsToDots = (name) => {
   if (!name) return "";
-  return name.replace(/\[(\d+)\]/g, ".$1");
+  return name.replace(/\[(\d+)\]/g, ".$1"); // Replace [0] with .0
 };
 
 // Helper function to check if dependent field conditions are met
@@ -53,53 +52,45 @@ const isDependentFieldReady = (dependsOn, formValues) => {
   return value && value !== '' && value !== null && value !== undefined;
 };
 
-// Helper function to resolve dynamic API configuration
+// Helper function to safely resolve dynamic API configuration
 const resolveDynamicApiConfig = (api, formValues) => {
   if (!api) return null;
   
-  const resolvedConfig = { ...api };
+  // If it's a static API config, return as-is
+  if (!api.data || typeof api.data !== 'function') {
+    return api;
+  }
   
-  // Handle dynamic data function
-  if (typeof api.data === 'function') {
+  // For dynamic APIs, ensure we have all required data before resolving
+  try {
     const resolvedData = api.data(formValues);
-    if (!resolvedData) return null; // Don't make API call if function returns null
+    
+    // Don't return config if data function returns null or incomplete data
+    if (!resolvedData || !resolvedData.Endpoint) {
+      return null;
+    }
+    
+    // Check for undefined values in the endpoint
+    if (resolvedData.Endpoint.includes('undefined') || resolvedData.Endpoint.includes('null')) {
+      return null;
+    }
+    
+    const resolvedConfig = { ...api };
     resolvedConfig.data = resolvedData;
-  } else if (api.data && typeof api.data === 'object') {
-    // Handle string references in data object
-    const resolvedData = { ...api.data };
-    Object.keys(resolvedData).forEach(key => {
-      const value = resolvedData[key];
-      if (typeof value === 'string' && formValues[value]) {
-        const formValue = formValues[value];
-        if (formValue && typeof formValue === 'object' && formValue.value) {
-          resolvedData[key] = formValue.value;
-        } else if (formValue && typeof formValue === 'object' && formValue.addedFields) {
-          resolvedData[key] = formValue.addedFields;
-        } else {
-          resolvedData[key] = formValue;
-        }
+    
+    // Handle dynamic query key
+    if (typeof api.queryKey === 'function') {
+      const resolvedQueryKey = api.queryKey(formValues);
+      if (resolvedQueryKey) {
+        resolvedConfig.queryKey = resolvedQueryKey;
       }
-    });
-    resolvedConfig.data = resolvedData;
+    }
+    
+    return resolvedConfig;
+  } catch (error) {
+    console.warn('Error resolving dynamic API config:', error);
+    return null;
   }
-  
-  // Handle dynamic query key
-  if (typeof api.queryKey === 'function') {
-    const resolvedQueryKey = api.queryKey(formValues);
-    if (!resolvedQueryKey) return null;
-    resolvedConfig.queryKey = resolvedQueryKey;
-  } else if (typeof api.queryKey === 'string') {
-    // Replace placeholder patterns like {fieldName}
-    resolvedConfig.queryKey = api.queryKey.replace(/\{(\w+)\}/g, (match, fieldName) => {
-      const value = formValues[fieldName];
-      if (value && typeof value === 'object' && value.value) {
-        return value.value;
-      }
-      return value || match;
-    });
-  }
-  
-  return resolvedConfig;
 };
 
 const MemoizedCippAutoComplete = React.memo((props) => {
@@ -111,39 +102,75 @@ export const CippFormComponent = (props) => {
     validators,
     formControl,
     type = "textField",
-    name,
+    name, // The name that may have bracket notation
     label,
-    labelLocation = "behind",
+    labelLocation = "behind", // Default location for switches
     defaultValue,
     helperText,
-    dependsOn, // New prop for dependent fields
-    api, // API configuration that might be dynamic
+    dependsOn,
+    api,
     ...other
   } = props;
-  
   const { errors } = useFormState({ control: formControl.control });
   // Convert the name from bracket notation to dot notation
   const convertedName = convertBracketsToDots(name);
   
-  // Watch all form values for dependent field logic
-  const watchedValues = formControl?.watch ? formControl.watch() : {};
+  // Only watch dependency fields when needed
+  const dependencyFields = useMemo(() => {
+    if (!dependsOn) return [];
+    return Array.isArray(dependsOn) ? dependsOn : [dependsOn];
+  }, [dependsOn]);
+  
+  // Watch only dependency fields to minimize re-renders
+  const watchedDependencies = formControl?.watch ? 
+    (dependencyFields.length > 0 ? formControl.watch(dependencyFields) : {}) : 
+    {};
+  
+  // Create form values object for dependencies
+  const formValues = useMemo(() => {
+    if (dependencyFields.length === 0) return {};
+    
+    const result = {};
+    dependencyFields.forEach((field, index) => {
+      result[field] = Array.isArray(watchedDependencies) ? 
+        watchedDependencies[index] : 
+        watchedDependencies[field] || watchedDependencies;
+    });
+    return result;
+  }, [dependencyFields, watchedDependencies]);
   
   // Check if this field should be visible based on dependencies
   const shouldShowField = useMemo(() => {
-    return isDependentFieldReady(dependsOn, watchedValues);
-  }, [dependsOn, watchedValues]);
+    return isDependentFieldReady(dependsOn, formValues);
+  }, [dependsOn, formValues]);
   
-  // Resolve dynamic API configuration for autoComplete fields
-  const [dynamicApiConfig, setDynamicApiConfig] = useState(null);
+  // Handle dynamic API for autoComplete fields
+  const [resolvedApi, setResolvedApi] = useState(null);
+  const [isResolvingApi, setIsResolvingApi] = useState(false);
   
   useEffect(() => {
     if (type === "autoComplete" && api && shouldShowField) {
-      const resolved = resolveDynamicApiConfig(api, watchedValues);
-      setDynamicApiConfig(resolved);
-    } else if (type === "autoComplete" && !shouldShowField) {
-      setDynamicApiConfig(null);
+      // If it's a static API, use it directly
+      if (!api.data || typeof api.data !== 'function') {
+        setResolvedApi(api);
+        return;
+      }
+      
+      // For dynamic APIs, try to resolve
+      setIsResolvingApi(true);
+      const resolved = resolveDynamicApiConfig(api, formValues);
+      
+      if (resolved) {
+        setResolvedApi(resolved);
+      } else {
+        setResolvedApi(null);
+      }
+      setIsResolvingApi(false);
+    } else {
+      setResolvedApi(null);
+      setIsResolvingApi(false);
     }
-  }, [type, api, shouldShowField, watchedValues]);
+  }, [type, api, shouldShowField, JSON.stringify(formValues)]);
 
   // Don't render field if dependencies aren't met
   if (!shouldShowField) {
@@ -151,7 +178,7 @@ export const CippFormComponent = (props) => {
   }
 
   const renderSwitchWithLabel = (element) => {
-    if (!label) return element;
+    if (!label) return element; // No label for the switch if label prop is not provided
 
     if (labelLocation === "above") {
       return (
@@ -379,8 +406,8 @@ export const CippFormComponent = (props) => {
               render={({ field }) => (
                 <MemoizedCippAutoComplete
                   {...other}
-                  api={dynamicApiConfig || api} // Use dynamic config if available
-                  isFetching={other.isFetching}
+                  api={resolvedApi || api}
+                  isFetching={other.isFetching || isResolvingApi}
                   variant="filled"
                   defaultValue={field.value}
                   label={label}
@@ -397,6 +424,36 @@ export const CippFormComponent = (props) => {
       );
 
     case "autoComplete":
+      if (dependsOn && !resolvedApi && !isResolvingApi) {
+        return (
+          <>
+            <div>
+              <TextField
+                variant="filled"
+                fullWidth
+                label={label}
+                value=""
+                disabled
+                placeholder={
+                  isDependentFieldReady(dependsOn, formValues) 
+                    ? "Loading options..." 
+                    : "Please select required fields first..."
+                }
+                InputLabelProps={{ shrink: true }}
+              />
+            </div>
+            <Typography variant="subtitle3" color="error">
+              {get(errors, convertedName, {}).message}
+            </Typography>
+            {helperText && (
+              <Typography variant="subtitle3" color="text.secondary">
+                {helperText}
+              </Typography>
+            )}
+          </>
+        );
+      }
+
       return (
         <>
           <div>
@@ -407,8 +464,8 @@ export const CippFormComponent = (props) => {
               render={({ field }) => (
                 <MemoizedCippAutoComplete
                   {...other}
-                  api={dynamicApiConfig || api} // Use dynamic config if available
-                  isFetching={other.isFetching}
+                  api={resolvedApi || api}
+                  isFetching={other.isFetching || isResolvingApi}
                   variant="filled"
                   defaultValue={field.value}
                   label={label}
@@ -562,18 +619,18 @@ export const CippFormComponent = (props) => {
                           : ["year", "month", "day", "hours", "minutes"]
                       }
                       label={label}
-                      value={field.value ? new Date(field.value * 1000) : null}
+                      value={field.value ? new Date(field.value * 1000) : null} // Convert Unix timestamp to Date object
                       onChange={(date) => {
                         if (date) {
-                          const unixTimestamp = Math.floor(date.getTime() / 1000);
-                          field.onChange(unixTimestamp);
+                          const unixTimestamp = Math.floor(date.getTime() / 1000); // Convert to Unix timestamp
+                          field.onChange(unixTimestamp); // Pass the Unix timestamp to the form
                         } else {
-                          field.onChange(null);
+                          field.onChange(null); // Handle the case where no date is selected
                         }
                       }}
                       ampm={false}
                       minutesStep={15}
-                      inputFormat="yyyy/MM/dd HH:mm"
+                      inputFormat="yyyy/MM/dd HH:mm" // Display format
                       renderInput={(inputProps) => (
                         <TextField
                           {...inputProps}
