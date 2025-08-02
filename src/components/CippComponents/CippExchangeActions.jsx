@@ -1,4 +1,6 @@
-﻿import { TrashIcon, MagnifyingGlassIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
+﻿// Complete CippExchangeActions with corrected bulk permissions
+
+import { TrashIcon, MagnifyingGlassIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
 import {
   Archive,
   MailOutline,
@@ -23,7 +25,8 @@ import { useMemo } from "react";
 export const CippExchangeActions = () => {
   const tenant = useSettings().currentTenant;
   
-  // API configuration for all user selection fields
+
+  // Memoized API configuration for all user selection fields
   const userApiConfig = useMemo(() => ({
     url: "/api/ListGraphRequest",
     dataKey: "Results",

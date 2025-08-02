@@ -352,11 +352,56 @@ export const CippUserActions = () => {
             data: { type: "SharePointSiteUsage", URLOnly: true },
             labelField: "webUrl",
             valueField: "webUrl",
+            addedField: {
+              siteId: "siteId", // Fix: Use "siteId" not "id" based on API response
+            },
             queryKey: `sharepointSites-${tenant}`,
           },
         },
+        {
+          type: "autoComplete",
+          name: "libraryId",
+          label: "Select Document Library (optional - defaults to Documents)",
+          multiple: false,
+          creatable: false,
+          dependsOn: "siteUrl",
+          api: {
+            url: "/api/ListGraphRequest",
+            dataKey: "Results",
+            labelField: "name",
+            valueField: "id",
+            data: (formValues) => {
+              // More robust null checking
+              if (!formValues || !formValues.siteUrl) {
+                return null;
+              }
+              
+              const siteUrl = formValues.siteUrl;
+              const siteId = siteUrl?.addedFields?.siteId;
+              
+              if (!siteId) {
+                return null; // Don't make API call if site ID not available
+              }
+              
+              return {
+                Endpoint: `sites/${siteId}/drives`,
+                $filter: "driveType eq 'documentLibrary'",
+                $select: "id,name,driveType",
+              };
+            },
+            queryKey: (formValues) => {
+              // More robust query key generation
+              if (!formValues || !formValues.siteUrl) {
+                return `libraries-${tenant}-empty`;
+              }
+              
+              const siteId = formValues.siteUrl?.addedFields?.siteId;
+              return siteId ? `libraries-${tenant}-${siteId}` : `libraries-${tenant}-no-site`;
+            },
+          },
+        },
       ],
-      confirmText: "Select a SharePoint site to create a shortcut for:",
+      confirmText: "Select a SharePoint site and document library to create a shortcut for:",
       multiPost: false,
       condition: () => canWriteUser,
     },
