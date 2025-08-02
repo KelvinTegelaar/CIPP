@@ -16,6 +16,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
 import {
   CheckCircle,
   Cancel,
@@ -26,6 +27,7 @@ import {
   Close,
   Search,
   FactCheck,
+  PlayArrow,
 } from "@mui/icons-material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import standards from "/src/data/standards.json";
@@ -40,6 +42,7 @@ import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
+import tabOptions from "./tabOptions.json";
 
 const Page = () => {
   const router = useRouter();
@@ -150,6 +153,64 @@ const Page = () => {
                   allStandards.push({
                     standardId,
                     standardName: `Intune Template: ${
+                      templateItem.TemplateList?.label || templateId
+                    }`,
+                    currentTenantValue:
+                      standardObject !== undefined
+                        ? {
+                            Value: directStandardValue,
+                            LastRefresh: standardObject?.LastRefresh,
+                          }
+                        : currentTenantStandard?.value,
+                    standardValue: templateSettings, // Use the template settings object instead of true
+                    complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                    complianceDetails:
+                      standardInfo?.docsDescription || standardInfo?.helpText || "",
+                    standardDescription: standardInfo?.helpText || "",
+                    standardImpact: standardInfo?.impact || "Medium Impact",
+                    standardImpactColour: standardInfo?.impactColour || "warning",
+                    templateName: selectedTemplate?.templateName || "Standard Template",
+                    templateActions: templateItem.action || [],
+                  });
+                }
+              });
+            } else if (
+              standardKey === "ConditionalAccessTemplate" &&
+              Array.isArray(standardConfig)
+            ) {
+              // Process each ConditionalAccessTemplate item separately
+              standardConfig.forEach((templateItem, index) => {
+                const templateId = templateItem.TemplateList?.value;
+                if (templateId) {
+                  const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
+                  const standardInfo = standards.find(
+                    (s) => s.name === `standards.ConditionalAccessTemplate`
+                  );
+
+                  // Find the tenant's value for this specific template
+                  const currentTenantStandard = currentTenantData.find(
+                    (s) => s.standardId === standardId
+                  );
+                  const standardObject = currentTenantObj?.[standardId];
+                  const directStandardValue = standardObject?.Value;
+                  let isCompliant = false;
+
+                  // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                  if (directStandardValue === true) {
+                    isCompliant = true;
+                  } else {
+                    isCompliant = false;
+                  }
+
+                  // Create a standardValue object that contains the template settings
+                  const templateSettings = {
+                    templateId,
+                    Template: templateItem.TemplateList?.label || "Unknown Template",
+                  };
+
+                  allStandards.push({
+                    standardId,
+                    standardName: `Conditional Access Template: ${
                       templateItem.TemplateList?.label || templateId
                     }`,
                     currentTenantValue:
@@ -316,16 +377,19 @@ const Page = () => {
 
       const filteredStandards = groupedStandards[category].filter((standard) => {
         const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue;
-        const hasLicenseMissing = typeof tenantValue === "string" && tenantValue.startsWith("License Missing:");
-        
+        const hasLicenseMissing =
+          typeof tenantValue === "string" && tenantValue.startsWith("License Missing:");
+
         const matchesFilter =
           filter === "all" ||
           (filter === "compliant" && standard.complianceStatus === "Compliant") ||
           (filter === "nonCompliant" && standard.complianceStatus === "Non-Compliant") ||
           (filter === "nonCompliantWithLicense" &&
-           standard.complianceStatus === "Non-Compliant" && !hasLicenseMissing) ||
+            standard.complianceStatus === "Non-Compliant" &&
+            !hasLicenseMissing) ||
           (filter === "nonCompliantWithoutLicense" &&
-           standard.complianceStatus === "Non-Compliant" && hasLicenseMissing);
+            standard.complianceStatus === "Non-Compliant" &&
+            hasLicenseMissing);
 
         const matchesSearch =
           !searchQuery ||
@@ -352,74 +416,59 @@ const Page = () => {
   const reportingDisabledCount =
     comparisonData?.filter((standard) => standard.complianceStatus === "Reporting Disabled")
       .length || 0;
-  
+
   // Calculate license-related metrics
-  const missingLicenseCount = comparisonData?.filter((standard) => {
-    const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue;
-    return typeof tenantValue === "string" && tenantValue.startsWith("License Missing:");
-  }).length || 0;
-  
-  const nonCompliantWithLicenseCount = comparisonData?.filter((standard) => {
-    const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue;
-    return standard.complianceStatus === "Non-Compliant" &&
-           !(typeof tenantValue === "string" && tenantValue.startsWith("License Missing:"));
-  }).length || 0;
-  
-  const nonCompliantWithoutLicenseCount = comparisonData?.filter((standard) => {
-    const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue;
-    return standard.complianceStatus === "Non-Compliant" &&
-           (typeof tenantValue === "string" && tenantValue.startsWith("License Missing:"));
-  }).length || 0;
-  
+  const missingLicenseCount =
+    comparisonData?.filter((standard) => {
+      const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue;
+      return typeof tenantValue === "string" && tenantValue.startsWith("License Missing:");
+    }).length || 0;
+
+  const nonCompliantWithLicenseCount =
+    comparisonData?.filter((standard) => {
+      const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue;
+      return (
+        standard.complianceStatus === "Non-Compliant" &&
+        !(typeof tenantValue === "string" && tenantValue.startsWith("License Missing:"))
+      );
+    }).length || 0;
+
+  const nonCompliantWithoutLicenseCount =
+    comparisonData?.filter((standard) => {
+      const tenantValue = standard.currentTenantValue?.Value || standard.currentTenantValue;
+      return (
+        standard.complianceStatus === "Non-Compliant" &&
+        typeof tenantValue === "string" &&
+        tenantValue.startsWith("License Missing:")
+      );
+    }).length || 0;
+
   const compliancePercentage =
     allCount > 0
       ? Math.round((compliantCount / (allCount - reportingDisabledCount || 1)) * 100)
       : 0;
-      
+
   const missingLicensePercentage =
     allCount > 0
       ? Math.round((missingLicenseCount / (allCount - reportingDisabledCount || 1)) * 100)
       : 0;
-      
+
   // Combined score: compliance percentage + missing license percentage
   // This represents the total "addressable" compliance (compliant + could be compliant if licensed)
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
-  return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
-      <Stack spacing={4} sx={{ px: 4 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Button
-            color="inherit"
-            onClick={() => router.back()}
-            startIcon={
-              <SvgIcon fontSize="small">
-                <ArrowLeftIcon />
-              </SvgIcon>
-            }
-          >
-            Back to Templates
-          </Button>
-        </Stack>
-        <Box>
-          <Stack direction="row" alignItems="space-between" spacing={2}>
-            <Typography variant="h4" width={"100%"}>
-              {
-                templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
-                  ?.templateName
-              }
-            </Typography>
-            <Tooltip title="Refresh Data">
-              <IconButton onClick={() => comparisonApi.refetch()}>
-                <Sync />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-          <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-            {comparisonApi.data?.find(
-              (comparison) => comparison.tenantFilter === currentTenant
-            ) && (
-              <Stack alignItems="center" direction="row" spacing={1} flexWrap="wrap">
+  // Prepare title and subtitle for HeaderedTabbedLayout
+  const title =
+    templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.templateName ||
+    "Tenant Report";
+
+  const subtitle = [
+    // Add compliance badges when template data is available (show even if no comparison data yet)
+    ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
+      ? [
+          {
+            component: (
+              <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
                 <Chip
                   icon={
                     <SvgIcon fontSize="small">
@@ -436,7 +485,6 @@ const Page = () => {
                       ? "warning"
                       : "error"
                   }
-                  sx={{ ml: 2 }}
                 />
                 <Chip
                   label={`${missingLicensePercentage}% Missing Required License`}
@@ -455,40 +503,96 @@ const Page = () => {
                   variant="outlined"
                   size="small"
                   color={
-                    combinedScore >= 80
-                      ? "success"
-                      : combinedScore >= 60
-                      ? "warning"
-                      : "error"
+                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
                   }
                 />
               </Stack>
-            )}
-          </Stack>
-          {templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
-            ?.description && (
-            <Box
-              sx={{
-                "& a": {
-                  color: (theme) => theme.palette.primary.main,
-                  textDecoration: "underline",
-                },
-                color: "text.secondary",
-                fontSize: "0.875rem",
-                "& p": {
-                  my: 0,
-                },
-                mt: 2,
-              }}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  templateDetails?.data?.filter((template) => template.GUID === templateId)[0]
-                    .description
-                ),
-              }}
-            />
-          )}
-        </Box>
+            ),
+          },
+        ]
+      : []),
+    // Add description if available
+    ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.description
+      ? [
+          {
+            component: (
+              <Box
+                sx={{
+                  "& a": {
+                    color: (theme) => theme.palette.primary.main,
+                    textDecoration: "underline",
+                  },
+                  color: "text.secondary",
+                  fontSize: "0.875rem",
+                  "& p": {
+                    my: 0,
+                  },
+                  mt: 1,
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    templateDetails?.data?.filter((template) => template.GUID === templateId)[0]
+                      .description
+                  ),
+                }}
+              />
+            ),
+          },
+        ]
+      : []),
+  ];
+
+  // Actions for the header
+  const actions = [
+    {
+      label: "Refresh Data",
+      icon: <Sync />,
+      noConfirm: true,
+      customFunction: () => {
+        comparisonApi.refetch();
+        templateDetails.refetch();
+      },
+    },
+    ...(templateId
+      ? [
+          {
+            label: "Run Standard Now (Currently Selected Tenant only)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+          {
+            label: "Run Standard Now (All Tenants in Template)",
+            type: "GET",
+            url: "/api/ExecStandardsRun",
+            icon: <PlayArrow />,
+            data: {
+              TemplateId: templateId,
+              tenantFilter: "allTenants",
+            },
+            confirmText: "Are you sure you want to force a run of this standard?",
+            multiPost: false,
+          },
+        ]
+      : []),
+  ];
+
+  return (
+    <HeaderedTabbedLayout
+      tabOptions={tabOptions}
+      title={title}
+      subtitle={subtitle}
+      backUrl="/tenant/standards/list-standards"
+      actions={actions}
+      actionsData={{}}
+      isFetching={comparisonApi.isFetching || templateDetails.isFetching}
+    >
+      <Box sx={{ py: 2 }}>
         {comparisonApi.isFetching && (
           <>
             {[1, 2, 3].map((item) => (
@@ -567,7 +671,6 @@ const Page = () => {
         )}
         {!comparisonApi.isFetching && (
           <>
-            <Divider sx={{ my: 2 }} />
             <Stack
               direction={{ xs: "column", sm: "row" }}
               spacing={2}
@@ -1120,8 +1223,8 @@ const Page = () => {
                                     textDecoration: "none",
                                   },
                                 },
-                                fontSize: "0.875rem", 
-                                lineHeight: 1.43,     
+                                fontSize: "0.875rem",
+                                lineHeight: 1.43,
                                 "& p": {
                                   my: 0,
                                 },
@@ -1158,21 +1261,21 @@ const Page = () => {
             ))}
           </>
         )}
-      </Stack>
 
-      <CippApiDialog
-        createDialog={runReportDialog}
-        title="Run Standard Report"
-        api={{
-          ...runReportApi,
-          data: {
-            ...runReportApi.data,
-            TemplateId: templateId,
-          },
-        }}
-        relatedQueryKeys={["ListStandardsCompare"]}
-      />
-    </Box>
+        <CippApiDialog
+          createDialog={runReportDialog}
+          title="Run Standard Report"
+          api={{
+            ...runReportApi,
+            data: {
+              ...runReportApi.data,
+              TemplateId: templateId,
+            },
+          }}
+          relatedQueryKeys={["ListStandardsCompare"]}
+        />
+      </Box>
+    </HeaderedTabbedLayout>
   );
 };
 
