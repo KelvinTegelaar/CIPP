@@ -37,7 +37,6 @@ const ManageDriftPage = () => {
   const tenantFilter = userSettingsDefaults.currentTenant || "";
   const [anchorEl, setAnchorEl] = useState({});
   const [bulkActionsAnchorEl, setBulkActionsAnchorEl] = useState(null);
-  const [whatIfAnchorEl, setWhatIfAnchorEl] = useState(null);
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, ready: false });
 
@@ -73,11 +72,9 @@ const ManageDriftPage = () => {
 
   // Process drift data for chart - filter by current tenant and aggregate
   const rawDriftData = driftApi.data || [];
-  console.log("Raw drift API data:", rawDriftData);
   const tenantDriftData = Array.isArray(rawDriftData)
     ? rawDriftData.filter((item) => item.tenantFilter === tenantFilter)
     : [];
-  console.log("Filtered tenant drift data:", tenantDriftData);
 
   // Aggregate data across all standards for this tenant
   const processedDriftData = tenantDriftData.reduce(
@@ -263,6 +260,9 @@ const ManageDriftPage = () => {
         statusColor: getDeviationColor(statusOverride || deviation.Status || deviation.state),
         statusText: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
         standardName: deviation.standardName, // Store the original standardName for action handlers
+        receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
+        expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
+        originalDeviation: deviation, // Store the complete original deviation object for reference
         propertyItems: [
           { label: "Standard Name", value: prettyName },
           { label: "Description", value: description },
@@ -347,6 +347,7 @@ const ManageDriftPage = () => {
           {
             standardName: deviation.standardName,
             status: status,
+            receivedValue: deviation.receivedValue,
           },
         ],
         TenantFilter: tenantFilter,
@@ -399,6 +400,7 @@ const ManageDriftPage = () => {
           {
             standardName: deviation.standardName, // Use the standardName from the original deviation data
             status: status,
+            receivedValue: deviation.receivedValue,
           },
         ],
         TenantFilter: tenantFilter,
@@ -453,6 +455,7 @@ const ManageDriftPage = () => {
     const deviations = processedDriftData.currentDeviations.map((deviation) => ({
       standardName: deviation.standardName,
       status: status,
+      receivedValue: deviation.receivedValue,
     }));
 
     // Set action data for CippApiDialog
@@ -460,6 +463,7 @@ const ManageDriftPage = () => {
       data: {
         deviations: deviations,
         TenantFilter: tenantFilter,
+        receivedValues: deviations.map((d) => d.receivedValue),
       },
       action: {
         text: actionText,
@@ -471,12 +475,6 @@ const ManageDriftPage = () => {
 
     createDialog.handleOpen();
     setBulkActionsAnchorEl(null);
-  };
-
-  const handleWhatIfAction = (standardId) => {
-    console.log(`What If Analysis with standard: ${standardId}`);
-    // Here you would implement the what-if analysis
-    setWhatIfAnchorEl(null);
   };
 
   const handleRemoveDriftCustomization = () => {
@@ -539,12 +537,6 @@ const ManageDriftPage = () => {
         ]
       : []),
   ];
-
-  // Process drift templates data for "What If" dropdown
-  const availableStandards = (standardsApi.data || []).map((template) => ({
-    id: template.GUID || template.id || template.templateName,
-    name: template.templateName || template.displayName || "Unknown Template",
-  }));
 
   // Add action buttons to each deviation item
   const deviationItemsWithActions = deviationItems.map((item) => {

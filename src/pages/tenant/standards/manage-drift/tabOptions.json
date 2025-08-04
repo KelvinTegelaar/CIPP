@@ -12,10 +12,6 @@
     "path": "/tenant/standards/manage-drift/history"
   },
   {
-    "label": "Recover Policies",
-    "path": "/tenant/standards/manage-drift/recover-policies"
-  },
-  {
     "label": "Tenant Report",
     "path": "/tenant/standards/manage-drift/compare"
   }
