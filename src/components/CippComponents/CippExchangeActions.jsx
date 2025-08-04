@@ -2,10 +2,7 @@
 import {
   Archive,
   MailOutline,
-  Person,
-  Room,
   Visibility,
-  VisibilityOff,
   PhonelinkLock,
   Key,
   PostAdd,
@@ -17,12 +14,134 @@ import {
   MailLock,
   SettingsEthernet,
   CalendarMonth,
+  PersonAdd,
   Email,
 } from "@mui/icons-material";
+import { useSettings } from "/src/hooks/use-settings.js";
+import { useMemo } from "react";
 
 export const CippExchangeActions = () => {
-  // const tenant = useSettings().currentTenant;
+  const tenant = useSettings().currentTenant;
+  
+  // API configuration for all user selection fields
+  const userApiConfig = useMemo(() => ({
+    url: "/api/ListGraphRequest",
+    dataKey: "Results",
+    labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+    valueField: "userPrincipalName",
+    queryKey: `users-${tenant}`,
+    data: {
+      Endpoint: "users",
+      tenantFilter: tenant,
+      $select: "id,displayName,userPrincipalName,mail",
+      $top: 999,
+    },
+  }), [tenant]);
+
   return [
+    {
+      label: "Bulk Add Mailbox Permissions",
+      type: "POST",
+      url: "/api/ExecModifyMBPerms",
+      icon: <PersonAdd />,
+      data: {
+        userID: "UPN",
+      },
+      confirmText: "Add the specified permissions to selected mailboxes?",
+      multiPost: false,
+      data: {
+      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "fullAccessUser",
+          label: "Add Full Access User",
+          multiple: true,
+          creatable: false,
+          api: userApiConfig,
+        },
+        {
+          type: "switch",
+          name: "autoMap",
+          label: "Enable Automapping",
+          defaultValue: true,
+          labelLocation: "behind",
+        },
+        {
+          type: "autoComplete",
+          name: "sendAsUser",
+          label: "Add Send As User",
+          multiple: true,
+          creatable: false,
+          api: userApiConfig,
+        },
+        {
+          type: "autoComplete",
+          name: "sendOnBehalfUser",
+          label: "Add Send On Behalf User",
+          multiple: true,
+          creatable: false,
+          api: userApiConfig,
+        },
+      ],
+      customDataformatter: (rows, action, formData) => {
+        
+        const mailboxArray = Array.isArray(rows) ? rows : [rows];
+        
+        // Create bulk request array - one object per mailbox
+        const bulkRequestData = mailboxArray.map(mailbox => {
+          const permissions = [];
+          const autoMap = formData.autoMap === undefined ? true : formData.autoMap;
+
+          // Add type: "user" to match format
+          const addTypeToUsers = (users) => {
+            return users.map(user => ({
+              ...user,
+              type: "user"
+            }));
+          };
+
+          // Handle FullAccess - formData.fullAccessUser is an array since multiple: true
+          if (formData.fullAccessUser && formData.fullAccessUser.length > 0) {
+            permissions.push({
+              UserID: addTypeToUsers(formData.fullAccessUser),
+              PermissionLevel: "FullAccess",
+              Modification: "Add",
+              AutoMap: autoMap,
+            });
+          }
+
+          // Handle SendAs - formData.sendAsUser is an array since multiple: true  
+          if (formData.sendAsUser && formData.sendAsUser.length > 0) {
+            permissions.push({
+              UserID: addTypeToUsers(formData.sendAsUser),
+              PermissionLevel: "SendAs", 
+              Modification: "Add",
+            });
+          }
+
+          // Handle SendOnBehalf - formData.sendOnBehalfUser is an array since multiple: true
+          if (formData.sendOnBehalfUser && formData.sendOnBehalfUser.length > 0) {
+            permissions.push({
+              UserID: addTypeToUsers(formData.sendOnBehalfUser),
+              PermissionLevel: "SendOnBehalf",
+              Modification: "Add", 
+            });
+          }
+
+          return {
+            userID: mailbox.UPN,
+            permissions: permissions,
+          };
+        });
+        
+        return { 
+          mailboxRequests: bulkRequestData,
+          tenantFilter: tenant
+        };
+      },
+      color: "primary",
+    },
     {
       label: "Edit permissions",
       link: "/identity/administration/users/user/exchange?userId=[ExternalDirectoryObjectId]",
@@ -50,7 +169,7 @@ export const CippExchangeActions = () => {
       type: "POST",
       icon: <Email />,
       url: "/api/ExecConvertMailbox",
-      data: { ID: "userPrincipalName" },
+      data: { ID: "UPN" },
       fields: [
         {
           type: "radio",
@@ -70,7 +189,6 @@ export const CippExchangeActions = () => {
       multiPost: false,
     },
     {
-      //tested
       label: "Enable Online Archive",
       type: "POST",
       icon: <Archive />,
