@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Typography, List, ListItem, SvgIcon } from "@mui/material";
 import CippButtonCard from "./CippButtonCard"; // Adjust the import path as needed
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
@@ -59,6 +58,7 @@ export default function CippRemediationCard(props) {
         <ListItem>Block user sign-in</ListItem>
         <ListItem>Reset user password</ListItem>
         <ListItem>Disconnect all current sessions</ListItem>
+        <ListItem>Remove all MFA methods for the user</ListItem>
         <ListItem>Disable all inbox rules for the user</ListItem>
       </List>
       <CippApiDialog

@@ -9,7 +9,7 @@ import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import {
   Avatar,
   Box,
-  FormControlLabel,
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
@@ -18,15 +18,14 @@ import {
   Popover,
   Stack,
   SvgIcon,
-  Switch,
   Typography,
   useMediaQuery,
-  IconButton,
 } from "@mui/material";
 import { usePopover } from "../hooks/use-popover";
 import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
 import { CogIcon } from "@heroicons/react/24/outline";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const AccountPopover = (props) => {
   const {
@@ -39,19 +38,22 @@ export const AccountPopover = (props) => {
   const router = useRouter();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const popover = usePopover();
-
+  const queryClient = useQueryClient();
   const orgData = ApiGetCall({
-    url: "/.auth/me",
-    queryKey: "me",
+    url: "/api/me",
+    queryKey: "authmecipp",
   });
 
   const handleLogout = useCallback(async () => {
     try {
       popover.handleClose();
+      // delete query cache and persisted data
+      queryClient.clear();
 
       router.push("/.auth/logout?post_logout_redirect_uri=" + encodeURIComponent(paths.index));
     } catch (err) {
       console.error(err);
+      console.log(orgData);
       toast.error("Something went wrong");
     }
   }, [router, popover]);
@@ -90,16 +92,22 @@ export const AccountPopover = (props) => {
             <>
               <Box sx={{ minWidth: 100 }}>
                 <Typography color="neutral.400" variant="caption">
-                  {orgData.data?.Org?.Domain}
+                  {orgData.data?.clientPrincipal?.userDetails?.split("@")?.[1]}
                 </Typography>
                 <Typography color="inherit" variant="subtitle2">
                   {orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
                 </Typography>
               </Box>
               {orgData.data?.clientPrincipal?.userDetails && (
-                <SvgIcon color="action" fontSize="small">
-                  <ChevronDownIcon />
-                </SvgIcon>
+                <>
+                  {orgData?.isFetching ? (
+                    <CircularProgress size={20} color="textPrimary" />
+                  ) : (
+                    <SvgIcon color="action" fontSize="small">
+                      <ChevronDownIcon />
+                    </SvgIcon>
+                  )}
+                </>
               )}
             </>
           )}

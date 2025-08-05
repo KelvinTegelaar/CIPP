@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "/src/api/ApiCall";
 import {
   Box,
   Typography,
@@ -61,7 +61,7 @@ const Page = () => {
     if (logRequest.isSuccess) {
       var data = logRequest?.data?.Results?.[0];
 
-      if (data && data?.Data.ActionUrl.includes("identity/administration/ViewBec")) {
+      if (data && data?.Data?.ActionUrl?.includes("identity/administration/ViewBec")) {
         data.Data.ActionUrl = data.Data.ActionUrl.replace(
           "identity/administration/ViewBec",
           "identity/administration/users/user/bec"
@@ -88,7 +88,12 @@ const Page = () => {
       { label: "Tenant", value: data.Tenant },
       {
         label: "User",
-        value: data?.Data?.RawData?.UserKey ?? data?.Data?.RawData?.AuditRecord?.userId ?? "N/A",
+        value:
+          data?.Data?.RawData?.CIPPUserKey ??
+          data?.Data?.RawData?.AuditRecord?.CIPPuserId ??
+          data?.Data?.RawData?.AuditRecord?.UserKey ??
+          data?.Data?.RawData?.userId ??
+          "N/A",
       },
       { label: "IP Address", value: data?.Data?.IP },
       {
@@ -152,7 +157,7 @@ const Page = () => {
             {logData.Title}
           </Typography>
           <Grid container spacing={2}>
-            <Grid item size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CippPropertyListCard
                 title="Log Information"
                 propertyItems={propertyItems}
@@ -176,7 +181,7 @@ const Page = () => {
             </Grid>
 
             {lookupIp && (
-              <Grid item size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Card variant="outlined">
                   <CardHeader title={`Location Information for ${lookupIp}`} />
                   <Divider />
@@ -186,7 +191,7 @@ const Page = () => {
                 </Card>
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippPropertyListCard
                 title="Audit Data"
                 propertyItems={rawDataItems}

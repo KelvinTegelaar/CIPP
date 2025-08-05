@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Box,
@@ -13,8 +13,8 @@ import {
   Skeleton,
 } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { Grid } from "@mui/system";
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { Save } from "@mui/icons-material";
@@ -67,10 +67,11 @@ export const CippCustomRoles = () => {
     queryKey: "customRoleList",
   });
 
-  const { data: tenants = [], isSuccess: tenantsSuccess } = ApiGetCall({
+  const { data: { pages = [] } = {}, isSuccess: tenantsSuccess } = ApiGetCallWithPagination({
     url: "/api/ListTenants?AllTenantSelector=true",
     queryKey: "ListTenants-AllTenantSelector",
   });
+  const tenants = pages[0] || [];
 
   useEffect(() => {
     if (customRoleListSuccess && tenantsSuccess && selectedRole !== currentRole?.value) {
@@ -197,7 +198,7 @@ export const CippCustomRoles = () => {
       >
         <Typography variant="h6">{obj}</Typography>
 
-        <Stack direction="row" spacing={3} xl={8}>
+        <Stack direction="row" spacing={3} size={{ xl: 8 }}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
               <InformationCircleIcon />
@@ -276,7 +277,7 @@ export const CippCustomRoles = () => {
                 label: role.RowKey,
                 value: role.RowKey,
               }))}
-              isLoading={customRoleListFetching}
+              isFetching={customRoleListFetching}
               refreshFunction={() => refetchCustomRoleList()}
               creatable={true}
               formControl={formControl}
@@ -285,8 +286,9 @@ export const CippCustomRoles = () => {
             />
             {cippApiRoleSelected && (
               <Alert color="info">
-                This role will limit access for the CIPP-API integration. It is not intended to be
-                used for users.
+                This is the default role for all API clients in the CIPP-API integration. If you
+                would like different permissions for specific applications, create a role per
+                application and select it from the CIPP-API integrations page.
               </Alert>
             )}
           </Stack>
@@ -389,7 +391,7 @@ export const CippCustomRoles = () => {
           )}
         </Box>
 
-        <Box xl={3} md={12} width="30%">
+        <Box size={{ md: 12, xl: 3 }} width="30%">
           {selectedRole && selectedTenant?.length > 0 && (
             <>
               <h5>Allowed Tenants</h5>

@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Check, Mail } from "@mui/icons-material";
+import { Check, Mail, Fingerprint } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippUserInfoCard } from "../../../../../components/CippCards/CippUserInfoCard";
 import { Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
@@ -49,6 +49,10 @@ const Page = () => {
         {
           icon: <Mail />,
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
+        },
+        {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
         },
         {
           icon: <CalendarIcon />,
@@ -339,10 +343,10 @@ const Page = () => {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item size={4}>
+            <Grid size={4}>
               <CippUserInfoCard user={data} isFetching={userRequest.isLoading} />
             </Grid>
-            <Grid item size={8}>
+            <Grid size={8}>
               <Stack spacing={3}>
                 <Typography variant="h6">Latest Logon</Typography>
                 <CippBannerListCard

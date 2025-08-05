@@ -15,11 +15,13 @@ import CIPPDefaultGDAPRoles from "/src/data/CIPPDefaultGDAPRoles.json";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Schedule } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import CippGdapActions from "../../../../../components/CippComponents/CippGdapActions";
 
 const Page = () => {
   const router = useRouter();
   const { id } = router.query;
   const [relationshipProperties, setRelationshipProperties] = useState([]);
+  const [relationshipData, setRelationshipData] = useState({});
 
   const relationshipRequest = ApiGetCall({
     url: `/api/ListGraphRequest?Endpoint=tenantRelationships/delegatedAdminRelationships/${id}`,
@@ -67,7 +69,7 @@ const Page = () => {
   useEffect(() => {
     if (relationshipRequest.isSuccess) {
       const data = relationshipRequest?.data?.Results?.[0];
-
+      setRelationshipData(data);
       var properties = [
         {
           label: "Customer",
@@ -135,6 +137,9 @@ const Page = () => {
       title={title}
       subtitle={subtitle}
       isFetching={relationshipRequest.isLoading}
+      actions={CippGdapActions()}
+      actionsData={relationshipData}
+      backUrl="/tenant/gdap-management/relationships"
     >
       {relationshipRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 2]} />}
       {relationshipRequest.isSuccess && (
@@ -182,7 +187,7 @@ const Page = () => {
               </Alert>
             )}
             <Grid container spacing={2}>
-              <Grid item size={{ xs: 12, md: 8 }}>
+              <Grid size={{ xs: 12, md: 8 }}>
                 <CippPropertyListCard
                   layout="double"
                   title="Relationship Details"
@@ -190,7 +195,7 @@ const Page = () => {
                   propertyItems={relationshipProperties}
                 />
               </Grid>
-              <Grid item size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <CippDataTable
                   title="Approved Roles"
                   simple={true}

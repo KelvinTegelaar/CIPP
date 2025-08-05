@@ -1,36 +1,69 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Clear } from "@mui/icons-material";
+import { Clear, Search } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Risky Users";
 
-  // Actions from the source file
   const actions = [
     {
       label: "Dismiss Risk",
-      type: "GET",
+      type: "POST",
       icon: <Clear />,
       url: "/api/ExecDismissRiskyUser",
       data: { userId: "id", userDisplayName: "userDisplayName" },
       confirmText: "Are you sure you want to dismiss the risk for this user?",
       multiPost: false,
     },
+    {
+      label: "Research Compromised Account",
+      type: "GET",
+      icon: <Search />,
+      link: "/identity/administration/users/user/bec?userId=[id]",
+      confirmText: "Are you sure you want to research this compromised account?",
+      multiPost: false,
+    },
   ];
 
-  // OffCanvas details based on the source file
   const offCanvas = {
     extendedInfoFields: [
-      "id", // User ID
-      "userDisplayName", // Display Name
-      "userPrincipalName", // User Principal
-      "riskLastUpdatedDateTime", // Risk Last Updated
-      "riskLevel", // Risk Level
-      "riskState", // Risk State
-      "riskDetail", // Risk Detail
+      "id",
+      "userDisplayName",
+      "userPrincipalName",
+      "riskLastUpdatedDateTime",
+      "riskLevel",
+      "riskState",
+      "riskDetail",
     ],
     actions: actions,
   };
+
+  const simpleColumns = [
+    "userDisplayName",
+    "userPrincipalName",
+    "riskLevel",
+    "riskState",
+    "riskDetail",
+    "riskLastUpdatedDateTime",
+  ];
+
+  const filterList = [
+    {
+      filterName: "Users at Risk",
+      value: [{ id: "riskState", value: "atRisk" }],
+      type: "column",
+    },
+    {
+      filterName: "Dismissed Users",
+      value: [{ id: "riskState", value: "dismissed" }],
+      type: "column",
+    },
+    {
+      filterName: "Remediated Users",
+      value: [{ id: "riskState", value: "remediated" }],
+      type: "column",
+    },
+  ];
 
   return (
     <CippTablePage
@@ -39,8 +72,6 @@ const Page = () => {
       apiData={{
         Endpoint: "identityProtection/riskyUsers",
         manualPagination: true,
-        $select:
-          "id,userDisplayName,userPrincipalName,riskLevel,riskState,riskDetail,riskLastUpdatedDateTime",
         $count: true,
         $orderby: "riskLastUpdatedDateTime desc",
         $top: 500,
@@ -48,14 +79,8 @@ const Page = () => {
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
-      simpleColumns={[
-        "userDisplayName",
-        "userPrincipalName",
-        "riskLevel",
-        "riskState",
-        "riskDetail",
-        "riskLastUpdatedDateTime",
-      ]}
+      simpleColumns={simpleColumns}
+      filters={filterList}
     />
   );
 };

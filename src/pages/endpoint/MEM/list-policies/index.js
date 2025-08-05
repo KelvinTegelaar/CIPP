@@ -1,15 +1,18 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Book, LaptopChromebook } from "@mui/icons-material";
+import { Book, LaptopChromebook, RocketLaunch } from "@mui/icons-material";
 import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
+import { PermissionButton } from "/src/utils/permissions.js";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Configuration Policies";
+  const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
 
   const actions = [
     {
       label: "Create template based on policy",
-      type: "GET",
+      type: "POST",
       url: "/api/AddIntuneTemplate",
       data: {
         ID: "id",
@@ -60,7 +63,7 @@ const Page = () => {
     },
     {
       label: "Delete Policy",
-      type: "GET",
+      type: "POST",
       url: "/api/RemovePolicy",
       data: {
         ID: "id",
@@ -98,6 +101,16 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <PermissionButton
+          requiredPermissions={cardButtonPermissions}
+          component={Link}
+          href="/endpoint/MEM/add-policy"
+          startIcon={<RocketLaunch />}
+        >
+          Deploy Policy
+        </PermissionButton>
+      }
     />
   );
 };

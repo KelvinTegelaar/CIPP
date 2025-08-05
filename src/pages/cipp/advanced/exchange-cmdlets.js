@@ -3,12 +3,13 @@ import {
   Button,
   Container,
   Stack,
-  Grid,
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
+  Skeleton,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiPostCall } from "/src/api/ApiCall";
@@ -98,11 +99,11 @@ const Page = () => {
         <CippButtonCard component="accordion" title="Cmdlet Search" accordionExpanded={true}>
           <Grid container spacing={2}>
             {/* Tenant Filter */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormTenantSelector formControl={formControl} name="tenant" multiple={false} />
             </Grid>
             {/* Compliance Filter */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 name="compliance"
@@ -111,7 +112,7 @@ const Page = () => {
               />
             </Grid>
             {/* AsApp Filter */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippFormComponent
                 type="switch"
                 name="asApp"
@@ -120,7 +121,7 @@ const Page = () => {
               />
             </Grid>
             {/* Submit Button */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
                 Search
               </Button>
@@ -130,7 +131,7 @@ const Page = () => {
         <CippDataTable
           title={pageTitle}
           simpleColumns={simpleColumns}
-          data={searchResults?.Results}
+          data={searchResults?.Results ?? []}
           isFetching={exchangeCmdlets.isPending}
           refreshFunction={onSubmit}
           actions={actions}
@@ -148,13 +149,17 @@ const Page = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <CippDataTable
-            noCard={true}
-            title="Permitted Roles"
-            simpleColumns={roleColumns}
-            data={roleDetails?.Results ?? []}
-            isFetching={managementRole.isPending}
-          />
+          {roleDetails.isPending ? (
+            <Skeleton variant="rectangular" height={200} />
+          ) : (
+            <CippDataTable
+              noCard={true}
+              title="Permitted Roles"
+              simpleColumns={roleColumns}
+              data={roleDetails?.data?.Results ?? []}
+              isFetching={managementRole.isPending}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </Container>

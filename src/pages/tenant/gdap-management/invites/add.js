@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
@@ -40,12 +40,12 @@ const Page = () => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListGDAPRoleTemplatesAutocomplete"],
+    relatedQueryKeys: ["ListGDAPRoleTemplatesAutocomplete", "ListGDAPRoleTemplates"],
   });
 
   const templateList = ApiGetCall({
     url: "/api/ExecGDAPRoleTemplate",
-    queryKey: "ListGDAPRoleTemplatesAutocomplete",
+    queryKey: "ListGDAPRoleTemplates",
   });
   const selectedTemplate = useWatch({ control: formControl.control, name: "roleMappings" });
 

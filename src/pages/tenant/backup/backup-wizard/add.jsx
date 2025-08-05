@@ -1,10 +1,13 @@
 import React from "react";
-import { Grid, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
+import { omit } from "lodash";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "/src/hooks/use-settings";
+import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
 
 const CreateBackup = () => {
   const userSettingsDefaults = useSettings();
@@ -24,13 +27,12 @@ const CreateBackup = () => {
       antiphishing: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
-      CippStandards: true,
     },
   });
 
   return (
     <CippFormPage
-      title="Add Backup Schedule"
+      title="Backup Schedule"
       formControl={formControl}
       queryKey={`Backup Tasks`}
       postUrl="/api/AddScheduledItem?hidden=true&DisallowDuplicateName=true"
@@ -41,34 +43,37 @@ const CreateBackup = () => {
         const tenantFilter = values.tenantFilter || tenantDomain;
         const shippedValues = {
           TenantFilter: tenantFilter,
-          Name: `CIPP Backup ${tenantFilter}`,
+          Name: `CIPP Backup - ${tenantFilter}`,
           Command: { value: `New-CIPPBackup` },
-          Parameters: { backupType: "Scheduled", ScheduledBackupValues: { ...values } },
+          Parameters: { backupType: "Scheduled", ScheduledBackupValues: { ...omit(values, ['tenantFilter']) } },
           ScheduledTime: unixTime,
           Recurrence: { value: "1d" },
         };
         return shippedValues;
       }}
       backButtonTitle="Backup Tasks"
+      allowResubmit={true}
     >
       <Typography variant="body1">
         Backups are stored in CIPP's storage and can be restored using the CIPP Restore Backup
         Wizard. Backups run daily or on demand by clicking the backup now button.
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <CippFormComponent
-            type="tenantSelector"
-            label="Tenant"
-            name="tenantFilter"
+      <Grid container spacing={2} sx={{ my: 2 }}>
+        <Grid size={{ xs: 12 }}>
+          <CippFormTenantSelector
             formControl={formControl}
+            allTenants={true}
+            name="tenantFilter"
+            required={true}
+            disableClearable={true}
+            componentType="select"
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="h6">Identity</Typography>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="User List"
@@ -76,14 +81,14 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent type="switch" label="Groups" name="groups" formControl={formControl} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="h6">Conditional Access</Typography>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Conditional Access Configuration"
@@ -91,13 +96,13 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        {/* Optional: Add an empty Grid item to balance the layout */}
-        <Grid item xs={12} md={6}></Grid>
+        {/* Optional: Add an empty Grid to balance the layout */}
+        <Grid size={{ md: 6, xs: 12 }}></Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="h6">Intune</Typography>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Intune Configuration Policies"
@@ -105,7 +110,7 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Intune Compliance Policies"
@@ -113,7 +118,7 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Intune Protection Policies"
@@ -121,13 +126,13 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        {/* Add an empty Grid item to fill the second column */}
-        <Grid item xs={12} md={6}></Grid>
+        {/* Add an empty Grid to fill the second column */}
+        <Grid size={{ md: 6, xs: 12 }}></Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="h6">Email Security</Typography>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Anti-Spam Policies"
@@ -135,7 +140,7 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Anti-Phishing Policies"
@@ -144,10 +149,10 @@ const CreateBackup = () => {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Typography variant="h6">CIPP</Typography>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Webhook Alerts Configuration"
@@ -155,7 +160,7 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Scripted Alerts Configuration"
@@ -163,16 +168,8 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <CippFormComponent
-            type="switch"
-            label="Standards Configuration"
-            name="CippStandards"
-            formControl={formControl}
-          />
-        </Grid>
-        {/* Add an empty Grid item to fill the second column */}
-        <Grid item xs={12} md={6}></Grid>
+        {/* Add an empty Grid to fill the second column */}
+        <Grid size={{ md: 6, xs: 12 }}></Grid>
       </Grid>
     </CippFormPage>
   );

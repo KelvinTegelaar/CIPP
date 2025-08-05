@@ -4,29 +4,58 @@ import { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 export const CippCopyToClipBoard = (props) => {
-  const { text, type = "button", ...other } = props;
+  const { text, type = "button", visible = true, ...other } = props;
   const [showPassword, setShowPassword] = useState(false);
+
   const handleTogglePassword = () => {
     setShowPassword((prev) => !prev);
   };
-  return (
-    <>
-      {type === "button" && (
-        <CopyToClipboard text={props.text}>
-          <Tooltip title="Copy to clipboard">
-            <IconButton size="small">
-              <SvgIcon fontSize="small">
-                <CopyAll />
-              </SvgIcon>
-            </IconButton>
-          </Tooltip>
-        </CopyToClipboard>
-      )}
-      {type === "chip" && (
-        <CopyToClipboard text={props.text}>
+
+  if (!visible) return null;
+
+  if (type === "button") {
+    return (
+      <CopyToClipboard text={text}>
+        <Tooltip title="Copy to clipboard">
+          <IconButton size="small" {...other}>
+            <SvgIcon fontSize="small">
+              <CopyAll />
+            </SvgIcon>
+          </IconButton>
+        </Tooltip>
+      </CopyToClipboard>
+    );
+  }
+
+  if (type === "chip") {
+    return (
+      <CopyToClipboard text={text}>
+        <Tooltip title="Copy to clipboard">
+          <Chip
+            label={text}
+            variant="outlined"
+            size="small"
+            color="info"
+            sx={{ mr: "0.25rem" }}
+            {...other}
+          />
+        </Tooltip>
+      </CopyToClipboard>
+    );
+  }
+
+  if (type === "password") {
+    return (
+      <>
+        <Tooltip title={showPassword ? "Hide password" : "Show password"}>
+          <IconButton size="small" onClick={handleTogglePassword}>
+            <SvgIcon>{showPassword ? <VisibilityOff /> : <Visibility />}</SvgIcon>
+          </IconButton>
+        </Tooltip>
+        <CopyToClipboard text={text}>
           <Tooltip title="Copy to clipboard">
             <Chip
-              label={text}
+              label={showPassword ? text : "********"}
               variant="outlined"
               size="small"
               color="info"
@@ -34,27 +63,9 @@ export const CippCopyToClipBoard = (props) => {
             />
           </Tooltip>
         </CopyToClipboard>
-      )}
-      {type === "password" && (
-        <>
-          <Tooltip title={showPassword ? "Hide password" : "Show password"}>
-            <IconButton size="small" onClick={handleTogglePassword}>
-              <SvgIcon>{showPassword ? <VisibilityOff /> : <Visibility />}</SvgIcon>
-            </IconButton>
-          </Tooltip>
-          <CopyToClipboard text={props.text}>
-            <Tooltip title="Copy to clipboard">
-              <Chip
-                label={showPassword ? props.text : "********"}
-                variant="outlined"
-                size="small"
-                color="info"
-                sx={{ mr: "0.25rem" }}
-              />
-            </Tooltip>
-          </CopyToClipboard>
-        </>
-      )}
-    </>
-  );
+      </>
+    );
+  }
+
+  return null;
 };

@@ -7,7 +7,7 @@ import { CippFormComponent } from "/src/components/CippComponents/CippFormCompon
 import vendorTenantList from "/src/data/vendorTenantList";
 import { Box, Grid, Stack } from "@mui/system";
 import { Alert, Divider, Typography } from "@mui/material";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination } from "/src/api/ApiCall";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { Apps, Description, Widgets } from "@mui/icons-material";
@@ -53,14 +53,14 @@ const Page = () => {
     data: {
       Endpoint: "servicePrincipals",
       TenantFilter: tenantId?.value,
-      $filter: `appOwnerOrganizationId eq %tenantid%`,
+      $filter: `appOwnerOrganizationId eq %partnertenantid%`,
       $select: "id,displayName,appId,appOwnerOrganizationId",
       $count: true,
     },
     queryKey: "ListMSPApps-" + tenantId?.value,
   });
 
-  const vendorApps = ApiGetCall({
+  const vendorApps = ApiGetCallWithPagination({
     url: "/api/ListGraphRequest",
     data: {
       Endpoint: "servicePrincipals",
@@ -81,6 +81,7 @@ const Page = () => {
         hideBackButton={true}
         hidePageType={true}
         postUrl="/api/ExecOffboardTenant"
+        resetForm={true}
       >
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid size={12}>
@@ -136,6 +137,15 @@ const Page = () => {
                           (relationship) => relationship?.customer?.tenantId === tenantId.value
                         )?.length ?? 0,
                       icon: <ShieldCheckIcon />,
+                      offcanvas: {
+                        title: "GDAP Relationships",
+                        propertyItems: gdapRelationships.data?.Results
+                          ?.filter((relationship) => relationship?.customer?.tenantId === tenantId.value)
+                          ?.map((relationship) => ({
+                            label: `Relationship: ${relationship?.displayName}`,
+                            value: `Id: ${relationship?.id}`,
+                          })),
+                      },
                     },
                     {
                       name: "CSP Contract",
@@ -151,11 +161,27 @@ const Page = () => {
                       name: "MSP Applications",
                       data: mspApps.data?.Results?.length ?? 0,
                       icon: <Widgets />,
+                      offcanvas: {
+                        title: "MSP Applications",
+                        propertyItems: mspApps.data?.Results?.map((app) => ({
+                          label: app?.displayName,
+                          value: app?.appId,
+                        })),
+                      },
                     },
                     {
                       name: "Vendor Applications",
-                      data: 0,
+                      data: vendorApps.data?.pages?.reduce((sum, page) => sum + (page?.Results?.length ?? 0), 0) ?? 0,
                       icon: <Apps />,
+                      offcanvas: {
+                        title: "Vendor Applications",
+                        propertyItems: vendorApps.data?.pages
+                          ?.reduce((sum, page) => sum.concat(page?.Results ?? []), [])
+                          .map((app) => ({
+                            label: app?.displayName,
+                            value: app?.appId,
+                          })),
+                      }
                     },
                   ]}
                 />
@@ -193,7 +219,7 @@ const Page = () => {
                       },
                       valueField: "appId",
                     }}
-                    disabled={vendorApps?.data?.Results?.length > 0 ? false : true}
+                    disabled={vendorApps?.data?.pages?.[0]?.Results?.length > 0 ? false : true}
                   />
                   <CippFormComponent
                     formControl={formControl}

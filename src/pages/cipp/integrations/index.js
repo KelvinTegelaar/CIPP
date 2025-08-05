@@ -7,7 +7,6 @@ import {
   CardActions,
   CardContent,
   Container,
-  Grid,
   Skeleton,
   Stack,
   Typography,
@@ -17,6 +16,7 @@ import { Sync } from "@mui/icons-material";
 import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
 import Link from "next/link";
+import { Grid } from "@mui/system";
 
 const Page = () => {
   const settings = useSettings();
@@ -25,6 +25,8 @@ const Page = () => {
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return (
@@ -56,16 +58,16 @@ const Page = () => {
           }
 
           var integrationConfig = integrations?.data?.[extension.id];
-          var isEnabled = integrationConfig?.Enabled;
+          var isEnabled = integrationConfig?.Enabled || extension.id === "cippapi";
           var status = "Unconfigured";
           if (integrationConfig && !isEnabled) {
             status = "Disabled";
-          } else if (integrationConfig && isEnabled) {
+          } else if ((integrationConfig && isEnabled) || extension.id === "cippapi") {
             status = "Enabled";
           }
 
           return (
-            <Grid item sm={12} md={6} xl={3} key={extension.id}>
+            <Grid size={{ md: 6, sm: 12, xl: 3 }} key={extension.id}>
               <CardActionArea
                 component={Link}
                 sx={{

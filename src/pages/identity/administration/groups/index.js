@@ -2,7 +2,16 @@ import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import Link from "next/link";
-import { EyeIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import {
+  Visibility,
+  VisibilityOff,
+  GroupAdd,
+  Edit,
+  LockOpen,
+  Lock,
+  GroupSharp,
+} from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Groups";
@@ -10,17 +19,17 @@ const Page = () => {
     {
       //tested
       label: "Edit Group",
-      link: "/identity/administration/groups/edit?groupId=[id]",
+      link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
       multiPost: false,
-      icon: <EyeIcon />,
+      icon: <Edit />,
       color: "success",
     },
     {
       label: "Hide from Global Address List",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsHideFromGAL",
+      icon: <VisibilityOff />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
         HidefromGAL: true,
@@ -31,12 +40,13 @@ const Page = () => {
     },
     {
       label: "Unhide from Global Address List",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsHideFromGAL",
+      icon: <Visibility />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
+        HidefromGAL: false,
       },
       confirmText:
         "Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the group is AD Synched.",
@@ -44,10 +54,10 @@ const Page = () => {
     },
     {
       label: "Only allow messages from people inside the organisation",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsDeliveryManagement",
+      icon: <Lock />,
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
         OnlyAllowInternal: true,
@@ -58,21 +68,39 @@ const Page = () => {
     },
     {
       label: "Allow messages from people inside and outside the organisation",
-      type: "GET",
+      type: "POST",
+      icon: <LockOpen />,
       url: "/api/ExecGroupsDeliveryManagement",
       data: {
-        TenantFilter: "TenantFilter",
         ID: "mail",
         GroupType: "calculatedGroupType",
+        OnlyAllowInternal: false,
       },
       confirmText:
         "Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.",
       multiPost: false,
     },
     {
+      label: "Create template based on group",
+      type: "POST",
+      url: "/api/AddGroupTemplate",
+      icon: <GroupSharp />,
+      data: {
+        displayName: "displayName",
+        description: "description",
+        groupType: "calculatedGroupType",
+        membershipRules: "membershipRule",
+        allowExternal: "allowExternal",
+        username: "mailNickname",
+      },
+      confirmText: "Are you sure you want to create a template based on this group?",
+      multiPost: false,
+    },
+    {
       label: "Delete Group",
-      type: "GET",
+      type: "POST",
       url: "/api/ExecGroupsDelete",
+      icon: <TrashIcon />,
       data: {
         ID: "id",
         GroupType: "calculatedGroupType",
@@ -100,7 +128,7 @@ const Page = () => {
       title={pageTitle}
       cardButton={
         <>
-          <Button component={Link} href="groups/add">
+          <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
             Add Group
           </Button>
         </>
@@ -115,6 +143,7 @@ const Page = () => {
         "mailEnabled",
         "mailNickname",
         "calculatedGroupType",
+        "assignedLicenses",
         "visibility",
         "onPremisesSamAccountName",
         "membershipRule",

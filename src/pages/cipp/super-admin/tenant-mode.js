@@ -3,7 +3,8 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
-import { Grid, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
@@ -45,7 +46,7 @@ const Page = () => {
         TenantMode: execPartnerMode.data?.TenantMode,
       });
     }
-  }, [execPartnerMode.isSuccess]);
+  }, [execPartnerMode.isSuccess, execPartnerMode.data]);
 
   return (
     <CippFormPage
@@ -58,7 +59,7 @@ const Page = () => {
       queryKey={["execPartnerMode", "TenantSelector"]}
     >
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={12}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
             The configuration settings below should only be modified by a super admin. Super admins
             can configure what tenant mode CIPP operates in. See{" "}
@@ -72,7 +73,7 @@ const Page = () => {
             for more information on how to configure these modes and what they mean.
           </Typography>
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="radio"
             name="TenantMode"

@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Block, Check } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "List of Safe Attachment Filters";
@@ -10,36 +11,37 @@ const Page = () => {
     {
       label: "Enable Rule",
       type: "POST",
+      icon: <Check />,
       url: "/api/EditSafeAttachmentsFilter",
       data: {
-        State: "Enable",
-        TenantFilter: "tenant.defaultDomainName", // TenantFilter uses default domain name in context
-        RuleName: "row.RuleName",
+        State: "!enable",
+        RuleName: "RuleName",
       },
       confirmText: "Are you sure you want to enable this rule?",
       color: "info",
+      condition: (row) => row.State === "Disabled",
     },
     {
       label: "Disable Rule",
       type: "POST",
+      icon: <Block />,
       url: "/api/EditSafeAttachmentsFilter",
       data: {
         State: "Disable",
-        TenantFilter: "tenant.defaultDomainName", // TenantFilter uses default domain name in context
-        RuleName: "row.RuleName",
+        RuleName: "RuleName",
       },
       confirmText: "Are you sure you want to disable this rule?",
       color: "info",
+      condition: (row) => row.State === "Enabled",
     },
     // Commented out "Delete Rule" action from the original file as it was also commented in legacy code
     /*
     {
       label: "Delete Rule",
-      type: "POST",
+      type: "GET",
       url: "/api/RemoveSafeAttachmentsFilter",
       data: {
-        TenantFilter: "tenant.defaultDomainName",
-        RuleName: "row.RuleName",
+        RuleName: "RuleName",
       },
       confirmText: "Are you sure you want to delete this rule?",
       color: "danger",

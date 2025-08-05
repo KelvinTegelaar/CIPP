@@ -70,8 +70,14 @@ const storeSettings = (value) => {
 const initialSettings = {
   direction: "ltr",
   paletteMode: "light",
+  currentTheme: { value: "light", label: "light" },
   pinNav: true,
   currentTenant: null,
+  showDevtools: false,
+  customBranding: {
+    colour: "#F77F00",
+    logo: null,
+  },
 };
 
 const initialState = {
@@ -94,6 +100,10 @@ export const SettingsProvider = (props) => {
     const restored = restoreSettings();
 
     if (restored) {
+      if (!restored.currentTheme && restored.paletteMode) {
+        restored.currentTheme = { value: restored.paletteMode, label: restored.paletteMode };
+      }
+
       setState((prevState) => ({
         ...prevState,
         ...restored,
@@ -128,6 +138,7 @@ export const SettingsProvider = (props) => {
     return !isEqual(initialSettings, {
       direction: state.direction,
       paletteMode: state.paletteMode,
+      currentTheme: state.currentTheme,
       pinNav: state.pinNav,
     });
   }, [state]);

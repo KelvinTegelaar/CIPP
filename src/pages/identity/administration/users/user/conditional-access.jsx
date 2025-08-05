@@ -4,13 +4,13 @@ import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Mail, Forward } from "@mui/icons-material";
+import { Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import { Box, Stack, Typography, Button, CircularProgress } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import { Box, Stack, Typography, Button } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import countryList from "/src/data/countryList";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
@@ -25,12 +25,8 @@ const Page = () => {
   const { userId } = router.query;
 
   const tenant = userSettingsDefaults.currentTenant;
-  const currentSettings = userSettingsDefaults.currentSettings; // Assuming currentSettings is part of useSettings
+  const [formParams, setFormParams] = useState(false);
 
-  // State for form parameters
-  const [formParams, setFormParams] = useState(null);
-
-  // Fetch user details for the header
   const userRequest = ApiGetCall({
     url: `/api/ListUsers?UserId=${userId}&tenantFilter=${tenant}`,
     queryKey: `ListUsers-${userId}`,
@@ -46,11 +42,30 @@ const Page = () => {
           text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.userPrincipalName} />,
         },
         {
+          icon: <Fingerprint />,
+          text: <CippCopyToClipBoard type="chip" text={userRequest.data?.[0]?.id} />,
+        },
+        {
           icon: <CalendarIcon />,
           text: (
             <>
               Created: <ReactTimeAgo date={new Date(userRequest.data?.[0]?.createdDateTime)} />
             </>
+          ),
+        },
+        {
+          icon: <Launch style={{ color: "#667085" }} />,
+          text: (
+            <Button
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -93,7 +108,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Form Section */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippButtonCard
                 title={"Test Conditional Access Policy"}
                 CardButton={
@@ -101,7 +116,6 @@ const Page = () => {
                     Test policies
                   </Button>
                 }
-                cardLabelBox={currentSettings?.ForwardAndDeliver ? <Forward /> : "-"} // Optional: Display an icon or placeholder
               >
                 {/* Form Starts Here */}
                 <form id="ca-test-form" onSubmit={formControl.handleSubmit(onSubmit)}>
@@ -223,18 +237,18 @@ const Page = () => {
                       ]}
                       formControl={formControl}
                     />
-                    <CippApiResults apiObject={postRequest} />
+                    <CippApiResults apiObject={postRequest} errorsOnly={true} />
                   </Stack>
                 </form>
               </CippButtonCard>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid size={{ md: 8, xs: 12 }}>
               <CippDataTable
                 queryKey={`ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`}
                 title={"CA Test Results"}
                 simple={true}
                 simpleColumns={["displayName", "state", "policyApplies", "reasons"]}
-                data={postRequest.data?.data?.Results?.value}
+                data={postRequest.data?.data?.Results?.value || []}
               />
             </Grid>
           </Grid>

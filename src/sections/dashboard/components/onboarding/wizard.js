@@ -1,12 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
-import PropTypes from "prop-types";
 import { Card, CardContent, Container, Stack } from "@mui/material";
 import { WizardBusinessStep } from "../../../../components/CippWizard/CippWizardOptionsList";
 import { WizardConfirmationStep } from "../../../../components/CippWizard/CippWizardConfirmation";
 import { WizardNotificationsStep } from "../../../../components/CippWizard/CippPSASyncOptions";
 import { WizardProfileStep } from "../../../../components/CippWizard/CippPSACredentialsStep";
 import { WizardSteps } from "../../../../components/CippWizard/wizard-steps";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 
 const steps = [
   {
@@ -112,10 +111,10 @@ export const Wizard = (props) => {
       {orientation === "vertical" ? (
         <CardContent>
           <Grid container spacing={3}>
-            <Grid xs={12} md={4}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <WizardSteps activeStep={activeStep} orientation={orientation} steps={steps} />
             </Grid>
-            <Grid xs={12} md={8}>
+            <Grid size={{ md: 8, xs: 12 }}>
               {content}
             </Grid>
           </Grid>

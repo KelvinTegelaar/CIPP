@@ -1,4 +1,3 @@
-import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 import { useSettings } from "../../hooks/use-settings";
@@ -24,14 +23,11 @@ export const CippFormLicenseSelector = ({
       api={{
         addedField: addedField,
         tenantFilter: userSettingsDefaults.currentTenant ?? undefined,
-        url: "/api/ListGraphRequest",
-        dataKey: "Results",
+        url: "/api/ListLicenses",
         labelField: (option) =>
-          `${getCippLicenseTranslation([option])} (${
-            option.prepaidUnits.enabled - option.consumedUnits
-          } available)`,
+          `${getCippLicenseTranslation([option])} (${option?.availableUnits} available)`,
         valueField: "skuId",
-        queryKey: `ListLicenses-${userSettingsDefaults.currentTenant ?? undefined}`,
+        queryKey: `ListLicenses-${userSettingsDefaults?.currentTenant ?? undefined}`,
         data: {
           Endpoint: "subscribedSkus",
           $count: true,

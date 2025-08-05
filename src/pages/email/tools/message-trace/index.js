@@ -5,7 +5,6 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Container,
   Stack,
   Typography,
   CircularProgress,
@@ -83,6 +82,12 @@ const Page = () => {
       },
       icon: <DocumentTextIcon />,
     },
+    {
+      label: "View in Explorer",
+      noConfirm: true,
+      link: `https://security.microsoft.com/realtimereportsv3?tid=${tenantFilter}&dltarget=Explorer&dlstorage=Url&viewid=allemail&query-NetworkMessageId=[MessageTraceId]`,
+      icon: <DocumentTextIcon />,
+    },
   ];
 
   const onSubmit = () => {
@@ -150,7 +155,7 @@ const Page = () => {
           accordionExpanded={true}
         >
           <Grid container spacing={2}>
-            <Grid item size={12}>
+            <Grid size={12}>
               <CippFormComponent
                 type="radio"
                 row
@@ -165,7 +170,7 @@ const Page = () => {
               />
             </Grid>
             {formControl.watch("dateFilter") === "relative" && (
-              <Grid item size={12}>
+              <Grid size={12}>
                 <CippFormComponent
                   type="number"
                   name="days"
@@ -177,7 +182,7 @@ const Page = () => {
             )}
             {formControl.watch("dateFilter") === "startEnd" && (
               <>
-                <Grid item size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="startDate"
@@ -187,7 +192,7 @@ const Page = () => {
                     disabled={isMessageIdSet}
                   />
                 </Grid>
-                <Grid item size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <CippFormComponent
                     type="datePicker"
                     name="endDate"
@@ -223,7 +228,7 @@ const Page = () => {
                 disabled={isMessageIdSet}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="messageId"
@@ -231,7 +236,7 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="autoComplete"
                 name="status"
@@ -251,7 +256,7 @@ const Page = () => {
                 disabled={isMessageIdSet}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="fromIP"
@@ -261,7 +266,7 @@ const Page = () => {
                 disabled={isMessageIdSet}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="toIP"
@@ -273,7 +278,7 @@ const Page = () => {
             </Grid>
 
             {/* Submit and Clear Buttons */}
-            <Grid item size={12} sx={{ display: "flex", gap: 1 }}>
+            <Grid size={12} sx={{ display: "flex", gap: 1 }}>
               <Button onClick={onSubmit} variant="contained" color="primary" startIcon={<Search />}>
                 Search
               </Button>

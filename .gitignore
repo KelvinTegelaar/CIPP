@@ -27,3 +27,7 @@ yarn-error.log*
 
 # vscode debug logs
 debug.log
+app.log
+
+# AI rules
+.*/rules

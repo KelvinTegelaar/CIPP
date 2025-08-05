@@ -5,24 +5,42 @@ import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/system";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const currentTenant = formControl.watch("tenantFilter");
   const selectedUsers = useWatch({ control: formControl.control, name: "user" });
   const [showAlert, setShowAlert] = useState(false);
+  const userSettingsDefaults = useSettings().userSettingsDefaults;
+  const disableForwarding = useWatch({ control: formControl.control, name: "disableForwarding" });
 
   useEffect(() => {
-    if (selectedUsers.length >= 4) {
+    if (selectedUsers.length >= 3) {
       setShowAlert(true);
       formControl.setValue("Scheduled.enabled", true);
     }
   }, [selectedUsers]);
 
+  useEffect(() => {
+    if (userSettingsDefaults?.offboardingDefaults) {
+      userSettingsDefaults.offboardingDefaults.forEach((setting) => {
+        formControl.setValue(setting.name, setting.value);
+      });
+    }
+  }, [userSettingsDefaults]);
+
+  useEffect(() => {
+    if (disableForwarding) {
+      formControl.setValue("forward", null);
+      formControl.setValue("KeepCopy", false);
+    }
+  }, [disableForwarding, formControl]);
+
   return (
     <Stack spacing={4}>
       <Grid container spacing={4}>
-        <Grid item size={6}>
+        <Grid size={6}>
           <Card variant="outlined">
             <CardHeader title="Offboarding Settings" />
             <Divider />
@@ -47,7 +65,7 @@ export const CippWizardOffboarding = (props) => {
               />
               <CippFormComponent
                 name="removePermissions"
-                label="Remove users mailbox permissions"
+                label="Remove user's mailbox permissions"
                 type="switch"
                 formControl={formControl}
               />
@@ -88,6 +106,12 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
               />
               <CippFormComponent
+                name="ClearImmutableId"
+                label="Clear Immutable ID"
+                type="switch"
+                formControl={formControl}
+              />
+              <CippFormComponent
                 name="ResetPass"
                 label="Reset Password"
                 type="switch"
@@ -109,7 +133,7 @@ export const CippWizardOffboarding = (props) => {
           </Card>
         </Grid>
 
-        <Grid item size={6}>
+        <Grid size={6}>
           <Card variant="outlined">
             <CardHeader title="Permissions and forwarding" />
             <Divider />
@@ -131,6 +155,7 @@ export const CippWizardOffboarding = (props) => {
                   dataKey: "Results",
                   labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
                   valueField: "id",
+                  queryKey: "Offboarding-Users",
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -155,6 +180,7 @@ export const CippWizardOffboarding = (props) => {
                   url: "/api/ListGraphRequest",
                   dataKey: "Results",
                   tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  queryKey: "Offboarding-Users",
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -179,6 +205,7 @@ export const CippWizardOffboarding = (props) => {
                   valueField: "id",
                   url: "/api/ListGraphRequest",
                   dataKey: "Results",
+                  queryKey: "Offboarding-Users",
                   data: {
                     Endpoint: "users",
                     manualPagination: true,
@@ -194,36 +221,51 @@ export const CippWizardOffboarding = (props) => {
                 Email Forwarding
               </Typography>
               <CippFormComponent
-                sx={{ m: 1 }}
-                name="forward"
-                label="Forward Email To"
-                type="autoComplete"
-                placeholder="Leave blank if not needed"
-                formControl={formControl}
-                multiple={false}
-                api={{
-                  tenantFilter: currentTenant ? currentTenant.value : undefined,
-                  labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
-                  valueField: "id",
-                  url: "/api/ListGraphRequest",
-                  dataKey: "Results",
-                  data: {
-                    Endpoint: "users",
-                    manualPagination: true,
-                    $select: "id,userPrincipalName,displayName",
-                    $count: true,
-                    $orderby: "displayName",
-                    $top: 999,
-                  },
-                }}
-              />
-
-              <CippFormComponent
-                name="keepCopy"
-                label="Keep a copy of forwarded mail"
+                name="disableForwarding"
+                label="Disable Email Forwarding"
                 type="switch"
                 formControl={formControl}
               />
+
+              <CippFormCondition
+                formControl={formControl}
+                field={"disableForwarding"}
+                compareType="isNot"
+                compareValue={true}
+              >
+                <CippFormComponent
+                  sx={{ m: 1 }}
+                  name="forward"
+                  label="Forward Email To"
+                  type="autoComplete"
+                  placeholder="Leave blank if not needed"
+                  formControl={formControl}
+                  multiple={false}
+                  api={{
+                    tenantFilter: currentTenant ? currentTenant.value : undefined,
+                    labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                    valueField: "id",
+                    url: "/api/ListGraphRequest",
+                    dataKey: "Results",
+                    queryKey: "Offboarding-Users",
+                    data: {
+                      Endpoint: "users",
+                      manualPagination: true,
+                      $select: "id,userPrincipalName,displayName",
+                      $count: true,
+                      $orderby: "displayName",
+                      $top: 999,
+                    },
+                  }}
+                />
+
+                <CippFormComponent
+                  name="KeepCopy"
+                  label="Keep a copy of forwarded mail"
+                  type="switch"
+                  formControl={formControl}
+                />
+              </CippFormCondition>
               <CippFormComponent
                 name="OOO"
                 label="Out of Office Message"
@@ -239,7 +281,7 @@ export const CippWizardOffboarding = (props) => {
 
       {showAlert && (
         <Alert severity="warning">
-          You have selected more than 3 users. This offboarding must be scheduled.
+          You have selected more than 2 users. This offboarding must be scheduled.
         </Alert>
       )}
 
@@ -248,7 +290,7 @@ export const CippWizardOffboarding = (props) => {
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 name="Scheduled.enabled"
                 label="Schedule this offboarding"
@@ -263,7 +305,7 @@ export const CippWizardOffboarding = (props) => {
               compareType="is"
               compareValue={true}
             >
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Scheduled Offboarding Date</Typography>
                 <CippFormComponent
                   name="Scheduled.date"
@@ -273,21 +315,26 @@ export const CippWizardOffboarding = (props) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ sm: 6, xs: 12 }}>
                 <Typography variant="subtitle2">Send results to:</Typography>
                 <CippFormComponent
-                  name="webhook"
+                  name="postExecution.webhook"
                   label="Webhook"
                   type="switch"
                   formControl={formControl}
                 />
                 <CippFormComponent
-                  name="email"
+                  name="postExecution.email"
                   label="E-mail"
                   type="switch"
                   formControl={formControl}
                 />
-                <CippFormComponent name="psa" label="PSA" type="switch" formControl={formControl} />
+                <CippFormComponent
+                  name="postExecution.psa"
+                  label="PSA"
+                  type="switch"
+                  formControl={formControl}
+                />
               </Grid>
             </CippFormCondition>
           </Grid>

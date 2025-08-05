@@ -13,7 +13,7 @@ import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import GDAPRoles from "/src/data/GDAPRoles";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "/src/api/ApiCall";
 import { useEffect, useState } from "react";
@@ -53,12 +53,9 @@ const Page = () => {
     data: {
       TenantFilter: "",
       Endpoint: "tenantRelationships/delegatedAdminRelationships",
-      $filter:
-        "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
     },
     queryKey: "GDAPRelationshipOnboarding",
   });
-
   const onboardingList = ApiGetCallWithPagination({
     url: "/api/ListTenantOnboarding",
     queryKey: "ListTenantOnboarding",
@@ -108,7 +105,11 @@ const Page = () => {
           (relationship) => relationship?.id === queryId
         );
 
-        if (relationship) {
+        if (
+          relationship &&
+          (relationship?.status === "active" || relationship?.status === "approvalPending") &&
+          !relationship?.customer?.displayName.startsWith("MLT_")
+        ) {
           formValue = {
             label:
               (relationship?.customer?.displayName ?? "Pending Invite") +
@@ -206,8 +207,8 @@ const Page = () => {
 
       var missingDefaults = [];
       cippDefaults.forEach((defaultRole) => {
-        if (!relationshipRoles?.find((role) => defaultRole.value === role.roleDefinitionId)) {
-          missingDefaults.push(role);
+        if (!relationshipRoles?.find((role) => defaultRole?.value === role?.roleDefinitionId)) {
+          missingDefaults.push(defaultRole);
         }
       });
       setMissingDefaults(missingDefaults.length > 0);
@@ -304,11 +305,9 @@ const Page = () => {
                   api={{
                     url: "/api/ListGraphRequest",
                     data: {
-                      TenantFilter: "",
                       Endpoint: "tenantRelationships/delegatedAdminRelationships",
-                      $filter:
-                        "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
                     },
+                    excludeTenantFilter: true,
                     queryKey: "GDAPRelationships",
                     dataKey: "Results",
                     labelField: (option) =>
@@ -320,12 +319,22 @@ const Page = () => {
                     addedField: {
                       customer: "customer",
                       id: "id",
+                      displayName: "displayName",
                       createdDateTime: "createdDateTime",
                       accessDetails: "accessDetails",
                       status: "status",
                       autoExtendDuration: "autoExtendDuration",
                       lastModifiedDateTime: "lastModifiedDateTime",
                     },
+                    dataFilter: (data) => {
+                      return data?.filter(
+                        (relationship) =>
+                          (relationship?.addedFields?.status === "active" ||
+                            relationship?.addedFields?.status === "approvalPending") &&
+                          !relationship?.addedFields?.displayName?.startsWith("MLT_")
+                      );
+                    },
+                    showRefresh: true,
                   }}
                   multiple={false}
                   creatable={true}
@@ -369,6 +378,7 @@ const Page = () => {
                         },
                       }}
                       multiple={false}
+                      creatable={false}
                     />
                   </>
                 )}
@@ -409,7 +419,9 @@ const Page = () => {
                     {(currentInvite || selectedRole) && rolesMissingFromRelationship.length > 0 && (
                       <Alert severity="warning">
                         The following roles are not mapped with the current template:{" "}
-                        {rolesMissingFromRelationship.map((role) => role.Name).join(", ")}
+                        {rolesMissingFromRelationship
+                          .map((role) => role?.Name ?? "Unknown Role")
+                          .join(", ")}
                       </Alert>
                     )}
                     {(currentInvite || selectedRole) &&
@@ -485,7 +497,7 @@ const Page = () => {
                               value: getCippFormatting(
                                 currentInvite
                                   ? currentInvite.RoleMappings
-                                  : currentRelationship?.addedFields?.accessDetails.unifiedRoles,
+                                  : currentRelationship?.addedFields?.accessDetails?.unifiedRoles,
                                 "unifiedRoles",
                                 "object"
                               ),

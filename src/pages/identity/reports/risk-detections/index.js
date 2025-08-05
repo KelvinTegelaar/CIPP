@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const pageTitle = "Risk Detection Report";
@@ -8,8 +9,11 @@ const Page = () => {
   const actions = [
     {
       label: "Research Compromised Account",
-      link: "/identity/administration/users/user/bec?userId=[userId]&tenantFilter=[Tenant]",
-      color: "info",
+      type: "GET",
+      icon: <MagnifyingGlassIcon />,
+      link: "/identity/administration/users/user/bec?userId=[userId]",
+      confirmText: "Are you sure you want to research this compromised account?",
+      multiPost: false,
     },
   ];
 
@@ -19,8 +23,7 @@ const Page = () => {
       "userDisplayName",
       "userPrincipalName",
       "detectedDateTime",
-      "location.city",
-      "location.countryOrRegion",
+      "location",
       "ipAddress",
       "riskLevel",
       "riskState",
@@ -35,8 +38,7 @@ const Page = () => {
   const simpleColumns = [
     "detectedDateTime",
     "userPrincipalName",
-    "location.city",
-    "location.countryOrRegion",
+    "location",
     "ipAddress",
     "riskState",
     "riskDetail",
@@ -47,18 +49,28 @@ const Page = () => {
     "activity",
   ];
 
-  // Note to Developer: Add necessary filter logic here
-  // Filters previously defined:
-  /*
-    filterlist: [
-      { filterName: 'State: atRisk', filter: 'Complex: riskState eq atRisk' },
-      { filterName: 'State: confirmedCompromised', filter: 'Complex: riskState eq confirmedCompromised' },
-      { filterName: 'State: confirmedSafe', filter: 'Complex: riskState eq confirmedSafe' },
-      { filterName: 'State: dismissed', filter: 'Complex: riskState eq dismissed' },
-      { filterName: 'State: remediated', filter: 'Complex: riskState eq remediated' },
-      { filterName: 'State: unknownFutureValue', filter: 'Complex: riskState eq unknownFutureValue' },
-    ]
-  */
+  const filterList = [
+    {
+      filterName: "Users at Risk",
+      value: [{ id: "riskState", value: "atRisk" }],
+      type: "column",
+    },
+    {
+      filterName: "Confirmed Compromised",
+      value: [{ id: "riskState", value: "confirmedCompromised" }],
+      type: "column",
+    },
+    {
+      filterName: "Confirmed Safe",
+      value: [{ id: "riskState", value: "confirmedSafe" }],
+      type: "column",
+    },
+    {
+      filterName: "Remediated",
+      value: [{ id: "riskState", value: "remediated" }],
+      type: "column",
+    },
+  ];
 
   return (
     <CippTablePage
@@ -75,6 +87,7 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      filters={filterList}
     />
   );
 };

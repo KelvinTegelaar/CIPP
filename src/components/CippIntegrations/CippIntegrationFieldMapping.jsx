@@ -1,12 +1,10 @@
 import {
   Box,
-  Grid,
   CardContent,
   Skeleton,
   Typography,
   Divider,
   Tooltip,
-  IconButton,
   Button,
   Alert,
 } from "@mui/material";
@@ -18,7 +16,7 @@ import extensions from "/src/data/Extensions.json";
 import React, { useEffect, useState } from "react";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { Sync } from "@mui/icons-material";
-import { Stack } from "@mui/system";
+import { Stack, Grid } from "@mui/system";
 
 const CippIntegrationFieldMapping = () => {
   const router = useRouter();
@@ -44,7 +42,7 @@ const CippIntegrationFieldMapping = () => {
       var missingMappings = [];
       fieldMapping?.data?.Mappings?.forEach((mapping) => {
         const exists = fieldMapping?.data?.IntegrationFields?.some(
-          (integrationField) => integrationField.value === mapping.IntegrationId
+          (integrationField) => String(integrationField.value) === mapping.IntegrationId
         );
         if (exists) {
           newMappings[mapping.RowKey] = {
@@ -113,41 +111,33 @@ const CippIntegrationFieldMapping = () => {
                   )}
                 </Stack>
                 <Divider />
-                <Grid container spacing={3} sx={{ mt: 1, mb: 3 }}>
+                <Grid container spacing={3} sx={{ my: 3 }}>
                   {fieldMapping?.data?.CIPPFields?.filter(
                     (field) => field.FieldType === header.FieldType
                   ).map((field, fieldIndex) => (
-                    <Grid item xs={12} md={6} key={`field-${headerIndex}-${fieldIndex}`}>
-                      <Box sx={{ p: 1 }}>
-                        <CippFormComponent
-                          name={field.FieldName}
-                          type="autoComplete"
-                          label={field.FieldLabel}
-                          options={fieldMapping?.data?.IntegrationFields?.filter(
-                            (integrationField) =>
-                              (integrationField?.type === field.Type &&
-                                integrationField?.FieldType === field.FieldType) ||
-                              integrationField?.type === "unset"
-                          )?.map((integrationField) => {
-                            return {
-                              label: integrationField?.name,
-                              value: integrationField?.value,
-                            };
-                          })}
-                          formControl={formControl}
-                          multiple={false}
-                          creatable={false}
-                          fullWidth
-                          isFetching={fieldMapping.isFetching}
-                          disableClearable={true}
-                          required={true}
-                          validators={{
-                            validate: (value) => {
-                              return value ? true : "Please select a value";
-                            },
-                          }}
-                        />
-                      </Box>
+                    <Grid size={{ xs: 12, md: 6 }} key={`field-${headerIndex}-${fieldIndex}`}>
+                      <CippFormComponent
+                        name={field.FieldName}
+                        type="autoComplete"
+                        label={field.FieldLabel}
+                        options={fieldMapping?.data?.IntegrationFields?.filter(
+                          (integrationField) =>
+                            (integrationField?.type === field.Type &&
+                              integrationField?.FieldType === field.FieldType) ||
+                            integrationField?.type === "unset"
+                        )?.map((integrationField) => {
+                          return {
+                            label: integrationField?.name,
+                            value: integrationField?.value,
+                          };
+                        })}
+                        formControl={formControl}
+                        multiple={false}
+                        creatable={false}
+                        fullWidth
+                        isFetching={fieldMapping.isFetching}
+                        disableClearable={true}
+                      />
                     </Grid>
                   ))}
                 </Grid>
@@ -165,12 +155,12 @@ const CippIntegrationFieldMapping = () => {
           {fieldMapping.isLoading && (
             <Box>
               <Grid container spacing={3}>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Box>
                     <Skeleton variant="rectangular" height={60} />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Box>
                     <Skeleton variant="rectangular" height={60} />
                   </Box>
@@ -180,7 +170,7 @@ const CippIntegrationFieldMapping = () => {
           )}
           {fieldMapping.isSuccess && !extension && (
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Box sx={{ p: 3 }}>
                   <Box sx={{ textAlign: "center" }}>Extension not found</Box>
                 </Box>

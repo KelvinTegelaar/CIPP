@@ -11,7 +11,7 @@ const Page = () => {
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       tenantFilter: userSettingsDefaults.currentTenant,
       usageLocation: userSettingsDefaults.usageLocation,
@@ -36,6 +36,7 @@ const Page = () => {
         newFields.usageLocation = { label: usageLocation, value: usageLocation };
       }
       newFields.tenantFilter = userSettingsDefaults.currentTenant;
+
       formControl.reset(newFields);
     }
   }, [formValues]);
@@ -55,7 +56,7 @@ const Page = () => {
             label="Copy properties from another user"
             multiple={false}
             select={
-              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,postalCode,companyName,mobilePhone,businessPhones,usageLocation"
+              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
             }
             addedField={{
               groupType: "calculatedGroupType",
@@ -68,11 +69,14 @@ const Page = () => {
               jobTitle: "jobTitle",
               department: "department",
               streetAddress: "streetAddress",
+              city: "city",
+              state: "state",
               postalCode: "postalCode",
               companyName: "companyName",
               mobilePhone: "mobilePhone",
               businessPhones: "businessPhones",
               usageLocation: "usageLocation",
+              office: "office",
             }}
           />
         </Box>

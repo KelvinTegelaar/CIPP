@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
@@ -25,7 +25,7 @@ const CodeContainer = styled("div")`
 export const CippCodeBlock = (props) => {
   const {
     code,
-    language = "javascript",
+    language = "json",
     showLineNumbers = false,
     startingLineNumber = 1,
     wrapLongLines = true,
@@ -47,13 +47,14 @@ export const CippCodeBlock = (props) => {
       </div>
       {type === "editor" && (
         <Editor
-          defaultLanguage="json"
+          defaultLanguage={language}
           defaultValue={code}
           theme={currentTheme === "dark" ? "vs-dark" : "vs-light"}
           height={editorHeight}
           options={{
             wordWrap: true,
-    
+            lineNumbers: showLineNumbers ? "on" : "off",
+            minimap: { enabled: showLineNumbers},
           }}
           {...other}
         />
@@ -66,7 +67,6 @@ export const CippCodeBlock = (props) => {
           showLineNumbers={showLineNumbers}
           startingLineNumber={startingLineNumber}
           wrapLongLines={wrapLongLines}
-          
         >
           {code}
         </SyntaxHighlighter>

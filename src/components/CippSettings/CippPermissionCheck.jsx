@@ -1,10 +1,20 @@
-import { Box, Button, Chip, Stack, SvgIcon, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Collapse,
+  IconButton,
+  Stack,
+  SvgIcon,
+  Typography,
+} from "@mui/material";
 import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useEffect, useState } from "react";
 import { CippPermissionResults } from "./CippPermissionResults";
 import { CippGDAPResults } from "./CippGDAPResults";
-import { Sync } from "@mui/icons-material";
+import { Close, Sync } from "@mui/icons-material";
 import { CippTenantResults } from "./CippTenantResults";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 import { Description } from "@mui/icons-material";
@@ -14,6 +24,7 @@ const CippPermissionCheck = (props) => {
   const [skipCache, setSkipCache] = useState(false);
   const [cardIcon, setCardIcon] = useState(null);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+  const [showAlertMessage, setShowAlertMessage] = useState(true);
   var showDetails = true;
 
   if (type === "Tenants") {
@@ -130,6 +141,26 @@ const CippPermissionCheck = (props) => {
       >
         {(executeCheck.isSuccess || executeCheck.isLoading) && (
           <>
+            {executeCheck.data?.Metadata?.AlertMessage && (
+              <Collapse in={showAlertMessage} unmountOnExit>
+                <Alert
+                  severity={executeCheck?.data?.Metadata?.AlertSeverity ?? "info"}
+                  sx={{ mb: 2 }}
+                  action={
+                    <IconButton
+                      aria-label="close"
+                      color="inherit"
+                      size="small"
+                      onClick={() => setShowAlertMessage(false)}
+                    >
+                      <Close fontSize="inherit" />
+                    </IconButton>
+                  }
+                >
+                  {executeCheck.data.Metadata.AlertMessage}
+                </Alert>
+              </Collapse>
+            )}
             {type === "Permissions" && (
               <CippPermissionResults
                 executeCheck={executeCheck}
