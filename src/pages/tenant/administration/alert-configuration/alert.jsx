@@ -132,6 +132,13 @@ const AlertWizard = () => {
           };
         }
 
+        // Parse the original desired start date-time from DesiredStartTime field if it exists
+        let startDateTimeForForm = null;
+        if (alert.RawAlert.DesiredStartTime && alert.RawAlert.DesiredStartTime !== "0") {
+          const desiredStartEpoch = parseInt(alert.RawAlert.DesiredStartTime);
+          startDateTimeForForm = desiredStartEpoch;
+        }
+
         // Create the reset object with all the form values
         const resetObject = {
           tenantFilter: tenantFilterForForm,
@@ -139,6 +146,7 @@ const AlertWizard = () => {
           command: { value: usedCommand, label: usedCommand.label },
           recurrence: recurrenceOption,
           postExecution: postExecutionValue,
+          startDateTime: startDateTimeForForm,
         };
 
         // Parse Parameters field if it exists and is a string
@@ -332,6 +340,7 @@ const AlertWizard = () => {
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
       Parameters: getInputParams(),
       ScheduledTime: Math.floor(new Date().getTime() / 1000) + 60,
+      DesiredStartTime: values.startDateTime ? values.startDateTime.toString() : null,
       Recurrence: values.recurrence,
       PostExecution: values.postExecution,
     };
@@ -698,6 +707,15 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 label="When should the alert run"
                                 options={recurrenceOptions} // Use the state-managed recurrenceOptions here
+                              />
+                            </Grid>
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="datePicker"
+                                name="startDateTime"
+                                formControl={formControl}
+                                label="When should the first alert run?"
+                                dateTimeType="datetime"
                               />
                             </Grid>
                             <Grid size={12}>
