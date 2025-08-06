@@ -36,10 +36,11 @@ import { CippApiResults } from "../../../components/CippComponents/CippApiResult
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { BackupValidator, BackupValidationError } from "../../../utils/backupValidation";
 import { useState } from "react";
+import { useDialog } from "../../../hooks/use-dialog";
 
 const Page = () => {
   const [validationResult, setValidationResult] = useState(null);
-  const [restoreDialog, setRestoreDialog] = useState({ open: false });
+  const restoreDialog = useDialog();
   const [selectedBackupFile, setSelectedBackupFile] = useState(null);
   const [selectedBackupData, setSelectedBackupData] = useState(null);
 
@@ -86,7 +87,15 @@ const Page = () => {
         {result.isValid ? (
           <Alert severity="success" icon={<CheckCircle />}>
             <AlertTitle>Backup Validation Successful</AlertTitle>
-            The backup file is valid and ready for restoration.
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              The backup file is valid and ready for restoration.
+            </Typography>
+            {result.validRows !== undefined && result.totalRows !== undefined && (
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                <strong>Import Summary:</strong> {result.validRows} valid rows out of{" "}
+                {result.totalRows} total rows will be imported.
+              </Typography>
+            )}
             {result.repaired && (
               <Typography variant="body2" sx={{ mt: 1 }}>
                 <strong>Note:</strong> The backup file had minor issues that were automatically
@@ -113,7 +122,15 @@ const Page = () => {
         ) : (
           <Alert severity="error" icon={<ErrorIcon />}>
             <AlertTitle>Backup Validation Failed</AlertTitle>
-            The backup file is corrupted and cannot be restored safely.
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              The backup file is corrupted and cannot be restored safely.
+            </Typography>
+            {result.validRows !== undefined && result.totalRows !== undefined && (
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                <strong>Analysis:</strong> Found {result.validRows} valid rows out of{" "}
+                {result.totalRows} total rows.
+              </Typography>
+            )}
             <Box sx={{ mt: 1 }}>
               <Typography variant="body2">
                 <strong>Errors found:</strong>
@@ -187,7 +204,7 @@ const Page = () => {
         }
 
         // Open the confirmation dialog
-        setRestoreDialog({ open: true });
+        restoreDialog.handleOpen();
 
         // Clear the file input
         e.target.value = null;
@@ -205,7 +222,7 @@ const Page = () => {
           lastModified: new Date(file.lastModified),
         });
         setSelectedBackupData(null);
-        setRestoreDialog({ open: true });
+        restoreDialog.handleOpen();
         e.target.value = null;
       }
     };
@@ -408,7 +425,7 @@ const Page = () => {
         createDialog={{
           open: restoreDialog.open,
           handleClose: () => {
-            setRestoreDialog({ open: false });
+            restoreDialog.handleClose();
             setValidationResult(null);
             setSelectedBackupFile(null);
             setSelectedBackupData(null);
@@ -422,7 +439,7 @@ const Page = () => {
             ? "Are you sure you want to restore this backup? This will overwrite your current CIPP configuration."
             : null,
           onSuccess: () => {
-            setRestoreDialog({ open: false });
+            restoreDialog.handleClose();
             setValidationResult(null);
             setSelectedBackupFile(null);
             setSelectedBackupData(null);
