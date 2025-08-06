@@ -52,29 +52,41 @@ export const CippWizardConfirmation = (props) => {
       !["user", "userPrincipalName", "username"].includes(key)
   );
 
-  // Dynamically split entries based on columns prop
+  // Calculate total entries including special ones for even distribution
+  const totalEntries = filteredEntries.length + (tenantEntry ? 1 : 0) + (userEntry ? 1 : 0);
+
+  // Dynamically split entries based on columns prop with special entries distributed
   const splitEntries = () => {
-    const entriesPerColumn = Math.ceil(filteredEntries.length / columns);
-    const result = [];
-    
-    for (let i = 0; i < columns; i++) {
-      const start = i * entriesPerColumn;
-      const end = start + entriesPerColumn;
-      result.push(filteredEntries.slice(start, end));
+    const result = Array.from({ length: columns }, () => []);
+
+    // Add special entries to different columns first
+    if (tenantEntry) {
+      result[0].push(tenantEntry);
     }
-    
+    if (userEntry && result[1]) {
+      result[1].push(userEntry);
+    }
+
+    // Distribute remaining entries across columns to balance them
+    filteredEntries.forEach((entry) => {
+      // Find the column with the fewest entries
+      let targetColumn = 0;
+      let minLength = result[0].length;
+      
+      for (let i = 1; i < columns; i++) {
+        if (result[i].length < minLength) {
+          minLength = result[i].length;
+          targetColumn = i;
+        }
+      }
+      
+      result[targetColumn].push(entry);
+    });
+
     return result;
   };
 
   const columnEntries = splitEntries();
-
-  // Distribute special entries across first available columns
-  if (tenantEntry && columnEntries[0]) {
-    columnEntries[0].unshift(tenantEntry);
-  }
-  if (userEntry && columnEntries[1]) {
-    columnEntries[1].unshift(userEntry);
-  }
 
   // Calculate Grid sizes based on number of columns
   const getGridSize = () => {
