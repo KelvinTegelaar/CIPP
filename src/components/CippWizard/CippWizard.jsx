@@ -39,8 +39,8 @@ export const CippWizard = (props) => {
   }, []);
 
   const content = useMemo(() => {
-    const StepComponent = stepsWithVisibility[activeStep].component;
     const currentStep = stepsWithVisibility[activeStep];
+    const StepComponent = currentStep.component;
 
     return (
       <StepComponent
