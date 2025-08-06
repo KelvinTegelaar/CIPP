@@ -421,11 +421,17 @@ const Page = () => {
 
       {/* Backup Restore Confirmation Dialog */}
       <CippApiDialog
+        key={
+          selectedBackupFile
+            ? `restore-${selectedBackupFile.name}-${selectedBackupFile.lastModified}`
+            : "restore-dialog"
+        }
         title="Confirm Backup Restoration"
         createDialog={{
           open: restoreDialog.open,
           handleClose: () => {
             restoreDialog.handleClose();
+            // Clear state when user manually closes the dialog
             setValidationResult(null);
             setSelectedBackupFile(null);
             setSelectedBackupData(null);
@@ -439,10 +445,8 @@ const Page = () => {
             ? "Are you sure you want to restore this backup? This will overwrite your current CIPP configuration."
             : null,
           onSuccess: () => {
-            restoreDialog.handleClose();
-            setValidationResult(null);
-            setSelectedBackupFile(null);
-            setSelectedBackupData(null);
+            // Don't auto-close the dialog - let user see the results and close manually
+            // The dialog will show the API results and user can close when ready
           },
         }}
         relatedQueryKeys={["BackupList", "ScheduledBackup"]}

@@ -317,33 +317,31 @@ export const BackupValidator = {
       return false;
     }
 
-    // Must have either:
-    // 1. PartitionKey and RowKey (Azure Table format)
-    // 2. id field (some backup formats)
-    // 3. At least 2 string properties (fallback for partial data)
-    const hasAzureKeys = row.PartitionKey && row.RowKey;
-    const hasId = row.id;
-    const stringProps = Object.values(row).filter((v) => typeof v === "string").length;
+    // Must have all three required properties for CIPP table storage
+    const hasTable = row.table && typeof row.table === "string";
+    const hasPartitionKey = row.PartitionKey && typeof row.PartitionKey === "string";
+    const hasRowKey = row.RowKey && typeof row.RowKey === "string";
 
-    if (hasAzureKeys || hasId || stringProps >= 2) {
-      // Additional checks for obvious corruption
-      const rowJson = JSON.stringify(row);
-
-      // Skip rows that are way too large (likely corrupted)
-      if (rowJson.length > 10000000) {
-        // 10MB limit
-        return false;
-      }
-
-      // Skip rows with null bytes (always corruption)
-      if (rowJson.includes("\0")) {
-        return false;
-      }
-
-      return true;
+    // All three are required for valid CIPP backup row
+    if (!hasTable || !hasPartitionKey || !hasRowKey) {
+      return false;
     }
 
-    return false;
+    // Additional checks for obvious corruption
+    const rowJson = JSON.stringify(row);
+
+    // Skip rows that are way too large (likely corrupted)
+    if (rowJson.length > 10000000) {
+      // 10MB limit
+      return false;
+    }
+
+    // Skip rows with null bytes (always corruption)
+    if (rowJson.includes("\0")) {
+      return false;
+    }
+
+    return true;
   },
 
   /**
@@ -354,11 +352,20 @@ export const BackupValidator = {
       return "Not a valid object";
     }
 
-    if (!row.PartitionKey && !row.RowKey && !row.id) {
-      const stringProps = Object.values(row).filter((v) => typeof v === "string").length;
-      if (stringProps < 2) {
-        return "Missing required identifiers and insufficient data";
-      }
+    // Check for missing required CIPP backup properties
+    const missingFields = [];
+    if (!row.table || typeof row.table !== "string") {
+      missingFields.push("table");
+    }
+    if (!row.PartitionKey || typeof row.PartitionKey !== "string") {
+      missingFields.push("PartitionKey");
+    }
+    if (!row.RowKey || typeof row.RowKey !== "string") {
+      missingFields.push("RowKey");
+    }
+
+    if (missingFields.length > 0) {
+      return `Missing required fields: ${missingFields.join(", ")}`;
     }
 
     const rowJson = JSON.stringify(row);
