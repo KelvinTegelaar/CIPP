@@ -4,10 +4,6 @@ description: Deploying multiple function apps to increase performance
 
 # Function Offloading
 
-{% hint style="danger" %}
-This is an advanced configuration of CIPP currently in beta. Please proceed with caution.
-{% endhint %}
-
 {% hint style="warning" %}
 Hosted CIPP users can request this deployment via the helpdesk. Once deployed, proceed to the [#enabling-function-offloading](function-offloading.md#enabling-function-offloading "mention") section of this page.
 {% endhint %}
