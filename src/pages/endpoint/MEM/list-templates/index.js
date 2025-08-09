@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { GitHub } from "@mui/icons-material";
+import { Edit, GitHub } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { ApiGetCall } from "/src/api/ApiCall";
 
@@ -14,6 +14,12 @@ const Page = () => {
     refetchOnReconnect: false,
   });
   const actions = [
+    {
+      label: "Edit Template",
+      link: `/endpoint/MEM/list-templates/edit?id=[GUID]`,
+      icon: <Edit />,
+      color: "info",
+    },
     {
       label: "Edit Template Name and Description",
       type: "POST",

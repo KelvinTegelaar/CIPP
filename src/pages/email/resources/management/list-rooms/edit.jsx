@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
@@ -173,322 +174,332 @@ const EditRoomMailbox = () => {
         WorkingHoursTimeZone: values.WorkingHoursTimeZone?.value || values.WorkingHoursTimeZone,
       })}
     >
-      <Grid container spacing={2}>
-        {/* Basic Information */}
-        <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>Basic Information</Typography>
-        </Grid>
+      {roomInfo.isLoading && (
+        <CippFormSkeleton layout={[2, 3, 1, 2, 3, 2, 1, 2, 3, 1, 3, 1, 3, 1]} />
+      )}
+      {roomInfo.isSuccess && (
+        <Grid container spacing={2}>
+          {/* Basic Information */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              Basic Information
+            </Typography>
+          </Grid>
 
-        <Grid size={{ md: 6, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Display Name"
-            name="displayName"
-            formControl={formControl}
-            validators={{ required: "Display Name is required" }}
-          />
-        </Grid>
-        <Grid size={{ md: 6, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Hidden From Address Lists"
-            name="hiddenFromAddressListsEnabled"
-            formControl={formControl}
-          />
-        </Grid>
-        <Divider sx={{ my: 2, width: "100%" }} />
-        {/* Booking Settings */}
-        <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>Booking Settings</Typography>
-        </Grid>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Display Name"
+              name="displayName"
+              formControl={formControl}
+              validators={{ required: "Display Name is required" }}
+            />
+          </Grid>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Hidden From Address Lists"
+              name="hiddenFromAddressListsEnabled"
+              formControl={formControl}
+            />
+          </Grid>
+          <Divider sx={{ my: 2, width: "100%" }} />
+          {/* Booking Settings */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              Booking Settings
+            </Typography>
+          </Grid>
 
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="number"
-            label="Room Capacity"
-            name="capacity"
-            formControl={formControl}
-            InputProps={{
-              inputProps: { min: 0 },
-            }}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="number"
-            label="Maximum Booking Duration (Minutes)"
-            name="MaximumDurationInMinutes"
-            formControl={formControl}
-            validators={{
-              min: { value: 1, message: "Minimum duration is 1 minute" },
-              max: { value: 1440, message: "Maximum duration is 1440 minutes (24 hours)" },
-            }}
-            InputProps={{
-              inputProps: { min: 1, max: 1440 },
-            }}
-            fullWidth
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="number"
-            label="Booking Window (Days)"
-            name="BookingWindowInDays"
-            formControl={formControl}
-            validators={{
-              min: { value: 0, message: "Minimum is 0 days" },
-              max: { value: 1080, message: "Maximum is 1080 days (3 years)" },
-            }}
-            InputProps={{
-              inputProps: { min: 0, max: 1080 },
-            }}
-            fullWidth
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Booking Process"
-            name="AutomateProcessing"
-            multiple={false}
-            creatable={false}
-            options={automateProcessingOptions}
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Allow Recurring Meetings"
-            name="AllowRecurringMeetings"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Allow Double-Booking"
-            name="AllowConflicts"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Process External Meetings"
-            name="ProcessExternalMeetingMessages"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Enforce Room Capacity"
-            name="EnforceCapacity"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Forward to Delegates"
-            name="ForwardRequestsToDelegates"
-            formControl={formControl}
-          />
-        </Grid>
-        <Divider sx={{ my: 2, width: "100%" }} />
-        {/* Working Hours */}
-        <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>Working Hours</Typography>
-        </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="number"
+              label="Room Capacity"
+              name="capacity"
+              formControl={formControl}
+              InputProps={{
+                inputProps: { min: 0 },
+              }}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="number"
+              label="Maximum Booking Duration (Minutes)"
+              name="MaximumDurationInMinutes"
+              formControl={formControl}
+              validators={{
+                min: { value: 1, message: "Minimum duration is 1 minute" },
+                max: { value: 1440, message: "Maximum duration is 1440 minutes (24 hours)" },
+              }}
+              InputProps={{
+                inputProps: { min: 1, max: 1440 },
+              }}
+              fullWidth
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="number"
+              label="Booking Window (Days)"
+              name="BookingWindowInDays"
+              formControl={formControl}
+              validators={{
+                min: { value: 0, message: "Minimum is 0 days" },
+                max: { value: 1080, message: "Maximum is 1080 days (3 years)" },
+              }}
+              InputProps={{
+                inputProps: { min: 0, max: 1080 },
+              }}
+              fullWidth
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Booking Process"
+              name="AutomateProcessing"
+              multiple={false}
+              creatable={false}
+              options={automateProcessingOptions}
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Allow Recurring Meetings"
+              name="AllowRecurringMeetings"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Allow Double-Booking"
+              name="AllowConflicts"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Process External Meetings"
+              name="ProcessExternalMeetingMessages"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Enforce Room Capacity"
+              name="EnforceCapacity"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Forward to Delegates"
+              name="ForwardRequestsToDelegates"
+              formControl={formControl}
+            />
+          </Grid>
+          <Divider sx={{ my: 2, width: "100%" }} />
+          {/* Working Hours */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              Working Hours
+            </Typography>
+          </Grid>
 
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Schedule Only During Work Hours"
-            name="ScheduleOnlyDuringWorkHours"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 8, xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Working Days"
-            name="WorkDays"
-            multiple={true}
-            creatable={false}
-            options={workDaysOptions}
-            formControl={formControl}
-          />
-        </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Schedule Only During Work Hours"
+              name="ScheduleOnlyDuringWorkHours"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 8, xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Working Days"
+              name="WorkDays"
+              multiple={true}
+              creatable={false}
+              options={workDaysOptions}
+              formControl={formControl}
+            />
+          </Grid>
 
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Timezone"
-            name="WorkingHoursTimeZone"
-            options={timezoneList.map((tz) => ({
-              value: tz.standardTime,
-              label: `${tz.standardTime} - ${tz.timezone}`,
-            }))}
-            multiple={false}
-            creatable={false}
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="time"
-            label="Work Hours Start"
-            name="WorkHoursStartTime"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="time"
-            label="Work Hours End"
-            name="WorkHoursEndTime"
-            formControl={formControl}
-          />
-        </Grid>
-        <Divider sx={{ my: 2, width: "100%" }} />
-        {/* Room Facilities */}
-        <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>Room Facilities & Equipment</Typography>
-        </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Timezone"
+              name="WorkingHoursTimeZone"
+              options={timezoneList.map((tz) => ({
+                value: tz.standardTime,
+                label: `${tz.standardTime} - ${tz.timezone}`,
+              }))}
+              multiple={false}
+              creatable={false}
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="time"
+              label="Work Hours Start"
+              name="WorkHoursStartTime"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="time"
+              label="Work Hours End"
+              name="WorkHoursEndTime"
+              formControl={formControl}
+            />
+          </Grid>
+          <Divider sx={{ my: 2, width: "100%" }} />
+          {/* Room Facilities */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              Room Facilities & Equipment
+            </Typography>
+          </Grid>
 
-        <Grid size={{ md: 6, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Wheelchair Accessible"
-            name="isWheelChairAccessible"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 6, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Phone"
-            name="phone"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Audio Device"
-            name="audioDeviceName"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Video Device"
-            name="videoDeviceName"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Display Device"
-            name="displayDeviceName"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Tags"
-            name="tags"
-            formControl={formControl}
-            multiple={true}
-            creatable={true}
-          />
-        </Grid>
-        <Divider sx={{ my: 2, width: "100%" }} />
-        {/* Location Information */}
-        <Grid size={{ xs: 12 }}>
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>Location Information</Typography>
-        </Grid>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Wheelchair Accessible"
+              name="isWheelChairAccessible"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Phone"
+              name="phone"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Audio Device"
+              name="audioDeviceName"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Video Device"
+              name="videoDeviceName"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Display Device"
+              name="displayDeviceName"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Tags"
+              name="tags"
+              formControl={formControl}
+              multiple={true}
+              creatable={true}
+            />
+          </Grid>
+          <Divider sx={{ my: 2, width: "100%" }} />
+          {/* Location Information */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              Location Information
+            </Typography>
+          </Grid>
 
-        <Grid size={{ md: 6, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Building"
-            name="building"
-            formControl={formControl}
-          />
-        </Grid>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Building"
+              name="building"
+              formControl={formControl}
+            />
+          </Grid>
 
-        <Grid size={{ md: 3, xs: 12 }}>
-          <CippFormComponent
-            type="number"
-            label="Floor"
-            name="floor"
-            formControl={formControl}
-          />
-        </Grid>
+          <Grid size={{ md: 3, xs: 12 }}>
+            <CippFormComponent type="number" label="Floor" name="floor" formControl={formControl} />
+          </Grid>
 
-        <Grid size={{ md: 3, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Floor Label"
-            name="floorLabel"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 12, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Street Address"
-            name="street"
-            formControl={formControl}
-          />
-        </Grid>
+          <Grid size={{ md: 3, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Floor Label"
+              name="floorLabel"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 12, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Street Address"
+              name="street"
+              formControl={formControl}
+            />
+          </Grid>
 
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="City"
-            name="city"
-            formControl={formControl}
-          />
-        </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="City"
+              name="city"
+              formControl={formControl}
+            />
+          </Grid>
 
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="State/Province"
-            name="state"
-            formControl={formControl}
-          />
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="State/Province"
+              name="state"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Postal Code"
+              name="postalCode"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 12, xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Country/Region"
+              name="countryOrRegion"
+              multiple={false}
+              creatable={false}
+              options={countryList.map(({ Code, Name }) => ({
+                label: Name,
+                value: Code,
+              }))}
+              formControl={formControl}
+            />
+          </Grid>
         </Grid>
-        <Grid size={{ md: 4, xs: 12 }}>
-          <CippFormComponent
-            type="textField"
-            label="Postal Code"
-            name="postalCode"
-            formControl={formControl}
-          />
-        </Grid>
-        <Grid size={{ md: 12, xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Country/Region"
-            name="countryOrRegion"
-            multiple={false}
-            creatable={false}
-            options={countryList.map(({ Code, Name }) => ({
-              label: Name,
-              value: Code,
-            }))}
-            formControl={formControl}
-          />
-        </Grid>
-      </Grid>
+      )}
     </CippFormPage>
   );
 };

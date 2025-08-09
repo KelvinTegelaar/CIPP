@@ -28,6 +28,8 @@ const Page = () => {
                 formControl={formControl}
                 type="single"
                 allTenants={false}
+                preselectedEnabled={true}
+                validators={{ required: "A tenant must be selected" }}
               />
             </Grid>
             <Grid size={{ md: 12, xs: 12 }}>

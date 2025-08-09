@@ -52,7 +52,7 @@ const Page = () => {
     >
       <Container maxWidth={false}>
         <Grid container spacing={3}>
-          <Grid container item spacing={4}>
+          <Grid container spacing={4}>
             <Grid spacing={4} size={{ xs: 12 }}>
               <Alert severity="info">
                 <Typography variant="body1" color="textPrimary">
@@ -120,7 +120,7 @@ const Page = () => {
                 </Grid>
               )}
               {getGeoIP.data?.map((breach, index) => (
-                <Grid key={index} spacing={2} item size={{ xs: 3 }}>
+                <Grid key={index} spacing={2} size={{ xs: 3 }}>
                   <CippButtonCard
                     cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
                     title={<>{breach.Title}</>}

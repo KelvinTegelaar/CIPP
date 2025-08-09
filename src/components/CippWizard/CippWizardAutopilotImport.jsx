@@ -1,10 +1,7 @@
 import {
   Button,
-  Grid,
   Link,
   Stack,
-  Card,
-  CardContent,
   Box,
   Typography,
   Dialog,
@@ -14,13 +11,12 @@ import {
   TextField,
   Alert,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
-import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useWatch } from "react-hook-form";
 import { Delete, FileDownload, Upload, Add } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { getCippTranslation } from "../../utils/get-cipp-translation";
 import React from "react";
 
 export const CippWizardAutopilotImport = (props) => {

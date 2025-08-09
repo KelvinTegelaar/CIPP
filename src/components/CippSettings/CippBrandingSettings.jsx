@@ -22,7 +22,7 @@ const CippBrandingSettings = () => {
 
   const saveBrandingSettings = ApiPostCall({
     datafromUrl: true,
-    relatedQueryKeys: ["BrandingSettings"],
+    relatedQueryKeys: ["BrandingSettings", "userSettings"],
   });
 
   const handleLogoUpload = (event) => {

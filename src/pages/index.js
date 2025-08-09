@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Box, Container, Button, Card, CardContent } from "@mui/material";
+import { Box, Container, Button, Card, CardContent, Tooltip } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippInfoBar } from "../components/CippCards/CippInfoBar";
 import { CippChartCard } from "../components/CippCards/CippChartCard";
@@ -14,10 +14,12 @@ import { CippUniversalSearch } from "../components/CippCards/CippUniversalSearch
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard.jsx";
 import { ExecutiveReportButton } from "../components/ExecutiveReportButton.js";
+import { CippStandardsDialog } from "../components/CippCards/CippStandardsDialog.jsx";
 
 const Page = () => {
   const { currentTenant } = useSettings();
   const [domainVisible, setDomainVisible] = useState(false);
+  const [standardsDialogOpen, setStandardsDialogOpen] = useState(false);
 
   const organization = ApiGetCall({
     url: "/api/ListOrg",
@@ -254,13 +256,16 @@ const Page = () => {
             </Grid>
 
             <Grid size={{ md: 4, xs: 12 }}>
-              <CippChartCard
-                title="Standards Set"
-                isFetching={standards.isFetching}
-                chartType="bar"
-                chartSeries={[remediateCount, alertCount, reportCount]}
-                labels={["Remediation", "Alert", "Report"]}
-              />
+              <Tooltip title="Click to view standards">
+                <CippChartCard
+                  title="Standards Set"
+                  isFetching={standards.isFetching}
+                  chartType="bar"
+                  chartSeries={[remediateCount, alertCount, reportCount]}
+                  labels={["Remediation", "Alert", "Report"]}
+                  onClick={() => setStandardsDialogOpen(true)}
+                />
+              </Tooltip>
             </Grid>
 
             <Grid size={{ md: 4, xs: 12 }}>
@@ -357,6 +362,13 @@ const Page = () => {
           </Grid>
         </Container>
       </Box>
+      
+      <CippStandardsDialog
+        open={standardsDialogOpen}
+        onClose={() => setStandardsDialogOpen(false)}
+        standardsData={standards.data}
+        currentTenant={currentTenant}
+      />
     </>
   );
 };

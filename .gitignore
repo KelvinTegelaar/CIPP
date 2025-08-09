@@ -29,6 +29,5 @@ yarn-error.log*
 debug.log
 app.log
 
-# Cursor IDE
-.cursor/rules
-
+# AI rules
+.*/rules

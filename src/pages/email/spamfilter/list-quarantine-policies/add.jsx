@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { Grid, Divider } from "@mui/material";
+import { useEffect } from "react";
+import { Divider } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
@@ -46,6 +47,7 @@ const AddPolicy = () => {
             name="selectedTenants"
             type="multiple"
             allTenants={true}
+            preselectedEnabled={true}
             validators={{ required: "At least one tenant must be selected" }}
           />
         </Grid>
@@ -71,73 +73,67 @@ const AddPolicy = () => {
         </Grid> */}
 
         <Divider sx={{ my: 2, width: "100%" }} />
-          <Grid xs={6} >
-            <CippFormComponent
-              type="textField"
-              label="Policy Name"
-              name="Name"
-              placeholder="Enter policy name"
-              formControl={formControl}
-              required={true}
-            />
-            <Divider sx={{ my: 2, width: "100%" }} />
-            <CippFormComponent
-              type="autoComplete"
-              label="Release Action Preference"
-              name="ReleaseActionPreference"
-              placeholder="Select release action preference"
-              formControl={formControl}
-              required={true}
-              multiple={false}
-              options={[
-                { label: "Release", value: "Release" },
-                { label: "Request Release", value: "RequestRelease" },
-              ]}
-            />
-          </Grid>
+        <Grid xs={6}>
+          <CippFormComponent
+            type="textField"
+            label="Policy Name"
+            name="Name"
+            placeholder="Enter policy name"
+            formControl={formControl}
+            required={true}
+          />
+          <Divider sx={{ my: 2, width: "100%" }} />
+          <CippFormComponent
+            type="autoComplete"
+            label="Release Action Preference"
+            name="ReleaseActionPreference"
+            placeholder="Select release action preference"
+            formControl={formControl}
+            required={true}
+            multiple={false}
+            options={[
+              { label: "Release", value: "Release" },
+              { label: "Request Release", value: "RequestRelease" },
+            ]}
+          />
+        </Grid>
 
-          <Grid xs={2}>
-            
-            <CippFormComponent
-              type="switch"
-              label="Delete"
-              name="Delete"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              label="Preview"
-              name="Preview"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              label="Block Sender"
-              name="BlockSender"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              label="Allow Sender"
-              name="AllowSender"
-              formControl={formControl}
-            />
-          </Grid>
-          <Grid xs={4}>
-            <CippFormComponent
-              type="switch"
-              label="Quarantine Notification"
-              name="QuarantineNotification"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              label="Include Messages From Blocked Sender Address"
-              name="IncludeMessagesFromBlockedSenderAddress"
-              formControl={formControl}
-              disabled={!quarantineNotification}
-            />
-          </Grid>
+        <Grid xs={2}>
+          <CippFormComponent type="switch" label="Delete" name="Delete" formControl={formControl} />
+          <CippFormComponent
+            type="switch"
+            label="Preview"
+            name="Preview"
+            formControl={formControl}
+          />
+          <CippFormComponent
+            type="switch"
+            label="Block Sender"
+            name="BlockSender"
+            formControl={formControl}
+          />
+          <CippFormComponent
+            type="switch"
+            label="Allow Sender"
+            name="AllowSender"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid xs={4}>
+          <CippFormComponent
+            type="switch"
+            label="Quarantine Notification"
+            name="QuarantineNotification"
+            formControl={formControl}
+          />
+          <CippFormComponent
+            type="switch"
+            label="Include Messages From Blocked Sender Address"
+            name="IncludeMessagesFromBlockedSenderAddress"
+            formControl={formControl}
+            disabled={!quarantineNotification}
+          />
+        </Grid>
       </Grid>
     </CippFormPage>
   );

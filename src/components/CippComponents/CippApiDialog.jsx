@@ -12,7 +12,7 @@ import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import React, { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import CippFormComponent from "./CippFormComponent";
 
@@ -41,8 +41,12 @@ export const CippApiDialog = (props) => {
   }
 
   const formHook = useForm({
-    defaultValues: defaultvalues || {}
+    defaultValues: defaultvalues || {},
+    mode: "onChange", // Enable real-time validation
   });
+
+  // Get form state for validation
+  const { isValid } = useFormState({ control: formHook.control });
 
   useEffect(() => {
     if (createDialog.open) {
@@ -357,7 +361,7 @@ export const CippApiDialog = (props) => {
               <Button
                 variant="contained"
                 type="submit"
-                disabled={isFormSubmitted && !allowResubmit}
+                disabled={!isValid || (isFormSubmitted && !allowResubmit)}
               >
                 {isFormSubmitted && allowResubmit ? "Reconfirm" : "Confirm"}
               </Button>

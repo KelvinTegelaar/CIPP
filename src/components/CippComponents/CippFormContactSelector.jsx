@@ -12,6 +12,7 @@ export const CippFormContactSelector = ({
   select,
   addedField,
   valueField,
+  dataFilter = null,
   ...other
 }) => {
   const currentTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
@@ -33,6 +34,12 @@ export const CippFormContactSelector = ({
           })`,
         valueField: valueField ? valueField : "WindowsEmailAddress" || "mail",
         queryKey: `listcontacts-${currentTenant?.value ? currentTenant.value : selectedTenant}`,
+        dataFilter: (options) => {
+          if (dataFilter) {
+            return options.filter(dataFilter);
+          }
+          return options;
+        },
       }}
       creatable={false}
       {...other}

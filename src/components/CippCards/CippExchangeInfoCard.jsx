@@ -8,6 +8,7 @@ import {
   IconButton,
   Typography,
   CircularProgress,
+  Alert,
 } from "@mui/material";
 import { PropertyList } from "/src/components/property-list";
 import { PropertyListItem } from "/src/components/property-list-item";
@@ -59,6 +60,11 @@ export const CippExchangeInfoCard = (props) => {
           </Stack>
         }
       />
+      {exchangeData?.BlockedForSpam ? (
+        <Alert severity="warning" sx={{ mx: 2, mt: 2, mb: 2 }}>
+          This mailbox is currently blocked for spam.
+        </Alert>
+      ) : null}
       <Divider />
       <PropertyList>
         <PropertyListItem
@@ -81,7 +87,10 @@ export const CippExchangeInfoCard = (props) => {
                     Hidden from GAL:
                   </Typography>
                   <Typography variant="inherit">
-                    {getCippFormatting(exchangeData?.HiddenFromAddressLists, "HiddenFromAddressLists")}
+                    {getCippFormatting(
+                      exchangeData?.HiddenFromAddressLists,
+                      "HiddenFromAddressLists"
+                    )}
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, md: 4 }}>
@@ -127,14 +136,15 @@ export const CippExchangeInfoCard = (props) => {
           value={
             isLoading ? (
               <Skeleton variant="text" width={200} />
-            ) : (() => {
+            ) : (
+              (() => {
                 const forwardingAddress = exchangeData?.ForwardingAddress;
                 const forwardAndDeliver = exchangeData?.ForwardAndDeliver;
-                
+
                 // Determine forwarding type and clean address
                 let forwardingType = "None";
                 let cleanAddress = "";
-                
+
                 if (forwardingAddress) {
                   if (forwardingAddress.startsWith("smtp:")) {
                     forwardingType = "External";
@@ -144,7 +154,7 @@ export const CippExchangeInfoCard = (props) => {
                     cleanAddress = forwardingAddress;
                   }
                 }
-                
+
                 return (
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, md: 6 }}>
@@ -152,10 +162,9 @@ export const CippExchangeInfoCard = (props) => {
                         Forwarding Status:
                       </Typography>
                       <Typography variant="inherit">
-                        {forwardingType === "None" 
+                        {forwardingType === "None"
                           ? getCippFormatting(false, "ForwardingStatus")
-                          : `${forwardingType} Forwarding`
-                        }
+                          : `${forwardingType} Forwarding`}
                       </Typography>
                     </Grid>
                     {forwardingType !== "None" && (
@@ -172,18 +181,17 @@ export const CippExchangeInfoCard = (props) => {
                           <Typography variant="inherit" color="text.primary" gutterBottom>
                             Forwarding Address:
                           </Typography>
-                          <Typography variant="inherit">
-                            {cleanAddress}
-                          </Typography>
+                          <Typography variant="inherit">{cleanAddress}</Typography>
                         </Grid>
                       </>
                     )}
                   </Grid>
                 );
               })()
+            )
           }
         />
-        
+
         {/* Archive section - always show status */}
         <PropertyListItem
           divider
@@ -207,7 +215,10 @@ export const CippExchangeInfoCard = (props) => {
                         Auto Expanding Archive:
                       </Typography>
                       <Typography variant="inherit">
-                        {getCippFormatting(exchangeData?.AutoExpandingArchive, "AutoExpandingArchive")}
+                        {getCippFormatting(
+                          exchangeData?.AutoExpandingArchive,
+                          "AutoExpandingArchive"
+                        )}
                       </Typography>
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>

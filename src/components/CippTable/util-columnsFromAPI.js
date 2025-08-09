@@ -2,7 +2,7 @@ import { getCippFilterVariant } from "../../utils/get-cipp-filter-variant";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 
-const skipRecursion = ["location", "ScheduledBackupValues"];
+const skipRecursion = ["location", "ScheduledBackupValues", "Tenant"];
 // Function to merge keys from all objects in the array
 const mergeKeys = (dataArray) => {
   return dataArray.reduce((acc, item) => {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Button, Typography } from "@mui/material";
+import { Button, Link, Typography } from "@mui/material";
 import {
   Save as SaveIcon,
   Delete,
@@ -558,6 +558,7 @@ const CippGraphExplorerFilter = ({
                 </li>
               )}
               placeholder="Select a preset"
+              helperText="Select an existing preset to load its parameters"
             />
           </Grid>
 
@@ -580,6 +581,19 @@ const CippGraphExplorerFilter = ({
               formControl={formControl}
               disabled={endpointFilter ? true : false}
               placeholder="Enter Graph API endpoint"
+              helperText={
+                <>
+                  The{" "}
+                  <Link
+                    href="https://learn.microsoft.com/en-us/graph/api/overview?view=graph-rest-beta"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Graph endpoint
+                  </Link>{" "}
+                  to query (e.g. https://graph.microsoft.com/beta/$Endpoint)
+                </>
+              }
             />
           </Grid>
 
@@ -601,7 +615,7 @@ const CippGraphExplorerFilter = ({
                 ]
               }
               placeholder="Columns to select"
-              helperText="Comma-separated list of columns to include in the response"
+              helperText="List of object properties to include in the response"
             />
           </Grid>
 
@@ -613,6 +627,17 @@ const CippGraphExplorerFilter = ({
               label="Filter"
               formControl={formControl}
               placeholder="OData filter"
+              helperText={
+                <Link
+                  href="https://learn.microsoft.com/en-us/graph/filter-query-parameter?tabs=http"
+                  target="_blank"
+                  rel="noreferrer"
+                  sx={{ color: "primary.main" }}
+                  underline="hover"
+                >
+                  Graph $filter query
+                </Link>
+              }
             />
           </Grid>
 

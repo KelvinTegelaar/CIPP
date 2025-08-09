@@ -92,6 +92,7 @@ export const CippChartCard = ({
   chartType = "donut",
   title,
   actions,
+  onClick,
 }) => {
   const [range, setRange] = useState("Last 7 days");
   const [barSeries, setBarSeries] = useState([]);
@@ -109,7 +110,18 @@ export const CippChartCard = ({
   }, [chartType, chartSeries.length, labels]);
 
   return (
-    <Card style={{ width: "100%", height: "100%" }}>
+    <Card 
+      style={{ width: "100%", height: "100%" }}
+      onClick={onClick}
+      sx={{
+        cursor: onClick ? "pointer" : "default",
+        transition: "all 0.2s ease-in-out",
+        "&:hover": onClick ? {
+          boxShadow: (theme) => theme.shadows[8],
+          transform: "translateY(-2px)",
+        } : {},
+      }}
+    >
       <CardHeader
         action={
           actions ? (

@@ -47,7 +47,7 @@ const CippCustomDataMappingForm = ({ formControl }) => {
       creatable: false,
       condition: {
         field: "sourceType",
-        compareType: "is",
+        compareType: "valueEq",
         compareValue: "extensionSync",
       },
     },

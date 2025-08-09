@@ -71,6 +71,8 @@ export const CippAutoComplete = (props) => {
     removeOptions = [],
     sortOptions = false,
     preselectedValue,
+    groupBy,
+    renderGroup,
     ...other
   } = props;
 
@@ -300,7 +302,7 @@ export const CippAutoComplete = (props) => {
                 value: item?.label ? item.value : item,
               };
               if (onCreateOption) {
-                onCreateOption(item, item?.addedFields);
+                item = onCreateOption(item, item?.addedFields);
               }
             }
             return item;
@@ -315,7 +317,7 @@ export const CippAutoComplete = (props) => {
               value: newValue?.label ? newValue.value : newValue,
             };
             if (onCreateOption) {
-              onCreateOption(newValue, newValue?.addedFields);
+              newValue = onCreateOption(newValue, newValue?.addedFields);
             }
           }
           if (!newValue?.value || newValue.value === "error") {
@@ -336,7 +338,9 @@ export const CippAutoComplete = (props) => {
           }
           // For API options, use the existing logic
           if (api) {
-            return option.label === null ? "" : option.label || "Label not found - Are you missing a labelField?";
+            return option.label === null
+              ? ""
+              : option.label || "Label not found - Are you missing a labelField?";
           }
           // Fallback for any edge cases
           return option.label || option.value || "";
@@ -365,6 +369,8 @@ export const CippAutoComplete = (props) => {
           )}
         </Stack>
       )}
+      groupBy={groupBy}
+      renderGroup={renderGroup}
       {...other}
     />
   );

@@ -10,12 +10,15 @@ export const CippUserInfoCard = (props) => {
   const { user, tenant, isFetching = false, ...other } = props;
 
   // Helper function to check if a section has any data
-  const hasWorkInfo = user?.jobTitle || user?.department || user?.manager?.displayName;
-  const hasAddressInfo = user?.streetAddress || user?.postalCode || user?.city || user?.country || user?.officeLocation;
-  const hasContactInfo = user?.mobilePhone || (user?.businessPhones && user?.businessPhones.length > 0);
+  const hasWorkInfo = user?.jobTitle || user?.department || user?.manager?.displayName || user?.companyName;
+  const hasAddressInfo =
+    user?.streetAddress || user?.postalCode || user?.city || user?.country || user?.officeLocation;
+  const hasContactInfo =
+    user?.mobilePhone || (user?.businessPhones && user?.businessPhones.length > 0);
 
   // Handle image URL - only set if user and tenant exist, otherwise let Avatar fall back to children
-  const imageUrl = user?.id && tenant ? `/api/ListUserPhoto?TenantFilter=${tenant}&UserId=${user.id}` : undefined;
+  const imageUrl =
+    user?.id && tenant ? `/api/ListUserPhoto?TenantFilter=${tenant}&UserId=${user.id}` : undefined;
 
   return (
     <Card {...other}>
@@ -44,7 +47,7 @@ export const CippUserInfoCard = (props) => {
                     </Avatar>
                   </Stack>
                 </Grid>
-                
+
                 {/* Status information section */}
                 <Grid size={{ xs: 12, sm: 8, md: 9 }}>
                   <Grid container spacing={2}>
@@ -56,7 +59,7 @@ export const CippUserInfoCard = (props) => {
                         {getCippFormatting(user?.accountEnabled, "accountEnabled")}
                       </Typography>
                     </Grid>
-                    
+
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <Typography variant="inherit" color="text.primary" gutterBottom>
                         Synced from AD:
@@ -71,7 +74,7 @@ export const CippUserInfoCard = (props) => {
             )
           }
         />
-        
+
         {/* Basic Identity Information */}
         <PropertyListItem
           divider
@@ -108,7 +111,7 @@ export const CippUserInfoCard = (props) => {
             )
           }
         />
-        
+
         {/* Licenses */}
         <PropertyListItem
           divider
@@ -125,7 +128,7 @@ export const CippUserInfoCard = (props) => {
             )
           }
         />
-        
+
         {/* Work Information Section */}
         <PropertyListItem
           divider
@@ -134,7 +137,7 @@ export const CippUserInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={200} />
             ) : !hasWorkInfo ? (
-              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: "italic" }}>
                 No work information available
               </Typography>
             ) : (
@@ -144,9 +147,15 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Job Title:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.jobTitle}
+                    <Typography variant="inherit">{user.jobTitle}</Typography>
+                  </Grid>
+                )}
+                {user?.companyName && (
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant="inherit" color="text.primary" gutterBottom>
+                      Company Name:
                     </Typography>
+                    <Typography variant="inherit">{user.companyName}</Typography>
                   </Grid>
                 )}
                 {user?.department && (
@@ -154,9 +163,7 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Department:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.department}
-                    </Typography>
+                    <Typography variant="inherit">{user.department}</Typography>
                   </Grid>
                 )}
                 {user?.manager?.displayName && (
@@ -164,16 +171,14 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Manager:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.manager.displayName}
-                    </Typography>
+                    <Typography variant="inherit">{user.manager.displayName}</Typography>
                   </Grid>
                 )}
               </Grid>
             )
           }
         />
-        
+
         {/* Contact Information Section */}
         <PropertyListItem
           divider
@@ -182,7 +187,7 @@ export const CippUserInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={200} />
             ) : !hasContactInfo ? (
-              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: "italic" }}>
                 No contact information available
               </Typography>
             ) : (
@@ -192,9 +197,7 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Mobile Phone:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.mobilePhone}
-                    </Typography>
+                    <Typography variant="inherit">{user.mobilePhone}</Typography>
                   </Grid>
                 )}
                 {user?.businessPhones && user.businessPhones.length > 0 && (
@@ -202,16 +205,14 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Business Phones:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.businessPhones.join(", ")}
-                    </Typography>
+                    <Typography variant="inherit">{user.businessPhones.join(", ")}</Typography>
                   </Grid>
                 )}
               </Grid>
             )
           }
         />
-        
+
         {/* Address Information Section */}
         <PropertyListItem
           label="Address Information"
@@ -219,7 +220,7 @@ export const CippUserInfoCard = (props) => {
             isFetching ? (
               <Skeleton variant="text" width={200} />
             ) : !hasAddressInfo ? (
-              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+              <Typography variant="inherit" color="text.secondary" sx={{ fontStyle: "italic" }}>
                 No address information available
               </Typography>
             ) : (
@@ -229,9 +230,7 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Street Address:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.streetAddress}
-                    </Typography>
+                    <Typography variant="inherit">{user.streetAddress}</Typography>
                   </Grid>
                 )}
                 {user?.city && (
@@ -239,9 +238,7 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       City:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.city}
-                    </Typography>
+                    <Typography variant="inherit">{user.city}</Typography>
                   </Grid>
                 )}
                 {user?.postalCode && (
@@ -249,9 +246,7 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Postal Code:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.postalCode}
-                    </Typography>
+                    <Typography variant="inherit">{user.postalCode}</Typography>
                   </Grid>
                 )}
                 {user?.country && (
@@ -259,9 +254,7 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Country:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.country}
-                    </Typography>
+                    <Typography variant="inherit">{user.country}</Typography>
                   </Grid>
                 )}
                 {user?.officeLocation && (
@@ -269,9 +262,7 @@ export const CippUserInfoCard = (props) => {
                     <Typography variant="inherit" color="text.primary" gutterBottom>
                       Office Location:
                     </Typography>
-                    <Typography variant="inherit">
-                      {user.officeLocation}
-                    </Typography>
+                    <Typography variant="inherit">{user.officeLocation}</Typography>
                   </Grid>
                 )}
               </Grid>

@@ -3,510 +3,595 @@
     "language": "Arabic",
     "Geographic area": "Saudi Arabia",
     "tag": "ar-SA",
+    "languageTag": "Arabic (ar-SA)",
     "LCID": "1025"
   },
   {
     "language": "Arabic",
     "Geographic area": "Algeria",
     "tag": "ar-DZ",
+    "languageTag": "Arabic (ar-DZ)",
     "LCID": "5121"
   },
   {
     "language": "Arabic",
     "Geographic area": "Egypt",
     "tag": "ar-EG",
+    "languageTag": "Arabic (ar-EG)",
     "LCID": "3073"
   },
   {
     "language": "Arabic",
     "Geographic area": "Bahrain",
     "tag": "ar-BH",
+    "languageTag": "Arabic (ar-BH)",
     "LCID": "15361"
   },
   {
     "language": "Arabic",
     "Geographic area": "Iraq",
     "tag": "ar-IQ",
+    "languageTag": "Arabic (ar-IQ)",
     "LCID": "2049"
   },
   {
     "language": "Arabic",
     "Geographic area": "Jordan",
     "tag": "ar-JO",
+    "languageTag": "Arabic (ar-JO)",
     "LCID": "11265"
   },
   {
     "language": "Arabic",
     "Geographic area": "Kuwait",
     "tag": "ar-KW",
+    "languageTag": "Arabic (ar-KW)",
     "LCID": "13313"
   },
   {
     "language": "Arabic",
     "Geographic area": "Lebanon",
     "tag": "ar-LB",
+    "languageTag": "Arabic (ar-LB)",
     "LCID": "12289"
   },
   {
     "language": "Arabic",
     "Geographic area": "Libya",
     "tag": "ar-LY",
+    "languageTag": "Arabic (ar-LY)",
     "LCID": "4097"
   },
   {
     "language": "Arabic",
     "Geographic area": "Morocco",
     "tag": "ar-MA",
+    "languageTag": "Arabic (ar-MA)",
     "LCID": "6145"
   },
   {
     "language": "Arabic",
     "Geographic area": "Oman",
     "tag": "ar-OM",
+    "languageTag": "Arabic (ar-OM)",
     "LCID": "8193"
   },
   {
     "language": "Arabic",
     "Geographic area": "Qatar",
     "tag": "ar-QA",
+    "languageTag": "Arabic (ar-QA)",
     "LCID": "16385"
   },
   {
     "language": "Arabic",
     "Geographic area": "Syria",
     "tag": "ar-SY",
+    "languageTag": "Arabic (ar-SY)",
     "LCID": "10241"
   },
   {
     "language": "Arabic",
     "Geographic area": "Tunisia",
     "tag": "ar-TN",
+    "languageTag": "Arabic (ar-TN)",
     "LCID": "7169"
   },
   {
     "language": "Arabic",
     "Geographic area": "UAE",
     "tag": "ar-AE",
+    "languageTag": "Arabic (ar-AE)",
     "LCID": "14337"
   },
   {
     "language": "Arabic",
     "Geographic area": "Yemen",
     "tag": "ar-YE",
+    "languageTag": "Arabic (ar-YE)",
     "LCID": "9217"
   },
   {
     "language": "Bulgarian",
     "Geographic area": "Bulgaria",
     "tag": "bg-BG",
+    "languageTag": "Bulgarian (bg-BG)",
     "LCID": "1026"
   },
   {
     "language": "Chinese (Simplified)",
     "Geographic area": "People's Republic of China",
     "tag": "zh-CN",
+    "languageTag": "Chinese (Simplified) (zh-CN)",
     "LCID": "2052"
   },
   {
     "language": "Chinese",
     "Geographic area": "Taiwan",
     "tag": "zh-TW",
+    "languageTag": "Chinese (zh-TW)",
     "LCID": "1028"
   },
   {
     "language": "Chinese",
     "Geographic area": "Hong Kong SAR",
     "tag": "zh-HK",
+    "languageTag": "Chinese (zh-HK)",
     "LCID": "3076"
   },
   {
     "language": "Croatian",
     "Geographic area": "Croatia",
     "tag": "hr-HR",
+    "languageTag": "Croatian (hr-HR)",
     "LCID": "1050"
   },
   {
     "language": "Czech",
     "Geographic area": "Czech Republic",
     "tag": "cs-CZ",
+    "languageTag": "Czech (cs-CZ)",
     "LCID": "1029"
   },
   {
     "language": "Danish",
     "Geographic area": "Denmark",
     "tag": "da-DK",
+    "languageTag": "Danish (da-DK)",
     "LCID": "1030"
   },
   {
     "language": "Dutch",
     "Geographic area": "Netherlands",
     "tag": "nl-NL",
+    "languageTag": "Dutch (nl-NL)",
     "LCID": "1043"
   },
   {
     "language": "English",
     "Geographic area": "United States",
     "tag": "en-US",
+    "languageTag": "English (en-US)",
     "LCID": "1033"
   },
   {
     "language": "English",
     "Geographic area": "Australia",
     "tag": "en-AU",
+    "languageTag": "English (en-AU)",
     "LCID": "3081"
   },
   {
     "language": "English",
     "Geographic area": "United Kingdom",
     "tag": "en-GB",
+    "languageTag": "English (en-GB)",
     "LCID": "2057"
   },
   {
     "language": "English",
     "Geographic area": "New Zealand",
     "tag": "en-NZ",
+    "languageTag": "English (en-NZ)",
     "LCID": "5129"
   },
   {
     "language": "English",
     "Geographic area": "Canada",
     "tag": "en-CA",
+    "languageTag": "English (en-CA)",
     "LCID": "4105"
   },
   {
     "language": "English",
     "Geographic area": "South Africa",
     "tag": "en-ZA",
+    "languageTag": "English (en-ZA)",
     "LCID": "7177"
   },
   {
     "language": "English",
     "Geographic area": "Singapore",
     "tag": "en-SG",
+    "languageTag": "English (en-SG)",
     "LCID": "4100"
   },
   {
     "language": "Estonian",
     "Geographic area": "Estonia",
     "tag": "et-EE",
+    "languageTag": "Estonian (et-EE)",
     "LCID": "1061"
   },
   {
     "language": "Finnish",
     "Geographic area": "Finland",
     "tag": "fi-FI",
+    "languageTag": "Finnish (fi-FI)",
     "LCID": "1035"
   },
   {
     "language": "French",
     "Geographic area": "France",
     "tag": "fr-FR",
+    "languageTag": "French (fr-FR)",
     "LCID": "1036"
   },
   {
     "language": "French",
     "Geographic area": "Canada",
     "tag": "fr-CA",
+    "languageTag": "French (fr-CA)",
     "LCID": "3084"
   },
   {
     "language": "French",
     "Geographic area": "Switzerland",
     "tag": "fr-CH",
+    "languageTag": "French (fr-CH)",
     "LCID": "4108"
   },
   {
     "language": "German",
     "Geographic area": "Germany",
     "tag": "de-DE",
+    "languageTag": "German (de-DE)",
     "LCID": "1031"
   },
   {
     "language": "German",
     "Geographic area": "Switzerland",
     "tag": "de-CH",
+    "languageTag": "German (de-CH)",
     "LCID": "2055"
   },
   {
     "language": "Greek",
     "Geographic area": "Greece",
     "tag": "el-GR",
+    "languageTag": "Greek (el-GR)",
     "LCID": "1032"
   },
   {
     "language": "Hebrew",
     "Geographic area": "Israel",
     "tag": "he-IL",
+    "languageTag": "Hebrew (he-IL)",
     "LCID": "1037"
   },
   {
     "language": "Hindi",
     "Geographic area": "India",
     "tag": "hi-IN",
+    "languageTag": "Hindi (hi-IN)",
     "LCID": "1081"
   },
   {
     "language": "Hungarian",
     "Geographic area": "Hungary",
     "tag": "hu-HU",
+    "languageTag": "Hungarian (hu-HU)",
     "LCID": "1038"
   },
   {
     "language": "Indonesian",
     "Geographic area": "Indonesia",
     "tag": "id-ID",
+    "languageTag": "Indonesian (id-ID)",
     "LCID": "1057"
   },
   {
     "language": "Italian",
     "Geographic area": "Italy",
     "tag": "it-IT",
+    "languageTag": "Italian (it-IT)",
     "LCID": "1040"
   },
   {
     "language": "Japanese",
     "Geographic area": "Japan",
     "tag": "ja-JP",
+    "languageTag": "Japanese (ja-JP)",
     "LCID": "1041"
   },
   {
     "language": "Kazakh",
     "Geographic area": "Kazakhstan",
     "tag": "kk-KZ",
+    "languageTag": "Kazakh (kk-KZ)",
     "LCID": "1087"
   },
   {
     "language": "Korean",
     "Geographic area": "Korea",
     "tag": "ko-KR",
+    "languageTag": "Korean (ko-KR)",
     "LCID": "1042"
   },
   {
     "language": "Latvian",
     "Geographic area": "Latvia",
     "tag": "lv-LV",
+    "languageTag": "Latvian (lv-LV)",
     "LCID": "1062"
   },
   {
     "language": "Lithuanian",
     "Geographic area": "Lithuania",
     "tag": "lt-LT",
+    "languageTag": "Lithuanian (lt-LT)",
     "LCID": "1063"
   },
   {
     "language": "Malay",
     "Geographic area": "Malaysia",
     "tag": "ms-MY",
+    "languageTag": "Malay (ms-MY)",
     "LCID": "1086"
   },
   {
     "language": "Norwegian (Bokmål)",
     "Geographic area": "Norway",
     "tag": "nb-NO",
+    "languageTag": "Norwegian (Bokmål) (nb-NO)",
     "LCID": "1044"
   },
   {
     "language": "Persian",
     "Geographic area": "Iran",
     "tag": "fa-IR",
+    "languageTag": "Persian (fa-IR)",
     "LCID": "1065"
   },
   {
     "language": "Polish",
     "Geographic area": "Poland",
     "tag": "pl-PL",
+    "languageTag": "Polish (pl-PL)",
     "LCID": "1045"
   },
   {
     "language": "Portuguese",
     "Geographic area": "Brazil",
     "tag": "pt-BR",
+    "languageTag": "Portuguese (pt-BR)",
     "LCID": "1046"
   },
   {
     "language": "Portuguese",
     "Geographic area": "Portugal",
     "tag": "pt-PT",
+    "languageTag": "Portuguese (pt-PT)",
     "LCID": "2070"
   },
   {
     "language": "Romanian",
     "Geographic area": "Romania",
     "tag": "ro-RO",
+    "languageTag": "Romanian (ro-RO)",
     "LCID": "1048"
   },
   {
     "language": "Russian",
     "Geographic area": "Russia",
     "tag": "ru-RU",
+    "languageTag": "Russian (ru-RU)",
     "LCID": "1049"
   },
   {
     "language": "Serbian (Latin)",
     "Geographic area": "Serbia",
     "tag": "sr-latn-RS",
+    "languageTag": "Serbian (Latin) (sr-latn-RS)",
     "LCID": "2074"
   },
   {
     "language": "Slovak",
     "Geographic area": "Slovakia",
     "tag": "sk-SK",
+    "languageTag": "Slovak (sk-SK)",
     "LCID": "1051"
   },
   {
     "language": "Slovenian",
     "Geographic area": "Slovenia",
     "tag": "sl-SI",
+    "languageTag": "Slovenian (sl-SI)",
     "LCID": "1060"
   },
   {
     "language": "Spanish",
     "Geographic area": "Spain",
     "tag": "es-ES",
+    "languageTag": "Spanish (es-ES)",
     "LCID": "3082"
   },
   {
     "language": "Spanish",
     "Geographic area": "Argentina",
     "tag": "es-AR",
+    "languageTag": "Spanish (es-AR)",
     "LCID": "11274"
   },
   {
     "language": "Spanish",
     "Geographic area": "Bolivia",
     "tag": "es-BO",
+    "languageTag": "Spanish (es-BO)",
     "LCID": "16394"
   },
   {
     "language": "Spanish",
     "Geographic area": "Chile",
     "tag": "es-CL",
+    "languageTag": "Spanish (es-CL)",
     "LCID": "13322"
   },
   {
     "language": "Spanish",
     "Geographic area": "Colombia",
     "tag": "es-CO",
+    "languageTag": "Spanish (es-CO)",
     "LCID": "9226"
   },
   {
     "language": "Spanish",
     "Geographic area": "Costa Rica",
     "tag": "es-CR",
+    "languageTag": "Spanish (es-CR)",
     "LCID": "5130"
   },
   {
     "language": "Spanish",
     "Geographic area": "Dominican Republic",
     "tag": "es-DO",
+    "languageTag": "Spanish (es-DO)",
     "LCID": "7178"
   },
   {
     "language": "Spanish",
     "Geographic area": "Ecuador",
     "tag": "es-EC",
+    "languageTag": "Spanish (es-EC)",
     "LCID": "12298"
   },
   {
     "language": "Spanish",
     "Geographic area": "El Salvador",
     "tag": "es-SV",
+    "languageTag": "Spanish (es-SV)",
     "LCID": "17418"
   },
   {
     "language": "Spanish",
     "Geographic area": "Guatemala",
     "tag": "es-GT",
+    "languageTag": "Spanish (es-GT)",
     "LCID": "4106"
   },
   {
     "language": "Spanish",
     "Geographic area": "Honduras",
     "tag": "es-HN",
+    "languageTag": "Spanish (es-HN)",
     "LCID": "18442"
   },
   {
     "language": "Spanish",
     "Geographic area": "Mexico",
     "tag": "es-MX",
+    "languageTag": "Spanish (es-MX)",
     "LCID": "2058"
   },
   {
     "language": "Spanish",
     "Geographic area": "Nicaragua",
     "tag": "es-NI",
+    "languageTag": "Spanish (es-NI)",
     "LCID": "19466"
   },
   {
     "language": "Spanish",
     "Geographic area": "Panama",
     "tag": "es-PA",
+    "languageTag": "Spanish (es-PA)",
     "LCID": "6154"
   },
   {
     "language": "Spanish",
     "Geographic area": "Paraguay",
     "tag": "es-PY",
+    "languageTag": "Spanish (es-PY)",
     "LCID": "15370"
   },
   {
     "language": "Spanish",
     "Geographic area": "Peru",
     "tag": "es-PE",
+    "languageTag": "Spanish (es-PE)",
     "LCID": "10250"
   },
   {
     "language": "Spanish",
     "Geographic area": "Uruguay",
     "tag": "es-UY",
+    "languageTag": "Spanish (es-UY)",
     "LCID": "14346"
   },
   {
     "language": "Spanish",
     "Geographic area": "Venezuela",
     "tag": "es-VE",
+    "languageTag": "Spanish (es-VE)",
     "LCID": "8202"
   },
   {
     "language": "Swedish",
     "Geographic area": "Sweden",
     "tag": "sv-SE",
+    "languageTag": "Swedish (sv-SE)",
     "LCID": "1053"
   },
   {
     "language": "Thai",
     "Geographic area": "Thailand",
     "tag": "th-TH",
+    "languageTag": "Thai (th-TH)",
     "LCID": "1054"
   },
   {
     "language": "Turkish",
     "Geographic area": "Turkey",
     "tag": "tr-TR",
+    "languageTag": "Turkish (tr-TR)",
     "LCID": "1055"
   },
   {
     "language": "Ukrainian",
     "Geographic area": "Ukraine",
     "tag": "uk-UA",
+    "languageTag": "Ukrainian (uk-UA)",
     "LCID": "1058"
   },
   {
     "language": "Urdu",
     "Geographic area": "Pakistan",
     "tag": "ur-PK",
+    "languageTag": "Urdu (ur-PK)",
     "LCID": "1056"
   },
   {
     "language": "Vietnamese",
     "Geographic area": "Vietnam",
     "tag": "vi-VN",
+    "languageTag": "Vietnamese (vi-VN)",
     "LCID": "1066"
   },
   {
     "language": "Welsh",
     "Geographic area": "Wales",
     "tag": "cy-GB",
+    "languageTag": "Welsh (cy-GB)",
     "LCID": "1106"
   }
 ]
