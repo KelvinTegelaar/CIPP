@@ -60,7 +60,7 @@ export const HeaderedTabbedLayout = (props) => {
     >
       <Container maxWidth="xl" sx={{ height: "100%" }}>
         <Stack spacing={1} sx={{ height: "100%" }}>
-          <Stack spacing={2}>
+          <Stack spacing={0.5}>
             <div>
               <Button
                 color="inherit"
