@@ -45,7 +45,7 @@ const AddRoomMailbox = () => {
     >
       <Grid container spacing={2}>
         {/* Display Name */}
-        <Grid item size={{ md: 8, xs: 12 }}>
+        <Grid size={{ md: 8, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -58,7 +58,7 @@ const AddRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Username and Domain */}
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Username"
@@ -67,7 +67,7 @@ const AddRoomMailbox = () => {
             validators={{ required: "Username is required" }}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormDomainSelector
             formControl={formControl}
             name="domain"
@@ -79,7 +79,7 @@ const AddRoomMailbox = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Resource Capacity (Optional) */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Resource Capacity (Optional)"

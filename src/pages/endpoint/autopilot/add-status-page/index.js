@@ -1,7 +1,6 @@
-import React from "react";
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -34,13 +33,14 @@ const Page = () => {
     >
       <Grid container spacing={2}>
         {/* Tenant Selector */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
             name="selectedTenants"
             type="multiple"
             allTenants={true}
+            preselectedEnabled={true}
             validators={{ required: "At least one tenant must be selected" }}
           />
         </Grid>
@@ -48,7 +48,7 @@ const Page = () => {
         <Divider sx={{ my: 2 }} />
 
         {/* Form Fields */}
-        <Grid item size={{ md: 6, xs: 12 }}>
+        <Grid size={{ md: 6, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Timeout in minutes"
@@ -59,7 +59,7 @@ const Page = () => {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Custom Error Message"
@@ -70,7 +70,7 @@ const Page = () => {
         </Grid>
 
         {/* Switches */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Show progress to users"

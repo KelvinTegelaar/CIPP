@@ -167,6 +167,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     "LastOccurrence",
     "NotBefore",
     "NotAfter",
+    "latestDataCollection",
   ];
 
   const matchDateTime = /[dD]ate[tT]ime/;
@@ -186,6 +187,40 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? "Password hidden" : <CippCopyToClipBoard text={data} type="password" />;
   }
 
+  // Handle hardware hash fields
+  const hardwareHashFields = ["hardwareHash", "Hardware Hash"];
+  if (hardwareHashFields.includes(cellName) || cellNameLower.includes("hardware")) {
+    if (typeof data === "string" && data.length > 15) {
+      return isText ? data : `${data.substring(0, 15)}...`;
+    }
+    return isText ? data : data;
+  }
+
+  // Handle log message field
+  const messageFields = ["Message"];
+  if (messageFields.includes(cellName)) {
+    if (typeof data === "string" && data.length > 120) {
+      return isText ? data : `${data.substring(0, 120)}...`;
+    }
+    return isText ? data : data;
+  }
+
+  if (cellName === "alignmentScore" || cellName === "combinedAlignmentScore") {
+    // Handle alignment score, return a percentage with a label
+    return isText ? (
+      `${data}%`
+    ) : (
+      <LinearProgressWithLabel colourLevels={true} variant="determinate" value={data} />
+    );
+  }
+
+  if (cellName === "LicenseMissingPercentage") {
+    return isText ? (
+      `${data}%`
+    ) : (
+      <LinearProgressWithLabel colourLevels={"flipped"} variant="determinate" value={data} />
+    );
+  }
   if (cellName === "RepeatsEvery") {
     //convert 1d to "Every 1 day", 1w to "Every 1 week" etc.
     const match = data.match(/(\d+)([a-zA-Z]+)/);
@@ -257,14 +292,20 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   }
 
   //if the cellName is tenantFilter, return a chip with the tenant name. This can sometimes be an array, sometimes be a single item.
-  if (cellName === "tenantFilter" || cellName === "Tenant") {
+  if (
+    cellName === "tenantFilter" ||
+    cellName === "Tenant" ||
+    cellName === "Tenants" ||
+    cellName === "AllowedTenants" ||
+    cellName === "BlockedTenants"
+  ) {
     //check if data is an array.
     if (Array.isArray(data)) {
       return isText
         ? data.join(", ")
         : renderChipList(
             data.map((item, key) => {
-              const itemText = item?.label ? item.label : item;
+              const itemText = item?.label !== undefined ? item.label : item;
               let icon = null;
 
               if (item?.type === "Group") {
@@ -289,11 +330,23 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             })
           );
     } else {
-      return isText ? (
-        data
-      ) : (
-        <CippCopyToClipBoard text={data?.label ? data?.label : data} type="chip" />
-      );
+      const itemText = data?.label !== undefined ? data.label : data;
+      let icon = null;
+
+      if (data?.type === "Group") {
+        icon = (
+          <SvgIcon sx={{ ml: 0.25 }}>
+            <GroupOutlined />
+          </SvgIcon>
+        );
+      } else {
+        icon = (
+          <SvgIcon sx={{ ml: 0.25 }}>
+            <BuildingOfficeIcon />
+          </SvgIcon>
+        );
+      }
+      return isText ? itemText : <CippCopyToClipBoard text={itemText} type="chip" icon={icon} />;
     }
   }
 
@@ -313,6 +366,26 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             />
           ));
     }
+  }
+  if (cellName === "standardType") {
+    return isText ? (
+      data
+    ) : (
+      <Chip
+        variant="outlined"
+        label={data === "drift" ? "Drift Standard" : "Classic Standard"}
+        size="small"
+        color="info"
+      />
+    );
+  }
+
+  if (cellName === "type" && data === "drift") {
+    return isText ? (
+      "Drift Standard"
+    ) : (
+      <Chip variant="outlined" label="Drift Standard" size="small" color="info" />
+    );
   }
 
   if (cellName === "ClientId" || cellName === "role") {
@@ -636,7 +709,17 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
-  const durationArray = ["autoExtendDuration"];
+  // ISO 8601 Duration Formatting
+  // Add property names here to automatically format ISO 8601 duration strings (e.g., "PT1H23M30S")
+  // into human-readable format (e.g., "1 hour 23 minutes 30 seconds") across all CIPP tables.
+  // This works for any API response property that contains ISO 8601 duration format.
+  const durationArray = [
+    "autoExtendDuration", // GDAP page (/tenant/gdap-management/relationships)
+    "deploymentDuration", // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+    "deploymentTotalDuration", // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+    "deviceSetupDuration", // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+    "accountSetupDuration", // AutoPilot deployments (/endpoint/reports/autopilot-deployment)
+  ];
   if (durationArray.includes(cellName)) {
     isoDuration.setLocales(
       {

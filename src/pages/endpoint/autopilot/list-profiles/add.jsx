@@ -1,7 +1,6 @@
-import React from "react";
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -39,13 +38,14 @@ const AutopilotProfileForm = () => {
     >
       <Grid container spacing={2}>
         {/* Tenant Selector */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
             name="selectedTenants"
             type="multiple"
             allTenants={true}
+            preselectedEnabled={true}
             validators={{ required: "At least one tenant must be selected" }}
           />
         </Grid>
@@ -53,7 +53,7 @@ const AutopilotProfileForm = () => {
         <Divider sx={{ my: 2 }} />
 
         {/* Form Fields */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -63,7 +63,7 @@ const AutopilotProfileForm = () => {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Language"
@@ -77,7 +77,7 @@ const AutopilotProfileForm = () => {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Description"
@@ -87,7 +87,7 @@ const AutopilotProfileForm = () => {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Unique Name Template"
@@ -98,7 +98,7 @@ const AutopilotProfileForm = () => {
         </Grid>
 
         {/* Switches */}
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Convert all targeted devices to Autopilot"

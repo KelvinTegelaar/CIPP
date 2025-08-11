@@ -180,7 +180,7 @@ const AddTenantAllowBlockList = () => {
     >
       <Grid container spacing={2}>
         {/* Entries */}
-        <Grid item size={{ md: 12, xs: 12 }}>
+        <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Entries"
@@ -204,7 +204,7 @@ const AddTenantAllowBlockList = () => {
           />
         </Grid>
         {/* Notes & List Type */}
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Notes"
@@ -212,7 +212,7 @@ const AddTenantAllowBlockList = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="List Type"
@@ -231,7 +231,7 @@ const AddTenantAllowBlockList = () => {
         </Grid>
 
         {/* List Method */}
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
             label="Block or Allow Entry"
@@ -254,7 +254,7 @@ const AddTenantAllowBlockList = () => {
         </Grid>
 
         {/* No Expiration */}
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="No Expiration"
@@ -276,7 +276,7 @@ const AddTenantAllowBlockList = () => {
         </Grid>
 
         {/* Remove After */}
-        <Grid item size={{ md: 4, xs: 12 }}>
+        <Grid size={{ md: 4, xs: 12 }}>
           <CippFormComponent
             type="switch"
             label="Remove After 45 Days"
