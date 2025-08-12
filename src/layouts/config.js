@@ -196,7 +196,7 @@ export const nativeMenuItems = [
         ],
       },
       {
-        title: "Standards",
+        title: "Standards & Drift",
         path: "/tenant/standards",
         permissions: [
           "Tenant.Standards.*",
@@ -205,13 +205,8 @@ export const nativeMenuItems = [
         ],
         items: [
           {
-            title: "Standard Templates",
+            title: "Standards Management",
             path: "/tenant/standards/list-standards",
-            permissions: ["Tenant.Standards.*"],
-          },
-          {
-            title: "Tenant Alignment",
-            path: "/tenant/standards/tenant-alignment",
             permissions: ["Tenant.Standards.*"],
           },
           {
@@ -256,11 +251,7 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/tenant/reports",
-        permissions: [
-          "Tenant.Administration.*",
-          "Scheduler.Billing.*",
-          "Tenant.Application.*",
-        ],
+        permissions: ["Tenant.Administration.*", "Scheduler.Billing.*", "Tenant.Application.*"],
         items: [
           {
             title: "Licence Report",
@@ -270,9 +261,7 @@ export const nativeMenuItems = [
           {
             title: "Sherweb Licence Report",
             path: "/tenant/reports/list-csp-licenses",
-            permissions: [
-              "Tenant.Directory.*"
-            ],
+            permissions: ["Tenant.Directory.*"],
           },
           {
             title: "Consented Applications",
@@ -478,10 +467,7 @@ export const nativeMenuItems = [
       {
         title: "Reports",
         path: "/endpoint/reports",
-        permissions: [
-          "Endpoint.Device.*",
-          "Endpoint.Autopilot.*",
-        ],
+        permissions: ["Endpoint.Device.*", "Endpoint.Autopilot.*"],
         items: [
           {
             title: "Analytics Device Score",
@@ -709,6 +695,11 @@ export const nativeMenuItems = [
           {
             title: "Mailbox Statistics",
             path: "/email/reports/mailbox-statistics",
+            permissions: ["Exchange.Mailbox.*"],
+          },
+          {
+            title: "Mailbox Activity",
+            path: "/email/reports/mailbox-activity",
             permissions: ["Exchange.Mailbox.*"],
           },
           {
