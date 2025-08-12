@@ -10,7 +10,7 @@ import { Divider } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "/src/api/ApiCall";
 
-const AddRetentionPolicy = () => {
+const RetentionPolicy = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { name } = router.query;
@@ -146,6 +146,6 @@ const AddRetentionPolicy = () => {
   );
 };
 
-AddRetentionPolicy.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+RetentionPolicy.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default AddRetentionPolicy;
+export default RetentionPolicy;

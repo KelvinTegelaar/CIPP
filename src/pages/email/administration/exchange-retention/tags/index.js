@@ -16,7 +16,7 @@ const Page = () => {
   const actions = useMemo(() => [
     {
       label: "Edit Tag",
-      link: "/email/administration/exchange-retention/tags/edit?name=[Name]",
+      link: "/email/administration/exchange-retention/tags/tag?name=[Name]",
       multiPost: false,
       postEntireRow: true,
       icon: <Edit />,
@@ -51,7 +51,7 @@ const Page = () => {
   const cardButton = useMemo(() => (
     <Button
       component={Link}
-      href="/email/administration/exchange-retention/tags/add"
+      href="/email/administration/exchange-retention/tags/tag"
       startIcon={<Sell />}
     >
       Add Retention Tag

@@ -10,7 +10,7 @@ import { Divider } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "/src/api/ApiCall";
 
-const AddRetentionTag = () => {
+const RetentionTag = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { name } = router.query;
@@ -271,6 +271,6 @@ const AddRetentionTag = () => {
   );
 };
 
-AddRetentionTag.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+RetentionTag.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default AddRetentionTag;
+export default RetentionTag;

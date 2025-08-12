@@ -16,7 +16,7 @@ const Page = () => {
   const actions = useMemo(() => [
     {
       label: "Edit Policy",
-      link: "/email/administration/exchange-retention/policies/edit?name=[Name]",
+      link: "/email/administration/exchange-retention/policies/policy?name=[Name]",
       multiPost: false,
       postEntireRow: true,
       icon: <Edit />,
@@ -49,7 +49,7 @@ const Page = () => {
   const cardButton = useMemo(() => (
     <Button
       component={Link}
-      href="/email/administration/exchange-retention/policies/add"
+      href="/email/administration/exchange-retention/policies/policy"
       startIcon={<Policy />}
     >
       Add Retention Policy
