@@ -266,7 +266,7 @@ const Page = () => {
         new Date(oooRequest.data?.EndTime).getTime() / 1000 || null
       );
     }
-  }, [oooRequest.isSuccess]);
+  }, [oooRequest.isSuccess, oooRequest.data]);
 
   useEffect(() => {
     //if userId is defined, we can fetch the user data
