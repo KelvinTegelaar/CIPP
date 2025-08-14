@@ -40,7 +40,8 @@ export const CippWizardConfirmation = (props) => {
       !blacklist.includes(key) &&
       key !== "tenantFilter" &&
       key !== "tenant" &&
-      !["user", "userPrincipalName", "username"].includes(key)
+      !["user", "userPrincipalName", "username"].includes(key) &&
+      !key.startsWith('HIDDEN_')
   );
 
   const halfIndex = Math.ceil(filteredEntries.length / 2);
