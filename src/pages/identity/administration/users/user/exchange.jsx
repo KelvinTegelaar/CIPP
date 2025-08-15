@@ -139,7 +139,7 @@ const Page = () => {
         // Exact match on display name
         (group.displayName && group.displayName === userIdentifier) ||
         // Partial match - permission identifier starts with group display name (handles timestamps)
-        (group.displayName && userIdentifier.startsWith(group.displayName))
+        (group.displayName && userIdentifier?.startsWith(group.displayName))
       );
     });
 
@@ -918,7 +918,7 @@ const Page = () => {
         data:
           graphUserRequest.data?.[0]?.proxyAddresses?.map((address) => ({
             Address: address,
-            Type: address.startsWith("SMTP:") ? "Primary" : "Alias",
+            Type: address?.startsWith("SMTP:") ? "Primary" : "Alias",
           })) || [],
         refreshFunction: () => graphUserRequest.refetch(),
         isFetching: graphUserRequest.isFetching,
