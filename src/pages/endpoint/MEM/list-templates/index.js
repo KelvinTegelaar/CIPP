@@ -4,9 +4,13 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Edit, GitHub } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { ApiGetCall } from "/src/api/ApiCall";
+import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
+import { PermissionButton } from "/src/utils/permissions.js";
 
 const Page = () => {
   const pageTitle = "Available Endpoint Manager Templates";
+  const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
+
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
@@ -107,13 +111,24 @@ const Page = () => {
   const simpleColumns = ["displayName", "description", "Type"];
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListIntuneTemplates?View=true"
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={simpleColumns}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl="/api/ListIntuneTemplates?View=true"
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={simpleColumns}
+        queryKey="ListIntuneTemplates-table"
+        cardButton={
+          <CippPolicyImportDrawer
+            buttonText="Browse Catalog"
+            requiredPermissions={cardButtonPermissions}
+            PermissionButton={PermissionButton}
+            mode="Intune"
+          />
+        }
+      />
+    </>
   );
 };
 
