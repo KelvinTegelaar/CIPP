@@ -406,8 +406,25 @@ export const CippPolicyImportDrawer = ({
                   Browse Repository Files
                 </Typography>
                 {repositoryFiles.isLoading ? (
-                  <Box sx={{ p: 4, textAlign: "center", flexGrow: 1 }}>
-                    <Skeleton variant="rectangular" height={400} />
+                  <Box sx={{ flexGrow: 1 }}>
+                    {/* Navigation skeleton */}
+                    <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
+                      <Skeleton variant="text" width={200} height={24} />
+                    </Box>
+                    
+                    {/* File/folder list skeleton */}
+                    <Box sx={{ p: 1 }}>
+                      {[...Array(5)].map((_, index) => (
+                        <Box key={index} sx={{ mb: 1 }}>
+                          <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 1 }}>
+                            <Skeleton variant="circular" width={20} height={20} />
+                            <Skeleton variant="text" width={Math.random() * 200 + 100} height={20} />
+                            <Box sx={{ flexGrow: 1 }} />
+                            <Skeleton variant="rectangular" width={16} height={16} />
+                          </Stack>
+                        </Box>
+                      ))}
+                    </Box>
                   </Box>
                 ) : repositoryFiles.isSuccess ? (
                   <Box
