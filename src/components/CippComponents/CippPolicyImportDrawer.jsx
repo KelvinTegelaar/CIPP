@@ -19,6 +19,7 @@ import CippFormComponent from "./CippFormComponent";
 import CippJsonView from "../CippFormPages/CippJSONView";
 import { CippApiResults } from "./CippApiResults";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
+import { CippFolderNavigation } from "./CippFolderNavigation";
 
 export const CippPolicyImportDrawer = ({
   buttonText = "Browse Catalog",
@@ -30,6 +31,7 @@ export const CippPolicyImportDrawer = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingPolicy, setViewingPolicy] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const formControl = useForm();
 
   const selectedSource = useWatch({ control: formControl.control, name: "policySource" });
@@ -54,6 +56,15 @@ export const CippPolicyImportDrawer = ({
       selectedSource?.value || ""
     }&Branch=main`,
     queryKey: `RepoPolicies-${mode}-${selectedSource?.value || "none"}`,
+    enabled: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
+  });
+
+  const repositoryFiles = ApiGetCall({
+    url: `/api/ExecGitHubAction?Action=GetFileTree&FullName=${
+      selectedSource?.value || ""
+    }&Branch=main`,
+    queryKey: `RepositoryFiles-${selectedSource?.value || "none"}`,
+    enabled: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
   });
 
   const importPolicy = ApiPostCall({
@@ -167,7 +178,12 @@ export const CippPolicyImportDrawer = ({
     setDrawerVisible(false);
     setSearchQuery("");
     setViewingPolicy(null);
+    setSelectedFile(null);
     // Don't reset form at all to avoid any potential issues
+  };
+
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
   };
 
   const handleCloseViewDialog = () => {
@@ -264,121 +280,177 @@ export const CippPolicyImportDrawer = ({
           </Stack>
         }
       >
-        <Stack spacing={3}>
-          <CippFormComponent
-            name="policySource"
-            type="autoComplete"
-            label="Select Policy Source"
-            isFetching={communityRepos.isLoading}
-            multiple={false}
-            formControl={formControl}
-            options={[
-              ...(communityRepos.isSuccess &&
-              communityRepos.data?.Results &&
-              Array.isArray(communityRepos.data.Results)
-                ? communityRepos.data.Results.map((repo) => ({
-                    label: `${repo?.Name || "Unknown"} (${repo?.URL || "Unknown"})`,
-                    value: repo?.FullName || "",
-                  })).filter((option) => option.value)
-                : []),
-              { label: "Get template from existing tenant", value: "tenant" },
-            ]}
-          />
-
-          {selectedSource?.value === "tenant" && (
-            <CippFormTenantSelector
+        <Box sx={{ height: "100%", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+          <Box sx={{ flexShrink: 0, mb: 3 }}>
+            <CippFormComponent
+              name="policySource"
+              type="autoComplete"
+              label="Select Policy Source"
+              isFetching={communityRepos.isLoading}
+              multiple={false}
               formControl={formControl}
-              name="tenantFilter"
-              required={true}
-              disableClearable={false}
-              allTenants={false}
-              type="single"
+              options={[
+                ...(communityRepos.isSuccess &&
+                communityRepos.data?.Results &&
+                Array.isArray(communityRepos.data.Results)
+                  ? communityRepos.data.Results.map((repo) => ({
+                      label: `${repo?.Name || "Unknown"} (${repo?.URL || "Unknown"})`,
+                      value: repo?.FullName || "",
+                    })).filter((option) => option.value)
+                  : []),
+                { label: "Get template from existing tenant", value: "tenant" },
+              ]}
             />
-          )}
 
-          <TextField
-            fullWidth
-            label="Search Policies"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: <Search sx={{ mr: 1, color: "text.secondary" }} />,
+            {selectedSource?.value === "tenant" && (
+              <Box sx={{ mt: 3 }}>
+                <CippFormTenantSelector
+                  formControl={formControl}
+                  name="tenantFilter"
+                  required={true}
+                  disableClearable={false}
+                  allTenants={false}
+                  type="single"
+                />
+              </Box>
+            )}
+          </Box>
+
+          {/* Content based on source */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
             }}
-            placeholder="Search by policy name or description..."
-          />
+          >
+            {selectedSource?.value === "tenant" ? (
+              // Tenant policies - show traditional list
+              <>
+                <TextField
+                  fullWidth
+                  label="Search Policies"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: <Search sx={{ mr: 1, color: "text.secondary" }} />,
+                  }}
+                  placeholder="Search by policy name or description..."
+                />
 
-          <Typography variant="h6">Available Policies ({filteredPolicies.length})</Typography>
+                <Typography variant="h6">Available Policies ({filteredPolicies.length})</Typography>
 
-          {/* Loading skeletons */}
-          {(selectedSource?.value === "tenant" && tenantPolicies.isLoading) ||
-          (selectedSource?.value &&
-            selectedSource?.value !== "tenant" &&
-            repoPolicies.isLoading) ? (
-            <>
-              {[...Array(3)].map((_, index) => (
-                <Box key={index} sx={{ mb: 3 }}>
-                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 1 }}>
-                    <Skeleton variant="rectangular" width={80} height={36} />
-                    <Skeleton variant="rectangular" width={120} height={36} />
-                    <Skeleton variant="text" width={300} height={32} />
-                  </Stack>
-                  <Skeleton variant="text" width={200} height={20} />
+                {tenantPolicies.isLoading ? (
+                  <>
+                    {[...Array(3)].map((_, index) => (
+                      <Box key={index} sx={{ mb: 3 }}>
+                        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 1 }}>
+                          <Skeleton variant="rectangular" width={80} height={36} />
+                          <Skeleton variant="rectangular" width={120} height={36} />
+                          <Skeleton variant="text" width={300} height={32} />
+                        </Stack>
+                        <Skeleton variant="text" width={200} height={20} />
+                      </Box>
+                    ))}
+                  </>
+                ) : Array.isArray(filteredPolicies) && filteredPolicies.length > 0 ? (
+                  filteredPolicies.map((policy, index) => {
+                    if (!policy) return null;
+                    return (
+                      <Box key={policy.id || policy.path || index} sx={{ mb: 3 }}>
+                        <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mb: 1 }}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleImportPolicy(policy)}
+                            disabled={importPolicy.isLoading}
+                            sx={{ minWidth: 80, flexShrink: 0 }}
+                          >
+                            Import
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            startIcon={<Visibility />}
+                            onClick={() => handleViewPolicy(policy)}
+                            sx={{ minWidth: 120, flexShrink: 0 }}
+                          >
+                            View Policy
+                          </Button>
+                          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                            <Typography variant="h6" sx={{ wordBreak: "break-word" }}>
+                              {formatPolicyName(policy)}
+                            </Typography>
+                            {policy?.description && (
+                              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                                {policy.description}
+                              </Typography>
+                            )}
+                          </Box>
+                        </Stack>
+                      </Box>
+                    );
+                  })
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No policies available.
+                  </Typography>
+                )}
+
+                <CippApiResults apiObject={tenantPolicies} errorsOnly />
+              </>
+            ) : selectedSource?.value ? (
+              // Repository source - show iOS-style folder navigation
+              <>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Browse Repository Files
+                </Typography>
+                {repositoryFiles.isLoading ? (
+                  <Box sx={{ p: 4, textAlign: "center", flexGrow: 1 }}>
+                    <Skeleton variant="rectangular" height={400} />
+                  </Box>
+                ) : repositoryFiles.isSuccess ? (
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      minHeight: 0,
+                      height: "100%",
+                    }}
+                  >
+                    <CippFolderNavigation
+                      data={repositoryFiles.data?.Results || []}
+                      onFileSelect={handleFileSelect}
+                      selectedFile={selectedFile}
+                      searchable={true}
+                      showFileInfo={true}
+                      onImportFile={handleImportPolicy}
+                      onViewFile={handleViewPolicy}
+                      isImporting={importPolicy.isLoading}
+                    />
+                  </Box>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Unable to load repository files.
+                  </Typography>
+                )}
+
+                <Box sx={{ flexShrink: 0 }}>
+                  <CippApiResults apiObject={repositoryFiles} errorsOnly />
                 </Box>
-              ))}
-            </>
-          ) : Array.isArray(filteredPolicies) && filteredPolicies.length > 0 ? (
-            filteredPolicies.map((policy, index) => {
-              if (!policy) return null;
-              return (
-                <Box key={policy.id || policy.path || index} sx={{ mb: 3 }}>
-                  <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mb: 1 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleImportPolicy(policy)}
-                      disabled={importPolicy.isLoading}
-                      sx={{ minWidth: 80, flexShrink: 0 }}
-                    >
-                      Import
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      startIcon={<Visibility />}
-                      onClick={() => handleViewPolicy(policy)}
-                      sx={{ minWidth: 120, flexShrink: 0 }}
-                    >
-                      View Policy
-                    </Button>
-                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                      <Typography variant="h6" sx={{ wordBreak: "break-word" }}>
-                        {formatPolicyName(policy)}
-                      </Typography>
-                      {policy?.description && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                          {policy.description}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Stack>
-                </Box>
-              );
-            })
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              No policies available.
-            </Typography>
-          )}
+              </>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                Please select a policy source to continue.
+              </Typography>
+            )}
 
-          {/* Error handling */}
-          {selectedSource?.value === "tenant" && (
-            <CippApiResults apiObject={tenantPolicies} errorsOnly />
-          )}
-          {selectedSource?.value && selectedSource?.value !== "tenant" && (
-            <CippApiResults apiObject={repoPolicies} errorsOnly />
-          )}
-
-          <CippApiResults apiObject={importPolicy} />
-        </Stack>
+            <Box sx={{ flexShrink: 0 }}>
+              <CippApiResults apiObject={importPolicy} />
+            </Box>
+          </Box>
+        </Box>
       </CippOffCanvas>
 
       <Dialog fullWidth maxWidth="xl" open={viewDialogOpen} onClose={handleCloseViewDialog}>
