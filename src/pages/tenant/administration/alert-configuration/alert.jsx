@@ -24,7 +24,8 @@ import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 import alertList from "/src/data/alerts.json";
 import auditLogTemplates from "/src/data/AuditLogTemplates";
 import auditLogSchema from "/src/data/AuditLogSchema.json";
-import DeleteIcon from "@mui/icons-material/Delete"; // Icon for removing added inputs
+import { Save, Delete } from "@mui/icons-material";
+
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // Dashboard layout
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
@@ -132,6 +133,13 @@ const AlertWizard = () => {
           };
         }
 
+        // Parse the original desired start date-time from DesiredStartTime field if it exists
+        let startDateTimeForForm = null;
+        if (alert.RawAlert.DesiredStartTime && alert.RawAlert.DesiredStartTime !== "0") {
+          const desiredStartEpoch = parseInt(alert.RawAlert.DesiredStartTime);
+          startDateTimeForForm = desiredStartEpoch;
+        }
+
         // Create the reset object with all the form values
         const resetObject = {
           tenantFilter: tenantFilterForForm,
@@ -139,6 +147,7 @@ const AlertWizard = () => {
           command: { value: usedCommand, label: usedCommand.label },
           recurrence: recurrenceOption,
           postExecution: postExecutionValue,
+          startDateTime: startDateTimeForForm,
         };
 
         // Parse Parameters field if it exists and is a string
@@ -253,7 +262,7 @@ const AlertWizard = () => {
         recommendedOption.label += " (Recommended)";
       }
       setRecurrenceOptions(updatedRecurrenceOptions);
-      
+
       // Only set the recommended recurrence if we're NOT editing an existing alert
       if (!editAlert) {
         formControl.setValue("recurrence", recommendedOption);
@@ -332,6 +341,7 @@ const AlertWizard = () => {
       Command: { value: `Get-CIPPAlert${values.command.value.name}` },
       Parameters: getInputParams(),
       ScheduledTime: Math.floor(new Date().getTime() / 1000) + 60,
+      DesiredStartTime: values.startDateTime ? values.startDateTime.toString() : null,
       Recurrence: values.recurrence,
       PostExecution: values.postExecution,
     };
@@ -420,6 +430,11 @@ const AlertWizard = () => {
                                 allTenants={true}
                                 label="Included Tenants for alert"
                                 includeGroups={true}
+                                required={true}
+                                validators={{
+                                  validate: (value) =>
+                                    value?.length > 0 || "At least one tenant must be selected",
+                                }}
                               />
                             </Grid>
                             <CippFormCondition
@@ -446,7 +461,11 @@ const AlertWizard = () => {
                         <CippButtonCard
                           title="Alert Criteria"
                           CardButton={
-                            <Button disabled={isValid ? false : true} type="submit">
+                            <Button
+                              disabled={isValid ? false : true}
+                              type="submit"
+                              startIcon={<Save />}
+                            >
                               Save Alert
                             </Button>
                           }
@@ -583,7 +602,7 @@ const AlertWizard = () => {
                                     color="error"
                                     onClick={() => handleRemoveCondition(event.id)}
                                   >
-                                    <DeleteIcon />
+                                    <Delete />
                                   </IconButton>
                                 </Tooltip>
                               </Grid>
@@ -664,7 +683,12 @@ const AlertWizard = () => {
                         <CippButtonCard
                           title="Alert Criteria"
                           CardButton={
-                            <Button disabled={isValid ? false : true} type="submit">
+                            <Button
+                              variant="contained"
+                              disabled={isValid ? false : true}
+                              type="submit"
+                              startIcon={<Save />}
+                            >
                               Save Alert
                             </Button>
                           }
@@ -698,6 +722,15 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 label="When should the alert run"
                                 options={recurrenceOptions} // Use the state-managed recurrenceOptions here
+                              />
+                            </Grid>
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="datePicker"
+                                name="startDateTime"
+                                formControl={formControl}
+                                label="When should the first alert run?"
+                                dateTimeType="datetime"
                               />
                             </Grid>
                             <Grid size={12}>
