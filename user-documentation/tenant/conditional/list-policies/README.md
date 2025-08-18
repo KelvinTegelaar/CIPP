@@ -6,6 +6,12 @@ description: Review all Conditional Access Polcies per tenant
 
 This page lists all the Conditional Access Policies on the selected tenant. This lists everything that's available in the Microsoft Endpoint Manager (MEM) portal, including the applications the CA applies to and used built-in controls.
 
+### Page Actions
+
+{% content-ref url="deploy.md" %}
+[deploy.md](deploy.md)
+{% endcontent-ref %}
+
 ### Table Details
 
 The properties returned are for the Graph resource type `conditionalAccessPolicy`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/conditionalaccesspolicy?view=graph-rest-1.0#properties). CIPP does some additional correlation to convert some of the GUID attributes into display names for ease of reading.

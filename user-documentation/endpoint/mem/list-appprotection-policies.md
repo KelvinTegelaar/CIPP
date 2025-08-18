@@ -1,5 +1,9 @@
 # Protection Policies
 
+### Page Actions
+
+Deploy Policy - This will open a flyout to allow you to select a tenant or tenants, a policy template, and the scope to assign.
+
 ### Table Details
 
 The properties returned are for the Graph resource type `managedAppPolicy`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-mam-managedapppolicy?view=graph-rest-1.0#properties).
