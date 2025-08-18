@@ -22,7 +22,7 @@ const Page = () => {
   const actions = [
     {
       label: "View Tenant Report",
-      link: "/tenant/standards/compare?templateId=[GUID]",
+      link: "/tenant/standards/manage-drift/compare?templateId=[GUID]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",
