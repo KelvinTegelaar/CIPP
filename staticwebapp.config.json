@@ -32,7 +32,7 @@
     },
     {
       "route": "/logout",
-      "redirect": "/.auth/logout?post_logout_redirect_uri=/LogoutRedirect"
+      "redirect": "https://login.microsoftonline.com/5197ded8-c845-4a45-8c20-09122ae12852/oauth2/v2.0/logout?post_logout_redirect_uri=https://cipp.cloudvanguard-it.com/signed-out"
     },
     {
       "route": "/authredirect",
@@ -41,6 +41,10 @@
     {
       "route": "/LogoutRedirect",
       "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
+    },
+    {
+      "route": "/signed-out",
+      "allowedRoles": ["anonymous"]
     },
     {
       "route": "/404",
