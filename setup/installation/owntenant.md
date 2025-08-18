@@ -11,7 +11,7 @@ To manage the tenant mode, a user with the CIPP "superadmin" roles will need to 
 * **Multi Tenant - GDAP mode**
   * This is the default mode in CIPP, it does not allow access to the partner tenant.
 * **Multi Tenant - Add Partner Tenant**
-  * This mode allows access to the partner tenant, and customers via GDAP. See the Limitations below for more details.
+  * This mode allows direct access to the partner tenant in addition to your customer tenants via GDAP. See the Limitations below for more details.
 * **Single Tenant - Own Tenant Mode**
   * This mode is for if you would like to manage your own tenant and/or are not a Microsoft Partner. See the limitations below for more details.
 
