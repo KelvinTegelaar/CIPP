@@ -7,6 +7,8 @@ import {
   Shield,
   Description,
   GroupOutlined,
+  PrecisionManufacturing,
+  BarChart,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
 import { Box } from "@mui/system";
@@ -54,6 +56,8 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     portal_security: Shield,
     portal_compliance: CompassCalibration,
     portal_sharepoint: Description,
+    portal_platform: PrecisionManufacturing,
+    portal_bi: BarChart,
   };
 
   // Create a helper function to render chips with CollapsibleChipList
