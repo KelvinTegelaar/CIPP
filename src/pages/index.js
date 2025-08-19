@@ -203,7 +203,7 @@ const Page = () => {
                   <BulkActionsMenu
                     buttonName="Portals"
                     actions={PortalMenuItems}
-                    disabled={!currentTenantInfo.isSuccess}
+                    disabled={!currentTenantInfo.isSuccess || PortalMenuItems.length === 0}
                   />
                   <ExecutiveReportButton
                     tenantName={organization.data?.displayName}

@@ -448,11 +448,6 @@ export const nativeMenuItems = [
             permissions: ["Endpoint.MEM.*"],
           },
           {
-            title: "Apply Policy",
-            path: "/endpoint/MEM/add-policy",
-            permissions: ["Endpoint.MEM.*"],
-          },
-          {
             title: "Policy Templates",
             path: "/endpoint/MEM/list-templates",
             permissions: ["Endpoint.MEM.*"],

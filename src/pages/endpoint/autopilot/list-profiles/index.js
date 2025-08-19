@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import { AccountCircle } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
+import { CippAutopilotProfileDrawer } from "/src/components/CippComponents/CippAutopilotProfileDrawer";
 
 const Page = () => {
   const pageTitle = "Autopilot Profiles";
@@ -32,13 +33,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/endpoint/autopilot/list-profiles/add"
-            startIcon={<AccountCircle />}
-          >
-            Add Profile
-          </Button>
+          <CippAutopilotProfileDrawer />
         </>
       }
     />

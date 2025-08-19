@@ -93,6 +93,10 @@ const CippIntegrationSettings = ({ children }) => {
     };
 
     setTableData([...tableData, newRowData]);
+
+    // Clear the form fields after successfully adding the mapping
+    formControl.setValue("tenantFilter", null);
+    formControl.setValue("integrationCompany", null);
   };
 
   const handleAutoMap = () => {
@@ -187,7 +191,7 @@ const CippIntegrationSettings = ({ children }) => {
                   fullWidth
                   name="integrationCompany"
                   formControl={formControl}
-                  placeholder={`Select ${extension.name} Company`}
+                  label={`Select ${extension.name} Company`}
                   options={mappings?.data?.Companies?.map((company) => {
                     return {
                       label: company.name,

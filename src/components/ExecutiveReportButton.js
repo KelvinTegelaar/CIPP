@@ -1943,68 +1943,93 @@ export const ExecutiveReportButton = (props) => {
     infographics: true,
   });
 
-  // Get real secure score data
-  const secureScore = useSecureScore();
+  // Only fetch additional data when preview dialog is opened
+  const secureScore = useSecureScore({ waiting: previewOpen });
 
-  // Get real license data
+  // Get real license data - only when preview is open
   const licenseData = ApiGetCall({
     url: "/api/ListLicenses",
     data: {
       tenantFilter: settings.currentTenant,
     },
     queryKey: `licenses-report-${settings.currentTenant}`,
+    waiting: previewOpen,
   });
-  // Get real device data
+  
+  // Get real device data - only when preview is open
   const deviceData = ApiGetCall({
     url: "/api/ListDevices",
     data: {
       tenantFilter: settings.currentTenant,
     },
     queryKey: `devices-report-${settings.currentTenant}`,
+    waiting: previewOpen,
   });
 
-  // Get real conditional access policy data
+  // Get real conditional access policy data - only when preview is open
   const conditionalAccessData = ApiGetCall({
     url: "/api/ListConditionalAccessPolicies",
     data: {
       tenantFilter: settings.currentTenant,
     },
     queryKey: `ca-policies-report-${settings.currentTenant}`,
+    waiting: previewOpen,
   });
 
-  // Get real standards data
+  // Get real standards data - only when preview is open
   const standardsCompareData = ApiGetCall({
     url: "/api/ListStandardsCompare",
     data: {
       tenantFilter: settings.currentTenant,
     },
     queryKey: `standards-compare-report-${settings.currentTenant}`,
+    waiting: previewOpen,
   });
 
-  // Check if all data is loaded (either successful or failed)
-  const isDataLoading =
+  // Check if all data is loaded (either successful or failed) - only relevant when preview is open
+  const isDataLoading = previewOpen && (
     secureScore.isFetching ||
     licenseData.isFetching ||
     deviceData.isFetching ||
     conditionalAccessData.isFetching ||
-    standardsCompareData.isFetching;
+    standardsCompareData.isFetching
+  );
 
-  const hasAllDataFinished =
+  const hasAllDataFinished = !previewOpen || (
     (secureScore.isSuccess || secureScore.isError) &&
     (licenseData.isSuccess || licenseData.isError) &&
     (deviceData.isSuccess || deviceData.isError) &&
     (conditionalAccessData.isSuccess || conditionalAccessData.isError) &&
-    (standardsCompareData.isSuccess || standardsCompareData.isError);
+    (standardsCompareData.isSuccess || standardsCompareData.isError)
+  );
 
-  // Show button when all data is finished loading (regardless of success/failure)
-  const shouldShowButton = hasAllDataFinished && !isDataLoading;
+  // Button is always available now since we don't need to wait for data
+  const shouldShowButton = true;
 
   const fileName = `Executive_Report_${tenantName?.replace(/[^a-zA-Z0-9]/g, "_") || "Tenant"}_${
     new Date().toISOString().split("T")[0]
   }.pdf`;
 
-  // Memoize the document to prevent unnecessary re-renders
+  // Memoize the document to prevent unnecessary re-renders - only when dialog is open
   const reportDocument = useMemo(() => {
+    // Don't create document if dialog is closed
+    if (!previewOpen) {
+      return null;
+    }
+
+    // Only create document if preview is open and data is ready
+    if (!hasAllDataFinished) {
+      return (
+        <Document>
+          <Page size="A4" style={{ padding: 40, fontFamily: "Helvetica" }}>
+            <Text style={{ fontSize: 14, textAlign: "center", marginTop: 100 }}>
+              Loading report data...
+            </Text>
+          </Page>
+        </Document>
+      );
+    }
+
     console.log("Creating report document with:", {
       tenantName,
       tenantId,
@@ -2052,18 +2077,20 @@ export const ExecutiveReportButton = (props) => {
       );
     }
   }, [
+    previewOpen, // Most important - prevents creation when dialog is closed
+    hasAllDataFinished,
     tenantName,
     tenantId,
     userStats,
     standardsData,
     organizationData,
     brandingSettings,
-    secureScore,
-    licenseData,
-    deviceData,
-    conditionalAccessData,
-    standardsCompareData,
-    sectionConfig,
+    secureScore?.isSuccess,
+    licenseData?.isSuccess,
+    deviceData?.isSuccess,
+    conditionalAccessData?.isSuccess,
+    standardsCompareData?.isSuccess,
+    JSON.stringify(sectionConfig), // Stringify to prevent reference issues
   ]);
 
   // Handle section toggle
@@ -2082,6 +2109,11 @@ export const ExecutiveReportButton = (props) => {
         [sectionKey]: !prev[sectionKey],
       };
     });
+  };
+
+  // Close handler with cleanup
+  const handleClose = () => {
+    setPreviewOpen(false);
   };
 
   // Section configuration options
@@ -2123,32 +2155,9 @@ export const ExecutiveReportButton = (props) => {
     },
   ];
 
-  // Don't render the button if data is not ready
-  if (!shouldShowButton) {
-    return (
-      <Tooltip title="Loading report data...">
-        <Button
-          variant="contained"
-          startIcon={<PictureAsPdf />}
-          disabled={true}
-          sx={{
-            fontWeight: "bold",
-            textTransform: "none",
-            borderRadius: 2,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            transition: "all 0.2s ease-in-out",
-          }}
-          {...other}
-        >
-          Loading Data...
-        </Button>
-      </Tooltip>
-    );
-  }
-
   return (
     <>
-      {/* Main Executive Summary Button */}
+      {/* Main Executive Summary Button - Always available */}
       <Tooltip title="Generate Executive Report with preview and configuration">
         <Button
           variant="contained"
@@ -2170,7 +2179,7 @@ export const ExecutiveReportButton = (props) => {
       {/* Combined Preview and Configuration Dialog */}
       <Dialog
         open={previewOpen}
-        onClose={() => setPreviewOpen(false)}
+        onClose={handleClose}
         maxWidth="xl"
         fullWidth
         sx={{
@@ -2193,7 +2202,7 @@ export const ExecutiveReportButton = (props) => {
           <Typography variant="h6" component="div">
             Executive Report - {tenantName}
           </Typography>
-          <IconButton onClick={() => setPreviewOpen(false)} size="small">
+          <IconButton onClick={handleClose} size="small">
             <Close />
           </IconButton>
         </DialogTitle>
@@ -2303,17 +2312,47 @@ export const ExecutiveReportButton = (props) => {
 
           {/* Right Panel - PDF Preview */}
           <Box sx={{ flex: 1, height: "100%" }}>
-            <PDFViewer
-              key={JSON.stringify(sectionConfig)} // Force re-render when sections change
-              style={{
-                width: "100%",
-                height: "100%",
-                border: "none",
-              }}
-              showToolbar={true}
-            >
-              {reportDocument}
-            </PDFViewer>
+            {isDataLoading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                  gap: 2,
+                }}
+              >
+                <Typography variant="h6">Loading Report Data...</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Fetching additional data for comprehensive report generation
+                </Typography>
+              </Box>
+            ) : reportDocument ? (
+              <PDFViewer
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  border: "none",
+                }}
+                showToolbar={true}
+              >
+                {reportDocument}
+              </PDFViewer>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+              >
+                <Typography variant="body1" color="text.secondary">
+                  Report preview will appear here
+                </Typography>
+              </Box>
+            )}
           </Box>
         </DialogContent>
 
@@ -2328,7 +2367,7 @@ export const ExecutiveReportButton = (props) => {
           <Button
             variant="contained"
             startIcon={<Download />}
-            disabled={!shouldShowButton}
+            disabled={isDataLoading}
             sx={{ minWidth: 140 }}
             onClick={() => {
               // Create document dynamically when download is clicked
@@ -2373,10 +2412,10 @@ export const ExecutiveReportButton = (props) => {
               });
             }}
           >
-            Download PDF
+            {isDataLoading ? "Loading..." : "Download PDF"}
           </Button>
 
-          <Button onClick={() => setPreviewOpen(false)} variant="outlined">
+          <Button onClick={handleClose} variant="outlined">
             Close
           </Button>
         </DialogActions>

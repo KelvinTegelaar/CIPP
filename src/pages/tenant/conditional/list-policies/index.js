@@ -12,6 +12,7 @@ import {
 import { Box, Button } from "@mui/material";
 import Link from "next/link";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
+import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
 
 // Page Component
 const Page = () => {
@@ -158,13 +159,7 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/tenant/conditional/list-policies/deploy"
-            startIcon={<AddModeratorIcon />}
-          >
-            Deploy Conditional Access Policy
-          </Button>
+          <CippCADeployDrawer />
         </>
       }
       title={pageTitle}

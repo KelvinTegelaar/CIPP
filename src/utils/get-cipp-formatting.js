@@ -301,10 +301,21 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   ) {
     //check if data is an array.
     if (Array.isArray(data)) {
+      // Filter out null/undefined values and map the valid items
+      const validItems = data.filter(item => item !== null && item !== undefined);
+
+      if (validItems.length === 0) {
+        return isText ? (
+          "No data"
+        ) : (
+          <Chip variant="outlined" label="No data" size="small" color="info" />
+        );
+      }
+
       return isText
-        ? data.join(", ")
+        ? validItems.map(item => item?.label !== undefined ? item.label : item).join(", ")
         : renderChipList(
-            data.map((item, key) => {
+            validItems.map((item, key) => {
               const itemText = item?.label !== undefined ? item.label : item;
               let icon = null;
 
@@ -330,6 +341,15 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
             })
           );
     } else {
+      // Handle null/undefined single element
+      if (data === null || data === undefined) {
+        return isText ? (
+          "No data"
+        ) : (
+          <Chip variant="outlined" label="No data" size="small" color="info" />
+        );
+      }
+
       const itemText = data?.label !== undefined ? data.label : data;
       let icon = null;
 
