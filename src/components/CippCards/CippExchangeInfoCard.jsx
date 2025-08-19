@@ -60,7 +60,7 @@ export const CippExchangeInfoCard = (props) => {
           </Stack>
         }
       />
-      {exchangeData?.BlockedForSpam ? (
+      {exchangeData?.BlockedForSpam === true ? (
         <Alert severity="warning" sx={{ mx: 2, mt: 2, mb: 2 }}>
           This mailbox is currently blocked for spam.
         </Alert>
