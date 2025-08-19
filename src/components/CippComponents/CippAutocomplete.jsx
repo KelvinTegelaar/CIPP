@@ -6,7 +6,7 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
@@ -78,6 +78,7 @@ export const CippAutoComplete = (props) => {
 
   const [usedOptions, setUsedOptions] = useState(options);
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
+  const hasPreselectedRef = useRef(false);
   const filter = createFilterOptions({
     stringify: (option) => JSON.stringify(option),
   });
@@ -207,9 +208,9 @@ export const CippAutoComplete = (props) => {
     return finalOptions;
   }, [api, usedOptions, options, removeOptions, sortOptions]);
 
-  // Dedicated effect for handling preselected value
+  // Dedicated effect for handling preselected value - only runs once
   useEffect(() => {
-    if (preselectedValue && memoizedOptions.length > 0) {
+    if (preselectedValue && memoizedOptions.length > 0 && !hasPreselectedRef.current) {
       // Check if we should skip preselection due to existing defaultValue
       const hasDefaultValue =
         defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true);
@@ -228,6 +229,7 @@ export const CippAutoComplete = (props) => {
 
           if (preselectedOption) {
             const newValue = multiple ? [preselectedOption] : preselectedOption;
+            hasPreselectedRef.current = true; // Mark that we've preselected
             if (onChange) {
               onChange(newValue, newValue?.addedFields);
             }
