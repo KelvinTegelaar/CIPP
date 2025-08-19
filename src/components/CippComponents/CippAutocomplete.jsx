@@ -209,13 +209,29 @@ export const CippAutoComplete = (props) => {
 
   // Dedicated effect for handling preselected value
   useEffect(() => {
-    if (preselectedValue && !defaultValue && !value && memoizedOptions.length > 0) {
-      const preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue);
+    if (preselectedValue && memoizedOptions.length > 0) {
+      // Check if we should skip preselection due to existing defaultValue
+      const hasDefaultValue =
+        defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true);
 
-      if (preselectedOption) {
-        const newValue = multiple ? [preselectedOption] : preselectedOption;
-        if (onChange) {
-          onChange(newValue, newValue?.addedFields);
+      if (!hasDefaultValue) {
+        // For multiple mode, check if value is empty array or null/undefined
+        // For single mode, check if value is null/undefined
+        const shouldPreselect = multiple
+          ? !value || (Array.isArray(value) && value.length === 0)
+          : !value;
+
+        if (shouldPreselect) {
+          const preselectedOption = memoizedOptions.find(
+            (option) => option.value === preselectedValue
+          );
+
+          if (preselectedOption) {
+            const newValue = multiple ? [preselectedOption] : preselectedOption;
+            if (onChange) {
+              onChange(newValue, newValue?.addedFields);
+            }
+          }
         }
       }
     }
