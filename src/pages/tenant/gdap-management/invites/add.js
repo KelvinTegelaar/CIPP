@@ -45,7 +45,7 @@ const Page = () => {
 
   const templateList = ApiGetCall({
     url: "/api/ExecGDAPRoleTemplate",
-    queryKey: "ListGDAPRoleTemplates",
+    queryKey: "ListGDAPRoleTemplates-list",
   });
   const selectedTemplate = useWatch({ control: formControl.control, name: "roleMappings" });
 
