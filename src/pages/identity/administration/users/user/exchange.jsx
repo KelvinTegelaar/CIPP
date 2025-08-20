@@ -235,6 +235,9 @@ const Page = () => {
         permission.CanViewPrivateItems = true;
       }
 
+      // Always include SendNotificationToUser explicitly (default false)
+      permission.SendNotificationToUser = Boolean(data.SendNotificationToUser);
+
       return {
         userID: graphUserRequest.data?.[0]?.userPrincipalName,
         tenantFilter: userSettingsDefaults.currentTenant,
