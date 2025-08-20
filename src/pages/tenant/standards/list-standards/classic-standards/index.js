@@ -37,7 +37,7 @@ const Page = () => {
     },
     {
       label: "Clone & Edit Template",
-      link: "/tenant/standards/template?id=[GUID]&clone=true",
+      link: "/tenant/standards/template?id=[GUID]&clone=true&type=[type]",
       icon: <CopyAll />,
       color: "success",
       target: "_self",
