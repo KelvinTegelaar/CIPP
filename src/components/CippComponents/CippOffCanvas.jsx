@@ -89,25 +89,26 @@ export const CippOffCanvas = (props) => {
           </IconButton>
         </Box>
         <Divider />
-        {/* Main content area */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            height: footer ? "calc(100vh - 120px)" : "100%",
+            height: "calc(100vh - 73px)", // Account for header + divider
+            minHeight: 0,
           }}
         >
           <Box
             sx={{
               overflowY: "auto",
-              flex: 1,
+              flexGrow: 1,
               display: "flex",
               flexDirection: "column",
+              minHeight: 0,
             }}
           >
-            <Grid container spacing={1}>
-              <Grid size={{ xs: 12 }}>
-                {extendedInfo.length > 0 && (
+            <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+              {extendedInfo.length > 0 && (
+                <Grid size={{ xs: 12 }}>
                   <CippPropertyListCard
                     isFetching={isFetching}
                     align="vertical"
@@ -116,10 +117,15 @@ export const CippOffCanvas = (props) => {
                     actionItems={actions}
                     data={extendedData}
                   />
-                )}
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Box sx={{ m: 2 }}>
+                </Grid>
+              )}
+              <Grid
+                size={{ xs: 12 }}
+                sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+              >
+                <Box
+                  sx={{ display: "flex", flexDirection: "column", flexGrow: 1, minHeight: 0, p: 2 }}
+                >
                   {/* Render children if provided, otherwise render default content */}
                   {typeof children === "function" ? children(extendedData) : children}
                 </Box>
@@ -134,6 +140,8 @@ export const CippOffCanvas = (props) => {
                 borderTop: 1,
                 borderColor: "divider",
                 p: 2,
+                flexShrink: 0,
+                mt: "auto",
               }}
             >
               {footer}

@@ -345,7 +345,7 @@ export const CippFormComponent = (props) => {
 
     case "richText": {
       const editorInstanceRef = React.useRef(null);
-      const hasSetInitialValue = React.useRef(false);
+      const lastSetValue = React.useRef(null);
 
       return (
         <>
@@ -357,15 +357,15 @@ export const CippFormComponent = (props) => {
               render={({ field }) => {
                 const { value, onChange, ref } = field;
 
-                // Set content only once on first render
+                // Update content when value changes externally
                 React.useEffect(() => {
                   if (
                     editorInstanceRef.current &&
-                    !hasSetInitialValue.current &&
-                    typeof value === "string"
+                    typeof value === "string" &&
+                    value !== lastSetValue.current
                   ) {
                     editorInstanceRef.current.commands.setContent(value || "", false);
-                    hasSetInitialValue.current = true;
+                    lastSetValue.current = value;
                   }
                 }, [value]);
 
@@ -376,12 +376,19 @@ export const CippFormComponent = (props) => {
                       {...other}
                       ref={ref}
                       extensions={[StarterKit]}
-                      content="" // do not preload content
+                      content=""
                       onCreate={({ editor }) => {
                         editorInstanceRef.current = editor;
+                        // Set initial content when editor is created
+                        if (typeof value === "string") {
+                          editor.commands.setContent(value || "", false);
+                          lastSetValue.current = value;
+                        }
                       }}
                       onUpdate={({ editor }) => {
-                        onChange(editor.getHTML());
+                        const newValue = editor.getHTML();
+                        lastSetValue.current = newValue;
+                        onChange(newValue);
                       }}
                       label={label}
                       renderControls={() => (
