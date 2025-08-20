@@ -31,3 +31,6 @@ app.log
 
 # AI rules
 .*/rules
+
+package-lock.json
+node_modules/
