@@ -9,6 +9,11 @@
     "label": "Alert on admins without any form of MFA",
     "recommendedRunInterval": "1d"
   },
+    {
+    "name": "AlertSmtpAuthSuccess",
+    "label": "Alert on SMTP Auth usage with success, a help for phasing out SMTP AUTH",
+    "recommendedRunInterval": "1d"
+  },
   {
     "name": "LicenseAssignmentErrors",
     "label": "Alert on license assignment errors",
