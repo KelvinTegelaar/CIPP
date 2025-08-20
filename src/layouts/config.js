@@ -415,11 +415,6 @@ export const nativeMenuItems = [
             path: "/endpoint/autopilot/list-status-pages",
             permissions: ["Endpoint.Autopilot.*"],
           },
-          {
-            title: "Add Status Page",
-            path: "/endpoint/autopilot/add-status-page",
-            permissions: ["Endpoint.Autopilot.*"],
-          },
         ],
       },
       {
