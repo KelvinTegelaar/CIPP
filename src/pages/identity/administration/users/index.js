@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSettings } from "/src/hooks/use-settings.js";
 import { PermissionButton } from "../../../../utils/permissions";
 import { CippUserActions } from "/src/components/CippComponents/CippUserActions.jsx";
+import { CippInviteGuestDrawer } from "/src/components/CippComponents/CippInviteGuestDrawer.jsx";
 
 const Page = () => {
   const pageTitle = "Users";
@@ -72,14 +73,10 @@ const Page = () => {
           >
             Bulk Add Users
           </PermissionButton>
-          <PermissionButton
+          <CippInviteGuestDrawer
             requiredPermissions={cardButtonPermissions}
-            component={Link}
-            href="users/invite"
-            startIcon={<Send />}
-          >
-            Invite Guest
-          </PermissionButton>
+            PermissionButton={PermissionButton}
+          />
         </>
       }
       apiData={{
