@@ -409,13 +409,14 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                                 }}
                               >
                                 {new Date(task.Timestamp).toLocaleDateString(undefined, {
-                                  year: 'numeric',
-                                  month: 'short',
-                                  day: 'numeric'
-                                })} {new Date(task.Timestamp).toLocaleTimeString(undefined, {
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                  second: '2-digit'
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}{" "}
+                                {new Date(task.Timestamp).toLocaleTimeString(undefined, {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  second: "2-digit",
                                 })}
                               </Typography>
                             )}
