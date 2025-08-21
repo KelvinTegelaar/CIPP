@@ -101,6 +101,14 @@ export const CippExchangeInfoCard = (props) => {
                     {getCippFormatting(exchangeData?.BlockedForSpam, "BlockedForSpam")}
                   </Typography>
                 </Grid>
+                <Grid size={{ xs: 12, md: 12 }}>
+                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                    Retention Policy:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {getCippFormatting(exchangeData?.RetentionPolicy, "RetentionPolicy")}
+                  </Typography>
+                </Grid>
               </Grid>
             )
           }
