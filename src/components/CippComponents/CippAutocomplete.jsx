@@ -6,7 +6,7 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
@@ -78,6 +78,7 @@ export const CippAutoComplete = (props) => {
 
   const [usedOptions, setUsedOptions] = useState(options);
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
+  const hasPreselectedRef = useRef(false);
   const filter = createFilterOptions({
     stringify: (option) => JSON.stringify(option),
   });
@@ -207,15 +208,32 @@ export const CippAutoComplete = (props) => {
     return finalOptions;
   }, [api, usedOptions, options, removeOptions, sortOptions]);
 
-  // Dedicated effect for handling preselected value
+  // Dedicated effect for handling preselected value - only runs once
   useEffect(() => {
-    if (preselectedValue && !defaultValue && !value && memoizedOptions.length > 0) {
-      const preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue);
+    if (preselectedValue && memoizedOptions.length > 0 && !hasPreselectedRef.current) {
+      // Check if we should skip preselection due to existing defaultValue
+      const hasDefaultValue =
+        defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true);
 
-      if (preselectedOption) {
-        const newValue = multiple ? [preselectedOption] : preselectedOption;
-        if (onChange) {
-          onChange(newValue, newValue?.addedFields);
+      if (!hasDefaultValue) {
+        // For multiple mode, check if value is empty array or null/undefined
+        // For single mode, check if value is null/undefined
+        const shouldPreselect = multiple
+          ? !value || (Array.isArray(value) && value.length === 0)
+          : !value;
+
+        if (shouldPreselect) {
+          const preselectedOption = memoizedOptions.find(
+            (option) => option.value === preselectedValue
+          );
+
+          if (preselectedOption) {
+            const newValue = multiple ? [preselectedOption] : preselectedOption;
+            hasPreselectedRef.current = true; // Mark that we've preselected
+            if (onChange) {
+              onChange(newValue, newValue?.addedFields);
+            }
+          }
         }
       }
     }

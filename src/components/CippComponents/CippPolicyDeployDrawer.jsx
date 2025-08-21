@@ -110,6 +110,7 @@ export const CippPolicyDeployDrawer = ({
             required={true}
             disableClearable={false}
             allTenants={true}
+            preselectedEnabled={true}
             type="multiple"
           />
           <CippFormComponent

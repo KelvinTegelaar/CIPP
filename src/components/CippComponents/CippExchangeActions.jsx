@@ -199,6 +199,51 @@ export const CippExchangeActions = () => {
       condition: (row) => row.ArchiveGuid === "00000000-0000-0000-0000-000000000000",
     },
     {
+      label: "Set Retention Policy",
+      type: "POST",
+      url: "/api/ExecSetMailboxRetentionPolicies",
+      icon: <MailLock />,
+      confirmText: "Set the specified retention policy for selected mailboxes?",
+      multiPost: false,
+      fields: [
+        {
+          type: "autoComplete",
+          name: "policyName",
+          label: "Retention Policy",
+          multiple: false,
+          creatable: false,
+          validators: { required: "Please select a retention policy" },
+          api: {
+            url: "/api/ExecManageRetentionPolicies",
+            labelField: "Name",
+            valueField: "Name",
+            queryKey: `RetentionPolicies-${tenant}`,
+            data: {
+              tenantFilter: tenant,
+            },
+          },
+        },
+      ],
+      customDataformatter: (rows, action, formData) => {
+        const mailboxArray = Array.isArray(rows) ? rows : [rows];
+        
+        // Extract mailbox identities - using UPN as the identifier
+        const mailboxes = mailboxArray.map(mailbox => mailbox.UPN);
+        
+        // Handle autocomplete selection - could be string or object
+        const policyName = typeof formData.policyName === 'object' 
+          ? formData.policyName.value 
+          : formData.policyName;
+        
+        return {
+          PolicyName: policyName,
+          Mailboxes: mailboxes,
+          tenantFilter: tenant
+        };
+      },
+      color: "primary",
+    },
+    {
       label: "Enable Auto-Expanding Archive",
       type: "POST",
       icon: <PostAdd />,
