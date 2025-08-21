@@ -413,6 +413,7 @@ export const CippDataTable = (props) => {
               graphFilterData={graphFilterData}
               setGraphFilterData={setGraphFilterData}
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
+              queueMetadata={getRequestData.data?.pages?.[0]?.Metadata}
             />
           )}
         </>

@@ -30,9 +30,11 @@ import { useRouter } from "next/router";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
+import { useQueryClient } from "@tanstack/react-query";
 import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
 import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
 import { useMediaQuery } from "@mui/material";
+import { CippQueueTracker } from "./CippQueueTracker";
 
 export const CIPPTableToptoolbar = ({
   api,
@@ -53,6 +55,7 @@ export const CIPPTableToptoolbar = ({
   data,
   setGraphFilterData,
   setConfiguredSimpleColumns,
+  queueMetadata,
 }) => {
   const popover = usePopover();
   const columnPopover = usePopover();
@@ -65,26 +68,40 @@ export const CIPPTableToptoolbar = ({
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [filterList, setFilterList] = useState(filters);
+  const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(queryKey || title);
   const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
   const [filterCanvasVisible, setFilterCanvasVisible] = useState(false);
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = useSettings()?.currentTenant;
+  const queryClient = useQueryClient();
 
   const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
   const handleActionMenuOpen = (event) => setActionMenuAnchor(event.currentTarget);
   const handleActionMenuClose = () => setActionMenuAnchor(null);
 
   const getBulkActions = (actions, selectedRows) => {
-    return actions?.filter((action) => !action.link && !action?.hideBulk)?.map(action => ({
-      ...action,
-      disabled: action.condition ? !selectedRows.every(row => action.condition(row.original)) : false
-    })) || [];
+    return (
+      actions
+        ?.filter((action) => !action.link && !action?.hideBulk)
+        ?.map((action) => ({
+          ...action,
+          disabled: action.condition
+            ? !selectedRows.every((row) => action.condition(row.original))
+            : false,
+        })) || []
+    );
   };
 
   useEffect(() => {
     //if usedData changes, deselect all rows
     table.toggleAllRowsSelected(false);
   }, [usedData]);
+
+  // Sync currentEffectiveQueryKey with queryKey prop changes (e.g., tenant changes)
+  useEffect(() => {
+    setCurrentEffectiveQueryKey(queryKey || title);
+  }, [queryKey, title]);
+
   //if the currentTenant Switches, remove Graph filters
   useEffect(() => {
     if (currentTenant) {
@@ -112,7 +129,7 @@ export const CIPPTableToptoolbar = ({
     data: {
       Endpoint: api?.data?.Endpoint ?? "",
     },
-    waiting: api?.data?.Endpoint ? true : false,
+    waiting: !!api?.data?.Endpoint,
   });
 
   const resetToDefaultVisibility = () => {
@@ -193,6 +210,7 @@ export const CIPPTableToptoolbar = ({
         setGraphFilterData({});
         resetToDefaultVisibility();
       }
+      setCurrentEffectiveQueryKey(queryKey || title); // Reset to original query key
     }
     if (filterType === "graph") {
       const filterProps = [
@@ -215,10 +233,12 @@ export const CIPPTableToptoolbar = ({
       table.resetGlobalFilter();
       table.resetColumnFilters();
       //get api.data, merge with graphFilter, set api.data
+      const newQueryKey = `${queryKey ? queryKey : title}-${filterName}`;
       setGraphFilterData({
         data: { ...mergeCaseInsensitive(api.data, graphFilter) },
-        queryKey: `${queryKey ? queryKey : title}-${filterName}`,
+        queryKey: newQueryKey,
       });
+      setCurrentEffectiveQueryKey(newQueryKey);
       if (filter?.$select) {
         let selectedColumns = [];
         if (Array.isArray(filter?.$select)) {
@@ -258,6 +278,7 @@ export const CIPPTableToptoolbar = ({
         var presetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
         if (presetEndpoint === endpoint) {
           graphPresetList.push({
+            id: preset?.id,
             filterName: preset?.name,
             value: preset?.params,
             type: "graph",
@@ -269,6 +290,7 @@ export const CIPPTableToptoolbar = ({
         var customPresetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
         if (customPresetEndpoint === endpoint) {
           graphPresetList.push({
+            id: preset?.id,
             filterName: preset?.name,
             value: preset?.params,
             type: "graph",
@@ -456,6 +478,11 @@ export const CIPPTableToptoolbar = ({
                   <DeveloperMode />
                 </IconButton>
               </Tooltip>
+              <CippQueueTracker
+                queueId={queueMetadata?.QueueId}
+                queryKey={currentEffectiveQueryKey}
+                title={title}
+              />
               {mdDown && <MRT_ToggleFullScreenButton table={table} />}
             </>
             {
@@ -493,74 +520,78 @@ export const CIPPTableToptoolbar = ({
                 <SevereCold />
               </Tooltip>
             )}
-            {actions && getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
-              <>
-                <Button
-                  onClick={popover.handleOpen}
-                  ref={popover.anchorRef}
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <ChevronDownIcon />
-                    </SvgIcon>
-                  }
-                  variant="outlined"
-                  sx={{
-                    flexShrink: 0,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Bulk Actions
-                </Button>
-                <Menu
-                  anchorEl={popover.anchorRef.current}
-                  anchorOrigin={{
-                    horizontal: "right",
-                    vertical: "bottom",
-                  }}
-                  MenuListProps={{
-                    dense: true,
-                    sx: { p: 1 },
-                  }}
-                  onClose={popover.handleClose}
-                  open={popover.open}
-                  transformOrigin={{
-                    horizontal: "right",
-                    vertical: "top",
-                  }}
-                >
-                  {getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
-                    <MenuItem
-                      key={index}
-                      disabled={action.disabled}
-                      onClick={() => {
-                        if (action.disabled) return;
-                        setActionData({
-                          data: table.getSelectedRowModel().rows.map((row) => row.original),
-                          action: action,
-                          ready: true,
-                        });
-
-                        if (action?.noConfirm && action.customFunction) {
-                          table
-                            .getSelectedRowModel()
-                            .rows.map((row) =>
-                              action.customFunction(row.original.original, action, {})
-                            );
-                        } else {
-                          createDialog.handleOpen();
-                          popover.handleClose();
-                        }
-                      }}
-                    >
-                      <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                        {action.icon}
+            {actions &&
+              getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 &&
+              (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
+                <>
+                  <Button
+                    onClick={popover.handleOpen}
+                    ref={popover.anchorRef}
+                    startIcon={
+                      <SvgIcon fontSize="small">
+                        <ChevronDownIcon />
                       </SvgIcon>
-                      <ListItemText>{action.label}</ListItemText>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </>
-            )}
+                    }
+                    variant="outlined"
+                    sx={{
+                      flexShrink: 0,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Bulk Actions
+                  </Button>
+                  <Menu
+                    anchorEl={popover.anchorRef.current}
+                    anchorOrigin={{
+                      horizontal: "right",
+                      vertical: "bottom",
+                    }}
+                    MenuListProps={{
+                      dense: true,
+                      sx: { p: 1 },
+                    }}
+                    onClose={popover.handleClose}
+                    open={popover.open}
+                    transformOrigin={{
+                      horizontal: "right",
+                      vertical: "top",
+                    }}
+                  >
+                    {getBulkActions(actions, table.getSelectedRowModel().rows).map(
+                      (action, index) => (
+                        <MenuItem
+                          key={index}
+                          disabled={action.disabled}
+                          onClick={() => {
+                            if (action.disabled) return;
+                            setActionData({
+                              data: table.getSelectedRowModel().rows.map((row) => row.original),
+                              action: action,
+                              ready: true,
+                            });
+
+                            if (action?.noConfirm && action.customFunction) {
+                              table
+                                .getSelectedRowModel()
+                                .rows.map((row) =>
+                                  action.customFunction(row.original.original, action, {})
+                                );
+                            } else {
+                              createDialog.handleOpen();
+                              popover.handleClose();
+                            }
+                          }}
+                        >
+                          <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                            {action.icon}
+                          </SvgIcon>
+                          <ListItemText>{action.label}</ListItemText>
+                        </MenuItem>
+                      )
+                    )}
+                  </Menu>
+                </>
+              )}
           </Box>
         </Box>
       </Box>
@@ -584,6 +615,7 @@ export const CIPPTableToptoolbar = ({
       >
         <CippGraphExplorerFilter
           endpointFilter={api?.data?.Endpoint}
+          relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(Boolean)}
           onSubmitFilter={(filter) => {
             setTableFilter(filter, "graph", "Custom Filter");
             if (filter?.$select) {
