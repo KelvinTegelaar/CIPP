@@ -1,6 +1,9 @@
-import M365Licenses from "../data/M365Licenses.json";
+import M365LicensesDefault from "../data/M365Licenses.json";
+import M365LicensesAdditional from "../data/M365Licenses-additional.json";
 
 export const getCippLicenseTranslation = (licenseArray) => {
+  //combine M365LicensesDefault and M365LicensesAdditional to one array
+  const M365Licenses = [...M365LicensesDefault, ...M365LicensesAdditional];
   let licenses = [];
 
   if (!Array.isArray(licenseArray) && typeof licenseArray === "object") {
