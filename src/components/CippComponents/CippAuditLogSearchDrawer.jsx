@@ -1,18 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Stack, Box } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
-import { ApiPostCall } from "../../api/ApiCall";
+import { ApiPostCall, ApiGetCallWithPagination } from "../../api/ApiCall";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
+import { useSettings } from "/src/hooks/use-settings";
 
 export const CippAuditLogSearchDrawer = ({
   buttonText = "New Search",
   relatedQueryKeys = ["AuditLogSearches"],
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const formControl = useForm();
+  const currentTenantDomain = useSettings().currentTenant;
+
+  // Fetch tenant list to get full tenant details
+  const tenantList = ApiGetCallWithPagination({
+    url: "/api/ListTenants",
+    queryKey: "ListTenants-FormnotAllTenants",
+    data: { AllTenantSelector: false },
+  });
+
+  // Find the current tenant from the list using the domain name - handle pagination data structure
+  const allTenants = tenantList.data?.pages?.flatMap((page) => page.Results || page) || [];
+  const currentTenant = allTenants.find(
+    (tenant) => tenant.defaultDomainName === currentTenantDomain
+  );
+
+  // Create default values with current tenant prefilled
+  const defaultValues = {
+    TenantFilter: currentTenant
+      ? {
+          label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
+          value: currentTenant.defaultDomainName,
+        }
+      : null,
+  };
+
+  const formControl = useForm({
+    defaultValues,
+  });
+
+  // Update form defaults when tenant data is loaded
+  useEffect(() => {
+    if (currentTenant) {
+      const newDefaultValues = {
+        TenantFilter: {
+          label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
+          value: currentTenant.defaultDomainName,
+        },
+      };
+      formControl.reset(newDefaultValues);
+    }
+  }, [currentTenant, formControl]);
 
   const createSearchApi = ApiPostCall({
     datafromUrl: false,
@@ -21,7 +62,17 @@ export const CippAuditLogSearchDrawer = ({
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
-    formControl.reset();
+    if (currentTenant) {
+      const resetValues = {
+        TenantFilter: {
+          label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
+          value: currentTenant.defaultDomainName,
+        },
+      };
+      formControl.reset(resetValues);
+    } else {
+      formControl.reset();
+    }
   };
 
   const handleCreateSearch = async (data) => {
@@ -390,15 +441,15 @@ export const CippAuditLogSearchDrawer = ({
         size="lg"
         footer={
           <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Cancel
-            </Button>
             <Button
               variant="contained"
               onClick={formControl.handleSubmit(handleCreateSearch)}
               disabled={createSearchApi.isLoading}
             >
               {createSearchApi.isLoading ? "Creating..." : "Create Search"}
+            </Button>
+            <Button variant="outlined" onClick={handleCloseDrawer}>
+              Cancel
             </Button>
           </Stack>
         }
