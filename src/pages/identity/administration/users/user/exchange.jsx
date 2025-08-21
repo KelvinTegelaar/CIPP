@@ -67,7 +67,7 @@ const Page = () => {
   const userRequest = ApiGetCall({
     url: `/api/ListUserMailboxDetails?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}&userMail=${graphUserRequest.data?.[0]?.userPrincipalName}`,
     queryKey: `Mailbox-${userId}`,
-    waiting: waiting,
+    waiting: waiting && !!graphUserRequest.data?.[0]?.userPrincipalName,
   });
 
   const usersList = ApiGetCall({
@@ -139,7 +139,7 @@ const Page = () => {
         // Exact match on display name
         (group.displayName && group.displayName === userIdentifier) ||
         // Partial match - permission identifier starts with group display name (handles timestamps)
-        (group.displayName && userIdentifier.startsWith(group.displayName))
+        (group.displayName && userIdentifier?.startsWith(group.displayName))
       );
     });
 
@@ -235,6 +235,9 @@ const Page = () => {
         permission.CanViewPrivateItems = true;
       }
 
+      // Always include SendNotificationToUser explicitly (default false)
+      permission.SendNotificationToUser = Boolean(data.SendNotificationToUser);
+
       return {
         userID: graphUserRequest.data?.[0]?.userPrincipalName,
         tenantFilter: userSettingsDefaults.currentTenant,
@@ -266,7 +269,7 @@ const Page = () => {
         new Date(oooRequest.data?.EndTime).getTime() / 1000 || null
       );
     }
-  }, [oooRequest.isSuccess]);
+  }, [oooRequest.isSuccess, oooRequest.data]);
 
   useEffect(() => {
     //if userId is defined, we can fetch the user data
@@ -707,6 +710,7 @@ const Page = () => {
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
           ruleName: row?.Name,
           Enable: true,
+          tenantFilter: userSettingsDefaults.currentTenant,
         };
       },
       condition: (row) => row && !row.Enabled,
@@ -724,6 +728,7 @@ const Page = () => {
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
           ruleName: row?.Name,
           Disable: true,
+          tenantFilter: userSettingsDefaults.currentTenant,
         };
       },
       condition: (row) => row && row.Enabled,
@@ -740,6 +745,7 @@ const Page = () => {
           ruleId: row?.Identity,
           ruleName: row?.Name,
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+          tenantFilter: userSettingsDefaults.currentTenant,
         };
       },
       confirmText: "Are you sure you want to remove this mailbox rule?",
@@ -803,6 +809,7 @@ const Page = () => {
                       userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
                       ruleName: data?.Name,
                       Enable: true,
+                      tenantFilter: userSettingsDefaults.currentTenant,
                     },
                     confirmText: "Are you sure you want to enable this mailbox rule?",
                     multiPost: false,
@@ -817,6 +824,7 @@ const Page = () => {
                       userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
                       ruleName: data?.Name,
                       Disable: true,
+                      tenantFilter: userSettingsDefaults.currentTenant,
                     },
                     confirmText: "Are you sure you want to disable this mailbox rule?",
                     multiPost: false,
@@ -830,6 +838,7 @@ const Page = () => {
                       ruleId: data?.Identity,
                       ruleName: data?.Name,
                       userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                      tenantFilter: userSettingsDefaults.currentTenant,
                     },
                     confirmText: "Are you sure you want to remove this mailbox rule?",
                     multiPost: false,
@@ -912,7 +921,7 @@ const Page = () => {
         data:
           graphUserRequest.data?.[0]?.proxyAddresses?.map((address) => ({
             Address: address,
-            Type: address.startsWith("SMTP:") ? "Primary" : "Alias",
+            Type: address?.startsWith("SMTP:") ? "Primary" : "Alias",
           })) || [],
         refreshFunction: () => graphUserRequest.refetch(),
         isFetching: graphUserRequest.isFetching,

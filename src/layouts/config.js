@@ -415,11 +415,6 @@ export const nativeMenuItems = [
             path: "/endpoint/autopilot/list-status-pages",
             permissions: ["Endpoint.Autopilot.*"],
           },
-          {
-            title: "Add Status Page",
-            path: "/endpoint/autopilot/add-status-page",
-            permissions: ["Endpoint.Autopilot.*"],
-          },
         ],
       },
       {
@@ -445,11 +440,6 @@ export const nativeMenuItems = [
           {
             title: "Protection Policies",
             path: "/endpoint/MEM/list-appprotection-policies",
-            permissions: ["Endpoint.MEM.*"],
-          },
-          {
-            title: "Apply Policy",
-            path: "/endpoint/MEM/add-policy",
             permissions: ["Endpoint.MEM.*"],
           },
           {
@@ -557,6 +547,7 @@ export const nativeMenuItems = [
       "Exchange.Room.*",
       "Exchange.SafeLinks.*",
       "Exchange.Group.*",
+      "Exchange.RetentionPolicies.*",
     ],
     items: [
       {
@@ -598,6 +589,11 @@ export const nativeMenuItems = [
             title: "Tenant Allow/Block Lists",
             path: "/email/administration/tenant-allow-block-lists",
             permissions: ["Exchange.SpamFilter.*"],
+          },
+          {
+            title: "Retention Polcies & Tags",
+            path: "/email/administration/exchange-retention/policies",
+            permissions: ["Exchange.RetentionPolicies.*"],
           },
         ],
       },
