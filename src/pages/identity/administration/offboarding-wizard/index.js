@@ -54,6 +54,10 @@ const Page = () => {
       title: "Step 4",
       description: "Confirmation",
       component: CippWizardConfirmation,
+      maxWidth: "lg",
+      componentProps: {
+        columns: 3,
+      },
     },
   ];
 
