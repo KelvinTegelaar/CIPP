@@ -15,7 +15,7 @@ import { Scrollbar } from "../scrollbar";
 import { useEffect, useMemo, useState } from "react";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
-import { utilColumnsFromAPI } from "./util-columnsFromAPI";
+import { utilColumnsFromAPI, resolveSimpleColumnVariables } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
 import { Info, More, MoreHoriz } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
@@ -156,8 +156,11 @@ export const CippDataTable = (props) => {
         newVisibility[col.id] = true;
       });
     } else if (configuredSimpleColumns.length > 0) {
+      // Resolve any variables in the simple columns before checking visibility
+      const resolvedSimpleColumns = resolveSimpleColumnVariables(configuredSimpleColumns, usedData);
+
       finalColumns = apiColumns.map((col) => {
-        newVisibility[col.id] = configuredSimpleColumns.includes(col.id);
+        newVisibility[col.id] = resolvedSimpleColumns.includes(col.id);
         return col;
       });
     } else {

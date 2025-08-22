@@ -4,8 +4,37 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 
 const skipRecursion = ["location", "ScheduledBackupValues", "Tenant"];
 
-const getAtPath = (obj, path) =>
-  path.split(".").reduce((acc, part) => (acc ? acc[part] : undefined), obj);
+// Variable replacement patterns - maps variable names to property patterns
+const variableReplacements = {
+  cippuserschema: (dataSample) => {
+    // Find the first property that contains "_cippUser"
+    const cippUserProp = Object.keys(dataSample).find((key) => key.includes("_cippUser"));
+    return cippUserProp || "cippuserschema"; // fallback to original if not found
+  },
+};
+
+// Function to resolve variable replacements in column names
+const resolveVariables = (columnName, dataSample) => {
+  return columnName.replace(/%(\w+)%/g, (match, variableName) => {
+    const resolver = variableReplacements[variableName.toLowerCase()];
+    if (resolver && typeof resolver === "function") {
+      const resolved = resolver(dataSample);
+      console.log("resolving " + match + " to " + resolved);
+      return resolved;
+    }
+    return match; // return original if no resolver found
+  });
+};
+
+const getAtPath = (obj, path) => {
+  const parts = path.split(".");
+  return parts.reduce((acc, part) => {
+    if (acc && typeof acc === "object") {
+      return acc[part];
+    }
+    return undefined;
+  }, obj);
+};
 
 // Function to merge keys from all objects in the array
 const mergeKeys = (dataArray) => {
@@ -89,4 +118,22 @@ export const utilColumnsFromAPI = (dataArray) => {
   };
 
   return generateColumns(dataSample);
+};
+
+// Helper function to resolve variables in simple column names
+export const resolveSimpleColumnVariables = (simpleColumns, dataArray) => {
+  if (!simpleColumns || !Array.isArray(dataArray) || dataArray.length === 0) {
+    return simpleColumns;
+  }
+
+  const dataSample = mergeKeys(dataArray);
+
+  return simpleColumns.map((columnName) => {
+    if (typeof columnName === "string" && columnName.includes("%")) {
+      const resolved = resolveVariables(columnName, dataSample);
+      console.log(`Resolving simple column: ${columnName} -> ${resolved}`);
+      return resolved;
+    }
+    return columnName;
+  });
 };
