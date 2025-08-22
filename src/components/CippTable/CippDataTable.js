@@ -150,6 +150,13 @@ export const CippDataTable = (props) => {
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
+    // Check if we're in AllTenants mode and data has Tenant property
+    const isAllTenants = settings?.currentTenant === "AllTenants";
+    const hasTenantProperty = usedData.some(
+      (row) => row && typeof row === "object" && "Tenant" in row
+    );
+    const shouldShowTenant = isAllTenants && hasTenantProperty;
+
     if (columns.length === 0 && configuredSimpleColumns.length === 0) {
       finalColumns = apiColumns;
       apiColumns.forEach((col) => {
@@ -159,9 +166,15 @@ export const CippDataTable = (props) => {
       // Resolve any variables in the simple columns before checking visibility
       const resolvedSimpleColumns = resolveSimpleColumnVariables(configuredSimpleColumns, usedData);
 
-      finalColumns = apiColumns.map((col) => {
-        newVisibility[col.id] = resolvedSimpleColumns.includes(col.id);
-        return col;
+      // Add Tenant to resolved columns if in AllTenants mode and not already included
+      let finalResolvedColumns = [...resolvedSimpleColumns];
+      if (shouldShowTenant && !resolvedSimpleColumns.includes("Tenant")) {
+        finalResolvedColumns = [...resolvedSimpleColumns, "Tenant"];
+      }
+
+      finalColumns = apiColumns;
+      finalColumns.forEach((col) => {
+        newVisibility[col.id] = finalResolvedColumns.includes(col.id);
       });
     } else {
       const providedColumnKeys = new Set(columns.map((col) => col.id || col.header));
@@ -169,13 +182,22 @@ export const CippDataTable = (props) => {
       finalColumns.forEach((col) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
+
+      // Handle Tenant column for custom columns case
+      if (shouldShowTenant) {
+        const tenantColumn = finalColumns.find((col) => col.id === "Tenant");
+        if (tenantColumn) {
+          // Make tenant visible
+          newVisibility["Tenant"] = true;
+        }
+      }
     }
     if (defaultSorting?.length > 0) {
       setSorting(defaultSorting);
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData, queryKey]);
+  }, [columns.length, usedData, queryKey, settings?.currentTenant]);
 
   const createDialog = useDialog();
 
