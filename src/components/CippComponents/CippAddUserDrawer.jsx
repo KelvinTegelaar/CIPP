@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Box } from "@mui/material";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, useFormState } from "react-hook-form";
 import { PersonAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { CippFormUserSelector } from "./CippFormUserSelector";
@@ -26,9 +26,11 @@ export const CippAddUserDrawer = ({
   });
 
   const createUser = ApiPostCall({
-    urlFromData: true,
+    datafromUrl: true,
     relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
   });
+
+  const { isValid, isDirty } = useFormState({ control: formControl.control });
 
   const formValues = useWatch({ control: formControl.control, name: "userProperties" });
 
@@ -54,12 +56,29 @@ export const CippAddUserDrawer = ({
     }
   }, [formValues]);
 
+  useEffect(() => {
+    if (createUser.isSuccess) {
+      formControl.reset({
+        tenantFilter: userSettingsDefaults.currentTenant,
+        usageLocation: userSettingsDefaults.usageLocation,
+      });
+    }
+  }, [createUser.isSuccess]);
+
   const handleSubmit = () => {
-    const formData = formControl.getValues();
+    formControl.trigger();
+    if (!isValid) {
+      return;
+    }
+    const values = formControl.getValues();
+    Object.keys(values).forEach((key) => {
+      if (values[key] === "" || values[key] === null) {
+        delete values[key];
+      }
+    });
     createUser.mutate({
       url: "/api/AddUser",
-      data: formData,
-      relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
+      data: values,
     });
   };
 
@@ -90,10 +109,10 @@ export const CippAddUserDrawer = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={handleSubmit}
-              disabled={createUser.isLoading}
+              onClick={formControl.handleSubmit(handleSubmit)}
+              disabled={createUser.isPending || !isValid || (!isDirty && !createUser.isSuccess)}
             >
-              {createUser.isLoading
+              {createUser.isPending
                 ? "Creating User..."
                 : createUser.isSuccess
                 ? "Create Another User"
@@ -137,8 +156,8 @@ export const CippAddUserDrawer = ({
           />
         </Box>
         <Box sx={{ my: 2 }}>
-          <CippAddEditUser 
-            formControl={formControl} 
+          <CippAddEditUser
+            formControl={formControl}
             userSettingsDefaults={userSettingsDefaults}
             formType="add"
           />
