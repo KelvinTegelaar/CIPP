@@ -157,7 +157,7 @@
     "id": "7a44a7cf-bf40-4a8a-8eaa-ffd8203f3216",
     "params": {
       "endpoint": "users",
-      "$select": "id,displayName,userprincipalname,accountEnabled,mail,proxyAddresses,createdDateTime,signInActivity.lastSuccessfulSignInDateTime"
+      "$select": "id,displayName,userPrincipalName,accountEnabled,mail,proxyAddresses,createdDateTime,signInActivity.lastSuccessfulSignInDateTime"
     },
     "isBuiltin": true
   },
@@ -166,7 +166,7 @@
     "id": "f632d3b8-29f3-470c-8483-54cb88004674",
     "params": {
       "endpoint": "users",
-      "$select": "id,displayName,userprincipalname,accountEnabled,mail,proxyAddresses,createdDateTime,%cippuserschema%.mailboxType"
+      "$select": "id,displayName,userPrincipalName,accountEnabled,mail,proxyAddresses,createdDateTime,%cippuserschema%.mailboxType"
     },
     "isBuiltin": true
   }
