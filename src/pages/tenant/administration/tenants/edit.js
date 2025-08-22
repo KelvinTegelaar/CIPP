@@ -4,7 +4,7 @@ import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { Stack, Box, Tab, Tabs, Typography } from "@mui/material";
+import { Stack, Box, Tab, Tabs, Typography, Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippCardTabPanel } from "/src/components/CippComponents/CippCardTabPanel";
 import CippFormSection from "/src/components/CippFormPages/CippFormSection";
@@ -12,6 +12,7 @@ import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import CippCustomVariables from "/src/components/CippComponents/CippCustomVariables";
+import { CippOffboardingDefaultSettings } from "/src/components/CippComponents/CippOffboardingDefaultSettings";
 
 function tabProps(index) {
   return {
@@ -24,6 +25,10 @@ const Page = () => {
   const router = useRouter();
   const { id } = router.query;
   const formControl = useForm({
+    mode: "onChange",
+  });
+
+  const offboardingFormControl = useForm({
     mode: "onChange",
   });
   const [value, setValue] = useState(0);
@@ -44,11 +49,71 @@ const Page = () => {
             value: group.Id,
           })) || [],
       });
+
+      // Set up offboarding defaults with default values
+      const tenantOffboardingDefaults = tenantDetails.data?.customProperties?.OffboardingDefaults;
+      const defaultOffboardingValues = {
+        ConvertToShared: false,
+        RemoveGroups: false,
+        HideFromGAL: false,
+        RemoveLicenses: false,
+        removeCalendarInvites: false,
+        RevokeSessions: false,
+        removePermissions: false,
+        RemoveRules: false,
+        ResetPass: false,
+        KeepCopy: false,
+        DeleteUser: false,
+        RemoveMobile: false,
+        DisableSignIn: false,
+        RemoveMFADevices: false,
+        ClearImmutableId: false,
+      };
+      
+      let offboardingDefaults = {};
+      
+      if (tenantOffboardingDefaults) {
+        try {
+          const parsed = JSON.parse(tenantOffboardingDefaults);
+          // Merge defaults with parsed values to ensure all fields are defined
+          offboardingDefaults = { 
+            offboardingDefaults: { ...defaultOffboardingValues, ...parsed } 
+          };
+        } catch {
+          offboardingDefaults = { offboardingDefaults: defaultOffboardingValues };
+        }
+      } else {
+        offboardingDefaults = { offboardingDefaults: defaultOffboardingValues };
+      }
+      
+      offboardingFormControl.reset(offboardingDefaults);
     }
-  }, [tenantDetails.isSuccess, tenantDetails.data]);
+  }, [tenantDetails.isSuccess, tenantDetails.data, id]);
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleResetOffboardingDefaults = () => {
+    const defaultOffboardingValues = {
+      ConvertToShared: false,
+      RemoveGroups: false,
+      HideFromGAL: false,
+      RemoveLicenses: false,
+      removeCalendarInvites: false,
+      RevokeSessions: false,
+      removePermissions: false,
+      RemoveRules: false,
+      ResetPass: false,
+      KeepCopy: false,
+      DeleteUser: false,
+      RemoveMobile: false,
+      DisableSignIn: false,
+      RemoveMFADevices: false,
+      ClearImmutableId: false,
+    };
+    
+    offboardingFormControl.reset({ offboardingDefaults: defaultOffboardingValues });
   };
 
   return (
@@ -68,6 +133,7 @@ const Page = () => {
           <Tabs value={value} onChange={handleTabChange} aria-label="Edit Tenant Tabs">
             <Tab label="General" {...tabProps(0)} />
             <Tab label="Custom Variables" {...tabProps(1)} />
+            <Tab label="Offboarding Defaults" {...tabProps(2)} />
           </Tabs>
         </Box>
         <CippCardTabPanel value={value} index={0}>
@@ -145,6 +211,51 @@ const Page = () => {
         </CippCardTabPanel>
         <CippCardTabPanel value={value} index={1}>
           <CippCustomVariables id={id} />
+        </CippCardTabPanel>
+        <CippCardTabPanel value={value} index={2}>
+          <Grid container spacing={2} sx={{ my: 2, px: 2 }}>
+            <Grid size={{ xs: 12 }}>
+              <Stack spacing={3}>
+                <Typography variant="h6">Tenant-Specific Offboarding Defaults</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Configure default offboarding settings specifically for this tenant. These settings will override user defaults when offboarding users in this tenant.
+                </Typography>
+                
+                <CippFormSection
+                  relatedQueryKeys={[`TenantProperties_${id}`]}
+                  formControl={offboardingFormControl}
+                  title="Tenant Offboarding Defaults"
+                  postUrl="/api/EditTenantOffboardingDefaults"
+                  customDataformatter={(values) => {
+                    const offboardingSettings = values.offboardingDefaults || values;
+                    return {
+                      customerId: id,
+                      offboardingDefaults: offboardingSettings,
+                    };
+                  }}
+                  hideTitle={true}
+                >
+                  <CippOffboardingDefaultSettings 
+                    formControl={offboardingFormControl}
+                    title="Tenant Offboarding Defaults"
+                  />
+                  
+                  <Box sx={{ mt: 2 }}>
+                    <Button 
+                      variant="outlined" 
+                      onClick={handleResetOffboardingDefaults}
+                      sx={{ mr: 2 }}
+                    >
+                      Reset All to Off
+                    </Button>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Click "Reset All to Off" to turn off all options, then click "Save" to clear tenant defaults.
+                    </Typography>
+                  </Box>
+                </CippFormSection>
+              </Stack>
+            </Grid>
+          </Grid>
         </CippCardTabPanel>
       </Box>
     </CippPageCard>

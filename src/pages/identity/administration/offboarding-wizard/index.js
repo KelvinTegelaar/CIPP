@@ -16,6 +16,7 @@ const Page = () => {
       componentProps: {
         allTenants: false,
         type: "single",
+        includeOffboardingDefaults: true,
       },
     },
     {
