@@ -4813,5 +4813,37 @@
     "addedDate": "2025-06-19",
     "powershellEquivalent": "Set-User -Identity $user -RemotePowerShellEnabled $false",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.OWAAttachmentRestrictions",
+    "cat": "Exchange Standards",
+    "tag": ["CIS M365 5.0 (6.1.2)", "Security", "NIST CSF 2.0 (PR.AA-05)"],
+    "helpText": "Restricts how users on unmanaged devices can interact with email attachments in Outlook on the web and new Outlook for Windows. Prevents downloading attachments or blocks viewing them entirely.",
+    "docsDescription": "This standard configures the OWA mailbox policy to restrict access to email attachments on unmanaged devices. Users can be prevented from downloading attachments (but can view/edit via Office Online) or blocked from seeing attachments entirely. This helps prevent data exfiltration through email attachments on devices not managed by the organization.",
+    "executiveText": "Restricts access to email attachments on personal or unmanaged devices while allowing full functionality on corporate-managed devices. This security measure prevents data theft through email attachments while maintaining productivity for employees using approved company devices.",
+    "addedComponent": [
+      {
+        "type": "select",
+        "name": "standards.OWAAttachmentRestrictions.ConditionalAccessPolicy",
+        "label": "Attachment Restriction Policy",
+        "options": [
+          {
+            "label": "Read Only (View/Edit via Office Online, no download)",
+            "value": "ReadOnly"
+          },
+          {
+            "label": "Read Only Plus Attachments Blocked (Cannot see attachments)",
+            "value": "ReadOnlyPlusAttachmentsBlocked"
+          }
+        ],
+        "defaultValue": "ReadOnlyPlusAttachmentsBlocked"
+      }
+    ],
+    "label": "Restrict Email Attachments on Unmanaged Devices",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-08-22",
+    "powershellEquivalent": "Set-OwaMailboxPolicy -Identity \"OwaMailboxPolicy-Default\" -ConditionalAccessPolicy ReadOnlyPlusAttachmentsBlocked",
+    "recommendedBy": ["Microsoft Zero Trust", "CIPP"]
   }
 ]
