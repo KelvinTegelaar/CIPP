@@ -1,4 +1,4 @@
-import { DeveloperMode, SevereCold, Sync, Tune, ViewColumn } from "@mui/icons-material";
+import { DeveloperMode, FilterList, SevereCold, Sync, Tune, ViewColumn } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -71,6 +71,7 @@ export const CIPPTableToptoolbar = ({
   const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(queryKey || title);
   const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
   const [filterCanvasVisible, setFilterCanvasVisible] = useState(false);
+  const [activeFilterName, setActiveFilterName] = useState(null);
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = useSettings()?.currentTenant;
   const queryClient = useQueryClient();
@@ -100,12 +101,16 @@ export const CIPPTableToptoolbar = ({
   // Sync currentEffectiveQueryKey with queryKey prop changes (e.g., tenant changes)
   useEffect(() => {
     setCurrentEffectiveQueryKey(queryKey || title);
+    // Clear active filter name when query key changes (page load, tenant change, etc.)
+    setActiveFilterName(null);
   }, [queryKey, title]);
 
   //if the currentTenant Switches, remove Graph filters
   useEffect(() => {
     if (currentTenant) {
       setGraphFilterData({});
+      // Clear active filter name when tenant changes
+      setActiveFilterName(null);
     }
   }, [currentTenant]);
 
@@ -198,10 +203,12 @@ export const CIPPTableToptoolbar = ({
   const setTableFilter = (filter, filterType, filterName) => {
     if (filterType === "global" || filterType === undefined) {
       table.setGlobalFilter(filter);
+      setActiveFilterName(filterName);
     }
     if (filterType === "column") {
       table.setShowColumnFilters(true);
       table.setColumnFilters(filter);
+      setActiveFilterName(filterName);
     }
     if (filterType === "reset") {
       table.resetGlobalFilter();
@@ -211,6 +218,7 @@ export const CIPPTableToptoolbar = ({
         resetToDefaultVisibility();
       }
       setCurrentEffectiveQueryKey(queryKey || title); // Reset to original query key
+      setActiveFilterName(null); // Clear active filter
     }
     if (filterType === "graph") {
       const filterProps = [
@@ -239,6 +247,7 @@ export const CIPPTableToptoolbar = ({
         queryKey: newQueryKey,
       });
       setCurrentEffectiveQueryKey(newQueryKey);
+      setActiveFilterName(filterName); // Track active graph filter
       if (filter?.$select) {
         let selectedColumns = [];
         if (Array.isArray(filter?.$select)) {
@@ -376,8 +385,16 @@ export const CIPPTableToptoolbar = ({
               </div>
             </Tooltip>
             <MRT_GlobalFilterTextField table={table} />
-            <Tooltip title="Preset Filters">
-              <IconButton onClick={filterPopover.handleOpen} ref={filterPopover.anchorRef}>
+            <Tooltip
+              title={activeFilterName ? `Active Filter: ${activeFilterName}` : "Preset Filters"}
+            >
+              <IconButton
+                onClick={filterPopover.handleOpen}
+                ref={filterPopover.anchorRef}
+                sx={{
+                  color: activeFilterName ? "primary.main" : "",
+                }}
+              >
                 <SvgIcon>
                   <Tune />
                 </SvgIcon>
