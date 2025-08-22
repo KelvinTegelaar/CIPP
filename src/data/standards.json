@@ -4823,7 +4823,7 @@
     "executiveText": "Restricts access to email attachments on personal or unmanaged devices while allowing full functionality on corporate-managed devices. This security measure prevents data theft through email attachments while maintaining productivity for employees using approved company devices.",
     "addedComponent": [
       {
-        "type": "select",
+        "type": "autoComplete",
         "name": "standards.OWAAttachmentRestrictions.ConditionalAccessPolicy",
         "label": "Attachment Restriction Policy",
         "options": [
