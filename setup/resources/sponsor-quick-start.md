@@ -20,7 +20,7 @@ If you've started the sponsorship process and are ready to enhance your manageme
 3. **Configure CIPP Deployment:** Login to your [management portal](https://management.cipp.app) using the GitHub credentials you used to initiate the sponsorship. This is where you can kick off your deployment, add custom domain names, and begin inviting users into CIPP. <mark style="color:yellow;">NOTE: If you sponsor with an organization GitHub account, please send in a message to helpdesk@cyberdrain.com with your personal GitHub username so that we can manually add that user to the portal. You cannot log in to the management portal with organization accounts.</mark>
 4. **Service Account Creation**: Follow the instructions carefully on the [creating-the-cipp-service-account-gdap-ready.md](../installation/creating-the-cipp-service-account-gdap-ready.md "mention")page to ensure there are no permission issues when connecting your tenants within CIPP in the subsequent steps.
 
-## Accessing CIPP & Executing SAM Wizard
+## Accessing CIPP & Executing Setup Wizard
 
 5. **Add Yourself to CIPP:** On the [User Management](https://management.cipp.app/invite-users) page in your management portal, ensure you've invited your work account as an `admin` into your newly deployed instance to avoid `403 Forbidden` errors during login. Further guidance can be found on the [roles.md](../installation/roles.md "mention") page.
 6. **Execute Setup Wizard:** Follow the instructions on the [Executing the Setup Wizard](../installation/executing-the-setup-wizard.md) page once logged into your CIPP instance using your newly invited account, **NOT** the service account. The service account is only used during specific configuration steps within the Setup Wizard.

@@ -187,7 +187,7 @@ To ensure full functionality of CIPP, follow these steps to add the necessary AP
 
 This error occurs because the user who authorized the CSP or Graph API connection has had their password changed, sessions revoked, or account disabled. Reauthorization is required.
 
-**To resolve this,** e**xecute the SAM Wizard with Option 4:**
+**To resolve this,** e**xecute the Setup Wizard with Option 4:**
 
 * Go to CIPP -> Application Settings -> [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention").
 * Select "Refresh Tokens for existing application registration"
