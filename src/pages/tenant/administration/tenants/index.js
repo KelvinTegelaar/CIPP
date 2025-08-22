@@ -18,6 +18,8 @@ const Page = () => {
     "portal_intune",
     "portal_security",
     "portal_compliance",
+    "portal_platform",
+    "portal_bi",
   ];
 
   const actions = [
