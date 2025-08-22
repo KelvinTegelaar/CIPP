@@ -352,11 +352,48 @@ export const CippUserActions = () => {
             data: { type: "SharePointSiteUsage", URLOnly: true },
             labelField: "webUrl",
             valueField: "webUrl",
+            addedField: {
+              siteId: "siteId",
+            },
             queryKey: `sharepointSites-${tenant}`,
           },
         },
+        {
+          type: "autoComplete",
+          name: "libraryId",
+          label: "Select Document Library (optional - defaults to Documents)",
+          multiple: false,
+          creatable: false,
+          dependsOn: "siteUrl",
+          api: {
+            url: "/api/ListGraphRequest",
+            dataKey: "Results",
+            labelField: "name",
+            valueField: "id",
+            data: (formValues) => {
+              if (!formValues?.siteUrl?.addedFields?.siteId) {
+                return null; // This will prevent the API call
+              }
+              
+              const siteId = formValues.siteUrl.addedFields.siteId;
+              
+              return {
+                Endpoint: `sites/${siteId}/drives`,
+                $select: "id,name,driveType,webUrl",
+              };
+            },
+            queryKey: (formValues) => {
+              if (!formValues?.siteUrl?.addedFields?.siteId) {
+                return null; // This will prevent caching issues
+              }
+              
+              const siteId = formValues.siteUrl.addedFields.siteId;
+              return `libraries-${tenant}-${siteId}`;
+            },
+          },
+        },
       ],
-      confirmText: "Select a SharePoint site to create a shortcut for:",
+      confirmText: "Select a SharePoint site and document library to create a shortcut for:",
       multiPost: false,
       condition: () => canWriteUser,
     },
