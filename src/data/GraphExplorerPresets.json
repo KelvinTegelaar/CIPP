@@ -34,7 +34,7 @@
     "id": "e7fdc49a-72a9-4a70-9dbf-a74152495d80",
     "params": {
       "endpoint": "/devices",
-      "$select": "deviceId,DisplayName,profileType,registrationDateTime,trustType",
+      "$select": "deviceId,displayName,profileType,registrationDateTime,trustType",
       "$filter": ""
     },
     "isBuiltin": true
@@ -44,7 +44,7 @@
     "id": "f1844e3d-cb3e-4611-9bab-f5f42169bcd0",
     "params": {
       "endpoint": "/contacts",
-      "$select": "CompanyName,DisplayName,Mail,ProxyAddresses",
+      "$select": "companyName,displayName,mail,proxyAddresses",
       "$filter": ""
     },
     "isBuiltin": true
@@ -149,6 +149,15 @@
     "params": {
       "endpoint": "organization/%tenantid%/branding",
       "NoPagination": true
+    },
+    "isBuiltin": true
+  },
+  {
+    "name": "User Report with Sign in Activity (Entra ID P1+)",
+    "id": "7a44a7cf-bf40-4a8a-8eaa-ffd8203f3216",
+    "params": {
+      "endpoint": "users",
+      "$select": "id,displayName,userprincipalname,accountEnabled,mail,proxyAddresses,createdDateTime,signInActivity.lastSuccessfulSignInDateTime"
     },
     "isBuiltin": true
   }
