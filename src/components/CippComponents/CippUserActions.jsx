@@ -435,7 +435,7 @@ export const CippUserActions = () => {
       },
       confirmText: "Are you sure you want to clear the Immutable ID for [userPrincipalName]?",
       multiPost: false,
-      condition: (row) => !row.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
+      condition: (row) => !row?.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
     },
     {
       label: "Revoke all user sessions",
@@ -465,17 +465,19 @@ export const CippUserActions = () => {
       customFunction: (users, action, formData) => {
         // Handle both single user and multiple users
         const userData = Array.isArray(users) ? users : [users];
-        
+
         // Store users in session storage to avoid URL length limits
-        sessionStorage.setItem('patchWizardUsers', JSON.stringify(userData));
-        
+        sessionStorage.setItem("patchWizardUsers", JSON.stringify(userData));
+
         // Use Next.js router for internal navigation
-        import('next/router').then(({ default: router }) => {
-          router.push('/identity/administration/users/patch-wizard');
-        }).catch(() => {
-          // Fallback to window.location if router is not available
-          window.location.href = '/identity/administration/users/patch-wizard';
-        });
+        import("next/router")
+          .then(({ default: router }) => {
+            router.push("/identity/administration/users/patch-wizard");
+          })
+          .catch(() => {
+            // Fallback to window.location if router is not available
+            window.location.href = "/identity/administration/users/patch-wizard";
+          });
       },
       condition: () => canWriteUser,
     },

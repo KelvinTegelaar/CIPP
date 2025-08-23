@@ -1,9 +1,9 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Book, RocketLaunch } from "@mui/icons-material";
+import { Book } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { PermissionButton } from "/src/utils/permissions.js";
-import Link from "next/link";
+import { CippPolicyDeployDrawer } from "/src/components/CippComponents/CippPolicyDeployDrawer.jsx";
 
 const Page = () => {
   const pageTitle = "App Protection & Configuration Policies";
@@ -62,14 +62,11 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       cardButton={
-        <PermissionButton
+        <CippPolicyDeployDrawer
+          buttonText="Deploy Policy"
           requiredPermissions={cardButtonPermissions}
-          component={Link}
-          href="/endpoint/MEM/add-policy"
-          startIcon={<RocketLaunch />}
-        >
-          Deploy Policy
-        </PermissionButton>
+          PermissionButton={PermissionButton}
+        />
       }
     />
   );

@@ -70,7 +70,7 @@ const Page = () => {
             <Grid size={{ xs: 8 }}>
               <CippButtonCard title="Tenant Lookup Results">
                 <Grid container spacing={2}>
-                  <Grid size={{ xs: 6 }}>
+                  <Grid size={{ xs: 12 }}>
                     <Typography variant="body1">
                       <strong>Tenant Name:</strong> {domain}
                     </Typography>
@@ -86,20 +86,6 @@ const Page = () => {
                       {getTenant.data?.GraphRequest?.federationBrandName
                         ? getTenant.data?.GraphRequest?.federationBrandName
                         : "N/A"}
-                    </Typography>
-                  </Grid>
-                  <Grid size={{ xs: 6 }}>
-                    <Typography variant="body1">
-                      <strong>domains:</strong>
-                    </Typography>
-                    <Typography variant="body1">
-                      {getTenant.data?.Domains?.map((domain, index) => (
-                        <li key={index}>
-                          <Link href={`https://${domain}`} target="_blank">
-                            {domain}
-                          </Link>
-                        </li>
-                      ))}
                     </Typography>
                   </Grid>
                 </Grid>

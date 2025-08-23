@@ -5,6 +5,7 @@ import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { Delete, GitHub, Edit } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";
 import Link from "next/link";
+import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
 
 const Page = () => {
   const pageTitle = "Available Conditional Access Templates";
@@ -84,11 +85,15 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListCATemplates"
+      queryKey="ListCATemplates-table"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={["displayName", "GUID"]}
       cardButton={
-        <Button key="template-lib" href="/cipp/template-library" title="Add Template Library" />
+        <>
+          <Button key="template-lib" href="/cipp/template-library" title="Add Template Library" />
+          <CippPolicyImportDrawer mode="ConditionalAccess" />
+        </>
       }
     />
   );
