@@ -19,7 +19,7 @@ We recommend that this user be your break glass CIPP `superadmin` account while 
   * Go to the Azure Portal.
   * Go to your CIPP Resource Group.
   * Select your CIPP Static Web App `CIPP-SWA-XXXX`.
-  * Select **Role Management** (Not IAM Role Management).
+  * Under Settings, Select **Role Management** (Not IAM Role Management).
   * Select **invite user**.
   * Add the roles for the user. Multiple roles can be applied to the same user.&#x20;
 
