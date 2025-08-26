@@ -4845,5 +4845,18 @@
     "addedDate": "2025-08-22",
     "powershellEquivalent": "Set-OwaMailboxPolicy -Identity \"OwaMailboxPolicy-Default\" -ConditionalAccessPolicy ReadOnlyPlusAttachmentsBlocked",
     "recommendedBy": ["Microsoft Zero Trust", "CIPP"]
+  },
+  {
+    "name": "standards.LegacyEmailReportAddins",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Removes legacy Report Phishing and Report Message Outlook add-ins.",
+    "executiveText": "The legacy Report Phishing and Report Message Outlook add-ins are security issues with the add-in which makes them unsafe for the organization.",
+    "label": "Remove legacy Outlook Report add-ins",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-08-26",
+    "powershellEquivalent": "None",
+    "recommendedBy": ["Microsoft"]
   }
 ]
