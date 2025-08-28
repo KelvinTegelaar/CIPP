@@ -6,7 +6,7 @@ import { LaptopMac, Sync } from "@mui/icons-material";
 import { CippApplicationDeployDrawer } from "/src/components/CippComponents/CippApplicationDeployDrawer";
 import { Button, Box } from "@mui/material";
 import { useSettings } from "/src/hooks/use-settings.js";
-import { useDialog } from "../../../../hooks/use-dialog";
+import { useDialog } from "/src/hooks/use-dialog.js";
 
 const Page = () => {
   const pageTitle = "Applications";
