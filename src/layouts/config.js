@@ -302,6 +302,11 @@ export const nativeMenuItems = [
             path: "/security/incidents/list-alerts",
             permissions: ["Security.Alert.*"],
           },
+          {
+            title: "MDO Alerts",
+            path: "/security/incidents/list-mdo-alerts",
+            permissions: ["Security.Alert.*"],
+          },
         ],
       },
       {
