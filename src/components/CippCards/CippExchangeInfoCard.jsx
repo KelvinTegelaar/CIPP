@@ -60,7 +60,7 @@ export const CippExchangeInfoCard = (props) => {
           </Stack>
         }
       />
-      {exchangeData?.BlockedForSpam ? (
+      {exchangeData?.BlockedForSpam === true ? (
         <Alert severity="warning" sx={{ mx: 2, mt: 2, mb: 2 }}>
           This mailbox is currently blocked for spam.
         </Alert>
@@ -99,6 +99,14 @@ export const CippExchangeInfoCard = (props) => {
                   </Typography>
                   <Typography variant="inherit">
                     {getCippFormatting(exchangeData?.BlockedForSpam, "BlockedForSpam")}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12, md: 12 }}>
+                  <Typography variant="inherit" color="text.primary" gutterBottom>
+                    Retention Policy:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {getCippFormatting(exchangeData?.RetentionPolicy, "RetentionPolicy")}
                   </Typography>
                 </Grid>
               </Grid>
