@@ -1,8 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import Link from "next/link";
-import { AccountCircle, Delete } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippAutopilotProfileDrawer } from "/src/components/CippComponents/CippAutopilotProfileDrawer";
 
