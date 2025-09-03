@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 const Page = () => {
   const settings = useSettings();
   const [initialUserType, setInitialUserType] = useState(null);
-  
+
   // Default portal links configuration
   const defaultPortalLinks = {
     M365_Portal: true,
@@ -32,7 +32,7 @@ const Page = () => {
     Power_Platform_Portal: true,
     Power_BI_Portal: true,
   };
-  
+
   const auth = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
@@ -48,9 +48,10 @@ const Page = () => {
   // Determine if we have user-specific settings and set initial user type
   useEffect(() => {
     if (cleanedSettings && auth.data?.clientPrincipal?.userDetails && initialUserType === null) {
-      const hasUserSpecificSettings = cleanedSettings.UserSpecificSettings && 
+      const hasUserSpecificSettings =
+        cleanedSettings.UserSpecificSettings &&
         Object.keys(cleanedSettings.UserSpecificSettings).length > 0;
-      
+
       setInitialUserType(hasUserSpecificSettings ? "currentUser" : "allUsers");
     }
   }, [cleanedSettings, auth.data?.clientPrincipal?.userDetails, initialUserType]);
@@ -66,7 +67,7 @@ const Page = () => {
       // Merge with defaults to ensure all keys exist
       return { ...defaultPortalLinks, ...cleanedSettings.UserSpecificSettings.portalLinks };
     }
-    
+
     // Use global settings or defaults
     return { ...defaultPortalLinks, ...cleanedSettings.portalLinks };
   };
@@ -74,44 +75,48 @@ const Page = () => {
   // Set up initial form values with proper user selector default
   const initialFormValues = {
     ...cleanedSettings,
-    user: initialUserType === "currentUser" ? {
-      label: "Current User",
-      value: auth.data?.clientPrincipal?.userDetails || "currentUser",
-    } : {
-      label: "All Users", 
-      value: "allUsers"
-    },
-    portalLinks: getInitialPortalLinks()
+    user:
+      initialUserType === "currentUser"
+        ? {
+            label: "Current User",
+            value: auth.data?.clientPrincipal?.userDetails || "currentUser",
+          }
+        : {
+            label: "All Users",
+            value: "allUsers",
+          },
+    portalLinks: getInitialPortalLinks(),
   };
 
-  const formcontrol = useForm({ 
-    mode: "onChange", 
-    defaultValues: initialFormValues 
+  const formcontrol = useForm({
+    mode: "onChange",
+    defaultValues: initialFormValues,
   });
 
   // Watch the user selector to determine which settings to show
-  const selectedUser = useWatch({ 
-    control: formcontrol.control, 
-    name: "user" 
+  const selectedUser = useWatch({
+    control: formcontrol.control,
+    name: "user",
   });
 
   // Update form when initial user type is determined
   useEffect(() => {
     if (initialUserType !== null && auth.data?.clientPrincipal?.userDetails) {
-      const userValue = initialUserType === "currentUser" 
-        ? {
-            label: "Current User",
-            value: auth.data.clientPrincipal.userDetails,
-          }
-        : {
-            label: "All Users",
-            value: "allUsers"
-          };
-      
+      const userValue =
+        initialUserType === "currentUser"
+          ? {
+              label: "Current User",
+              value: auth.data.clientPrincipal.userDetails,
+            }
+          : {
+              label: "All Users",
+              value: "allUsers",
+            };
+
       const newFormValues = {
         ...cleanedSettings,
         user: userValue,
-        portalLinks: getInitialPortalLinks()
+        portalLinks: getInitialPortalLinks(),
       };
 
       // Reset the entire form with new values
@@ -136,14 +141,14 @@ const Page = () => {
 
       const newPortalLinks = getPortalLinksForUserType();
       const currentPortalLinks = formcontrol.getValues("portalLinks");
-      
+
       // Only update if the portal links actually changed
       if (JSON.stringify(currentPortalLinks) !== JSON.stringify(newPortalLinks)) {
         // Reset form with updated portal links but preserve other values
         const currentValues = formcontrol.getValues();
         formcontrol.reset({
           ...currentValues,
-          portalLinks: newPortalLinks
+          portalLinks: newPortalLinks,
         });
       }
     }
@@ -169,7 +174,7 @@ const Page = () => {
     { value: "100", label: "100" },
     { value: "250", label: "250" },
   ];
-  
+
   const languageListOptions = countryList.map((language) => {
     return { value: language.Code, label: language.Name };
   });
@@ -294,6 +299,16 @@ const Page = () => {
                             />
                           ),
                         },
+                        {
+                          label: "Save last used table filter",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="persistFilters"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
                       ]}
                     />
                     <CippOffboardingDefaultSettings formControl={formcontrol} />
@@ -312,7 +327,10 @@ const Page = () => {
                       showDivider={false}
                     />
 
-                    <CippSettingsSideBar formcontrol={formcontrol} initialUserType={initialUserType} />
+                    <CippSettingsSideBar
+                      formcontrol={formcontrol}
+                      initialUserType={initialUserType}
+                    />
                     <CippDevOptions />
                     <CippPropertyListCard
                       layout="two"

@@ -22,7 +22,7 @@ import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outl
 import { usePopover } from "../../hooks/use-popover";
 import { CSVExportButton } from "../csvExportButton";
 import { useDialog } from "../../hooks/use-dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { useSettings } from "../../hooks/use-settings";
@@ -73,8 +73,11 @@ export const CIPPTableToptoolbar = ({
   const [filterCanvasVisible, setFilterCanvasVisible] = useState(false);
   const [activeFilterName, setActiveFilterName] = useState(null);
   const pageName = router.pathname.split("/").slice(1).join("/");
-  const currentTenant = useSettings()?.currentTenant;
+  const currentTenant = settings?.currentTenant;
   const queryClient = useQueryClient();
+
+  // Track if we've restored filters for this page to prevent infinite loops
+  const restoredFiltersRef = useRef(new Set());
 
   const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
   const handleActionMenuOpen = (event) => setActionMenuAnchor(event.currentTarget);
@@ -111,8 +114,11 @@ export const CIPPTableToptoolbar = ({
       setGraphFilterData({});
       // Clear active filter name when tenant changes
       setActiveFilterName(null);
+      // Clear restoration tracking so saved filters can be re-applied
+      const restorationKey = `${pageName}-graph`;
+      restoredFiltersRef.current.delete(restorationKey);
     }
-  }, [currentTenant]);
+  }, [currentTenant, pageName]);
 
   //useEffect to set the column visibility to the preferred columns if they exist
   useEffect(() => {
@@ -127,6 +133,104 @@ export const CIPPTableToptoolbar = ({
   useEffect(() => {
     setOriginalSimpleColumns(simpleColumns);
   }, [simpleColumns]);
+
+  // Early restoration of graph filters (before API call) - run only once per page
+  useEffect(() => {
+    const restorationKey = `${pageName}-graph`;
+
+    if (
+      settings.persistFilters &&
+      settings.lastUsedFilters &&
+      settings.lastUsedFilters[pageName] &&
+      api?.url === "/api/ListGraphRequest" && // Only for graph requests
+      !restoredFiltersRef.current.has(restorationKey) // Only if not already restored
+    ) {
+      const last = settings.lastUsedFilters[pageName];
+      if (last.type === "graph") {
+        console.log("Early restoring graph filter:", last, "for page:", pageName);
+
+        // Mark as restored to prevent infinite loops
+        restoredFiltersRef.current.add(restorationKey);
+
+        // Directly set the graph filter data without calling setTableFilter to avoid loops
+        const filterProps = [
+          "$filter",
+          "$select",
+          "$expand",
+          "$orderby",
+          "$count",
+          "$search",
+          "ReverseTenantLookup",
+          "ReverseTenantLookupProperty",
+          "AsApp",
+        ];
+        const graphFilter = filterProps.reduce((acc, prop) => {
+          if (last.value[prop]) {
+            acc[prop] = last.value[prop];
+          }
+          return acc;
+        }, {});
+
+        const newQueryKey = `${queryKey ? queryKey : title}-${last.name}`;
+        setGraphFilterData({
+          data: { ...mergeCaseInsensitive(api.data, graphFilter) },
+          queryKey: newQueryKey,
+        });
+        setCurrentEffectiveQueryKey(newQueryKey);
+        setActiveFilterName(last.name);
+      }
+    }
+  }, [settings.persistFilters, settings.lastUsedFilters, pageName, api?.url, queryKey, title]);
+
+  // Clear restoration tracking when page changes
+  useEffect(() => {
+    restoredFiltersRef.current.clear();
+  }, [pageName]);
+
+  // Restore last used filter on mount if persistFilters is enabled (non-graph filters)
+  useEffect(() => {
+    // Wait for table to be initialized and data to be available
+    if (
+      settings.persistFilters &&
+      settings.lastUsedFilters &&
+      settings.lastUsedFilters[pageName] &&
+      table &&
+      usedColumns.length > 0 &&
+      !getRequestData?.isFetching
+    ) {
+      // Use setTimeout to ensure the table is fully rendered
+      const timeoutId = setTimeout(() => {
+        const last = settings.lastUsedFilters[pageName];
+        console.log("Restoring filter:", last, "for page:", pageName);
+
+        if (last.type === "global") {
+          table.setGlobalFilter(last.value);
+          setActiveFilterName(last.name);
+        } else if (last.type === "column") {
+          // Only apply if all filter columns exist in the current table
+          const allColumns = table.getAllColumns().map((col) => col.id);
+          const filterColumns = Array.isArray(last.value) ? last.value.map((f) => f.id) : [];
+          const allExist = filterColumns.every((colId) => allColumns.includes(colId));
+          console.log("Column filter check:", { allColumns, filterColumns, allExist });
+          if (allExist) {
+            table.setShowColumnFilters(true);
+            table.setColumnFilters(last.value);
+            setActiveFilterName(last.name);
+          }
+        }
+        // Note: graph filters are handled in the earlier useEffect
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [
+    settings.persistFilters,
+    settings.lastUsedFilters,
+    pageName,
+    table,
+    usedColumns,
+    getRequestData?.isFetching,
+  ]);
 
   const presetList = ApiGetCall({
     url: "/api/ListGraphExplorerPresets",
@@ -204,11 +308,17 @@ export const CIPPTableToptoolbar = ({
     if (filterType === "global" || filterType === undefined) {
       table.setGlobalFilter(filter);
       setActiveFilterName(filterName);
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "global", value: filter, name: filterName });
+      }
     }
     if (filterType === "column") {
       table.setShowColumnFilters(true);
       table.setColumnFilters(filter);
       setActiveFilterName(filterName);
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "column", value: filter, name: filterName });
+      }
     }
     if (filterType === "reset") {
       table.resetGlobalFilter();
@@ -248,6 +358,9 @@ export const CIPPTableToptoolbar = ({
       });
       setCurrentEffectiveQueryKey(newQueryKey);
       setActiveFilterName(filterName); // Track active graph filter
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "graph", value: filter, name: filterName });
+      }
       if (filter?.$select) {
         let selectedColumns = [];
         if (Array.isArray(filter?.$select)) {
