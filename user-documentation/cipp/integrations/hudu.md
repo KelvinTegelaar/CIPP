@@ -29,8 +29,8 @@ In order for CIPP to access your Hudu asset layouts, a **global** API key must b
 
 You should now be ready to configure settings inside CIPP
 
-1. Inside CIPP browse to **Settings** -> **CIPP** -> **Extension Settings**
-2. Select the **Hudu** tab.
+1. Inside CIPP browse to **CIPP** -> **Integrations**
+2. Select **Hudu**.
 3. Please enter the FQDN you use to connect to Hudu:
    * https://yoursubdomain.huducloud.com or a self hosted address
 4. Enter the API Key you created in Hudu.

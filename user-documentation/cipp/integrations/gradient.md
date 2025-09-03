@@ -21,12 +21,13 @@ For the latest version of this documentation you can check out Gradient's docume
 
 **Step 2: Connect the Integration**
 
-1. Login to CIPP and navigate to the Extensions tab.
-2. Enter the Gradient Vendor and Partner API Keys. Set the checkbox for "Enable Integration".
-3. Click on "Test Connection" to see if you've entered the keys correctly.
-4. After entering the keys, you can force the first sync.
-5. Navigate back to Synthesize and click the Status Refresh button for the CIPP integration.
-6. Press Next to complete the service and account mapping.
+1. Login to CIPP and navigate to **CIPP** -> **Integrations**.
+2. Select **Gradient**.
+3. Enter the Gradient Vendor and Partner API Keys. Set the checkbox for "Enable Integration".
+4. Click on "Test Connection" to see if you've entered the keys correctly.
+5. After entering the keys, you can force the first sync.
+6. Navigate back to Synthesize and click the Status Refresh button for the CIPP integration.
+7. Press Next to complete the service and account mapping.
 
 ***
 
