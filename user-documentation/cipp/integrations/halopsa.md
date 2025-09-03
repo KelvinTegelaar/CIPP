@@ -22,7 +22,7 @@ description: Configuring the Halo PSA Ticketing integration
 
 #### Configure the HaloPSA Integration in CIPP
 
-1. In your CIPP instance head to **CIPP** > **Integrations** > **HALOPSA**
+1. In your CIPP instance head to **CIPP** > **Integrations** > **HaloPSA**
 2. Enter your HaloPSA URL in the **HaloPSA Resource Server URL** field adding /api at the end, for example _https://yourcompany.halopsa.com/api_
 3. Enter your HaloPSA URL in the **HaloPSA Authorisation Endpoint URL** field adding /auth at the end, for example _https://yourcompany.halopsa.com/auth_
 4. If you are self-hosting Halo, you can leave the HaloPSA Tenant blank, otherwise enter the first part of your HaloPSA URL in the \***HaloPSA Tenant** field, for example _yourcompany_

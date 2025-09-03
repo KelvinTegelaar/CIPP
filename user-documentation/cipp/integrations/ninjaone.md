@@ -65,7 +65,7 @@ To add the custom fields:
 
 You should now be ready to configure settings inside CIPP
 
-1. Inside CIPP browse to **Settings** -> **CIPP** -> **Extension Settings**
+1. Inside CIPP browse to **CIPP** -> **Integrations**
 2. Select the **NinjaOne** tab.
 3. Please enter the instance name you use to connect to NinjaOne:
    * app.ninjarmm.com
