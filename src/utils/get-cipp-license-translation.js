@@ -6,6 +6,10 @@ export const getCippLicenseTranslation = (licenseArray) => {
   const M365Licenses = [...M365LicensesDefault, ...M365LicensesAdditional];
   let licenses = [];
 
+  if (Array.isArray(licenseArray) && typeof licenseArray[0] === "string") {
+    return licenseArray;
+  }
+
   if (!Array.isArray(licenseArray) && typeof licenseArray === "object") {
     licenseArray = [licenseArray];
   }
