@@ -254,7 +254,7 @@ const Page = () => {
                       title="General Settings"
                       propertyItems={[
                         {
-                          label: "Default new user usage location",
+                          label: "Default usage location for users",
                           value: (
                             <CippFormComponent
                               type="autoComplete"
