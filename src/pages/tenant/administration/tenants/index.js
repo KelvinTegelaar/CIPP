@@ -13,6 +13,7 @@ const Page = () => {
     "portal_m365",
     "portal_exchange",
     "portal_entra",
+    "portal_sharepoint",
     "portal_teams",
     "portal_azure",
     "portal_intune",
