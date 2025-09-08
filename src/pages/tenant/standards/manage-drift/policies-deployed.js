@@ -7,8 +7,6 @@ import {
   AdminPanelSettings,
   Devices,
   ExpandMore,
-  Sync,
-  PlayArrow,
 } from "@mui/icons-material";
 import {
   Box,
@@ -25,6 +23,7 @@ import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { CippHead } from "/src/components/CippComponents/CippHead";
 import { ApiGetCall } from "/src/api/ApiCall";
 import standardsData from "/src/data/standards.json";
+import { createDriftManagementActions } from "./driftManagementActions";
 
 const PoliciesDeployedPage = () => {
   const userSettingsDefaults = useSettings();
@@ -233,45 +232,14 @@ const PoliciesDeployedPage = () => {
       };
     }
   );
-  const actions = [
-    {
-      label: "Refresh Data",
-      icon: <Sync />,
-      noConfirm: true,
-      customFunction: () => {
-        standardsApi.refetch();
-        comparisonApi.refetch();
-        driftApi.refetch();
-      },
+  const actions = createDriftManagementActions({
+    templateId,
+    onRefresh: () => {
+      standardsApi.refetch();
+      comparisonApi.refetch();
+      driftApi.refetch();
     },
-    ...(templateId
-      ? [
-          {
-            label: "Run Standard Now (Currently Selected Tenant only)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-          {
-            label: "Run Standard Now (All Tenants in Template)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-              tenantFilter: "allTenants",
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-        ]
-      : []),
-  ];
+  });
   const title = "Manage Drift";
   const subtitle = [
     {

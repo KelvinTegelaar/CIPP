@@ -1,7 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
-import { Policy, Restore, ExpandMore, Sync, PlayArrow } from "@mui/icons-material";
+import { Policy, Restore, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Stack,
@@ -13,7 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions.json";
@@ -22,6 +21,7 @@ import { CippHead } from "/src/components/CippComponents/CippHead";
 import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
 import { ApiPostCall } from "/src/api/ApiCall";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
+import { createDriftManagementActions } from "./driftManagementActions";
 
 const RecoverPoliciesPage = () => {
   const router = useRouter();
@@ -78,43 +78,12 @@ const RecoverPoliciesPage = () => {
   };
 
   // Actions for the ActionsMenu
-  const actions = [
-    {
-      label: "Refresh Data",
-      icon: <Sync />,
-      noConfirm: true,
-      customFunction: () => {
-        // Refresh any relevant data here
-      },
+  const actions = createDriftManagementActions({
+    templateId,
+    onRefresh: () => {
+      // Refresh any relevant data here
     },
-    ...(templateId
-      ? [
-          {
-            label: "Run Standard Now (Currently Selected Tenant only)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-          {
-            label: "Run Standard Now (All Tenants in Template)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-              tenantFilter: "allTenants",
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-        ]
-      : []),
-  ];
+  });
 
   const title = "Manage Drift";
   const subtitle = [

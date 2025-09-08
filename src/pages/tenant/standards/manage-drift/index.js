@@ -5,7 +5,6 @@ import {
   Warning,
   ExpandMore,
   CheckCircle,
-  Sync,
   Block,
   Science,
   CheckBox,
@@ -14,7 +13,6 @@ import {
   Error,
   Info,
   FactCheck,
-  PlayArrow,
 } from "@mui/icons-material";
 import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon } from "@mui/material";
 import { Grid } from "@mui/system";
@@ -29,6 +27,7 @@ import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
 import { useDialog } from "/src/hooks/use-dialog";
 import tabOptions from "./tabOptions.json";
 import standardsData from "/src/data/standards.json";
+import { createDriftManagementActions } from "./driftManagementActions";
 
 const ManageDriftPage = () => {
   const router = useRouter();
@@ -496,47 +495,16 @@ const ManageDriftPage = () => {
   };
 
   // Actions for the ActionsMenu
-  const actions = [
-    {
-      label: "Refresh Data",
-      icon: <Sync />,
-      noConfirm: true,
-      customFunction: () => {
-        driftApi.refetch();
-        standardsApi.refetch();
-        if (templateId) {
-          comparisonApi.refetch();
-        }
-      },
+  const actions = createDriftManagementActions({
+    templateId,
+    onRefresh: () => {
+      driftApi.refetch();
+      standardsApi.refetch();
+      if (templateId) {
+        comparisonApi.refetch();
+      }
     },
-    ...(templateId
-      ? [
-          {
-            label: "Run Standard Now (Currently Selected Tenant only)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-          {
-            label: "Run Standard Now (All Tenants in Template)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-              tenantFilter: "allTenants",
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-        ]
-      : []),
-  ];
+  });
 
   // Add action buttons to each deviation item
   const deviationItemsWithActions = deviationItems.map((item) => {
