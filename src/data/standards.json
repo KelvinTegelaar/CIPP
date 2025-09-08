@@ -4437,14 +4437,14 @@
       },
       {
         "type": "switch",
-        "name": "standards.AutopilotStatusPage.BlockDevice",
-        "label": "Block device usage during setup",
+        "name": "standards.AutopilotStatusPage.InstallWindowsUpdates",
+        "label": "Install Windows Updates during setup",
         "defaultValue": true
       },
       {
         "type": "switch",
-        "name": "standards.AutopilotStatusPage.AllowRetry",
-        "label": "Allow retry",
+        "name": "standards.AutopilotStatusPage.BlockDevice",
+        "label": "Block device usage during setup",
         "defaultValue": true
       },
       {
