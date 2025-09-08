@@ -27,7 +27,6 @@ import {
   Search,
   FactCheck,
 } from "@mui/icons-material";
-import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import standards from "/src/data/standards.json";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { SvgIcon } from "@mui/material";
