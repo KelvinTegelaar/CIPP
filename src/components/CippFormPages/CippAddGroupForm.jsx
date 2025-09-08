@@ -94,7 +94,7 @@ const CippAddGroupForm = (props) => {
             { label: "Security Group", value: "generic" },
             { label: "Microsoft 365 Group", value: "m365" },
             { label: "Dynamic Group", value: "dynamic" },
-            { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
+            { label: "Dynamic Distribution Group", value: "dynamicdistribution" },
             { label: "Distribution List", value: "distribution" },
             { label: "Mail Enabled Security Group", value: "security" },
           ]}
@@ -104,7 +104,7 @@ const CippAddGroupForm = (props) => {
         formControl={formControl}
         field="groupType"
         compareType="isOneOf"
-        compareValue={["distribution", "dynamicDistribution"]}
+        compareValue={["distribution", "dynamicdistribution"]}
       >
         <Grid size={{ xs: 12 }}>
           <CippFormComponent
