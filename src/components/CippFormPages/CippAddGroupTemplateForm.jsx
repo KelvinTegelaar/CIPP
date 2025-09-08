@@ -40,7 +40,8 @@ const CippAddGroupTemplateForm = (props) => {
       <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
-          label="Username (do not include domain)"
+          label="Username"
+          helperText="If this is a mail enabled group, CIPP variable replacement is supported for the domain (e.g mygroup@%tenantfilter%)"
           name="username"
           required
           formControl={formControl}
