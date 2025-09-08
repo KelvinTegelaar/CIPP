@@ -31,7 +31,7 @@ const Page = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [hasDriftConflict, setHasDriftConflict] = useState(false);
   const initialStandardsRef = useRef({});
-  
+
   // Check if this is drift mode
   const isDriftMode = router.query.type === "drift";
 
@@ -264,9 +264,9 @@ const Page = () => {
   // Determine if save button should be disabled based on configuration
   const isSaveDisabled = isDriftMode
     ? currentStep < 3 || hasDriftConflict // For drift mode, only require steps 1, 3, and 4 (skip tenant requirement) and no drift conflicts
-    : (!_.get(watchForm, "tenantFilter") ||
-       !_.get(watchForm, "tenantFilter").length ||
-       currentStep < 3);
+    : !_.get(watchForm, "tenantFilter") ||
+      !_.get(watchForm, "tenantFilter").length ||
+      currentStep < 3;
 
   const actions = [];
 
@@ -291,9 +291,9 @@ const Page = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
+    <Box sx={{ flexGrow: 1, py: 2 }}>
       <Container maxWidth={"xl"}>
-        <Stack spacing={4}>
+        <Stack spacing={2}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Button
               color="inherit"
@@ -322,9 +322,12 @@ const Page = () => {
           >
             <Typography variant="h4">
               {editMode
-                ? (isDriftMode ? "Edit Drift Template" : "Edit Standards Template")
-                : (isDriftMode ? "Add Drift Template" : "Add Standards Template")
-              }
+                ? isDriftMode
+                  ? "Edit Drift Template"
+                  : "Edit Standards Template"
+                : isDriftMode
+                ? "Add Drift Template"
+                : "Add Standards Template"}
             </Typography>
             <Stack direction="row" spacing={2}>
               <Button
@@ -372,7 +375,7 @@ const Page = () => {
                 />
               </Grid>
               <Grid size={{ xs: 12, lg: 8 }} sx={{ height: "100%", overflow: "auto", pr: 1 }}>
-                <Stack spacing={3}>
+                <Stack spacing={2}>
                   {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
                   {existingTemplate.isLoading ? (
                     <Skeleton variant="rectangular" height="700px" />

@@ -136,9 +136,7 @@ const CippStandardAccordion = ({
         // Set default autoRemediate if not set
         if (currentValues.autoRemediate === undefined) {
           formControl.setValue(`${standardName}.autoRemediate`, false);
-          formControl.setValue(`${standardName}.action`, [
-            { label: "Report", value: "Report" },
-          ]);
+          formControl.setValue(`${standardName}.action`, [{ label: "Report", value: "Report" }]);
         }
       });
     }
@@ -667,9 +665,9 @@ const CippStandardAccordion = ({
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
-                  sx={{ p: 3 }}
+                  sx={{ p: 2 }}
                 >
-                  <Stack direction="row" alignItems="center" spacing={3}>
+                  <Stack direction="row" alignItems="center" spacing={2}>
                     <Avatar>
                       {standard.cat === "Global Standards" ? (
                         <Public />
@@ -687,7 +685,7 @@ const CippStandardAccordion = ({
                     </Avatar>
                     <Stack>
                       <Typography variant="h6">{accordionTitle}</Typography>
-                      <Stack direction="row" spacing={1} sx={{ my: 0.5 }}>
+                      <Stack direction="row" spacing={1} sx={{ my: 0.25 }}>
                         {/* Hide action chips in drift mode */}
                         {!isDriftMode && selectedActions && selectedActions?.length > 0 && (
                           <>

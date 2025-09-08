@@ -22,12 +22,10 @@ import {
   Cancel,
   Info,
   Microsoft,
-  Sync,
   FilterAlt,
   Close,
   Search,
   FactCheck,
-  PlayArrow,
 } from "@mui/icons-material";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import standards from "/src/data/standards.json";
@@ -43,6 +41,7 @@ import DOMPurify from "dompurify";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
 import tabOptions from "./tabOptions.json";
+import { createDriftManagementActions } from "./driftManagementActions";
 
 const Page = () => {
   const router = useRouter();
@@ -543,44 +542,13 @@ const Page = () => {
   ];
 
   // Actions for the header
-  const actions = [
-    {
-      label: "Refresh Data",
-      icon: <Sync />,
-      noConfirm: true,
-      customFunction: () => {
-        comparisonApi.refetch();
-        templateDetails.refetch();
-      },
+  const actions = createDriftManagementActions({
+    templateId,
+    onRefresh: () => {
+      comparisonApi.refetch();
+      templateDetails.refetch();
     },
-    ...(templateId
-      ? [
-          {
-            label: "Run Standard Now (Currently Selected Tenant only)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-          {
-            label: "Run Standard Now (All Tenants in Template)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-              tenantFilter: "allTenants",
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-        ]
-      : []),
-  ];
+  });
 
   return (
     <HeaderedTabbedLayout

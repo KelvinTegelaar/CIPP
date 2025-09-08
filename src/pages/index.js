@@ -17,7 +17,8 @@ import { ExecutiveReportButton } from "../components/ExecutiveReportButton.js";
 import { CippStandardsDialog } from "../components/CippCards/CippStandardsDialog.jsx";
 
 const Page = () => {
-  const { currentTenant } = useSettings();
+  const settings = useSettings();
+  const { currentTenant } = settings;
   const [domainVisible, setDomainVisible] = useState(false);
   const [standardsDialogOpen, setStandardsDialogOpen] = useState(false);
 
@@ -174,12 +175,48 @@ const Page = () => {
     return `${sizeInMB}MB`;
   };
 
+  // Function to filter portals based on user preferences
+  const getFilteredPortals = () => {
+    const defaultLinks = {
+      M365_Portal: true,
+      Exchange_Portal: true,
+      Entra_Portal: true,
+      Teams_Portal: true,
+      Azure_Portal: true,
+      Intune_Portal: true,
+      SharePoint_Admin: true,
+      Security_Portal: true,
+      Compliance_Portal: true,
+      Power_Platform_Portal: true,
+      Power_BI_Portal: true,
+    };
+
+    let portalLinks;
+    if (settings.UserSpecificSettings?.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.UserSpecificSettings.portalLinks };
+    } else if (settings.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.portalLinks };
+    } else {
+      portalLinks = defaultLinks;
+    }
+
+    // Filter the portals based on user settings
+    return Portals.filter(portal => {
+      const settingKey = portal.name;
+      return settingKey ? portalLinks[settingKey] === true : true;
+    });
+  };
+
   useEffect(() => {
     if (currentTenantInfo.isSuccess) {
       const tenantLookup = currentTenantInfo.data?.find(
         (tenant) => tenant.defaultDomainName === currentTenant
       );
-      const menuItems = Portals.map((portal) => ({
+      
+      // Get filtered portals based on user preferences
+      const filteredPortals = getFilteredPortals();
+      
+      const menuItems = filteredPortals.map((portal) => ({
         label: portal.label,
         target: "_blank",
         link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
@@ -187,7 +224,7 @@ const Page = () => {
       }));
       setPortalMenuItems(menuItems);
     }
-  }, [currentTenantInfo.isSuccess, currentTenant]);
+  }, [currentTenantInfo.isSuccess, currentTenant, settings.portalLinks, settings.UserSpecificSettings]);
 
   return (
     <>

@@ -69,8 +69,8 @@ const CippAddGroupTemplateForm = (props) => {
       <CippFormCondition
         formControl={formControl}
         field="groupType"
-        compareType="is"
-        compareValue="distribution"
+        compareType="isOneOf"
+        compareValue={["distribution", "dynamicdistribution"]}
       >
         <Grid size={{ xs: 12 }}>
           <CippFormComponent
