@@ -1,13 +1,19 @@
-import { Sync, PlayArrow } from "@mui/icons-material";
+import React from "react";
+import { Sync, PlayArrow, PictureAsPdf } from "@mui/icons-material";
 
 /**
  * Creates the standard drift management actions array
  * @param {Object} options - Configuration options
  * @param {string} options.templateId - The template ID for conditional actions
  * @param {Function} options.onRefresh - Function to call when refresh is triggered
+ * @param {Function} options.onGenerateReport - Function to call when generate report is triggered (optional)
  * @returns {Array} Array of action objects
  */
-export const createDriftManagementActions = ({ templateId, onRefresh }) => {
+export const createDriftManagementActions = ({
+  templateId,
+  onRefresh,
+  onGenerateReport,
+}) => {
   const actions = [
     {
       label: "Refresh Data",
@@ -16,6 +22,16 @@ export const createDriftManagementActions = ({ templateId, onRefresh }) => {
       customFunction: onRefresh,
     },
   ];
+
+  // Add Generate Report action if handler is provided
+  if (onGenerateReport) {
+    actions.push({
+      label: "Generate Report",
+      icon: <PictureAsPdf />,
+      noConfirm: true,
+      customFunction: onGenerateReport,
+    });
+  }
 
   // Add template-specific actions if templateId is available
   if (templateId) {

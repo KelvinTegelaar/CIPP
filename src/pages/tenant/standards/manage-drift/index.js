@@ -6,7 +6,6 @@ import {
   ExpandMore,
   CheckCircle,
   Block,
-  Science,
   CheckBox,
   Cancel,
   Policy,
@@ -16,7 +15,7 @@ import {
 } from "@mui/icons-material";
 import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CippChartCard } from "/src/components/CippCards/CippChartCard";
 import { CippBannerListCard } from "/src/components/CippCards/CippBannerListCard";
 import { CippHead } from "/src/components/CippComponents/CippHead";
@@ -28,6 +27,7 @@ import { useDialog } from "/src/hooks/use-dialog";
 import tabOptions from "./tabOptions.json";
 import standardsData from "/src/data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
+import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton";
 
 const ManageDriftPage = () => {
   const router = useRouter();
@@ -38,6 +38,8 @@ const ManageDriftPage = () => {
   const [bulkActionsAnchorEl, setBulkActionsAnchorEl] = useState(null);
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, ready: false });
+  const [triggerReport, setTriggerReport] = useState(false);
+  const reportButtonRef = useRef(null);
 
   // API calls for drift data
   const driftApi = ApiGetCall({
@@ -494,6 +496,17 @@ const ManageDriftPage = () => {
     setBulkActionsAnchorEl(null);
   };
 
+  // Get current tenant info for report generation
+  const currentTenantInfo = ApiGetCall({
+    url: "/api/ListTenants",
+    queryKey: "ListTenants",
+  });
+
+  // Find current tenant data
+  const currentTenantData = currentTenantInfo.data?.find(
+    (tenant) => tenant.defaultDomainName === tenantFilter
+  );
+
   // Actions for the ActionsMenu
   const actions = createDriftManagementActions({
     templateId,
@@ -504,7 +517,19 @@ const ManageDriftPage = () => {
         comparisonApi.refetch();
       }
     },
+    onGenerateReport: () => {
+      setTriggerReport(true);
+    },
   });
+
+  // Effect to trigger the ExecutiveReportButton when needed
+  useEffect(() => {
+    if (triggerReport && reportButtonRef.current) {
+      // Trigger the button click to open the dialog
+      reportButtonRef.current.click();
+      setTriggerReport(false);
+    }
+  }, [triggerReport]);
 
   // Add action buttons to each deviation item
   const deviationItemsWithActions = deviationItems.map((item) => {
@@ -927,6 +952,23 @@ const ManageDriftPage = () => {
           relatedQueryKeys={[`TenantDrift-${tenantFilter}`]}
         />
       )}
+
+      {/* Hidden ExecutiveReportButton that gets triggered programmatically */}
+      <Box sx={{ position: "absolute", top: -9999, left: -9999 }}>
+        <ExecutiveReportButton
+          ref={reportButtonRef}
+          tenantName={currentTenantData?.displayName || tenantFilter}
+          tenantId={currentTenantData?.customerId}
+          userStats={{
+            licensedUsers: 0, // These would come from actual user data APIs
+            unlicensedUsers: 0,
+            guests: 0,
+            globalAdmins: 0,
+          }}
+          standardsData={standardsApi.data}
+          organizationData={currentTenantData}
+        />
+      </Box>
     </HeaderedTabbedLayout>
   );
 };
