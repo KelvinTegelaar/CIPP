@@ -254,12 +254,12 @@ export const nativeMenuItems = [
         permissions: ["Tenant.Administration.*", "Scheduler.Billing.*", "Tenant.Application.*"],
         items: [
           {
-            title: "Licence Report",
+            title: "License Report",
             path: "/tenant/reports/list-licenses",
             permissions: ["Tenant.Administration.*"],
           },
           {
-            title: "Sherweb Licence Report",
+            title: "Sherweb License Report",
             path: "/tenant/reports/list-csp-licenses",
             permissions: ["Tenant.Directory.*"],
           },
