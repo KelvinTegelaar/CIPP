@@ -2330,6 +2330,7 @@ export const ExecutiveReportButton = (props) => {
               </Box>
             ) : reportDocument ? (
               <PDFViewer
+                key={`pdf-viewer-${Date.now()}`} // Fix for react-pdf "Eo is not a function" error
                 style={{
                   width: "100%",
                   height: "100%",
