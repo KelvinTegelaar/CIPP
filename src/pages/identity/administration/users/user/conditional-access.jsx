@@ -4,13 +4,13 @@ import { useSettings } from "/src/hooks/use-settings";
 import { useRouter } from "next/router";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { Mail, Forward, Fingerprint, Launch } from "@mui/icons-material";
+import { Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
 import ReactTimeAgo from "react-time-ago";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
-import { Box, Stack, Typography, Button, CircularProgress } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import { Box, Stack, Typography, Button } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import countryList from "/src/data/countryList";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
@@ -57,15 +57,15 @@ const Page = () => {
           icon: <Launch style={{ color: "#667085" }} />,
           text: (
             <Button
-                color="muted"
-                style={{ paddingLeft: 0 }}
-                size="small"
-                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View in Entra
-              </Button>
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -108,7 +108,7 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             {/* Form Section */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ md: 4, xs: 12 }}>
               <CippButtonCard
                 title={"Test Conditional Access Policy"}
                 CardButton={
@@ -237,12 +237,12 @@ const Page = () => {
                       ]}
                       formControl={formControl}
                     />
-                    <CippApiResults apiObject={postRequest} />
+                    <CippApiResults apiObject={postRequest} errorsOnly={true} />
                   </Stack>
                 </form>
               </CippButtonCard>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid size={{ md: 8, xs: 12 }}>
               <CippDataTable
                 queryKey={`ExecCACheck-${tenant}-${userId}-${JSON.stringify(formParams)}`}
                 title={"CA Test Results"}

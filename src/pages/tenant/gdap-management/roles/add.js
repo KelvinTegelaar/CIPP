@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Alert, Button, SvgIcon, Typography, Grid, Tooltip, Link } from "@mui/material";
+import { Alert, Button, SvgIcon, Typography, Tooltip, Link } from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import GDAPRoles from "/src/data/GDAPRoles";
-import { Box, Stack } from "@mui/system";
+import { Box, Stack, Grid } from "@mui/system";
 import { ShieldCheckIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
 import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
 import cippDefaults from "/src/data/CIPPDefaultGDAPRoles";
@@ -243,7 +243,7 @@ const Page = () => {
               </ul>
             </Alert>
             <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} md={5}>
+              <Grid size={{ md: 5, xs: 12 }}>
                 <CippFormComponent
                   formControl={formControl}
                   name="selectedGroup"
@@ -260,14 +260,14 @@ const Page = () => {
                   sortOptions={true}
                 />
               </Grid>
-              <Grid item>
+              <Grid>
                 <Box sx={{ my: "auto" }}>
                   <SvgIcon>
                     <SyncAlt />
                   </SvgIcon>
                 </Box>
               </Grid>
-              <Grid item xs={12} md={5}>
+              <Grid size={{ md: 5, xs: 12 }}>
                 <CippFormComponent
                   formControl={formControl}
                   name="selectedRole"
@@ -284,7 +284,7 @@ const Page = () => {
                   sortOptions={true}
                 />
               </Grid>
-              <Grid item xs={12} md={1}>
+              <Grid size={{ md: 1, xs: 12 }}>
                 <Tooltip title="Add Mapping">
                   <Button size="small" onClick={handleAddMapping} variant="contained">
                     <SvgIcon fontSize="small">

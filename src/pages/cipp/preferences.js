@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { Box, Container, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
 import CippFormComponent from "../../components/CippComponents/CippFormComponent";
@@ -14,13 +14,18 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 const Page = () => {
   const settings = useSettings();
-  const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
+  const cleanedSettings = { ...settings };
+
+  if (cleanedSettings.offboardingDefaults?.keepCopy) {
+    delete cleanedSettings.offboardingDefaults.keepCopy;
+    settings.handleUpdate(cleanedSettings);
+  }
+
+  const formcontrol = useForm({ mode: "onChange", defaultValues: cleanedSettings });
 
   const auth = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const addedAttributes = [
@@ -34,8 +39,6 @@ const Page = () => {
     { value: "officeLocation", label: "officeLocation" },
     { value: "otherMails", label: "otherMails" },
     { value: "showInAddressList", label: "showInAddressList" },
-    { value: "state", label: "state" },
-    { value: "city", label: "city" },
     { value: "sponsor", label: "sponsor" },
   ];
 
@@ -92,7 +95,6 @@ const Page = () => {
                           value: (
                             <CippFormComponent
                               type="autoComplete"
-
                               disableClearable={true}
                               defaultValue={{ value: "25", label: "25" }}
                               name="tablePageSize"
@@ -111,7 +113,6 @@ const Page = () => {
                             <CippFormComponent
                               type="autoComplete"
                               options={addedAttributes}
-
                               name="userAttributes"
                               formControl={formcontrol}
                               multiple={true}
@@ -220,7 +221,7 @@ const Page = () => {
                           value: (
                             <CippFormComponent
                               type="switch"
-                              name="offboardingDefaults.keepCopy"
+                              name="offboardingDefaults.KeepCopy"
                               formControl={formcontrol}
                             />
                           ),
@@ -261,6 +262,16 @@ const Page = () => {
                             <CippFormComponent
                               type="switch"
                               name="offboardingDefaults.RemoveMFADevices"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Clear Immutable ID",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.ClearImmutableId"
                               formControl={formcontrol}
                             />
                           ),

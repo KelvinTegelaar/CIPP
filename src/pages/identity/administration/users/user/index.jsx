@@ -9,7 +9,7 @@ import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayou
 import tabOptions from "./tabOptions";
 import { CippCopyToClipBoard } from "../../../../../components/CippComponents/CippCopyToClipboard";
 import { Box, Stack } from "@mui/system";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { CippUserInfoCard } from "../../../../../components/CippCards/CippUserInfoCard";
 import { SvgIcon, Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
@@ -87,7 +87,7 @@ const Page = () => {
   });
 
   const userBulkRequest = ApiPostCall({
-    urlfromdata: true,
+    urlFromData: true,
   });
 
   useEffect(() => {
@@ -231,7 +231,7 @@ const Page = () => {
             <>
               <Typography variant="h6">Location</Typography>
               <Grid container spacing={2}>
-                <Grid item size={8}>
+                <Grid size={8}>
                   <CippMap
                     markers={[
                       {
@@ -244,7 +244,7 @@ const Page = () => {
                     ]}
                   />
                 </Grid>
-                <Grid item size={4}>
+                <Grid size={4}>
                   <CippPropertyList
                     propertyItems={[
                       { label: "City", value: signInData.location.city },
@@ -572,14 +572,14 @@ const Page = () => {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item size={4}>
+            <Grid size={4}>
               <CippUserInfoCard
                 user={data}
                 tenant={userSettingsDefaults.currentTenant}
                 isFetching={userRequest.isLoading}
               />
             </Grid>
-            <Grid item size={8}>
+            <Grid size={8}>
               <Stack spacing={3}>
                 <Typography variant="h6">Latest Logon</Typography>
                 <CippBannerListCard

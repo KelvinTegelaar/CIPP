@@ -10,7 +10,7 @@ const Page = () => {
       title: "Step 1",
       description: "Tenant Selection",
       component: CippTenantStep,
-      componentProps: { type: "multiple", valueField: "customerId" },
+      componentProps: { type: "multiple" },
     },
     {
       title: "Step 2",

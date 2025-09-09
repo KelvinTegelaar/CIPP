@@ -12,9 +12,16 @@ import {
   Lock,
   GroupSharp,
 } from "@mui/icons-material";
+import { Stack } from "@mui/system";
+import { useState } from "react";
 
 const Page = () => {
   const pageTitle = "Groups";
+  const [showMembers, setShowMembers] = useState(false);
+
+  const handleMembersToggle = () => {
+    setShowMembers(!showMembers);
+  };
   const actions = [
     {
       //tested
@@ -86,10 +93,10 @@ const Page = () => {
       url: "/api/AddGroupTemplate",
       icon: <GroupSharp />,
       data: {
-        Displayname: "displayName",
-        Description: "description",
-        GroupType: "calculatedGroupType",
-        MembershipRules: "membershipRule",
+        displayName: "displayName",
+        description: "description",
+        groupType: "calculatedGroupType",
+        membershipRules: "membershipRule",
         allowExternal: "allowExternal",
         username: "mailNickname",
       },
@@ -127,13 +134,18 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       cardButton={
-        <>
+        <Stack direction="row" spacing={1}>
+          <Button onClick={handleMembersToggle}>
+            {showMembers ? "Hide Members" : "Show Members"}
+          </Button>
           <Button component={Link} href="groups/add" startIcon={<GroupAdd />}>
             Add Group
           </Button>
-        </>
+        </Stack>
       }
       apiUrl="/api/ListGroups"
+      apiData={{ expandMembers: showMembers }}
+      queryKey={showMembers ? "groups-with-members" : "groups-without-members"}
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[

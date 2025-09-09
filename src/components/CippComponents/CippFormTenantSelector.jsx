@@ -75,7 +75,7 @@ export const CippFormTenantSelector = ({
       name={name}
       formControl={formControl}
       preselectedValue={preselectedEnabled ?? currentTenant ? currentTenant : null}
-      placeholder="Select a tenant"
+      label="Select a tenant"
       creatable={false}
       multiple={type === "single" ? false : true}
       disableClearable={disableClearable}
@@ -89,6 +89,7 @@ export const CippFormTenantSelector = ({
           {includeGroups ? <GroupItems>{params.children}</GroupItems> : params.children}
         </li>
       )}
+      isFetching={tenantList.isFetching || tenantGroupList.isFetching}
       {...other}
     />
   );

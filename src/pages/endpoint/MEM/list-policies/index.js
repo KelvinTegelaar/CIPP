@@ -2,9 +2,12 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Book, LaptopChromebook } from "@mui/icons-material";
 import { GlobeAltIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
+import { PermissionButton } from "/src/utils/permissions.js";
+import { CippPolicyDeployDrawer } from "/src/components/CippComponents/CippPolicyDeployDrawer.jsx";
 
 const Page = () => {
   const pageTitle = "Configuration Policies";
+  const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
 
   const actions = [
     {
@@ -98,6 +101,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <CippPolicyDeployDrawer
+          buttonText="Deploy Policy"
+          requiredPermissions={cardButtonPermissions}
+          PermissionButton={PermissionButton}
+        />
+      }
     />
   );
 };

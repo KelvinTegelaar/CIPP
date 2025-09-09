@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { SvgIcon, Button } from "@mui/material";
-import { Refresh } from "@mui/icons-material";
+import { Refresh, PlayArrow } from "@mui/icons-material";
 import { ApiPostCall } from "../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage";
@@ -80,6 +80,8 @@ const Page = () => {
             url: apiUrl,
             data: { FunctionName: "Command", Parameters: "Parameters" },
             confirmText: "Do you want to run this task now?",
+            allowResubmit: true,
+            icon: <PlayArrow />,
           },
         ]}
       />

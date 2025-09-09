@@ -1,12 +1,12 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { CheckmarkIcon } from "react-hot-toast";
 import { Button } from "@mui/material";
 import { PlayArrow, Add } from "@mui/icons-material";
 import Link from "next/link";
 import { ApiPostCall } from "../../../../api/ApiCall";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
 
 const Page = () => {
   const pageTitle = "Queued Applications";
@@ -45,9 +45,9 @@ const Page = () => {
             Run Queue now
           </Button>
 
-          <Button component={Link} href="/endpoint/applications/list/add" startIcon={<Add />}>
-            Add Application
-          </Button>
+          <>
+            <CippApplicationDeployDrawer />
+          </>
         </>
       }
     />

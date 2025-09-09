@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
-import { Grid, Divider, Typography, CircularProgress, Alert, Chip, Link } from "@mui/material";
+import { useEffect } from "react";
+import { Divider, Typography, Alert, Chip } from "@mui/material";
 import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { useSettings } from "/src/hooks/use-settings";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
-import { Box } from "@mui/system";
+import { Grid } from "@mui/system";
 import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
-import { ApiGetCall } from "/src/api/ApiCall";
-import NextLink from "next/link";
 
 const TemplateLibrary = () => {
   const currentTenant = useSettings().currentTenant;
@@ -62,7 +60,7 @@ const TemplateLibrary = () => {
       customDataformatter={customDataFormatter}
     >
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography sx={{ mb: 2 }}>
             Template libraries are tenants set up to retrieve the latest version of a specific
             tenants policies. These are then stored in CIPPs templates, allowing you to keep an up
@@ -85,48 +83,42 @@ const TemplateLibrary = () => {
           sx={{
             alignItems: "center",
             my: 1,
-            mx: 1,
+            width: "100%",
           }}
         >
-          <Grid item xs={12} md={5}>
-            <Box sx={{ my: "auto" }}>
-              <CippFormTenantSelector
-                formControl={formControl}
-                multiple={false}
-                disableClearable={false}
-              />
-            </Box>
+          <Grid size={{ md: 5, xs: 12 }}>
+            <CippFormTenantSelector
+              formControl={formControl}
+              multiple={false}
+              disableClearable={false}
+            />
           </Grid>
-          <Grid item xs={12} md={0.7}>
-            <Box sx={{ my: "auto" }}>
-              <Chip label="OR" color="info" />
-            </Box>
+          <Grid size={{ md: 2, xs: 12 }} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Chip label="OR" color="info" />
           </Grid>
-          <Grid item xs={12} md={5}>
-            <Box sx={{ my: "auto" }}>
-              <CippFormComponent
-                name="templateRepo"
-                type="autoComplete"
-                label="Community Repository"
-                api={{
-                  url: "/api/ListCommunityRepos",
-                  queryKey: "CommunityRepos",
-                  dataKey: "Results",
-                  valueField: "FullName",
-                  labelField: (option) => `${option.Name} (${option.URL})`,
-                  addedField: {
-                    branch: "DefaultBranch",
-                  },
-                }}
-                formControl={formControl}
-                multiple={false}
-              />
-            </Box>
+          <Grid size={{ md: 5, xs: 12 }}>
+            <CippFormComponent
+              name="templateRepo"
+              type="autoComplete"
+              label="Community Repository"
+              api={{
+                url: "/api/ListCommunityRepos",
+                queryKey: "CommunityRepos",
+                dataKey: "Results",
+                valueField: "FullName",
+                labelField: (option) => `${option.Name} (${option.URL})`,
+                addedField: {
+                  branch: "DefaultBranch",
+                },
+              }}
+              formControl={formControl}
+              multiple={false}
+            />
           </Grid>
         </Grid>
         <Divider sx={{ mt: 2, width: "100%" }} />
         {templateRepo?.value && (
-          <Grid item xs={12} md={5}>
+          <Grid size={12}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Repository Branch
             </Typography>
@@ -156,7 +148,7 @@ const TemplateLibrary = () => {
           compareType="doesNotContain"
           compareValue={"CIPP"}
         >
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="h6" sx={{ mb: 1 }}>
               Conditional Access
             </Typography>
@@ -168,7 +160,7 @@ const TemplateLibrary = () => {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="h6" sx={{ mb: 1 }}>
               Intune
             </Typography>
@@ -198,7 +190,7 @@ const TemplateLibrary = () => {
           compareType="contains"
           compareValue={"CIPP-"}
         >
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="h6" sx={{ mb: 1 }}>
               Template Repository files
             </Typography>

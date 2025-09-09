@@ -7,10 +7,12 @@ import {
   MenuBook as MenuBookIcon,
   AddModerator as AddModeratorIcon,
   Visibility as VisibilityIcon,
+  Edit as EditIcon,
 } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import Link from "next/link";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
+import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
 
 // Page Component
 const Page = () => {
@@ -24,8 +26,12 @@ const Page = () => {
       type: "POST",
       url: "/api/AddCATemplate",
       dataFunction: (data) => {
+        if (Array.isArray(data)) {
+          return data.map((item) => JSON.parse(item.rawjson));
+        }
         return JSON.parse(data.rawjson);
       },
+      hideBulk: true,
       confirmText: "Are you sure you want to create a template based on this policy?",
       icon: <MenuBookIcon />,
       color: "info",
@@ -80,11 +86,52 @@ const Page = () => {
       icon: <DeleteIcon />,
       color: "danger",
     },
+    {
+      label: "Change Display Name",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id",
+      },
+      confirmText: "Are you sure you want to change the display name of this policy?",
+      icon: <EditIcon />,
+      color: "info",
+      hideBulk: true,
+      fields: [
+        {
+          type: "textField",
+          name: "newDisplayName",
+          label: "New Display Name",
+          required: true,
+          validate: (value) => {
+            if (!value) {
+              return "Display name is required.";
+            }
+            return true;
+          },
+        },
+      ],
+    },
+    {
+      label: "Add service provider exception to policy",
+      type: "POST",
+      url: "/api/ExecCAServiceExclusion",
+      data: {
+        GUID: "id",
+      },
+      confirmText: "Are you sure you want to add the service provider exception to this policy?",
+      icon: <DeleteIcon />,
+      color: "warning",
+    },
   ];
 
   // Off-canvas configuration
   const offCanvas = {
-    children: (row) => <CippJsonView object={JSON.parse(row?.rawjson ? row.rawjson : null)} />,
+    children: (row) => (
+      <Box sx={{ pt: 4 }}>
+        <CippJsonView object={JSON.parse(row?.rawjson ? row.rawjson : null)} defaultOpen={true} />
+      </Box>
+    ),
     size: "xl",
   };
 
@@ -112,13 +159,7 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/tenant/conditional/list-policies/deploy"
-            startIcon={<AddModeratorIcon />}
-          >
-            Deploy Conditional Access Policy
-          </Button>
+          <CippCADeployDrawer />
         </>
       }
       title={pageTitle}

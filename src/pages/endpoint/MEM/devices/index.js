@@ -9,12 +9,14 @@ import {
   Password,
   PasswordOutlined,
   Key,
+  Edit,
   Security,
   FindInPage,
   Shield,
   Archive,
   AutoMode,
   Recycling,
+  ManageAccounts,
 } from "@mui/icons-material";
 
 const Page = () => {
@@ -30,6 +32,62 @@ const Page = () => {
       target: "_blank",
       multiPost: false,
       external: true,
+    },
+    {
+      label: "Change Primary User",
+      type: "POST",
+      icon: <ManageAccounts />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "!users",
+      },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "user",
+          label: "Select User",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/ListGraphRequest",
+            data: {
+              Endpoint: "users",
+              $select: "id,displayName,userPrincipalName",
+              $top: 999,
+              $count: true,
+            },
+            queryKey: "ListUsersAutoComplete",
+            dataKey: "Results",
+            labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+            valueField: "id",
+            addedField: {
+              userPrincipalName: "userPrincipalName",
+            },
+            showRefresh: true,
+          },
+        },
+      ],
+      confirmText: "Select the User to set as the primary user for this device",
+    },
+    {
+      label: "Rename Device",
+      type: "POST",
+      icon: <Edit />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "setDeviceName",
+      },
+      confirmText: "Enter the new name for the device",
+      fields: [
+        {
+          type: "textField",
+          name: "input",
+          label: "New Device Name",
+          required: true,
+        },
+      ],
     },
     {
       label: "Sync Device",
@@ -142,19 +200,6 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to generate logs and ship these to MEM?",
     },
-    /*
-    {
-      label: "Rename device",
-      type: "POST",
-      icon: null,
-      url: "/api/ExecDeviceAction",
-      data: {
-        GUID: "id",
-        Action: "setDeviceName",
-      },
-      confirmText: "Enter the new name for the device",
-    },
-    */
     {
       label: "Fresh Start (Remove user data)",
       type: "POST",
@@ -280,8 +325,13 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListDevices"
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        Endpoint: "deviceManagement/managedDevices",
+      }}
+      apiDataKey="Results"
       actions={actions}
+      queryKey={`MEMDevices-${tenantFilter}`}
       offCanvas={offCanvas}
       simpleColumns={[
         "deviceName",

@@ -6,13 +6,13 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  Grid,
   Card,
   CardContent,
   CardActionArea,
   Typography,
   Box,
 } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useRouter } from "next/router";
 import { nativeMenuItems } from "/src/layouts/config";
 
@@ -111,7 +111,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
             filteredItems.length > 0 ? (
               <Grid container spacing={2} mt={2}>
                 {filteredItems.map((item, index) => (
-                  <Grid item xs={12} sm={12} md={12} key={index}>
+                  <Grid size={{ md: 12, sm: 12, xs: 12 }} key={index}>
                     <Card variant="outlined" sx={{ height: "100%" }}>
                       <CardActionArea
                         onClick={() => handleCardClick(item.path)}

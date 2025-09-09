@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import CippGraphExplorerFilter from "../../../../components/CippTable/CippGraphExplorerFilter";
 import { useState } from "react";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { useSettings } from "/src/hooks/use-settings";
 
 const Page = () => {
@@ -15,7 +15,7 @@ const Page = () => {
     <CippTablePage
       tableFilter={
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <CippGraphExplorerFilter onSubmitFilter={setApiFilter} onPresetChange={setPageTitle} />
           </Grid>
         </Grid>

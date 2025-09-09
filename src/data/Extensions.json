@@ -81,12 +81,12 @@
       {
         "type": "autoComplete",
         "name": "Sherweb.AllowedCustomRoles",
-        "label": "Select custom roles that are allowed to purchase licenses",
+        "label": "Select CIPP roles that are allowed to purchase licenses",
         "api": {
           "url": "/api/ListCustomRole",
           "queryKey": "CustomRoles",
-          "labelField": "RowKey",
-          "valueField": "RowKey"
+          "labelField": "RoleName",
+          "valueField": "RoleName"
         },
         "multiple": true,
         "condition": {
@@ -335,29 +335,6 @@
         }
       },
       {
-        "type": "autoComplete",
-        "name": "HaloPSA.TicketType",
-        "label": "Select your HaloPSA Ticket Type, leave blank for default.",
-        "multiple": false,
-        "api": {
-          "url": "/api/ExecExtensionMapping",
-          "data": {
-            "List": "HaloPSAFields"
-          },
-          "queryKey": "HaloTicketTypes",
-          "dataKey": "TicketTypes",
-          "labelField": "name",
-          "valueField": "id",
-          "showRefresh": true
-        },
-        "condition": {
-          "field": "HaloPSA.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
         "type": "textField",
         "name": "HaloPSA.ClientID",
         "label": "HaloPSA Client ID",
@@ -378,6 +355,54 @@
         "required": true,
         "condition": {
           "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "HaloPSA.TicketType",
+        "label": "HaloPSA Ticket Type",
+        "placeholder": "Select your HaloPSA Ticket Type, leave blank for default",
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloTicketTypes",
+          "dataKey": "TicketTypes",
+          "labelField": "name",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "HaloPSA.Outcome",
+        "label": "HaloPSA Outcome",
+        "placeholder": "Select your HaloPSA Outcome, leave blank for default",
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloOutcomes",
+          "dataKey": "Outcomes",
+          "labelField": "buttonname",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.ConsolidateTickets",
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
@@ -841,7 +866,7 @@
     "logo": "/assets/integrations/github.png",
     "logoDark": "/assets/integrations/github_dark.png",
     "description": "Enable the GitHub integration to manage your repositories from CIPP.",
-    "helpText": "This integration allows you to manage GitHub repositories from CIPP, including the Community Repositorities functionality. Requires a GitHub Personal Access Token (PAT) with a minimum of repo:public_repo permissions. If you plan on saving your templates to GitHub or accessing private/internal repositories, you will need to grant the whole repo scope. You can create a PAT in your GitHub account settings, see the GitHub Token documentation for more info. If you do not enable the extension, a read-only API will be provided.",
+    "helpText": "This integration allows you to manage GitHub repositories from CIPP, including the Community Repositories functionality. Requires a GitHub Personal Access Token (PAT) with a minimum of repo:public_repo permissions. If you plan on saving your templates to GitHub or accessing private/internal repositories, you will need to grant the whole repo scope. You can create a PAT in your GitHub account settings, see the GitHub Token documentation for more info. If you do not enable the extension, a read-only API will be provided.",
     "links": [
       {
         "name": "GitHub Token",

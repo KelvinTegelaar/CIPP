@@ -1635,7 +1635,7 @@
     parse-svg-path "^0.1.2"
     svg-arc-to-cubic-bezier "^3.2.0"
 
-"@react-pdf/renderer@4.3.0":
+"@react-pdf/renderer@^4.3.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-4.3.0.tgz#21a41e0cf0db703e3cc54f6eb7d6cd78b460de06"
   integrity sha512-28gpA69fU9ZQrDzmd5xMJa1bDf8t0PT3ApUKBl2PUpoE/x4JlvCB5X66nMXrfFrgF2EZrA72zWQAkvbg7TE8zw==
@@ -1872,10 +1872,30 @@
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.69.0.tgz#c434505987ade936dc53e6e27aa1406b0295516f"
   integrity sha512-Kn410jq6vs1P8Nm+ZsRj9H+U3C0kjuEkYLxbiCyn3MDEiYor1j2DGVULqAz62SLZtUZ/e9Xt6xMXiJ3NJ65WyQ==
 
+"@tanstack/query-core@5.76.0":
+  version "5.76.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.76.0.tgz#3b4d5d34ce307ba0cf7d1a3e90d7adcdc6c46be0"
+  integrity sha512-FN375hb8ctzfNAlex5gHI6+WDXTNpe0nbxp/d2YJtnP+IBM6OUm7zcaoCW6T63BawGOYZBbKC0iPvr41TteNVg==
+
 "@tanstack/query-devtools@5.67.2":
   version "5.67.2"
   resolved "https://registry.yarnpkg.com/@tanstack/query-devtools/-/query-devtools-5.67.2.tgz#890ae9913bd21d3969c7fd85c68b1bd1500cfc57"
   integrity sha512-O4QXFFd7xqp6EX7sdvc9tsVO8nm4lpWBqwpgjpVLW5g7IeOY6VnS/xvs/YzbRhBVkKTMaJMOUGU7NhSX+YGoNg==
+
+"@tanstack/query-persist-client-core@5.76.0":
+  version "5.76.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-5.76.0.tgz#a3bcdd687384dc6b5b61b402bef153ad54515321"
+  integrity sha512-xcTZjILf4q49Nsl6wcnhBYZ4O0gpnuNwV6vPIEWIrwTuSNWz2zd/g9bc8SxnXy7xCV8SM1H0IJn8KjLQIUb2ag==
+  dependencies:
+    "@tanstack/query-core" "5.76.0"
+
+"@tanstack/query-sync-storage-persister@^5.76.0":
+  version "5.76.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-5.76.0.tgz#29643062f1a424873afb22032ce70ee72436bb9b"
+  integrity sha512-N8d8voY61XkM+jfXTySduLrevD6wRM3pwQ1kG0syLiWWx/sX2+CpaTMSPr0GggjQuhmjhUPo83LaV+e449tizA==
+  dependencies:
+    "@tanstack/query-core" "5.76.0"
+    "@tanstack/query-persist-client-core" "5.76.0"
 
 "@tanstack/react-query-devtools@^5.51.11":
   version "5.69.0"
@@ -1883,6 +1903,13 @@
   integrity sha512-sYklnou3IKAemqB5wJeBwjmG5bUGDKAL5/I4pVA+aqSnsNibVLt8/pAU976uuJ5K71w71bHtI/AMxiIs3gtkEA==
   dependencies:
     "@tanstack/query-devtools" "5.67.2"
+
+"@tanstack/react-query-persist-client@^5.76.0":
+  version "5.76.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-5.76.0.tgz#97718fec844708cb98a5902d4b1eeb72adea555b"
+  integrity sha512-QPKgkHX1yC1Ec21FTQHBTbQcHYI+6157DgsmxABp94H7/ZUJ3szZ7wdpdBPQyZ9VxBXlKRN+aNZkOPC90+r/uA==
+  dependencies:
+    "@tanstack/query-persist-client-core" "5.76.0"
 
 "@tanstack/react-query@^5.51.11":
   version "5.69.0"
@@ -6068,6 +6095,11 @@ react-transition-group@^4.4.5:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-virtuoso@^4.12.8:
+  version "4.12.8"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.12.8.tgz#db1dbba617f91c1dcd760aa90e09ef991e65a356"
+  integrity sha512-NMMKfDBr/+xZZqCQF3tN1SZsh6FwOJkYgThlfnsPLkaEhdyQo0EuWUzu3ix6qjnI7rYwJhMwRGoJBi+aiDfGsA==
 
 react-window@^1.8.10:
   version "1.8.11"

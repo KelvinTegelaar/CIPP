@@ -3,8 +3,8 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
-import { Alert, Typography, Link } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Alert, Link } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
@@ -28,7 +28,7 @@ const Page = () => {
   });
 
   const deleteOffloadEntry = ApiPostCall({
-    urlfromdata: true,
+    urlFromData: true,
     relatedQueryKeys: ["execOffloadFunctions"],
   });
 

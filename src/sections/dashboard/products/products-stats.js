@@ -2,7 +2,8 @@ import CheckCircleIcon from "@heroicons/react/24/outline/CheckCircleIcon";
 import CurrencyDollarIcon from "@heroicons/react/24/outline/CurrencyDollarIcon";
 import ShoppingCartIcon from "@heroicons/react/24/outline/ShoppingCartIcon";
 import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
-import { Card, Stack, SvgIcon, Typography, Unstable_Grid2 as Grid } from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 
 const stats = [
   {
@@ -32,9 +33,7 @@ export const ProductsStats = () => (
     <Grid container>
       {stats.map((item) => (
         <Grid
-          xs={12}
-          sm={6}
-          md={3}
+          size={{ md: 3, sm: 6, xs: 12 }}
           key={item.name}
           sx={{
             borderBottom: (theme) => ({
