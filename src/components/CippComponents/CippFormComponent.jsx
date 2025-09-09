@@ -374,6 +374,7 @@ export const CippFormComponent = (props) => {
                     <Typography variant="subtitle2">{label}</Typography>
                     <RichTextEditor
                       {...other}
+                      immediatelyRender={false}
                       ref={ref}
                       extensions={[StarterKit]}
                       content=""
