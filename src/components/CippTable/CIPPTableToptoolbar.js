@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
@@ -56,7 +55,9 @@ import { Stack } from "@mui/system";
 const ModernSearchContainer = styled(Paper)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  width: "300px",
+  width: "100%",
+  maxWidth: "300px",
+  minWidth: "200px",
   height: "40px",
   backgroundColor: theme.palette.mode === "dark" ? "#2A2D3A" : "#F8F9FA",
   border: `1px solid ${theme.palette.mode === "dark" ? "#404040" : "#E0E0E0"}`,
@@ -68,6 +69,14 @@ const ModernSearchContainer = styled(Paper)(({ theme }) => ({
   "&:focus-within": {
     borderColor: theme.palette.primary.main,
     boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
+  },
+  [theme.breakpoints.down("md")]: {
+    minWidth: "150px",
+    maxWidth: "200px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    minWidth: "120px",
+    maxWidth: "150px",
   },
 }));
 
@@ -94,6 +103,8 @@ const ModernButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#2A2D3A" : "#F8F9FA",
   border: `1px solid ${theme.palette.mode === "dark" ? "#404040" : "#E0E0E0"}`,
   color: theme.palette.text.primary,
+  minWidth: "auto",
+  whiteSpace: "nowrap",
   "&:hover": {
     backgroundColor: theme.palette.mode === "dark" ? "#363A4A" : "#F0F0F0",
     borderColor: theme.palette.primary.main,
@@ -103,6 +114,26 @@ const ModernButton = styled(Button)(({ theme }) => ({
   },
   "& .MuiButton-endIcon": {
     marginLeft: "8px",
+  },
+  [theme.breakpoints.down("md")]: {
+    padding: "8px 12px",
+    fontSize: "13px",
+    "& .MuiButton-startIcon": {
+      marginRight: "6px",
+    },
+    "& .MuiButton-endIcon": {
+      marginLeft: "6px",
+    },
+  },
+  [theme.breakpoints.down("sm")]: {
+    padding: "8px 10px",
+    fontSize: "12px",
+    "& .MuiButton-startIcon": {
+      marginRight: "4px",
+    },
+    "& .MuiButton-endIcon": {
+      marginLeft: "4px",
+    },
   },
 }));
 
@@ -523,15 +554,25 @@ export const CIPPTableToptoolbar = ({
       <Box
         sx={{
           display: "flex",
-          gap: 2,
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 1, md: 2 },
           p: 2,
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "stretch", md: "center" },
           backgroundColor: "background.paper",
         }}
       >
         {/* Left side - Main controls */}
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center", flex: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: { xs: 1, md: 2 },
+            alignItems: "center",
+            flex: 1,
+            flexWrap: { xs: "wrap", md: "nowrap" },
+            minWidth: 0,
+          }}
+        >
           {/* Refresh Button */}
           <Tooltip
             title={
@@ -555,7 +596,9 @@ export const CIPPTableToptoolbar = ({
                 }
               }}
               disabled={
-                getRequestData?.isLoading || getRequestData?.isFetching || refreshFunction?.isFetching
+                getRequestData?.isLoading ||
+                getRequestData?.isFetching ||
+                refreshFunction?.isFetching
               }
             >
               <SvgIcon
@@ -584,7 +627,7 @@ export const CIPPTableToptoolbar = ({
           <ModernSearchContainer elevation={0}>
             <SearchIcon sx={{ color: "text.secondary", fontSize: 20 }} />
             <ModernSearchInput
-              placeholder="Search input text"
+              placeholder="Search input"
               value={searchValue}
               onChange={handleSearchChange}
             />
@@ -620,9 +663,6 @@ export const CIPPTableToptoolbar = ({
                 setFiltersAnchor(null);
               }}
             >
-              <ListItemIcon>
-                {table.getState().showColumnFilters ? <VisibilityOffIcon /> : <VisibilityIcon />}
-              </ListItemIcon>
               <ListItemText>
                 {table.getState().showColumnFilters ? "Hide Column Filters" : "Show Column Filters"}
               </ListItemText>
@@ -650,9 +690,9 @@ export const CIPPTableToptoolbar = ({
                   setTableFilter(filter.value, filter.type, filter.filterName);
                 }}
               >
-                <ListItemText 
+                <ListItemText
                   primary={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       {activeFilterName === filter.filterName && (
                         <CheckIcon sx={{ fontSize: 16, color: "primary.main" }} />
                       )}
@@ -779,13 +819,59 @@ export const CIPPTableToptoolbar = ({
         </Box>
 
         {/* Right side - Additional controls */}
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            flexShrink: 0,
+            flexWrap: "nowrap",
+            justifyContent: { xs: "space-between", md: "flex-end" },
+            width: { xs: "100%", md: "auto" },
+            mt: { xs: 1, md: 0 },
+          }}
+        >
           {/* Selected rows indicator */}
           {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                fontSize: { xs: "12px", md: "14px" },
+                whiteSpace: "nowrap",
+                mr: 1,
+              }}
+            >
               {table.getSelectedRowModel().rows.length} rows selected
             </Typography>
           )}
+
+          {/* Bulk Actions - inline with toolbar */}
+          {actions &&
+            getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 &&
+            (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
+              <Button
+                onClick={popover.handleOpen}
+                ref={popover.anchorRef}
+                startIcon={
+                  <SvgIcon fontSize="small">
+                    <ChevronDownIcon />
+                  </SvgIcon>
+                }
+                variant="outlined"
+                size="small"
+                sx={{
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                  minWidth: "auto",
+                  height: "32px",
+                  fontSize: { xs: "12px", md: "14px" },
+                  mr: 1,
+                }}
+              >
+                Bulk Actions
+              </Button>
+            )}
 
           {/* Cold start indicator */}
           {getRequestData?.data?.pages?.[0].Metadata?.ColdStart === true && (
@@ -823,80 +909,56 @@ export const CIPPTableToptoolbar = ({
           />
         </Box>
       </Box>
-      
-      {/* Bulk Actions Menu */}
-      {actions &&
-        getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 &&
-        (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
-          <Box sx={{ p: 2, pt: 0 }}>
-            <Button
-              onClick={popover.handleOpen}
-              ref={popover.anchorRef}
-              startIcon={
-                <SvgIcon fontSize="small">
-                  <ChevronDownIcon />
-                </SvgIcon>
-              }
-              variant="outlined"
-              sx={{
-                flexShrink: 0,
-                whiteSpace: "nowrap",
-              }}
-            >
-              Bulk Actions
-            </Button>
-            <Menu
-              anchorEl={popover.anchorRef.current}
-              anchorOrigin={{
-                horizontal: "right",
-                vertical: "bottom",
-              }}
-              MenuListProps={{
-                dense: true,
-                sx: { p: 1 },
-              }}
-              onClose={popover.handleClose}
-              open={popover.open}
-              transformOrigin={{
-                horizontal: "right",
-                vertical: "top",
-              }}
-            >
-              {getBulkActions(actions, table.getSelectedRowModel().rows).map(
-                (action, index) => (
-                  <MenuItem
-                    key={index}
-                    disabled={action.disabled}
-                    onClick={() => {
-                      if (action.disabled) return;
-                      setActionData({
-                        data: table.getSelectedRowModel().rows.map((row) => row.original),
-                        action: action,
-                        ready: true,
-                      });
 
-                      if (action?.noConfirm && action.customFunction) {
-                        table
-                          .getSelectedRowModel()
-                          .rows.map((row) =>
-                            action.customFunction(row.original.original, action, {})
-                          );
-                      } else {
-                        createDialog.handleOpen();
-                        popover.handleClose();
-                      }
-                    }}
-                  >
-                    <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                      {action.icon}
-                    </SvgIcon>
-                    <ListItemText>{action.label}</ListItemText>
-                  </MenuItem>
-                )
-              )}
-            </Menu>
-          </Box>
-        )}
+      {/* Bulk Actions Menu - now inline with toolbar */}
+      <Menu
+        anchorEl={popover.anchorRef.current}
+        anchorOrigin={{
+          horizontal: "right",
+          vertical: "bottom",
+        }}
+        MenuListProps={{
+          dense: true,
+          sx: { p: 1 },
+        }}
+        onClose={popover.handleClose}
+        open={popover.open}
+        transformOrigin={{
+          horizontal: "right",
+          vertical: "top",
+        }}
+      >
+        {actions && getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
+          <MenuItem
+            key={index}
+            disabled={action.disabled}
+            onClick={() => {
+              if (action.disabled) return;
+              setActionData({
+                data: table.getSelectedRowModel().rows.map((row) => row.original),
+                action: action,
+                ready: true,
+              });
+
+              if (action?.noConfirm && action.customFunction) {
+                table
+                  .getSelectedRowModel()
+                  .rows.map((row) =>
+                    action.customFunction(row.original.original, action, {})
+                  );
+              } else {
+                createDialog.handleOpen();
+                popover.handleClose();
+              }
+            }}
+          >
+            <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+              {action.icon}
+            </SvgIcon>
+            <ListItemText>{action.label}</ListItemText>
+          </MenuItem>
+        ))}
+      </Menu>
 
       {/* API Response Off-Canvas */}
       <CippOffCanvas
