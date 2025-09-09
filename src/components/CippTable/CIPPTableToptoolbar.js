@@ -137,17 +137,7 @@ const ModernButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const RefreshButton = styled(IconButton)(({ theme }) => ({
-  height: "40px",
-  width: "40px",
-  borderRadius: "8px",
-  backgroundColor: theme.palette.mode === "dark" ? "#2A2D3A" : "#F8F9FA",
-  border: `1px solid ${theme.palette.mode === "dark" ? "#404040" : "#E0E0E0"}`,
-  "&:hover": {
-    backgroundColor: theme.palette.mode === "dark" ? "#363A4A" : "#F0F0F0",
-    borderColor: theme.palette.primary.main,
-  },
-}));
+const RefreshButton = styled(IconButton)(({ theme }) => ({}));
 
 export const CIPPTableToptoolbar = ({
   api,
@@ -189,7 +179,6 @@ export const CIPPTableToptoolbar = ({
   const [activeFilterName, setActiveFilterName] = useState(null);
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = settings?.currentTenant;
-  const queryClient = useQueryClient();
 
   // Track if we've restored filters for this page to prevent infinite loops
   const restoredFiltersRef = useRef(new Set());
@@ -556,7 +545,7 @@ export const CIPPTableToptoolbar = ({
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           gap: { xs: 1, md: 2 },
-          p: 2,
+          p: 0.5,
           justifyContent: "space-between",
           alignItems: { xs: "stretch", md: "center" },
           backgroundColor: "background.paper",
@@ -928,36 +917,35 @@ export const CIPPTableToptoolbar = ({
           vertical: "top",
         }}
       >
-        {actions && getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
-          <MenuItem
-            key={index}
-            disabled={action.disabled}
-            onClick={() => {
-              if (action.disabled) return;
-              setActionData({
-                data: table.getSelectedRowModel().rows.map((row) => row.original),
-                action: action,
-                ready: true,
-              });
+        {actions &&
+          getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
+            <MenuItem
+              key={index}
+              disabled={action.disabled}
+              onClick={() => {
+                if (action.disabled) return;
+                setActionData({
+                  data: table.getSelectedRowModel().rows.map((row) => row.original),
+                  action: action,
+                  ready: true,
+                });
 
-              if (action?.noConfirm && action.customFunction) {
-                table
-                  .getSelectedRowModel()
-                  .rows.map((row) =>
-                    action.customFunction(row.original.original, action, {})
-                  );
-              } else {
-                createDialog.handleOpen();
-                popover.handleClose();
-              }
-            }}
-          >
-            <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-              {action.icon}
-            </SvgIcon>
-            <ListItemText>{action.label}</ListItemText>
-          </MenuItem>
-        ))}
+                if (action?.noConfirm && action.customFunction) {
+                  table
+                    .getSelectedRowModel()
+                    .rows.map((row) => action.customFunction(row.original.original, action, {}));
+                } else {
+                  createDialog.handleOpen();
+                  popover.handleClose();
+                }
+              }}
+            >
+              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                {action.icon}
+              </SvgIcon>
+              <ListItemText>{action.label}</ListItemText>
+            </MenuItem>
+          ))}
       </Menu>
 
       {/* API Response Off-Canvas */}
