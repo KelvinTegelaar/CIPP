@@ -38,7 +38,7 @@
       }
     },
     "GithubRepository": {
-      "defaultValue": "https://github.com/KelvinTegelaar/CIPP",
+      "defaultValue": "https://github.com/MLBA-INC/CIPP",
       "type": "string",
       "metadata": {
         "description": "URL to your Github Frontend fork."
@@ -52,7 +52,7 @@
       }
     },
     "GithubAPIRepository": {
-      "defaultValue": "https://github.com/KelvinTegelaar/CIPP-API",
+      "defaultValue": "https://github.com/MLBA-INC/CIPP-API",
       "type": "string",
       "metadata": {
         "description": "URL to your Github backend fork."
