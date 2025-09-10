@@ -29,6 +29,8 @@ import {
   SevereCold,
   Sync,
   Check as CheckIcon,
+  MoreVert as MoreVertIcon,
+  Fullscreen as FullscreenIcon,
 } from "@mui/icons-material";
 import { ExclamationCircleIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { styled, alpha } from "@mui/material/styles";
@@ -71,12 +73,9 @@ const ModernSearchContainer = styled(Paper)(({ theme }) => ({
     boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
   },
   [theme.breakpoints.down("md")]: {
-    minWidth: "150px",
-    maxWidth: "200px",
-  },
-  [theme.breakpoints.down("sm")]: {
-    minWidth: "120px",
-    maxWidth: "150px",
+    minWidth: "0",
+    maxWidth: "none",
+    flex: 1,
   },
 }));
 
@@ -164,6 +163,7 @@ export const CIPPTableToptoolbar = ({
   const [filtersAnchor, setFiltersAnchor] = useState(null);
   const [columnsAnchor, setColumnsAnchor] = useState(null);
   const [exportAnchor, setExportAnchor] = useState(null);
+  const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
   const [searchValue, setSearchValue] = useState("");
 
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -558,7 +558,7 @@ export const CIPPTableToptoolbar = ({
             gap: { xs: 1, md: 2 },
             alignItems: "center",
             flex: 1,
-            flexWrap: { xs: "wrap", md: "nowrap" },
+            flexWrap: { xs: "nowrap", md: "nowrap" },
             minWidth: 0,
           }}
         >
@@ -622,18 +622,209 @@ export const CIPPTableToptoolbar = ({
             />
           </ModernSearchContainer>
 
-          {/* Filters Button */}
-          <ModernButton
-            startIcon={<FilterListIcon />}
-            endIcon={<ArrowDownIcon />}
-            onClick={(event) => setFiltersAnchor(event.currentTarget)}
-            sx={{
-              color: activeFilterName ? "primary.main" : "text.primary",
-              borderColor: activeFilterName ? "primary.main" : undefined,
+          {/* Desktop Buttons */}
+          {!mdDown && (
+            <>
+              {/* Filters Button */}
+              <ModernButton
+                startIcon={<FilterListIcon />}
+                endIcon={<ArrowDownIcon />}
+                onClick={(event) => setFiltersAnchor(event.currentTarget)}
+                sx={{
+                  color: activeFilterName ? "primary.main" : "text.primary",
+                  borderColor: activeFilterName ? "primary.main" : undefined,
+                }}
+              >
+                Filters
+              </ModernButton>
+              <Menu
+                anchorEl={filtersAnchor}
+                open={Boolean(filtersAnchor)}
+                onClose={() => setFiltersAnchor(null)}
+                PaperProps={{
+                  sx: {
+                    mt: 1,
+                    borderRadius: 2,
+                    minWidth: 200,
+                  },
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleColumnFiltersToggle();
+                    setFiltersAnchor(null);
+                  }}
+                >
+                  <ListItemText>
+                    {table.getState().showColumnFilters
+                      ? "Hide Column Filters"
+                      : "Show Column Filters"}
+                  </ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+                  <ListItemText primary="Reset all filters" />
+                </MenuItem>
+                {api?.url === "/api/ListGraphRequest" && (
+                  <MenuItem
+                    onClick={() => {
+                      setFiltersAnchor(null);
+                      setFilterCanvasVisible(true);
+                    }}
+                  >
+                    <ListItemText primary="Edit filters" />
+                  </MenuItem>
+                )}
+                {filterList?.length > 0 && <Divider />}
+                {filterList?.map((filter) => (
+                  <MenuItem
+                    key={filter.id}
+                    onClick={() => {
+                      setFiltersAnchor(null);
+                      setTableFilter(filter.value, filter.type, filter.filterName);
+                    }}
+                  >
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          {activeFilterName === filter.filterName && (
+                            <CheckIcon sx={{ fontSize: 16, color: "primary.main" }} />
+                          )}
+                          {filter.filterName}
+                        </Box>
+                      }
+                    />
+                  </MenuItem>
+                ))}
+              </Menu>
+
+              {/* Columns Button */}
+              <ModernButton
+                startIcon={<ViewColumnIcon />}
+                endIcon={<ArrowDownIcon />}
+                onClick={(event) => setColumnsAnchor(event.currentTarget)}
+              >
+                Columns
+              </ModernButton>
+              <Menu
+                anchorEl={columnsAnchor}
+                open={Boolean(columnsAnchor)}
+                onClose={() => setColumnsAnchor(null)}
+                PaperProps={{
+                  sx: {
+                    mt: 1,
+                    borderRadius: 2,
+                    minWidth: 250,
+                    maxHeight: 400,
+                  },
+                }}
+              >
+                <MenuItem onClick={resetToPreferedVisibility}>
+                  <ListItemText primary="Reset to preferred columns" />
+                </MenuItem>
+                <MenuItem onClick={saveAsPreferedColumns}>
+                  <ListItemText primary="Save as preferred columns" />
+                </MenuItem>
+                <MenuItem onClick={resetToDefaultVisibility}>
+                  <ListItemText primary="Delete preferred columns" />
+                </MenuItem>
+                <Divider />
+                {table
+                  .getAllColumns()
+                  .filter((column) => !column.id.startsWith("mrt-"))
+                  .map((column) => (
+                    <MenuItem
+                      key={column.id}
+                      onClick={() =>
+                        setColumnVisibility({
+                          ...columnVisibility,
+                          [column.id]: !column.getIsVisible(),
+                        })
+                      }
+                    >
+                      <Checkbox checked={column.getIsVisible()} size="small" />
+                      <ListItemText primary={getCippTranslation(column.id)} />
+                    </MenuItem>
+                  ))}
+              </Menu>
+
+              {/* Export Button */}
+              {exportEnabled && (
+                <ModernButton
+                  startIcon={<ExportIcon />}
+                  endIcon={<ArrowDownIcon />}
+                  onClick={(event) => setExportAnchor(event.currentTarget)}
+                >
+                  Export
+                </ModernButton>
+              )}
+            </>
+          )}
+
+          {/* Mobile Action Menu */}
+          <Menu
+            anchorEl={actionMenuAnchor}
+            open={Boolean(actionMenuAnchor)}
+            onClose={() => setActionMenuAnchor(null)}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                borderRadius: 2,
+                minWidth: 180,
+              },
             }}
           >
-            Filters
-          </ModernButton>
+            <MenuItem
+              onClick={(event) => {
+                setFiltersAnchor(event.currentTarget);
+                setActionMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <FilterListIcon />
+              </ListItemIcon>
+              <ListItemText>Filters</ListItemText>
+            </MenuItem>
+            <MenuItem
+              onClick={(event) => {
+                setColumnsAnchor(event.currentTarget);
+                setActionMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <ViewColumnIcon />
+              </ListItemIcon>
+              <ListItemText>Columns</ListItemText>
+            </MenuItem>
+            {exportEnabled && (
+              <MenuItem
+                onClick={(event) => {
+                  setExportAnchor(event.currentTarget);
+                  setActionMenuAnchor(null);
+                }}
+              >
+                <ListItemIcon>
+                  <ExportIcon />
+                </ListItemIcon>
+                <ListItemText>Export</ListItemText>
+              </MenuItem>
+            )}
+            <MenuItem
+              onClick={() => {
+                table.setIsFullScreen(!table.getState().isFullScreen);
+                setActionMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <FullscreenIcon />
+              </ListItemIcon>
+              <ListItemText>
+                {table.getState().isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+              </ListItemText>
+            </MenuItem>
+          </Menu>
+
+          {/* Filters Menu */}
           <Menu
             anchorEl={filtersAnchor}
             open={Boolean(filtersAnchor)}
@@ -693,14 +884,7 @@ export const CIPPTableToptoolbar = ({
             ))}
           </Menu>
 
-          {/* Columns Button */}
-          <ModernButton
-            startIcon={<ViewColumnIcon />}
-            endIcon={<ArrowDownIcon />}
-            onClick={(event) => setColumnsAnchor(event.currentTarget)}
-          >
-            Columns
-          </ModernButton>
+          {/* Columns Menu */}
           <Menu
             anchorEl={columnsAnchor}
             open={Boolean(columnsAnchor)}
@@ -743,67 +927,76 @@ export const CIPPTableToptoolbar = ({
               ))}
           </Menu>
 
-          {/* Export Button */}
+          {/* Export Menu */}
           {exportEnabled && (
-            <>
-              <ModernButton
-                startIcon={<ExportIcon />}
-                endIcon={<ArrowDownIcon />}
-                onClick={(event) => setExportAnchor(event.currentTarget)}
-              >
-                Export
-              </ModernButton>
-              <Menu
-                anchorEl={exportAnchor}
-                open={Boolean(exportAnchor)}
-                onClose={() => setExportAnchor(null)}
-                PaperProps={{
-                  sx: {
-                    mt: 1,
-                    borderRadius: 2,
-                    minWidth: 180,
-                  },
+            <Menu
+              anchorEl={exportAnchor}
+              open={Boolean(exportAnchor)}
+              onClose={() => setExportAnchor(null)}
+              PaperProps={{
+                sx: {
+                  mt: 1,
+                  borderRadius: 2,
+                  minWidth: 180,
+                },
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  // Trigger CSV export
+                  const csvButton = document.querySelector("[data-csv-export]");
+                  if (csvButton) csvButton.click();
+                  setExportAnchor(null);
                 }}
               >
-                <MenuItem
-                  onClick={() => {
-                    // Trigger CSV export
-                    const csvButton = document.querySelector("[data-csv-export]");
-                    if (csvButton) csvButton.click();
-                    setExportAnchor(null);
-                  }}
-                >
-                  <ListItemIcon>
-                    <CsvIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Export to CSV" />
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    // Trigger PDF export
-                    const pdfButton = document.querySelector("[data-pdf-export]");
-                    if (pdfButton) pdfButton.click();
-                    setExportAnchor(null);
-                  }}
-                >
-                  <ListItemIcon>
-                    <PdfIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Export to PDF" />
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setOffcanvasVisible(true);
-                    setExportAnchor(null);
-                  }}
-                >
-                  <ListItemIcon>
-                    <CodeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="View API Response" />
-                </MenuItem>
-              </Menu>
-            </>
+                <ListItemIcon>
+                  <CsvIcon />
+                </ListItemIcon>
+                <ListItemText primary="Export to CSV" />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  // Trigger PDF export
+                  const pdfButton = document.querySelector("[data-pdf-export]");
+                  if (pdfButton) pdfButton.click();
+                  setExportAnchor(null);
+                }}
+              >
+                <ListItemIcon>
+                  <PdfIcon />
+                </ListItemIcon>
+                <ListItemText primary="Export to PDF" />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setOffcanvasVisible(true);
+                  setExportAnchor(null);
+                }}
+              >
+                <ListItemIcon>
+                  <CodeIcon />
+                </ListItemIcon>
+                <ListItemText primary="View API Response" />
+              </MenuItem>
+            </Menu>
+          )}
+
+          {/* Mobile Action Menu */}
+          {mdDown && (
+            <IconButton
+              onClick={(event) => setActionMenuAnchor(event.currentTarget)}
+              size="small"
+              sx={{
+                height: "40px",
+                width: "40px",
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: "8px",
+                ml: "auto",
+              }}
+            >
+              <MoreVertIcon />
+            </IconButton>
           )}
         </Box>
 
@@ -875,9 +1068,6 @@ export const CIPPTableToptoolbar = ({
             queryKey={currentEffectiveQueryKey}
             title={title}
           />
-
-          {/* Full screen toggle for mobile */}
-          {mdDown && <MRT_ToggleFullScreenButton table={table} />}
         </Box>
 
         {/* Hidden export buttons for triggering */}
