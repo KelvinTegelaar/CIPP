@@ -4590,10 +4590,10 @@
         "name": "TemplateList",
         "label": "Select Intune Template",
         "api": {
+          "queryKey": "ListIntuneTemplates-autcomplete",
           "url": "/api/ListIntuneTemplates",
           "labelField": "Displayname",
-          "valueField": "GUID",
-          "queryKey": "languages"
+          "valueField": "GUID"
         }
       },
       {

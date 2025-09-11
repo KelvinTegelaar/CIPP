@@ -41,6 +41,7 @@ import GDAPRoles from "/src/data/GDAPRoles";
 import timezoneList from "/src/data/timezoneList";
 import standards from "/src/data/standards.json";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import { CippPolicyImportDrawer } from "../CippComponents/CippPolicyImportDrawer";
 import ReactMarkdown from "react-markdown";
 
 const getAvailableActions = (disabledFeatures) => {
@@ -855,6 +856,17 @@ const CippStandardAccordion = ({
                         {hasAddedComponents && (
                           <Grid size={8}>
                             <Grid container spacing={2}>
+                              {/* Add catalog button for Intune Template standard - appears first */}
+                              {standardName.startsWith("standards.IntuneTemplate") && (
+                                <Grid size={12}>
+                                  <Box sx={{ mb: 2 }}>
+                                    <CippPolicyImportDrawer
+                                      buttonText="Browse Intune Template Catalog"
+                                      mode="Intune"
+                                    />
+                                  </Box>
+                                </Grid>
+                              )}
                               {standard.addedComponent?.map((component, idx) =>
                                 component?.condition ? (
                                   <CippFormCondition
