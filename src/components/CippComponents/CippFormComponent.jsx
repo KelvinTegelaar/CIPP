@@ -479,6 +479,12 @@ export const CippFormComponent = (props) => {
                   <Box sx={{ flexGrow: 1 }}>
                     <DateTimePicker
                       slotProps={{ textField: { fullWidth: true } }}
+                      sx={{
+                        "& .MuiPickersSectionList-root": {
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
+                        },
+                      }}
                       views={
                         other.dateTimeType === "date"
                           ? ["year", "month", "day"]
