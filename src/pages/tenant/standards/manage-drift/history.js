@@ -26,8 +26,6 @@ import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import {
   Policy,
-  Sync,
-  PlayArrow,
   Error as ErrorIcon,
   Warning as WarningIcon,
   Info as InfoIcon,
@@ -36,6 +34,7 @@ import {
 } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../../hooks/use-settings";
+import { createDriftManagementActions } from "./driftManagementActions";
 
 const Page = () => {
   const router = useRouter();
@@ -126,43 +125,13 @@ const Page = () => {
   };
 
   // Actions for the ActionsMenu
-  const actions = [
-    {
-      label: "Refresh Data",
-      icon: <Sync />,
-      noConfirm: true,
-      customFunction: () => {
-        logsData.refetch();
-      },
+  const actions = createDriftManagementActions({
+    templateId,
+    onRefresh: () => {
+      logsData.refetch();
     },
-    ...(templateId
-      ? [
-          {
-            label: "Run Standard Now (Currently Selected Tenant only)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-          {
-            label: "Run Standard Now (All Tenants in Template)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-              tenantFilter: "allTenants",
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-        ]
-      : []),
-  ];
+    currentTenant: tenant,
+  });
 
   const title = "Manage Drift";
   const subtitle = [

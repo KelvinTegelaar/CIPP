@@ -43,8 +43,13 @@ const Page = () => {
           defaultAttributes[attribute.label] = { Value: user?.[attribute.label] };
         });
       }
+
+      // Use fallback for usageLocation if user's usageLocation is null/undefined
+      const usageLocation = user?.usageLocation || userSettingsDefaults?.usageLocation || null;
+
       formControl.reset({
         ...user,
+        usageLocation: usageLocation,
         defaultAttributes: defaultAttributes,
         tenantFilter: userSettingsDefaults.currentTenant,
         licenses: user.assignedLicenses.map((license) => ({
@@ -104,7 +109,8 @@ const Page = () => {
     >
       {userRequest.isSuccess && userRequest.data?.[0]?.onPremisesSyncEnabled && (
         <Alert severity="error" sx={{ mb: 1 }}>
-          This user is synced from on-premises Active Directory. Changes should be made in the on-premises environment instead.
+          This user is synced from on-premises Active Directory. Changes should be made in the
+          on-premises environment instead.
         </Alert>
       )}
       <CippFormPage

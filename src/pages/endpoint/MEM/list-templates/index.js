@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Edit, GitHub } from "@mui/icons-material";
+import { Edit, GitHub, LocalOffer } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
@@ -45,6 +45,27 @@ const Page = () => {
         "Enter the new name and description for the template. Warning: This will disconnect the template from a template library if applied.",
       multiPost: false,
       icon: <PencilIcon />,
+      color: "info",
+    },
+    {
+      label: "Add to package",
+      type: "POST",
+      url: "/api/ExecSetPackageTag",
+      data: { GUID: "GUID" },
+      fields: [
+        {
+          type: "textField",
+          name: "Package",
+          label: "Package Name",
+          required: true,
+          validators: {
+            required: { value: true, message: "Package name is required" },
+          },
+        },
+      ],
+      confirmText: "Enter the package name to assign to the selected template(s).",
+      multiPost: true,
+      icon: <LocalOffer />,
       color: "info",
     },
     {
@@ -108,7 +129,7 @@ const Page = () => {
     size: "lg",
   };
 
-  const simpleColumns = ["displayName", "description", "Type"];
+  const simpleColumns = ["displayName", "package", "description", "Type"];
 
   return (
     <>

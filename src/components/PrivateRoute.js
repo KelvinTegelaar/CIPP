@@ -31,7 +31,8 @@ export const PrivateRoute = ({ children, routeType }) => {
   // Or other network errors that would indicate API is unavailable
   if (
     apiRoles?.error?.response?.status === 404 || // API endpoint not found
-    apiRoles?.error?.response?.status === 502 || // Service unavailable
+    apiRoles?.error?.response?.status === 502 || // Bad Gateway
+    apiRoles?.error?.response?.status === 503 || // Service Unavailable
     (apiRoles?.isSuccess && !apiRoles?.data) // No client principal data, indicating API might be offline
   ) {
     return <ApiOfflinePage />;

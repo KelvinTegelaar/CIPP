@@ -9,6 +9,7 @@ import { Grid } from "@mui/system";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "../tabOptions.json";
+import { useSettings } from "/src/hooks/use-settings.js";
 
 const Page = () => {
   const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });
@@ -18,6 +19,8 @@ const Page = () => {
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
+
+  const currentTenant = useSettings().currentTenant;
   const pageTitle = "Templates";
   const actions = [
     {
@@ -51,11 +54,12 @@ const Page = () => {
       data: {
         id: "GUID",
       },
-      confirmText: "Are you sure you want to create a drift clone of [templateName]? This will create a new drift template based on this template.",
+      confirmText:
+        "Are you sure you want to create a drift clone of [templateName]? This will create a new drift template based on this template.",
       multiPost: false,
     },
     {
-      label: "Run Template Now (Currently Selected Tenant only)",
+      label: `Run Template Now (${currentTenant || "Currently Selected Tenant"})`,
       type: "GET",
       url: "/api/ExecStandardsRun",
       icon: <PlayArrow />,

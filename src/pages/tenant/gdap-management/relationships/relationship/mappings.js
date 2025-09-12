@@ -56,9 +56,9 @@ const Page = () => {
             url: `/api/ListGDAPAccessAssignments`,
             data: { id },
             dataKey: "Results",
-            queryKey: `AccessAssignments-${id}`,
           }}
           simpleColumns={["group.displayName", "status", "createdDateTime", "roles", "members"]}
+          queryKey={`AccessAssignments-${id}`}
           maxHeightOffset="550px"
         />
       )}

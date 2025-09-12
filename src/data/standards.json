@@ -336,8 +336,8 @@
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
     "tag": ["CIS M365 5.0 (6.5.4)", "NIST CSF 2.0 (PR.IR-01)"],
-    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants.",
-    "docsDescription": "Disables SMTP basic authentication for the tenant and all users with it explicitly enabled.",
+    "helpText": "Disables SMTP AUTH organization-wide, impacting POP and IMAP clients that rely on SMTP for sending emails. Default for new tenants. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission)",
+    "docsDescription": "Disables tenant-wide SMTP basic authentication, including for all explicitly enabled users, impacting POP and IMAP clients that rely on SMTP for sending emails. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission).",
     "executiveText": "Disables outdated email authentication methods that are vulnerable to security attacks, forcing applications and devices to use modern, more secure authentication protocols. This reduces the risk of email-based security breaches and credential theft.",
     "addedComponent": [],
     "label": "Disable SMTP Basic Authentication",
@@ -4437,14 +4437,14 @@
       },
       {
         "type": "switch",
-        "name": "standards.AutopilotStatusPage.BlockDevice",
-        "label": "Block device usage during setup",
+        "name": "standards.AutopilotStatusPage.InstallWindowsUpdates",
+        "label": "Install Windows Updates during setup",
         "defaultValue": true
       },
       {
         "type": "switch",
-        "name": "standards.AutopilotStatusPage.AllowRetry",
-        "label": "Allow retry",
+        "name": "standards.AutopilotStatusPage.BlockDevice",
+        "label": "Block device usage during setup",
         "defaultValue": true
       },
       {
@@ -4587,13 +4587,31 @@
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
+        "required": false,
         "name": "TemplateList",
         "label": "Select Intune Template",
         "api": {
+          "queryKey": "ListIntuneTemplates-autcomplete",
           "url": "/api/ListIntuneTemplates",
           "labelField": "Displayname",
-          "valueField": "GUID",
-          "queryKey": "languages"
+          "valueField": "GUID"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "required": false,
+        "creatable": false,
+        "name": "TemplateList-Tags",
+        "label": "Or select a package of Intune Templates",
+        "api": {
+          "queryKey": "ListIntuneTemplates-tag-autcomplete",
+          "url": "/api/ListIntuneTemplates?mode=Tag",
+          "labelField": "label",
+          "valueField": "value",
+          "addedField": {
+            "templates": "templates"
+          }
         }
       },
       {
@@ -4813,5 +4831,50 @@
     "addedDate": "2025-06-19",
     "powershellEquivalent": "Set-User -Identity $user -RemotePowerShellEnabled $false",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.OWAAttachmentRestrictions",
+    "cat": "Exchange Standards",
+    "tag": ["CIS M365 5.0 (6.1.2)", "Security", "NIST CSF 2.0 (PR.AA-05)"],
+    "helpText": "Restricts how users on unmanaged devices can interact with email attachments in Outlook on the web and new Outlook for Windows. Prevents downloading attachments or blocks viewing them entirely.",
+    "docsDescription": "This standard configures the OWA mailbox policy to restrict access to email attachments on unmanaged devices. Users can be prevented from downloading attachments (but can view/edit via Office Online) or blocked from seeing attachments entirely. This helps prevent data exfiltration through email attachments on devices not managed by the organization.",
+    "executiveText": "Restricts access to email attachments on personal or unmanaged devices while allowing full functionality on corporate-managed devices. This security measure prevents data theft through email attachments while maintaining productivity for employees using approved company devices.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "standards.OWAAttachmentRestrictions.ConditionalAccessPolicy",
+        "label": "Attachment Restriction Policy",
+        "options": [
+          {
+            "label": "Read Only (View/Edit via Office Online, no download)",
+            "value": "ReadOnly"
+          },
+          {
+            "label": "Read Only Plus Attachments Blocked (Cannot see attachments)",
+            "value": "ReadOnlyPlusAttachmentsBlocked"
+          }
+        ],
+        "defaultValue": "ReadOnlyPlusAttachmentsBlocked"
+      }
+    ],
+    "label": "Restrict Email Attachments on Unmanaged Devices",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-08-22",
+    "powershellEquivalent": "Set-OwaMailboxPolicy -Identity \"OwaMailboxPolicy-Default\" -ConditionalAccessPolicy ReadOnlyPlusAttachmentsBlocked",
+    "recommendedBy": ["Microsoft Zero Trust", "CIPP"]
+  },
+  {
+    "name": "standards.LegacyEmailReportAddins",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Removes legacy Report Phishing and Report Message Outlook add-ins.",
+    "executiveText": "The legacy Report Phishing and Report Message Outlook add-ins are security issues with the add-in which makes them unsafe for the organization.",
+    "label": "Remove legacy Outlook Report add-ins",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-08-26",
+    "powershellEquivalent": "None",
+    "recommendedBy": ["Microsoft"]
   }
 ]

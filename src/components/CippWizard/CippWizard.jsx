@@ -5,8 +5,13 @@ import { WizardSteps } from "./wizard-steps";
 import { useForm, useWatch } from "react-hook-form";
 
 export const CippWizard = (props) => {
-  const { postUrl, orientation = "horizontal", steps } = props;
-
+  const { 
+    postUrl, 
+    orientation = "horizontal", 
+    steps,
+    contentMaxWidth = "md",
+  } = props;
+  
   const formControl = useForm({ mode: "onChange", defaultValues: props.initialState });
   const formWatcher = useWatch({
     control: formControl.control,
@@ -34,7 +39,9 @@ export const CippWizard = (props) => {
   }, []);
 
   const content = useMemo(() => {
-    const StepComponent = stepsWithVisibility[activeStep].component;
+    const currentStep = stepsWithVisibility[activeStep];
+    const StepComponent = currentStep.component;
+
     return (
       <StepComponent
         onNextStep={handleNext}
@@ -43,14 +50,20 @@ export const CippWizard = (props) => {
         lastStep={stepsWithVisibility.length - 1}
         currentStep={activeStep}
         postUrl={postUrl}
-        options={stepsWithVisibility[activeStep].componentProps?.options}
-        title={stepsWithVisibility[activeStep].componentProps?.title}
-        subtext={stepsWithVisibility[activeStep].componentProps?.subtext}
-        valuesKey={stepsWithVisibility[activeStep].componentProps?.valuesKey}
-        {...stepsWithVisibility[activeStep].componentProps}
+        options={currentStep.componentProps?.options}
+        title={currentStep.componentProps?.title}
+        subtext={currentStep.componentProps?.subtext}
+        valuesKey={currentStep.componentProps?.valuesKey}
+        {...currentStep.componentProps}
       />
     );
   }, [activeStep, handleNext, handleBack, stepsWithVisibility, formControl]);
+
+  // Get the maxWidth for the current step, fallback to global setting
+  const currentStepMaxWidth = useMemo(() => {
+    const currentStep = stepsWithVisibility[activeStep];
+    return currentStep.maxWidth ?? contentMaxWidth;
+  }, [activeStep, stepsWithVisibility, contentMaxWidth]);
 
   return (
     <Card>
@@ -80,7 +93,7 @@ export const CippWizard = (props) => {
               steps={stepsWithVisibility}
             />
             <div>
-              <Container maxWidth="md">{content}</Container>
+              <Container maxWidth={currentStepMaxWidth}>{content}</Container>
             </div>
           </Stack>
         </CardContent>

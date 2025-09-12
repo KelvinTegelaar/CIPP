@@ -22,13 +22,44 @@ export const CippWizardOffboarding = (props) => {
     }
   }, [selectedUsers]);
 
+  // Set initial defaults source on component mount if not already set
   useEffect(() => {
-    if (userSettingsDefaults?.offboardingDefaults) {
-      userSettingsDefaults.offboardingDefaults.forEach((setting) => {
-        formControl.setValue(setting.name, setting.value);
-      });
+    const currentDefaultsSource = formControl.getValues("HIDDEN_defaultsSource");
+    if (!currentDefaultsSource) {
+      // Default to user defaults since form starts with user defaults from initialState within the wizard component
+      formControl.setValue("HIDDEN_defaultsSource", "user");
     }
-  }, [userSettingsDefaults]);
+  }, [formControl]);
+
+  // Apply defaults only once per tenant or when tenant changes
+  useEffect(() => {
+    const currentTenantId = currentTenant?.value;
+    const appliedDefaultsForTenant = formControl.getValues("HIDDEN_appliedDefaultsForTenant");
+    
+    // Only apply defaults if we haven't applied them for this tenant yet
+    if (currentTenantId && appliedDefaultsForTenant !== currentTenantId) {
+      const tenantDefaults = currentTenant?.addedFields?.offboardingDefaults;
+      
+      if (tenantDefaults) {
+        // Apply tenant defaults
+        Object.entries(tenantDefaults).forEach(([key, value]) => {
+          formControl.setValue(key, value);
+        });
+        // Set the source indicator
+        formControl.setValue("HIDDEN_defaultsSource", "tenant");
+      } else if (userSettingsDefaults?.offboardingDefaults) {
+        // Apply user defaults if no tenant defaults
+        userSettingsDefaults.offboardingDefaults.forEach((setting) => {
+          formControl.setValue(setting.name, setting.value);
+        });
+        // Set the source indicator
+        formControl.setValue("HIDDEN_defaultsSource", "user");
+      }
+      
+      // Mark that we've applied defaults for this tenant
+      formControl.setValue("HIDDEN_appliedDefaultsForTenant", currentTenantId);
+    }
+  }, [currentTenant?.value, userSettingsDefaults, formControl]);
 
   useEffect(() => {
     if (disableForwarding) {
@@ -36,6 +67,10 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue("KeepCopy", false);
     }
   }, [disableForwarding, formControl]);
+
+  const getDefaultsSource = () => {
+    return formControl.getValues("HIDDEN_defaultsSource") || "user";
+  };
 
   return (
     <Stack spacing={4}>
@@ -45,6 +80,12 @@ export const CippWizardOffboarding = (props) => {
             <CardHeader title="Offboarding Settings" />
             <Divider />
             <CardContent>
+              <Typography variant="body2" sx={{ mb: 2, color: 
+                getDefaultsSource() === "tenant" ? "primary.main" : "warning.main", 
+                fontStyle: "italic" 
+              }}>
+                {getDefaultsSource() === "tenant" ? "Using Tenant Defaults" : "Using User Defaults"}
+              </Typography>
               <CippFormComponent
                 name="ConvertToShared"
                 label="Convert to Shared Mailbox"

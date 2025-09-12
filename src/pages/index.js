@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { Box, Container, Button, Card, CardContent, Tooltip } from "@mui/material";
+import { Box, Container, Button, Card, CardContent } from "@mui/material";
 import { Grid } from "@mui/system";
 import { CippInfoBar } from "../components/CippCards/CippInfoBar";
 import { CippChartCard } from "../components/CippCards/CippChartCard";
@@ -14,12 +14,11 @@ import { CippUniversalSearch } from "../components/CippCards/CippUniversalSearch
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard.jsx";
 import { ExecutiveReportButton } from "../components/ExecutiveReportButton.js";
-import { CippStandardsDialog } from "../components/CippCards/CippStandardsDialog.jsx";
 
 const Page = () => {
-  const { currentTenant } = useSettings();
+  const settings = useSettings();
+  const { currentTenant } = settings;
   const [domainVisible, setDomainVisible] = useState(false);
-  const [standardsDialogOpen, setStandardsDialogOpen] = useState(false);
 
   const organization = ApiGetCall({
     url: "/api/ListOrg",
@@ -52,6 +51,14 @@ const Page = () => {
   const standards = ApiGetCall({
     url: "/api/ListStandardTemplates",
     queryKey: `${currentTenant}-ListStandardTemplates`,
+  });
+
+  const driftApi = ApiGetCall({
+    url: "/api/listTenantDrift",
+    data: {
+      TenantFilter: currentTenant,
+    },
+    queryKey: `TenantDrift-${currentTenant}`,
   });
 
   const partners = ApiGetCall({
@@ -98,6 +105,45 @@ const Page = () => {
       data: getCippFormatting(organization.data?.onPremisesSyncEnabled, "dirsync"),
     },
   ];
+
+  // Process drift data for chart - filter by current tenant and aggregate
+  const processDriftDataForTenant = (driftData, currentTenant) => {
+    if (!driftData) {
+      return {
+        alignedCount: 0,
+        acceptedDeviationsCount: 0,
+        currentDeviationsCount: 0,
+        customerSpecificDeviations: 0,
+        hasData: false,
+      };
+    }
+
+    const rawDriftData = driftData || [];
+    const tenantDriftData = Array.isArray(rawDriftData)
+      ? rawDriftData.filter((item) => item.tenantFilter === currentTenant)
+      : [];
+
+    const hasData = tenantDriftData.length > 0;
+
+    // Aggregate data across all standards for this tenant
+    const aggregatedData = tenantDriftData.reduce(
+      (acc, item) => {
+        acc.acceptedDeviationsCount += item.acceptedDeviationsCount || 0;
+        acc.currentDeviationsCount += item.currentDeviationsCount || 0;
+        acc.alignedCount += item.alignedCount || 0;
+        acc.customerSpecificDeviations += item.customerSpecificDeviationsCount || 0;
+        return acc;
+      },
+      {
+        acceptedDeviationsCount: 0,
+        currentDeviationsCount: 0,
+        alignedCount: 0,
+        customerSpecificDeviations: 0,
+      }
+    );
+
+    return { ...aggregatedData, hasData };
+  };
 
   function getActionCountsForTenant(standardsData, currentTenant) {
     if (!standardsData) {
@@ -160,6 +206,7 @@ const Page = () => {
     return { remediateCount, alertCount, reportCount, total };
   }
 
+  const driftData = processDriftDataForTenant(driftApi.data, currentTenant);
   const { remediateCount, alertCount, reportCount, total } = getActionCountsForTenant(
     standards.data,
     currentTenant
@@ -174,12 +221,48 @@ const Page = () => {
     return `${sizeInMB}MB`;
   };
 
+  // Function to filter portals based on user preferences
+  const getFilteredPortals = () => {
+    const defaultLinks = {
+      M365_Portal: true,
+      Exchange_Portal: true,
+      Entra_Portal: true,
+      Teams_Portal: true,
+      Azure_Portal: true,
+      Intune_Portal: true,
+      SharePoint_Admin: true,
+      Security_Portal: true,
+      Compliance_Portal: true,
+      Power_Platform_Portal: true,
+      Power_BI_Portal: true,
+    };
+
+    let portalLinks;
+    if (settings.UserSpecificSettings?.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.UserSpecificSettings.portalLinks };
+    } else if (settings.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.portalLinks };
+    } else {
+      portalLinks = defaultLinks;
+    }
+
+    // Filter the portals based on user settings
+    return Portals.filter(portal => {
+      const settingKey = portal.name;
+      return settingKey ? portalLinks[settingKey] === true : true;
+    });
+  };
+
   useEffect(() => {
     if (currentTenantInfo.isSuccess) {
       const tenantLookup = currentTenantInfo.data?.find(
         (tenant) => tenant.defaultDomainName === currentTenant
       );
-      const menuItems = Portals.map((portal) => ({
+      
+      // Get filtered portals based on user preferences
+      const filteredPortals = getFilteredPortals();
+      
+      const menuItems = filteredPortals.map((portal) => ({
         label: portal.label,
         target: "_blank",
         link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
@@ -187,7 +270,7 @@ const Page = () => {
       }));
       setPortalMenuItems(menuItems);
     }
-  }, [currentTenantInfo.isSuccess, currentTenant]);
+  }, [currentTenantInfo.isSuccess, currentTenant, settings.portalLinks, settings.UserSpecificSettings]);
 
   return (
     <>
@@ -216,7 +299,7 @@ const Page = () => {
                       guests: dashboard.data?.Guests || 0,
                       globalAdmins: GlobalAdminList.data?.Results?.length || 0
                     }}
-                    standardsData={standards.data}
+                    standardsData={driftApi.data}
                     organizationData={organization.data}
                     disabled={organization.isFetching || dashboard.isFetching}
                   />
@@ -256,16 +339,31 @@ const Page = () => {
             </Grid>
 
             <Grid size={{ md: 4, xs: 12 }}>
-              <Tooltip title="Click to view standards">
-                <CippChartCard
-                  title="Standards Set"
-                  isFetching={standards.isFetching}
-                  chartType="bar"
-                  chartSeries={[remediateCount, alertCount, reportCount]}
-                  labels={["Remediation", "Alert", "Report"]}
-                  onClick={() => setStandardsDialogOpen(true)}
-                />
-              </Tooltip>
+              <CippChartCard
+                title={driftData.hasData ? "Drift Monitoring" : "Standards Set"}
+                isFetching={driftApi.isFetching || standards.isFetching}
+                chartType={driftData.hasData ? "donut" : "bar"}
+                chartSeries={
+                  driftData.hasData
+                    ? [
+                        driftData.alignedCount,
+                        driftData.acceptedDeviationsCount,
+                        driftData.currentDeviationsCount,
+                        driftData.customerSpecificDeviations,
+                      ]
+                    : [remediateCount, alertCount, reportCount]
+                }
+                labels={
+                  driftData.hasData
+                    ? [
+                        "Aligned Policies",
+                        "Accepted Deviations",
+                        "Current Deviations",
+                        "Customer Specific Deviations"
+                      ]
+                    : ["Remediation", "Alert", "Report"]
+                }
+              />
             </Grid>
 
             <Grid size={{ md: 4, xs: 12 }}>
@@ -363,12 +461,6 @@ const Page = () => {
         </Container>
       </Box>
       
-      <CippStandardsDialog
-        open={standardsDialogOpen}
-        onClose={() => setStandardsDialogOpen(false)}
-        standardsData={standards.data}
-        currentTenant={currentTenant}
-      />
     </>
   );
 };

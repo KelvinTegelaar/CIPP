@@ -22,14 +22,11 @@ import {
   Cancel,
   Info,
   Microsoft,
-  Sync,
   FilterAlt,
   Close,
   Search,
   FactCheck,
-  PlayArrow,
 } from "@mui/icons-material";
-import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import standards from "/src/data/standards.json";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { SvgIcon } from "@mui/material";
@@ -43,6 +40,7 @@ import DOMPurify from "dompurify";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
 import tabOptions from "./tabOptions.json";
+import { createDriftManagementActions } from "./driftManagementActions";
 
 const Page = () => {
   const router = useRouter();
@@ -108,70 +106,155 @@ const Page = () => {
         const allStandards = [];
         if (selectedTemplate.standards) {
           Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
-            // Special handling for IntuneTemplate which is an array of items
             if (standardKey === "IntuneTemplate" && Array.isArray(standardConfig)) {
-              // Process each IntuneTemplate item separately
               standardConfig.forEach((templateItem, index) => {
-                const templateId = templateItem.TemplateList?.value;
-                if (templateId) {
-                  const standardId = `standards.IntuneTemplate.${templateId}`;
-                  const standardInfo = standards.find((s) => s.name === `standards.IntuneTemplate`);
-
-                  // Find the tenant's value for this specific template
-                  const currentTenantStandard = currentTenantData.find(
-                    (s) => s.standardId === standardId
+                console.log("Processing IntuneTemplate item:", templateItem);
+                if (
+                  templateItem["TemplateList-Tags"]?.value &&
+                  templateItem["TemplateList-Tags"]?.addedFields?.templates
+                ) {
+                  console.log(
+                    "Found TemplateList-Tags for IntuneTemplate:",
+                    templateItem["TemplateList-Tags"]
                   );
+                  console.log(
+                    "Templates to expand:",
+                    templateItem["TemplateList-Tags"].addedFields.templates
+                  );
+                  templateItem["TemplateList-Tags"].addedFields.templates.forEach(
+                    (expandedTemplate) => {
+                      console.log("Expanding IntuneTemplate:", expandedTemplate);
+                      const templateId = expandedTemplate.GUID;
+                      const standardId = `standards.IntuneTemplate.${templateId}`;
+                      const standardInfo = standards.find(
+                        (s) => s.name === `standards.IntuneTemplate`
+                      );
 
-                  // Get the standard object and its value from the tenant object
-                  const standardObject = currentTenantObj?.[standardId];
-                  const directStandardValue = standardObject?.Value;
+                      // Find the tenant's value for this specific template
+                      const currentTenantStandard = currentTenantData.find(
+                        (s) => s.standardId === standardId
+                      );
 
-                  // Determine compliance status
-                  let isCompliant = false;
+                      // Get the standard object and its value from the tenant object
+                      const standardObject = currentTenantObj?.[standardId];
+                      const directStandardValue = standardObject?.Value;
 
-                  // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                  if (directStandardValue === true) {
-                    isCompliant = true;
-                  } else if (
-                    directStandardValue !== undefined &&
-                    typeof directStandardValue !== "object"
-                  ) {
-                    isCompliant = true;
-                  } else if (currentTenantStandard) {
-                    isCompliant = currentTenantStandard.value === true;
+                      // Determine compliance status
+                      let isCompliant = false;
+
+                      // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                      if (directStandardValue === true) {
+                        isCompliant = true;
+                      } else if (
+                        directStandardValue !== undefined &&
+                        typeof directStandardValue !== "object"
+                      ) {
+                        isCompliant = true;
+                      } else if (currentTenantStandard) {
+                        isCompliant = currentTenantStandard.value === true;
+                      }
+
+                      // Create a standardValue object that contains the template settings
+                      const templateSettings = {
+                        templateId,
+                        Template:
+                          expandedTemplate.displayName ||
+                          expandedTemplate.name ||
+                          "Unknown Template",
+                        "Assign to": templateItem.AssignTo || "On",
+                        "Excluded Group": templateItem.excludeGroup || "",
+                        "Included Group": templateItem.customGroup || "",
+                      };
+
+                      allStandards.push({
+                        standardId,
+                        standardName: `Intune Template: ${
+                          expandedTemplate.displayName || expandedTemplate.name || templateId
+                        } (via ${templateItem['TemplateList-Tags'].value})`,
+                        currentTenantValue:
+                          standardObject !== undefined
+                            ? {
+                                Value: directStandardValue,
+                                LastRefresh: standardObject?.LastRefresh,
+                              }
+                            : currentTenantStandard?.value,
+                        standardValue: templateSettings,
+                        complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                        complianceDetails:
+                          standardInfo?.docsDescription || standardInfo?.helpText || "",
+                        standardDescription: standardInfo?.helpText || "",
+                        standardImpact: standardInfo?.impact || "Medium Impact",
+                        standardImpactColour: standardInfo?.impactColour || "warning",
+                        templateName: selectedTemplate?.templateName || "Standard Template",
+                        templateActions: templateItem.action || [],
+                      });
+                    }
+                  );
+                } else {
+                  // Regular TemplateList processing
+                  const templateId = templateItem.TemplateList?.value;
+                  if (templateId) {
+                    const standardId = `standards.IntuneTemplate.${templateId}`;
+                    const standardInfo = standards.find(
+                      (s) => s.name === `standards.IntuneTemplate`
+                    );
+
+                    // Find the tenant's value for this specific template
+                    const currentTenantStandard = currentTenantData.find(
+                      (s) => s.standardId === standardId
+                    );
+
+                    // Get the standard object and its value from the tenant object
+                    const standardObject = currentTenantObj?.[standardId];
+                    const directStandardValue = standardObject?.Value;
+
+                    // Determine compliance status
+                    let isCompliant = false;
+
+                    // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                    if (directStandardValue === true) {
+                      isCompliant = true;
+                    } else if (
+                      directStandardValue !== undefined &&
+                      typeof directStandardValue !== "object"
+                    ) {
+                      isCompliant = true;
+                    } else if (currentTenantStandard) {
+                      isCompliant = currentTenantStandard.value === true;
+                    }
+
+                    // Create a standardValue object that contains the template settings
+                    const templateSettings = {
+                      templateId,
+                      Template: templateItem.TemplateList?.label || "Unknown Template",
+                      "Assign to": templateItem.AssignTo || "On",
+                      "Excluded Group": templateItem.excludeGroup || "",
+                      "Included Group": templateItem.customGroup || "",
+                    };
+
+                    allStandards.push({
+                      standardId,
+                      standardName: `Intune Template: ${
+                        templateItem.TemplateList?.label || templateId
+                      }`,
+                      currentTenantValue:
+                        standardObject !== undefined
+                          ? {
+                              Value: directStandardValue,
+                              LastRefresh: standardObject?.LastRefresh,
+                            }
+                          : currentTenantStandard?.value,
+                      standardValue: templateSettings, // Use the template settings object instead of true
+                      complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                      complianceDetails:
+                        standardInfo?.docsDescription || standardInfo?.helpText || "",
+                      standardDescription: standardInfo?.helpText || "",
+                      standardImpact: standardInfo?.impact || "Medium Impact",
+                      standardImpactColour: standardInfo?.impactColour || "warning",
+                      templateName: selectedTemplate?.templateName || "Standard Template",
+                      templateActions: templateItem.action || [],
+                    });
                   }
-
-                  // Create a standardValue object that contains the template settings
-                  const templateSettings = {
-                    templateId,
-                    Template: templateItem.TemplateList?.label || "Unknown Template",
-                    "Assign to": templateItem.AssignTo || "On",
-                    "Excluded Group": templateItem.excludeGroup || "",
-                    "Included Group": templateItem.customGroup || "",
-                  };
-
-                  allStandards.push({
-                    standardId,
-                    standardName: `Intune Template: ${
-                      templateItem.TemplateList?.label || templateId
-                    }`,
-                    currentTenantValue:
-                      standardObject !== undefined
-                        ? {
-                            Value: directStandardValue,
-                            LastRefresh: standardObject?.LastRefresh,
-                          }
-                        : currentTenantStandard?.value,
-                    standardValue: templateSettings, // Use the template settings object instead of true
-                    complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
-                    complianceDetails:
-                      standardInfo?.docsDescription || standardInfo?.helpText || "",
-                    standardDescription: standardInfo?.helpText || "",
-                    standardImpact: standardInfo?.impact || "Medium Impact",
-                    standardImpactColour: standardInfo?.impactColour || "warning",
-                    templateName: selectedTemplate?.templateName || "Standard Template",
-                    templateActions: templateItem.action || [],
-                  });
                 }
               });
             } else if (
@@ -180,56 +263,130 @@ const Page = () => {
             ) {
               // Process each ConditionalAccessTemplate item separately
               standardConfig.forEach((templateItem, index) => {
-                const templateId = templateItem.TemplateList?.value;
-                if (templateId) {
-                  const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
-                  const standardInfo = standards.find(
-                    (s) => s.name === `standards.ConditionalAccessTemplate`
+                // Check if this item has TemplateList-Tags and expand them
+                if (
+                  templateItem["TemplateList-Tags"]?.value &&
+                  templateItem["TemplateList-Tags"]?.addedFields?.templates
+                ) {
+                  console.log(
+                    "Found TemplateList-Tags for ConditionalAccessTemplate:",
+                    templateItem["TemplateList-Tags"]
                   );
-
-                  // Find the tenant's value for this specific template
-                  const currentTenantStandard = currentTenantData.find(
-                    (s) => s.standardId === standardId
+                  console.log(
+                    "Templates to expand:",
+                    templateItem["TemplateList-Tags"].addedFields.templates
                   );
-                  const standardObject = currentTenantObj?.[standardId];
-                  const directStandardValue = standardObject?.Value;
-                  let isCompliant = false;
+                  // Expand TemplateList-Tags into multiple template items
+                  templateItem["TemplateList-Tags"].addedFields.templates.forEach(
+                    (expandedTemplate) => {
+                      console.log("Expanding ConditionalAccessTemplate:", expandedTemplate);
+                      const templateId = expandedTemplate.GUID;
+                      const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
+                      const standardInfo = standards.find(
+                        (s) => s.name === `standards.ConditionalAccessTemplate`
+                      );
 
-                  // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                  if (directStandardValue === true) {
-                    isCompliant = true;
-                  } else {
-                    isCompliant = false;
+                      // Find the tenant's value for this specific template
+                      const currentTenantStandard = currentTenantData.find(
+                        (s) => s.standardId === standardId
+                      );
+                      const standardObject = currentTenantObj?.[standardId];
+                      const directStandardValue = standardObject?.Value;
+                      let isCompliant = false;
+
+                      // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                      if (directStandardValue === true) {
+                        isCompliant = true;
+                      } else {
+                        isCompliant = false;
+                      }
+
+                      // Create a standardValue object that contains the template settings
+                      const templateSettings = {
+                        templateId,
+                        Template:
+                          expandedTemplate.displayName ||
+                          expandedTemplate.name ||
+                          "Unknown Template",
+                      };
+
+                      allStandards.push({
+                        standardId,
+                        standardName: `Conditional Access Template: ${
+                          expandedTemplate.displayName || expandedTemplate.name || templateId
+                        } (via ${templateItem['TemplateList-Tags'].value})`,
+                        currentTenantValue:
+                          standardObject !== undefined
+                            ? {
+                                Value: directStandardValue,
+                                LastRefresh: standardObject?.LastRefresh,
+                              }
+                            : currentTenantStandard?.value,
+                        standardValue: templateSettings,
+                        complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                        complianceDetails:
+                          standardInfo?.docsDescription || standardInfo?.helpText || "",
+                        standardDescription: standardInfo?.helpText || "",
+                        standardImpact: standardInfo?.impact || "Medium Impact",
+                        standardImpactColour: standardInfo?.impactColour || "warning",
+                        templateName: selectedTemplate?.templateName || "Standard Template",
+                        templateActions: templateItem.action || [],
+                      });
+                    }
+                  );
+                } else {
+                  // Regular TemplateList processing
+                  const templateId = templateItem.TemplateList?.value;
+                  if (templateId) {
+                    const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
+                    const standardInfo = standards.find(
+                      (s) => s.name === `standards.ConditionalAccessTemplate`
+                    );
+
+                    // Find the tenant's value for this specific template
+                    const currentTenantStandard = currentTenantData.find(
+                      (s) => s.standardId === standardId
+                    );
+                    const standardObject = currentTenantObj?.[standardId];
+                    const directStandardValue = standardObject?.Value;
+                    let isCompliant = false;
+
+                    // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                    if (directStandardValue === true) {
+                      isCompliant = true;
+                    } else {
+                      isCompliant = false;
+                    }
+
+                    // Create a standardValue object that contains the template settings
+                    const templateSettings = {
+                      templateId,
+                      Template: templateItem.TemplateList?.label || "Unknown Template",
+                    };
+
+                    allStandards.push({
+                      standardId,
+                      standardName: `Conditional Access Template: ${
+                        templateItem.TemplateList?.label || templateId
+                      }`,
+                      currentTenantValue:
+                        standardObject !== undefined
+                          ? {
+                              Value: directStandardValue,
+                              LastRefresh: standardObject?.LastRefresh,
+                            }
+                          : currentTenantStandard?.value,
+                      standardValue: templateSettings, // Use the template settings object instead of true
+                      complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                      complianceDetails:
+                        standardInfo?.docsDescription || standardInfo?.helpText || "",
+                      standardDescription: standardInfo?.helpText || "",
+                      standardImpact: standardInfo?.impact || "Medium Impact",
+                      standardImpactColour: standardInfo?.impactColour || "warning",
+                      templateName: selectedTemplate?.templateName || "Standard Template",
+                      templateActions: templateItem.action || [],
+                    });
                   }
-
-                  // Create a standardValue object that contains the template settings
-                  const templateSettings = {
-                    templateId,
-                    Template: templateItem.TemplateList?.label || "Unknown Template",
-                  };
-
-                  allStandards.push({
-                    standardId,
-                    standardName: `Conditional Access Template: ${
-                      templateItem.TemplateList?.label || templateId
-                    }`,
-                    currentTenantValue:
-                      standardObject !== undefined
-                        ? {
-                            Value: directStandardValue,
-                            LastRefresh: standardObject?.LastRefresh,
-                          }
-                        : currentTenantStandard?.value,
-                    standardValue: templateSettings, // Use the template settings object instead of true
-                    complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
-                    complianceDetails:
-                      standardInfo?.docsDescription || standardInfo?.helpText || "",
-                    standardDescription: standardInfo?.helpText || "",
-                    standardImpact: standardInfo?.impact || "Medium Impact",
-                    standardImpactColour: standardInfo?.impactColour || "warning",
-                    templateName: selectedTemplate?.templateName || "Standard Template",
-                    templateActions: templateItem.action || [],
-                  });
                 }
               });
             } else {
@@ -543,44 +700,14 @@ const Page = () => {
   ];
 
   // Actions for the header
-  const actions = [
-    {
-      label: "Refresh Data",
-      icon: <Sync />,
-      noConfirm: true,
-      customFunction: () => {
-        comparisonApi.refetch();
-        templateDetails.refetch();
-      },
+  const actions = createDriftManagementActions({
+    templateId,
+    onRefresh: () => {
+      comparisonApi.refetch();
+      templateDetails.refetch();
     },
-    ...(templateId
-      ? [
-          {
-            label: "Run Standard Now (Currently Selected Tenant only)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-          {
-            label: "Run Standard Now (All Tenants in Template)",
-            type: "GET",
-            url: "/api/ExecStandardsRun",
-            icon: <PlayArrow />,
-            data: {
-              TemplateId: templateId,
-              tenantFilter: "allTenants",
-            },
-            confirmText: "Are you sure you want to force a run of this standard?",
-            multiPost: false,
-          },
-        ]
-      : []),
-  ];
+    currentTenant,
+  });
 
   return (
     <HeaderedTabbedLayout
@@ -840,10 +967,13 @@ const Page = () => {
                                 sx={{
                                   width: 40,
                                   height: 40,
+                                  minWidth: 40,
+                                  minHeight: 40,
                                   borderRadius: "50%",
                                   display: "flex",
                                   alignItems: "center",
                                   justifyContent: "center",
+                                  flexShrink: 0,
                                   bgcolor:
                                     standard.complianceStatus === "Compliant"
                                       ? "success.main"
@@ -860,8 +990,17 @@ const Page = () => {
                                   <Cancel sx={{ color: "white" }} />
                                 )}
                               </Box>
-                              <Stack>
-                                <Typography variant="h6">{standard?.standardName}</Typography>
+                              <Stack sx={{ minWidth: 0, flex: 1 }}>
+                                <Typography
+                                  variant="h6"
+                                  sx={{
+                                    wordBreak: "break-word",
+                                    overflowWrap: "break-word",
+                                    hyphens: "auto"
+                                  }}
+                                >
+                                  {standard?.standardName}
+                                </Typography>
                                 <Box>
                                   <Chip
                                     label="Standard"

@@ -22,21 +22,24 @@ import { useMemo } from "react";
 
 export const CippExchangeActions = () => {
   const tenant = useSettings().currentTenant;
-  
+
   // API configuration for all user selection fields
-  const userApiConfig = useMemo(() => ({
-    url: "/api/ListGraphRequest",
-    dataKey: "Results",
-    labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
-    valueField: "userPrincipalName",
-    queryKey: `users-${tenant}`,
-    data: {
-      Endpoint: "users",
-      tenantFilter: tenant,
-      $select: "id,displayName,userPrincipalName,mail",
-      $top: 999,
-    },
-  }), [tenant]);
+  const userApiConfig = useMemo(
+    () => ({
+      url: "/api/ListGraphRequest",
+      dataKey: "Results",
+      labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+      valueField: "userPrincipalName",
+      queryKey: `users-${tenant}`,
+      data: {
+        Endpoint: "users",
+        tenantFilter: tenant,
+        $select: "id,displayName,userPrincipalName,mail",
+        $top: 999,
+      },
+    }),
+    [tenant]
+  );
 
   return [
     {
@@ -49,8 +52,7 @@ export const CippExchangeActions = () => {
       },
       confirmText: "Add the specified permissions to selected mailboxes?",
       multiPost: false,
-      data: {
-      },
+      data: {},
       fields: [
         {
           type: "autoComplete",
@@ -85,19 +87,18 @@ export const CippExchangeActions = () => {
         },
       ],
       customDataformatter: (rows, action, formData) => {
-        
         const mailboxArray = Array.isArray(rows) ? rows : [rows];
-        
+
         // Create bulk request array - one object per mailbox
-        const bulkRequestData = mailboxArray.map(mailbox => {
+        const bulkRequestData = mailboxArray.map((mailbox) => {
           const permissions = [];
           const autoMap = formData.autoMap === undefined ? true : formData.autoMap;
 
           // Add type: "user" to match format
           const addTypeToUsers = (users) => {
-            return users.map(user => ({
+            return users.map((user) => ({
               ...user,
-              type: "user"
+              type: "user",
             }));
           };
 
@@ -111,11 +112,11 @@ export const CippExchangeActions = () => {
             });
           }
 
-          // Handle SendAs - formData.sendAsUser is an array since multiple: true  
+          // Handle SendAs - formData.sendAsUser is an array since multiple: true
           if (formData.sendAsUser && formData.sendAsUser.length > 0) {
             permissions.push({
               UserID: addTypeToUsers(formData.sendAsUser),
-              PermissionLevel: "SendAs", 
+              PermissionLevel: "SendAs",
               Modification: "Add",
             });
           }
@@ -125,7 +126,7 @@ export const CippExchangeActions = () => {
             permissions.push({
               UserID: addTypeToUsers(formData.sendOnBehalfUser),
               PermissionLevel: "SendOnBehalf",
-              Modification: "Add", 
+              Modification: "Add",
             });
           }
 
@@ -134,10 +135,10 @@ export const CippExchangeActions = () => {
             permissions: permissions,
           };
         });
-        
-        return { 
+
+        return {
           mailboxRequests: bulkRequestData,
-          tenantFilter: tenant
+          tenantFilter: tenant,
         };
       },
       color: "primary",
@@ -226,19 +227,18 @@ export const CippExchangeActions = () => {
       ],
       customDataformatter: (rows, action, formData) => {
         const mailboxArray = Array.isArray(rows) ? rows : [rows];
-        
+
         // Extract mailbox identities - using UPN as the identifier
-        const mailboxes = mailboxArray.map(mailbox => mailbox.UPN);
-        
+        const mailboxes = mailboxArray.map((mailbox) => mailbox.UPN);
+
         // Handle autocomplete selection - could be string or object
-        const policyName = typeof formData.policyName === 'object' 
-          ? formData.policyName.value 
-          : formData.policyName;
-        
+        const policyName =
+          typeof formData.policyName === "object" ? formData.policyName.value : formData.policyName;
+
         return {
           PolicyName: policyName,
           Mailboxes: mailboxes,
-          tenantFilter: tenant
+          tenantFilter: tenant,
         };
       },
       color: "primary",

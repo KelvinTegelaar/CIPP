@@ -70,7 +70,9 @@ export const CippPolicyImportDrawer = ({
   const importPolicy = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys:
-      mode === "ConditionalAccess" ? ["ListCATemplates-table"] : ["ListIntuneTemplates-table"],
+      mode === "ConditionalAccess"
+        ? ["ListCATemplates-table"]
+        : ["ListIntuneTemplates-table", "ListIntuneTemplates-autcomplete"],
   });
 
   const viewPolicyQuery = ApiPostCall({

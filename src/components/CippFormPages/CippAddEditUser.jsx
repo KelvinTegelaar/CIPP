@@ -164,7 +164,7 @@ const CippAddEditUser = (props) => {
           label="Usage Location"
           name="usageLocation"
           multiple={false}
-          defaultValue="US"
+          defaultValue={userSettingsDefaults?.usageLocation || "US"}
           options={countryList.map(({ Code, Name }) => ({
             label: Name,
             value: Code,

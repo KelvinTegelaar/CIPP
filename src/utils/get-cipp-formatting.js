@@ -7,6 +7,8 @@ import {
   Shield,
   Description,
   GroupOutlined,
+  PrecisionManufacturing,
+  BarChart,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
 import { Box } from "@mui/system";
@@ -54,6 +56,8 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     portal_security: Shield,
     portal_compliance: CompassCalibration,
     portal_sharepoint: Description,
+    portal_platform: PrecisionManufacturing,
+    portal_bi: BarChart,
   };
 
   // Create a helper function to render chips with CollapsibleChipList
@@ -170,7 +174,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     "latestDataCollection",
   ];
 
-  const matchDateTime = /[dD]ate[tT]ime/;
+  const matchDateTime = /([dD]ate[tT]ime|[Ee]xpiration)/;
   if (timeAgoArray.includes(cellName) || matchDateTime.test(cellName)) {
     return isText && canReceive === false ? (
       new Date(data).toLocaleString() // This runs if canReceive is false and isText is true
@@ -302,7 +306,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     //check if data is an array.
     if (Array.isArray(data)) {
       // Filter out null/undefined values and map the valid items
-      const validItems = data.filter(item => item !== null && item !== undefined);
+      const validItems = data.filter((item) => item !== null && item !== undefined);
 
       if (validItems.length === 0) {
         return isText ? (
@@ -313,7 +317,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       }
 
       return isText
-        ? validItems.map(item => item?.label !== undefined ? item.label : item).join(", ")
+        ? validItems.map((item) => (item?.label !== undefined ? item.label : item)).join(", ")
         : renderChipList(
             validItems.map((item, key) => {
               const itemText = item?.label !== undefined ? item.label : item;
