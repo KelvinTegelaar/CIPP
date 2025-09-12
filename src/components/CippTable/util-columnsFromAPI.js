@@ -105,6 +105,7 @@ export const utilColumnsFromAPI = (dataArray) => {
             sampleValue,
             values: valuesForColumn,
             getValue: (row) => resolveValue(row),
+            dataArray: dataArray, // Pass the full data array for processing if needed
           }),
           Cell: ({ row }) => {
             const value = resolveValue(row.original);
