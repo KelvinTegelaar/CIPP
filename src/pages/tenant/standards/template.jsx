@@ -285,7 +285,7 @@ const Page = () => {
 
     // Filter out the refresh action
     return allActions.filter((action) => action.label !== "Refresh Data");
-  }, [editMode, router.query.id]);
+  }, [editMode, router.query.id, currentTenant]);
 
   const actions = [];
 
@@ -367,7 +367,12 @@ const Page = () => {
                 Add Standard to Template
               </Button>
               {/* Drift management actions */}
-              {driftActions.length > 0 && <ActionsMenu actions={driftActions} data={{}} />}
+              {driftActions.length > 0 && (
+                <ActionsMenu
+                  actions={driftActions}
+                  data={{ templateId: router.query.id, tenantFilter: currentTenant }}
+                />
+              )}
             </Stack>
           </Stack>
 
