@@ -1,6 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useRouter } from "next/router";
 import { Policy, Security, AdminPanelSettings, Devices, ExpandMore } from "@mui/icons-material";
+import { Policy, Security, AdminPanelSettings, Devices, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Stack,
@@ -17,7 +18,6 @@ import { CippHead } from "/src/components/CippComponents/CippHead";
 import { ApiGetCall } from "/src/api/ApiCall";
 import standardsData from "/src/data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
-import { useSettings } from "../../../../hooks/use-settings";
 
 const PoliciesDeployedPage = () => {
   const userSettingsDefaults = useSettings();

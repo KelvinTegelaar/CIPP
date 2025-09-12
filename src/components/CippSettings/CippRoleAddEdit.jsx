@@ -24,6 +24,7 @@ import { useForm, useFormState, useWatch } from "react-hook-form";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import cippRoles from "../../data/cipp-roles.json";
+import { GroupHeader, GroupItems } from "../CippComponents/CippAutocompleteGrouping";
 
 export const CippRoleAddEdit = ({ selectedRole }) => {
   const updatePermissions = ApiPostCall({
@@ -57,6 +58,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   const selectedTenant = useWatch({ control: formControl.control, name: "allowedTenants" });
   const blockedTenants = useWatch({ control: formControl.control, name: "blockedTenants" });
+  const blockedEndpoints = useWatch({ control: formControl.control, name: "BlockedEndpoints" });
   const setDefaults = useWatch({ control: formControl.control, name: "Defaults" });
   const selectedPermissions = useWatch({ control: formControl.control, name: "Permissions" });
   const selectedEntraGroup = useWatch({ control: formControl.control, name: "EntraGroup" });
@@ -225,6 +227,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         return processed;
       };
 
+      // Process blocked endpoints
+      const processedBlockedEndpoints =
+        currentPermissions?.BlockedEndpoints?.map((endpoint) => ({
+          label: endpoint,
+          value: endpoint,
+        })) || [];
+
       formControl.reset({
         Permissions:
           basePermissions && Object.keys(basePermissions).length > 0
@@ -233,6 +242,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         RoleName: selectedRole ?? currentPermissions?.RowKey,
         allowedTenants: newAllowedTenants,
         blockedTenants: newBlockedTenants,
+        BlockedEndpoints: processedBlockedEndpoints,
         EntraGroup: currentPermissions?.EntraGroup,
       });
     }
@@ -318,6 +328,12 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         })
         .filter(Boolean) || [];
 
+    const processedBlockedEndpoints =
+      values?.["BlockedEndpoints"]?.map((endpoint) => {
+        // Extract the endpoint value
+        return endpoint.value || endpoint;
+      }) || [];
+
     updatePermissions.mutate({
       url: "/api/ExecCustomRole?Action=AddUpdate",
       data: {
@@ -326,6 +342,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         EntraGroup: selectedEntraGroup,
         AllowedTenants: processedAllowedTenants,
         BlockedTenants: processedBlockedTenants,
+        BlockedEndpoints: processedBlockedEndpoints,
       },
     });
   };
@@ -498,6 +515,60 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   />
                 </Box>
               )}
+
+              {/* Blocked Endpoints */}
+              <Box sx={{ mb: 3 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  name="BlockedEndpoints"
+                  label="Blocked Endpoints"
+                  placeholder="Select API endpoints to block for this role"
+                  options={
+                    apiPermissionSuccess
+                      ? (() => {
+                          const allEndpoints = [];
+                          Object.keys(apiPermissions)
+                            .sort()
+                            .forEach((cat) => {
+                              Object.keys(apiPermissions[cat])
+                                .sort()
+                                .forEach((obj) => {
+                                  Object.keys(apiPermissions[cat][obj]).forEach((type) => {
+                                    Object.keys(apiPermissions[cat][obj][type]).forEach(
+                                      (apiKey) => {
+                                        allEndpoints.push({
+                                          label: apiPermissions[cat][obj][type][apiKey],
+                                          value: apiPermissions[cat][obj][type][apiKey],
+                                          category: cat,
+                                        });
+                                      }
+                                    );
+                                  });
+                                });
+                            });
+                          // Sort endpoints alphabetically within each category
+                          return allEndpoints.sort((a, b) => {
+                            if (a.category !== b.category) {
+                              return a.category.localeCompare(b.category);
+                            }
+                            return a.label.localeCompare(b.label);
+                          });
+                        })()
+                      : []
+                  }
+                  formControl={formControl}
+                  fullWidth={true}
+                  multiple={true}
+                  creatable={false}
+                  groupBy={(option) => option.category}
+                  renderGroup={(params) => (
+                    <li key={params.key}>
+                      <GroupHeader>{params.group}</GroupHeader>
+                      <GroupItems>{params.children}</GroupItems>
+                    </li>
+                  )}
+                />
+              </Box>
             </>
           )}
           {apiPermissionFetching && <Skeleton variant="rectangle" height={500} />}
@@ -586,6 +657,18 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <ul>
                 {blockedTenants.map((tenant, idx) => (
                   <li key={idx}>{tenant?.label}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {blockedEndpoints?.length > 0 && (
+            <>
+              <h5>Blocked Endpoints</h5>
+              <ul>
+                {blockedEndpoints.map((endpoint, idx) => (
+                  <li key={idx} style={{ fontSize: "0.875rem", marginBottom: "0.25rem" }}>
+                    {endpoint?.label || endpoint?.value || endpoint}
+                  </li>
                 ))}
               </ul>
             </>
