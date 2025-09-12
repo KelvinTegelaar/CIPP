@@ -15,7 +15,7 @@ import { SvgIcon, Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { useEffect, useState } from "react";
-import CippUserActions from "/src/components/CippComponents/CippUserActions";
+import { useCippUserActions } from "/src/components/CippComponents/CippUserActions";
 import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import dynamic from "next/dynamic";
@@ -73,6 +73,7 @@ const Page = () => {
   const { userId } = router.query;
   const [waiting, setWaiting] = useState(false);
   const [signInLogsDialogOpen, setSignInLogsDialogOpen] = useState(false);
+  const userActions = useCippUserActions();
 
   useEffect(() => {
     if (userId) {
@@ -81,7 +82,9 @@ const Page = () => {
   }, [userId]);
 
   const userRequest = ApiGetCall({
-    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${router.query.tenantFilter ?? userSettingsDefaults.currentTenant}`,
+    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${
+      router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+    }`,
     queryKey: `ListUsers-${userId}`,
     waiting: waiting,
   });
@@ -558,7 +561,7 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
-      actions={CippUserActions()}
+      actions={userActions}
       actionsData={data}
       subtitle={subtitle}
       isFetching={userRequest.isLoading}

@@ -14,6 +14,7 @@
     "CIPP",
     "CIPP-API",
     "Datto",
+    "DMARC",
     "Entra",
     "ESET",
     "GDAP",
@@ -31,8 +32,8 @@
     "Sherweb",
     "Syncro",
     "TERRL",
-    "Yubikey",
-    "DMARC"
+    "unconfigured",
+    "Yubikey"
   ],
   "ignoreWords": [
     "Addins",
