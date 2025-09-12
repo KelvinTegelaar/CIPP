@@ -167,15 +167,15 @@ const Page = () => {
           icon: <Launch style={{ color: "#667085" }} />,
           text: (
             <Button
-                color="muted"
-                style={{ paddingLeft: 0 }}
-                size="small"
-                href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View in Entra
-              </Button>
+              color="muted"
+              style={{ paddingLeft: 0 }}
+              size="small"
+              href={`https://entra.microsoft.com/${userSettingsDefaults.currentTenant}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in Entra
+            </Button>
           ),
         },
       ]
@@ -313,7 +313,11 @@ const Page = () => {
                       <Box mt={2}>
                         <PropertyList>
                           {becPollingCall.data.NewRules.map((rule, index) => (
-                            <PropertyListItem key={index} label={rule.Name} value={rule.Description} />
+                            <PropertyListItem
+                              key={index}
+                              label={rule?.Name}
+                              value={rule?.Description}
+                            />
                           ))}
                         </PropertyList>
                       </Box>
@@ -355,8 +359,8 @@ const Page = () => {
                           {becPollingCall.data.NewUsers.map((user, index) => (
                             <PropertyListItem
                               key={index}
-                              label={user.userPrincipalName}
-                              value={user.createdDateTime}
+                              label={user?.userPrincipalName}
+                              value={user?.createdDateTime}
                             />
                           ))}
                         </PropertyList>
@@ -399,8 +403,8 @@ const Page = () => {
                           {becPollingCall.data.AddedApps.map((app, index) => (
                             <PropertyListItem
                               key={index}
-                              label={`${app.displayName} - ${app.appId}`}
-                              value={app.createdDateTime}
+                              label={`${app?.displayName} - ${app?.appId}`}
+                              value={app?.createdDateTime}
                             />
                           ))}
                         </PropertyList>
@@ -488,7 +492,7 @@ const Page = () => {
                             <PropertyListItem
                               key={index}
                               label={permission["@odata.type"]}
-                              value={`${permission.displayName} - Registered at ${permission.createdDateTime}`}
+                              value={`${permission?.displayName} - Registered at ${permission?.createdDateTime}`}
                             />
                           ))}
                         </PropertyList>
@@ -530,8 +534,8 @@ const Page = () => {
                           {becPollingCall.data.ChangedPasswords.map((permission, index) => (
                             <PropertyListItem
                               key={index}
-                              label={permission.displayName}
-                              value={`${permission.lastPasswordChangeDateTime}`}
+                              label={permission?.displayName}
+                              value={`${permission?.lastPasswordChangeDateTime}`}
                             />
                           ))}
                         </PropertyList>
