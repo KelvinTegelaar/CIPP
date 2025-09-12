@@ -82,7 +82,9 @@ const Page = () => {
   }, [userId]);
 
   const userRequest = ApiGetCall({
-    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${router.query.tenantFilter ?? userSettingsDefaults.currentTenant}`,
+    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${
+      router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+    }`,
     queryKey: `ListUsers-${userId}`,
     waiting: waiting,
   });
