@@ -144,14 +144,14 @@ const Page = () => {
       confirmText: "Are you sure you want to rotate the password for this device?",
     },
     {
-      label: "Retrieve Bitlocker Keys",
+      label: "Retrieve BitLocker Keys",
       type: "POST",
       icon: <Key />,
       url: "/api/ExecGetRecoveryKey",
       data: {
         GUID: "azureADDeviceId",
       },
-      confirmText: "Are you sure you want to retrieve the Bitlocker keys?",
+      confirmText: "Are you sure you want to retrieve the BitLocker keys?",
     },
     {
       label: "Windows Defender Full Scan",

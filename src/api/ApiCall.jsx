@@ -1,9 +1,4 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { isAxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
@@ -25,6 +20,7 @@ export function ApiGetCall(props) {
     refetchOnMount = true,
     refetchOnReconnect = true,
     keepPreviousData = false,
+    refetchInterval = false,
   } = props;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
@@ -113,6 +109,7 @@ export function ApiGetCall(props) {
     refetchOnMount: refetchOnMount,
     refetchOnReconnect: refetchOnReconnect,
     keepPreviousData: keepPreviousData,
+    refetchInterval: refetchInterval,
     retry: retryFn,
   });
   return queryInfo;
