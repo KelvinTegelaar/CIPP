@@ -130,6 +130,7 @@ const Page = () => {
     onRefresh: () => {
       logsData.refetch();
     },
+    currentTenant: tenant,
   });
 
   const title = "Manage Drift";

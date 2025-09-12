@@ -520,6 +520,7 @@ const ManageDriftPage = () => {
     onGenerateReport: () => {
       setTriggerReport(true);
     },
+    currentTenant: tenantFilter,
   });
 
   // Effect to trigger the ExecutiveReportButton when needed

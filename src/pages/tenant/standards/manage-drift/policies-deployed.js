@@ -24,12 +24,14 @@ import { CippHead } from "/src/components/CippComponents/CippHead";
 import { ApiGetCall } from "/src/api/ApiCall";
 import standardsData from "/src/data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const PoliciesDeployedPage = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { templateId } = router.query;
   const tenantFilter = router.query.tenantFilter || userSettingsDefaults.tenantFilter;
+  const currentTenant = userSettingsDefaults.currentTenant;
 
   // API call to get standards template data
   const standardsApi = ApiGetCall({
@@ -71,19 +73,19 @@ const PoliciesDeployedPage = () => {
   const getStatus = (standardKey, templateValue = null, templateType = null) => {
     const comparisonKey = `standards.${standardKey}`;
     const value = comparisonData[comparisonKey]?.Value;
-    
+
     if (value === true) {
       return "Deployed";
     } else {
       // Check if there's drift data for this standard to get the deviation status
       const driftData = driftApi.data || [];
-      
+
       // For templates, we need to match against the full template path
       let searchKeys = [
         standardKey,
         `standards.${standardKey}`,
       ];
-      
+
       // Add template-specific search keys
       if (templateValue && templateType) {
         searchKeys.push(
@@ -92,7 +94,7 @@ const PoliciesDeployedPage = () => {
           templateValue
         );
       }
-      
+
       const deviation = driftData.find(item =>
         searchKeys.some(key =>
           item.standardName === key ||
@@ -101,11 +103,11 @@ const PoliciesDeployedPage = () => {
           item.policyName?.includes(key)
         )
       );
-      
+
       if (deviation && deviation.Status) {
         return `Deviation - ${deviation.Status}`;
       }
-      
+
       return "Deviation - New";
     }
   };
@@ -113,13 +115,13 @@ const PoliciesDeployedPage = () => {
   // Helper function to get display name from drift data
   const getDisplayNameFromDrift = (standardKey, templateValue = null, templateType = null) => {
     const driftData = driftApi.data || [];
-    
+
     // For templates, we need to match against the full template path
     let searchKeys = [
       standardKey,
       `standards.${standardKey}`,
     ];
-    
+
     // Add template-specific search keys
     if (templateValue && templateType) {
       searchKeys.push(
@@ -128,7 +130,7 @@ const PoliciesDeployedPage = () => {
         templateValue
       );
     }
-    
+
     const deviation = driftData.find(item =>
       searchKeys.some(key =>
         item.standardName === key ||
@@ -137,7 +139,7 @@ const PoliciesDeployedPage = () => {
         item.policyName?.includes(key)
       )
     );
-    
+
     return deviation?.standardDisplayName || null;
   };
 
@@ -158,10 +160,10 @@ const PoliciesDeployedPage = () => {
   // Helper function to get template label from standards API data
   const getTemplateLabel = (templateValue, templateType) => {
     if (!templateValue || !currentTemplate) return "Unknown Template";
-    
+
     // Search through all templates in the current template data
     const allTemplates = currentTemplate.standards || {};
-    
+
     // Look for the template in the specific type array
     if (allTemplates[templateType] && Array.isArray(allTemplates[templateType])) {
       const template = allTemplates[templateType].find(t => t.TemplateList?.value === templateValue);
@@ -169,7 +171,7 @@ const PoliciesDeployedPage = () => {
         return template.TemplateList.label;
       }
     }
-    
+
     // If not found in the specific type, search through all template types
     for (const [key, templates] of Object.entries(allTemplates)) {
       if (Array.isArray(templates)) {
@@ -179,7 +181,7 @@ const PoliciesDeployedPage = () => {
         }
       }
     }
-    
+
     return "Unknown Template";
   };
 
@@ -200,7 +202,7 @@ const PoliciesDeployedPage = () => {
     const standardKey = `IntuneTemplate.${template.TemplateList?.value}`;
     const driftDisplayName = getDisplayNameFromDrift(standardKey, template.TemplateList?.value, "IntuneTemplate");
     const templateLabel = getTemplateLabel(template.TemplateList?.value, "IntuneTemplate");
-    
+
     return {
       id: index + 1,
       name: driftDisplayName || `Intune - ${templateLabel}`,
@@ -219,7 +221,7 @@ const PoliciesDeployedPage = () => {
       const standardKey = `ConditionalAccessTemplate.${template.TemplateList?.value}`;
       const driftDisplayName = getDisplayNameFromDrift(standardKey, template.TemplateList?.value, "ConditionalAccessTemplate");
       const templateLabel = getTemplateLabel(template.TemplateList?.value, "ConditionalAccessTemplate");
-      
+
       return {
         id: index + 1,
         name: driftDisplayName || `Conditional Access - ${templateLabel}`,
@@ -239,6 +241,7 @@ const PoliciesDeployedPage = () => {
       comparisonApi.refetch();
       driftApi.refetch();
     },
+    currentTenant,
   });
   const title = "Manage Drift";
   const subtitle = [

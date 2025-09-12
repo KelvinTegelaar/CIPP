@@ -16,6 +16,9 @@ import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useDialog } from "../../../hooks/use-dialog";
 import { ApiGetCall } from "../../../api/ApiCall";
 import _ from "lodash";
+import { createDriftManagementActions } from "./manage-drift/driftManagementActions";
+import { ActionsMenu } from "/src/components/actions-menu";
+import { useSettings } from "/src/hooks/use-settings";
 
 const Page = () => {
   const router = useRouter();
@@ -31,6 +34,8 @@ const Page = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [hasDriftConflict, setHasDriftConflict] = useState(false);
   const initialStandardsRef = useRef({});
+
+  const currentTenant = useSettings().currentTenant;
 
   // Check if this is drift mode
   const isDriftMode = router.query.type === "drift";
@@ -268,6 +273,20 @@ const Page = () => {
       !_.get(watchForm, "tenantFilter").length ||
       currentStep < 3;
 
+  // Create drift management actions (excluding refresh)
+  const driftActions = useMemo(() => {
+    if (!editMode || !router.query.id) return [];
+
+    const allActions = createDriftManagementActions({
+      templateId: router.query.id,
+      onRefresh: () => {}, // Empty function since we're filtering out refresh
+      currentTenant: currentTenant,
+    });
+
+    // Filter out the refresh action
+    return allActions.filter((action) => action.label !== "Refresh Data");
+  }, [editMode, router.query.id]);
+
   const actions = [];
 
   const steps = [
@@ -347,6 +366,8 @@ const Page = () => {
               >
                 Add Standard to Template
               </Button>
+              {/* Drift management actions */}
+              {driftActions.length > 0 && <ActionsMenu actions={driftActions} data={{}} />}
             </Stack>
           </Stack>
 

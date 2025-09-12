@@ -9,11 +9,7 @@ import { Sync, PlayArrow, PictureAsPdf } from "@mui/icons-material";
  * @param {Function} options.onGenerateReport - Function to call when generate report is triggered (optional)
  * @returns {Array} Array of action objects
  */
-export const createDriftManagementActions = ({
-  templateId,
-  onRefresh,
-  onGenerateReport,
-}) => {
+export const createDriftManagementActions = ({ templateId, onRefresh, onGenerateReport, currentTenant }) => {
   const actions = [
     {
       label: "Refresh Data",
@@ -37,7 +33,7 @@ export const createDriftManagementActions = ({
   if (templateId) {
     actions.push(
       {
-        label: "Run Standard Now (Currently Selected Tenant only)",
+        label: `Run Standard Now (${currentTenant || "Currently Selected Tenant"})`,
         type: "GET",
         url: "/api/ExecStandardsRun",
         icon: <PlayArrow />,

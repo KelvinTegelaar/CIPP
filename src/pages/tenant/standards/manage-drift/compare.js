@@ -547,6 +547,7 @@ const Page = () => {
       comparisonApi.refetch();
       templateDetails.refetch();
     },
+    currentTenant,
   });
 
   return (

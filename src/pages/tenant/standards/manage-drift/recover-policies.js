@@ -22,11 +22,13 @@ import { CippFormComponent } from "/src/components/CippComponents/CippFormCompon
 import { ApiPostCall } from "/src/api/ApiCall";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import { createDriftManagementActions } from "./driftManagementActions";
+import { useSettings } from "/src/hooks/use-settings";
 
 const RecoverPoliciesPage = () => {
   const router = useRouter();
   const { templateId } = router.query;
   const [selectedPolicies, setSelectedPolicies] = useState([]);
+  const currentTenant = useSettings().currentTenant;
 
   const formControl = useForm({ mode: "onChange" });
 
@@ -83,6 +85,7 @@ const RecoverPoliciesPage = () => {
     onRefresh: () => {
       // Refresh any relevant data here
     },
+    currentTenant,
   });
 
   const title = "Manage Drift";
