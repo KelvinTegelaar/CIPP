@@ -12,6 +12,8 @@ The List Applications page shows a list of line-of-business applications configu
 [add-application](add-application/)
 {% endcontent-ref %}
 
+* Sync VPP - This button will sync Apple Volume Purchase Program tokens for the tenant.
+
 ### Details
 
 The properties returned are for the Graph resource type `mobileApp`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/intune-apps-mobileapp?view=graph-rest-1.0#properties).
