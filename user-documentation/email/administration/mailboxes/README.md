@@ -12,6 +12,10 @@ This page provides information on Exchange mailboxes, with the ability to view d
 [addshared.md](addshared.md)
 {% endcontent-ref %}
 
+{% content-ref url="add-hve-user.md" %}
+[add-hve-user.md](add-hve-user.md)
+{% endcontent-ref %}
+
 ### Table Details
 
 The properties returned are for the Exchange PowerShell command `Get-Mailbox`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-mailbox?view=exchange-ps).&#x20;

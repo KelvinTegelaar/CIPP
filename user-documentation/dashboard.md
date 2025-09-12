@@ -17,8 +17,8 @@ The Home page includes the following sections:
   * Tenant ID
   * Default Domain
   * AD Sync Enabled
-  * Users: Total, Licensed, Guests and Global Admins. **Note:** The chart names are clickable.
-  * Standards set: Shows the applied Remediation, Alert and Report standards set.
+  * User Statistics: Total, Licensed, Guests and Global Admins. **Note:** The chart names are clickable.
+  * Drift Monitoring: Shows the Aligned Policies, Accepted Deviations, Current Deviations, and Customer Specific Deviations.
   * SharePoint Quota
   * Domain Names
   * Partner Relationships

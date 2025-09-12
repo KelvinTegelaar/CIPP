@@ -1,13 +1,13 @@
 ---
 description: >-
-  The Add User page provides an interface for creating new user accounts in your
-  tenant.
+  The Add User wizard provides an interface for creating new user accounts in
+  your tenant.
 ---
 
 # Add User
 
 {% hint style="info" %}
-This page will allow you to set all of the necessary properties to create a single new user. You can start with a blank slate or select to copy properties from another user in the top dropdown to speed up account creation.
+This wizard will allow you to set all of the necessary properties to create a single new user. You can start with a blank slate or select to copy properties from another user in the top dropdown to speed up account creation.
 {% endhint %}
 
 ## Getting Started

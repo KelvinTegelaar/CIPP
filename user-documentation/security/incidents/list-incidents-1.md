@@ -12,7 +12,7 @@ The properties returned are for the Graph resource type `alert`. For more inform
 
 ### Table Actions
 
-<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Set status to in progress</td><td>Sets the status for the selected alert to in progress from its current status</td><td>true</td></tr><tr><td>Set status to resolved</td><td>Sets the status for the selected alert to resolved from the current status</td><td>true</td></tr><tr><td>More info</td><td></td><td>false</td></tr></tbody></table>
+<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Set status to in progress</td><td>Sets the status for the selected alert to in progress from its current status</td><td>true</td></tr><tr><td>Set status to resolved</td><td>Sets the status for the selected alert to resolved from the current status</td><td>true</td></tr><tr><td>More info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 
