@@ -28,6 +28,7 @@ const CippGraphExplorerFilter = ({
   onSubmitFilter,
   onPresetChange,
   component = "accordion",
+  relatedQueryKeys = [],
 }) => {
   const [offCanvasOpen, setOffCanvasOpen] = useState(false);
   const [cardExpanded, setCardExpanded] = useState(true);
@@ -162,7 +163,7 @@ const CippGraphExplorerFilter = ({
   }, [currentEndpoint, debouncedRefetch]);
 
   const savePresetApi = ApiPostCall({
-    relatedQueryKeys: ["ListGraphExplorerPresets", "ListGraphRequest"],
+    relatedQueryKeys: ["ListGraphExplorerPresets", "ListGraphRequest", ...relatedQueryKeys],
   });
 
   // Save preset function

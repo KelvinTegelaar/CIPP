@@ -14,13 +14,20 @@ export const CippCADeployDrawer = ({
   buttonText = "Deploy CA Policy",
   requiredPermissions = [],
   PermissionButton = Button,
+  templateId = null, // New prop for pre-supplying template ID
+  open = null, // External control for drawer visibility
+  onClose = null, // External close handler
 }) => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [internalDrawerVisible, setInternalDrawerVisible] = useState(false);
   const formControl = useForm();
   const tenantFilter = useSettings()?.tenantFilter;
   const CATemplates = ApiGetCall({ url: "/api/ListCATemplates", queryKey: "CATemplates" });
   const [JSONData, setJSONData] = useState();
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
+
+  // Use external open state if provided, otherwise use internal state
+  const drawerVisible = open !== null ? open : internalDrawerVisible;
+  const isExternallyControlled = open !== null && onClose !== null;
 
   const updateTemplate = useCallback(
     (templateGuid) => {
@@ -34,6 +41,19 @@ export const CippCADeployDrawer = ({
     },
     [CATemplates.isSuccess, CATemplates.data, formControl.setValue]
   );
+
+  // Effect to set template when templateId prop is provided
+  useEffect(() => {
+    if (templateId && CATemplates.isSuccess) {
+      // Find the template to get the display name
+      const template = CATemplates.data.find((template) => template.GUID === templateId);
+      if (template) {
+        // Pre-select the template when drawer opens
+        formControl.setValue("TemplateList", { value: templateId, label: template.displayName });
+        updateTemplate(templateId);
+      }
+    }
+  }, [templateId, CATemplates.isSuccess, formControl, updateTemplate]);
 
   useEffect(() => {
     updateTemplate(watcher?.value);
@@ -55,19 +75,25 @@ export const CippCADeployDrawer = ({
   };
 
   const handleCloseDrawer = () => {
-    setDrawerVisible(false);
+    if (isExternallyControlled) {
+      onClose();
+    } else {
+      setInternalDrawerVisible(false);
+    }
     formControl.reset();
   };
 
   return (
     <>
-      <PermissionButton
-        requiredPermissions={requiredPermissions}
-        onClick={() => setDrawerVisible(true)}
-        startIcon={<RocketLaunch />}
-      >
-        {buttonText}
-      </PermissionButton>
+      {!isExternallyControlled && (
+        <PermissionButton
+          requiredPermissions={requiredPermissions}
+          onClick={() => setInternalDrawerVisible(true)}
+          startIcon={<RocketLaunch />}
+        >
+          {buttonText}
+        </PermissionButton>
+      )}
       <CippOffCanvas
         title="Deploy Conditional Access Policy"
         visible={drawerVisible}
@@ -106,10 +132,11 @@ export const CippCADeployDrawer = ({
           <CippFormComponent
             type="autoComplete"
             name="TemplateList"
-            label="Please choose a template to apply."
+            label={templateId ? "Selected Template" : "Please choose a template to apply."}
             isFetching={CATemplates.isLoading}
             multiple={false}
             formControl={formControl}
+            disabled={!!templateId} // Disable if templateId is provided
             options={
               CATemplates.isSuccess
                 ? CATemplates.data.map((template) => ({
