@@ -13,11 +13,14 @@ const Page = () => {
     "portal_m365",
     "portal_exchange",
     "portal_entra",
+    "portal_sharepoint",
     "portal_teams",
     "portal_azure",
     "portal_intune",
     "portal_security",
     "portal_compliance",
+    "portal_platform",
+    "portal_bi",
   ];
 
   const actions = [
