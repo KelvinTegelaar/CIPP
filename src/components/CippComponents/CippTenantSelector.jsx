@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
 import { ApiGetCall } from "../../api/ApiCall";
 import { IconButton, SvgIcon, Tooltip, Box } from "@mui/material";
-import { FilePresent, Laptop, Mail, Refresh, Share, Shield, ShieldMoon } from "@mui/icons-material";
+import { FilePresent, Laptop, Mail, Refresh, Share, Shield, ShieldMoon, PrecisionManufacturing, BarChart } from "@mui/icons-material";
 import {
   BuildingOfficeIcon,
   GlobeAltIcon,
@@ -42,6 +42,111 @@ export const CippTenantSelector = (props) => {
     waiting: false,
     toast: true,
   });
+
+  // Filter portal actions based on user preferences
+  const getFilteredPortalActions = () => {
+    // Define all available portal actions with current tenant data
+    const allPortalActions = [
+      {
+        key: "M365_Portal",
+        label: "M365 Admin Portal",
+        link: `https://admin.cloud.microsoft/?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
+        icon: <GlobeAltIcon />,
+      },
+      {
+        key: "Exchange_Portal",
+        label: "Exchange Portal",
+        link: `https://admin.cloud.microsoft/exchange?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
+        icon: <Mail />,
+      },
+      {
+        key: "Entra_Portal",
+        label: "Entra Portal",
+        link: `https://entra.microsoft.com/${currentTenant?.value}`,
+        icon: <UsersIcon />,
+      },
+      {
+        key: "Teams_Portal",
+        label: "Teams Portal",
+        link: `https://admin.teams.microsoft.com/?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
+        icon: <FilePresent />,
+      },
+      {
+        key: "Azure_Portal",
+        label: "Azure Portal",
+        link: `https://portal.azure.com/${currentTenant?.value}`,
+        icon: <ServerIcon />,
+      },
+      {
+        key: "Intune_Portal",
+        label: "Intune Portal",
+        link: `https://intune.microsoft.com/${currentTenant?.value}`,
+        icon: <Laptop />,
+      },
+      {
+        key: "SharePoint_Admin",
+        label: "SharePoint Portal",
+        link: `/api/ListSharePointAdminUrl?tenantFilter=${currentTenant?.value}`,
+        icon: <Share />,
+        external: true,
+      },
+      {
+        key: "Security_Portal",
+        label: "Security Portal",
+        link: `https://security.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
+        icon: <Shield />,
+      },
+      {
+        key: "Compliance_Portal",
+        label: "Compliance Portal",
+        link: `https://purview.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
+        icon: <ShieldMoon />,
+      },
+      {
+        key: "Power_Platform_Portal",
+        label: "Power Platform Portal",
+        link: `https://admin.powerplatform.microsoft.com/account/login/${currentTenant?.addedFields?.customerId}`,
+        icon: <PrecisionManufacturing />,
+      },
+      {
+        key: "Power_BI_Portal",
+        label: "Power BI Portal",
+        link: `https://app.powerbi.com/admin-portal?ctid=${currentTenant?.addedFields?.customerId}`,
+        icon: <BarChart />,
+      },
+    ];
+
+    // Default to all links enabled (final fallback)
+    const defaultLinks = {
+      M365_Portal: true,
+      Exchange_Portal: true,
+      Entra_Portal: true,
+      Teams_Portal: true,
+      Azure_Portal: true,
+      Intune_Portal: true,
+      SharePoint_Admin: true,
+      Security_Portal: true,
+      Compliance_Portal: true,
+      Power_Platform_Portal: true,
+      Power_BI_Portal: true,
+    };
+
+    let portalLinks;
+    if (settings.UserSpecificSettings?.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.UserSpecificSettings.portalLinks };
+    } else if (settings.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.portalLinks };
+    } else {
+      portalLinks = defaultLinks;
+    }
+
+    const filteredActions = allPortalActions.filter(action => {
+      const isEnabled = portalLinks[action.key] === true;
+      return isEnabled;
+    });
+
+    return filteredActions;
+  };
 
   // This effect handles updates when the tenant is changed via dropdown selection
   useEffect(() => {
@@ -240,54 +345,7 @@ export const CippTenantSelector = (props) => {
           "onPremisesLastSyncDateTime",
           "onPremisesLastPasswordSyncDateTime",
         ]}
-        actions={[
-          {
-            label: "M365 Admin Portal",
-            link: `https://admin.cloud.microsoft/?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
-            icon: <GlobeAltIcon />,
-          },
-          {
-            label: "Exchange Portal",
-            link: `https://admin.cloud.microsoft/exchange?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
-            icon: <Mail />,
-          },
-          {
-            label: "Entra Portal",
-            link: `https://entra.microsoft.com/${currentTenant?.value}`,
-            icon: <UsersIcon />,
-          },
-          {
-            label: "Teams Portal",
-            link: `https://admin.teams.microsoft.com/?delegatedOrg=${currentTenant?.addedFields?.initialDomainName}`,
-            icon: <FilePresent />,
-          },
-          {
-            label: "Azure Portal",
-            link: `https://portal.azure.com/${currentTenant?.value}`,
-            icon: <ServerIcon />,
-          },
-          {
-            label: "Intune Portal",
-            link: `https://intune.microsoft.com/${currentTenant?.value}`,
-            icon: <Laptop />,
-          },
-          {
-            label: "SharePoint Portal",
-            link: `/api/ListSharePointAdminUrl?tenantFilter=${currentTenant?.value}`,
-            icon: <Share />,
-            external: true,
-          },
-          {
-            label: "Security Portal",
-            link: `https://security.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
-            icon: <Shield />,
-          },
-          {
-            label: "Compliance Portal",
-            link: `https://purview.microsoft.com/?tid=${currentTenant?.addedFields?.customerId}`,
-            icon: <ShieldMoon />,
-          },
-        ]}
+        actions={getFilteredPortalActions()}
       />
     </>
   );

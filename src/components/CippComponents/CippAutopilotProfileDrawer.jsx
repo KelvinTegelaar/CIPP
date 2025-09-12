@@ -147,7 +147,7 @@ export const CippAutopilotProfileDrawer = ({
               label="Unique Name Template"
               name="DeviceNameTemplate"
               formControl={formControl}
-              placeholder="Leave blank for none"
+              placeholder="Ex. %SERIAL%, %RAND:x% or leave blank for none"
             />
           </Grid>
 
