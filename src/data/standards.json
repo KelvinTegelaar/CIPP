@@ -4587,6 +4587,7 @@
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
+        "required": false,
         "name": "TemplateList",
         "label": "Select Intune Template",
         "api": {
@@ -4594,6 +4595,20 @@
           "url": "/api/ListIntuneTemplates",
           "labelField": "Displayname",
           "valueField": "GUID"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "required": false,
+        "creatable": false,
+        "name": "TemplateList-Tags",
+        "label": "Or select a package of Intune Templates",
+        "api": {
+          "queryKey": "ListIntuneTemplates-tag-autcomplete",
+          "url": "/api/ListIntuneTemplates?mode=Tag",
+          "labelField": "label",
+          "valueField": "value"
         }
       },
       {
