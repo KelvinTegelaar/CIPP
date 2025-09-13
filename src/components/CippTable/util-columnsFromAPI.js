@@ -40,6 +40,10 @@ const getAtPath = (obj, path) => {
 const mergeKeys = (dataArray) => {
   return dataArray.reduce((acc, item) => {
     const mergeRecursive = (obj, base = {}) => {
+      // Add null/undefined check before calling Object.keys
+      if (!obj || typeof obj !== 'object') {
+        return base;
+      }
       Object.keys(obj).forEach((key) => {
         if (
           typeof obj[key] === "object" &&
@@ -62,11 +66,20 @@ const mergeKeys = (dataArray) => {
       return base;
     };
 
+    // Add null/undefined check before calling mergeRecursive
+    if (!item || typeof item !== 'object') {
+      return acc;
+    }
     return mergeRecursive(item, acc);
   }, {});
 };
 
 export const utilColumnsFromAPI = (dataArray) => {
+  // Add safety check for dataArray
+  if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
+    return [];
+  }
+  
   const dataSample = mergeKeys(dataArray);
 
   const generateColumns = (obj, parentKey = "") => {
