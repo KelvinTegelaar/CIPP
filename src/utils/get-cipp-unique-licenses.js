@@ -22,12 +22,12 @@ export const getCippUniqueLicenses = (dataArray) => {
             // Get the translated name for this license
             const translatedName = getCippLicenseTranslation([license]);
             const displayName = Array.isArray(translatedName) ? translatedName[0] : translatedName;
-            
+
             uniqueLicensesMap.set(license.skuId, {
               skuId: license.skuId,
               displayName: displayName,
               // Store the original license object for reference
-              originalLicense: license
+              originalLicense: license,
             });
           }
         }
@@ -36,9 +36,11 @@ export const getCippUniqueLicenses = (dataArray) => {
   });
 
   // Convert map to array and sort by display name
-  return Array.from(uniqueLicensesMap.values()).sort((a, b) => 
-    a.displayName.localeCompare(b.displayName)
-  );
+  return Array.from(uniqueLicensesMap.values()).sort((a, b) => {
+    const nameA = a?.displayName || '';
+    const nameB = b?.displayName || '';
+    return nameA.localeCompare(nameB);
+  });
 };
 
 /**
@@ -56,12 +58,10 @@ export const userHasAllLicenses = (userLicenses, requiredLicenseSkuIds) => {
     return true; // No licenses required
   }
 
-  const userSkuIds = userLicenses.map(license => license.skuId).filter(Boolean);
-  
+  const userSkuIds = userLicenses.map((license) => license.skuId).filter(Boolean);
+
   // Check if user has all required licenses
-  return requiredLicenseSkuIds.every(requiredSkuId => 
-    userSkuIds.includes(requiredSkuId)
-  );
+  return requiredLicenseSkuIds.every((requiredSkuId) => userSkuIds.includes(requiredSkuId));
 };
 
 /**
@@ -79,10 +79,8 @@ export const userHasAnyLicense = (userLicenses, licenseSkuIds) => {
     return true; // No licenses specified
   }
 
-  const userSkuIds = userLicenses.map(license => license.skuId).filter(Boolean);
-  
+  const userSkuIds = userLicenses.map((license) => license.skuId).filter(Boolean);
+
   // Check if user has any of the specified licenses
-  return licenseSkuIds.some(licenseSkuId => 
-    userSkuIds.includes(licenseSkuId)
-  );
+  return licenseSkuIds.some((licenseSkuId) => userSkuIds.includes(licenseSkuId));
 };
