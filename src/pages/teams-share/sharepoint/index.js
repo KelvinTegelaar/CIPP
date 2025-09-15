@@ -8,6 +8,7 @@ import {
   PersonRemove,
   AdminPanelSettings,
   NoAccounts,
+  Delete,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
@@ -174,6 +175,18 @@ const Page = () => {
           },
         },
       ],
+      multiPost: false,
+    },
+    {
+      label: "Delete Site",
+      type: "POST",
+      icon: <Delete />,
+      url: "/api/DeleteSharepointSite",
+      data: {
+        SiteId: "siteId",
+      },
+      confirmText: "Are you sure you want to delete this SharePoint site? This action cannot be undone.",
+      color: "error",
       multiPost: false,
     },
   ];
