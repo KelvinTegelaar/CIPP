@@ -204,11 +204,11 @@ export const CippFormComponent = (props) => {
             <Controller
               name={convertedName}
               control={formControl.control}
-              defaultValue={defaultValue}
+              defaultValue={defaultValue || false}
               render={({ field }) =>
                 renderSwitchWithLabel(
                   <Switch
-                    checked={field.value}
+                    checked={Boolean(field.value)}
                     {...other}
                     {...formControl.register(convertedName, { ...validators })}
                   />

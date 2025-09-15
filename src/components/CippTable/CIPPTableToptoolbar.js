@@ -247,8 +247,6 @@ export const CIPPTableToptoolbar = ({
     ) {
       const last = settings.lastUsedFilters[pageName];
       if (last.type === "graph") {
-        console.log("Early restoring graph filter:", last, "for page:", pageName);
-
         // Mark as restored to prevent infinite loops
         restoredFiltersRef.current.add(restorationKey);
 
@@ -278,6 +276,16 @@ export const CIPPTableToptoolbar = ({
         });
         setCurrentEffectiveQueryKey(newQueryKey);
         setActiveFilterName(last.name);
+
+        if (last.value?.$select) {
+          const selectColumns = last.value.$select
+            .split(",")
+            .map((col) => col.trim())
+            .filter((col) => usedColumns.includes(col));
+          if (selectColumns.length > 0) {
+            setConfiguredSimpleColumns(selectColumns);
+          }
+        }
       }
     }
   }, [settings.persistFilters, settings.lastUsedFilters, pageName, api?.url, queryKey, title]);
@@ -301,7 +309,6 @@ export const CIPPTableToptoolbar = ({
       // Use setTimeout to ensure the table is fully rendered
       const timeoutId = setTimeout(() => {
         const last = settings.lastUsedFilters[pageName];
-        console.log("Restoring filter:", last, "for page:", pageName);
 
         if (last.type === "global") {
           table.setGlobalFilter(last.value);
@@ -311,7 +318,6 @@ export const CIPPTableToptoolbar = ({
           const allColumns = table.getAllColumns().map((col) => col.id);
           const filterColumns = Array.isArray(last.value) ? last.value.map((f) => f.id) : [];
           const allExist = filterColumns.every((colId) => allColumns.includes(colId));
-          console.log("Column filter check:", { allColumns, filterColumns, allExist });
           if (allExist) {
             table.setShowColumnFilters(true);
             table.setColumnFilters(last.value);
@@ -417,6 +423,22 @@ export const CIPPTableToptoolbar = ({
     return merged;
   };
 
+  // Shared function for setting nested column visibility
+  const setNestedVisibility = (col) => {
+    if (typeof col === "object" && col !== null) {
+      Object.keys(col).forEach((key) => {
+        if (usedColumns.includes(key.trim())) {
+          setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
+          setNestedVisibility(col[key]);
+        }
+      });
+    } else {
+      if (usedColumns.includes(col.trim())) {
+        setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
+      }
+    }
+  };
+
   const setTableFilter = (filter, filterType, filterName) => {
     if (filterType === "global" || filterType === undefined) {
       table.setGlobalFilter(filter);
@@ -481,20 +503,6 @@ export const CIPPTableToptoolbar = ({
         } else {
           selectedColumns = filter?.$select.split(",");
         }
-        const setNestedVisibility = (col) => {
-          if (typeof col === "object" && col !== null) {
-            Object.keys(col).forEach((key) => {
-              if (usedColumns.includes(key.trim())) {
-                setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
-                setNestedVisibility(col[key]);
-              }
-            });
-          } else {
-            if (usedColumns.includes(col.trim())) {
-              setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
-            }
-          }
-        };
         if (selectedColumns.length > 0) {
           setConfiguredSimpleColumns(selectedColumns);
           selectedColumns.forEach((col) => {
@@ -743,7 +751,7 @@ export const CIPPTableToptoolbar = ({
                         })
                       }
                     >
-                      <Checkbox checked={column.getIsVisible()} size="small" />
+                      <Checkbox checked={Boolean(column.getIsVisible())} size="small" />
                       <ListItemText primary={getCippTranslation(column.id)} />
                     </MenuItem>
                   ))}
@@ -922,7 +930,7 @@ export const CIPPTableToptoolbar = ({
                     })
                   }
                 >
-                  <Checkbox checked={column.getIsVisible()} size="small" />
+                  <Checkbox checked={Boolean(column.getIsVisible())} size="small" />
                   <ListItemText primary={getCippTranslation(column.id)} />
                 </MenuItem>
               ))}
@@ -1190,20 +1198,6 @@ export const CIPPTableToptoolbar = ({
               } else {
                 selectedColumns = filter?.$select.split(",");
               }
-              const setNestedVisibility = (col) => {
-                if (typeof col === "object" && col !== null) {
-                  Object.keys(col).forEach((key) => {
-                    if (usedColumns.includes(key.trim())) {
-                      setColumnVisibility((prev) => ({ ...prev, [key.trim()]: true }));
-                      setNestedVisibility(col[key]);
-                    }
-                  });
-                } else {
-                  if (usedColumns.includes(col.trim())) {
-                    setColumnVisibility((prev) => ({ ...prev, [col.trim()]: true }));
-                  }
-                }
-              };
               if (selectedColumns.length > 0) {
                 setConfiguredSimpleColumns(selectedColumns);
                 selectedColumns.forEach((col) => {
