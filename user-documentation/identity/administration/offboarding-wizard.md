@@ -60,6 +60,7 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | Give another user access to OneDrive                           | Gives another user full access to the offboarded user's OneDrive                                                                    |
 | Forward all e-mail to another user                             | Forwards all e-mails of the offboarded user to another user                                                                         |
 | Keep a copy of the forwarded mail in the source mailbox        | Keeps a copy of the forwarded mail in the offboarded user's mailbox                                                                 |
+| Remove Teams Phone DID                                         | Removes the Teams phone DID assigned to the user                                                                                    |
 | Delete User                                                    | Deletes the user from the tenant                                                                                                    |
 
 ### Permissions and forwarding

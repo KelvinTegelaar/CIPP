@@ -22,7 +22,7 @@ The properties returned are for the Graph resource type `site` but filtered to o
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Add Member</td><td>Opens a modal to add a user to the site</td><td>true</td></tr><tr><td>Remove Member</td><td>Opens a modal to remove a user from the site</td><td>true</td></tr><tr><td>Add Site Admin</td><td>Opens a modal to add a site admin</td><td>true</td></tr><tr><td>Remove Site Admin</td><td>Opens a modal to remove a site admin</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout which includes a table of the Site Members</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Add Member</td><td>Opens a modal to add a user to the site</td><td>true</td></tr><tr><td>Remove Member</td><td>Opens a modal to remove a user from the site</td><td>true</td></tr><tr><td>Add Site Admin</td><td>Opens a modal to add a site admin</td><td>true</td></tr><tr><td>Remove Site Admin</td><td>Opens a modal to remove a site admin</td><td>true</td></tr><tr><td>Delete Site</td><td>Opens a modal to delete the selected site(s)</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout which includes a table of the Site Members</td><td>false</td></tr></tbody></table>
 
 ***
 
