@@ -235,6 +235,25 @@ const DeployDefenderForm = () => {
                   name="Policy.MeteredConnectionUpdates"
                   formControl={formControl}
                 />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Allow On Access Protection"
+                  name="Policy.AllowOnAccessProtection"
+                  multiple={false}
+                  creatable={false}
+                  options={[
+                    { label: "Not Allowed", value: "0" },
+                    { label: "Allowed (Default)", value: "1" },
+                  ]}
+                  sx={{ my: 1 }}
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="switch"
+                  label="Disable Local Admin Merge"
+                  name="Policy.DisableLocalAdminMerge"
+                  formControl={formControl}
+                />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
@@ -267,6 +286,7 @@ const DeployDefenderForm = () => {
                   label="Enable Network Protection"
                   name="Policy.EnableNetworkProtection"
                   multiple={false}
+                  creatable={false}
                   options={[
                     { label: "Disabled (Default)", value: "0" },
                     { label: "Enabled (block mode)", value: "1" },
@@ -309,6 +329,7 @@ const DeployDefenderForm = () => {
                   type="autoComplete"
                   label="Cloud Block Level"
                   multiple={false}
+                  creatable={false}
                   name="Policy.CloudBlockLevel"
                   options={[
                     { label: "Default", value: "0" },
