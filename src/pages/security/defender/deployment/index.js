@@ -255,16 +255,18 @@ const DeployDefenderForm = () => {
                   name="Policy.AllowUI"
                   formControl={formControl}
                 />
+
                 <CippFormComponent
-                  type="switch"
-                  label="Enable Network Protection in Block Mode"
-                  name="Policy.NetworkProtectionBlock"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Enable Network Protection in Audit Mode"
-                  name="Policy.NetworkProtectionAudit"
+                  type="autoComplete"
+                  label="Enable Network Protection"
+                  name="Policy.EnableNetworkProtection"
+                  multiple={false}
+                  options={[
+                    { label: "Disabled (Default)", value: "0" },
+                    { label: "Enabled (block mode)", value: "1" },
+                    { label: "Enabled (audit mode)", value: "2" },
+                  ]}
+                  sx={{ my: 1 }}
                   formControl={formControl}
                 />
                 <CippFormComponent
