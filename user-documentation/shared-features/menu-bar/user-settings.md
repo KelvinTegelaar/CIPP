@@ -15,6 +15,10 @@ In this section, users can manage general settings related to their account and 
 
 This section provides you the ability to set offboarding defaults, this allows you to easily preselect your predefined offboarding preferences.
 
+### CIPP Roles
+
+This will display the active roles for the logged in user.
+
 ### Actions
 
 * **Save Settings**: Save the modified settings for the individual user.
@@ -23,6 +27,10 @@ This section provides you the ability to set offboarding defaults, this allows y
 ### Developer Options
 
 * Enable TanStack Query Tools
+
+### Portal Links Configuration
+
+This will allow you to toggle on and off the various portal links displayed in the [tenant-select.md](tenant-select.md "mention") or on the Portals dropdown on the [dashboard.md](../../dashboard.md "mention").
 
 ***
 

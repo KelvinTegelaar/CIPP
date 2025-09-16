@@ -1,46 +1,32 @@
----
-description: View & Edit Quarantine Policies and Global settings
----
-
 # Quarantine Policies
 
-### **Action Buttons**
+This page will allow you to view and manage custom quarantine policies that apply to your client tenants.
 
-{% content-ref url="edit.md" %}
-[edit.md](edit.md)
-{% endcontent-ref %}
+### Global Quarantine Settings
+
+This top bar will display the settings you have globally applied to your tenants. Click the `Edit Settings` button at the top of the page to modify your global quarantine settings.
+
+| Setting                | Description                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Notification Frequency | How often you want to be notified for policies that have notifications enabled. Options are `4 hours`, `Daily`, and `Weekly`. |
+| Branding               |                                                                                                                               |
+| Custom Sender Address  | This will be the optional address you set the alerts to generate from                                                         |
+| Custom Language        | Currently only available in English                                                                                           |
+
+### Action Buttons
 
 {% content-ref url="add.md" %}
 [add.md](add.md)
 {% endcontent-ref %}
 
-## **Global Quarantine Settings**
+### Table Details
 
-### **Table Details**
-
-The properties returned are for the Exchange PowerShell command `Get-QuarantinePolicy -QuarantinePolicyType GlobalQuarantinePolicy`. For more information on the command please see the Microsoft documentation:
-
-* [Get-QuarantinePolicy](https://learn.microsoft.com/en-us/powershell/module/exchange/get-quarantinepolicy?view=exchange-ps#example-3)
-
-<table><thead><tr><th>Column</th><th>Description</th><th data-type="checkbox">More Info Available</th></tr></thead><tbody><tr><td>Notification Frequency</td><td>Shows the interval for quarantine notification to end users</td><td>false</td></tr><tr><td>Branding</td><td>Indicates if organization Branding is enabled. Company logo must be uploaded in the Admin center by following the instructions in <a href="https://go.microsoft.com/fwlink/?linkid=2139901">this documentation</a></td><td>false</td><tr><td>Custom Sender Address</td><td>Shows the sender address if set</td><td>false</td></tr><tr><td>Custom Language</td><td>Shows which languages are configured. Clicking more info shows Sender display name, Subject and Disclaimer for each language. Maximum 3 languages can be configured</td><td>true</td></tr></tbody></table>
-
-***
-
-## **Quarantine Policies**
-
-### **Table Details**
-
-The properties returned are for the Exchange PowerShell command `Get-QuarantinePolicy`. For more information on the command please see the Microsoft documentation:
-
-* [Get-QuarantinePolicy](https://learn.microsoft.com/en-us/powershell/module/exchange/get-quarantinepolicy?view=exchange-ps)
+The table outputs basic information for all of the custom quarantine policies you have created.
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Policy</td><td>Edit the selected quarantine policy/policies</td><td>true</td></tr><tr><td>Delete Policy</td><td>Deletes the selected quarantine policy/policies</td><td>true</td><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Policy</td><td>Edits the selected policy(ies)</td><td>true</td></tr><tr><td>Delete Policy</td><td>Deletes the selected policy(ies)</td><td>true</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 
-### Feature Requests / Ideas
-
-We value your feedback and ideas. Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
-
+{% include "../../../../.gitbook/includes/feature-request.md" %}

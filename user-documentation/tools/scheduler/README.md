@@ -5,10 +5,12 @@ The task scheduler allows you to schedule CIPP functionality to be executed at a
 The scheduler allows you to schedule components to run once, every day, every 7 days, every 30 days, or every year.
 
 {% hint style="warning" %}
-Scheduling a task for the past will make it run immediately.
+Scheduling a task for the past will make it run on the next interval the scheduler runs.&#x20;
 {% endhint %}
 
-Scheduled tasks run every 15 minutes on their planned time. A recurring task will return to a planned state directly after execution. The latest results of a task can be viewed via the eye icon in the history table.
+Scheduled tasks can be used to run tasks at 15 minute intervals. The system does not allow you to schedule a task for any other intervals. If you add a task via the API for 10:10, the task will run at 10:15.
+
+A recurring task will return to a planned state directly after execution. The latest results of a task can be viewed via the eye icon in the history table.
 
 ### Action Buttons
 

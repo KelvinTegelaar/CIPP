@@ -1,6 +1,6 @@
 # Setup Wizard
 
-The SAM setup wizard is the keys to the engine that allows CIPP to manage your client tenants. For more details on this please see [executing-the-setup-wizard.md](../../setup/installation/executing-the-setup-wizard.md "mention").
+The setup wizard is the keys to the engine that allows CIPP to manage your client tenants. For more details on this please see [executing-the-setup-wizard.md](../../setup/installation/executing-the-setup-wizard.md "mention").
 
 ***
 

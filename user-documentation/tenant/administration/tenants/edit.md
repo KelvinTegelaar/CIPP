@@ -14,7 +14,7 @@ Here you can view/edit a custom alias for the tenant. This alias will currently 
 
 ## Custom Variables
 
-This tab presents a way to manage [global-variables.md](../../../cipp/settings/global-variables.md "mention")on a per-tenant basis. For example, you need to set a client's RMM site ID.
+This tab presents a way to manage [global-variables.md](global-variables.md "mention")on a per-tenant basis. For example, you need to set a client's RMM site ID.
 
 ***
 

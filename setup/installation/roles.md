@@ -19,9 +19,9 @@ We recommend that this user be your break glass CIPP `superadmin` account while 
   * Go to the Azure Portal.
   * Go to your CIPP Resource Group.
   * Select your CIPP Static Web App `CIPP-SWA-XXXX`.
-  * Select **Role Management** (Not IAM Role Management).
+  * Under Settings, Select **Role Management** (Not IAM Role Management).
   * Select **invite user**.
-  * Add the roles for the user. Multiple roles can be applied to the same user.&#x20;
+  * Add the roles for the user. Multiple roles can be applied to the same user.
 
 {% hint style="info" %}
 After the invite link is sent to the user, they must click on it to accept the invite and gain access to the app. The invites expire after a specific amount of time. Note this link must be sent manually to them, it is not e-mailed.
@@ -35,14 +35,14 @@ Once you have your initial `superadmin` user added, you are now able to set up a
 
 CIPP features a role management system which utilizes the [Roles feature of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
 
-| Role Name  | Description                                                                                                                                                            |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                   |
-| editor     | Allowed to perform everything, except change system settings.                                                                                                          |
-| admin      | Allowed to perform everything.                                                                                                                                         |
-| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings.  |
+| Role Name  | Description                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| readonly   | Only allowed to read and list items and send push messages to users.                                                                                                  |
+| editor     | Allowed to perform everything, except change system settings.                                                                                                         |
+| admin      | Allowed to perform everything.                                                                                                                                        |
+| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. |
 
-You can assign these roles to users using the [custom-roles.md](../../user-documentation/cipp/advanced/super-admin/custom-roles.md "mention") page.&#x20;
+You can assign these roles to users using the [custom-roles.md](../../user-documentation/cipp/advanced/super-admin/custom-roles.md "mention") page.
 
 {% hint style="info" %}
 You can assign built-in roles using Entra groups. Select Edit from the Action column next to the role in the CIPP Roles table and select an Entra group from the drop down. Don't forget to hit `Save` at the bottom!
@@ -50,7 +50,7 @@ You can assign built-in roles using Entra groups. Select Edit from the Action co
 
 ## Custom Roles
 
-While CIPP only supplies the above roles by default, you can create your own custom roles and apply them to your users with `editor` or `readonly` rights, admin users are unaffected by custom roles.&#x20;
+While CIPP only supplies the above roles by default, you can create your own custom roles and apply them to your users with `editor` or `readonly` rights, admin users are unaffected by custom roles.
 
 {% hint style="info" %}
 Custom role permissions can only grant the highest level of the base permission. You cannot grant edit permissions to the `readonly` role. Assigning the `editor` role and then using a custom role to remove permissions will provide you with the functionality you're looking for there.
@@ -64,8 +64,12 @@ Set up Custom Roles by following these steps:
 * Optionally select a Entra group this role will be mapped to. Adding an Entra group allows all users in this group to access CIPP.
 * For Allowed Tenants select a subset of tenants to manage, tenant groups, or AllTenants.
   * If AllTenants is selected, you can block a subset of tenants or tenant groups using Blocked Tenants.
+* Optionally select the CIPP endpoints that you want to block for the role. For example, if you do not want the role to have access to delete users/mailboxes you would block `RemoveUser`.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
   * To find out which API endpoints are affected by these selections, click on the Info button.
+* You must be sure to assign both the custom role and the base role `readonly` or `editor` to the users.
+  * If using Entra ID groups, you can map the base role to a Entra group (eg. `CIPP readonly` mapped to `readonly`) and add the user to the base role Entra group and the custom role Entra group to properly manage permissions
+  * If using SWA role management (self-hosted) or management portal (CyberDrain hosted) be sure to add both roles to the user manually.
 
 {% hint style="info" %}
 If you are continuing to statically assign roles, the custom roles created in CIPP do not sync back to the SWA role management (self-hosted) or management portal (CyberDrain hosted). You will need to add the role to the invited user exactly how it appears in CIPP manually.

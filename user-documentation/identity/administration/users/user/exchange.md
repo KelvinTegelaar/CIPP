@@ -8,6 +8,7 @@ description: This page displays information about the user's Exchange settings.
 
 | Action                                    | Description                                                                                                                                                                        |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bulk Add Mailbox Permissions              | Allows you to bulk add other users to the current mailbox with `Send As` and/or `Send On Behalf` permissions.                                                                      |
 | Send MFA Push                             | Sends a push notification to the user's Microsoft Authenticator (if setup). This is useful to confirm you are speaking with the user.                                              |
 | Convert Mailbox                           | Transforms mailbox to selected type: `Shared`, `User`, `Room`, or `Equipment`.                                                                                                     |
 | Enable Online Archive                     |                                                                                                                                                                                    |
@@ -51,6 +52,7 @@ description: This page displays information about the user's Exchange settings.
 | Proxy Addresses      | A widget that allows for updating a user/mailbox proxy addresses with add, delete, and set primary capability. |
 | Mailbox Permissions  | A widget that allows for updating mailbox permissions other users can be granted to this user's mailbox.       |
 | Calendar Permissions | A widget that allows for updating calendar permissions other users can be granted to this user's mailbox.      |
+| Contact Permissions  | A widget that allows you to manage contact folder permissions.                                                 |
 | Mailbox Forwarding   | A widget that allows for updating mail forwarding options for this user's mailbox.                             |
 | Out of Office        | A widget that allows you to edit the out of office settings for this user's mailbox.                           |
 

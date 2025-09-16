@@ -10,6 +10,8 @@ The Groups page is equivalent to [Microsoft 365 admin center > Active teams and 
 
 ### Action Buttons
 
+Show/Hide Members - This will toggle if the page displays a column to show the membership of the group. You may need to select the column to show from the table's column selector also.
+
 {% content-ref url="add.md" %}
 [add.md](add.md)
 {% endcontent-ref %}

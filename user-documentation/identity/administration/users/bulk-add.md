@@ -6,7 +6,7 @@ This wizard will allow you to bulk create new users.&#x20;
 {% step %}
 ### Tenant Selection
 
-Select the tenant that you'd like to create the users in. This will default to the tenant you have picked in the menu bar.
+This is the tenant you have picked in the menu bar.
 {% endstep %}
 
 {% step %}
