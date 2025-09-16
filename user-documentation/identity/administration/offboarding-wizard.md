@@ -53,6 +53,7 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | Disable Sign-In                                                | Disables the user's ability to sign in                                                                                              |
 | Clear Immutable ID                                             | Clears the Immutable ID for a user synced from on-premises Active Directory. Note: This only works after the link is broken from AD |
 | Reset Password                                                 | Resets the user's password                                                                                                          |
+| Remove all MFA Devices                                         | Removes all MFA devices associated with the user                                                                                                          |
 | Remove from all Groups                                         | Removes the user from all groups                                                                                                    |
 | Set Out of Office                                              | Sets an out of office message for the user                                                                                          |
 | Give another user access to the mailbox (without auto mapping) | Gives another user full access to the offboarded user's mailbox without auto mapping                                                |
