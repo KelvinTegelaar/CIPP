@@ -222,12 +222,18 @@ const DeployDefenderForm = () => {
                   label="Avg CPU Load Factor(%)"
                   name="Policy.AvgCPULoadFactor"
                   formControl={formControl}
-                  defaultValue={50}
+                  placeholder="50"
                   validators={{
                     min: { value: 0, message: "Value must be at least 0" },
                     max: { value: 100, message: "Value cannot exceed 100" },
                   }}
                   sx={{ my: 1 }}
+                />
+                <CippFormComponent
+                  type="switch"
+                  label="Allow Metered Connection Updates"
+                  name="Policy.MeteredConnectionUpdates"
+                  formControl={formControl}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -280,7 +286,7 @@ const DeployDefenderForm = () => {
                   label="Signature Update Interval (hours)"
                   name="Policy.SignatureUpdateInterval"
                   formControl={formControl}
-                  defaultValue={8}
+                  placeholder="8"
                   validators={{
                     min: { value: 0, message: "Value must be at least 0" },
                     max: { value: 24, message: "Value cannot exceed 24" },
@@ -318,7 +324,7 @@ const DeployDefenderForm = () => {
                   label="Cloud Extended Timeout (seconds)"
                   name="Policy.CloudExtendedTimeout"
                   formControl={formControl}
-                  defaultValue={50}
+                  placeholder="0"
                   validators={{
                     min: { value: 0, message: "Value must be at least 0" },
                     max: { value: 50, message: "Value cannot exceed 50" },
