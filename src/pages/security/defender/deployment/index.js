@@ -227,6 +227,7 @@ const DeployDefenderForm = () => {
                     min: { value: 0, message: "Value must be at least 0" },
                     max: { value: 100, message: "Value cannot exceed 100" },
                   }}
+                  sx={{ my: 1 }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -296,9 +297,20 @@ const DeployDefenderForm = () => {
                     { label: "Zero Tolerance", value: "6" },
                   ]}
                   formControl={formControl}
-                  validators={{}}
+                  sx={{ my: 1 }}
                 />
-
+                <CippFormComponent
+                  type="number"
+                  label="Cloud Extended Timeout (seconds)"
+                  name="Policy.CloudExtendedTimeout"
+                  formControl={formControl}
+                  defaultValue={50}
+                  validators={{
+                    min: { value: 0, message: "Value must be at least 0" },
+                    max: { value: 50, message: "Value cannot exceed 50" },
+                  }}
+                  sx={{ my: 1 }}
+                />
               </Grid>
 
               {/* Assign to Group */}
@@ -572,8 +584,6 @@ const DeployDefenderForm = () => {
             </Grid>
           </Grid>
         </CippFormCondition>
-
-        {/* Remove the Review and Confirm section as per your request */}
       </Grid>
     </CippFormPage>
   );
