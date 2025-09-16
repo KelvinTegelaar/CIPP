@@ -217,6 +217,17 @@ const DeployDefenderForm = () => {
                   name="Policy.LowCPU"
                   formControl={formControl}
                 />
+                <CippFormComponent
+                  type="number"
+                  label="Avg CPU Load Factor(%)"
+                  name="Policy.AvgCPULoadFactor"
+                  formControl={formControl}
+                  defaultValue={50}
+                  validators={{
+                    min: { value: 0, message: "Value must be at least 0" },
+                    max: { value: 100, message: "Value cannot exceed 100" },
+                  }}
+                />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
@@ -273,6 +284,21 @@ const DeployDefenderForm = () => {
                   name="Policy.DisableCatchupQuickScan"
                   formControl={formControl}
                 />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Cloud Block Level"
+                  multiple={false}
+                  name="Policy.CloudBlockLevel"
+                  options={[
+                    { label: "Default", value: "0" },
+                    { label: "High", value: "2" },
+                    { label: "High Plus", value: "4" },
+                    { label: "Zero Tolerance", value: "6" },
+                  ]}
+                  formControl={formControl}
+                  validators={{}}
+                />
+
               </Grid>
 
               {/* Assign to Group */}
