@@ -113,7 +113,7 @@ This occurs when the app has existed for more than 2 years and requires a new ce
 5. Enter a description, choose an expiration, and click "Add"
 6. Copy the new client **secret value**
 7. Go to CIPP -> Settings -> Setup Wizard
-8. Use the option "I have an existing application and would like to enter my keys"
+8. Use the option "Manually enter credentials"
 9. Enter only the new secret and click Next.
 
 ### You discarded changes when syncing GitHub Repositories

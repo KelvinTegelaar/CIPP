@@ -1,19 +1,25 @@
 ---
-description: >-
-  Standards ensures consistent configuration across your Microsoft 365 tenants
-  by reapplying baseline settings every three hours. This prevents unauthorized
-  changes and maintains security.
+description: Standards ensure consistent configuration across your Microsoft 365 tenants.
 ---
 
-# Standards
+# Standards & Drift
 
-## **Overview**
+{% hint style="warning" %}
+### Page Purpose
 
-Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours**. This automatic enforcement prevents unauthorized changes and helps maintain security.
+This page serves as an overview of CIPP Standards.  For the tecnical components of each page and details on the actions you can take, please see the respective docs page under this menu item to the left.
+{% endhint %}
+
+## **Standards Overview**
+
+Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours** or evaluating drift **every hour**. This automatic enforcement and drift detection prevents unauthorized changes and helps maintain security. There are two kinds of standards:
+
+* Classic: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every three hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
+* Drift: New in v 8.3, drift standards allow for you to manage client environments with a much finer touch. These standards evaluate every hour and allow for granular handling of anything that is out of alignment with the template. As such, drift standards are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with drift standards, see [managedrift](managedrift/ "mention").
 
 ### Actions
 
-CIPP allows you to set standards in three different settings. Some standards can only be set to specific items, such as Intune standards which can only be "Remediated".
+CIPP allows you to set standards in three different settings. Some classic standards can only be set to specific items, such as Intune standards which can only be "Remediated".
 
 | Action    | Description                                                                                                                                                                                                     |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -21,13 +27,13 @@ CIPP allows you to set standards in three different settings. Some standards can
 | Alert     | Sends you a notification via the configured method in CIPP -> Application Settings -> Notifications                                                                                                             |
 | Remediate | Changes the configuration of the tenant and enables Report settings in the backend. You can optionally enable Report in addition to Remediate for visual clarity, but all Remediate Standards will also Report. |
 
-For example, when you wish to create a report for Audit log state across all your tenants, you can create an "All Tenants" standard that has the Audit Log standard set to "Report" - This fills the CIPP database with the current setting without editing the clients settings.
+For example, when you wish to create a report for Audit log state across all your tenants, you can create an "All Tenants" standard that has the Audit Log standard set to "Report" - This fills the CIPP database with the current setting without editing the client's settings.
 
 Setting this same standard to "Alert" allows you to receive an alert inside of your e-mail or ticketing system.
 
-Setting this same standard to "Remediate" changes the clients configuration, and in this case would enable the audit log for the client.
+Setting this same standard to "Remediate" changes the client's configuration, and in this case would enable the audit log for the client.
 
-### **Precedence of Standards**
+### **Precedence of Classic Standards**
 
 Standards are merged based on their specificity and creation date:
 
@@ -41,7 +47,7 @@ Standards are merged based on their specificity and creation date:
 **Note**: By default, standards aren't applied to any tenants upon setup of CIPP. You must manually configure and enable them. Apply standards with a clear understanding of their effects.
 {% endhint %}
 
-{% hint style="danger" %}
+{% hint style="success" %}
 ### CIPP v7 Standards Updates
 
 As of the update to v7 of CIPP, standards now operate via templates. Where previously, standards were either configured via the AllTenants "Edit Standards" page or an individual tenants "Edit Standards" page, multiple templates can be created to provide you with a more granular standards experience. Templates can be assigned to "AllTenants", "AllTenants" with excluded tenants, or just specific list of tenants.
@@ -61,27 +67,6 @@ For ease of reference, standards are grouped within the following categories. Th
 | Intune Standards     | Device and application management policies for a secure Intune environment.       |
 | SharePoint Standards | SharePoint and OneDrive configuration incl. sharing and retention policies.       |
 | Teams Standards      | Collaboration-related settings, i.e.: meeting policies and external file sharing. |
-
-### **Table Columns**
-
-Each of the separate standards category pages have a table listing of their respective standards that includes the following columns:
-
-| Column                | Description                                                   |
-| --------------------- | ------------------------------------------------------------- |
-| Standard Name         | The name of the standard.                                     |
-| Description           | A brief explanation of what the standard does.                |
-| Recommended By        | The organization recommending the standard (e.g., CIS, CIPP). |
-| API Name              | Useful for logs and automation.                               |
-| PowerShell Equivalent | The PowerShell command used to apply the standard manually.   |
-
-{% hint style="info" %}
-**Sorting:** Standards are listed by their **API Names**. For example:
-
-* Display Name: "Set Sharing Level for Default Calendar"
-* API Name: `calDefault`
-{% endhint %}
-
-**Note**: Disabling the "Remediate" option prevents future enforcement but does not undo previously applied changes.
 
 ### **Impact Levels**
 

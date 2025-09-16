@@ -50,7 +50,7 @@ Enter a webhook URL. Data is formatted based on the receiving server:
 | _webhook.office.com_ | A basic HTML formatted table.                         |
 | _slack.com_          | A separate markdown-formatted message for each alert. |
 | _discord.com_        | A basic HTML formatted table.                         |
-| All other services   | JSON array of data values.                            |
+| All other services   | JSON array of data values. Method is `POST`           |
 
 {% hint style="info" %}
 Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler_CIPPNotifications).
@@ -58,11 +58,10 @@ Custom Webhook Formatting Need something different for your webhook? Can you wri
 
 ### Notification Setting Options
 
-| Setting                                         | Description                                                                               |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant                            |
-| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured       |
-| Include Tenant ID in alerts                     | This will include the tenant's ID for additional easy of identifying who the alert is for |
+| Setting                                         | Description                                                                         |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant                      |
+| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured |
 
 ### Send Test Alert
 

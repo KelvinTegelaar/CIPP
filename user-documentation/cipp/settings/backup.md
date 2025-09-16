@@ -28,6 +28,30 @@ Backups are stored indefinitely. The low cost of Azure Table storage allows this
 
 <table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Restore Backup</td><td>Restores CIPP using the selected backup</td><td>false</td></tr><tr><td>Download Backup</td><td>Downloads the selected backup(s)</td><td>true</td></tr></tbody></table>
 
+### What Gets Backed Up
+
+The following tables will get copied into the backup:
+
+* AccessRoleGroups
+* ApiClients
+* AppPermissions
+* CommunityRepos
+* Config
+* CustomData
+* CustomRoles
+* Domains
+* ExcludedLicenses
+* Extensions - This table does not include the authentication for the extensions. You will need to manually set up the extensions again if you restore from a backup.
+* GDAPRoles
+* GDAPRoleTemplates
+* GraphPresets
+* ScheduledTasks
+* SchedulerConfig
+* Standards
+* templates
+* TenantProperties
+* WebhookRules
+
 ***
 
 {% include "../../../.gitbook/includes/feature-request.md" %}

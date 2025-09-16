@@ -53,8 +53,15 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | Revoke all sessions                                            | Revokes all active sessions of the user                                                                                             |
 | Disable Sign-In                                                | Disables the user's ability to sign in                                                                                              |
 | Clear Immutable ID                                             | Clears the Immutable ID for a user synced from on-premises Active Directory. Note: This only works after the link is broken from AD |
-| Reset Password                                                 | Resets the user's password to a randomly generated value, preventing the user from signing in after offboarding                    |
-| Remove all MFA Devices                                         | Removes all MFA devices associated with the user                                                                                                          |
+| Reset Password                                                 | Resets the user's password                                                                                                          |
+| Remove from all Groups                                         | Removes the user from all groups                                                                                                    |
+| Set Out of Office                                              | Sets an out of office message for the user                                                                                          |
+| Give another user access to the mailbox (without auto mapping) | Gives another user full access to the offboarded user's mailbox without auto mapping                                                |
+| Give another user access to the mailbox (with auto mapping)    | Gives another user full access to the offboarded user's mailbox with auto mapping                                                   |
+| Give another user access to OneDrive                           | Gives another user full access to the offboarded user's OneDrive                                                                    |
+| Forward all e-mail to another user                             | Forwards all e-mails of the offboarded user to another user                                                                         |
+| Keep a copy of the forwarded mail in the source mailbox        | Keeps a copy of the forwarded mail in the offboarded user's mailbox                                                                 |
+| Remove Teams Phone DID                                         | Removes the Teams phone DID assigned to the user                                                                                    |
 | Delete User                                                    | Deletes the user from the tenant                                                                                                    |
 
 

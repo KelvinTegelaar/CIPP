@@ -25,15 +25,16 @@ Before deploying, ensure you’ve completed everything in the [index.md](index.m
 **When to use**:
 
 * Your Azure region supports [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/) (SWA).
-* You want SWA to deploy automatically to the closest supported data center.
 
-This template creates all necessary resources in your local region, including:
+This template creates all necessary resources in your selected region, including:
 
 * **Azure Function App** (API) with a **Storage Account**
 * **Azure Key Vault** for CIPP secrets
 * **Azure Static Web App** (SWA) that auto-selects a supported region near you
 
-After you have completed the prerequisites in, select the button below to run the automated setup.
+Performance is impacted by your region selection. Make sure you choose the region closest to you for optimal performance.&#x20;
+
+After you have completed the prerequisites in, select the button below to run the automated setup.&#x20;
 
 [![](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate.json)
 
