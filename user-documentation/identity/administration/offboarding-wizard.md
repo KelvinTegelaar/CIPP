@@ -44,23 +44,19 @@ The Offboarding Wizard offers a range of settings that can be performed during t
 | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Convert to Shared Mailbox                                      | Converts the user's mailbox to a shared mailbox                                                                                     |
 | Hide from Global Address List                                  | Hides the user from the Global Address List                                                                                         |
-| Cancel all calendar invites                                    |                                                                                                                                     |
-| Remove user's mailbox permissions                              | Removes all the offboarded user's permissons to all other mailboxes                                                                 |
-| Revoke all sessions                                            | Revokes all active sessions of the user                                                                                             |
-| Remove all Mobile Devices                                      | Removes all mobile devices associated with the user                                                                                 |
+| Cancel all calendar invites                                    | Cancels all upcoming calendar events and meetings organized by the user                   |
+| Remove user's mailbox permissions                              | Removes all the offboarded user's permissions to all other mailboxes                                                                 |
 | Remove all Rules                                               | Removes all rules associated with the user                                                                                          |
+| Remove all Mobile Devices                                      | Removes all mobile devices associated with the user                                                                                 |
+| Remove from all Groups                                         | Removes the user from all groups                                                                                                    |
 | Remove Licenses                                                | Removes all licenses associated with the user                                                                                       |
+| Revoke all sessions                                            | Revokes all active sessions of the user                                                                                             |
 | Disable Sign-In                                                | Disables the user's ability to sign in                                                                                              |
 | Clear Immutable ID                                             | Clears the Immutable ID for a user synced from on-premises Active Directory. Note: This only works after the link is broken from AD |
-| Reset Password                                                 | Resets the user's password                                                                                                          |
-| Remove from all Groups                                         | Removes the user from all groups                                                                                                    |
-| Set Out of Office                                              | Sets an out of office message for the user                                                                                          |
-| Give another user access to the mailbox (without auto mapping) | Gives another user full access to the offboarded user's mailbox without auto mapping                                                |
-| Give another user access to the mailbox (with auto mapping)    | Gives another user full access to the offboarded user's mailbox with auto mapping                                                   |
-| Give another user access to OneDrive                           | Gives another user full access to the offboarded user's OneDrive                                                                    |
-| Forward all e-mail to another user                             | Forwards all e-mails of the offboarded user to another user                                                                         |
-| Keep a copy of the forwarded mail in the source mailbox        | Keeps a copy of the forwarded mail in the offboarded user's mailbox                                                                 |
+| Reset Password                                                 | Resets the user's password to a randomly generated value, preventing the user from signing in after offboarding                    |
+| Remove all MFA Devices                                         | Removes all MFA devices associated with the user                                                                                                          |
 | Delete User                                                    | Deletes the user from the tenant                                                                                                    |
+
 
 ### Permissions and forwarding
 
