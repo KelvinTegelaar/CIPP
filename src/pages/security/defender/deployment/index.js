@@ -276,6 +276,18 @@ const DeployDefenderForm = () => {
                   formControl={formControl}
                 />
                 <CippFormComponent
+                  type="number"
+                  label="Signature Update Interval (hours)"
+                  name="Policy.SignatureUpdateInterval"
+                  formControl={formControl}
+                  defaultValue={8}
+                  validators={{
+                    min: { value: 0, message: "Value must be at least 0" },
+                    max: { value: 24, message: "Value cannot exceed 24" },
+                  }}
+                  sx={{ my: 1 }}
+                />
+                <CippFormComponent
                   type="switch"
                   label="Disable Catchup Full Scan"
                   name="Policy.DisableCatchupFullScan"
