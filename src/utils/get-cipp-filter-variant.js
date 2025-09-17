@@ -71,7 +71,7 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
     case "accountEnabled":
       return {
         filterVariant: "select",
-        sortingFn: "boolean",
+        sortingFn: "alphanumeric",
         filterFn: "equals",
       };
     case "primDomain":
@@ -97,7 +97,7 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
   if (typeOf === "boolean") {
     return {
       filterVariant: "select",
-      sortingFn: "boolean",
+      sortingFn: "alphanumeric",
       filterFn: "equals",
     };
   }
