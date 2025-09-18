@@ -31,6 +31,11 @@
   * [Professional Onboarding Services](setup/resources/professional-onboarding-services.md)
   * [Sponsor Quick Start](setup/resources/sponsor-quick-start.md)
 
+## Demos
+
+* [Tutorials](demos/tutorials.md)
+* [Showcases](demos/showcases.md)
+
 ## User Documentation
 
 * [Shared Features](user-documentation/shared-features/README.md)
@@ -371,7 +376,7 @@
 
 ***
 
-* [Why CIPP Doesn't Do Demos](why-cipp-doesnt-do-demos.md)
+* [Why CIPP Doesn't Do (live) Demos](why-cipp-doesnt-do-demos.md)
 
 ## Sip & CIPP
 
