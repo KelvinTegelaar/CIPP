@@ -18,7 +18,6 @@ import {
   History,
   EventRepeat,
   Schedule,
-  RestoreFromTrash,
   SettingsBackupRestore,
   Settings,
   CheckCircle,
@@ -174,18 +173,12 @@ const Page = () => {
     },
   ];
 
-  const title = "Manage Drift";
-  const subtitle = [
-    {
-      text: `Template ID: ${templateId || "Loading..."}`,
-    },
-  ];
+  const title = "Manage Backups";
 
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
-      subtitle={subtitle}
       backUrl="/tenant/standards/list-standards"
       actions={[]}
       actionsData={{}}

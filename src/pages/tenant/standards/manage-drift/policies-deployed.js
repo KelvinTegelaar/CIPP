@@ -332,11 +332,11 @@ const PoliciesDeployedPage = () => {
     },
     currentTenant,
   });
-  const title = "Manage Drift";
+  const title = "View Deployed Policies";
   const subtitle = [
     {
       icon: <Policy />,
-      text: `Template ID: ${templateId || "Loading..."}`,
+      text: `These are the policies deployed via a standard`,
     },
   ];
 
