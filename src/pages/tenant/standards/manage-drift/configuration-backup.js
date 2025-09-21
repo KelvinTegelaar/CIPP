@@ -61,7 +61,7 @@ const Page = () => {
       showHidden: true,
       Type: "New-CIPPBackup",
     },
-    queryKey: "BackupTasks",
+    queryKey: `BackupTasks-${settings.currentTenant}`,
   });
 
   // Use the actual backup files as the backup data
@@ -87,8 +87,10 @@ const Page = () => {
     tags: generateBackupTags(backup),
   }));
 
-  // Process existing backup configuration
-  const currentConfig = existingBackupConfig.data?.[0];
+  // Process existing backup configuration, find tenantFilter. by comparing settings.currentTenant with Tenant.value
+  const currentConfig = existingBackupConfig.data?.find(
+    (tenant) => tenant.Tenant.value === settings.currentTenant
+  );
   const hasExistingConfig = currentConfig && currentConfig.Parameters?.ScheduledBackupValues;
 
   // Create property items for current configuration
