@@ -12,7 +12,11 @@
     "path": "/tenant/standards/manage-drift/history"
   },
   {
-    "label": "Tenant Report",
+    "label": "Applied Standards Report",
     "path": "/tenant/standards/manage-drift/compare"
+  },
+  {
+    "label": "Configuration Backup",
+    "path": "/tenant/standards/manage-drift/configuration-backup"
   }
 ]

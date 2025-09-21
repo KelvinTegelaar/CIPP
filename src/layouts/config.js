@@ -184,18 +184,6 @@ export const nativeMenuItems = [
         permissions: ["Tenant.Relationship.*"],
       },
       {
-        title: "Configuration Backup",
-        path: "/tenant/backup",
-        permissions: ["CIPP.Backup.*"],
-        items: [
-          {
-            title: "Backups",
-            path: "/tenant/backup/backup-wizard",
-            permissions: ["CIPP.Backup.*"],
-          },
-        ],
-      },
-      {
         title: "Standards & Drift",
         path: "/tenant/standards",
         permissions: [
