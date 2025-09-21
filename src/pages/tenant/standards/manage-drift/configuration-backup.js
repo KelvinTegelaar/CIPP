@@ -52,7 +52,7 @@ const Page = () => {
       Type: "Scheduled",
       NameOnly: true,
     },
-    queryKey: "BackupList",
+    queryKey: `BackupList-${settings.currentTenant}`,
   });
 
   // API call to get existing backup configuration/schedule
@@ -117,7 +117,7 @@ const Page = () => {
         {
           label: "Next Run",
           value: currentConfig.ScheduledTime ? (
-            <CippTimeAgo data={new Date(currentConfig.ScheduledTime * 1000)} />
+            <CippTimeAgo data={currentConfig.ScheduledTime} />
           ) : (
             "Not scheduled"
           ),
