@@ -26,7 +26,12 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Tenant",
-      link: "/tenant/administration/tenants/edit?id=[customerId]",
+      link: "/tenant/standards/manage-drift/edit-tenant?tenantFilter=[defaultDomainName]",
+      icon: <Edit />,
+    },
+    {
+      label: "Configure Backup",
+      link: "/tenant/standards/manage-drift/configuration-backup?tenantFilter=[defaultDomainName]",
       icon: <Edit />,
     },
   ];
