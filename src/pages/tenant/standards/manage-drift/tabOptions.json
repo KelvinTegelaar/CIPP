@@ -1,7 +1,19 @@
 [
   {
+    "label": "Edit Tenant",
+    "path": "/tenant/standards/manage-drift/edit-tenant"
+  },
+  {
+    "label": "Configuration Backup",
+    "path": "/tenant/standards/manage-drift/configuration-backup"
+  },
+  {
     "label": "Manage Drift",
     "path": "/tenant/standards/manage-drift"
+  },
+  {
+    "label": "Applied Standards Report",
+    "path": "/tenant/standards/manage-drift/compare"
   },
   {
     "label": "Policies and Settings Deployed",
@@ -10,13 +22,5 @@
   {
     "label": "History",
     "path": "/tenant/standards/manage-drift/history"
-  },
-  {
-    "label": "Applied Standards Report",
-    "path": "/tenant/standards/manage-drift/compare"
-  },
-  {
-    "label": "Configuration Backup",
-    "path": "/tenant/standards/manage-drift/configuration-backup"
   }
 ]

@@ -192,7 +192,7 @@ const Page = () => {
       isFetching={backupList.isFetching || existingBackupConfig.isFetching}
     >
       <CippHead title="Configuration Backup" />
-      <Box sx={{ py: 2 }}>
+      <Box sx={{ p: 1 }}>
         <Grid container spacing={3}>
           {/* Two Side-by-Side Displays */}
           <Grid size={{ md: 6, xs: 12 }}>
