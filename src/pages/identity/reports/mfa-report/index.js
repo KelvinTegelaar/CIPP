@@ -52,7 +52,7 @@ const Page = () => {
       type: "POST",
       icon: <LockPerson />,
       url: "/api/ExecPerUserMFA",
-      data: { userId: "UPN" },
+      data: { userId: "ID", userPrincipalName: "UPN" },
       fields: [
         {
           type: "autoComplete",

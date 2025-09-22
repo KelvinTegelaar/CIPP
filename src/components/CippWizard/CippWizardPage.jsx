@@ -13,6 +13,7 @@ const CippWizardPage = (props) => {
     wizardTitle,
     backButton = true,
     wizardOrientation = "horizontal",
+    maxWidth = "xl",
     ...other
   } = props;
   return (
@@ -25,7 +26,7 @@ const CippWizardPage = (props) => {
           py: 4,
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth={maxWidth}>
           {backButton && (
             <Button
               color="inherit"

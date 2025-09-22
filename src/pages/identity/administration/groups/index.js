@@ -14,10 +14,12 @@ import {
 } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { useState } from "react";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const Page = () => {
   const pageTitle = "Groups";
   const [showMembers, setShowMembers] = useState(false);
+  const { currentTenant } = useSettings();
 
   const handleMembersToggle = () => {
     setShowMembers(!showMembers);
@@ -145,7 +147,11 @@ const Page = () => {
       }
       apiUrl="/api/ListGroups"
       apiData={{ expandMembers: showMembers }}
-      queryKey={showMembers ? "groups-with-members" : "groups-without-members"}
+      queryKey={
+        showMembers
+          ? `groups-with-members-${currentTenant}`
+          : `groups-without-members-${currentTenant}`
+      }
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[

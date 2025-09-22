@@ -1,38 +1,142 @@
-import { DeveloperMode, SevereCold, Sync, Tune, ViewColumn } from "@mui/icons-material";
+import React, { useState, useEffect, useRef } from "react";
 import {
+  Box,
   Button,
-  Checkbox,
-  Divider,
-  IconButton,
-  ListItemText,
   Menu,
   MenuItem,
-  SvgIcon,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  IconButton,
   Tooltip,
   Typography,
+  InputBase,
+  Paper,
+  Checkbox,
+  SvgIcon,
 } from "@mui/material";
-import { Box, Stack } from "@mui/system";
 import {
-  MRT_GlobalFilterTextField,
-  MRT_ToggleFiltersButton,
-  MRT_ToggleFullScreenButton,
-} from "material-react-table";
+  Search as SearchIcon,
+  FilterList as FilterListIcon,
+  ViewColumn as ViewColumnIcon,
+  FileDownload as ExportIcon,
+  KeyboardArrowDown as ArrowDownIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+  Code as CodeIcon,
+  PictureAsPdf as PdfIcon,
+  TableChart as CsvIcon,
+  SevereCold,
+  Sync,
+  Check as CheckIcon,
+  MoreVert as MoreVertIcon,
+  Fullscreen as FullscreenIcon,
+} from "@mui/icons-material";
+import { ExclamationCircleIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { styled, alpha } from "@mui/material/styles";
+import { MRT_ToggleFullScreenButton } from "material-react-table";
 import { PDFExportButton } from "../pdfExportButton";
-import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { usePopover } from "../../hooks/use-popover";
 import { CSVExportButton } from "../csvExportButton";
-import { useDialog } from "../../hooks/use-dialog";
-import { useEffect, useState } from "react";
-import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { useMediaQuery } from "@mui/material";
+import { CippQueueTracker } from "./CippQueueTracker";
+import { usePopover } from "../../hooks/use-popover";
+import { useDialog } from "../../hooks/use-dialog";
+import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import { useSettings } from "../../hooks/use-settings";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
+import { useQueryClient } from "@tanstack/react-query";
 import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
 import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
-import { useMediaQuery } from "@mui/material";
+import { Stack } from "@mui/system";
+
+// Styled components for modern design
+const ModernSearchContainer = styled(Paper)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
+  maxWidth: "300px",
+  minWidth: "200px",
+  height: "40px",
+  backgroundColor: theme.palette.mode === "dark" ? "#2A2D3A" : "#F8F9FA",
+  border: `1px solid ${theme.palette.mode === "dark" ? "#404040" : "#E0E0E0"}`,
+  borderRadius: "8px",
+  padding: "0 12px",
+  "&:hover": {
+    borderColor: theme.palette.primary.main,
+  },
+  "&:focus-within": {
+    borderColor: theme.palette.primary.main,
+    boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
+  },
+  [theme.breakpoints.down("md")]: {
+    minWidth: "0",
+    maxWidth: "none",
+    flex: 1,
+  },
+}));
+
+const ModernSearchInput = styled(InputBase)(({ theme }) => ({
+  marginLeft: theme.spacing(1),
+  flex: 1,
+  fontSize: "14px",
+  "& .MuiInputBase-input": {
+    padding: "8px 0",
+    "&::placeholder": {
+      color: theme.palette.text.secondary,
+      opacity: 0.7,
+    },
+  },
+}));
+
+const ModernButton = styled(Button)(({ theme }) => ({
+  height: "40px",
+  borderRadius: "8px",
+  textTransform: "none",
+  fontWeight: 500,
+  fontSize: "14px",
+  padding: "8px 16px",
+  backgroundColor: theme.palette.mode === "dark" ? "#2A2D3A" : "#F8F9FA",
+  border: `1px solid ${theme.palette.mode === "dark" ? "#404040" : "#E0E0E0"}`,
+  color: theme.palette.text.primary,
+  minWidth: "auto",
+  whiteSpace: "nowrap",
+  "&:hover": {
+    backgroundColor: theme.palette.mode === "dark" ? "#363A4A" : "#F0F0F0",
+    borderColor: theme.palette.primary.main,
+  },
+  "& .MuiButton-startIcon": {
+    marginRight: "8px",
+  },
+  "& .MuiButton-endIcon": {
+    marginLeft: "8px",
+  },
+  [theme.breakpoints.down("md")]: {
+    padding: "8px 12px",
+    fontSize: "13px",
+    "& .MuiButton-startIcon": {
+      marginRight: "6px",
+    },
+    "& .MuiButton-endIcon": {
+      marginLeft: "6px",
+    },
+  },
+  [theme.breakpoints.down("sm")]: {
+    padding: "8px 10px",
+    fontSize: "12px",
+    "& .MuiButton-startIcon": {
+      marginRight: "4px",
+    },
+    "& .MuiButton-endIcon": {
+      marginLeft: "4px",
+    },
+  },
+}));
+
+const RefreshButton = styled(IconButton)(({ theme }) => ({}));
 
 export const CIPPTableToptoolbar = ({
   api,
@@ -53,10 +157,14 @@ export const CIPPTableToptoolbar = ({
   data,
   setGraphFilterData,
   setConfiguredSimpleColumns,
+  queueMetadata,
 }) => {
   const popover = usePopover();
-  const columnPopover = usePopover();
-  const filterPopover = usePopover();
+  const [filtersAnchor, setFiltersAnchor] = useState(null);
+  const [columnsAnchor, setColumnsAnchor] = useState(null);
+  const [exportAnchor, setExportAnchor] = useState(null);
+  const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
 
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const settings = useSettings();
@@ -65,32 +173,52 @@ export const CIPPTableToptoolbar = ({
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [filterList, setFilterList] = useState(filters);
+  const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(queryKey || title);
   const [originalSimpleColumns, setOriginalSimpleColumns] = useState(simpleColumns);
   const [filterCanvasVisible, setFilterCanvasVisible] = useState(false);
+  const [activeFilterName, setActiveFilterName] = useState(null);
   const pageName = router.pathname.split("/").slice(1).join("/");
-  const currentTenant = useSettings()?.currentTenant;
+  const currentTenant = settings?.currentTenant;
 
-  const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
-  const handleActionMenuOpen = (event) => setActionMenuAnchor(event.currentTarget);
-  const handleActionMenuClose = () => setActionMenuAnchor(null);
+  // Track if we've restored filters for this page to prevent infinite loops
+  const restoredFiltersRef = useRef(new Set());
 
   const getBulkActions = (actions, selectedRows) => {
-    return actions?.filter((action) => !action.link && !action?.hideBulk)?.map(action => ({
-      ...action,
-      disabled: action.condition ? !selectedRows.every(row => action.condition(row.original)) : false
-    })) || [];
+    return (
+      actions
+        ?.filter((action) => !action.link && !action?.hideBulk)
+        ?.map((action) => ({
+          ...action,
+          disabled: action.condition
+            ? !selectedRows.every((row) => action.condition(row.original))
+            : false,
+        })) || []
+    );
   };
 
   useEffect(() => {
     //if usedData changes, deselect all rows
     table.toggleAllRowsSelected(false);
   }, [usedData]);
+
+  // Sync currentEffectiveQueryKey with queryKey prop changes (e.g., tenant changes)
+  useEffect(() => {
+    setCurrentEffectiveQueryKey(queryKey || title);
+    // Clear active filter name when query key changes (page load, tenant change, etc.)
+    setActiveFilterName(null);
+  }, [queryKey, title]);
+
   //if the currentTenant Switches, remove Graph filters
   useEffect(() => {
     if (currentTenant) {
       setGraphFilterData({});
+      // Clear active filter name when tenant changes
+      setActiveFilterName(null);
+      // Clear restoration tracking so saved filters can be re-applied
+      const restorationKey = `${pageName}-graph`;
+      restoredFiltersRef.current.delete(restorationKey);
     }
-  }, [currentTenant]);
+  }, [currentTenant, pageName]);
 
   //useEffect to set the column visibility to the preferred columns if they exist
   useEffect(() => {
@@ -106,14 +234,125 @@ export const CIPPTableToptoolbar = ({
     setOriginalSimpleColumns(simpleColumns);
   }, [simpleColumns]);
 
+  // Early restoration of graph filters (before API call) - run only once per page
+  useEffect(() => {
+    const restorationKey = `${pageName}-graph`;
+
+    if (
+      settings.persistFilters &&
+      settings.lastUsedFilters &&
+      settings.lastUsedFilters[pageName] &&
+      api?.url === "/api/ListGraphRequest" && // Only for graph requests
+      !restoredFiltersRef.current.has(restorationKey) // Only if not already restored
+    ) {
+      const last = settings.lastUsedFilters[pageName];
+      if (last.type === "graph") {
+        console.log("Early restoring graph filter:", last, "for page:", pageName);
+
+        // Mark as restored to prevent infinite loops
+        restoredFiltersRef.current.add(restorationKey);
+
+        // Directly set the graph filter data without calling setTableFilter to avoid loops
+        const filterProps = [
+          "$filter",
+          "$select",
+          "$expand",
+          "$orderby",
+          "$count",
+          "$search",
+          "ReverseTenantLookup",
+          "ReverseTenantLookupProperty",
+          "AsApp",
+        ];
+        const graphFilter = filterProps.reduce((acc, prop) => {
+          if (last.value[prop]) {
+            acc[prop] = last.value[prop];
+          }
+          return acc;
+        }, {});
+
+        const newQueryKey = `${queryKey ? queryKey : title}-${last.name}`;
+        setGraphFilterData({
+          data: { ...mergeCaseInsensitive(api.data, graphFilter) },
+          queryKey: newQueryKey,
+        });
+        setCurrentEffectiveQueryKey(newQueryKey);
+        setActiveFilterName(last.name);
+      }
+    }
+  }, [settings.persistFilters, settings.lastUsedFilters, pageName, api?.url, queryKey, title]);
+
+  // Clear restoration tracking when page changes
+  useEffect(() => {
+    restoredFiltersRef.current.clear();
+  }, [pageName]);
+
+  // Restore last used filter on mount if persistFilters is enabled (non-graph filters)
+  useEffect(() => {
+    // Wait for table to be initialized and data to be available
+    if (
+      settings.persistFilters &&
+      settings.lastUsedFilters &&
+      settings.lastUsedFilters[pageName] &&
+      table &&
+      usedColumns.length > 0 &&
+      !getRequestData?.isFetching
+    ) {
+      // Use setTimeout to ensure the table is fully rendered
+      const timeoutId = setTimeout(() => {
+        const last = settings.lastUsedFilters[pageName];
+        console.log("Restoring filter:", last, "for page:", pageName);
+
+        if (last.type === "global") {
+          table.setGlobalFilter(last.value);
+          setActiveFilterName(last.name);
+        } else if (last.type === "column") {
+          // Only apply if all filter columns exist in the current table
+          const allColumns = table.getAllColumns().map((col) => col.id);
+          const filterColumns = Array.isArray(last.value) ? last.value.map((f) => f.id) : [];
+          const allExist = filterColumns.every((colId) => allColumns.includes(colId));
+          console.log("Column filter check:", { allColumns, filterColumns, allExist });
+          if (allExist) {
+            table.setShowColumnFilters(true);
+            table.setColumnFilters(last.value);
+            setActiveFilterName(last.name);
+          }
+        }
+        // Note: graph filters are handled in the earlier useEffect
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [
+    settings.persistFilters,
+    settings.lastUsedFilters,
+    pageName,
+    table,
+    usedColumns,
+    getRequestData?.isFetching,
+  ]);
+
   const presetList = ApiGetCall({
     url: "/api/ListGraphExplorerPresets",
     queryKey: `ListGraphExplorerPresets${api?.data?.Endpoint ?? ""}`,
     data: {
       Endpoint: api?.data?.Endpoint ?? "",
     },
-    waiting: api?.data?.Endpoint ? true : false,
+    waiting: !!api?.data?.Endpoint,
   });
+
+  // Handle search input changes
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchValue(value);
+    table.setGlobalFilter(value);
+  };
+
+  // Handle column filters toggle
+  const handleColumnFiltersToggle = () => {
+    const currentState = table.getState().showColumnFilters;
+    table.setShowColumnFilters(!currentState);
+  };
 
   const resetToDefaultVisibility = () => {
     setColumnVisibility((prevVisibility) => {
@@ -131,7 +370,7 @@ export const CIPPTableToptoolbar = ({
         [pageName]: {},
       },
     });
-    columnPopover.handleClose();
+    setColumnsAnchor(null);
   };
 
   const resetToPreferedVisibility = () => {
@@ -151,7 +390,7 @@ export const CIPPTableToptoolbar = ({
         return updatedVisibility;
       });
     }
-    columnPopover.handleClose();
+    setColumnsAnchor(null);
   };
 
   const saveAsPreferedColumns = () => {
@@ -161,7 +400,7 @@ export const CIPPTableToptoolbar = ({
         [pageName]: columnVisibility,
       },
     });
-    columnPopover.handleClose();
+    setColumnsAnchor(null);
   };
 
   const mergeCaseInsensitive = (obj1, obj2) => {
@@ -181,10 +420,18 @@ export const CIPPTableToptoolbar = ({
   const setTableFilter = (filter, filterType, filterName) => {
     if (filterType === "global" || filterType === undefined) {
       table.setGlobalFilter(filter);
+      setActiveFilterName(filterName);
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "global", value: filter, name: filterName });
+      }
     }
     if (filterType === "column") {
       table.setShowColumnFilters(true);
       table.setColumnFilters(filter);
+      setActiveFilterName(filterName);
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "column", value: filter, name: filterName });
+      }
     }
     if (filterType === "reset") {
       table.resetGlobalFilter();
@@ -193,6 +440,8 @@ export const CIPPTableToptoolbar = ({
         setGraphFilterData({});
         resetToDefaultVisibility();
       }
+      setCurrentEffectiveQueryKey(queryKey || title); // Reset to original query key
+      setActiveFilterName(null); // Clear active filter
     }
     if (filterType === "graph") {
       const filterProps = [
@@ -215,10 +464,16 @@ export const CIPPTableToptoolbar = ({
       table.resetGlobalFilter();
       table.resetColumnFilters();
       //get api.data, merge with graphFilter, set api.data
+      const newQueryKey = `${queryKey ? queryKey : title}-${filterName}`;
       setGraphFilterData({
         data: { ...mergeCaseInsensitive(api.data, graphFilter) },
-        queryKey: `${queryKey ? queryKey : title}-${filterName}`,
+        queryKey: newQueryKey,
       });
+      setCurrentEffectiveQueryKey(newQueryKey);
+      setActiveFilterName(filterName); // Track active graph filter
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "graph", value: filter, name: filterName });
+      }
       if (filter?.$select) {
         let selectedColumns = [];
         if (Array.isArray(filter?.$select)) {
@@ -258,6 +513,7 @@ export const CIPPTableToptoolbar = ({
         var presetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
         if (presetEndpoint === endpoint) {
           graphPresetList.push({
+            id: preset?.id,
             filterName: preset?.name,
             value: preset?.params,
             type: "graph",
@@ -269,6 +525,7 @@ export const CIPPTableToptoolbar = ({
         var customPresetEndpoint = preset?.params?.endpoint?.replace(/^\//, "");
         if (customPresetEndpoint === endpoint) {
           graphPresetList.push({
+            id: preset?.id,
             filterName: preset?.name,
             value: preset?.params,
             type: "graph",
@@ -284,298 +541,637 @@ export const CIPPTableToptoolbar = ({
   return (
     <>
       <Box
-        sx={(theme) => ({
+        sx={{
           display: "flex",
-          gap: "0.5rem",
-          p: "8px",
+          flexDirection: { xs: "column", md: "row" },
+          gap: { xs: 1, md: 2 },
+          px: 0.5,
+          pb: 2,
           justifyContent: "space-between",
-        })}
+          alignItems: { xs: "stretch", md: "center" },
+          backgroundColor: "background.paper",
+        }}
       >
+        {/* Left side - Main controls */}
         <Box
           sx={{
             display: "flex",
-            gap: "0.5rem",
+            gap: { xs: 1, md: 2 },
             alignItems: "center",
-            width: "100%",
-            flexWrap: "wrap",
+            flex: 1,
+            flexWrap: { xs: "nowrap", md: "nowrap" },
+            minWidth: 0,
           }}
         >
-          <>
-            <Tooltip
-              title={
-                getRequestData?.isFetchNextPageError
-                  ? "Could not retrieve all data. Click to try again."
-                  : getRequestData?.isFetching
-                  ? "Retrieving more data..."
-                  : "Refresh data"
+          {/* Refresh Button */}
+          <Tooltip
+            title={
+              getRequestData?.isFetchNextPageError
+                ? "Could not retrieve all data. Click to try again."
+                : getRequestData?.isFetching
+                ? "Retrieving more data..."
+                : "Refresh data"
+            }
+          >
+            <RefreshButton
+              onClick={() => {
+                if (typeof refreshFunction === "object") {
+                  refreshFunction.refetch();
+                } else if (typeof refreshFunction === "function") {
+                  refreshFunction();
+                } else if (data && !getRequestData.isFetched) {
+                  // do nothing because data was sent native.
+                } else if (getRequestData) {
+                  getRequestData.refetch();
+                }
+              }}
+              disabled={
+                getRequestData?.isLoading ||
+                getRequestData?.isFetching ||
+                refreshFunction?.isFetching
               }
             >
-              <div
-                onClick={() => {
-                  if (typeof refreshFunction === "object") {
-                    refreshFunction.refetch();
-                  } else if (typeof refreshFunction === "function") {
-                    refreshFunction();
-                  } else if (data && !getRequestData.isFetched) {
-                    //do nothing because data was sent native.
-                  } else if (getRequestData) {
-                    getRequestData.refetch();
-                  }
+              <SvgIcon
+                fontSize="small"
+                sx={{
+                  animation:
+                    getRequestData?.isFetching || refreshFunction?.isFetching
+                      ? "spin 1s linear infinite"
+                      : "none",
+                  "@keyframes spin": {
+                    "0%": { transform: "rotate(0deg)" },
+                    "100%": { transform: "rotate(360deg)" },
+                  },
                 }}
               >
-                <IconButton
-                  className="MuiIconButton"
-                  disabled={
-                    getRequestData?.isLoading ||
-                    getRequestData?.isFetching ||
-                    refreshFunction?.isFetching
-                  }
+                {getRequestData?.isFetchNextPageError ? (
+                  <ExclamationCircleIcon color="red" />
+                ) : (
+                  <Sync />
+                )}
+              </SvgIcon>
+            </RefreshButton>
+          </Tooltip>
+
+          {/* Search Input */}
+          <ModernSearchContainer elevation={0}>
+            <SearchIcon sx={{ color: "text.secondary", fontSize: 20 }} />
+            <ModernSearchInput
+              placeholder="Search input"
+              value={searchValue}
+              onChange={handleSearchChange}
+            />
+          </ModernSearchContainer>
+
+          {/* Desktop Buttons */}
+          {!mdDown && (
+            <>
+              {/* Filters Button */}
+              <ModernButton
+                startIcon={<FilterListIcon />}
+                endIcon={<ArrowDownIcon />}
+                onClick={(event) => setFiltersAnchor(event.currentTarget)}
+                sx={{
+                  color: activeFilterName ? "primary.main" : "text.primary",
+                  borderColor: activeFilterName ? "primary.main" : undefined,
+                }}
+              >
+                Filters
+              </ModernButton>
+              <Menu
+                anchorEl={filtersAnchor}
+                open={Boolean(filtersAnchor)}
+                onClose={() => setFiltersAnchor(null)}
+                PaperProps={{
+                  sx: {
+                    mt: 1,
+                    borderRadius: 2,
+                    minWidth: 200,
+                  },
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleColumnFiltersToggle();
+                    setFiltersAnchor(null);
+                  }}
                 >
-                  <SvgIcon
-                    fontSize="small"
-                    sx={{
-                      animation:
-                        getRequestData?.isFetching || refreshFunction?.isFetching
-                          ? "spin 1s linear infinite"
-                          : "none",
-                      "@keyframes spin": {
-                        "0%": { transform: "rotate(0deg)" },
-                        "100%": { transform: "rotate(360deg)" },
-                      },
+                  <ListItemText>
+                    {table.getState().showColumnFilters
+                      ? "Hide Column Filters"
+                      : "Show Column Filters"}
+                  </ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+                  <ListItemText primary="Reset all filters" />
+                </MenuItem>
+                {api?.url === "/api/ListGraphRequest" && (
+                  <MenuItem
+                    onClick={() => {
+                      setFiltersAnchor(null);
+                      setFilterCanvasVisible(true);
                     }}
                   >
-                    {getRequestData?.isFetchNextPageError ? (
-                      <ExclamationCircleIcon color="red" />
-                    ) : (
-                      <Sync />
-                    )}
-                  </SvgIcon>
-                </IconButton>
-              </div>
-            </Tooltip>
-            <MRT_GlobalFilterTextField table={table} />
-            <Tooltip title="Preset Filters">
-              <IconButton onClick={filterPopover.handleOpen} ref={filterPopover.anchorRef}>
-                <SvgIcon>
-                  <Tune />
-                </SvgIcon>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={filterPopover.anchorRef.current}
-              open={filterPopover.open}
-              onClose={filterPopover.handleClose}
-              MenuListProps={{ dense: true }}
-            >
-              <MenuItem key="reset-filters" onClick={() => setTableFilter("", "reset", "")}>
-                <ListItemText primary="Reset all filters" />
-              </MenuItem>
-              {api?.url === "/api/ListGraphRequest" && (
-                <MenuItem
-                  key="custom-filter"
-                  onClick={() => {
-                    filterPopover.handleClose();
-                    setFilterCanvasVisible(true);
-                  }}
-                >
-                  <ListItemText primary="Edit filters" />
-                </MenuItem>
-              )}
-              <Divider />
-              {filterList?.map((filter) => (
-                <MenuItem
-                  key={filter.id}
-                  onClick={() => {
-                    filterPopover.handleClose();
-                    setTableFilter(filter.value, filter.type, filter.filterName);
-                  }}
-                >
-                  <ListItemText primary={filter.filterName} />
-                </MenuItem>
-              ))}
-            </Menu>
-            <MRT_ToggleFiltersButton table={table} />
-            <Tooltip title="Toggle Column Visibility">
-              <IconButton onClick={columnPopover.handleOpen} ref={columnPopover.anchorRef}>
-                <ViewColumn />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={columnPopover.anchorRef.current}
-              open={columnPopover.open}
-              onClose={columnPopover.handleClose}
-              MenuListProps={{ dense: true }}
-            >
-              <MenuItem onClick={resetToPreferedVisibility}>
-                <ListItemText primary="Reset to preferred columns" />
-              </MenuItem>
-              <MenuItem onClick={saveAsPreferedColumns}>
-                <ListItemText primary="Save as preferred columns" />
-              </MenuItem>
-              <MenuItem onClick={resetToDefaultVisibility}>
-                <ListItemText primary="Delete preferred columns" />
-              </MenuItem>
-              {table
-                .getAllColumns()
-                .filter((column) => !column.id.startsWith("mrt-"))
-                .map((column) => (
+                    <ListItemText primary="Edit filters" />
+                  </MenuItem>
+                )}
+                {filterList?.length > 0 && <Divider />}
+                {filterList?.map((filter) => (
                   <MenuItem
-                    key={column.id}
-                    onClick={() =>
-                      setColumnVisibility({
-                        ...columnVisibility,
-                        [column.id]: !column.getIsVisible(),
-                      })
-                    }
+                    key={filter.id}
+                    onClick={() => {
+                      setFiltersAnchor(null);
+                      setTableFilter(filter.value, filter.type, filter.filterName);
+                    }}
                   >
-                    <Checkbox checked={column.getIsVisible()} />
-                    <ListItemText primary={getCippTranslation(column.id)} />
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          {activeFilterName === filter.filterName && (
+                            <CheckIcon sx={{ fontSize: 16, color: "primary.main" }} />
+                          )}
+                          {filter.filterName}
+                        </Box>
+                      }
+                    />
                   </MenuItem>
                 ))}
-            </Menu>
+              </Menu>
 
-            <>
-              {exportEnabled && (
-                <>
-                  <PDFExportButton
-                    rows={table.getFilteredRowModel().rows}
-                    columns={usedColumns}
-                    reportName={title}
-                    columnVisibility={columnVisibility}
-                  />
-                  <CSVExportButton
-                    reportName={title}
-                    columnVisibility={columnVisibility}
-                    rows={table.getFilteredRowModel().rows}
-                    columns={usedColumns}
-                  />
-                </>
-              )}
-              <Tooltip title="View API Response">
-                <IconButton onClick={() => setOffcanvasVisible(true)}>
-                  <DeveloperMode />
-                </IconButton>
-              </Tooltip>
-              {mdDown && <MRT_ToggleFullScreenButton table={table} />}
-            </>
-            {
-              //add a little icon with how many rows are selected
-              (table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
-                <Typography variant="body2" sx={{ alignSelf: "center" }}>
-                  {table.getSelectedRowModel().rows.length} rows selected
-                </Typography>
-              )
-            }
-            <CippOffCanvas
-              size="xl"
-              title="API Response"
-              visible={offcanvasVisible}
-              onClose={() => {
-                setOffcanvasVisible(false);
-              }}
-            >
-              <Stack spacing={2}>
-                <Typography variant="h4">API Response</Typography>
-                <CippCodeBlock
-                  type="editor"
-                  code={JSON.stringify(usedData, null, 2)}
-                  editorHeight="1000px"
-                  showLineNumbers={!mdDown}
-                />
-              </Stack>
-            </CippOffCanvas>
-          </>
-        </Box>
-        <Box>
-          <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            {getRequestData?.data?.pages?.[0].Metadata?.ColdStart === true && (
-              <Tooltip title="Function App cold start was detected, data takes a little longer to retrieve on first load.">
-                <SevereCold />
-              </Tooltip>
-            )}
-            {actions && getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 && (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
-              <>
-                <Button
-                  onClick={popover.handleOpen}
-                  ref={popover.anchorRef}
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <ChevronDownIcon />
-                    </SvgIcon>
-                  }
-                  variant="outlined"
-                  sx={{
-                    flexShrink: 0,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Bulk Actions
-                </Button>
-                <Menu
-                  anchorEl={popover.anchorRef.current}
-                  anchorOrigin={{
-                    horizontal: "right",
-                    vertical: "bottom",
-                  }}
-                  MenuListProps={{
-                    dense: true,
-                    sx: { p: 1 },
-                  }}
-                  onClose={popover.handleClose}
-                  open={popover.open}
-                  transformOrigin={{
-                    horizontal: "right",
-                    vertical: "top",
-                  }}
-                >
-                  {getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
+              {/* Columns Button */}
+              <ModernButton
+                startIcon={<ViewColumnIcon />}
+                endIcon={<ArrowDownIcon />}
+                onClick={(event) => setColumnsAnchor(event.currentTarget)}
+              >
+                Columns
+              </ModernButton>
+              <Menu
+                anchorEl={columnsAnchor}
+                open={Boolean(columnsAnchor)}
+                onClose={() => setColumnsAnchor(null)}
+                PaperProps={{
+                  sx: {
+                    mt: 1,
+                    borderRadius: 2,
+                    minWidth: 250,
+                    maxHeight: 400,
+                  },
+                }}
+              >
+                <MenuItem onClick={resetToPreferedVisibility}>
+                  <ListItemText primary="Reset to preferred columns" />
+                </MenuItem>
+                <MenuItem onClick={saveAsPreferedColumns}>
+                  <ListItemText primary="Save as preferred columns" />
+                </MenuItem>
+                <MenuItem onClick={resetToDefaultVisibility}>
+                  <ListItemText primary="Delete preferred columns" />
+                </MenuItem>
+                <Divider />
+                {table
+                  .getAllColumns()
+                  .filter((column) => !column.id.startsWith("mrt-"))
+                  .map((column) => (
                     <MenuItem
-                      key={index}
-                      disabled={action.disabled}
-                      onClick={() => {
-                        if (action.disabled) return;
-                        setActionData({
-                          data: table.getSelectedRowModel().rows.map((row) => row.original),
-                          action: action,
-                          ready: true,
-                        });
-
-                        if (action?.noConfirm && action.customFunction) {
-                          table
-                            .getSelectedRowModel()
-                            .rows.map((row) =>
-                              action.customFunction(row.original.original, action, {})
-                            );
-                        } else {
-                          createDialog.handleOpen();
-                          popover.handleClose();
-                        }
-                      }}
+                      key={column.id}
+                      onClick={() =>
+                        setColumnVisibility({
+                          ...columnVisibility,
+                          [column.id]: !column.getIsVisible(),
+                        })
+                      }
                     >
-                      <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                        {action.icon}
-                      </SvgIcon>
-                      <ListItemText>{action.label}</ListItemText>
+                      <Checkbox checked={column.getIsVisible()} size="small" />
+                      <ListItemText primary={getCippTranslation(column.id)} />
                     </MenuItem>
                   ))}
-                </Menu>
-              </>
+              </Menu>
+
+              {/* Export Button */}
+              {exportEnabled && (
+                <ModernButton
+                  startIcon={<ExportIcon />}
+                  endIcon={<ArrowDownIcon />}
+                  onClick={(event) => setExportAnchor(event.currentTarget)}
+                >
+                  Export
+                </ModernButton>
+              )}
+            </>
+          )}
+
+          {/* Mobile Action Menu */}
+          <Menu
+            anchorEl={actionMenuAnchor}
+            open={Boolean(actionMenuAnchor)}
+            onClose={() => setActionMenuAnchor(null)}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                borderRadius: 2,
+                minWidth: 180,
+              },
+            }}
+          >
+            <MenuItem
+              onClick={(event) => {
+                setFiltersAnchor(event.currentTarget);
+                setActionMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <FilterListIcon />
+              </ListItemIcon>
+              <ListItemText>Filters</ListItemText>
+            </MenuItem>
+            <MenuItem
+              onClick={(event) => {
+                setColumnsAnchor(event.currentTarget);
+                setActionMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <ViewColumnIcon />
+              </ListItemIcon>
+              <ListItemText>Columns</ListItemText>
+            </MenuItem>
+            {exportEnabled && (
+              <MenuItem
+                onClick={(event) => {
+                  setExportAnchor(event.currentTarget);
+                  setActionMenuAnchor(null);
+                }}
+              >
+                <ListItemIcon>
+                  <ExportIcon />
+                </ListItemIcon>
+                <ListItemText>Export</ListItemText>
+              </MenuItem>
             )}
-          </Box>
+            <MenuItem
+              onClick={() => {
+                table.setIsFullScreen(!table.getState().isFullScreen);
+                setActionMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <FullscreenIcon />
+              </ListItemIcon>
+              <ListItemText>
+                {table.getState().isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+              </ListItemText>
+            </MenuItem>
+          </Menu>
+
+          {/* Filters Menu */}
+          <Menu
+            anchorEl={filtersAnchor}
+            open={Boolean(filtersAnchor)}
+            onClose={() => setFiltersAnchor(null)}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                borderRadius: 2,
+                minWidth: 200,
+              },
+            }}
+          >
+            <MenuItem
+              onClick={() => {
+                handleColumnFiltersToggle();
+                setFiltersAnchor(null);
+              }}
+            >
+              <ListItemText>
+                {table.getState().showColumnFilters ? "Hide Column Filters" : "Show Column Filters"}
+              </ListItemText>
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={() => setTableFilter("", "reset", "")}>
+              <ListItemText primary="Reset all filters" />
+            </MenuItem>
+            {api?.url === "/api/ListGraphRequest" && (
+              <MenuItem
+                onClick={() => {
+                  setFiltersAnchor(null);
+                  setFilterCanvasVisible(true);
+                }}
+              >
+                <ListItemText primary="Edit filters" />
+              </MenuItem>
+            )}
+            {filterList?.length > 0 && <Divider />}
+            {filterList?.map((filter) => (
+              <MenuItem
+                key={filter.id}
+                onClick={() => {
+                  setFiltersAnchor(null);
+                  setTableFilter(filter.value, filter.type, filter.filterName);
+                }}
+              >
+                <ListItemText
+                  primary={
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      {activeFilterName === filter.filterName && (
+                        <CheckIcon sx={{ fontSize: 16, color: "primary.main" }} />
+                      )}
+                      {filter.filterName}
+                    </Box>
+                  }
+                />
+              </MenuItem>
+            ))}
+          </Menu>
+
+          {/* Columns Menu */}
+          <Menu
+            anchorEl={columnsAnchor}
+            open={Boolean(columnsAnchor)}
+            onClose={() => setColumnsAnchor(null)}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                borderRadius: 2,
+                minWidth: 250,
+                maxHeight: 400,
+              },
+            }}
+          >
+            <MenuItem onClick={resetToPreferedVisibility}>
+              <ListItemText primary="Reset to preferred columns" />
+            </MenuItem>
+            <MenuItem onClick={saveAsPreferedColumns}>
+              <ListItemText primary="Save as preferred columns" />
+            </MenuItem>
+            <MenuItem onClick={resetToDefaultVisibility}>
+              <ListItemText primary="Delete preferred columns" />
+            </MenuItem>
+            <Divider />
+            {table
+              .getAllColumns()
+              .filter((column) => !column.id.startsWith("mrt-"))
+              .map((column) => (
+                <MenuItem
+                  key={column.id}
+                  onClick={() =>
+                    setColumnVisibility({
+                      ...columnVisibility,
+                      [column.id]: !column.getIsVisible(),
+                    })
+                  }
+                >
+                  <Checkbox checked={column.getIsVisible()} size="small" />
+                  <ListItemText primary={getCippTranslation(column.id)} />
+                </MenuItem>
+              ))}
+          </Menu>
+
+          {/* Export Menu */}
+          {exportEnabled && (
+            <Menu
+              anchorEl={exportAnchor}
+              open={Boolean(exportAnchor)}
+              onClose={() => setExportAnchor(null)}
+              PaperProps={{
+                sx: {
+                  mt: 1,
+                  borderRadius: 2,
+                  minWidth: 180,
+                },
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  // Trigger CSV export
+                  const csvButton = document.querySelector("[data-csv-export]");
+                  if (csvButton) csvButton.click();
+                  setExportAnchor(null);
+                }}
+              >
+                <ListItemIcon>
+                  <CsvIcon />
+                </ListItemIcon>
+                <ListItemText primary="Export to CSV" />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  // Trigger PDF export
+                  const pdfButton = document.querySelector("[data-pdf-export]");
+                  if (pdfButton) pdfButton.click();
+                  setExportAnchor(null);
+                }}
+              >
+                <ListItemIcon>
+                  <PdfIcon />
+                </ListItemIcon>
+                <ListItemText primary="Export to PDF" />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setOffcanvasVisible(true);
+                  setExportAnchor(null);
+                }}
+              >
+                <ListItemIcon>
+                  <CodeIcon />
+                </ListItemIcon>
+                <ListItemText primary="View API Response" />
+              </MenuItem>
+            </Menu>
+          )}
+
+          {/* Mobile Action Menu */}
+          {mdDown && (
+            <IconButton
+              onClick={(event) => setActionMenuAnchor(event.currentTarget)}
+              size="small"
+              sx={{
+                height: "40px",
+                width: "40px",
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: "8px",
+                ml: "auto",
+              }}
+            >
+              <MoreVertIcon />
+            </IconButton>
+          )}
+        </Box>
+
+        {/* Right side - Additional controls */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            flexShrink: 0,
+            flexWrap: "nowrap",
+            justifyContent: { xs: "space-between", md: "flex-end" },
+            width: { xs: "100%", md: "auto" },
+            mt: { xs: 1, md: 0 },
+          }}
+        >
+          {/* Selected rows indicator */}
+          {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                fontSize: { xs: "12px", md: "14px" },
+                whiteSpace: "nowrap",
+                mr: 1,
+              }}
+            >
+              {table.getSelectedRowModel().rows.length} rows selected
+            </Typography>
+          )}
+
+          {/* Bulk Actions - inline with toolbar */}
+          {actions &&
+            getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 &&
+            (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
+              <Button
+                onClick={popover.handleOpen}
+                ref={popover.anchorRef}
+                startIcon={
+                  <SvgIcon fontSize="small">
+                    <ChevronDownIcon />
+                  </SvgIcon>
+                }
+                variant="outlined"
+                size="small"
+                sx={{
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                  minWidth: "auto",
+                  height: "32px",
+                  fontSize: { xs: "12px", md: "14px" },
+                  mr: 1,
+                }}
+              >
+                Bulk Actions
+              </Button>
+            )}
+
+          {/* Cold start indicator */}
+          {getRequestData?.data?.pages?.[0].Metadata?.ColdStart === true && (
+            <Tooltip title="Function App cold start was detected, data takes a little longer to retrieve on first load.">
+              <SevereCold />
+            </Tooltip>
+          )}
+
+          {/* Queue tracker */}
+          <CippQueueTracker
+            queueId={queueMetadata?.QueueId}
+            queryKey={currentEffectiveQueryKey}
+            title={title}
+          />
+        </Box>
+
+        {/* Hidden export buttons for triggering */}
+        <Box sx={{ display: "none" }}>
+          <PDFExportButton
+            rows={table.getFilteredRowModel().rows}
+            columns={usedColumns}
+            reportName={title}
+            columnVisibility={columnVisibility}
+            data-pdf-export
+          />
+          <CSVExportButton
+            reportName={title}
+            columnVisibility={columnVisibility}
+            rows={table.getFilteredRowModel().rows}
+            columns={usedColumns}
+            data-csv-export
+          />
         </Box>
       </Box>
-      <Box>
-        {actionData.ready && (
-          <CippApiDialog
-            createDialog={createDialog}
-            title="Confirmation"
-            fields={actionData.action?.fields}
-            api={actionData.action}
-            row={actionData.data}
-            relatedQueryKeys={queryKeys}
+
+      {/* Bulk Actions Menu - now inline with toolbar */}
+      <Menu
+        anchorEl={popover.anchorRef.current}
+        anchorOrigin={{
+          horizontal: "right",
+          vertical: "bottom",
+        }}
+        MenuListProps={{
+          dense: true,
+          sx: { p: 1 },
+        }}
+        onClose={popover.handleClose}
+        open={popover.open}
+        transformOrigin={{
+          horizontal: "right",
+          vertical: "top",
+        }}
+      >
+        {actions &&
+          getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
+            <MenuItem
+              key={index}
+              disabled={action.disabled}
+              onClick={() => {
+                if (action.disabled) return;
+                setActionData({
+                  data: table.getSelectedRowModel().rows.map((row) => row.original),
+                  action: action,
+                  ready: true,
+                });
+
+                if (action?.noConfirm && action.customFunction) {
+                  table
+                    .getSelectedRowModel()
+                    .rows.map((row) => action.customFunction(row.original.original, action, {}));
+                } else {
+                  createDialog.handleOpen();
+                  popover.handleClose();
+                }
+              }}
+            >
+              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                {action.icon}
+              </SvgIcon>
+              <ListItemText>{action.label}</ListItemText>
+            </MenuItem>
+          ))}
+      </Menu>
+
+      {/* API Response Off-Canvas */}
+      <CippOffCanvas
+        size="xl"
+        title="API Response"
+        visible={offcanvasVisible}
+        onClose={() => {
+          setOffcanvasVisible(false);
+        }}
+      >
+        <Stack spacing={2}>
+          <Typography variant="h4">API Response</Typography>
+          <CippCodeBlock
+            type="editor"
+            code={JSON.stringify(usedData, null, 2)}
+            editorHeight="1000px"
+            showLineNumbers={!mdDown}
           />
-        )}
-      </Box>
+        </Stack>
+      </CippOffCanvas>
+
+      {/* Action Dialog */}
+      {actionData.ready && (
+        <CippApiDialog
+          createDialog={createDialog}
+          title="Confirmation"
+          fields={actionData.action?.fields}
+          api={actionData.action}
+          row={actionData.data}
+          relatedQueryKeys={queryKeys}
+        />
+      )}
+
+      {/* Graph Filter Off-Canvas */}
       <CippOffCanvas
         size="md"
         title="Edit Filters"
@@ -584,6 +1180,7 @@ export const CIPPTableToptoolbar = ({
       >
         <CippGraphExplorerFilter
           endpointFilter={api?.data?.Endpoint}
+          relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(Boolean)}
           onSubmitFilter={(filter) => {
             setTableFilter(filter, "graph", "Custom Filter");
             if (filter?.$select) {

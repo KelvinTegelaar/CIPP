@@ -1,0 +1,11 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "CIPP - Cyberdrain Improved Partner Portal",
+  "description": "The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.",
+  "folders": [],
+  "excludeFolders": [],
+  "excludeFiles": [],
+  "rules": [],
+  "previousVersions": [],
+  "branch": "docs"
+}

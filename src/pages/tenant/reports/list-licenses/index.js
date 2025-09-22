@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Licenses Report";
+  const pageTitle = "Licences Report";
   const apiUrl = "/api/ListLicenses";
 
   const simpleColumns = [

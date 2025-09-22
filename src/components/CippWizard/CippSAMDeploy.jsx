@@ -85,7 +85,7 @@ export const CippSAMDeploy = (props) => {
         <li>
           A CIPP Service Account. For more information on how to create a service account, click{" "}
           <Link
-            href="https://docs.cipp.app/setup/installation/samwizard"
+            href="https://docs.cipp.app/setup/installation/creating-the-cipp-service-account-gdap-ready"
             rel="noreferrer"
             target="_blank"
           >

@@ -2,8 +2,8 @@ import { alpha } from '@mui/material/styles';
 
 export const createShadows = (config) => {
   const { palette } = config;
-  const layer1Color = palette.neutral[200];
-  const layer2Color = alpha(palette.neutral[800], 0.08);
+  const layer1Color = palette.neutral[250] || alpha(palette.neutral[300], 0.7);
+  const layer2Color = alpha(palette.neutral[800], 0.06);
 
   return [
     'none',

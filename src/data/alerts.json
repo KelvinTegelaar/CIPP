@@ -14,7 +14,7 @@
     "label": "Alert on license assignment errors",
     "recommendedRunInterval": "1d"
   },
-    {
+  {
     "name": "AlertSmtpAuthSuccess",
     "label": "Alert on SMTP AUTH usage with success, helps to phase out SMTP AUTH (Entra P1 Required)",
     "recommendedRunInterval": "1d"
@@ -176,6 +176,11 @@
   {
     "name": "BreachAlert",
     "label": "Alert on (new) potentially breached passwords. Generates an alert if a password is found to be breached.",
+    "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "LicensedUsersWithRoles",
+    "label": "Alert on licensed users with any administrator roles",
     "recommendedRunInterval": "7d"
   },
   {

@@ -11,21 +11,29 @@ export const CippWizardGroupTemplates = (props) => {
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
   const groupOptions = [
     { label: "Dynamic Group", value: "dynamic" },
-    { label: "Dynamic Distribution Group", value: "dynamicdistribution" },
+    { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
     { label: "Security Group", value: "generic" },
     { label: "Distribution Group", value: "distribution" },
-    { label: "Azure Role Group", value: "azurerole" },
+    { label: "Azure Role Group", value: "azureRole" },
     { label: "Mail Enabled Security Group", value: "security" },
   ];
   useEffect(() => {
     if (watcher?.value) {
-      console.log(watcher);
+      console.log("Loading template:", watcher);
+
+      // Set groupType first to ensure conditional fields are visible
       formControl.setValue("groupType", watcher.addedFields.groupType);
-      formControl.setValue("Displayname", watcher.addedFields.Displayname);
-      formControl.setValue("Description", watcher.addedFields.Description);
-      formControl.setValue("username", watcher.addedFields.username);
-      formControl.setValue("allowExternal", watcher.addedFields.allowExternal);
-      formControl.setValue("membershipRules", watcher.addedFields.membershipRules);
+
+      // Use setTimeout to ensure the DOM updates with the groupType before setting other fields
+      setTimeout(() => {
+        formControl.setValue("displayName", watcher.addedFields.displayName);
+        formControl.setValue("description", watcher.addedFields.description);
+        formControl.setValue("username", watcher.addedFields.username);
+        formControl.setValue("allowExternal", watcher.addedFields.allowExternal);
+        formControl.setValue("membershipRules", watcher.addedFields.membershipRules);
+
+        console.log("Set membershipRules to:", watcher.addedFields.membershipRules);
+      }, 100);
     }
   }, [watcher]);
   return (
@@ -48,8 +56,8 @@ export const CippWizardGroupTemplates = (props) => {
               valueField: "GUID",
               addedField: {
                 groupType: "groupType",
-                Displayname: "displayName",
-                Description: "description",
+                displayName: "displayName",
+                description: "description",
                 username: "username",
                 allowExternal: "allowExternal",
                 membershipRules: "membershipRules",
@@ -71,7 +79,7 @@ export const CippWizardGroupTemplates = (props) => {
         <Grid size={12}>
           <CippFormComponent
             type="textField"
-            name="Displayname"
+            name="displayName"
             label="Group Display Name"
             formControl={formControl}
             validators={{ required: "Group display name is required" }}
@@ -80,7 +88,7 @@ export const CippWizardGroupTemplates = (props) => {
         <Grid size={12}>
           <CippFormComponent
             type="textField"
-            name="Description"
+            name="description"
             label="Group Description"
             formControl={formControl}
           />
@@ -110,24 +118,8 @@ export const CippWizardGroupTemplates = (props) => {
         </CippFormCondition>
         <CippFormCondition
           field="groupType"
-          compareType="is"
-          compareValue="dynamic"
-          formControl={formControl}
-        >
-          <Grid size={12}>
-            <CippFormComponent
-              type="textField"
-              name="membershipRules"
-              label="Membership Rules"
-              formControl={formControl}
-              validators={{ required: "Membership rules are required" }}
-            />
-          </Grid>
-        </CippFormCondition>
-        <CippFormCondition
-          field="groupType"
-          compareType="is"
-          compareValue="dynamicdistribution"
+          compareType="isOneOf"
+          compareValue={["dynamic", "dynamicDistribution"]}
           formControl={formControl}
         >
           <Grid size={12}>

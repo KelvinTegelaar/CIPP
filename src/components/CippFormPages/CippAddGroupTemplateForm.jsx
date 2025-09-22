@@ -40,7 +40,8 @@ const CippAddGroupTemplateForm = (props) => {
       <Grid size={{ md: 12, xs: 12 }}>
         <CippFormComponent
           type="textField"
-          label="Username (do not include domain)"
+          label="Username"
+          helperText="If this is a mail enabled group, CIPP variable replacement are supported for the domain (e.g mygroup@%tenantfilter%)"
           name="username"
           required
           formControl={formControl}
@@ -58,7 +59,7 @@ const CippAddGroupTemplateForm = (props) => {
             { label: "Security Group", value: "generic" },
             { label: "Microsoft 365 Group", value: "m365" },
             { label: "Dynamic Group", value: "dynamic" },
-            { label: "Dynamic Distribution Group", value: "dynamicdistribution" },
+            { label: "Dynamic Distribution Group", value: "dynamicDistribution" },
             { label: "Distribution List", value: "distribution" },
             { label: "Mail Enabled Security Group", value: "security" },
           ]}
@@ -69,8 +70,8 @@ const CippAddGroupTemplateForm = (props) => {
       <CippFormCondition
         formControl={formControl}
         field="groupType"
-        compareType="is"
-        compareValue="distribution"
+        compareType="isOneOf"
+        compareValue={["distribution", "dynamicDistribution"]}
       >
         <Grid size={{ xs: 12 }}>
           <CippFormComponent
