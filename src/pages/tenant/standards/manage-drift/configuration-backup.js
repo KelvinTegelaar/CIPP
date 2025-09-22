@@ -203,7 +203,16 @@ const Page = () => {
                       Current Configuration
                     </Typography>
                     {!hasExistingConfig ? (
-                      <CippBackupScheduleDrawer buttonText="Add Backup Schedule" />
+                      <CippBackupScheduleDrawer
+                        buttonText="Add Backup Schedule"
+                        onSuccess={() => {
+                          // Refresh both queries when a backup schedule is added
+                          setTimeout(() => {
+                            backupList.refetch();
+                            existingBackupConfig.refetch();
+                          }, 2000);
+                        }}
+                      />
                     ) : (
                       <Button
                         onClick={removeDialog.handleOpen}
@@ -371,7 +380,14 @@ const Page = () => {
           confirmText:
             "Are you sure you want to remove this backup schedule? This will stop automatic backups but won't delete existing backup files.",
         }}
-        relatedQueryKeys={["BackupTasks"]}
+        relatedQueryKeys={[`BackupTasks-${settings.currentTenant}`, `BackupList-${settings.currentTenant}`]}
+        onSuccess={() => {
+          // Refresh both queries when a backup schedule is removed
+          setTimeout(() => {
+            backupList.refetch();
+            existingBackupConfig.refetch();
+          }, 2000);
+        }}
       />
     </HeaderedTabbedLayout>
   );

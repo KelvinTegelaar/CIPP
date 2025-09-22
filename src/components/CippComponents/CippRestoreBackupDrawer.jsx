@@ -46,7 +46,7 @@ export const CippRestoreBackupDrawer = ({
 
   const restoreBackup = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["BackupList", "BackupTasks"],
+    relatedQueryKeys: [`BackupTasks-${tenantFilter}`],
   });
 
   const { isValid, isDirty } = useFormState({ control: formControl.control });
@@ -195,7 +195,7 @@ export const CippRestoreBackupDrawer = ({
                 multiple={false}
                 api={{
                   url: "/api/ExecListBackup",
-                  queryKey: `BackupList-${tenantFilter}`,
+                  queryKey: `BackupList-${tenantFilter}-autocomplete`,
                   labelField: (option) => {
                     const match = option.BackupName.match(/.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/);
                     return match ? `${match[1]} @ ${match[2]}:${match[3]}` : option.BackupName;

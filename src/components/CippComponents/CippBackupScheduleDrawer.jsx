@@ -15,6 +15,7 @@ export const CippBackupScheduleDrawer = ({
   buttonText = "Add Backup Schedule",
   requiredPermissions = [],
   PermissionButton = Button,
+  onSuccess,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const userSettingsDefaults = useSettings();
@@ -38,7 +39,7 @@ export const CippBackupScheduleDrawer = ({
 
   const createBackup = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["BackupList", "BackupTasks"],
+    relatedQueryKeys: [`BackupTasks-${userSettingsDefaults.currentTenant}`],
   });
 
   const { isValid, isDirty } = useFormState({ control: formControl.control });
@@ -58,8 +59,12 @@ export const CippBackupScheduleDrawer = ({
         CippWebhookAlerts: true,
         CippScriptedAlerts: true,
       });
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
     }
-  }, [createBackup.isSuccess]);
+  }, [createBackup.isSuccess, onSuccess]);
 
   const handleSubmit = () => {
     formControl.trigger();
