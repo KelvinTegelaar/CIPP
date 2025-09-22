@@ -64,8 +64,10 @@ Set up Custom Roles by following these steps:
 * Optionally select a Entra group this role will be mapped to. Adding an Entra group removes the requirement to add the user to either the SWA or inviting via the Management Portal.
 * For Allowed Tenants select a subset of tenants to manage or AllTenants.
   * If AllTenants is selected, you can block a subset of tenants using Blocked Tenants.
+* Blocked Endptoints: You can optionally block specific CIPP API endpoints for additional granularity. For example, to block the user from JIT Admin creation, you would block `ExecJITAdmin`.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
   * To find out which API endpoints are affected by these selections, click on the Info button.
+  * Not defining a category is the same as setting None. Be sure that you define all base role permissions you want to apply to the user.
 
 {% hint style="warning" %}
 Users previously directly added to the SWA or via the Management App will retain their settings from there. Adding those users via Entra group to a role with different permissions can cause errors in determining the user's access. It is recommended not to duplicate how you provide the user with permissions.
