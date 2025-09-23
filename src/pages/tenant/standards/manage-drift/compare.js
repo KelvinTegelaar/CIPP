@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { CippAutoComplete } from "../../../../components/CippComponents/CippAutocomplete";
 import {
   Button,
   Card,
@@ -26,6 +27,7 @@ import {
   Close,
   Search,
   FactCheck,
+  Policy,
 } from "@mui/icons-material";
 import standards from "/src/data/standards.json";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
@@ -614,12 +616,64 @@ const Page = () => {
   // This represents the total "addressable" compliance (compliant + could be compliant if licensed)
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
+  // Simple filter for all templates (no type filtering)
+  const templateOptions = templateDetails.data
+    ? templateDetails.data.map((template) => ({
+        label: template.displayName || template.templateName || template.name || `Template ${template.GUID}`,
+        value: template.GUID,
+      }))
+    : [];
+
+  // Find currently selected template
+  const selectedTemplateOption = templateId && templateOptions.length
+    ? templateOptions.find((option) => option.value === templateId) || null
+    : null;
+
+  // Effect to refetch APIs when templateId changes (needed for shallow routing)
+  useEffect(() => {
+    if (templateId) {
+      comparisonApi.refetch();
+    }
+  }, [templateId]);
+
   // Prepare title and subtitle for HeaderedTabbedLayout
   const title =
     templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.templateName ||
     "Tenant Report";
 
   const subtitle = [
+    {
+      icon: <Policy />,
+      text: (
+        <CippAutoComplete
+          options={templateOptions}
+          label="Select Template"
+          multiple={false}
+          creatable={false}
+          isFetching={templateDetails.isFetching}
+          defaultValue={selectedTemplateOption}
+          value={selectedTemplateOption}
+          onChange={(selectedTemplate) => {
+            const query = { ...router.query };
+            if (selectedTemplate && selectedTemplate.value) {
+              query.templateId = selectedTemplate.value;
+            } else {
+              delete query.templateId;
+            }
+            router.replace(
+              {
+                pathname: router.pathname,
+                query: query,
+              },
+              undefined,
+              { shallow: true }
+            );
+          }}
+          sx={{ minWidth: 300 }}
+          placeholder="Select a template..."
+        />
+      ),
+    },
     // Add compliance badges when template data is available (show even if no comparison data yet)
     ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
       ? [
