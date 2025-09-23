@@ -40,7 +40,7 @@ const CippRoles = () => {
           type: "textField",
           required: true,
           helperText:
-            "Enter a name for the new cloned role. This cannot be the same as the existing role.",
+            "Enter a name for the new cloned role. This cannot be the same as an existing role.",
         },
       ],
       relatedQueryKeys: ["customRoleList"],
