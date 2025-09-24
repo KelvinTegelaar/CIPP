@@ -438,6 +438,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       <Stack spacing={3} direction="row">
         <Box width={"80%"}>
           <Stack spacing={1} sx={{ mb: 3 }}>
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Role Options
+            </Typography>
             {!selectedRole && (
               <CippFormComponent
                 type="textField"
@@ -481,6 +484,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               sortOptions={true}
               multiple={false}
               creatable={false}
+              helperText="Assigning an Entra group will automatically assign this role to all users in that group. This does not work with users invited directly to Static Web App."
             />
           </Stack>
           {!isBaseRole && (
@@ -494,6 +498,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   name="allowedTenants"
                   fullWidth={true}
                   includeGroups={true}
+                  helperText="Select the tenants that users should have access to with this role."
                 />
                 {allTenantSelected && blockedTenants?.length == 0 && (
                   <Alert color="warning">
@@ -512,11 +517,11 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                     name="blockedTenants"
                     fullWidth={true}
                     includeGroups={true}
+                    helperText="Select tenants that this role should not have access to."
                   />
                 </Box>
               )}
 
-              {/* Blocked Endpoints */}
               <Box sx={{ mb: 3 }}>
                 <CippFormComponent
                   type="autoComplete"
@@ -567,14 +572,119 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                       <GroupItems>{params.children}</GroupItems>
                     </li>
                   )}
+                  helperText="Select specific API endpoints to block for this role, this overrides permission settings below."
                 />
               </Box>
             </>
           )}
-          {apiPermissionFetching && <Skeleton variant="rectangle" height={500} />}
+          {apiPermissionFetching && (
+            <>
+              <Typography variant="h5">
+                <Skeleton width={150} />
+              </Typography>
+              <Stack
+                direction="row"
+                display="flex"
+                alignItems="center"
+                justifyContent={"space-between"}
+                width={"100%"}
+                sx={{ my: 2 }}
+              >
+                <Skeleton width={180} />
+                <Box sx={{ pr: 5 }}>
+                  <Skeleton width={300} height={40} />
+                </Box>
+              </Stack>
+              {[...Array(5)].map((_, index) => (
+                <Accordion variant="outlined" key={`skeleton-accordion-${index}`} disabled>
+                  <AccordionSummary>
+                    <Skeleton width={100} />
+                  </AccordionSummary>
+                </Accordion>
+              ))}
+            </>
+          )}
           {apiPermissionSuccess && (
             <>
-              <Typography variant="h5">API Permissions</Typography>
+              {/* Display include/exclude patterns for base roles */}
+              {isBaseRole && selectedRole && cippRoles[selectedRole]?.include && (
+                <>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    Defined Permissions
+                  </Typography>
+                  <Box sx={{ mb: 3 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ mb: 1, fontWeight: "bold", color: "success.main" }}
+                    >
+                      Include Patterns:
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                      These patterns define which permissions are included for this base role:
+                    </Typography>
+                    <Box sx={{ fontFamily: "monospace", fontSize: "0.875rem", mb: 2 }}>
+                      {cippRoles[selectedRole].include.map((pattern, idx) => (
+                        <Box
+                          key={idx}
+                          sx={{
+                            py: 0.5,
+                            px: 1,
+                            backgroundColor: "success.main",
+                            color: "success.contrastText",
+                            mb: 1,
+                            borderRadius: 1,
+                            opacity: 0.8,
+                            display: "inline-block",
+                            mr: 1,
+                          }}
+                        >
+                          {pattern}
+                        </Box>
+                      ))}
+                    </Box>
+
+                    {cippRoles[selectedRole]?.exclude &&
+                      cippRoles[selectedRole].exclude.length > 0 && (
+                        <>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ mb: 1, fontWeight: "bold", color: "error.main" }}
+                          >
+                            Exclude Patterns:
+                          </Typography>
+                          <Typography variant="body2" sx={{ mb: 2 }}>
+                            These patterns define which permissions are explicitly excluded from
+                            this base role:
+                          </Typography>
+                          <Box sx={{ fontFamily: "monospace", fontSize: "0.875rem" }}>
+                            {cippRoles[selectedRole].exclude.map((pattern, idx) => (
+                              <Box
+                                key={idx}
+                                sx={{
+                                  py: 0.5,
+                                  px: 1,
+                                  backgroundColor: "error.main",
+                                  color: "error.contrastText",
+                                  mb: 1,
+                                  borderRadius: 1,
+                                  opacity: 0.8,
+                                  display: "inline-block",
+                                  mr: 1,
+                                }}
+                              >
+                                {pattern}
+                              </Box>
+                            ))}
+                          </Box>
+                        </>
+                      )}
+                  </Box>
+                </>
+              )}
+
+              <Typography variant="h5" sx={{ mb: 2 }}>
+                API Permissions
+              </Typography>
               {!isBaseRole && (
                 <Stack
                   direction="row"
@@ -582,7 +692,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   alignItems="center"
                   justifyContent={"space-between"}
                   width={"100%"}
-                  sx={{ my: 2 }}
+                  sx={{ mb: 2 }}
                 >
                   <Typography variant="body2">Set All Permissions</Typography>
 

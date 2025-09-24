@@ -306,9 +306,11 @@ export const CippFormComponent = (props) => {
               )}
             />
           </div>
-          <Typography variant="subtitle3" color="error">
-            {get(errors, convertedName, {}).message}
-          </Typography>
+          {get(errors, convertedName, {})?.message && (
+            <Typography variant="subtitle3" color="error">
+              {get(errors, convertedName, {})?.message}
+            </Typography>
+          )}
         </>
       );
 
@@ -332,9 +334,11 @@ export const CippFormComponent = (props) => {
               )}
             />
           </div>
-          <Typography variant="subtitle3" color="error">
-            {get(errors, convertedName, {}).message}
-          </Typography>
+          {get(errors, convertedName, {})?.message && (
+            <Typography variant="subtitle3" color="error">
+              {get(errors, convertedName, {})?.message}
+            </Typography>
+          )}
           {helperText && (
             <Typography variant="subtitle3" color="text.secondary">
               {helperText}
