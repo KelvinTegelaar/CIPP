@@ -473,6 +473,23 @@ export const CippDataTable = (props) => {
         }
         return aVal - bVal;
       },
+      boolean: (a, b, id) => {
+        const aVal = a?.original?.[id] ?? null;
+        const bVal = b?.original?.[id] ?? null;
+        if (aVal === null && bVal === null) {
+          return 0;
+        }
+        if (aVal === null) {
+          return 1;
+        }
+        if (bVal === null) {
+          return -1;
+        }
+        // Convert to numbers: true = 1, false = 0
+        const aNum = aVal === true ? 1 : 0;
+        const bNum = bVal === true ? 1 : 0;
+        return aNum - bNum;
+      },
     },
     filterFns: {
       notContains: (row, columnId, value) => {
