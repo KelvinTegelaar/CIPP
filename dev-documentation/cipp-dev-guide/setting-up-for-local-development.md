@@ -76,28 +76,28 @@ Using `npm` which is included with `nodejs`, you're going to install the _Azure 
 
 Run the following commands to install the necessary global packages:
 
+- **[Azure Static Web Apps CLI](https://azure.github.io/static-web-apps-cli/)**
 ```bash
-# Azure Static Web Apps CLI
 npm install --global @azure/static-web-apps-cli
 ```
 
+- **[Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local)**
 ```bash
-# Azure Functions Core Tools
 npm install --global azure-functions-core-tools@4 --unsafe-perms true
 ```
 
+- **[Azurite storage emulator](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite)**
 ```bash
-# Azurite storage emulator
 npm install --global azurite
 ```
 
+- **[Yarn package manager](https://yarnpkg.com/)**
 ```bash
-# Yarn package manager
 npm install --global yarn
 ```
 
+- **[Next.js framework](https://nextjs.org/)**
 ```bash
-# Next.js framework
 npm install --global next
 ```
 
@@ -133,8 +133,9 @@ If we assume that we want our `CIPP-Project` directory in `X:\Development`, we'r
 cd "X:\Development"
 mkdir "CIPP-Project"
 cd "CIPP-Project"
-
-# Clone your forked repositories
+```
+#### Clone your forked repositories
+```bash
 git clone https://github.com/goodatforking/CIPP --origin goodatforking
 git clone https://github.com/goodatforking/CIPP-API --origin goodatforking
 ```
@@ -147,13 +148,14 @@ At this point we could start working on the code - we have our pre-requisites an
 
 We're going to add Kelvin's original repository as `upstream`:
 
+#### Add upstream remote for CIPP
 ```bash
-# Add upstream remote for CIPP
 cd "CIPP"
 git remote add upstream https://github.com/KelvinTegelaar/CIPP
 cd ..
-
-# Add upstream remote for CIPP-API
+```
+#### Add upstream remote for CIPP-API
+```bash
 cd "CIPP-API"
 git remote add upstream https://github.com/KelvinTegelaar/CIPP-API
 cd ..
@@ -173,13 +175,14 @@ When working on open source projects it's often helpful to keep your stable/test
 
 We're going to want to work from the `dev` branch since that's where the latest development code is. Switching branches in git is achieved by doing a `checkout` on the branch:
 
+#### Switch to dev branch in CIPP
 ```bash
-# Switch to dev branch in CIPP
 cd "CIPP"
 git checkout dev
 cd ..
-
-# Switch to dev branch in CIPP-API
+```
+#### Switch to dev branch in CIPP-API
+```bash
 cd "CIPP-API"
 git checkout dev
 cd ..
