@@ -4652,7 +4652,7 @@
         "label": "Exclude Groups",
         "type": "textField",
         "required": false,
-        "helpText": "Enter the group name to exclude from the assignment. Wildcards are allowed."
+        "helpText": "Enter the group name(s) to exclude from the assignment. Wildcards are allowed. Multiple group names are comma-seperated."
       }
     ]
   },
