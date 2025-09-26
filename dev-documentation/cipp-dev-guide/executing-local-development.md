@@ -154,7 +154,7 @@ The contents of your `local.settings.json` file differs depending on whether you
     "FUNCTIONS_EXTENSION_VERSION": "4",
     "AzureWebJobs.BestPracticeAnalyser_OrchestrationStarterTimer.Disabled": true,
     "AzureWebJobs.Domain_OrchestrationStarterTimer.Disabled": true,
-    "WEBSITE_SITE_NAME": "mylocalcippinstance",
+    "WEBSITE_SITE_NAME": "mylocalcippinstance"
   }
 }
 ```
@@ -176,7 +176,7 @@ The contents of your `local.settings.json` file differs depending on whether you
     "FUNCTIONS_EXTENSION_VERSION": "4",
     "AzureWebJobs.BestPracticeAnalyser_OrchestrationStarterTimer.Disabled": true,
     "AzureWebJobs.Domain_OrchestrationStarterTimer.Disabled": true,
-    "WEBSITE_SITE_NAME": "mylocalcippinstance",
+    "WEBSITE_SITE_NAME": "mylocalcippinstance"
   }
 }
 ```
