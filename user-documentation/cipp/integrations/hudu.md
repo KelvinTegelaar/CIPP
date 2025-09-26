@@ -117,6 +117,11 @@ In some cases the information provided in the M365 Rich Text Field is cut off or
     max-height: 600px !important;
     overflow-y: scroll !important;
 }
+
+.writer-wrap { 
+    max-height: 2000px; 
+    overflow: scroll; 
+}
 ```
 
 #### Special Thanks
