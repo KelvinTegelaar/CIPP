@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Box,
@@ -349,13 +349,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   const ApiPermissionRow = ({ obj, cat, readOnly }) => {
     const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+    const [descriptionOffcanvasVisible, setDescriptionOffcanvasVisible] = useState(false);
+    const [selectedDescription, setSelectedDescription] = useState({ name: '', description: '' });
 
-    var items = [];
-    for (var key in apiPermissions[cat][obj])
-      for (var key2 in apiPermissions[cat][obj][key]) {
-        items.push({ heading: "", content: apiPermissions[cat][obj][key][key2] });
-      }
-    var group = [{ items: items }];
+    const handleDescriptionClick = (name, description) => {
+      setSelectedDescription({ name, description });
+      setDescriptionOffcanvasVisible(true);
+    };
 
     return (
       <Stack
@@ -392,41 +392,68 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
             disabled={readOnly}
           />
         </Stack>
+        {/* Main offcanvas */}
         <CippOffCanvas
           visible={offcanvasVisible}
-          onClose={() => {
-            setOffcanvasVisible(false);
-          }}
+          onClose={() => setOffcanvasVisible(false)}
+          title={`${cat}.${obj} Endpoints`}
         >
           <Stack spacing={2}>
-            <Typography variant="h3" sx={{ mx: 3 }}>
-              {`${cat}.${obj}`}
-            </Typography>
             <Typography variant="body1" sx={{ mx: 3 }}>
-              Listed below are the available API endpoints based on permission level, ReadWrite
-              level includes endpoints under Read.
+              Listed below are the available API endpoints based on permission level.
+              ReadWrite level includes endpoints under Read.
             </Typography>
-            {[apiPermissions[cat][obj]].map((permissions, key) => {
-              var sections = Object.keys(permissions).map((type) => {
-                var items = [];
-                for (var api in permissions[type]) {
-                  items.push({ heading: "", content: permissions[type][api] });
-                }
-                return (
-                  <Stack key={key} spacing={2}>
-                    <Typography variant="h4">{type}</Typography>
-                    <Stack spacing={1}>
-                      {items.map((item, idx) => (
-                        <Stack key={idx} spacing={1}>
-                          <Typography variant="body2">{item.content}</Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
+            {Object.keys(apiPermissions[cat][obj]).map((type, typeIndex) => {
+              var items = [];
+              for (var api in apiPermissions[cat][obj][type]) {
+                const apiFunction = apiPermissions[cat][obj][type][api];
+                items.push({ 
+                  name: apiFunction.Name, 
+                  description: apiFunction.Description?.[0]?.Text || null
+                });
+              }
+              return (
+                <Stack key={`${type}-${typeIndex}`} spacing={2}>
+                  <Typography variant="h4">{type}</Typography>
+                  <Stack spacing={1}>
+                    {items.map((item, idx) => (
+                      <Stack key={`${type}-${idx}`} direction="row" alignItems="center" spacing={1}>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', flexGrow: 1 }}>
+                          {item.name}
+                        </Typography>
+                        {item.description && (
+                          <Button 
+                            size="small" 
+                            onClick={() => handleDescriptionClick(item.name, item.description)}
+                            sx={{ minWidth: 'auto', p: 0.5 }}
+                          >
+                            <SvgIcon fontSize="small" color="info">
+                              <InformationCircleIcon />
+                            </SvgIcon>
+                          </Button>
+                        )}
+                      </Stack>
+                    ))}
                   </Stack>
-                );
-              });
-              return sections;
+                </Stack>
+              );
             })}
+          </Stack>
+        </CippOffCanvas>
+
+        {/* Description offcanvas */}
+        <CippOffCanvas
+          visible={descriptionOffcanvasVisible}
+          onClose={() => setDescriptionOffcanvasVisible(false)}
+          title="Function Description"
+        >
+          <Stack spacing={2} sx={{ p: 2 }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+              {selectedDescription.name}
+            </Typography>
+            <Typography variant="body1">
+              {selectedDescription.description}
+            </Typography>
           </Stack>
         </CippOffCanvas>
       </Stack>
@@ -539,15 +566,15 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                                 .sort()
                                 .forEach((obj) => {
                                   Object.keys(apiPermissions[cat][obj]).forEach((type) => {
-                                    Object.keys(apiPermissions[cat][obj][type]).forEach(
-                                      (apiKey) => {
-                                        allEndpoints.push({
-                                          label: apiPermissions[cat][obj][type][apiKey],
-                                          value: apiPermissions[cat][obj][type][apiKey],
-                                          category: cat,
-                                        });
-                                      }
-                                    );
+                                    Object.keys(apiPermissions[cat][obj][type]).forEach((apiKey) => {
+                                      const apiFunction = apiPermissions[cat][obj][type][apiKey];
+                                      const descriptionText = apiFunction.Description?.[0]?.Text;
+                                      allEndpoints.push({
+                                        label: descriptionText ? `${apiFunction.Name} - ${descriptionText}` : apiFunction.Name,
+                                        value: apiFunction.Name,
+                                        category: cat,
+                                      });
+                                    });
                                   });
                                 });
                             });
@@ -756,7 +783,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <h5>Allowed Tenants</h5>
               <ul>
                 {selectedTenant.map((tenant, idx) => (
-                  <li key={idx}>{tenant?.label}</li>
+                  <li key={`allowed-tenant-${idx}`}>{tenant?.label}</li>
                 ))}
               </ul>
             </>
@@ -766,7 +793,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <h5>Blocked Tenants</h5>
               <ul>
                 {blockedTenants.map((tenant, idx) => (
-                  <li key={idx}>{tenant?.label}</li>
+                  <li key={`blocked-tenant-${idx}`}>{tenant?.label}</li>
                 ))}
               </ul>
             </>
@@ -776,7 +803,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <h5>Blocked Endpoints</h5>
               <ul>
                 {blockedEndpoints.map((endpoint, idx) => (
-                  <li key={idx} style={{ fontSize: "0.875rem", marginBottom: "0.25rem" }}>
+                  <li key={`blocked-endpoint-${idx}`} style={{ fontSize: "0.875rem", marginBottom: "0.25rem" }}>
                     {endpoint?.label || endpoint?.value || endpoint}
                   </li>
                 ))}
@@ -791,13 +818,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   Object.keys(selectedPermissions)
                     ?.sort()
                     .map((cat, idx) => (
-                      <>
+                      <React.Fragment key={`permission-${idx}`}>
                         {selectedPermissions?.[cat] &&
                           typeof selectedPermissions[cat] === "string" &&
                           !selectedPermissions[cat]?.includes("None") && (
-                            <li key={idx}>{selectedPermissions[cat]}</li>
+                            <li>{selectedPermissions[cat]}</li>
                           )}
-                      </>
+                      </React.Fragment>
                     ))}
               </ul>
             </>
