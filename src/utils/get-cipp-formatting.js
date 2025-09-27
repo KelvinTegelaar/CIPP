@@ -269,10 +269,6 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? `${data}%` : <LinearProgressWithLabel variant="determinate" value={data} />;
   }
 
-  if (cellName === "DMARCPercentagePass") {
-    return isText ? `${data}%` : <LinearProgressWithLabel variant="determinate" value={data} />;
-  }
-
   if (cellName === "ScoreExplanation") {
     return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
   }
