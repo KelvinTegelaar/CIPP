@@ -97,7 +97,7 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
   if (typeOf === "boolean") {
     return {
       filterVariant: "select",
-      sortingFn: "alphanumeric",
+      sortingFn: "boolean",
       filterFn: "equals",
     };
   }

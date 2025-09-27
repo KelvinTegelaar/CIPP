@@ -3431,6 +3431,163 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Sets the Windows Hello for Business configuration during device enrollment.",
+    "executiveText": "Enables or disables Windows Hello for Business during device enrollment, enhancing security through biometric or PIN-based authentication methods. This ensures that devices meet corporate security standards while providing a user-friendly sign-in experience.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.state",
+        "label": "Configure Windows Hello for Business",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not configured",
+            "value": "notConfigured"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.securityDeviceRequired",
+        "label": "Use a Trusted Platform Module (TPM)",
+        "default": true
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinMinimumLength",
+        "label": "Minimum PIN length (4-127)",
+        "default": 4
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinMaximumLength",
+        "label": "Maximum PIN length (4-127)",
+        "default": 127
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinLowercaseCharactersUsage",
+        "label": "Lowercase letters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinUppercaseCharactersUsage",
+        "label": "Uppercase letters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinSpecialCharactersUsage",
+        "label": "Special characters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinExpirationInDays",
+        "label": "PIN expiration (days) - 0 to disable",
+        "default": 0
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinPreviousBlockCount",
+        "label": "PIN history - 0 to disable",
+        "default": 0
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.unlockWithBiometricsEnabled",
+        "label": "Allow biometric authentication",
+        "default": true
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.enhancedBiometricsState",
+        "label": "Use enhanced anti-spoofing when available",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not configured",
+            "value": "notConfigured"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.remotePassportEnabled",
+        "label": "Allow phone sign-in",
+        "default": true
+      }
+    ],
+    "label": "Windows Hello for Business enrollment configuration",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-09-25",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": ["CISA (MS.AAD.17.1v1)"],
@@ -4652,7 +4809,7 @@
         "label": "Exclude Groups",
         "type": "textField",
         "required": false,
-        "helpText": "Enter the group name to exclude from the assignment. Wildcards are allowed."
+        "helpText": "Enter the group name(s) to exclude from the assignment. Wildcards are allowed. Multiple group names are comma-seperated."
       }
     ]
   },
