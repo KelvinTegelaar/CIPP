@@ -23,3 +23,7 @@
 ### Audit log searches
 
 {% @storylane/embed subdomain="app" linkValue="x3xrv5qfgqpg" url="https://app.storylane.io/share/x3xrv5qfgqpg" %}
+
+### License Management
+
+{% @storylane/embed subdomain="app" linkValue="ossqaogex1sw" url="https://app.storylane.io/share/ossqaogex1sw" %}
