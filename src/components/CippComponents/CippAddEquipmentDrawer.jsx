@@ -1,39 +1,45 @@
-import React, { useState } from "react";
-import { Button } from "@mui/material";
+﻿import React, { useState, useEffect } from "react";
+import { Button, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { Send } from "@mui/icons-material";
+import { AddBusiness } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
+import { CippFormDomainSelector } from "./CippFormDomainSelector";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 
-export const CippInviteGuestDrawer = ({
-  buttonText = "Invite Guest",
+export const CippAddEquipmentDrawer = ({
+  buttonText = "Add Equipment Mailbox",
   requiredPermissions = [],
   PermissionButton = Button,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const userSettingsDefaults = useSettings();
+  const tenantDomain = useSettings().currentTenant;
 
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
-      tenantFilter: userSettingsDefaults.currentTenant,
       displayName: "",
-      mail: "",
-      redirectUri: "",
-      sendInvite: false,
+      username: "",
+      domain: null,
     },
   });
 
   const { isValid } = useFormState({ control: formControl.control });
 
-  const inviteGuest = ApiPostCall({
+  const addEquipment = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
+    relatedQueryKeys: [`EquipmentMailbox-${tenantDomain}`],
   });
+
+  // Reset form fields on successful creation
+  useEffect(() => {
+    if (addEquipment.isSuccess) {
+      formControl.reset();
+    }
+  }, [addEquipment.isSuccess, formControl]);
 
   const handleSubmit = () => {
     formControl.trigger();
@@ -41,22 +47,32 @@ export const CippInviteGuestDrawer = ({
     if (!isValid) {
       return;
     }
+
     const formData = formControl.getValues();
-    inviteGuest.mutate({
-      url: "/api/AddGuest",
-      data: formData,
-      relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
+    const shippedValues = {
+      tenantID: tenantDomain,
+      domain: formData.domain?.value,
+      displayName: formData.displayName.trim(),
+      username: formData.username.trim(),
+      userPrincipalName: formData.username.trim() + "@" + (formData.domain?.value || "").trim(),
+    };
+
+    addEquipment.mutate({
+      url: "/api/AddEquipmentMailbox",
+      data: shippedValues,
+      relatedQueryKeys: [`EquipmentMailbox-${tenantDomain}`],
     });
   };
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     formControl.reset({
-      tenantFilter: userSettingsDefaults.currentTenant,
       displayName: "",
-      mail: "",
-      redirectUri: "",
-      sendInvite: false,
+      username: "",
+      domain: null,
+      location: "",
+      department: "",
+      company: "",
     });
   };
 
@@ -65,12 +81,12 @@ export const CippInviteGuestDrawer = ({
       <PermissionButton
         requiredPermissions={requiredPermissions}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Send />}
+        startIcon={<AddBusiness />}
       >
         {buttonText}
       </PermissionButton>
       <CippOffCanvas
-        title="Invite Guest User"
+        title="Add Equipment Mailbox"
         visible={drawerVisible}
         onClose={handleCloseDrawer}
         size="md"
@@ -80,13 +96,13 @@ export const CippInviteGuestDrawer = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={inviteGuest.isLoading || !isValid}
+              disabled={addEquipment.isLoading || !isValid}
             >
-              {inviteGuest.isLoading
-                ? "Sending Invite..."
-                : inviteGuest.isSuccess
-                ? "Send Another Invite"
-                : "Send Invite"}
+              {addEquipment.isLoading
+                ? "Creating..."
+                : addEquipment.isSuccess
+                ? "Create Another"
+                : "Create Equipment Mailbox"}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -95,53 +111,39 @@ export const CippInviteGuestDrawer = ({
         }
       >
         <Grid container spacing={2}>
-          <Grid size={{ md: 6, xs: 12 }}>
+          {/* Display Name */}
+          <Grid size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="textField"
-              fullWidth
               label="Display Name"
               name="displayName"
               formControl={formControl}
-              validators={{ required: "Display name is required" }}
-            />
-          </Grid>
-          <Grid size={{ md: 6, xs: 12 }}>
-            <CippFormComponent
-              type="textField"
-              fullWidth
-              label="E-mail Address"
-              name="mail"
-              formControl={formControl}
-              validators={{
-                required: "Email address is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              }}
-            />
-          </Grid>
-          <Grid size={{ md: 12, xs: 12 }}>
-            <CippFormComponent
-              type="textField"
-              fullWidth
-              label="Redirect URL"
-              name="redirectUri"
-              placeholder="Optional Redirect URL defaults to https://myapps.microsoft.com if blank"
-              formControl={formControl}
-            />
-          </Grid>
-          <Grid size={{ md: 12, xs: 12 }}>
-            <CippFormComponent
-              type="switch"
-              fullWidth
-              label="Send invite via e-mail"
-              name="sendInvite"
-              formControl={formControl}
+              validators={{ required: "Display Name is required" }}
             />
           </Grid>
 
-          <CippApiResults apiObject={inviteGuest} />
+          <Divider sx={{ my: 2, width: "100%" }} />
+
+          {/* Username and Domain */}
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              label="Username"
+              name="username"
+              formControl={formControl}
+              validators={{ required: "Username is required" }}
+            />
+          </Grid>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormDomainSelector
+              formControl={formControl}
+              name="domain"
+              label="Primary Domain name"
+              validators={{ required: "Please select a domain" }}
+            />
+          </Grid>
+
+          <CippApiResults apiObject={addEquipment} />
         </Grid>
       </CippOffCanvas>
     </>

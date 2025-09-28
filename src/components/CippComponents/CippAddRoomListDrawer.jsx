@@ -1,39 +1,50 @@
-import React, { useState } from "react";
-import { Button } from "@mui/material";
+﻿import React, { useState, useEffect } from "react";
+import { Button, InputAdornment, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { Send } from "@mui/icons-material";
+import { ListAlt } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
+import { CippFormDomainSelector } from "./CippFormDomainSelector";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 
-export const CippInviteGuestDrawer = ({
-  buttonText = "Invite Guest",
+export const CippAddRoomListDrawer = ({
+  buttonText = "Add Room List",
   requiredPermissions = [],
   PermissionButton = Button,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const userSettingsDefaults = useSettings();
+  const tenantDomain = userSettingsDefaults.currentTenant;
 
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
-      tenantFilter: userSettingsDefaults.currentTenant,
       displayName: "",
-      mail: "",
-      redirectUri: "",
-      sendInvite: false,
+      username: "",
+      primDomain: null,
     },
   });
 
   const { isValid } = useFormState({ control: formControl.control });
 
-  const inviteGuest = ApiPostCall({
+  const addRoomList = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
+    relatedQueryKeys: [`RoomLists-${tenantDomain}`],
   });
+
+  // Reset form fields on successful creation
+  useEffect(() => {
+    if (addRoomList.isSuccess) {
+      formControl.reset({
+        displayName: "",
+        username: "",
+        primDomain: null,
+      });
+    }
+  }, [addRoomList.isSuccess, formControl]);
 
   const handleSubmit = () => {
     formControl.trigger();
@@ -41,22 +52,28 @@ export const CippInviteGuestDrawer = ({
     if (!isValid) {
       return;
     }
+
     const formData = formControl.getValues();
-    inviteGuest.mutate({
-      url: "/api/AddGuest",
-      data: formData,
-      relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
+    const shippedValues = {
+      tenantFilter: tenantDomain,
+      displayName: formData.displayName?.trim(),
+      username: formData.username?.trim(),
+      primDomain: formData.primDomain,
+    };
+
+    addRoomList.mutate({
+      url: "/api/AddRoomList",
+      data: shippedValues,
+      relatedQueryKeys: [`RoomLists-${tenantDomain}`],
     });
   };
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     formControl.reset({
-      tenantFilter: userSettingsDefaults.currentTenant,
       displayName: "",
-      mail: "",
-      redirectUri: "",
-      sendInvite: false,
+      username: "",
+      primDomain: null,
     });
   };
 
@@ -65,12 +82,12 @@ export const CippInviteGuestDrawer = ({
       <PermissionButton
         requiredPermissions={requiredPermissions}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Send />}
+        startIcon={<ListAlt />}
       >
         {buttonText}
       </PermissionButton>
       <CippOffCanvas
-        title="Invite Guest User"
+        title="Add Room List"
         visible={drawerVisible}
         onClose={handleCloseDrawer}
         size="md"
@@ -80,13 +97,13 @@ export const CippInviteGuestDrawer = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={inviteGuest.isLoading || !isValid}
+              disabled={addRoomList.isLoading || !isValid}
             >
-              {inviteGuest.isLoading
-                ? "Sending Invite..."
-                : inviteGuest.isSuccess
-                ? "Send Another Invite"
-                : "Send Invite"}
+              {addRoomList.isLoading
+                ? "Creating..."
+                : addRoomList.isSuccess
+                ? "Create Another"
+                : "Create Room List"}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
@@ -95,53 +112,46 @@ export const CippInviteGuestDrawer = ({
         }
       >
         <Grid container spacing={2}>
-          <Grid size={{ md: 6, xs: 12 }}>
+          <Grid size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="textField"
-              fullWidth
-              label="Display Name"
+              formControl={formControl}
               name="displayName"
-              formControl={formControl}
-              validators={{ required: "Display name is required" }}
-            />
-          </Grid>
-          <Grid size={{ md: 6, xs: 12 }}>
-            <CippFormComponent
-              type="textField"
-              fullWidth
-              label="E-mail Address"
-              name="mail"
-              formControl={formControl}
-              validators={{
-                required: "Email address is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              }}
-            />
-          </Grid>
-          <Grid size={{ md: 12, xs: 12 }}>
-            <CippFormComponent
-              type="textField"
-              fullWidth
-              label="Redirect URL"
-              name="redirectUri"
-              placeholder="Optional Redirect URL defaults to https://myapps.microsoft.com if blank"
-              formControl={formControl}
-            />
-          </Grid>
-          <Grid size={{ md: 12, xs: 12 }}>
-            <CippFormComponent
-              type="switch"
-              fullWidth
-              label="Send invite via e-mail"
-              name="sendInvite"
-              formControl={formControl}
+              label="Display Name"
+              validators={{ required: "Display Name is required" }}
             />
           </Grid>
 
-          <CippApiResults apiObject={inviteGuest} />
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="textField"
+              formControl={formControl}
+              name="username"
+              label="Username"
+              validators={{
+                required: "Username is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9\-_\.]+$/,
+                  message:
+                    "Username can only contain letters, numbers, hyphens, underscores, and periods",
+                },
+              }}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">@</InputAdornment>,
+              }}
+            />
+          </Grid>
+
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormDomainSelector
+              formControl={formControl}
+              name="primDomain"
+              label="Primary Domain"
+              validators={{ required: "Domain is required" }}
+            />
+          </Grid>
+
+          <CippApiResults apiObject={addRoomList} />
         </Grid>
       </CippOffCanvas>
     </>
