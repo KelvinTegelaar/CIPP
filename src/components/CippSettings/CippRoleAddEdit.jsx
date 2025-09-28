@@ -350,7 +350,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   const ApiPermissionRow = ({ obj, cat, readOnly }) => {
     const [offcanvasVisible, setOffcanvasVisible] = useState(false);
     const [descriptionOffcanvasVisible, setDescriptionOffcanvasVisible] = useState(false);
-    const [selectedDescription, setSelectedDescription] = useState({ name: '', description: '' });
+    const [selectedDescription, setSelectedDescription] = useState({ name: "", description: "" });
 
     const handleDescriptionClick = (name, description) => {
       setSelectedDescription({ name, description });
@@ -400,16 +400,16 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         >
           <Stack spacing={2}>
             <Typography variant="body1" sx={{ mx: 3 }}>
-              Listed below are the available API endpoints based on permission level.
-              ReadWrite level includes endpoints under Read.
+              Listed below are the available API endpoints based on permission level. ReadWrite
+              level includes endpoints under Read.
             </Typography>
             {Object.keys(apiPermissions[cat][obj]).map((type, typeIndex) => {
               var items = [];
               for (var api in apiPermissions[cat][obj][type]) {
                 const apiFunction = apiPermissions[cat][obj][type][api];
-                items.push({ 
-                  name: apiFunction.Name, 
-                  description: apiFunction.Description?.[0]?.Text || null
+                items.push({
+                  name: apiFunction.Name,
+                  description: apiFunction.Description?.[0]?.Text || null,
                 });
               }
               return (
@@ -418,14 +418,14 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   <Stack spacing={1}>
                     {items.map((item, idx) => (
                       <Stack key={`${type}-${idx}`} direction="row" alignItems="center" spacing={1}>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', flexGrow: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: "bold", flexGrow: 1 }}>
                           {item.name}
                         </Typography>
                         {item.description && (
-                          <Button 
-                            size="small" 
+                          <Button
+                            size="small"
                             onClick={() => handleDescriptionClick(item.name, item.description)}
-                            sx={{ minWidth: 'auto', p: 0.5 }}
+                            sx={{ minWidth: "auto", p: 0.5 }}
                           >
                             <SvgIcon fontSize="small" color="info">
                               <InformationCircleIcon />
@@ -448,12 +448,10 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           title="Function Description"
         >
           <Stack spacing={2} sx={{ p: 2 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               {selectedDescription.name}
             </Typography>
-            <Typography variant="body1">
-              {selectedDescription.description}
-            </Typography>
+            <Typography variant="body1">{selectedDescription.description}</Typography>
           </Stack>
         </CippOffCanvas>
       </Stack>
@@ -566,15 +564,19 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                                 .sort()
                                 .forEach((obj) => {
                                   Object.keys(apiPermissions[cat][obj]).forEach((type) => {
-                                    Object.keys(apiPermissions[cat][obj][type]).forEach((apiKey) => {
-                                      const apiFunction = apiPermissions[cat][obj][type][apiKey];
-                                      const descriptionText = apiFunction.Description?.[0]?.Text;
-                                      allEndpoints.push({
-                                        label: descriptionText ? `${apiFunction.Name} - ${descriptionText}` : apiFunction.Name,
-                                        value: apiFunction.Name,
-                                        category: cat,
-                                      });
-                                    });
+                                    Object.keys(apiPermissions[cat][obj][type]).forEach(
+                                      (apiKey) => {
+                                        const apiFunction = apiPermissions[cat][obj][type][apiKey];
+                                        const descriptionText = apiFunction.Description?.[0]?.Text;
+                                        allEndpoints.push({
+                                          label: descriptionText
+                                            ? `${apiFunction.Name} - ${descriptionText}`
+                                            : apiFunction.Name,
+                                          value: apiFunction.Name,
+                                          category: `${cat}.${obj}.${type}`,
+                                        });
+                                      }
+                                    );
                                   });
                                 });
                             });
@@ -803,7 +805,10 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <h5>Blocked Endpoints</h5>
               <ul>
                 {blockedEndpoints.map((endpoint, idx) => (
-                  <li key={`blocked-endpoint-${idx}`} style={{ fontSize: "0.875rem", marginBottom: "0.25rem" }}>
+                  <li
+                    key={`blocked-endpoint-${idx}`}
+                    style={{ fontSize: "0.875rem", marginBottom: "0.25rem" }}
+                  >
                     {endpoint?.label || endpoint?.value || endpoint}
                   </li>
                 ))}
