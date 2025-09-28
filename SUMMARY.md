@@ -372,11 +372,10 @@
 
 ## MSP Adoption Toolkit
 
-* [Building a CIPP Business Case](msp-adoption-toolkit/msp-adoption-toolkit-building-a-cipp-business-case.md)
-
-***
-
-* [Why CIPP Doesn't Do (live) Demos](why-cipp-doesnt-do-demos.md)
+* [Implementing CIPP](msp-adoption-toolkit/implementing-cipp/README.md)
+  * [Why CIPP Doesn't Do (live) Demos](msp-adoption-toolkit/implementing-cipp/why-cipp-doesnt-do-demos.md)
+  * [Building a CIPP Business Case](msp-adoption-toolkit/implementing-cipp/msp-adoption-toolkit-building-a-cipp-business-case.md)
+* [Untitled](msp-adoption-toolkit/untitled.md)
 
 ## Sip & CIPP
 
