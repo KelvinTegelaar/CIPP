@@ -1,9 +1,8 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import Link from "next/link";
-import { AddHomeWork, Edit, Block, LockOpen, Key } from "@mui/icons-material";
+import { Edit, Block, LockOpen, Key } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { CippAddRoomDrawer } from "../../../../../components/CippComponents/CippAddRoomDrawer";
 
 const Page = () => {
   const pageTitle = "Rooms";
@@ -70,15 +69,7 @@ const Page = () => {
         "countryOrRegion",
         "hiddenFromAddressListsEnabled",
       ]}
-      cardButton={
-        <Button
-          component={Link}
-          href="/email/resources/management/list-rooms/add"
-          startIcon={<AddHomeWork />}
-        >
-          Add Room
-        </Button>
-      }
+      cardButton={<CippAddRoomDrawer />}
     />
   );
 };
