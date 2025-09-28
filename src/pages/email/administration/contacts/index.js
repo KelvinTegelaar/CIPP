@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import { CippAddContactDrawer } from "../../../../components/CippComponents/CippAddContactDrawer";
+import { CippDeployContactTemplateDrawer } from "../../../../components/CippComponents/CippDeployContactTemplateDrawer";
 
 const Page = () => {
   const pageTitle = "Contacts";
@@ -48,14 +49,8 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <CippAddContactDrawer permissions={cardButtonPermissions} />
-          <Button
-            component={Link}
-            href="/email/administration/contacts-template/deploy"
-            startIcon={<RocketLaunch />}
-          >
-            Deploy Contact Template
-          </Button>
+          <CippAddContactDrawer requiredPermissions={cardButtonPermissions} />
+          <CippDeployContactTemplateDrawer requiredPermissions={cardButtonPermissions} />
         </>
       }
     />
