@@ -112,7 +112,7 @@ export const CippAddEquipmentDrawer = ({
       >
         <Grid container spacing={2}>
           {/* Display Name */}
-          <Grid size={{ md: 8, xs: 12 }}>
+          <Grid size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="textField"
               label="Display Name"

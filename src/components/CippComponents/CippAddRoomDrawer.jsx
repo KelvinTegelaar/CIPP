@@ -120,7 +120,7 @@ export const CippAddRoomDrawer = ({
       >
         <Grid container spacing={2}>
           {/* Display Name */}
-          <Grid size={{ md: 8, xs: 12 }}>
+          <Grid size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="textField"
               label="Display Name"
@@ -133,7 +133,7 @@ export const CippAddRoomDrawer = ({
           <Divider sx={{ my: 2, width: "100%" }} />
 
           {/* Username and Domain */}
-          <Grid size={{ md: 4, xs: 12 }}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <CippFormComponent
               type="textField"
               label="Username"
@@ -142,7 +142,7 @@ export const CippAddRoomDrawer = ({
               validators={{ required: "Username is required" }}
             />
           </Grid>
-          <Grid size={{ md: 4, xs: 12 }}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <CippFormDomainSelector
               formControl={formControl}
               name="domain"
