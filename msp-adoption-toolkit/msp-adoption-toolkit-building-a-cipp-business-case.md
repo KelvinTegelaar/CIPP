@@ -81,7 +81,7 @@ As we consider the implementation of CIPP at **\[Company Name]**, it's important
      * The hosted version ensures automated updates, support, and a user-friendly management backend, allowing us to focus on Microsoft 365 management tasks without the overhead of infrastructure management.
    * **Self-Hosted Model**:&#x20;
      * Choosing the self-hosted model involves forking the CIPP repository and hosting it within our environment. While this option offers more control and customization, it also requires a higher level of technical expertise.&#x20;
-     * More information on the prerequisites and installation steps for the self-hosted model can be found in [self-hosting-guide](../../setup/self-hosting-guide/ "mention").
+     * More information on the prerequisites and installation steps for the self-hosted model can be found in [self-hosting-guide](../setup/self-hosting-guide/ "mention").
 3. **Reaping the Rewards**: After implementing CIPP, we can look forward to the enhanced operational efficiency, strengthened security measures, and improved client satisfaction. As we navigate our Microsoft 365 management with ease and confidence, we'll experience the positive impact that CIPP brings to our MSP operations.
 
 ## Conclusion

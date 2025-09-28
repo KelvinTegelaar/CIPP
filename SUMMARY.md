@@ -373,9 +373,12 @@
 ## MSP Adoption Toolkit
 
 * [Implementing CIPP](msp-adoption-toolkit/implementing-cipp/README.md)
-  * [Why CIPP Doesn't Do (live) Demos](msp-adoption-toolkit/implementing-cipp/why-cipp-doesnt-do-demos.md)
-  * [Building a CIPP Business Case](msp-adoption-toolkit/implementing-cipp/msp-adoption-toolkit-building-a-cipp-business-case.md)
-* [Untitled](msp-adoption-toolkit/untitled.md)
+  * [Why CIPP Doesn't Do (live) Demos](why-cipp-doesnt-do-demos.md)
+  * [Building a CIPP Business Case](msp-adoption-toolkit/msp-adoption-toolkit-building-a-cipp-business-case.md)
+* [Sales Enablement Materials](msp-adoption-toolkit/sales-enablement-materials/README.md)
+  * [Content Templates - Precooked](msp-adoption-toolkit/sales-enablement-materials/content-templates-precooked.md)
+  * [M365 Management Package](msp-adoption-toolkit/sales-enablement-materials/m365-management-package.md)
+  * [Security packages](msp-adoption-toolkit/sales-enablement-materials/security-packages.md)
 
 ## Sip & CIPP
 
