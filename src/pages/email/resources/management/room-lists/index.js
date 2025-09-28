@@ -7,6 +7,7 @@ import { CippAddRoomListDrawer } from "../../../../../components/CippComponents/
 const Page = () => {
   const pageTitle = "Room Lists";
   const apiUrl = "/api/ListRoomLists";
+  const cardButtonPermissions = ["Exchange.Room.ReadWrite"];
 
   const actions = [
     {
@@ -56,7 +57,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <CippAddRoomListDrawer />
+          <CippAddRoomListDrawer requiredPermissions={cardButtonPermissions} />
         </>
       }
     />

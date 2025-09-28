@@ -6,6 +6,7 @@ import { CippAddEquipmentDrawer } from "../../../../../components/CippComponents
 
 const Page = () => {
   const pageTitle = "Equipment";
+  const cardButtonPermissions = ["Exchange.Equipment.ReadWrite"];
 
   const actions = [
     {
@@ -66,7 +67,7 @@ const Page = () => {
       apiUrl="/api/ListEquipment"
       actions={actions}
       simpleColumns={simpleColumns}
-      cardButton={<CippAddEquipmentDrawer />}
+      cardButton={<CippAddEquipmentDrawer requiredPermissions={cardButtonPermissions} />}
     />
   );
 };

@@ -6,6 +6,7 @@ import { CippAddRoomDrawer } from "../../../../../components/CippComponents/Cipp
 
 const Page = () => {
   const pageTitle = "Rooms";
+  const cardButtonPermissions = ["Exchange.Room.ReadWrite"];
 
   const actions = [
     {
@@ -69,7 +70,7 @@ const Page = () => {
         "countryOrRegion",
         "hiddenFromAddressListsEnabled",
       ]}
-      cardButton={<CippAddRoomDrawer />}
+      cardButton={<CippAddRoomDrawer requiredPermissions={cardButtonPermissions} />}
     />
   );
 };
