@@ -183,6 +183,18 @@ const Page = () => {
             </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
               <CippFormComponent
+                type="textField"
+                label="Reason"
+                name="reason"
+                placeholder="Enter the reason for adding this JIT Admin"
+                multiline
+                rows={3}
+                formControl={formControl}
+                validators={{ required: "A reason is required" }}
+              />
+            </Grid>
+            <Grid size={{ md: 12, xs: 12 }}>
+              <CippFormComponent
                 type="switch"
                 label="Generate TAP"
                 name="UseTAP"
