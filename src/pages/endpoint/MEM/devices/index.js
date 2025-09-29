@@ -18,7 +18,6 @@ import {
   Recycling,
   ManageAccounts,
 } from "@mui/icons-material";
-import { validate } from "numeral";
 
 const Page = () => {
   const pageTitle = "Devices";
@@ -131,6 +130,7 @@ const Page = () => {
       data: {
         GUID: "azureADDeviceId",
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to retrieve the local admin password?",
     },
     {
@@ -142,6 +142,7 @@ const Page = () => {
         GUID: "id",
         Action: "RotateLocalAdminPassword",
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to rotate the password for [deviceName]?",
     },
     {
@@ -152,6 +153,7 @@ const Page = () => {
       data: {
         GUID: "azureADDeviceId",
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to retrieve the BitLocker keys?",
     },
     {
@@ -164,6 +166,7 @@ const Page = () => {
         Action: "WindowsDefenderScan",
         quickScan: false,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to perform a full scan on [deviceName]?",
     },
     {
@@ -176,6 +179,7 @@ const Page = () => {
         Action: "WindowsDefenderScan",
         quickScan: true,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to perform a quick scan on [deviceName]?",
     },
     {
@@ -187,6 +191,7 @@ const Page = () => {
         GUID: "id",
         Action: "windowsDefenderUpdateSignatures",
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText:
         "Are you sure you want to update the Windows Defender signatures for [deviceName]?",
     },
@@ -200,7 +205,8 @@ const Page = () => {
         Action: "createDeviceLogCollectionRequest",
       },
       condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to generate logs and ship these to MEM?",
+      confirmText:
+        "Are you sure you want to generate logs for device [deviceName] and ship these to MEM?",
     },
     {
       label: "Fresh Start (Remove user data)",
@@ -239,6 +245,7 @@ const Page = () => {
         keepUserData: false,
         keepEnrollmentData: true,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to wipe [deviceName], and retain enrollment data?",
     },
     {
@@ -252,6 +259,7 @@ const Page = () => {
         keepUserData: false,
         keepEnrollmentData: false,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to wipe [deviceName], and remove enrollment data?",
     },
     {
@@ -266,6 +274,7 @@ const Page = () => {
         keepUserData: false,
         useProtectedWipe: true,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText:
         "Are you sure you want to wipe [deviceName]? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
     },
@@ -281,6 +290,7 @@ const Page = () => {
         keepUserData: false,
         useProtectedWipe: true,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText:
         "Are you sure you want to wipe [deviceName]? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
     },
