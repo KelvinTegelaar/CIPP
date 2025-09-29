@@ -128,6 +128,7 @@ const Page = () => {
                             createDialog.handleOpen();
                           }}
                           variant="contained"
+                          disabled={secureScoreControl.controlName.startsWith("scid_")}
                         >
                           Change Status
                         </Button>
