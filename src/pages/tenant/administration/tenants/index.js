@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Edit } from "@mui/icons-material";
+import { DeleteOutline, Edit } from "@mui/icons-material";
 import tabOptions from "./tabOptions";
 
 const Page = () => {
@@ -33,6 +33,15 @@ const Page = () => {
       label: "Configure Backup",
       link: "/tenant/standards/manage-drift/configuration-backup?tenantFilter=[defaultDomainName]",
       icon: <Edit />,
+    },
+    {
+      label: "Delete Capabilities Cache",
+      type: "GET",
+      url: "/api/RemoveTenantCapabilitiesCache",
+      data: { defaultDomainName: "defaultDomainName" },
+      confirmText: "Are you sure you want to delete the capabilities cache for this tenant?",
+      color: "info",
+      icon: <DeleteOutline />,
     },
   ];
 
