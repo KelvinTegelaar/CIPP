@@ -166,7 +166,6 @@ const Page = () => {
         Action: "WindowsDefenderScan",
         quickScan: false,
       },
-      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to perform a full scan on [deviceName]?",
     },
     {
@@ -179,7 +178,6 @@ const Page = () => {
         Action: "WindowsDefenderScan",
         quickScan: true,
       },
-      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to perform a quick scan on [deviceName]?",
     },
     {
@@ -191,7 +189,6 @@ const Page = () => {
         GUID: "id",
         Action: "windowsDefenderUpdateSignatures",
       },
-      condition: (row) => row.operatingSystem === "Windows",
       confirmText:
         "Are you sure you want to update the Windows Defender signatures for [deviceName]?",
     },
@@ -317,7 +314,7 @@ const Page = () => {
         GUID: "id",
         Action: "delete",
       },
-      confirmText: "Are you sure you want to retire [deviceName]?",
+      confirmText: "Are you sure you want to delete [deviceName]?",
     },
     {
       label: "Retire device",
