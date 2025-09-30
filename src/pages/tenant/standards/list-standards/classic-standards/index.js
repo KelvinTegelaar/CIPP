@@ -3,12 +3,13 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import Link from "next/link";
-import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub } from "@mui/icons-material";
+import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub, ContentCopy } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "../tabOptions.json";
+import { useSettings } from "/src/hooks/use-settings.js";
 
 const Page = () => {
   const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });
@@ -18,11 +19,13 @@ const Page = () => {
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
+
+  const currentTenant = useSettings().currentTenant;
   const pageTitle = "Templates";
   const actions = [
     {
       label: "View Tenant Report",
-      link: "/tenant/standards/compare?templateId=[GUID]",
+      link: "/tenant/standards/manage-drift/compare?templateId=[GUID]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",
@@ -37,13 +40,26 @@ const Page = () => {
     },
     {
       label: "Clone & Edit Template",
-      link: "/tenant/standards/template?id=[GUID]&clone=true",
+      link: "/tenant/standards/template?id=[GUID]&clone=true&type=[type]",
       icon: <CopyAll />,
       color: "success",
       target: "_self",
     },
     {
-      label: "Run Template Now (Currently Selected Tenant only)",
+      label: "Create Drift Clone",
+      type: "POST",
+      url: "/api/ExecDriftClone",
+      icon: <ContentCopy />,
+      color: "warning",
+      data: {
+        id: "GUID",
+      },
+      confirmText:
+        "Are you sure you want to create a drift clone of [templateName]? This will create a new drift template based on this template.",
+      multiPost: false,
+    },
+    {
+      label: `Run Template Now (${currentTenant || "Currently Selected Tenant"})`,
       type: "GET",
       url: "/api/ExecStandardsRun",
       icon: <PlayArrow />,

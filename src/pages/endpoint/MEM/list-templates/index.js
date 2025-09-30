@@ -1,12 +1,16 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Edit, GitHub } from "@mui/icons-material";
+import { Edit, GitHub, LocalOffer } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { ApiGetCall } from "/src/api/ApiCall";
+import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
+import { PermissionButton } from "/src/utils/permissions.js";
 
 const Page = () => {
   const pageTitle = "Available Endpoint Manager Templates";
+  const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
+
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
@@ -41,6 +45,27 @@ const Page = () => {
         "Enter the new name and description for the template. Warning: This will disconnect the template from a template library if applied.",
       multiPost: false,
       icon: <PencilIcon />,
+      color: "info",
+    },
+    {
+      label: "Add to package",
+      type: "POST",
+      url: "/api/ExecSetPackageTag",
+      data: { GUID: "GUID" },
+      fields: [
+        {
+          type: "textField",
+          name: "Package",
+          label: "Package Name",
+          required: true,
+          validators: {
+            required: { value: true, message: "Package name is required" },
+          },
+        },
+      ],
+      confirmText: "Enter the package name to assign to the selected template(s).",
+      multiPost: true,
+      icon: <LocalOffer />,
       color: "info",
     },
     {
@@ -104,16 +129,27 @@ const Page = () => {
     size: "lg",
   };
 
-  const simpleColumns = ["displayName", "description", "Type"];
+  const simpleColumns = ["displayName", "package", "description", "Type"];
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListIntuneTemplates?View=true"
-      actions={actions}
-      offCanvas={offCanvas}
-      simpleColumns={simpleColumns}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl="/api/ListIntuneTemplates?View=true"
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={simpleColumns}
+        queryKey="ListIntuneTemplates-table"
+        cardButton={
+          <CippPolicyImportDrawer
+            buttonText="Browse Catalog"
+            requiredPermissions={cardButtonPermissions}
+            PermissionButton={PermissionButton}
+            mode="Intune"
+          />
+        }
+      />
+    </>
   );
 };
 

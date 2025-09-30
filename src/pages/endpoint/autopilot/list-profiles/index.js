@@ -1,14 +1,24 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import Link from "next/link";
-import { AccountCircle } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
+import { CippAutopilotProfileDrawer } from "/src/components/CippComponents/CippAutopilotProfileDrawer";
 
 const Page = () => {
   const pageTitle = "Autopilot Profiles";
 
-  const actions = [];
+  const actions = [
+    {
+      label: "Delete Profile",
+      icon: <Delete />,
+      type: "POST",
+      url: "/api/RemoveAutopilotConfig",
+      data: { ID: "id", displayName: "displayName", assignments: "assignments" },
+      confirmText:
+        "Are you sure you want to delete this Autopilot profile? This action cannot be undone.",
+      color: "danger",
+    },
+  ];
 
   const offCanvas = {
     children: (row) => <CippJsonView object={row} type="intune" />,
@@ -32,13 +42,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/endpoint/autopilot/list-profiles/add"
-            startIcon={<AccountCircle />}
-          >
-            Add Profile
-          </Button>
+          <CippAutopilotProfileDrawer />
         </>
       }
     />

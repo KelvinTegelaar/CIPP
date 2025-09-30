@@ -22,8 +22,97 @@ import {
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 import { useSettings } from "/src/hooks/use-settings.js";
 import { usePermissions } from "../../hooks/use-permissions";
+import { Stack, Grid, Tooltip, Box } from "@mui/material";
+import CippFormComponent from "./CippFormComponent";
+import { useForm, useWatch } from "react-hook-form";
 
-export const CippUserActions = () => {
+// Separate component for Out of Office form to avoid hook issues
+const OutOfOfficeForm = ({ formControl }) => {
+  // Watch the Auto Reply State value
+  const autoReplyState = useWatch({
+    control: formControl.control,
+    name: "ooo.AutoReplyState",
+  });
+
+  // Calculate if date fields should be disabled
+  const areDateFieldsDisabled = autoReplyState?.value !== "Scheduled";
+
+  return (
+    <>
+      <CippFormComponent
+        type="autoComplete"
+        name="AutoReplyState"
+        label="Auto Reply State"
+        multiple={false}
+        formControl={formControl}
+        creatable={false}
+        options={[
+          { label: "Enabled", value: "Enabled" },
+          { label: "Disabled", value: "Disabled" },
+          { label: "Scheduled", value: "Scheduled" },
+        ]}
+      />
+
+      <Tooltip
+        title={
+          areDateFieldsDisabled
+            ? "Scheduling is only available when Auto Reply State is set to Scheduled"
+            : ""
+        }
+        placement="bottom"
+      >
+        <Box>
+          <CippFormComponent
+            type="datePicker"
+            label="Start Date/Time"
+            name="StartTime"
+            formControl={formControl}
+            disabled={areDateFieldsDisabled}
+          />
+        </Box>
+      </Tooltip>
+
+      <Tooltip
+        title={
+          areDateFieldsDisabled
+            ? "Scheduling is only available when Auto Reply State is set to Scheduled"
+            : ""
+        }
+        placement="bottom"
+      >
+        <Box>
+          <CippFormComponent
+            type="datePicker"
+            label="End Date/Time"
+            name="EndTime"
+            formControl={formControl}
+            disabled={areDateFieldsDisabled}
+          />
+        </Box>
+      </Tooltip>
+
+      <CippFormComponent
+        type="richText"
+        label="Internal Message"
+        name="InternalMessage"
+        formControl={formControl}
+        multiline
+        rows={4}
+      />
+
+      <CippFormComponent
+        type="richText"
+        label="External Message"
+        name="ExternalMessage"
+        formControl={formControl}
+        multiline
+        rows={4}
+      />
+    </>
+  );
+};
+
+export const useCippUserActions = () => {
   const tenant = useSettings().currentTenant;
 
   const { checkPermissions } = usePermissions();
@@ -115,7 +204,7 @@ export const CippUserActions = () => {
       type: "POST",
       icon: <LockPerson />,
       url: "/api/ExecPerUserMFA",
-      data: { userId: "userPrincipalName", tenantFilter: "Tenant" },
+      data: { userId: "id", userPrincipalName: "userPrincipalName" },
       fields: [
         {
           type: "autoComplete",
@@ -179,25 +268,10 @@ export const CippUserActions = () => {
       url: "/api/ExecSetOoO",
       data: {
         userId: "userPrincipalName",
-        AutoReplyState: { value: "Enabled" },
         tenantFilter: "Tenant",
       },
-      fields: [{ type: "richText", name: "input", label: "Out of Office Message" }],
+      children: ({ formHook: formControl }) => <OutOfOfficeForm formControl={formControl} />,
       confirmText: "Are you sure you want to set the out of office?",
-      multiPost: false,
-      condition: () => canWriteMailbox,
-    },
-
-    {
-      label: "Disable Out of Office",
-      type: "POST",
-      icon: <NoMeetingRoom />,
-      url: "/api/ExecSetOoO",
-      data: {
-        userId: "userPrincipalName",
-        AutoReplyState: { value: "Disabled" },
-      },
-      confirmText: "Are you sure you want to disable the out of office for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteMailbox,
     },
@@ -435,7 +509,7 @@ export const CippUserActions = () => {
       },
       confirmText: "Are you sure you want to clear the Immutable ID for [userPrincipalName]?",
       multiPost: false,
-      condition: (row) => !row.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
+      condition: (row) => !row?.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
     },
     {
       label: "Revoke all user sessions",
@@ -465,21 +539,30 @@ export const CippUserActions = () => {
       customFunction: (users, action, formData) => {
         // Handle both single user and multiple users
         const userData = Array.isArray(users) ? users : [users];
-        
+
         // Store users in session storage to avoid URL length limits
-        sessionStorage.setItem('patchWizardUsers', JSON.stringify(userData));
-        
+        sessionStorage.setItem("patchWizardUsers", JSON.stringify(userData));
+
         // Use Next.js router for internal navigation
-        import('next/router').then(({ default: router }) => {
-          router.push('/identity/administration/users/patch-wizard');
-        }).catch(() => {
-          // Fallback to window.location if router is not available
-          window.location.href = '/identity/administration/users/patch-wizard';
-        });
+        import("next/router")
+          .then(({ default: router }) => {
+            router.push("/identity/administration/users/patch-wizard");
+          })
+          .catch(() => {
+            // Fallback to window.location if router is not available
+            window.location.href = "/identity/administration/users/patch-wizard";
+          });
       },
       condition: () => canWriteUser,
     },
   ];
+};
+
+// Legacy wrapper function for backward compatibility - but this should not be used
+// Instead, components should use the useCippUserActions hook
+export const CippUserActions = () => {
+  console.warn("CippUserActions() function is deprecated. Use useCippUserActions() hook instead.");
+  return useCippUserActions();
 };
 
 export default CippUserActions;
