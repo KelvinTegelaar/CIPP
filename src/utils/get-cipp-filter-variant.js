@@ -40,7 +40,6 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
   //First key based filters
   switch (tailKey) {
     case "assignedLicenses":
-      console.log("Assigned Licenses Filter", sampleValue, values);
 
       // Extract unique licenses from the data if available
       let filterSelectOptions = [];
