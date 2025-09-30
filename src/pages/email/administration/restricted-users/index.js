@@ -37,8 +37,11 @@ const Page = () => {
           limits.
         </strong>
         <br />
-        This typically indicates a compromised account. Before unblocking, ensure you have properly
-        secured the account. Recommended actions include:
+        This typically indicates a compromised account.{" "}
+        <a href="https://aka.ms/O365-compromise" target="_blank" rel="noopener noreferrer">
+          Before unblocking, ensure you have properly secured the account.
+        </a>
+        Recommended actions include:
         <ul>
           <li>Checked for suspicious sign-ins and activities</li>
           <li>Reviewed their mailbox rules and forwarding settings</li>
