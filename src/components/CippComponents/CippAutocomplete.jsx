@@ -208,9 +208,9 @@ export const CippAutoComplete = (props) => {
     return finalOptions;
   }, [api, usedOptions, options, removeOptions, sortOptions]);
 
-  // Dedicated effect for handling preselected value - only runs once
+  // Dedicated effect for handling preselected value or auto-select first item - only runs once
   useEffect(() => {
-    if (preselectedValue && memoizedOptions.length > 0 && !hasPreselectedRef.current) {
+    if (memoizedOptions.length > 0 && !hasPreselectedRef.current) {
       // Check if we should skip preselection due to existing defaultValue
       const hasDefaultValue =
         defaultValue && (Array.isArray(defaultValue) ? defaultValue.length > 0 : true);
@@ -223,9 +223,16 @@ export const CippAutoComplete = (props) => {
           : !value;
 
         if (shouldPreselect) {
-          const preselectedOption = memoizedOptions.find(
-            (option) => option.value === preselectedValue
-          );
+          let preselectedOption;
+
+          // Handle explicit preselected value
+          if (preselectedValue) {
+            preselectedOption = memoizedOptions.find((option) => option.value === preselectedValue);
+          }
+          // Handle auto-select first item from API
+          else if (api?.autoSelectFirstItem && memoizedOptions.length > 0) {
+            preselectedOption = memoizedOptions[0];
+          }
 
           if (preselectedOption) {
             const newValue = multiple ? [preselectedOption] : preselectedOption;
@@ -237,7 +244,15 @@ export const CippAutoComplete = (props) => {
         }
       }
     }
-  }, [preselectedValue, defaultValue, value, memoizedOptions, multiple, onChange]);
+  }, [
+    preselectedValue,
+    defaultValue,
+    value,
+    memoizedOptions,
+    multiple,
+    onChange,
+    api?.autoSelectFirstItem,
+  ]);
 
   // Create a stable key that only changes when necessary inputs change
   const stableKey = useMemo(() => {
