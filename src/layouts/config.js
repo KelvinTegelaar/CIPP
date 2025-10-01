@@ -584,6 +584,11 @@ export const nativeMenuItems = [
             permissions: ["Exchange.SpamFilter.*"],
           },
           {
+            title: "Restricted Users",
+            path: "/email/administration/restricted-users",
+            permissions: ["Exchange.Mailbox.*"],
+          },
+          {
             title: "Tenant Allow/Block Lists",
             path: "/email/administration/tenant-allow-block-lists",
             permissions: ["Exchange.SpamFilter.*"],
