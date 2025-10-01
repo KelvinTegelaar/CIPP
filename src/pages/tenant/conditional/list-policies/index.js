@@ -5,12 +5,10 @@ import {
   Check as CheckIcon,
   Delete as DeleteIcon,
   MenuBook as MenuBookIcon,
-  AddModerator as AddModeratorIcon,
   Visibility as VisibilityIcon,
   Edit as EditIcon,
 } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
-import Link from "next/link";
+import { Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
 
@@ -18,6 +16,7 @@ import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCA
 const Page = () => {
   const pageTitle = "Conditional Access";
   const apiUrl = "/api/ListConditionalAccessPolicies";
+  const cardButtonPermissions = ["Tenant.ConditionalAccess.ReadWrite"];
 
   // Actions configuration
   const actions = [
@@ -159,7 +158,7 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <CippCADeployDrawer />
+          <CippCADeployDrawer requiredPermissions={cardButtonPermissions} />
         </>
       }
       title={pageTitle}
