@@ -965,10 +965,18 @@
     "name": "standards.DisableGuests",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "helpText": "Blocks login for guest users that have not logged in for 90 days",
-    "executiveText": "Automatically disables external guest accounts that haven't been used for 90 days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
-    "addedComponent": [],
-    "label": "Disable Guest accounts that have not logged on for 90 days",
+    "helpText": "Blocks login for guest users that have not logged in for a number of days",
+    "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.DisableGuests.days",
+        "required": true,
+        "defaultValue": 90,
+        "label": "Days of inactivity"
+      }
+    ],
+    "label": "Disable Guest accounts that have not logged on for a number of days",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2022-10-20",
