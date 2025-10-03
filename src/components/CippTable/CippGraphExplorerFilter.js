@@ -163,7 +163,7 @@ const CippGraphExplorerFilter = ({
   }, [currentEndpoint, debouncedRefetch]);
 
   const savePresetApi = ApiPostCall({
-    relatedQueryKeys: ["ListGraphExplorerPresets", "ListGraphRequest", ...relatedQueryKeys],
+    relatedQueryKeys: ["ListGraphExplorerPresets*", "ListGraphRequest", ...relatedQueryKeys],
   });
 
   // Save preset function
