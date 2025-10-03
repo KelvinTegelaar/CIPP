@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { TextField } from "@mui/material";
 import { CippVariableAutocomplete } from "./CippVariableAutocomplete";
+import { useSettings } from "/src/hooks/use-settings.js";
 
 /**
  * Enhanced TextField that supports custom variable autocomplete
@@ -9,8 +10,7 @@ import { CippVariableAutocomplete } from "./CippVariableAutocomplete";
 export const CippTextFieldWithVariables = ({
   value = "",
   onChange,
-  tenantFilter = null,
-  includeSystemVariables = true,
+  includeSystemVariables = false,
   ...textFieldProps
 }) => {
   const [showAutocomplete, setShowAutocomplete] = useState(false);
@@ -18,6 +18,9 @@ export const CippTextFieldWithVariables = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [cursorPosition, setCursorPosition] = useState(0);
   const textFieldRef = useRef(null);
+
+  const tenant = useSettings().currentTenant;
+  const tenantFilter = tenant || null;
 
   // Debug showAutocomplete state changes
   useEffect(() => {

@@ -13,7 +13,7 @@ export const CippVariableAutocomplete = ({
   onSelect,
   searchQuery = "",
   tenantFilter = null,
-  includeSystemVariables = true,
+  includeSystemVariables = false,
   position = { top: 0, left: 0 }, // Cursor position for floating box
 }) => {
   const theme = useTheme();

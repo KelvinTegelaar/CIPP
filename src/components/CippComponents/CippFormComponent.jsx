@@ -55,7 +55,6 @@ export const CippFormComponent = (props) => {
     helperText,
     disableVariables = false, // Default to false - variables enabled by default
     includeSystemVariables = true, // Include system variables by default
-    tenantFilter = null, // Tenant filter for variable context
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });
@@ -142,7 +141,6 @@ export const CippFormComponent = (props) => {
                     label={label}
                     value={field.value || ""}
                     onChange={field.onChange}
-                    tenantFilter={tenantFilter}
                     includeSystemVariables={includeSystemVariables}
                   />
                 )}

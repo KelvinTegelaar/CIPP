@@ -10,6 +10,10 @@ import { ApiGetCall } from "/src/api/ApiCall";
 export const useCustomVariables = (tenantFilter = null, includeSystemVariables = true) => {
   // Simple, consistent query key using prefix pattern
   // React Query can invalidate with wildcards like "CustomVariables*"
+
+  if (tenantFilter === "AllTenants") {
+    tenantFilter = null; // Normalize to null for global context
+  }
   const queryKey = `CustomVariables-${tenantFilter || "global"}-${
     includeSystemVariables ? "withSystem" : "noSystem"
   }`;
