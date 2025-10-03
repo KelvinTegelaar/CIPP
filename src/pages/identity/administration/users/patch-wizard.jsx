@@ -462,8 +462,8 @@ const ConfirmationStep = (props) => {
       selectedProperties.forEach((propName) => {
         if (propertyValues[propName] !== undefined && propertyValues[propName] !== "") {
           // Handle dot notation properties (e.g., "extension_abc123.customField")
-          if (propName.includes('.')) {
-            const parts = propName.split('.');
+          if (propName.includes(".")) {
+            const parts = propName.split(".");
             let current = userData;
 
             // Navigate to the nested object, creating it if it doesn't exist
@@ -633,13 +633,18 @@ const Page = () => {
 
   // Get unique tenant domains from users
   const tenantDomains = useMemo(() => {
-    return [...new Set(users?.map(user => user.Tenant || user.tenantFilter).filter(Boolean))] || [];
+    return (
+      [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || []
+    );
   }, [users]);
 
   // Fetch custom data mappings for all tenants
   const customDataMappings = ApiGetCall({
-    url: tenantDomains.length > 0 ? `/api/ListCustomDataMappings?sourceType=Manual Entry&directoryObject=User&tenantFilter=${tenantDomains[0]}` : null,
-    queryKey: `ManualEntryMappings-${tenantDomains.join(',')}`,
+    url:
+      tenantDomains.length > 0
+        ? `/api/ListCustomDataMappings?sourceType=Manual Entry&directoryObject=User&tenantFilter=${tenantDomains[0]}`
+        : null,
+    queryKey: `ManualEntryMappings-${tenantDomains.join(",")}`,
     enabled: tenantDomains.length > 0,
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -648,19 +653,17 @@ const Page = () => {
   // Process custom data mappings into property format
   const customDataProperties = useMemo(() => {
     if (customDataMappings.isSuccess && customDataMappings.data?.Results) {
-      return customDataMappings.data.Results
-        .filter(mapping => {
-          // Only include single-value properties, filter out multivalue ones
-          const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase();
-          const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue;
-          return !isMultiValue && dataType !== 'collection';
-        })
-        .map(mapping => ({
-          property: mapping.customDataAttribute.value, // Use the actual attribute name, not nested under customData
-          label: `${mapping.manualEntryFieldLabel} (Custom)`,
-          type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || "string",
-          isCustomData: true,
-        }));
+      return customDataMappings.data.Results.filter((mapping) => {
+        // Only include single-value properties, filter out multivalue ones
+        const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase();
+        const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue;
+        return !isMultiValue && dataType !== "collection";
+      }).map((mapping) => ({
+        property: mapping.customDataAttribute.value, // Use the actual attribute name, not nested under customData
+        label: `${mapping.manualEntryFieldLabel} (Custom)`,
+        type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || "string",
+        isCustomData: true,
+      }));
     }
     return [];
   }, [customDataMappings.isSuccess, customDataMappings.data]);
