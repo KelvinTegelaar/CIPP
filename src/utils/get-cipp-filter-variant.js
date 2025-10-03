@@ -63,7 +63,7 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
             return false;
           }
           const userSkuIds = userLicenses.map((license) => license.skuId).filter(Boolean);
-          return filterValue.every((selectedSkuId) => userSkuIds.includes(selectedSkuId));
+          return filterValue.some((selectedSkuId) => userSkuIds.includes(selectedSkuId));
         },
         filterSelectOptions: filterSelectOptions,
       };
