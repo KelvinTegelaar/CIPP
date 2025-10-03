@@ -278,10 +278,15 @@ export const CIPPTableToptoolbar = ({
         setActiveFilterName(last.name);
 
         if (last.value?.$select) {
-          const selectColumns = last.value.$select
-            .split(",")
-            .map((col) => col.trim())
-            .filter((col) => usedColumns.includes(col));
+          let selectColumns = [];
+          if (Array.isArray(last.value.$select)) {
+            selectColumns = last.value.$select;
+          } else if (typeof last.value.$select === 'string') {
+            selectColumns = last.value.$select
+              .split(",")
+              .map((col) => col.trim())
+              .filter((col) => usedColumns.includes(col));
+          }
           if (selectColumns.length > 0) {
             setConfiguredSimpleColumns(selectColumns);
           }
@@ -1195,8 +1200,8 @@ export const CIPPTableToptoolbar = ({
               let selectedColumns = [];
               if (Array.isArray(filter?.$select)) {
                 selectedColumns = filter?.$select;
-              } else {
-                selectedColumns = filter?.$select.split(",");
+              } else if (typeof filter?.$select === 'string') {
+                selectedColumns = filter.$select.split(",");
               }
               if (selectedColumns.length > 0) {
                 setConfiguredSimpleColumns(selectedColumns);
