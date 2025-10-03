@@ -1304,16 +1304,29 @@ const Page = () => {
                                           JSON.stringify(actualValue) !==
                                             JSON.stringify(standardValueForKey);
 
+                                        // Format the display value
+                                        let displayValue;
+                                        if (typeof value === "object" && value !== null) {
+                                          displayValue = value?.label || JSON.stringify(value, null, 2);
+                                        } else if (value === true) {
+                                          displayValue = "Enabled";
+                                        } else if (value === false) {
+                                          displayValue = "Disabled";
+                                        } else {
+                                          displayValue = String(value);
+                                        }
+
                                         return (
-                                          <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                          <Box key={key} sx={{ display: "flex", mb: 0.5, flexWrap: "wrap" }}>
                                             <Typography
                                               variant="body2"
-                                              sx={{ fontWeight: "medium", mr: 1 }}
+                                              sx={{ fontWeight: "medium", mr: 1, flexShrink: 0 }}
                                             >
                                               {key}:
-                                            </Typography>{" "}
+                                            </Typography>
                                             <Typography
                                               variant="body2"
+                                              component="pre"
                                               sx={{
                                                 color:
                                                   standard.complianceStatus === "Compliant"
@@ -1326,15 +1339,17 @@ const Page = () => {
                                                   isDifferent
                                                     ? "medium"
                                                     : "inherit",
+                                                wordBreak: "break-word",
+                                                overflowWrap: "break-word",
+                                                whiteSpace: "pre-wrap",
+                                                flex: 1,
+                                                minWidth: 0,
+                                                fontFamily: typeof value === "object" && value !== null && !value?.label ? "monospace" : "inherit",
+                                                fontSize: typeof value === "object" && value !== null && !value?.label ? "0.75rem" : "inherit",
+                                                m: 0,
                                               }}
                                             >
-                                              {typeof value === "object" && value !== null
-                                                ? value?.label || JSON.stringify(value)
-                                                : value === true
-                                                ? "Enabled"
-                                                : value === false
-                                                ? "Disabled"
-                                                : String(value)}
+                                              {displayValue}
                                             </Typography>
                                           </Box>
                                         );
