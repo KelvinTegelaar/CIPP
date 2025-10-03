@@ -153,7 +153,7 @@ export function ApiGetCall(props) {
 
 export function ApiPostCall({ relatedQueryKeys, onResult }) {
   const queryClient = useQueryClient();
-  
+
   const mutation = useMutation({
     mutationFn: async (props) => {
       const { url, data, bulkRequest } = props;

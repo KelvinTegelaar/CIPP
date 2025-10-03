@@ -19,8 +19,14 @@ export const CippTextFieldWithVariables = ({
   const [cursorPosition, setCursorPosition] = useState(0);
   const textFieldRef = useRef(null);
 
+  // Debug showAutocomplete state changes
+  useEffect(() => {
+    console.log("showAutocomplete changed to:", showAutocomplete);
+  }, [showAutocomplete]);
+
   // Safely close autocomplete
   const closeAutocomplete = () => {
+    console.log("Closing autocomplete");
     setShowAutocomplete(false);
     setSearchQuery("");
     setAutocompleteAnchor(null);
@@ -49,6 +55,8 @@ export const CippTextFieldWithVariables = ({
     const newValue = event.target.value;
     const cursorPos = event.target.selectionStart;
 
+    console.log("Input changed:", { newValue, cursorPos, lastChar: newValue[cursorPos - 1] });
+
     // Update cursor position state immediately
     setCursorPosition(cursorPos);
 
@@ -59,6 +67,7 @@ export const CippTextFieldWithVariables = ({
 
     // Check if % was just typed
     if (newValue[cursorPos - 1] === "%") {
+      console.log("% detected, opening autocomplete");
       // Position autocomplete near cursor
       setAutocompleteAnchor(textFieldRef.current);
       setSearchQuery("");
@@ -68,13 +77,16 @@ export const CippTextFieldWithVariables = ({
       const lastPercentIndex = newValue.lastIndexOf("%", cursorPos - 1);
       if (lastPercentIndex !== -1) {
         const query = newValue.substring(lastPercentIndex + 1, cursorPos);
+        console.log("Updating search query:", query);
         setSearchQuery(query);
 
         // Close autocomplete if user typed space or special characters (except %)
         if (query.includes(" ") || /[^a-zA-Z0-9_]/.test(query)) {
+          console.log("Closing autocomplete due to invalid characters");
           closeAutocomplete();
         }
       } else {
+        console.log("No % found, closing autocomplete");
         closeAutocomplete();
       }
     }

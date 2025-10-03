@@ -23,6 +23,16 @@ export const CippVariableAutocomplete = ({
   );
   const [filteredVariables, setFilteredVariables] = useState([]);
 
+  // Debug logging for production issues
+  useEffect(() => {
+    console.log("CippVariableAutocomplete - Variables loaded:", {
+      variables: variables?.length || 0,
+      isLoading,
+      tenantFilter,
+      includeSystemVariables,
+    });
+  }, [variables, isLoading, tenantFilter, includeSystemVariables]);
+
   // Filter variables based on search query
   useEffect(() => {
     if (!searchQuery) {
@@ -51,9 +61,25 @@ export const CippVariableAutocomplete = ({
     return null;
   }
 
-  if (filteredVariables.length === 0) {
+  if (isLoading) {
+    console.log("Not rendering autocomplete - still loading variables");
     return null;
   }
+
+  if (!variables || variables.length === 0) {
+    console.log("Not rendering autocomplete - no variables available", { variables });
+    return null;
+  }
+
+  if (filteredVariables.length === 0) {
+    console.log("Not rendering autocomplete - no filtered variables", {
+      searchQuery,
+      totalVariables: variables?.length || 0,
+    });
+    return null;
+  }
+
+  console.log("Rendering autocomplete with", filteredVariables.length, "variables");
 
   return (
     <Popper
