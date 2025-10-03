@@ -18,7 +18,7 @@ const Page = () => {
 
   const addMappingApi = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["MappingsListPage"],
+    relatedQueryKeys: ["MappingsListPage", "ManualEntryMappings*"],
   });
 
   const handleAddMapping = (data) => {
