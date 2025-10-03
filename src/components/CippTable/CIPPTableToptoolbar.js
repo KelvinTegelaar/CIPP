@@ -500,8 +500,8 @@ export const CIPPTableToptoolbar = ({
         let selectedColumns = [];
         if (Array.isArray(filter?.$select)) {
           selectedColumns = filter?.$select;
-        } else {
-          selectedColumns = filter?.$select.split(",");
+        } else if (typeof filter?.$select === 'string') {
+          selectedColumns = filter.$select.split(",");
         }
         if (selectedColumns.length > 0) {
           setConfiguredSimpleColumns(selectedColumns);

@@ -153,11 +153,9 @@ export function ApiGetCall(props) {
 
 export function ApiPostCall({ relatedQueryKeys, onResult }) {
   const queryClient = useQueryClient();
-  console.log("ApiPostCall created with relatedQueryKeys:", relatedQueryKeys);
-
+  
   const mutation = useMutation({
     mutationFn: async (props) => {
-      console.log("ApiPostCall mutationFn called with props:", props);
       const { url, data, bulkRequest } = props;
       if (bulkRequest && Array.isArray(data)) {
         const results = [];
