@@ -53,8 +53,8 @@ export const CippFormComponent = (props) => {
     labelLocation = "behind", // Default location for switches
     defaultValue,
     helperText,
-    disableVariables = false, // Default to false - variables enabled by default
-    includeSystemVariables = true, // Include system variables by default
+    disableVariables = false,
+    includeSystemVariables = false,
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });

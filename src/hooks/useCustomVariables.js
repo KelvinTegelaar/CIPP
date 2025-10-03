@@ -7,7 +7,7 @@ import { ApiGetCall } from "/src/api/ApiCall";
  * @param {boolean} includeSystemVariables - Whether to include system variables
  * @returns {object} { variables, isLoading, error }
  */
-export const useCustomVariables = (tenantFilter = null, includeSystemVariables = true) => {
+export const useCustomVariables = (tenantFilter = null, includeSystemVariables = false) => {
   // Simple, consistent query key using prefix pattern
   // React Query can invalidate with wildcards like "CustomVariables*"
 
@@ -45,19 +45,6 @@ export const useCustomVariables = (tenantFilter = null, includeSystemVariables =
     refetchOnMount: false,
     refetchOnReconnect: false,
     staleTime: 5 * 60 * 1000, // 5 minutes - variables don't change often
-  });
-
-  // Debug logging for production issues
-  console.log("useCustomVariables API call status:", {
-    url: apiUrl,
-    queryKey,
-    isLoading: apiCall.isLoading,
-    isSuccess: apiCall.isSuccess,
-    isError: apiCall.isError,
-    error: apiCall.error,
-    hasData: !!apiCall.data,
-    hasResults: !!apiCall.data?.Results,
-    resultsCount: apiCall.data?.Results?.length || 0,
   });
 
   // Format variables for autocomplete component
