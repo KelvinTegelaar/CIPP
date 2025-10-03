@@ -13,6 +13,7 @@ import {
   Input,
 } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
+import { CippTextFieldWithVariables } from "./CippTextFieldWithVariables";
 import { Controller, useFormState } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
 import CSVReader from "../CSVReader";
@@ -52,6 +53,9 @@ export const CippFormComponent = (props) => {
     labelLocation = "behind", // Default location for switches
     defaultValue,
     helperText,
+    disableVariables = false, // Default to false - variables enabled by default
+    includeSystemVariables = true, // Include system variables by default
+    tenantFilter = null, // Tenant filter for variable context
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });
@@ -121,16 +125,76 @@ export const CippFormComponent = (props) => {
       return (
         <>
           <div>
-            <TextField
-              variant="filled"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              {...other}
-              {...formControl.register(convertedName, { ...validators })}
-              label={label}
-              defaultValue={defaultValue}
+            {!disableVariables ? (
+              <Controller
+                name={convertedName}
+                control={formControl.control}
+                defaultValue={defaultValue || ""}
+                rules={validators}
+                render={({ field }) => (
+                  <CippTextFieldWithVariables
+                    {...other}
+                    variant="filled"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    label={label}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    tenantFilter={tenantFilter}
+                    includeSystemVariables={includeSystemVariables}
+                  />
+                )}
+              />
+            ) : (
+              <TextField
+                variant="filled"
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                {...other}
+                {...formControl.register(convertedName, { ...validators })}
+                label={label}
+                defaultValue={defaultValue}
+              />
+            )}
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {get(errors, convertedName, {})?.message}
+          </Typography>
+          {helperText && (
+            <Typography variant="subtitle3" color="text.secondary">
+              {helperText}
+            </Typography>
+          )}
+        </>
+      );
+    case "textFieldWithVariables":
+      return (
+        <>
+          <div>
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              defaultValue={defaultValue || ""}
+              rules={validators}
+              render={({ field }) => (
+                <CippTextFieldWithVariables
+                  {...other}
+                  variant="filled"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  label={label}
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  tenantFilter={tenantFilter}
+                  includeSystemVariables={includeSystemVariables}
+                />
+              )}
             />
           </div>
           <Typography variant="subtitle3" color="error">

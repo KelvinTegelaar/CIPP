@@ -76,7 +76,25 @@ export function ApiGetCall(props) {
         if (relatedQueryKeys) {
           const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
           setTimeout(() => {
-            clearKeys.forEach((key) => {
+            // Separate wildcard patterns from exact keys
+            const wildcardPatterns = clearKeys
+              .filter((key) => key.endsWith("*"))
+              .map((key) => key.slice(0, -1));
+            const exactKeys = clearKeys.filter((key) => !key.endsWith("*"));
+
+            // Use single predicate call for all wildcard patterns
+            if (wildcardPatterns.length > 0) {
+              queryClient.invalidateQueries({
+                predicate: (query) => {
+                  if (!query.queryKey || !query.queryKey[0]) return false;
+                  const queryKeyStr = String(query.queryKey[0]);
+                  return wildcardPatterns.some((pattern) => queryKeyStr.startsWith(pattern));
+                },
+              });
+            }
+
+            // Handle exact keys
+            exactKeys.forEach((key) => {
               queryClient.invalidateQueries({ queryKey: [key] });
             });
           }, 1000);
@@ -96,7 +114,25 @@ export function ApiGetCall(props) {
         if (relatedQueryKeys) {
           const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
           setTimeout(() => {
-            clearKeys.forEach((key) => {
+            // Separate wildcard patterns from exact keys
+            const wildcardPatterns = clearKeys
+              .filter((key) => key.endsWith("*"))
+              .map((key) => key.slice(0, -1));
+            const exactKeys = clearKeys.filter((key) => !key.endsWith("*"));
+
+            // Use single predicate call for all wildcard patterns
+            if (wildcardPatterns.length > 0) {
+              queryClient.invalidateQueries({
+                predicate: (query) => {
+                  if (!query.queryKey || !query.queryKey[0]) return false;
+                  const queryKeyStr = String(query.queryKey[0]);
+                  return wildcardPatterns.some((pattern) => queryKeyStr.startsWith(pattern));
+                },
+              });
+            }
+
+            // Handle exact keys
+            exactKeys.forEach((key) => {
               queryClient.invalidateQueries({ queryKey: [key] });
             });
           }, 1000);
@@ -117,8 +153,11 @@ export function ApiGetCall(props) {
 
 export function ApiPostCall({ relatedQueryKeys, onResult }) {
   const queryClient = useQueryClient();
+  console.log("ApiPostCall created with relatedQueryKeys:", relatedQueryKeys);
+
   const mutation = useMutation({
     mutationFn: async (props) => {
+      console.log("ApiPostCall mutationFn called with props:", props);
       const { url, data, bulkRequest } = props;
       if (bulkRequest && Array.isArray(data)) {
         const results = [];
@@ -140,17 +179,63 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
       }
     },
     onSuccess: () => {
+      console.log("ApiPostCall onSuccess triggered with relatedQueryKeys:", relatedQueryKeys);
+
       if (relatedQueryKeys) {
         const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
         setTimeout(() => {
           if (relatedQueryKeys === "*") {
+            console.log("Invalidating all queries");
             queryClient.invalidateQueries();
           } else {
-            clearKeys.forEach((key) => {
+            // Separate wildcard patterns from exact keys
+            const wildcardPatterns = clearKeys
+              .filter((key) => key.endsWith("*"))
+              .map((key) => key.slice(0, -1));
+            const exactKeys = clearKeys.filter((key) => !key.endsWith("*"));
+
+            console.log("ApiPostCall Invalidation Debug:", {
+              clearKeys,
+              wildcardPatterns,
+              exactKeys,
+            });
+
+            // Use single predicate call for all wildcard patterns
+            if (wildcardPatterns.length > 0) {
+              console.log("Running predicate invalidation for patterns:", wildcardPatterns);
+              queryClient.invalidateQueries({
+                predicate: (query) => {
+                  if (!query.queryKey || !query.queryKey[0]) return false;
+                  const queryKeyStr = String(query.queryKey[0]);
+                  const matches = wildcardPatterns.some((pattern) =>
+                    queryKeyStr.startsWith(pattern)
+                  );
+
+                  // Debug logging for each query check
+                  if (matches) {
+                    console.log("Invalidating query:", {
+                      queryKey: query.queryKey,
+                      queryKeyStr,
+                      matchedPattern: wildcardPatterns.find((pattern) =>
+                        queryKeyStr.startsWith(pattern)
+                      ),
+                    });
+                  }
+
+                  return matches;
+                },
+              });
+            }
+
+            // Handle exact keys
+            exactKeys.forEach((key) => {
+              console.log("Invalidating exact key:", key);
               queryClient.invalidateQueries({ queryKey: [key] });
             });
           }
         }, 1000);
+      } else {
+        console.log("No relatedQueryKeys provided to ApiPostCall");
       }
     },
   });

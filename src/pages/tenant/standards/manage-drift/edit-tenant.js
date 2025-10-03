@@ -45,7 +45,7 @@ const Page = () => {
   // API call for updating offboarding defaults
   const updateOffboardingDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [`TenantProperties_${currentTenant}`],
+    relatedQueryKeys: [`TenantProperties_${currentTenant}`, "CustomVariables*"],
   });
 
   const { isValid: isFormValid } = useFormState({ control: formControl.control });

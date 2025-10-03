@@ -41,6 +41,7 @@ const CippRoles = () => {
           required: true,
           helperText:
             "Enter a name for the new cloned role. This cannot be the same as an existing role.",
+          disableVariables: true,
         },
       ],
       relatedQueryKeys: ["customRoleList"],

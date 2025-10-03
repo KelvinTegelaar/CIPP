@@ -102,6 +102,7 @@ const CippCustomDataMappingForm = ({ formControl }) => {
       type: "textField",
       required: true,
       placeholder: "Enter field label (e.g., Employee ID, Department)",
+      disableVariables: true,
     },
     {
       name: "directoryObjectType",
