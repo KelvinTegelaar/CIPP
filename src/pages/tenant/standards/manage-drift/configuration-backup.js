@@ -65,7 +65,7 @@ const Page = () => {
   });
 
   // Use the actual backup files as the backup data
-  const filteredBackupData = backupList.data || [];
+  const filteredBackupData = Array.isArray(backupList.data) ? backupList.data : [];
   // Generate backup tags from actual API response items - use raw items directly
   const generateBackupTags = (backup) => {
     // Use the Items array directly from the API response without any translation
@@ -88,9 +88,9 @@ const Page = () => {
   }));
 
   // Process existing backup configuration, find tenantFilter. by comparing settings.currentTenant with Tenant.value
-  const currentConfig = existingBackupConfig.data?.find(
-    (tenant) => tenant.Tenant.value === settings.currentTenant
-  );
+  const currentConfig = Array.isArray(existingBackupConfig.data)
+    ? existingBackupConfig.data.find((tenant) => tenant.Tenant.value === settings.currentTenant)
+    : null;
   const hasExistingConfig = currentConfig && currentConfig.Parameters?.ScheduledBackupValues;
 
   // Create property items for current configuration
