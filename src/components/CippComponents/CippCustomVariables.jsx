@@ -12,8 +12,6 @@ const CippCustomVariables = ({ id }) => {
   // Simple cache invalidation using React Query wildcard support
   const allRelatedKeys = ["CustomVariables*"];
 
-  console.log("CippCustomVariables component - allRelatedKeys:", allRelatedKeys, "id:", id);
-
   const updateCustomVariablesApi = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: allRelatedKeys,

@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Paper, Typography, Box, Chip, Popper, ListItem, useTheme } from "@mui/material";
-import { useCustomVariables } from "/src/hooks/useCustomVariables";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { Paper, Typography, Box, Chip, Popper, ListItem, useTheme, CircularProgress } from "@mui/material";
+import { ApiGetCall } from "/src/api/ApiCall";
+import { useSettings } from "/src/hooks/use-settings.js";
+import { getCippError } from "/src/utils/get-cipp-error";
 
 /**
  * Autocomplete component specifically for custom variables
@@ -18,11 +20,103 @@ export const CippVariableAutocomplete = React.memo(
     position = { top: 0, left: 0 }, // Cursor position for floating box
   }) => {
     const theme = useTheme();
-    const { variables, isLoading, groupedVariables } = useCustomVariables(
-      tenantFilter,
-      includeSystemVariables
-    );
+    const settings = useSettings();
+    
+    // State management similar to CippAutocomplete
+    const [variables, setVariables] = useState([]);
+    const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
     const [filteredVariables, setFilteredVariables] = useState([]);
+
+    // Get current tenant like CippAutocomplete does
+    const currentTenant = tenantFilter || settings.currentTenant;
+
+    // API call using the same pattern as CippAutocomplete
+    const actionGetRequest = ApiGetCall({
+      ...getRequestInfo,
+    });
+
+    // Setup API request when component mounts or tenant changes
+    useEffect(() => {
+      if (open) {
+        // Normalize tenant filter
+        const normalizedTenantFilter = currentTenant === "AllTenants" ? null : currentTenant;
+        
+        // Build API URL
+        let apiUrl = "/api/ListCustomVariables";
+        const params = new URLSearchParams();
+
+        if (normalizedTenantFilter) {
+          params.append("tenantFilter", normalizedTenantFilter);
+        }
+
+        if (!includeSystemVariables) {
+          params.append("includeSystem", "false");
+        }
+
+        if (params.toString()) {
+          apiUrl += `?${params.toString()}`;
+        }
+
+        // Generate query key
+        const queryKey = `CustomVariables-${normalizedTenantFilter || "global"}-${
+          includeSystemVariables ? "withSystem" : "noSystem"
+        }`;
+
+        setGetRequestInfo({
+          url: apiUrl,
+          waiting: true,
+          queryKey: queryKey,
+          staleTime: Infinity, // Never goes stale like in the updated hook
+          refetchOnMount: false,
+          refetchOnReconnect: false,
+          refetchOnWindowFocus: false,
+        });
+      }
+    }, [open, currentTenant, includeSystemVariables]);
+
+    // Process API response like CippAutocomplete does
+    useEffect(() => {
+      if (actionGetRequest.isSuccess && actionGetRequest.data?.Results) {
+        const processedVariables = actionGetRequest.data.Results.map((variable) => ({
+          // Core properties
+          name: variable.Name,
+          variable: variable.Variable,
+          label: variable.Variable, // What shows in autocomplete
+          value: variable.Variable, // What gets inserted
+
+          // Metadata for display and filtering
+          description: variable.Description,
+          type: variable.Type, // 'reserved' or 'custom'
+          category: variable.Category, // 'system', 'tenant', 'partner', 'cipp', 'global', 'tenant-custom'
+
+          // Custom variable specific
+          ...(variable.Type === "custom" && {
+            customValue: variable.Value,
+            scope: variable.Scope,
+          }),
+
+          // For grouping in autocomplete
+          group:
+            variable.Type === "reserved"
+              ? `Reserved (${variable.Category})`
+              : variable.category === "global"
+              ? "Global Custom Variables"
+              : "Tenant Custom Variables",
+        }));
+        
+        setVariables(processedVariables);
+      }
+
+      if (actionGetRequest.isError) {
+        setVariables([{ 
+          label: getCippError(actionGetRequest.error), 
+          value: "error",
+          name: "error",
+          variable: "error",
+          description: "Error loading variables"
+        }]);
+      }
+    }, [actionGetRequest.isSuccess, actionGetRequest.isError, actionGetRequest.data]);
 
     // Filter variables based on search query
     useEffect(() => {
@@ -34,8 +128,8 @@ export const CippVariableAutocomplete = React.memo(
       const lowerQuery = searchQuery.toLowerCase();
       const filtered = variables.filter(
         (variable) =>
-          variable.name.toLowerCase().includes(lowerQuery) ||
-          variable.description.toLowerCase().includes(lowerQuery)
+          variable.name?.toLowerCase().includes(lowerQuery) ||
+          variable.description?.toLowerCase().includes(lowerQuery)
       );
       setFilteredVariables(filtered);
     }, [searchQuery, variables]);
@@ -51,8 +145,36 @@ export const CippVariableAutocomplete = React.memo(
       return null;
     }
 
-    if (isLoading) {
-      return null;
+    // Show loading state like CippAutocomplete
+    if (actionGetRequest.isLoading && (!variables || variables.length === 0)) {
+      return (
+        <Popper
+          open={open}
+          anchorEl={anchorEl}
+          placement="bottom-start"
+          style={{ zIndex: theme.zIndex.modal + 100 }}
+        >
+          <Paper
+            data-cipp-autocomplete="true"
+            elevation={8}
+            sx={{
+              maxWidth: 300,
+              maxHeight: 200,
+              p: 1,
+              borderRadius: 1,
+              backgroundColor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Box display="flex" alignItems="center" gap={1}>
+              <CircularProgress size={16} />
+              <Typography variant="caption" color="text.secondary">
+                Loading variables...
+              </Typography>
+            </Box>
+          </Paper>
+        </Popper>
+      );
     }
 
     if (!variables || variables.length === 0) {
