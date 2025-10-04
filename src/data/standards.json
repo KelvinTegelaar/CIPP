@@ -4846,6 +4846,30 @@
         "type": "textField",
         "required": false,
         "helpText": "Enter the group name(s) to exclude from the assignment. Wildcards are allowed. Multiple group names are comma-seperated."
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "assignmentFilter",
+        "label": "Assignment Filter Name (Optional)",
+        "helpText": "Enter the assignment filter name to apply to this policy assignment. Wildcards are allowed."
+      },
+      {
+        "name": "assignmentFilterType",
+        "label": "Assignment Filter Mode (Optional)",
+        "type": "radio",
+        "required": false,
+        "helpText": "Choose whether to include or exclude devices matching the filter. Only applies if you specified a filter name above. Defaults to Include if not specified.",
+        "options": [
+          {
+            "label": "Include - Assign to devices matching the filter",
+            "value": "include"
+          },
+          {
+            "label": "Exclude - Assign to devices NOT matching the filter",
+            "value": "exclude"
+          }
+        ]
       }
     ]
   },
@@ -4985,6 +5009,35 @@
           "altLabelField": "displayName",
           "valueField": "GUID",
           "queryKey": "ListGroupTemplates"
+        }
+      }
+    ]
+  },
+  {
+    "name": "standards.AssignmentFilterTemplate",
+    "label": "Assignment Filter Template",
+    "multi": true,
+    "cat": "Templates",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "Medium Impact",
+    "addedDate": "2025-10-04",
+    "helpText": "Deploy and manage assignment filter templates.",
+    "executiveText": "Creates standardized assignment filters with predefined settings. These templates ensure consistent assignment filter configurations across the organization, streamlining assignment management.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "assignmentFilterTemplate",
+        "label": "Select Assignment Filter Template",
+        "api": {
+          "url": "/api/ListAssignmentFilterTemplates",
+          "labelField": "Displayname",
+          "altLabelField": "displayName",
+          "valueField": "GUID",
+          "queryKey": "ListAssignmentFilterTemplates"
         }
       }
     ]
