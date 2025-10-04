@@ -6,7 +6,7 @@ import { useCustomVariables } from "/src/hooks/useCustomVariables";
  * Autocomplete component specifically for custom variables
  * Shows when user types % in a text field
  */
-export const CippVariableAutocomplete = ({
+export const CippVariableAutocomplete = React.memo(({
   open,
   anchorEl,
   onClose,
@@ -147,4 +147,4 @@ export const CippVariableAutocomplete = ({
       </Paper>
     </Popper>
   );
-};
+});

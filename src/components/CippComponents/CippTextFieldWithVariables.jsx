@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { TextField } from "@mui/material";
 import { CippVariableAutocomplete } from "./CippVariableAutocomplete";
 import { useSettings } from "/src/hooks/use-settings.js";
@@ -19,15 +19,16 @@ export const CippTextFieldWithVariables = ({
   const [cursorPosition, setCursorPosition] = useState(0);
   const textFieldRef = useRef(null);
 
-  const tenant = useSettings().currentTenant;
-  const tenantFilter = tenant || null;
+  const settings = useSettings();
+  // Memoize tenant filter to prevent unnecessary re-renders
+  const tenantFilter = useMemo(() => settings?.currentTenant || null, [settings?.currentTenant]);
 
   // Safely close autocomplete
-  const closeAutocomplete = () => {
+  const closeAutocomplete = useCallback(() => {
     setShowAutocomplete(false);
     setSearchQuery("");
     setAutocompleteAnchor(null);
-  };
+  }, []);
 
   // Track cursor position
   const handleSelectionChange = () => {
@@ -84,7 +85,7 @@ export const CippTextFieldWithVariables = ({
   };
 
   // Handle variable selection
-  const handleVariableSelect = (variableString) => {
+  const handleVariableSelect = useCallback((variableString) => {
     if (!onChange) {
       return;
     }
@@ -137,7 +138,7 @@ export const CippTextFieldWithVariables = ({
     }
 
     closeAutocomplete();
-  };
+  }, [value, cursorPosition, onChange, closeAutocomplete]);
 
   // Handle key events
   const handleKeyDown = (event) => {
