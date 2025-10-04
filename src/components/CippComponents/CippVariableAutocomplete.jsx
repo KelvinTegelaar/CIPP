@@ -1,5 +1,14 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Paper, Typography, Box, Chip, Popper, ListItem, useTheme, CircularProgress } from "@mui/material";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import {
+  Paper,
+  Typography,
+  Box,
+  Chip,
+  Popper,
+  ListItem,
+  useTheme,
+  CircularProgress,
+} from "@mui/material";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useSettings } from "/src/hooks/use-settings.js";
 import { getCippError } from "/src/utils/get-cipp-error";
@@ -21,11 +30,12 @@ export const CippVariableAutocomplete = React.memo(
   }) => {
     const theme = useTheme();
     const settings = useSettings();
-    
+
     // State management similar to CippAutocomplete
     const [variables, setVariables] = useState([]);
     const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
     const [filteredVariables, setFilteredVariables] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(0); // For keyboard navigation
 
     // Get current tenant like CippAutocomplete does
     const currentTenant = tenantFilter || settings.currentTenant;
@@ -40,7 +50,7 @@ export const CippVariableAutocomplete = React.memo(
       if (open) {
         // Normalize tenant filter
         const normalizedTenantFilter = currentTenant === "AllTenants" ? null : currentTenant;
-        
+
         // Build API URL
         let apiUrl = "/api/ListCustomVariables";
         const params = new URLSearchParams();
@@ -103,18 +113,20 @@ export const CippVariableAutocomplete = React.memo(
               ? "Global Custom Variables"
               : "Tenant Custom Variables",
         }));
-        
+
         setVariables(processedVariables);
       }
 
       if (actionGetRequest.isError) {
-        setVariables([{ 
-          label: getCippError(actionGetRequest.error), 
-          value: "error",
-          name: "error",
-          variable: "error",
-          description: "Error loading variables"
-        }]);
+        setVariables([
+          {
+            label: getCippError(actionGetRequest.error),
+            value: "error",
+            name: "error",
+            variable: "error",
+            description: "Error loading variables",
+          },
+        ]);
       }
     }, [actionGetRequest.isSuccess, actionGetRequest.isError, actionGetRequest.data]);
 
@@ -122,6 +134,7 @@ export const CippVariableAutocomplete = React.memo(
     useEffect(() => {
       if (!searchQuery) {
         setFilteredVariables(variables);
+        setSelectedIndex(0); // Reset selection when filtering
         return;
       }
 
@@ -132,6 +145,7 @@ export const CippVariableAutocomplete = React.memo(
           variable.description?.toLowerCase().includes(lowerQuery)
       );
       setFilteredVariables(filtered);
+      setSelectedIndex(0); // Reset selection when filtering
     }, [searchQuery, variables]);
 
     const handleSelect = (event, value) => {
@@ -140,6 +154,45 @@ export const CippVariableAutocomplete = React.memo(
       }
       onClose();
     };
+
+    // Keyboard navigation handlers
+    const handleKeyDown = useCallback((event) => {
+      if (!open || filteredVariables.length === 0) return;
+
+      switch (event.key) {
+        case 'ArrowDown':
+          event.preventDefault();
+          setSelectedIndex(prev => 
+            prev < filteredVariables.length - 1 ? prev + 1 : 0
+          );
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          setSelectedIndex(prev => 
+            prev > 0 ? prev - 1 : filteredVariables.length - 1
+          );
+          break;
+        case 'Tab':
+        case 'Enter':
+          event.preventDefault();
+          if (filteredVariables[selectedIndex]) {
+            handleSelect(event, filteredVariables[selectedIndex]);
+          }
+          break;
+        case 'Escape':
+          event.preventDefault();
+          onClose();
+          break;
+      }
+    }, [open, filteredVariables, selectedIndex, onClose]);
+
+    // Set up keyboard event listeners
+    useEffect(() => {
+      if (open) {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+      }
+    }, [open, handleKeyDown]);
 
     if (!open) {
       return null;
@@ -211,6 +264,12 @@ export const CippVariableAutocomplete = React.memo(
           {filteredVariables.map((variable, index) => (
             <ListItem
               key={variable.variable}
+              ref={index === selectedIndex ? (el) => {
+                // Scroll selected item into view
+                if (el) {
+                  el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+              } : null}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -223,6 +282,12 @@ export const CippVariableAutocomplete = React.memo(
                 py: 1,
                 px: 2,
                 borderBottom: `1px solid ${theme.palette.divider}`,
+                backgroundColor: index === selectedIndex 
+                  ? theme.palette.action.selected 
+                  : 'transparent',
+                borderLeft: index === selectedIndex 
+                  ? `3px solid ${theme.palette.primary.main}` 
+                  : '3px solid transparent',
                 "&:hover": {
                   backgroundColor: theme.palette.action.hover,
                 },
