@@ -214,7 +214,7 @@ const Page = () => {
                         groupId: group.value,
                         groupName: group.label,
                       })),
-                      customerId: currentTenant,
+                      customerId: tenantDetails.data?.id,
                     };
                     updateTenant.mutate({
                       url: "/api/EditTenant",
