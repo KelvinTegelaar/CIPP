@@ -79,6 +79,7 @@ export const CippAutoComplete = (props) => {
   const [usedOptions, setUsedOptions] = useState(options);
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
   const hasPreselectedRef = useRef(false);
+  const autocompleteRef = useRef(null); // Ref for focusing input after selection
   const filter = createFilterOptions({
     stringify: (option) => JSON.stringify(option),
   });
@@ -276,6 +277,7 @@ export const CippAutoComplete = (props) => {
 
   return (
     <Autocomplete
+      ref={autocompleteRef}
       key={stableKey}
       disabled={disabled || actionGetRequest.isFetching || isFetching}
       popupIcon={
@@ -360,6 +362,17 @@ export const CippAutoComplete = (props) => {
         if (onChange) {
           onChange(newValue, newValue?.addedFields);
         }
+
+        // In multiple mode, refocus the input after selection to allow continuous adding
+        if (multiple && newValue && autocompleteRef.current) {
+          // Use setTimeout to ensure the selection is processed first
+          setTimeout(() => {
+            const input = autocompleteRef.current?.querySelector("input");
+            if (input) {
+              input.focus();
+            }
+          }, 0);
+        }
       }}
       options={memoizedOptions}
       getOptionLabel={useCallback(
@@ -380,6 +393,20 @@ export const CippAutoComplete = (props) => {
         },
         [api]
       )}
+      onKeyDown={(event) => {
+        // Handle Tab key to select highlighted option
+        if (event.key === "Tab" && !event.shiftKey) {
+          // Check if there's a highlighted option
+          const listbox = document.querySelector('[role="listbox"]');
+          const highlightedOption = listbox?.querySelector('[data-focus="true"], .Mui-focused');
+
+          if (highlightedOption && listbox?.style.display !== "none") {
+            event.preventDefault();
+            // Trigger a click on the highlighted option
+            highlightedOption.click();
+          }
+        }
+      }}
       sx={sx}
       renderInput={(params) => (
         <Stack direction="row" spacing={1}>

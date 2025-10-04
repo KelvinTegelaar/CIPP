@@ -156,41 +156,40 @@ export const CippVariableAutocomplete = React.memo(
     };
 
     // Keyboard navigation handlers
-    const handleKeyDown = useCallback((event) => {
-      if (!open || filteredVariables.length === 0) return;
+    const handleKeyDown = useCallback(
+      (event) => {
+        if (!open || filteredVariables.length === 0) return;
 
-      switch (event.key) {
-        case 'ArrowDown':
-          event.preventDefault();
-          setSelectedIndex(prev => 
-            prev < filteredVariables.length - 1 ? prev + 1 : 0
-          );
-          break;
-        case 'ArrowUp':
-          event.preventDefault();
-          setSelectedIndex(prev => 
-            prev > 0 ? prev - 1 : filteredVariables.length - 1
-          );
-          break;
-        case 'Tab':
-        case 'Enter':
-          event.preventDefault();
-          if (filteredVariables[selectedIndex]) {
-            handleSelect(event, filteredVariables[selectedIndex]);
-          }
-          break;
-        case 'Escape':
-          event.preventDefault();
-          onClose();
-          break;
-      }
-    }, [open, filteredVariables, selectedIndex, onClose]);
+        switch (event.key) {
+          case "ArrowDown":
+            event.preventDefault();
+            setSelectedIndex((prev) => (prev < filteredVariables.length - 1 ? prev + 1 : 0));
+            break;
+          case "ArrowUp":
+            event.preventDefault();
+            setSelectedIndex((prev) => (prev > 0 ? prev - 1 : filteredVariables.length - 1));
+            break;
+          case "Tab":
+          case "Enter":
+            event.preventDefault();
+            if (filteredVariables[selectedIndex]) {
+              handleSelect(event, filteredVariables[selectedIndex]);
+            }
+            break;
+          case "Escape":
+            event.preventDefault();
+            onClose();
+            break;
+        }
+      },
+      [open, filteredVariables, selectedIndex, onClose]
+    );
 
     // Set up keyboard event listeners
     useEffect(() => {
       if (open) {
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
       }
     }, [open, handleKeyDown]);
 
@@ -264,12 +263,16 @@ export const CippVariableAutocomplete = React.memo(
           {filteredVariables.map((variable, index) => (
             <ListItem
               key={variable.variable}
-              ref={index === selectedIndex ? (el) => {
-                // Scroll selected item into view
-                if (el) {
-                  el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-                }
-              } : null}
+              ref={
+                index === selectedIndex
+                  ? (el) => {
+                      // Scroll selected item into view
+                      if (el) {
+                        el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                      }
+                    }
+                  : null
+              }
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -282,12 +285,12 @@ export const CippVariableAutocomplete = React.memo(
                 py: 1,
                 px: 2,
                 borderBottom: `1px solid ${theme.palette.divider}`,
-                backgroundColor: index === selectedIndex 
-                  ? theme.palette.action.selected 
-                  : 'transparent',
-                borderLeft: index === selectedIndex 
-                  ? `3px solid ${theme.palette.primary.main}` 
-                  : '3px solid transparent',
+                backgroundColor:
+                  index === selectedIndex ? theme.palette.action.selected : "transparent",
+                borderLeft:
+                  index === selectedIndex
+                    ? `3px solid ${theme.palette.primary.main}`
+                    : "3px solid transparent",
                 "&:hover": {
                   backgroundColor: theme.palette.action.hover,
                 },
