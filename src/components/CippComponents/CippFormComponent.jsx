@@ -124,13 +124,13 @@ export const CippFormComponent = (props) => {
       return (
         <>
           <div>
-            {!disableVariables ? (
-              <Controller
-                name={convertedName}
-                control={formControl.control}
-                defaultValue={defaultValue || ""}
-                rules={validators}
-                render={({ field }) => (
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              defaultValue={defaultValue || ""}
+              rules={validators}
+              render={({ field }) =>
+                !disableVariables ? (
                   <CippTextFieldWithVariables
                     {...other}
                     variant="filled"
@@ -143,21 +143,21 @@ export const CippFormComponent = (props) => {
                     onChange={field.onChange}
                     includeSystemVariables={includeSystemVariables}
                   />
-                )}
-              />
-            ) : (
-              <TextField
-                variant="filled"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                {...other}
-                {...formControl.register(convertedName, { ...validators })}
-                label={label}
-                defaultValue={defaultValue}
-              />
-            )}
+                ) : (
+                  <TextField
+                    variant="filled"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    {...other}
+                    label={label}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )
+              }
+            />
           </div>
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}

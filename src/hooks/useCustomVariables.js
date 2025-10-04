@@ -12,7 +12,7 @@ export const useCustomVariables = (tenantFilter = null, includeSystemVariables =
   const normalizedParams = useMemo(() => {
     // Normalize tenantFilter
     const normalizedTenantFilter = tenantFilter === "AllTenants" ? null : tenantFilter;
-    
+
     // Generate query key
     const queryKey = `CustomVariables-${normalizedTenantFilter || "global"}-${
       includeSystemVariables ? "withSystem" : "noSystem"
@@ -37,7 +37,7 @@ export const useCustomVariables = (tenantFilter = null, includeSystemVariables =
     return {
       queryKey,
       apiUrl,
-      relatedQueryKeys: ["CustomVariables*"]
+      relatedQueryKeys: ["CustomVariables*"],
     };
   }, [tenantFilter, includeSystemVariables]);
 

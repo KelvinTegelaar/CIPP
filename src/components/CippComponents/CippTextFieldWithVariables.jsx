@@ -85,60 +85,64 @@ export const CippTextFieldWithVariables = ({
   };
 
   // Handle variable selection
-  const handleVariableSelect = useCallback((variableString) => {
-    if (!onChange) {
-      return;
-    }
-
-    // Use the value prop instead of DOM value since we're in a controlled component
-    const currentValue = value || "";
-
-    // Get fresh cursor position from the DOM
-    let cursorPos = cursorPosition;
-    if (textFieldRef.current) {
-      const inputElement = textFieldRef.current.querySelector("input") || textFieldRef.current;
-      if (inputElement && typeof inputElement.selectionStart === "number") {
-        cursorPos = inputElement.selectionStart;
+  const handleVariableSelect = useCallback(
+    (variableString) => {
+      if (!onChange) {
+        return;
       }
-    }
 
-    // Find the % that triggered the autocomplete
-    const lastPercentIndex = currentValue.lastIndexOf("%", cursorPos - 1);
+      // Use the value prop instead of DOM value since we're in a controlled component
+      const currentValue = value || "";
 
-    if (lastPercentIndex !== -1) {
-      // Replace from % to cursor position with the selected variable
-      const beforePercent = currentValue.substring(0, lastPercentIndex);
-      const afterCursor = currentValue.substring(cursorPos);
-      const newValue = beforePercent + variableString + afterCursor;
-
-      // Create synthetic event for onChange
-      const syntheticEvent = {
-        target: {
-          name: textFieldRef.current?.name || "",
-          value: newValue,
-        },
-      };
-
-      onChange(syntheticEvent);
-
-      // Set cursor position after the inserted variable
-      setTimeout(() => {
-        if (textFieldRef.current) {
-          const newCursorPos = lastPercentIndex + variableString.length;
-
-          // Access the actual input element for Material-UI TextField
-          const inputElement = textFieldRef.current.querySelector("input") || textFieldRef.current;
-          if (inputElement && inputElement.setSelectionRange) {
-            inputElement.setSelectionRange(newCursorPos, newCursorPos);
-            inputElement.focus();
-          }
-          setCursorPosition(newCursorPos);
+      // Get fresh cursor position from the DOM
+      let cursorPos = cursorPosition;
+      if (textFieldRef.current) {
+        const inputElement = textFieldRef.current.querySelector("input") || textFieldRef.current;
+        if (inputElement && typeof inputElement.selectionStart === "number") {
+          cursorPos = inputElement.selectionStart;
         }
-      }, 0);
-    }
+      }
 
-    closeAutocomplete();
-  }, [value, cursorPosition, onChange, closeAutocomplete]);
+      // Find the % that triggered the autocomplete
+      const lastPercentIndex = currentValue.lastIndexOf("%", cursorPos - 1);
+
+      if (lastPercentIndex !== -1) {
+        // Replace from % to cursor position with the selected variable
+        const beforePercent = currentValue.substring(0, lastPercentIndex);
+        const afterCursor = currentValue.substring(cursorPos);
+        const newValue = beforePercent + variableString + afterCursor;
+
+        // Create synthetic event for onChange
+        const syntheticEvent = {
+          target: {
+            name: textFieldRef.current?.name || "",
+            value: newValue,
+          },
+        };
+
+        onChange(syntheticEvent);
+
+        // Set cursor position after the inserted variable
+        setTimeout(() => {
+          if (textFieldRef.current) {
+            const newCursorPos = lastPercentIndex + variableString.length;
+
+            // Access the actual input element for Material-UI TextField
+            const inputElement =
+              textFieldRef.current.querySelector("input") || textFieldRef.current;
+            if (inputElement && inputElement.setSelectionRange) {
+              inputElement.setSelectionRange(newCursorPos, newCursorPos);
+              inputElement.focus();
+            }
+            setCursorPosition(newCursorPos);
+          }
+        }, 0);
+      }
+
+      closeAutocomplete();
+    },
+    [value, cursorPosition, onChange, closeAutocomplete]
+  );
 
   // Handle key events
   const handleKeyDown = (event) => {
