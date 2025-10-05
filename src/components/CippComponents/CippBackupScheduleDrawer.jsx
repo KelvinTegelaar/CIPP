@@ -34,6 +34,7 @@ export const CippBackupScheduleDrawer = ({
       antiphishing: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
+      CippCustomVariables: true,
     },
   });
 
@@ -58,6 +59,7 @@ export const CippBackupScheduleDrawer = ({
         antiphishing: true,
         CippWebhookAlerts: true,
         CippScriptedAlerts: true,
+        CippCustomVariables: true,
       });
       // Call onSuccess callback if provided
       if (onSuccess) {
@@ -109,6 +111,7 @@ export const CippBackupScheduleDrawer = ({
       antiphishing: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
+      CippCustomVariables: true,
     });
   };
 
@@ -264,6 +267,14 @@ export const CippBackupScheduleDrawer = ({
                 type="switch"
                 label="Scripted Alerts Configuration"
                 name="CippScriptedAlerts"
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Custom Variables"
+                name="CippCustomVariables"
                 formControl={formControl}
               />
             </Grid>

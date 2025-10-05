@@ -35,6 +35,7 @@ export const CippRestoreBackupDrawer = ({
       antiphishing: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
+      CippCustomVariables: true,
       CippStandards: true,
       overwrite: false,
       webhook: false,
@@ -65,6 +66,7 @@ export const CippRestoreBackupDrawer = ({
         antiphishing: true,
         CippWebhookAlerts: true,
         CippScriptedAlerts: true,
+        CippCustomVariables: true,
         CippStandards: true,
         overwrite: false,
         webhook: false,
@@ -103,6 +105,7 @@ export const CippRestoreBackupDrawer = ({
           antiphishing: values.antiphishing,
           CippWebhookAlerts: values.CippWebhookAlerts,
           CippScriptedAlerts: values.CippScriptedAlerts,
+          CippCustomVariables: values.CippCustomVariables,
           overwrite: values.overwrite,
         },
       },
@@ -135,6 +138,7 @@ export const CippRestoreBackupDrawer = ({
       antiphishing: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
+      CippCustomVariables: true,
       CippStandards: true,
       overwrite: false,
       webhook: false,
@@ -301,6 +305,12 @@ export const CippRestoreBackupDrawer = ({
                 type="switch"
                 label="Scripted Alerts Configuration"
                 name="CippScriptedAlerts"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                label="Custom Variables"
+                name="CippCustomVariables"
                 formControl={formControl}
               />
             </Grid>

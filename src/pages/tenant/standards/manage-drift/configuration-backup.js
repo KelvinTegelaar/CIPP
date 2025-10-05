@@ -143,6 +143,7 @@ const Page = () => {
     if (values.antiphishing) enabledComponents.push("Anti-Phishing");
     if (values.CippWebhookAlerts) enabledComponents.push("CIPP Webhook Alerts");
     if (values.CippScriptedAlerts) enabledComponents.push("CIPP Scripted Alerts");
+    if (values.CippCustomVariables) enabledComponents.push("Custom Variables");
 
     return enabledComponents;
   };
