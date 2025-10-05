@@ -599,6 +599,14 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Custom Chocolatey Arguments (include full syntax with flags, supports variables). e.g., --params '/quiet' or --install-arguments '/S /KEY=%customlicensekey%'"
+                name="customArguments"
+                formControl={formControl}
+              />
+            </Grid>
 
             {/* Install Options */}
             <Grid size={{ xs: 12 }}>
