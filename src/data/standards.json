@@ -2292,6 +2292,13 @@
     "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.SafeLinksPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default SafeLinks Policy"
+      },
+      {
         "type": "switch",
         "label": "AllowClickThrough",
         "name": "standards.SafeLinksPolicy.AllowClickThrough"
@@ -2338,6 +2345,13 @@
     ],
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mail tips.",
     "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.AntiPhishPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Anti-Phishing Policy"
+      },
       {
         "type": "number",
         "label": "Phishing email threshold. (Default 1)",
@@ -2549,6 +2563,13 @@
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.SafeAttachmentPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Safe Attachment Policy"
+      },
+      {
         "type": "select",
         "multiple": false,
         "label": "Safe Attachment Action",
@@ -2693,6 +2714,13 @@
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.MalwareFilterPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Malware Policy"
+      },
+      {
         "type": "select",
         "multiple": false,
         "label": "FileTypeAction",
@@ -2813,6 +2841,13 @@
     "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
     "docsDescription": "This standard creates a Spam filter policy similar to the default strict policy, the following settings are configured to on by default: IncreaseScoreWithNumericIps, IncreaseScoreWithRedirectToOtherPort, MarkAsSpamEmptyMessages, MarkAsSpamJavaScriptInHtml, MarkAsSpamSpfRecordHardFail, MarkAsSpamFromAddressAuthFail, MarkAsSpamNdrBackscatter, MarkAsSpamBulkMail, InlineSafetyTipsEnabled, PhishZapEnabled, SpamZapEnabled",
     "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.SpamFilterPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Spam Filter Policy"
+      },
       {
         "type": "number",
         "label": "Bulk email threshold (Default 7)",
