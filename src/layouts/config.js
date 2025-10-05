@@ -446,6 +446,16 @@ export const nativeMenuItems = [
             permissions: ["Endpoint.MEM.*"],
           },
           {
+            title: "Assignment Filters",
+            path: "/endpoint/MEM/assignment-filters",
+            permissions: ["Endpoint.MEM.*"],
+          },
+          {
+            title: "Assignment Filter Templates",
+            path: "/endpoint/MEM/assignment-filter-templates",
+            permissions: ["Endpoint.MEM.*"],
+          },
+          {
             title: "Scripts",
             path: "/endpoint/MEM/list-scripts",
             permissions: ["Endpoint.MEM.*"],
