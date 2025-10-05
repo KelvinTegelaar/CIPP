@@ -759,6 +759,44 @@ export const CippApplicationDeployDrawer = ({
                 defaultValue={true}
               />
             </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Use Custom XML Configuration"
+                name="useCustomXml"
+                formControl={formControl}
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="useCustomXml"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Office Configuration XML"
+                  name="customXml"
+                  formControl={formControl}
+                  multiline
+                  rows={10}
+                  validators={{ required: "Please provide custom XML configuration" }}
+                />
+                <Alert severity="info" sx={{ mt: 1 }}>
+                  Provide a custom Office Configuration XML. When using custom XML, all other
+                  Office configuration options above will be ignored. See{" "}
+                  <a
+                    href="https://config.office.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Office Customization Tool
+                  </a>{" "}
+                  to generate XML.
+                </Alert>
+              </Grid>
+            </CippFormCondition>
 
             {/* Assign To Options */}
             <Grid size={{ xs: 12 }}>
