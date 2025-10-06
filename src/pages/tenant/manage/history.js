@@ -33,7 +33,7 @@ import {
   ExpandMore,
 } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
-import { useSettings } from "../../../../hooks/use-settings";
+import { useSettings } from "../../../hooks/use-settings";
 import { createDriftManagementActions } from "./driftManagementActions";
 
 const Page = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { CippAutoComplete } from "../../../../components/CippComponents/CippAutocomplete";
+import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
 import {
   Button,
   Card,
@@ -30,13 +30,13 @@ import {
   Policy,
 } from "@mui/icons-material";
 import standards from "/src/data/standards.json";
-import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
+import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { SvgIcon } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { useSettings } from "../../../../hooks/use-settings";
-import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
+import { useSettings } from "../../../hooks/use-settings";
+import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
-import { useDialog } from "../../../../hooks/use-dialog";
+import { useDialog } from "../../../hooks/use-dialog";
 import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
 import { ClockIcon } from "@heroicons/react/24/outline";
@@ -172,7 +172,7 @@ const Page = () => {
                         standardId,
                         standardName: `Intune Template: ${
                           expandedTemplate.displayName || expandedTemplate.name || templateId
-                        } (via ${templateItem['TemplateList-Tags'].value})`,
+                        } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
@@ -316,7 +316,7 @@ const Page = () => {
                         standardId,
                         standardName: `Conditional Access Template: ${
                           expandedTemplate.displayName || expandedTemplate.name || templateId
-                        } (via ${templateItem['TemplateList-Tags'].value})`,
+                        } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
@@ -619,15 +619,20 @@ const Page = () => {
   // Simple filter for all templates (no type filtering)
   const templateOptions = templateDetails.data
     ? templateDetails.data.map((template) => ({
-        label: template.displayName || template.templateName || template.name || `Template ${template.GUID}`,
+        label:
+          template.displayName ||
+          template.templateName ||
+          template.name ||
+          `Template ${template.GUID}`,
         value: template.GUID,
       }))
     : [];
 
   // Find currently selected template
-  const selectedTemplateOption = templateId && templateOptions.length
-    ? templateOptions.find((option) => option.value === templateId) || null
-    : null;
+  const selectedTemplateOption =
+    templateId && templateOptions.length
+      ? templateOptions.find((option) => option.value === templateId) || null
+      : null;
 
   // Effect to refetch APIs when templateId changes (needed for shallow routing)
   useEffect(() => {
@@ -1050,7 +1055,7 @@ const Page = () => {
                                   sx={{
                                     wordBreak: "break-word",
                                     overflowWrap: "break-word",
-                                    hyphens: "auto"
+                                    hyphens: "auto",
                                   }}
                                 >
                                   {standard?.standardName}
@@ -1307,7 +1312,8 @@ const Page = () => {
                                         // Format the display value
                                         let displayValue;
                                         if (typeof value === "object" && value !== null) {
-                                          displayValue = value?.label || JSON.stringify(value, null, 2);
+                                          displayValue =
+                                            value?.label || JSON.stringify(value, null, 2);
                                         } else if (value === true) {
                                           displayValue = "Enabled";
                                         } else if (value === false) {
@@ -1317,7 +1323,10 @@ const Page = () => {
                                         }
 
                                         return (
-                                          <Box key={key} sx={{ display: "flex", mb: 0.5, flexWrap: "wrap" }}>
+                                          <Box
+                                            key={key}
+                                            sx={{ display: "flex", mb: 0.5, flexWrap: "wrap" }}
+                                          >
                                             <Typography
                                               variant="body2"
                                               sx={{ fontWeight: "medium", mr: 1, flexShrink: 0 }}
@@ -1344,8 +1353,18 @@ const Page = () => {
                                                 whiteSpace: "pre-wrap",
                                                 flex: 1,
                                                 minWidth: 0,
-                                                fontFamily: typeof value === "object" && value !== null && !value?.label ? "monospace" : "inherit",
-                                                fontSize: typeof value === "object" && value !== null && !value?.label ? "0.75rem" : "inherit",
+                                                fontFamily:
+                                                  typeof value === "object" &&
+                                                  value !== null &&
+                                                  !value?.label
+                                                    ? "monospace"
+                                                    : "inherit",
+                                                fontSize:
+                                                  typeof value === "object" &&
+                                                  value !== null &&
+                                                  !value?.label
+                                                    ? "0.75rem"
+                                                    : "inherit",
                                                 m: 0,
                                               }}
                                             >

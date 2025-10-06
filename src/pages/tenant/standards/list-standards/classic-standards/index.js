@@ -28,7 +28,7 @@ const Page = () => {
   const actions = [
     {
       label: "View Tenant Report",
-      link: "/tenant/standards/manage-drift/compare?templateId=[GUID]",
+      link: "/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[standardId]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",

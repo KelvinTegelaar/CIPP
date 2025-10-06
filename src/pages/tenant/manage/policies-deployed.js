@@ -17,8 +17,8 @@ import { CippHead } from "/src/components/CippComponents/CippHead";
 import { ApiGetCall } from "/src/api/ApiCall";
 import standardsData from "/src/data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
-import { useSettings } from "../../../../hooks/use-settings";
-import { CippAutoComplete } from "../../../../components/CippComponents/CippAutocomplete";
+import { useSettings } from "../../../hooks/use-settings";
+import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
 import { useEffect } from "react";
 
 const PoliciesDeployedPage = () => {
@@ -73,7 +73,7 @@ const PoliciesDeployedPage = () => {
       return "Deployed";
     } else {
       // Check if there's drift data for this standard to get the deviation status
-      const driftData = driftApi.data || [];
+      const driftData = Array.isArray(driftApi.data) ? driftApi.data : [];
 
       // For templates, we need to match against the full template path
       let searchKeys = [standardKey, `standards.${standardKey}`];
@@ -107,7 +107,7 @@ const PoliciesDeployedPage = () => {
 
   // Helper function to get display name from drift data
   const getDisplayNameFromDrift = (standardKey, templateValue = null, templateType = null) => {
-    const driftData = driftApi.data || [];
+    const driftData = Array.isArray(driftApi.data) ? driftApi.data : [];
 
     // For templates, we need to match against the full template path
     let searchKeys = [standardKey, `standards.${standardKey}`];
@@ -328,15 +328,20 @@ const PoliciesDeployedPage = () => {
   // Simple filter for all templates (no type filtering)
   const templateOptions = standardsApi.data
     ? standardsApi.data.map((template) => ({
-        label: template.displayName || template.templateName || template.name || `Template ${template.GUID}`,
+        label:
+          template.displayName ||
+          template.templateName ||
+          template.name ||
+          `Template ${template.GUID}`,
         value: template.GUID,
       }))
     : [];
 
   // Find currently selected template
-  const selectedTemplateOption = templateId && templateOptions.length
-    ? templateOptions.find((option) => option.value === templateId) || null
-    : null;
+  const selectedTemplateOption =
+    templateId && templateOptions.length
+      ? templateOptions.find((option) => option.value === templateId) || null
+      : null;
 
   // Effect to refetch APIs when templateId changes (needed for shallow routing)
   useEffect(() => {
