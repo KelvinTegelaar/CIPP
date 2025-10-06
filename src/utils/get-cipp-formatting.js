@@ -193,8 +193,11 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
 
   // Handle hardware hash fields
   const hardwareHashFields = ["hardwareHash", "Hardware Hash"];
-  if (hardwareHashFields.includes(cellName) || cellNameLower.includes("hardware")) {
-    if (typeof data === "string" && data.length > 15) {
+  if (
+    typeof data === "string" &&
+    (hardwareHashFields.includes(cellName) || cellNameLower.includes("hardware"))
+  ) {
+    if (data.length > 15) {
       return isText ? data : `${data.substring(0, 15)}...`;
     }
     return isText ? data : data;

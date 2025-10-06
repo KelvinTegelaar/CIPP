@@ -40,7 +40,6 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
   //First key based filters
   switch (tailKey) {
     case "assignedLicenses":
-
       // Extract unique licenses from the data if available
       let filterSelectOptions = [];
       if (isOptions && arg.dataArray && Array.isArray(arg.dataArray)) {
@@ -116,4 +115,11 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
       filterFn: "betweenInclusive",
     };
   }
+
+  // Default fallback for any remaining cases - use text filter to avoid localeCompare issues
+  return {
+    filterVariant: "text",
+    sortingFn: "alphanumeric",
+    filterFn: "includes",
+  };
 };

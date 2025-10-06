@@ -27,7 +27,7 @@ const Page = () => {
 
   const simpleColumns = [
     "displayName",
-    "Description",
+    "description",
     "language",
     "extractHardwareHash",
     "deviceNameTemplate",
@@ -36,7 +36,12 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListAutopilotConfig?type=ApProfile"
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        Endpoint: "deviceManagement/windowsAutopilotDeploymentProfiles",
+        $expand: "assignments",
+      }}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
