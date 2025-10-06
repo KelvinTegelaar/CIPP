@@ -28,7 +28,7 @@ const Page = () => {
   const actions = [
     {
       label: "View Tenant Report",
-      link: "/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[standardId]",
+      link: "/tenant/manage/applied-standards/?templateId=[GUID]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",
@@ -186,7 +186,12 @@ const Page = () => {
           <Button component={Link} href="../template" startIcon={<AddBox />} sx={{ mr: 1 }}>
             Add Template
           </Button>
-          <Button component={Link} href="../template?type=drift" startIcon={<AddBox />} sx={{ mr: 1 }}>
+          <Button
+            component={Link}
+            href="../template?type=drift"
+            startIcon={<AddBox />}
+            sx={{ mr: 1 }}
+          >
             Create Drift Template
           </Button>
           <CippPolicyImportDrawer
