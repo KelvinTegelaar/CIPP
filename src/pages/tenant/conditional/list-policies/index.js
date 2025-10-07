@@ -137,6 +137,7 @@ const Page = () => {
 
   // Columns for CippTablePage
   const simpleColumns = [
+    "Tenant",
     "displayName",
     "state",
     "modifiedDateTime",
@@ -164,6 +165,7 @@ const Page = () => {
       }
       title={pageTitle}
       apiUrl={apiUrl}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
@@ -171,5 +173,5 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 export default Page;
