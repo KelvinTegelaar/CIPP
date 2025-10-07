@@ -1,12 +1,13 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import {
-  Block as BlockIcon,
-  Check as CheckIcon,
-  Delete as DeleteIcon,
-  MenuBook as MenuBookIcon,
-  Visibility as VisibilityIcon,
-  Edit as EditIcon,
+  Block,
+  Check,
+  Delete,
+  MenuBook,
+  Visibility,
+  Edit,
+  VerifiedUser,
 } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
@@ -31,59 +32,9 @@ const Page = () => {
         return JSON.parse(data.rawjson);
       },
       hideBulk: true,
-      confirmText: "Are you sure you want to create a template based on this policy?",
-      icon: <MenuBookIcon />,
+      confirmText: `Are you sure you want to create a template based on "[displayName]"?`,
+      icon: <MenuBook />,
       color: "info",
-    },
-    {
-      label: "Enable policy",
-      type: "POST",
-      url: "/api/EditCAPolicy",
-      data: {
-        GUID: "id",
-        State: "!Enabled",
-      },
-      confirmText: "Are you sure you want to enable this policy?",
-      condition: (row) => row.state !== "enabled",
-      icon: <CheckIcon />,
-      color: "info",
-    },
-    {
-      label: "Disable policy",
-      type: "POST",
-      url: "/api/EditCAPolicy",
-      data: {
-        GUID: "id",
-        State: "!Disabled",
-      },
-      confirmText: "Are you sure you want to disable this policy?",
-      condition: (row) => row.state !== "disabled",
-      icon: <BlockIcon />,
-      color: "info",
-    },
-    {
-      label: "Set policy to report only",
-      type: "POST",
-      url: "/api/EditCAPolicy",
-      data: {
-        GUID: "id",
-        State: "!enabledForReportingButNotEnforced",
-      },
-      confirmText: "Are you sure you want to set this policy to report only?",
-      condition: (row) => row.state !== "enabledForReportingButNotEnforced",
-      icon: <VisibilityIcon />,
-      color: "info",
-    },
-    {
-      label: "Delete policy",
-      type: "POST",
-      url: "/api/RemoveCAPolicy",
-      data: {
-        GUID: "id",
-      },
-      confirmText: "Are you sure you want to delete this policy?",
-      icon: <DeleteIcon />,
-      color: "danger",
     },
     {
       label: "Change Display Name",
@@ -92,8 +43,8 @@ const Page = () => {
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to change the display name of this policy?",
-      icon: <EditIcon />,
+      confirmText: `What do you want to change the display name of "[displayName]" to?`,
+      icon: <Edit />,
       color: "info",
       hideBulk: true,
       fields: [
@@ -112,15 +63,65 @@ const Page = () => {
       ],
     },
     {
+      label: "Enable policy",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id",
+        State: "!Enabled",
+      },
+      confirmText: `Are you sure you want to enable "[displayName]"?`,
+      condition: (row) => row.state !== "enabled",
+      icon: <Check />,
+      color: "info",
+    },
+    {
+      label: "Disable policy",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id",
+        State: "!Disabled",
+      },
+      confirmText: `Are you sure you want to disable "[displayName]"?`,
+      condition: (row) => row.state !== "disabled",
+      icon: <Block />,
+      color: "info",
+    },
+    {
+      label: "Set policy to report only",
+      type: "POST",
+      url: "/api/EditCAPolicy",
+      data: {
+        GUID: "id",
+        State: "!enabledForReportingButNotEnforced",
+      },
+      confirmText: `Are you sure you want to set "[displayName]" to report only?`,
+      condition: (row) => row.state !== "enabledForReportingButNotEnforced",
+      icon: <Visibility />,
+      color: "info",
+    },
+    {
       label: "Add service provider exception to policy",
       type: "POST",
       url: "/api/ExecCAServiceExclusion",
       data: {
         GUID: "id",
       },
-      confirmText: "Are you sure you want to add the service provider exception to this policy?",
-      icon: <DeleteIcon />,
+      confirmText: `Are you sure you want to add the service provider exception to "[displayName]"?`,
+      icon: <VerifiedUser />,
       color: "warning",
+    },
+    {
+      label: "Delete policy",
+      type: "POST",
+      url: "/api/RemoveCAPolicy",
+      data: {
+        GUID: "id",
+      },
+      confirmText: `Are you sure you want to delete "[displayName]"?`,
+      icon: <Delete />,
+      color: "danger",
     },
   ];
 
