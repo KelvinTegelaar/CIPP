@@ -251,6 +251,11 @@ const Page = () => {
     if (formControl.getValues("ignoreMissingRoles")) {
       data.ignoreMissingRoles = Boolean(formControl.getValues("ignoreMissingRoles"));
     }
+    if (formControl.getValues("standardsExcludeAllTenants")) {
+      data.standardsExcludeAllTenants = Boolean(
+        formControl.getValues("standardsExcludeAllTenants")
+      );
+    }
 
     startOnboarding.mutate({
       url: "/api/ExecOnboardTenant",
@@ -274,6 +279,11 @@ const Page = () => {
     }
     if (formControl.getValues("ignoreMissingRoles")) {
       data.IgnoreMissingRoles = Boolean(formControl.getValues("ignoreMissingRoles"));
+    }
+    if (formControl.getValues("standardsExcludeAllTenants")) {
+      data.standardsExcludeAllTenants = Boolean(
+        formControl.getValues("standardsExcludeAllTenants")
+      );
     }
 
     startOnboarding.mutate({
@@ -402,6 +412,13 @@ const Page = () => {
                     />
                   </>
                 )}
+                <CippFormComponent
+                  formControl={formControl}
+                  name="standardsExcludeAllTenants"
+                  label="Exclude onboarded tenant from top-level standards"
+                  type="switch"
+                  value={false}
+                />
                 {currentRelationship?.value && (
                   <>
                     {currentRelationship?.addedFields?.accessDetails?.unifiedRoles.some(
