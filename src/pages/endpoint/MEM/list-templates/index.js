@@ -135,7 +135,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} type={"intune"} />,
+    children: (row) => <CippJsonView object={row} type={"intune"} defaultOpen={true} />,
     size: "lg",
   };
 
