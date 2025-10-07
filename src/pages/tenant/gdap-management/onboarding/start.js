@@ -134,13 +134,17 @@ const Page = () => {
           setInvalidRelationship(true);
         }
       }
-      const invite = currentInvites?.data?.pages?.[0]?.find(
-        (invite) => invite?.RowKey === formValue?.value
-      );
+      const invite =
+        currentInvites?.data?.pages?.[0] && Array.isArray(currentInvites.data.pages[0])
+          ? currentInvites.data.pages[0].find((invite) => invite?.RowKey === formValue?.value)
+          : null;
 
-      const onboarding = onboardingList.data?.pages?.[0]?.find(
-        (onboarding) => onboarding?.RowKey === formValue?.value
-      );
+      const onboarding =
+        onboardingList.data?.pages?.[0] && Array.isArray(onboardingList.data.pages[0])
+          ? onboardingList.data.pages[0].find(
+              (onboarding) => onboarding?.RowKey === formValue?.value
+            )
+          : null;
       if (onboarding) {
         setCurrentOnboarding(onboarding);
         var stepCount = 0;
