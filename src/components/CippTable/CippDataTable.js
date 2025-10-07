@@ -56,6 +56,7 @@ export const CippDataTable = (props) => {
     filters,
     maxHeightOffset = "380px",
     defaultSorting = [],
+    isInDialog = false,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
@@ -439,6 +440,7 @@ export const CippDataTable = (props) => {
               setGraphFilterData={setGraphFilterData}
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
               queueMetadata={getRequestData.data?.pages?.[0]?.Metadata}
+              isInDialog={isInDialog}
             />
           )}
         </>
