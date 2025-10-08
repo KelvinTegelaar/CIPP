@@ -33,7 +33,7 @@ import {
   ExpandMore,
 } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
-import { useSettings } from "../../../../hooks/use-settings";
+import { useSettings } from "../../../hooks/use-settings";
 import { createDriftManagementActions } from "./driftManagementActions";
 
 const Page = () => {
@@ -133,14 +133,7 @@ const Page = () => {
     currentTenant: tenant,
   });
 
-  const title = "Manage Drift";
-  const subtitle = [
-    {
-      icon: <Policy />,
-      text: `Template ID: ${templateId || "Loading..."}`,
-    },
-  ];
-
+  const title = "View History";
   // Sort logs by date (newest first)
   const sortedLogs = logsData.data
     ? [...logsData.data].sort((a, b) => new Date(b.DateTime) - new Date(a.DateTime))
@@ -150,7 +143,6 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
-      subtitle={subtitle}
       backUrl="/tenant/standards/list-standards"
       actions={actions}
       actionsData={{}}
