@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
 import {
   Button,
   Card,
@@ -26,15 +27,16 @@ import {
   Close,
   Search,
   FactCheck,
+  Policy,
 } from "@mui/icons-material";
 import standards from "/src/data/standards.json";
-import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
+import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { SvgIcon } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { useSettings } from "../../../../hooks/use-settings";
-import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
+import { useSettings } from "../../../hooks/use-settings";
+import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
-import { useDialog } from "../../../../hooks/use-dialog";
+import { useDialog } from "../../../hooks/use-dialog";
 import { Grid } from "@mui/system";
 import DOMPurify from "dompurify";
 import { ClockIcon } from "@heroicons/react/24/outline";
@@ -170,7 +172,7 @@ const Page = () => {
                         standardId,
                         standardName: `Intune Template: ${
                           expandedTemplate.displayName || expandedTemplate.name || templateId
-                        } (via ${templateItem['TemplateList-Tags'].value})`,
+                        } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
@@ -314,7 +316,7 @@ const Page = () => {
                         standardId,
                         standardName: `Conditional Access Template: ${
                           expandedTemplate.displayName || expandedTemplate.name || templateId
-                        } (via ${templateItem['TemplateList-Tags'].value})`,
+                        } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
@@ -614,12 +616,69 @@ const Page = () => {
   // This represents the total "addressable" compliance (compliant + could be compliant if licensed)
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
+  // Simple filter for all templates (no type filtering)
+  const templateOptions = templateDetails.data
+    ? templateDetails.data.map((template) => ({
+        label:
+          template.displayName ||
+          template.templateName ||
+          template.name ||
+          `Template ${template.GUID}`,
+        value: template.GUID,
+      }))
+    : [];
+
+  // Find currently selected template
+  const selectedTemplateOption =
+    templateId && templateOptions.length
+      ? templateOptions.find((option) => option.value === templateId) || null
+      : null;
+
+  // Effect to refetch APIs when templateId changes (needed for shallow routing)
+  useEffect(() => {
+    if (templateId) {
+      comparisonApi.refetch();
+    }
+  }, [templateId]);
+
   // Prepare title and subtitle for HeaderedTabbedLayout
   const title =
     templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.templateName ||
     "Tenant Report";
 
   const subtitle = [
+    {
+      icon: <Policy />,
+      text: (
+        <CippAutoComplete
+          options={templateOptions}
+          label="Select Template"
+          multiple={false}
+          creatable={false}
+          isFetching={templateDetails.isFetching}
+          defaultValue={selectedTemplateOption}
+          value={selectedTemplateOption}
+          onChange={(selectedTemplate) => {
+            const query = { ...router.query };
+            if (selectedTemplate && selectedTemplate.value) {
+              query.templateId = selectedTemplate.value;
+            } else {
+              delete query.templateId;
+            }
+            router.replace(
+              {
+                pathname: router.pathname,
+                query: query,
+              },
+              undefined,
+              { shallow: true }
+            );
+          }}
+          sx={{ minWidth: 300 }}
+          placeholder="Select a template..."
+        />
+      ),
+    },
     // Add compliance badges when template data is available (show even if no comparison data yet)
     ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
       ? [
@@ -996,7 +1055,7 @@ const Page = () => {
                                   sx={{
                                     wordBreak: "break-word",
                                     overflowWrap: "break-word",
-                                    hyphens: "auto"
+                                    hyphens: "auto",
                                   }}
                                 >
                                   {standard?.standardName}
@@ -1250,16 +1309,33 @@ const Page = () => {
                                           JSON.stringify(actualValue) !==
                                             JSON.stringify(standardValueForKey);
 
+                                        // Format the display value
+                                        let displayValue;
+                                        if (typeof value === "object" && value !== null) {
+                                          displayValue =
+                                            value?.label || JSON.stringify(value, null, 2);
+                                        } else if (value === true) {
+                                          displayValue = "Enabled";
+                                        } else if (value === false) {
+                                          displayValue = "Disabled";
+                                        } else {
+                                          displayValue = String(value);
+                                        }
+
                                         return (
-                                          <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                          <Box
+                                            key={key}
+                                            sx={{ display: "flex", mb: 0.5, flexWrap: "wrap" }}
+                                          >
                                             <Typography
                                               variant="body2"
-                                              sx={{ fontWeight: "medium", mr: 1 }}
+                                              sx={{ fontWeight: "medium", mr: 1, flexShrink: 0 }}
                                             >
                                               {key}:
-                                            </Typography>{" "}
+                                            </Typography>
                                             <Typography
                                               variant="body2"
+                                              component="pre"
                                               sx={{
                                                 color:
                                                   standard.complianceStatus === "Compliant"
@@ -1272,15 +1348,27 @@ const Page = () => {
                                                   isDifferent
                                                     ? "medium"
                                                     : "inherit",
+                                                wordBreak: "break-word",
+                                                overflowWrap: "break-word",
+                                                whiteSpace: "pre-wrap",
+                                                flex: 1,
+                                                minWidth: 0,
+                                                fontFamily:
+                                                  typeof value === "object" &&
+                                                  value !== null &&
+                                                  !value?.label
+                                                    ? "monospace"
+                                                    : "inherit",
+                                                fontSize:
+                                                  typeof value === "object" &&
+                                                  value !== null &&
+                                                  !value?.label
+                                                    ? "0.75rem"
+                                                    : "inherit",
+                                                m: 0,
                                               }}
                                             >
-                                              {typeof value === "object" && value !== null
-                                                ? value?.label || JSON.stringify(value)
-                                                : value === true
-                                                ? "Enabled"
-                                                : value === false
-                                                ? "Disabled"
-                                                : String(value)}
+                                              {displayValue}
                                             </Typography>
                                           </Box>
                                         );
