@@ -22,7 +22,7 @@ This page will allow you to get a snapshot overview of your tenants and their al
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Tenant Report</td><td>Opens <a data-mention href="../compare.md">compare.md</a> for the selected standards template.</td><td>false</td></tr><tr><td>Manage Drift</td><td>Opens the <a data-mention href="../managedrift/">managedrift</a> page to the selected drift standard.</td><td>false</td></tr><tr><td>Remove Drift Customization</td><td>Removes all global and client level overrides from the standard and resets it to the template settings</td><td>true</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Tenant Report</td><td>Opens <a data-mention href="../compare.md">compare.md</a> for the selected standards template.</td><td>false</td></tr><tr><td>Manage Drift</td><td>Opens the <a data-mention href="../manage-drift/">manage-drift</a> page to the selected drift standard.</td><td>false</td></tr><tr><td>Remove Drift Customization</td><td>Removes all global and client level overrides from the standard and resets it to the template settings</td><td>true</td></tr></tbody></table>
 
 ### Known Issues
 

@@ -6,6 +6,10 @@
 [deploy-template.md](deploy-template.md)
 {% endcontent-ref %}
 
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
+
 ### Table Details
 
 The properties returned are for the Exchange PowerShell command `Get-TransportRule`. For more information on the command please see the [Microsoft documentation](https://learn.microsoft.com/en-us/powershell/module/exchange/get-transportrule?view=exchange-ps).&#x20;

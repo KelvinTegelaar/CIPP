@@ -32,24 +32,25 @@ With the launch of CIPP v7, there are now new, more powerful tables at your disp
 
 ### Column Filtering Options
 
-| Filter                   | Description                                                                                                                |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| Fuzzy                    | Will return all results where the value is similar to what is input                                                        |
-| Contains                 | Will return all results where the value contains the input                                                                 |
-| Starts With              | Will return all results where the value starts with the input                                                              |
-| Ends With                | Will return all results where the value ends with the input                                                                |
-| Equals                   | Will return all results where the value exactly matches the input                                                          |
-| Not Equals               | Will return all results where the value does not match the input                                                           |
-| Between                  | Will return all results where the value is in between the inputs. This will not include the inputs in the returned results |
-| Between Inclusive        | Will return all results where the value is in between the inputs. This will include the inputs in the returned results     |
-| Greater Than             | Will return all results where the value is greater than the input                                                          |
-| Greater Than Or Equal To | Will return all results where the value is greater than or equal to the input                                              |
-| Less Than                | Will return all results where the value is less than the input                                                             |
-| Less Than OR Equal To    | Will return all results where the value is less than or equal to the input                                                 |
-| Empty                    | Will return all results where there is no value for this column                                                            |
-| Not Empty                | Will return all results where there is a value for this column                                                             |
-| Not Contains             | Will return all results where the value does not contain the input                                                         |
-| Regex                    | Will return all results that match the Regex search pattern                                                                |
+| Filter                   | Description                                                                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Fuzzy                    | Will return all results where the value is similar to what is input                                                                                    |
+| Contains                 | Will return all results where the value contains the input                                                                                             |
+| Starts With              | Will return all results where the value starts with the input                                                                                          |
+| Ends With                | Will return all results where the value ends with the input                                                                                            |
+| Equals                   | Will return all results where the value exactly matches the input                                                                                      |
+| Not Equals               | Will return all results where the value does not match the input                                                                                       |
+| Between                  | Will return all results where the value is in between the inputs. This will not include the inputs in the returned results                             |
+| Between Inclusive        | Will return all results where the value is in between the inputs. This will include the inputs in the returned results                                 |
+| Greater Than             | Will return all results where the value is greater than the input                                                                                      |
+| Greater Than Or Equal To | Will return all results where the value is greater than or equal to the input                                                                          |
+| Less Than                | Will return all results where the value is less than the input                                                                                         |
+| Less Than OR Equal To    | Will return all results where the value is less than or equal to the input                                                                             |
+| Empty                    | Will return all results where there is no value for this column                                                                                        |
+| Not Empty                | Will return all results where there is a value for this column                                                                                         |
+| Not Contains             | Will return all results where the value does not contain the input                                                                                     |
+| Regex                    | Will return all results that match the Regex search pattern                                                                                            |
+| Boolean (not in list)    | Boolean columns will have a special drop down shown in the filters text entry area that will allow you to filter on `Yes` for true and `No` for false. |
 
 ### Value Display
 
@@ -57,8 +58,8 @@ Some values have special display settings for ease of reading.
 
 | Value Type | Description                                                                                                                                                                                                                             |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Boolean    | Colunns that display information in a Boolean will utilize a graphical representation instead of `true` and `false`. The value for `true` will display as a check mark. The value for `false` will display as a circle with an X in it. |
-| Table      | Columns that retun data in a complex list will an orange button with the number of items in the list. Clicking the button will open a modal that will desplay a second table with the contents of that list.                            |
+| Boolean    | Columns that display information in a Boolean will utilize a graphical representation instead of `true` and `false`. The value for `true` will display as a check mark. The value for `false` will display as a circle with an X in it. |
+| Table      | Columns that return data in a complex list will an orange button with the number of items in the list. Clicking the button will open a modal that will display a second table with the contents of that list.                           |
 
 ### Actions
 

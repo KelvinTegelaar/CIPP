@@ -15,7 +15,7 @@ This page serves as an overview of CIPP Standards.  For the tecnical components 
 Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours** or evaluating drift **every hour**. This automatic enforcement and drift detection prevents unauthorized changes and helps maintain security. There are two kinds of standards:
 
 * Classic: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every three hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
-* Drift: New in v 8.3, drift standards allow for you to manage client environments with a much finer touch. These standards evaluate every hour and allow for granular handling of anything that is out of alignment with the template. As such, drift standards are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with drift standards, see [managedrift](managedrift/ "mention").
+* Drift: New in v 8.3, drift standards allow for you to manage client environments with a much finer touch. These standards evaluate every hour and allow for granular handling of anything that is out of alignment with the template. As such, drift standards are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with drift standards, see [manage-drift](manage-drift/ "mention").
 
 ### Actions
 

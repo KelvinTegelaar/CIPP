@@ -39,6 +39,7 @@ The following tables will get copied into the backup:
 * Config
 * CustomData
 * CustomRoles
+* CustomVariables
 * Domains
 * ExcludedLicenses
 * Extensions - This table does not include the authentication for the extensions. You will need to manually set up the extensions again if you restore from a backup.
