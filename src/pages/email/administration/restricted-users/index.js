@@ -34,8 +34,8 @@ const Page = () => {
       <Alert severity="warning" sx={{ mx: 3, mt: 5, mb: -2 }}>
         <Typography variant="body1">
           <strong>
-            Users in this list have been restricted from sending email due to exceeding outbound spam
-            limits.
+            Users in this list have been restricted from sending email due to exceeding outbound
+            spam limits.
           </strong>
         </Typography>
         <Typography variant="body1" sx={{ mt: 1 }}>
@@ -53,32 +53,26 @@ const Page = () => {
         <Typography variant="body1" sx={{ mt: 1, mb: 1 }}>
           <strong>Recommended actions include:</strong>
         </Typography>
-        <List sx={{ listStyleType: 'disc', pl: 2 }}>
-          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
-            <ListItemText
-              primary="Checked for suspicious sign-ins and activities"
-              sx={{ my: 0 }}
-            />
+        <List sx={{ listStyleType: "disc", pl: 2 }}>
+          <ListItem sx={{ display: "list-item", py: 0.25 }}>
+            <ListItemText primary="Checked for suspicious sign-ins and activities" sx={{ my: 0 }} />
           </ListItem>
-          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+          <ListItem sx={{ display: "list-item", py: 0.25 }}>
             <ListItemText
               primary="Reviewed their mailbox rules and forwarding settings"
               sx={{ my: 0 }}
             />
           </ListItem>
-          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+          <ListItem sx={{ display: "list-item", py: 0.25 }}>
             <ListItemText
               primary="Investigated any unusual mailbox activity, such as unexpected sent items via message trace"
               sx={{ my: 0 }}
             />
           </ListItem>
-          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
-            <ListItemText
-              primary="Reset the user's password if compromised"
-              sx={{ my: 0 }}
-            />
+          <ListItem sx={{ display: "list-item", py: 0.25 }}>
+            <ListItemText primary="Reset the user's password if compromised" sx={{ my: 0 }} />
           </ListItem>
-          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+          <ListItem sx={{ display: "list-item", py: 0.25 }}>
             <ListItemText
               primary="Enabled MFA on the account if not already enabled"
               sx={{ my: 0 }}
