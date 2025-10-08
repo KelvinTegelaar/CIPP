@@ -115,11 +115,4 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
       filterFn: "betweenInclusive",
     };
   }
-
-  // Default fallback for any remaining cases - use text filter to avoid localeCompare issues
-  return {
-    filterVariant: "text",
-    sortingFn: "alphanumeric",
-    filterFn: "includes",
-  };
 };
