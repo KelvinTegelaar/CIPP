@@ -403,12 +403,14 @@ const CippSchedulerForm = (props) => {
                   name={`parameters.${param.Name}`}
                   label={param.Name}
                   formControl={formControl}
+                  helperText={param.Description}
                 />
               ) : param.Type === "System.Collections.Hashtable" ? (
                 <CippFormInputArray
                   formControl={formControl}
                   name={`parameters.${param.Name}`}
                   label={`${param.Name}`}
+                  helperText={param.Description}
                   key={idx}
                 />
               ) : param.Type?.startsWith("System.String") ? (
@@ -418,6 +420,7 @@ const CippSchedulerForm = (props) => {
                   label={param.Name}
                   formControl={formControl}
                   placeholder={`Enter a value for ${param.Name}`}
+                  helperText={param.Description}
                   validators={fieldRequired(param)}
                   required={param.Required}
                 />
@@ -428,6 +431,7 @@ const CippSchedulerForm = (props) => {
                   label={param.Name}
                   formControl={formControl}
                   placeholder={`Enter a value for ${param.Name}`}
+                  helperText={param.Description}
                   validators={fieldRequired(param)}
                   required={param.Required}
                 />

@@ -165,6 +165,12 @@ export const CippWizardOffboarding = (props) => {
                 formControl={formControl}
               />
               <CippFormComponent
+                name="RemoveTeamsPhoneDID"
+                label="Remove Teams Phone DID"
+                type="switch"
+                formControl={formControl}
+              />
+              <CippFormComponent
                 name="DeleteUser"
                 label="Delete user"
                 type="switch"

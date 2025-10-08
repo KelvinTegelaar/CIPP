@@ -1,4 +1,4 @@
-import { Alert, InputAdornment, Typography } from "@mui/material";
+import { Alert, Divider, InputAdornment, Typography } from "@mui/material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
 import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
@@ -41,6 +41,22 @@ const CippAddEditUser = (props) => {
     refetchOnReconnect: false,
     waiting: !!userId,
   });
+
+  // Get manual entry custom data mappings for current tenant
+  const manualEntryMappings = ApiGetCall({
+    url: `/api/ListCustomDataMappings?sourceType=Manual Entry&directoryObject=User&tenantFilter=${tenantDomain}`,
+    queryKey: `ManualEntryMappings-${tenantDomain}`,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+
+  // Use mappings directly since they're already filtered by the API
+  const currentTenantManualMappings = useMemo(() => {
+    if (manualEntryMappings.isSuccess) {
+      return manualEntryMappings.data?.Results || [];
+    }
+    return [];
+  }, [manualEntryMappings.isSuccess, manualEntryMappings.data]);
 
   // Make new list of groups by removing userGroups from tenantGroups
   const filteredTenantGroups = useMemo(() => {
@@ -410,51 +426,96 @@ const CippAddEditUser = (props) => {
           />
         </Grid>
       )}
+      {/* Manual Entry Custom Data Fields */}
+      {currentTenantManualMappings.length > 0 && (
+        <>
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="h6">Custom Data</Typography>
+          </Grid>
+          {currentTenantManualMappings.map((mapping, index) => {
+            const fieldName = `customData.${mapping.customDataAttribute.value}`;
+            const fieldLabel = mapping.manualEntryFieldLabel;
+            const dataType = mapping.customDataAttribute.addedFields.dataType;
+
+            // Determine field type based on the custom data attribute type
+            const getFieldType = (dataType) => {
+              switch (dataType?.toLowerCase()) {
+                case "boolean":
+                  return "switch";
+                case "datetime":
+                case "date":
+                  return "datePicker";
+                case "string":
+                default:
+                  return "textField";
+              }
+            };
+
+            return (
+              <Grid size={{ md: 6, xs: 12 }} key={`manual-entry-${index}`}>
+                <CippFormComponent
+                  type={getFieldType(dataType)}
+                  fullWidth
+                  label={fieldLabel}
+                  name={fieldName}
+                  formControl={formControl}
+                  placeholder={`Enter ${fieldLabel.toLowerCase()}`}
+                />
+              </Grid>
+            );
+          })}
+        </>
+      )}
       {/* Schedule User Creation */}
       {formType === "add" && (
-        <Grid size={{ xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            label="Schedule user creation"
-            name="Scheduled.enabled"
-            formControl={formControl}
-          />
-          <CippFormCondition
-            formControl={formControl}
-            field="Scheduled.enabled"
-            compareType="is"
-            compareValue={true}
-          >
-            <Grid size={{ xs: 12 }}>
-              <label>Scheduled creation Date</label>
-              <CippFormComponent
-                type="datePicker"
-                name="Scheduled.date"
-                formControl={formControl}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <CippFormComponent
-                type="switch"
-                label="Send results to Webhook"
-                name="webhook"
-                formControl={formControl}
-              />
-              <CippFormComponent
-                type="switch"
-                label="Send results to E-mail"
-                name="email"
-                formControl={formControl}
-              />
-              <CippFormComponent
-                type="switch"
-                label="Send results to PSA"
-                name="psa"
-                formControl={formControl}
-              />
-            </Grid>
-          </CippFormCondition>
-        </Grid>
+        <>
+          <Grid size={{ xs: 12 }}>
+            <Divider />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Schedule user creation"
+              name="Scheduled.enabled"
+              formControl={formControl}
+            />
+            <CippFormCondition
+              formControl={formControl}
+              field="Scheduled.enabled"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12 }}>
+                <label>Scheduled creation Date</label>
+                <CippFormComponent
+                  type="datePicker"
+                  name="Scheduled.date"
+                  formControl={formControl}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="switch"
+                  label="Send results to Webhook"
+                  name="webhook"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="switch"
+                  label="Send results to E-mail"
+                  name="email"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="switch"
+                  label="Send results to PSA"
+                  name="psa"
+                  formControl={formControl}
+                />
+              </Grid>
+            </CippFormCondition>
+          </Grid>
+        </>
       )}
     </Grid>
   );
