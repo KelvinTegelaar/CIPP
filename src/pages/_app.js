@@ -27,6 +27,7 @@ import {
   AutoStories,
   Gavel,
   Celebration,
+  ClearAll as ClearAllIcon,
 } from "@mui/icons-material";
 import { SvgIcon } from "@mui/material";
 import discordIcon from "../../public/discord-mark-blue.svg";
@@ -196,6 +197,29 @@ const App = (props) => {
           },
         ]
       : []), // toRemove
+    {
+      // add clear cache action that removes the persisted query cache from local storage and reloads the page
+      id: "clearCache",
+      icon: <ClearAllIcon />,
+      name: "Clear Cache and Reload",
+      onClick: () => {
+        // Clear the TanStack Query cache
+        queryClient.clear();
+
+        // Remove persisted cache from localStorage
+        if (typeof window !== "undefined") {
+          // Remove the persisted query cache keys
+          Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith("REACT_QUERY_OFFLINE_CACHE")) {
+              localStorage.removeItem(key);
+            }
+          });
+        }
+
+        // Force refresh the page to bypass browser cache and reload JavaScript
+        window.location.reload(true);
+      },
+    },
     {
       id: "license",
       icon: <Gavel />,
