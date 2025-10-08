@@ -58,6 +58,7 @@ const CippDataTableButton = ({ data, title, tableTitle = "Data" }) => {
               title={tableTitle}
               data={dialogData}
               simple={false}
+              isInDialog={true}
             />
           </DialogContent>
         </Dialog>

@@ -40,8 +40,6 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
   //First key based filters
   switch (tailKey) {
     case "assignedLicenses":
-      console.log("Assigned Licenses Filter", sampleValue, values);
-
       // Extract unique licenses from the data if available
       let filterSelectOptions = [];
       if (isOptions && arg.dataArray && Array.isArray(arg.dataArray)) {
@@ -64,14 +62,14 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
             return false;
           }
           const userSkuIds = userLicenses.map((license) => license.skuId).filter(Boolean);
-          return filterValue.every((selectedSkuId) => userSkuIds.includes(selectedSkuId));
+          return filterValue.some((selectedSkuId) => userSkuIds.includes(selectedSkuId));
         },
         filterSelectOptions: filterSelectOptions,
       };
     case "accountEnabled":
       return {
         filterVariant: "select",
-        sortingFn: "boolean",
+        sortingFn: "alphanumeric",
         filterFn: "equals",
       };
     case "primDomain":
@@ -117,4 +115,11 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
       filterFn: "betweenInclusive",
     };
   }
+
+  // Default fallback for any remaining cases - use text filter to avoid localeCompare issues
+  return {
+    filterVariant: "text",
+    sortingFn: "alphanumeric",
+    filterFn: "includes",
+  };
 };

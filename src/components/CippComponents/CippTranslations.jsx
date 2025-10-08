@@ -51,4 +51,5 @@ export const CippTranslations = {
   sendtoIntegration: "Send Notifications to Integration",
   includeTenantId: "Include Tenant ID in Notifications",
   logsToInclude: "Logs to Include in notifications",
+  assignmentFilterManagementType: "Filter Type",
 };

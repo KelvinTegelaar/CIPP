@@ -28,6 +28,7 @@ import tabOptions from "./tabOptions.json";
 import standardsData from "/src/data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
 import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton";
+import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
 
 const ManageDriftPage = () => {
   const router = useRouter();
@@ -532,6 +533,13 @@ const ManageDriftPage = () => {
     }
   }, [triggerReport]);
 
+  // Effect to refetch APIs when templateId changes (needed for shallow routing)
+  useEffect(() => {
+    if (templateId) {
+      comparisonApi.refetch();
+    }
+  }, [templateId]);
+
   // Add action buttons to each deviation item
   const deviationItemsWithActions = deviationItems.map((item) => {
     // Check if this is a template that supports delete action
@@ -712,11 +720,53 @@ const ManageDriftPage = () => {
   const missingLicensePercentage = 0; // This would need to be calculated from actual license data
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
+  // Simple filter for drift templates
+  const driftTemplateOptions = standardsApi.data
+    ? standardsApi.data
+        .filter((template) => template.type === "drift" || template.Type === "drift")
+        .map((template) => ({
+          label: template.displayName || template.templateName || template.name || `Template ${template.GUID}`,
+          value: template.GUID,
+        }))
+    : [];
+
+  // Find currently selected template
+  const selectedTemplateOption = templateId && driftTemplateOptions.length
+    ? driftTemplateOptions.find((option) => option.value === templateId) || null
+    : null;
   const title = "Manage Drift";
   const subtitle = [
     {
       icon: <Policy />,
-      text: `Template ID: ${templateId || "Loading..."}`,
+      text: (
+        <CippAutoComplete
+          options={driftTemplateOptions}
+          label="Select Drift Template"
+          multiple={false}
+          creatable={false}
+          isFetching={standardsApi.isFetching}
+          defaultValue={selectedTemplateOption}
+          value={selectedTemplateOption}
+          onChange={(selectedTemplate) => {
+            const query = { ...router.query };
+            if (selectedTemplate && selectedTemplate.value) {
+              query.templateId = selectedTemplate.value;
+            } else {
+              delete query.templateId;
+            }
+            router.replace(
+              {
+                pathname: router.pathname,
+                query: query,
+              },
+              undefined,
+              { shallow: true }
+            );
+          }}
+          sx={{ minWidth: 300 }}
+          placeholder="Select a drift template..."
+        />
+      ),
     },
     // Add compliance badges when data is available
     ...(totalPolicies > 0

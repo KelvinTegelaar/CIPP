@@ -149,6 +149,7 @@ export const CippTenantTable = ({
               type: "textField",
               name: "tenantFilter",
               label: "Default Domain Name or Tenant ID",
+              disableVariables: true,
             },
           ]}
           api={{

@@ -66,6 +66,7 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
             { value: "Reviewer", label: "Reviewer" },
             { value: "LimitedDetails", label: "Limited Details" },
             { value: "AvailabilityOnly", label: "Availability Only" },
+            { value: "None", label: "None" },
           ]}
           multiple={false}
           formControl={formHook}

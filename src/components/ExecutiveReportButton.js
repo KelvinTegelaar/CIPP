@@ -1194,16 +1194,24 @@ const ExecutiveReportDocument = ({
                               const endAngle = currentAngle + angle;
 
                               // Outer arc points
-                              const outerStartX = centerX + outerRadius * Math.cos((startAngle * Math.PI) / 180);
-                              const outerStartY = centerY + outerRadius * Math.sin((startAngle * Math.PI) / 180);
-                              const outerEndX = centerX + outerRadius * Math.cos((endAngle * Math.PI) / 180);
-                              const outerEndY = centerY + outerRadius * Math.sin((endAngle * Math.PI) / 180);
+                              const outerStartX =
+                                centerX + outerRadius * Math.cos((startAngle * Math.PI) / 180);
+                              const outerStartY =
+                                centerY + outerRadius * Math.sin((startAngle * Math.PI) / 180);
+                              const outerEndX =
+                                centerX + outerRadius * Math.cos((endAngle * Math.PI) / 180);
+                              const outerEndY =
+                                centerY + outerRadius * Math.sin((endAngle * Math.PI) / 180);
 
                               // Inner arc points
-                              const innerStartX = centerX + innerRadius * Math.cos((startAngle * Math.PI) / 180);
-                              const innerStartY = centerY + innerRadius * Math.sin((startAngle * Math.PI) / 180);
-                              const innerEndX = centerX + innerRadius * Math.cos((endAngle * Math.PI) / 180);
-                              const innerEndY = centerY + innerRadius * Math.sin((endAngle * Math.PI) / 180);
+                              const innerStartX =
+                                centerX + innerRadius * Math.cos((startAngle * Math.PI) / 180);
+                              const innerStartY =
+                                centerY + innerRadius * Math.sin((startAngle * Math.PI) / 180);
+                              const innerEndX =
+                                centerX + innerRadius * Math.cos((endAngle * Math.PI) / 180);
+                              const innerEndY =
+                                centerY + innerRadius * Math.sin((endAngle * Math.PI) / 180);
 
                               const largeArcFlag = angle > 180 ? 1 : 0;
 
@@ -1213,8 +1221,8 @@ const ExecutiveReportDocument = ({
                                 `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${outerEndX} ${outerEndY}`,
                                 `L ${innerEndX} ${innerEndY}`,
                                 `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}`,
-                                'Z'
-                              ].join(' ');
+                                "Z",
+                              ].join(" ");
 
                               currentAngle += angle;
 
@@ -1256,15 +1264,17 @@ const ExecutiveReportDocument = ({
                                 .map((value, index) => ({
                                   value,
                                   index,
-                                  label: chartLabels[index].replace(" Deviations", "").replace(" Policies", ""),
-                                  color: chartColors[index]
+                                  label: chartLabels[index]
+                                    .replace(" Deviations", "")
+                                    .replace(" Policies", ""),
+                                  color: chartColors[index],
                                 }))
-                                .filter(item => item.value > 0);
-                              
+                                .filter((item) => item.value > 0);
+
                               return visibleItems.map((item, displayIndex) => {
                                 const legendX = 30 + displayIndex * 90;
                                 const legendY = 175;
-                                
+
                                 return (
                                   <g key={`legend-${item.index}`}>
                                     <Rect
@@ -2569,6 +2579,7 @@ export const ExecutiveReportButton = (props) => {
     data: {
       tenantFilter: settings.currentTenant,
     },
+    dataKey: "Results",
     queryKey: `ca-policies-report-${settings.currentTenant}`,
     waiting: previewOpen,
   });

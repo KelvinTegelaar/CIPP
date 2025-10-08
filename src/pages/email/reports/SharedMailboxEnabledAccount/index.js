@@ -37,13 +37,13 @@ const Page = () => {
       filters={[
         {
           id: "accountEnabled",
-          value: "Yes"
-        }
+          value: "Yes",
+        },
       ]}
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

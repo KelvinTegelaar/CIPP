@@ -13,14 +13,14 @@ const Page = () => {
   const actions = [
     {
       label: "View Tenant Report",
-      link: "/tenant/standards/manage-drift/compare?tenantFilter=[tenantFilter]&templateId=[standardId]",
+      link: "/tenant/manage/applied-standards/?tenantFilter=[tenantFilter]&templateId=[standardId]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",
     },
     {
       label: "Manage Drift",
-      link: "/tenant/standards/manage-drift?templateId=[standardId]&tenantFilter=[tenantFilter]",
+      link: "/tenant/manage/drift?templateId=[standardId]&tenantFilter=[tenantFilter]",
       icon: <EyeIcon />,
       color: "info",
       target: "_self",

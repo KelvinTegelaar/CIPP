@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Box,
@@ -349,13 +349,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   const ApiPermissionRow = ({ obj, cat, readOnly }) => {
     const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+    const [descriptionOffcanvasVisible, setDescriptionOffcanvasVisible] = useState(false);
+    const [selectedDescription, setSelectedDescription] = useState({ name: "", description: "" });
 
-    var items = [];
-    for (var key in apiPermissions[cat][obj])
-      for (var key2 in apiPermissions[cat][obj][key]) {
-        items.push({ heading: "", content: apiPermissions[cat][obj][key][key2] });
-      }
-    var group = [{ items: items }];
+    const handleDescriptionClick = (name, description) => {
+      setSelectedDescription({ name, description });
+      setDescriptionOffcanvasVisible(true);
+    };
 
     return (
       <Stack
@@ -392,41 +392,66 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
             disabled={readOnly}
           />
         </Stack>
+        {/* Main offcanvas */}
         <CippOffCanvas
           visible={offcanvasVisible}
-          onClose={() => {
-            setOffcanvasVisible(false);
-          }}
+          onClose={() => setOffcanvasVisible(false)}
+          title={`${cat}.${obj} Endpoints`}
         >
           <Stack spacing={2}>
-            <Typography variant="h3" sx={{ mx: 3 }}>
-              {`${cat}.${obj}`}
-            </Typography>
             <Typography variant="body1" sx={{ mx: 3 }}>
-              Listed below are the available API endpoints based on permission level, ReadWrite
+              Listed below are the available API endpoints based on permission level. ReadWrite
               level includes endpoints under Read.
             </Typography>
-            {[apiPermissions[cat][obj]].map((permissions, key) => {
-              var sections = Object.keys(permissions).map((type) => {
-                var items = [];
-                for (var api in permissions[type]) {
-                  items.push({ heading: "", content: permissions[type][api] });
-                }
-                return (
-                  <Stack key={key} spacing={2}>
-                    <Typography variant="h4">{type}</Typography>
-                    <Stack spacing={1}>
-                      {items.map((item, idx) => (
-                        <Stack key={idx} spacing={1}>
-                          <Typography variant="body2">{item.content}</Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
+            {Object.keys(apiPermissions[cat][obj]).map((type, typeIndex) => {
+              var items = [];
+              for (var api in apiPermissions[cat][obj][type]) {
+                const apiFunction = apiPermissions[cat][obj][type][api];
+                items.push({
+                  name: apiFunction.Name,
+                  description: apiFunction.Description?.[0]?.Text || null,
+                });
+              }
+              return (
+                <Stack key={`${type}-${typeIndex}`} spacing={2}>
+                  <Typography variant="h4">{type}</Typography>
+                  <Stack spacing={1}>
+                    {items.map((item, idx) => (
+                      <Stack key={`${type}-${idx}`} direction="row" alignItems="center" spacing={1}>
+                        <Typography variant="body2" sx={{ fontWeight: "bold", flexGrow: 1 }}>
+                          {item.name}
+                        </Typography>
+                        {item.description && (
+                          <Button
+                            size="small"
+                            onClick={() => handleDescriptionClick(item.name, item.description)}
+                            sx={{ minWidth: "auto", p: 0.5 }}
+                          >
+                            <SvgIcon fontSize="small" color="info">
+                              <InformationCircleIcon />
+                            </SvgIcon>
+                          </Button>
+                        )}
+                      </Stack>
+                    ))}
                   </Stack>
-                );
-              });
-              return sections;
+                </Stack>
+              );
             })}
+          </Stack>
+        </CippOffCanvas>
+
+        {/* Description offcanvas */}
+        <CippOffCanvas
+          visible={descriptionOffcanvasVisible}
+          onClose={() => setDescriptionOffcanvasVisible(false)}
+          title="Function Description"
+        >
+          <Stack spacing={2} sx={{ p: 2 }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              {selectedDescription.name}
+            </Typography>
+            <Typography variant="body1">{selectedDescription.description}</Typography>
           </Stack>
         </CippOffCanvas>
       </Stack>
@@ -438,6 +463,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       <Stack spacing={3} direction="row">
         <Box width={"80%"}>
           <Stack spacing={1} sx={{ mb: 3 }}>
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Role Options
+            </Typography>
             {!selectedRole && (
               <CippFormComponent
                 type="textField"
@@ -481,6 +509,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               sortOptions={true}
               multiple={false}
               creatable={false}
+              helperText="Assigning an Entra group will automatically assign this role to all users in that group. This does not work with users invited directly to Static Web App."
             />
           </Stack>
           {!isBaseRole && (
@@ -494,6 +523,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   name="allowedTenants"
                   fullWidth={true}
                   includeGroups={true}
+                  helperText="Select the tenants that users should have access to with this role."
                 />
                 {allTenantSelected && blockedTenants?.length == 0 && (
                   <Alert color="warning">
@@ -512,11 +542,11 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                     name="blockedTenants"
                     fullWidth={true}
                     includeGroups={true}
+                    helperText="Select tenants that this role should not have access to."
                   />
                 </Box>
               )}
 
-              {/* Blocked Endpoints */}
               <Box sx={{ mb: 3 }}>
                 <CippFormComponent
                   type="autoComplete"
@@ -536,10 +566,14 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                                   Object.keys(apiPermissions[cat][obj]).forEach((type) => {
                                     Object.keys(apiPermissions[cat][obj][type]).forEach(
                                       (apiKey) => {
+                                        const apiFunction = apiPermissions[cat][obj][type][apiKey];
+                                        const descriptionText = apiFunction.Description?.[0]?.Text;
                                         allEndpoints.push({
-                                          label: apiPermissions[cat][obj][type][apiKey],
-                                          value: apiPermissions[cat][obj][type][apiKey],
-                                          category: cat,
+                                          label: descriptionText
+                                            ? `${apiFunction.Name} - ${descriptionText}`
+                                            : apiFunction.Name,
+                                          value: apiFunction.Name,
+                                          category: `${cat}.${obj}.${type}`,
                                         });
                                       }
                                     );
@@ -567,14 +601,119 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                       <GroupItems>{params.children}</GroupItems>
                     </li>
                   )}
+                  helperText="Select specific API endpoints to block for this role, this overrides permission settings below."
                 />
               </Box>
             </>
           )}
-          {apiPermissionFetching && <Skeleton variant="rectangle" height={500} />}
+          {apiPermissionFetching && (
+            <>
+              <Typography variant="h5">
+                <Skeleton width={150} />
+              </Typography>
+              <Stack
+                direction="row"
+                display="flex"
+                alignItems="center"
+                justifyContent={"space-between"}
+                width={"100%"}
+                sx={{ my: 2 }}
+              >
+                <Skeleton width={180} />
+                <Box sx={{ pr: 5 }}>
+                  <Skeleton width={300} height={40} />
+                </Box>
+              </Stack>
+              {[...Array(5)].map((_, index) => (
+                <Accordion variant="outlined" key={`skeleton-accordion-${index}`} disabled>
+                  <AccordionSummary>
+                    <Skeleton width={100} />
+                  </AccordionSummary>
+                </Accordion>
+              ))}
+            </>
+          )}
           {apiPermissionSuccess && (
             <>
-              <Typography variant="h5">API Permissions</Typography>
+              {/* Display include/exclude patterns for base roles */}
+              {isBaseRole && selectedRole && cippRoles[selectedRole]?.include && (
+                <>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    Defined Permissions
+                  </Typography>
+                  <Box sx={{ mb: 3 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ mb: 1, fontWeight: "bold", color: "success.main" }}
+                    >
+                      Include Patterns:
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                      These patterns define which permissions are included for this base role:
+                    </Typography>
+                    <Box sx={{ fontFamily: "monospace", fontSize: "0.875rem", mb: 2 }}>
+                      {cippRoles[selectedRole].include.map((pattern, idx) => (
+                        <Box
+                          key={idx}
+                          sx={{
+                            py: 0.5,
+                            px: 1,
+                            backgroundColor: "success.main",
+                            color: "success.contrastText",
+                            mb: 1,
+                            borderRadius: 1,
+                            opacity: 0.8,
+                            display: "inline-block",
+                            mr: 1,
+                          }}
+                        >
+                          {pattern}
+                        </Box>
+                      ))}
+                    </Box>
+
+                    {cippRoles[selectedRole]?.exclude &&
+                      cippRoles[selectedRole].exclude.length > 0 && (
+                        <>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ mb: 1, fontWeight: "bold", color: "error.main" }}
+                          >
+                            Exclude Patterns:
+                          </Typography>
+                          <Typography variant="body2" sx={{ mb: 2 }}>
+                            These patterns define which permissions are explicitly excluded from
+                            this base role:
+                          </Typography>
+                          <Box sx={{ fontFamily: "monospace", fontSize: "0.875rem" }}>
+                            {cippRoles[selectedRole].exclude.map((pattern, idx) => (
+                              <Box
+                                key={idx}
+                                sx={{
+                                  py: 0.5,
+                                  px: 1,
+                                  backgroundColor: "error.main",
+                                  color: "error.contrastText",
+                                  mb: 1,
+                                  borderRadius: 1,
+                                  opacity: 0.8,
+                                  display: "inline-block",
+                                  mr: 1,
+                                }}
+                              >
+                                {pattern}
+                              </Box>
+                            ))}
+                          </Box>
+                        </>
+                      )}
+                  </Box>
+                </>
+              )}
+
+              <Typography variant="h5" sx={{ mb: 2 }}>
+                API Permissions
+              </Typography>
               {!isBaseRole && (
                 <Stack
                   direction="row"
@@ -582,7 +721,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   alignItems="center"
                   justifyContent={"space-between"}
                   width={"100%"}
-                  sx={{ my: 2 }}
+                  sx={{ mb: 2 }}
                 >
                   <Typography variant="body2">Set All Permissions</Typography>
 
@@ -646,7 +785,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <h5>Allowed Tenants</h5>
               <ul>
                 {selectedTenant.map((tenant, idx) => (
-                  <li key={idx}>{tenant?.label}</li>
+                  <li key={`allowed-tenant-${idx}`}>{tenant?.label}</li>
                 ))}
               </ul>
             </>
@@ -656,7 +795,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <h5>Blocked Tenants</h5>
               <ul>
                 {blockedTenants.map((tenant, idx) => (
-                  <li key={idx}>{tenant?.label}</li>
+                  <li key={`blocked-tenant-${idx}`}>{tenant?.label}</li>
                 ))}
               </ul>
             </>
@@ -666,7 +805,10 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <h5>Blocked Endpoints</h5>
               <ul>
                 {blockedEndpoints.map((endpoint, idx) => (
-                  <li key={idx} style={{ fontSize: "0.875rem", marginBottom: "0.25rem" }}>
+                  <li
+                    key={`blocked-endpoint-${idx}`}
+                    style={{ fontSize: "0.875rem", marginBottom: "0.25rem" }}
+                  >
                     {endpoint?.label || endpoint?.value || endpoint}
                   </li>
                 ))}
@@ -681,13 +823,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   Object.keys(selectedPermissions)
                     ?.sort()
                     .map((cat, idx) => (
-                      <>
+                      <React.Fragment key={`permission-${idx}`}>
                         {selectedPermissions?.[cat] &&
                           typeof selectedPermissions[cat] === "string" &&
                           !selectedPermissions[cat]?.includes("None") && (
-                            <li key={idx}>{selectedPermissions[cat]}</li>
+                            <li>{selectedPermissions[cat]}</li>
                           )}
-                      </>
+                      </React.Fragment>
                     ))}
               </ul>
             </>

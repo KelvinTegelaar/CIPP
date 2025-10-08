@@ -96,6 +96,7 @@ export const CippSettingsSideBar = (props) => {
         RemoveMobile: formValues.offboardingDefaults?.RemoveMobile,
         DisableSignIn: formValues.offboardingDefaults?.DisableSignIn,
         RemoveMFADevices: formValues.offboardingDefaults?.RemoveMFADevices,
+        RemoveTeamsPhoneDID: formValues.offboardingDefaults?.RemoveTeamsPhoneDID,
         ClearImmutableId: formValues.offboardingDefaults?.ClearImmutableId,
       },
     };
