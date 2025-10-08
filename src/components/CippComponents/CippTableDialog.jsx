@@ -4,6 +4,7 @@ import { CippDataTable } from "../CippTable/CippDataTable";
 
 export const CippTableDialog = (props) => {
   const { createDialog, title, fields, api, simpleColumns, ...other } = props;
+
   return (
     <Dialog fullWidth maxWidth="lg" onClose={createDialog.handleClose} open={createDialog.open}>
       <DialogTitle>{title}</DialogTitle>
@@ -15,6 +16,7 @@ export const CippTableDialog = (props) => {
             data={other.data}
             simpleColumns={simpleColumns}
             simple={false}
+            isInDialog={true} // Flag to indicate table is inside a dialog
           />
         </Stack>
       </DialogContent>
