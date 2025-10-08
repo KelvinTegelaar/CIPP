@@ -4,7 +4,7 @@ This page and the other tabs are a way for you to manage your tenants and their 
 
 ### Manage Drift Overview
 
-{% embed url="https://app.storylane.io/share/xnqdcveexfod" %}
+{% @storylane/embed subdomain="app" linkValue="xnqdcveexfod" url="https://app.storylane.io/share/xnqdcveexfod" %}
 
 ### Page Actions
 

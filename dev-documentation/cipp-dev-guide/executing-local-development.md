@@ -4,7 +4,8 @@
 SAM Tokens for Development We **strongly** recommend that you setup an entirely separate SAM app for development purposes. You can use the script below to get the required RefreshToken.
 
 <details>
-<summary> Click to view script </summary>
+
+<summary>Click to view script</summary>
 
 ```powershell
 function New-PartnerRefreshToken {
@@ -74,15 +75,17 @@ function New-PartnerRefreshToken {
     }
 }
 ```
+
 Download the script and save it as `New-PartnerRefreshToken.ps1` in your `Downloads` folder. You can then run the script to get the RefreshToken you need.
+
 ```powershell
 Import-Module "$HOME\Downloads\New-PartnerRefreshToken.ps1"
 $HOME\Downloads\New-PartnerRefreshToken.ps1
 ```
+
 Input `https://graph.microsoft.com/.default offline_access` as the scope.
 
 </details>
-
 {% endhint %}
 
 So first you need tokens for a Secure Application Model (SAM) application and you should have completed setting up for local development
@@ -122,6 +125,7 @@ swa start "X:\Development\CIPP-Project\CIPP" --swa-config-location "C:\DoesntExi
 ```
 
 Or start everything
+
 ```sh
 cd X:\Development\CIPP-Project
 azurite
@@ -137,29 +141,24 @@ If you need the APIs to connect to Microsoft 365 and / or to test the Secure App
 
 The contents of your `local.settings.json` file differs depending on whether you are using the Azurite storage emulator or Azure Storage itself.
 
-```JSON
+```json
 {
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "powershell",
     "FUNCTIONS_WORKER_RUNTIME_VERSION": "7.4",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "ApplicationID": "<APPLICATION ID>",
-    "ApplicationSecret": "<APPLICATION SECRET>",
-    "RefreshToken": "<REFRESH TOKEN>",
-    "TenantID":"<TENANT ID>",
     "DEV_SKIP_BPA_TIMER": true,
     "DEV_SKIP_DOMAIN_TIMER": true,
-    "SetFromProfile": true,
     "FUNCTIONS_EXTENSION_VERSION": "4",
     "AzureWebJobs.BestPracticeAnalyser_OrchestrationStarterTimer.Disabled": true,
     "AzureWebJobs.Domain_OrchestrationStarterTimer.Disabled": true,
-    "WEBSITE_SITE_NAME": "mylocalcippinstance"
+    "WEBSITE_SITE_NAME": "<mylocalcippinstance>",
   }
 }
 ```
 
-```JSON
+```json
 {
   "IsEncrypted": false,
   "Values": {
@@ -180,8 +179,10 @@ The contents of your `local.settings.json` file differs depending on whether you
   }
 }
 ```
+
 Optional Values:
-```JSON
+
+```json
     "ExternalDurablePowerShellSDK": true
 ```
 

@@ -23,17 +23,28 @@ The Defender Deployment page allows you to set up default defender policies for 
   * **Allow Full Scan on Network Drives**: Enables full scans on network drives.
   * **Allow Full Scan on Removable Drives**: Enables full scans on removable drives.
   * **Allow Script Scanning**: Enables scanning of scripts.
-  * **Allow Intrusion Prevention System**: Enables the Intrusion Prevention System.
   * **Enable Low CPU priority**: Reduces CPU priority for scans.
+  * **Allow Metered Connection Updates:**&#x20;
+  * **Disable Local Admin Merge:** Blocks merging local admins
+  * **Avg CPU Load Factor (%):**&#x20;
+  * **Allow on Access Protection:**&#x20;
+  * **Submit Samples Consent:**&#x20;
   * **Allow scanning of downloaded files**: Enables scanning of files downloaded from the internet.
   * **Allow Realtime monitoring**: Enables real-time monitoring of files and processes.
-  * **Allow scanning of mapped drives**: Enables scanning of mapped network drives.
+  * **Allow Scanning Network Files**: Enables scanning of mapped network drives.
   * **Allow users to access UI**: Allows users to access the Defender user interface.
-  * **Enable Network Protection in Block Mode**: Enables network protection in block mode.
-  * **Enable Network Protection in Audit Mode**: Enables network protection in audit mode.
   * **Check Signatures before scan**: Verifies file signatures before scanning.
+  * **Signature Update Interval (hours):**&#x20;
   * **Disable Catchup Full Scan**: Disables catchup full scans.
   * **Disable Catchup Quick Scan**: Disables catchup quick scans.
+  * **Cloud External Timeout (seconds):**
+  * **Enable Network Protection:**
+  * **Cloud Block Level:** Default, High, High Plus, or Zero Tolerance
+  * **Threat Remediation Actions:**
+    * **Low severity threats:** Set the threats you want to apply to this category
+    * **Moderate severity threats:** Set the threats you want to apply to this category
+    * **High severity threats:** Set the threats you want to apply to this category
+    * **Severe threats:** Set the threats you want to apply to this category
   * **Assign to Group**: Options to assign policies to specific groups (e.g., all users, all devices).
 * **ASR Rules**: Define Attack Surface Reduction rules to enhance security.
   * **Block Adobe Reader from creating child processes**: Prevents Adobe Reader from creating child processes.

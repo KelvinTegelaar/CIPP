@@ -189,14 +189,18 @@ This error occurs because the user who authorized the CSP or Graph API connectio
 
 **To resolve this,** e**xecute the Setup Wizard with Option 4:**
 
-* Go to CIPP -> Application Settings -> [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention").
+* Go to CIPP → Application Settings → [sam-setup-wizard.md](../../user-documentation/cipp/sam-setup-wizard.md "mention").
 * Select "Refresh Tokens for existing application registration"
 
+Occasionally this can happen if there is not a new application secret available to CIPP and the existing one is expired/revoked. In that case, you will first need to:
+
+* Log into Entra on the partner tenant
+* Find your CIPP-SAM application in the app registrations
+* Add a new client secret
+* Choose option "Manually enter credentials" in the Setup Wizard.
+* Enter the new app secret only and Submit
+
 **Important:** Ensure your browser allows cookies, disable any ad-blockers, and do not use in-private mode.
-
-For more details, refer to:
-
-* [broken-reference](broken-reference/ "mention")
 
 </details>
 

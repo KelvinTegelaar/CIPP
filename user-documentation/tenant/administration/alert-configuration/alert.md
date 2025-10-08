@@ -37,11 +37,11 @@ Within CIPP, there are two types of alerts:
 
 ### Setting Up an Audit Log Alert
 
-{% embed url="https://app.storylane.io/share/0f4f3u4ah74m" %}
+{% @storylane/embed subdomain="app" linkValue="0f4f3u4ah74m" url="https://app.storylane.io/share/0f4f3u4ah74m" %}
 
 ### Setting Up A CIPP Scripted Alert
 
-{% embed url="https://app.storylane.io/share/d8riyacsbdog" %}
+{% @storylane/embed subdomain="app" linkValue="d8riyacsbdog" url="https://app.storylane.io/share/d8riyacsbdog" %}
 
 ***
 

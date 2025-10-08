@@ -11,7 +11,7 @@ When you first set up CIPP, you will need to create your first user in one of tw
 {% hint style="info" %}
 This user should be given the role of `superadmin` to allow you to complete the setup of your additional users. This user will be used to configure the remaining settings within CIPP and certain features like role management are restricted to `superadmin` only.
 
-We recommend that this user be your break glass CIPP `superadmin` account while all remaining users get invited via [custom-roles.md](../../user-documentation/cipp/advanced/super-admin/custom-roles.md "mention").
+We recommend that this user be your break glass CIPP `superadmin` account while all remaining users get invited via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
 {% endhint %}
 
 * For hosted clients, invites and roles can be managed by logging into the management portal [here](https://management.cipp.app/).
@@ -29,7 +29,7 @@ After the invite link is sent to the user, they must click on it to accept the i
 
 ### Additional User Setup
 
-Once you have your initial `superadmin` user added, you are now able to set up additional users using the built-in roles or custom CIPP roles via [custom-roles.md](../../user-documentation/cipp/advanced/super-admin/custom-roles.md "mention").
+Once you have your initial `superadmin` user added, you are now able to set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
 
 ### Built-In Roles
 
@@ -42,7 +42,7 @@ CIPP features a role management system which utilizes the [Roles feature of Azur
 | admin      | Allowed to perform everything.                                                                                                                                                                                                |
 | superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](../installation/owntenant.md "mention") settings. This role must be combined with 'admin' |
 
-You can assign these roles to users using the [custom-roles.md](../../user-documentation/cipp/advanced/super-admin/custom-roles.md "mention") page.&#x20;
+You can assign these roles to users using the [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention") page.&#x20;
 
 {% hint style="info" %}
 You can assign built-in roles using Entra groups. Select Edit from the Action column next to the role in the CIPP Roles table and select an Entra group from the drop down. Don't forget to hit `Save` at the bottom!
