@@ -234,5 +234,11 @@
     "inputName": "InputValue",
     "recommendedRunInterval": "1d",
     "description": "Monitors tenant alignment scores against standards templates and alerts when the alignment percentage falls below the specified threshold. This helps ensure compliance across all managed tenants."
+  },
+  {
+    "name": "RestrictedUsers",
+    "label": "Alert on users restricted from sending email",
+    "recommendedRunInterval": "30m",
+    "description": "Monitors for users who have been restricted from sending email due to exceeding outbound spam limits. These users typically indicate a compromised account that needs immediate attention."
   }
 ]

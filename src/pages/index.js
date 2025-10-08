@@ -32,16 +32,6 @@ const Page = () => {
     queryKey: `${currentTenant}-ListuserCounts`,
   });
 
-  const GlobalAdminList = ApiGetCall({
-    url: "/api/ListGraphRequest",
-    queryKey: `${currentTenant}-ListGraphRequest`,
-    data: {
-      tenantFilter: currentTenant,
-      Endpoint: "/directoryRoles(roleTemplateId='62e90394-69f5-4237-9190-012177145e10')/members",
-      $select: "displayName,userPrincipalName,accountEnabled",
-    },
-  });
-
   const sharepoint = ApiGetCall({
     url: "/api/ListSharepointQuota",
     queryKey: `${currentTenant}-ListSharepointQuota`,
@@ -293,11 +283,11 @@ const Page = () => {
                     tenantId={organization.data?.id}
                     userStats={{
                       licensedUsers: dashboard.data?.LicUsers || 0,
-                      unlicensedUsers: dashboard.data?.Users && dashboard.data?.LicUsers && GlobalAdminList.data?.Results && dashboard.data?.Guests
-                        ? dashboard.data?.Users - dashboard.data?.LicUsers - dashboard.data?.Guests - GlobalAdminList.data?.Results?.length
+                      unlicensedUsers: dashboard.data?.Users && dashboard.data?.LicUsers
+                        ? dashboard.data?.Users - dashboard.data?.LicUsers
                         : 0,
                       guests: dashboard.data?.Guests || 0,
-                      globalAdmins: GlobalAdminList.data?.Results?.length || 0
+                      globalAdmins: dashboard.data?.Gas || 0
                     }}
                     standardsData={driftApi.data}
                     organizationData={organization.data}
@@ -316,23 +306,17 @@ const Page = () => {
             <Grid size={{ md: 4, xs: 12 }}>
               <CippChartCard
                 title="User Statistics"
-                isFetching={dashboard.isFetching || GlobalAdminList.isFetching}
+                isFetching={dashboard.isFetching}
                 chartType="pie"
+                totalLabel="Total Users"
+                customTotal={dashboard.data?.Users}
                 chartSeries={[
                   Number(dashboard.data?.LicUsers || 0),
-                  dashboard.data?.Users &&
-                  dashboard.data?.LicUsers &&
-                  GlobalAdminList.data?.Results &&
-                  dashboard.data?.Guests
-                    ? Number(
-                        dashboard.data?.Users -
-                          dashboard.data?.LicUsers -
-                          dashboard.data?.Guests -
-                          GlobalAdminList.data?.Results?.length
-                      )
+                  dashboard.data?.Users && dashboard.data?.LicUsers
+                    ? Number(dashboard.data?.Users - dashboard.data?.LicUsers)
                     : 0,
                   Number(dashboard.data?.Guests || 0),
-                  Number(GlobalAdminList.data?.Results?.length || 0),
+                  Number(dashboard.data?.Gas || 0),
                 ]}
                 labels={["Licensed Users", "Unlicensed Users", "Guests", "Global Admins"]}
               />

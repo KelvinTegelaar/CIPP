@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Edit, GitHub, LocalOffer } from "@mui/icons-material";
+import { Edit, GitHub, LocalOffer, LocalOfferOutlined } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
@@ -69,6 +69,16 @@ const Page = () => {
       color: "info",
     },
     {
+      label: "Remove from package",
+      type: "POST",
+      url: "/api/ExecSetPackageTag",
+      data: { GUID: "GUID", Remove: true },
+      confirmText: "Are you sure you want to remove the selected template(s) from their package?",
+      multiPost: true,
+      icon: <LocalOfferOutlined />,
+      color: "warning",
+    },
+    {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
@@ -125,7 +135,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} type={"intune"} />,
+    children: (row) => <CippJsonView object={row} type={"intune"} defaultOpen={true} />,
     size: "lg",
   };
 

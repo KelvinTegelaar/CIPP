@@ -67,6 +67,7 @@ const Page = () => {
         RemoveMobile: false,
         DisableSignIn: false,
         RemoveMFADevices: false,
+        RemoveTeamsPhoneDID: false,
         ClearImmutableId: false,
       };
       
@@ -110,6 +111,7 @@ const Page = () => {
       RemoveMobile: false,
       DisableSignIn: false,
       RemoveMFADevices: false,
+      RemoveTeamsPhoneDID: false,
       ClearImmutableId: false,
     };
     

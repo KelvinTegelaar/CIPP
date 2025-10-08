@@ -306,6 +306,7 @@ const CippApiClientManagement = () => {
             name: "AppName",
             label: "App Name",
             placeholder: "Enter a name for this Application Registration.",
+            disableVariables: true,
           },
           {
             type: "autoComplete",

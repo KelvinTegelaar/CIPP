@@ -79,7 +79,7 @@ const Page = () => {
   const filterList = [
     {
       filterName: "Failed Deployments",
-      value: [{ id: "deploymentState", value: "failed" }],
+      value: [{ id: "deploymentState", value: "failure" }],
       type: "column",
     },
     {

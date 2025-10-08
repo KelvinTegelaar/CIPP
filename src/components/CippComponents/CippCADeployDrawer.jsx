@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Button, Stack, Box } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { RocketLaunch } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -125,6 +125,7 @@ export const CippCADeployDrawer = ({
             name="tenantFilter"
             required={true}
             disableClearable={false}
+            preselectedEnabled={true}
             allTenants={true}
             type="multiple"
           />

@@ -93,12 +93,15 @@ export const CippChartCard = ({
   title,
   actions,
   onClick,
+  totalLabel = "Total",
+  customTotal,
 }) => {
   const [range, setRange] = useState("Last 7 days");
   const [barSeries, setBarSeries] = useState([]);
   const chartOptions = useChartOptions(labels, chartType);
   chartSeries = chartSeries.filter((item) => item !== null);
-  const total = chartSeries.reduce((acc, value) => acc + value, 0);
+  const calculatedTotal = chartSeries.reduce((acc, value) => acc + value, 0);
+  const total = customTotal !== undefined ? customTotal : calculatedTotal;
   useEffect(() => {
     if (chartType === "bar") {
       setBarSeries(
@@ -160,7 +163,7 @@ export const CippChartCard = ({
         >
           {labels.length > 0 && (
             <>
-              <Typography variant="h5">Total</Typography>
+              <Typography variant="h5">{totalLabel}</Typography>
               <Typography variant="h5">{isFetching ? "0" : total}</Typography>
             </>
           )}

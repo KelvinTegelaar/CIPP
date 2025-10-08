@@ -68,7 +68,7 @@ const Page = () => {
           },
         },
       ],
-      confirmText: "Select the User to set as the primary user for this device",
+      confirmText: "Select the User to set as the primary user for [deviceName]",
     },
     {
       label: "Rename Device",
@@ -98,7 +98,7 @@ const Page = () => {
         GUID: "id",
         Action: "syncDevice",
       },
-      confirmText: "Are you sure you want to sync this device?",
+      confirmText: "Are you sure you want to sync [deviceName]?",
     },
     {
       label: "Reboot Device",
@@ -109,7 +109,7 @@ const Page = () => {
         GUID: "id",
         Action: "rebootNow",
       },
-      confirmText: "Are you sure you want to reboot this device?",
+      confirmText: "Are you sure you want to reboot [deviceName]?",
     },
     {
       label: "Locate Device",
@@ -120,7 +120,7 @@ const Page = () => {
         GUID: "id",
         Action: "locateDevice",
       },
-      confirmText: "Are you sure you want to locate this device?",
+      confirmText: "Are you sure you want to locate [deviceName]?",
     },
     {
       label: "Retrieve LAPs password",
@@ -130,6 +130,7 @@ const Page = () => {
       data: {
         GUID: "azureADDeviceId",
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to retrieve the local admin password?",
     },
     {
@@ -141,7 +142,8 @@ const Page = () => {
         GUID: "id",
         Action: "RotateLocalAdminPassword",
       },
-      confirmText: "Are you sure you want to rotate the password for this device?",
+      condition: (row) => row.operatingSystem === "Windows",
+      confirmText: "Are you sure you want to rotate the password for [deviceName]?",
     },
     {
       label: "Retrieve BitLocker Keys",
@@ -151,6 +153,7 @@ const Page = () => {
       data: {
         GUID: "azureADDeviceId",
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to retrieve the BitLocker keys?",
     },
     {
@@ -163,7 +166,7 @@ const Page = () => {
         Action: "WindowsDefenderScan",
         quickScan: false,
       },
-      confirmText: "Are you sure you want to perform a full scan on this device?",
+      confirmText: "Are you sure you want to perform a full scan on [deviceName]?",
     },
     {
       label: "Windows Defender Quick Scan",
@@ -175,7 +178,7 @@ const Page = () => {
         Action: "WindowsDefenderScan",
         quickScan: true,
       },
-      confirmText: "Are you sure you want to perform a quick scan on this device?",
+      confirmText: "Are you sure you want to perform a quick scan on [deviceName]?",
     },
     {
       label: "Update Windows Defender",
@@ -187,7 +190,7 @@ const Page = () => {
         Action: "windowsDefenderUpdateSignatures",
       },
       confirmText:
-        "Are you sure you want to update the Windows Defender signatures for this device?",
+        "Are you sure you want to update the Windows Defender signatures for [deviceName]?",
     },
     {
       label: "Generate logs and ship to MEM",
@@ -196,9 +199,11 @@ const Page = () => {
       url: "/api/ExecDeviceAction",
       data: {
         GUID: "id",
-        Action: "CreateDeviceLogCollectionRequest",
+        Action: "createDeviceLogCollectionRequest",
       },
-      confirmText: "Are you sure you want to generate logs and ship these to MEM?",
+      condition: (row) => row.operatingSystem === "Windows",
+      confirmText:
+        "Are you sure you want to generate logs for device [deviceName] and ship these to MEM?",
     },
     {
       label: "Fresh Start (Remove user data)",
@@ -210,7 +215,8 @@ const Page = () => {
         Action: "cleanWindowsDevice",
         keepUserData: false,
       },
-      confirmText: "Are you sure you want to Fresh Start this device?",
+      condition: (row) => row.operatingSystem === "Windows",
+      confirmText: "Are you sure you want to Fresh Start [deviceName]?",
     },
     {
       label: "Fresh Start (Do not remove user data)",
@@ -222,7 +228,8 @@ const Page = () => {
         Action: "cleanWindowsDevice",
         keepUserData: true,
       },
-      confirmText: "Are you sure you want to Fresh Start this device?",
+      condition: (row) => row.operatingSystem === "Windows",
+      confirmText: "Are you sure you want to Fresh Start [deviceName]?",
     },
     {
       label: "Wipe Device, keep enrollment data",
@@ -235,7 +242,8 @@ const Page = () => {
         keepUserData: false,
         keepEnrollmentData: true,
       },
-      confirmText: "Are you sure you want to wipe this device, and retain enrollment data?",
+      condition: (row) => row.operatingSystem === "Windows",
+      confirmText: "Are you sure you want to wipe [deviceName], and retain enrollment data?",
     },
     {
       label: "Wipe Device, remove enrollment data",
@@ -248,7 +256,8 @@ const Page = () => {
         keepUserData: false,
         keepEnrollmentData: false,
       },
-      confirmText: "Are you sure you want to wipe this device, and remove enrollment data?",
+      condition: (row) => row.operatingSystem === "Windows",
+      confirmText: "Are you sure you want to wipe [deviceName], and remove enrollment data?",
     },
     {
       label: "Wipe Device, keep enrollment data, and continue at powerloss",
@@ -262,8 +271,9 @@ const Page = () => {
         keepUserData: false,
         useProtectedWipe: true,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText:
-        "Are you sure you want to wipe this device? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+        "Are you sure you want to wipe [deviceName]? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
     },
     {
       label: "Wipe Device, remove enrollment data, and continue at powerloss",
@@ -277,8 +287,9 @@ const Page = () => {
         keepUserData: false,
         useProtectedWipe: true,
       },
+      condition: (row) => row.operatingSystem === "Windows",
       confirmText:
-        "Are you sure you want to wipe this device? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
+        "Are you sure you want to wipe [deviceName]? This will also remove enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.",
     },
     {
       label: "Autopilot Reset",
@@ -291,7 +302,8 @@ const Page = () => {
         keepUserData: "false",
         keepEnrollmentData: "true",
       },
-      confirmText: "Are you sure you want to Autopilot Reset this device?",
+      condition: (row) => row.operatingSystem === "Windows",
+      confirmText: "Are you sure you want to Autopilot Reset [deviceName]?",
     },
     {
       label: "Delete device",
@@ -302,7 +314,7 @@ const Page = () => {
         GUID: "id",
         Action: "delete",
       },
-      confirmText: "Are you sure you want to retire this device?",
+      confirmText: "Are you sure you want to delete [deviceName]?",
     },
     {
       label: "Retire device",
@@ -313,7 +325,7 @@ const Page = () => {
         GUID: "id",
         Action: "retire",
       },
-      confirmText: "Are you sure you want to retire this device?",
+      confirmText: "Are you sure you want to retire [deviceName]?",
     },
   ];
 

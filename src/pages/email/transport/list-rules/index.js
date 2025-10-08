@@ -104,6 +104,13 @@ const Page = () => {
           >
             Deploy Template
           </Button>
+          <Button
+            component={Link}
+            href="/email/transport/new-rules/add"
+            startIcon={<RocketLaunch />}
+          >
+            New Transport Rule
+          </Button>
         </>
       }
     />

@@ -207,14 +207,60 @@ const DeployDefenderForm = () => {
                 />
                 <CippFormComponent
                   type="switch"
-                  label="Allow Intrusion Prevention System"
-                  name="Policy.AllowIPS"
+                  label="Enable Low CPU priority"
+                  name="Policy.LowCPU"
                   formControl={formControl}
                 />
                 <CippFormComponent
                   type="switch"
-                  label="Enable Low CPU priority"
-                  name="Policy.LowCPU"
+                  label="Allow Metered Connection Updates"
+                  name="Policy.MeteredConnectionUpdates"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="switch"
+                  label="Disable Local Admin Merge"
+                  name="Policy.DisableLocalAdminMerge"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="number"
+                  label="Avg CPU Load Factor(%)"
+                  name="Policy.AvgCPULoadFactor"
+                  formControl={formControl}
+                  placeholder="50"
+                  validators={{
+                    min: { value: 0, message: "Value must be at least 0" },
+                    max: { value: 100, message: "Value cannot exceed 100" },
+                  }}
+                  sx={{ my: 1 }}
+                />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Allow On Access Protection"
+                  name="Policy.AllowOnAccessProtection"
+                  multiple={false}
+                  creatable={false}
+                  options={[
+                    { label: "Not Allowed", value: "0" },
+                    { label: "Allowed (Default)", value: "1" },
+                  ]}
+                  sx={{ my: 1 }}
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Submit Samples Consent"
+                  name="Policy.SubmitSamplesConsent"
+                  multiple={false}
+                  creatable={false}
+                  options={[
+                    { label: "Always prompt", value: "0" },
+                    { label: "Send safe samples automatically (Default)", value: "1" },
+                    { label: "Never send", value: "2" },
+                    { label: "Send all samples automatically", value: "3" },
+                  ]}
+                  sx={{ my: 1 }}
                   formControl={formControl}
                 />
               </Grid>
@@ -233,7 +279,7 @@ const DeployDefenderForm = () => {
                 />
                 <CippFormComponent
                   type="switch"
-                  label="Allow scanning of mapped drives"
+                  label="Allow Scanning Network Files"
                   name="Policy.AllowNetwork"
                   formControl={formControl}
                 />
@@ -245,21 +291,21 @@ const DeployDefenderForm = () => {
                 />
                 <CippFormComponent
                   type="switch"
-                  label="Enable Network Protection in Block Mode"
-                  name="Policy.NetworkProtectionBlock"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
-                  label="Enable Network Protection in Audit Mode"
-                  name="Policy.NetworkProtectionAudit"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  type="switch"
                   label="Check Signatures before scan"
                   name="Policy.CheckSigs"
                   formControl={formControl}
+                />
+                <CippFormComponent
+                  type="number"
+                  label="Signature Update Interval (hours)"
+                  name="Policy.SignatureUpdateInterval"
+                  formControl={formControl}
+                  placeholder="8"
+                  validators={{
+                    min: { value: 0, message: "Value must be at least 0" },
+                    max: { value: 24, message: "Value cannot exceed 24" },
+                  }}
+                  sx={{ my: 1 }}
                 />
                 <CippFormComponent
                   type="switch"
@@ -273,27 +319,183 @@ const DeployDefenderForm = () => {
                   name="Policy.DisableCatchupQuickScan"
                   formControl={formControl}
                 />
-              </Grid>
-
-              {/* Assign to Group */}
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="subtitle1">Assign to Group</Typography>
                 <CippFormComponent
-                  type="radio"
-                  label=""
-                  name="Policy.AssignTo"
+                  type="number"
+                  label="Cloud Extended Timeout (seconds)"
+                  name="Policy.CloudExtendedTimeout"
+                  formControl={formControl}
+                  placeholder="0"
+                  validators={{
+                    min: { value: 0, message: "Value must be at least 0" },
+                    max: { value: 50, message: "Value cannot exceed 50" },
+                  }}
+                  sx={{ my: 1 }}
+                />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Enable Network Protection"
+                  name="Policy.EnableNetworkProtection"
+                  multiple={false}
+                  creatable={false}
                   options={[
-                    { label: "Do not assign", value: "none" },
-                    { label: "Assign to all users", value: "allLicensedUsers" },
-                    { label: "Assign to all devices", value: "AllDevices" },
-                    { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
+                    { label: "Disabled (Default)", value: "0" },
+                    { label: "Enabled (block mode)", value: "1" },
+                    { label: "Enabled (audit mode)", value: "2" },
+                  ]}
+                  sx={{ my: 1 }}
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Cloud Block Level"
+                  multiple={false}
+                  creatable={false}
+                  name="Policy.CloudBlockLevel"
+                  options={[
+                    { label: "Default", value: "0" },
+                    { label: "High", value: "2" },
+                    { label: "High Plus", value: "4" },
+                    { label: "Zero Tolerance", value: "6" },
                   ]}
                   formControl={formControl}
-                  validators={{ required: "Assignment must be selected" }}
-                  row
+                  sx={{ my: 1 }}
                 />
               </Grid>
             </Grid>
+          </Grid>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* Threat Remediation Actions Section */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Threat Remediation Actions
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Low severity threats"
+                  name="Policy.Remediation.Low"
+                  multiple={false}
+                  creatable={false}
+                  options={[
+                    {
+                      label: "Clean. Service tries to recover files and try to disinfect.",
+                      value: "clean",
+                    },
+                    { label: "Quarantine. Moves files to quarantine.", value: "quarantine" },
+                    { label: "Remove. Removes files from system.", value: "remove" },
+                    { label: "Allow. Allows file/does none of the above actions.", value: "allow" },
+                    {
+                      label:
+                        "User defined. Requires user to make a decision on which action to take.",
+                      value: "userDefined",
+                    },
+                    { label: "Block. Blocks file execution.", value: "block" },
+                  ]}
+                  formControl={formControl}
+                  sx={{ my: 1 }}
+                />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Moderate severity threats"
+                  name="Policy.Remediation.Moderate"
+                  multiple={false}
+                  creatable={false}
+                  options={[
+                    {
+                      label: "Clean. Service tries to recover files and try to disinfect.",
+                      value: "clean",
+                    },
+                    { label: "Quarantine. Moves files to quarantine.", value: "quarantine" },
+                    { label: "Remove. Removes files from system.", value: "remove" },
+                    { label: "Allow. Allows file/does none of the above actions.", value: "allow" },
+                    {
+                      label:
+                        "User defined. Requires user to make a decision on which action to take.",
+                      value: "userDefined",
+                    },
+                    { label: "Block. Blocks file execution.", value: "block" },
+                  ]}
+                  formControl={formControl}
+                  sx={{ my: 1 }}
+                />
+              </Grid>
+              <Grid size={{ md: 6, xs: 12 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  label="High severity threats"
+                  name="Policy.Remediation.High"
+                  multiple={false}
+                  creatable={false}
+                  options={[
+                    {
+                      label: "Clean. Service tries to recover files and try to disinfect.",
+                      value: "clean",
+                    },
+                    { label: "Quarantine. Moves files to quarantine.", value: "quarantine" },
+                    { label: "Remove. Removes files from system.", value: "remove" },
+                    { label: "Allow. Allows file/does none of the above actions.", value: "allow" },
+                    {
+                      label:
+                        "User defined. Requires user to make a decision on which action to take.",
+                      value: "userDefined",
+                    },
+                    { label: "Block. Blocks file execution.", value: "block" },
+                  ]}
+                  formControl={formControl}
+                  sx={{ my: 1 }}
+                />
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Severe threats"
+                  name="Policy.Remediation.Severe"
+                  multiple={false}
+                  creatable={false}
+                  options={[
+                    {
+                      label: "Clean. Service tries to recover files and try to disinfect.",
+                      value: "clean",
+                    },
+                    { label: "Quarantine. Moves files to quarantine.", value: "quarantine" },
+                    { label: "Remove. Removes files from system.", value: "remove" },
+                    { label: "Allow. Allows file/does none of the above actions.", value: "allow" },
+                    {
+                      label:
+                        "User defined. Requires user to make a decision on which action to take.",
+                      value: "userDefined",
+                    },
+                    { label: "Block. Blocks file execution.", value: "block" },
+                  ]}
+                  formControl={formControl}
+                  sx={{ my: 1 }}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* Assignment Section */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Policy Assignment
+            </Typography>
+            <CippFormComponent
+              type="radio"
+              label=""
+              name="Policy.AssignTo"
+              options={[
+                { label: "Do not assign", value: "none" },
+                { label: "Assign to all users", value: "allLicensedUsers" },
+                { label: "Assign to all devices", value: "AllDevices" },
+                { label: "Assign to all users and devices", value: "AllDevicesAndUsers" },
+              ]}
+              formControl={formControl}
+              validators={{ required: "Assignment must be selected" }}
+              row
+            />
           </Grid>
         </CippFormCondition>
 
@@ -546,8 +748,6 @@ const DeployDefenderForm = () => {
             </Grid>
           </Grid>
         </CippFormCondition>
-
-        {/* Remove the Review and Confirm section as per your request */}
       </Grid>
     </CippFormPage>
   );

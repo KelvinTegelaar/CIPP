@@ -3,13 +3,7 @@ import { useForm, useFormState } from "react-hook-form";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ApiPostCall, ApiGetCall } from "/src/api/ApiCall";
-import {
-  Button,
-  Stack,
-  CardContent,
-  CardActions,
-  Skeleton,
-} from "@mui/material";
+import { Button, Stack, CardContent, CardActions, Skeleton } from "@mui/material";
 
 import CippPageCard from "/src/components/CippCards/CippPageCard";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
@@ -39,11 +33,39 @@ const Page = () => {
   });
 
   const handleEditMapping = (data) => {
+    // Filter data based on source type to only include relevant fields
+    let filteredData;
+
+    if (data.sourceType?.value === "manualEntry") {
+      // For manual entry, only include these fields
+      filteredData = {
+        sourceType: data.sourceType,
+        manualEntryFieldLabel: data.manualEntryFieldLabel,
+        directoryObjectType: data.directoryObjectType,
+        customDataAttribute: data.customDataAttribute,
+        tenantFilter: data.tenantFilter,
+      };
+    } else if (data.sourceType?.value === "extensionSync") {
+      // For extension sync, include the original fields
+      filteredData = {
+        sourceType: data.sourceType,
+        extensionSyncDataset: data.extensionSyncDataset,
+        extensionSyncProperty: data.extensionSyncProperty,
+        directoryObjectType: data.directoryObjectType,
+        customDataAttribute: data.customDataAttribute,
+        tenantFilter: data.tenantFilter,
+      };
+    } else {
+      // Fallback to all data if source type is not recognized
+      filteredData = data;
+    }
+
     editMappingApi.mutate({
       url: "/api/ExecCustomData",
       data: {
         Action: "AddEditMapping",
-        Mapping: { ...data, id }, // Include the ID for editing
+        id: id, // ID at top level for PowerShell function
+        Mapping: filteredData,
       },
     });
   };

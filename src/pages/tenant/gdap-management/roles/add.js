@@ -56,12 +56,14 @@ const Page = () => {
       groupName: selectedGroup.label,
       groupId: selectedGroup.value,
       roleName: selectedRole.label,
-      roleId: selectedRole.value,
+      roleDefinitionId: selectedRole.value,
     };
 
     if (
       advancedMappings.some(
-        (mapping) => mapping.groupId === newMapping.groupId && mapping.roleId === newMapping.roleId
+        (mapping) =>
+          mapping.groupId === newMapping.groupId &&
+          mapping.roleDefinitionId === newMapping.roleDefinitionId
       )
     ) {
       return;
@@ -75,7 +77,8 @@ const Page = () => {
   const handleRemoveMapping = (mappingToRemove) => {
     const updatedMappings = advancedMappings.filter(
       (mapping) =>
-        mapping.groupId !== mappingToRemove.groupId || mapping.roleId !== mappingToRemove.roleId
+        mapping.groupId !== mappingToRemove.groupId ||
+        mapping.roleDefinitionId !== mappingToRemove.roleDefinitionId
     );
     setAdvancedMappings(updatedMappings);
   };

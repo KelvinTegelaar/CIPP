@@ -40,6 +40,7 @@ const Page = () => {
           label: "Property Name",
           type: "textField",
           required: true,
+          disableVariables: true,
         },
         {
           name: "type",

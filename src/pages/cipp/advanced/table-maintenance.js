@@ -72,6 +72,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       name={`fields[${index}].name`}
                       formControl={formControl}
                       label="Name"
+                      disableVariables={true}
                     />
                   </Box>
                   <Box width="10%">
@@ -101,6 +102,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                           return {};
                         }
                       }}
+                      disableVariables={true}
                     />
                   </Box>
 
