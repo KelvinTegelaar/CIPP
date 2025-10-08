@@ -16,7 +16,7 @@ import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useDialog } from "../../../hooks/use-dialog";
 import { ApiGetCall } from "../../../api/ApiCall";
 import _ from "lodash";
-import { createDriftManagementActions } from "./manage-drift/driftManagementActions";
+import { createDriftManagementActions } from "../manage/driftManagementActions";
 import { ActionsMenu } from "/src/components/actions-menu";
 import { useSettings } from "/src/hooks/use-settings";
 

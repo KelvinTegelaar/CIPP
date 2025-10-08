@@ -133,11 +133,16 @@ export const CippApiDialog = (props) => {
         return;
       }
 
-      const commonData = {
-        tenantFilter,
-        ...formData,
-        ...addedFieldData,
+      // Helper function to get the correct tenant filter for a row
+      const getRowTenantFilter = (rowData) => {
+        // If we're in AllTenants mode and the row has a Tenant property, use that
+        if (tenantFilter === "AllTenants" && rowData?.Tenant) {
+          return rowData.Tenant;
+        }
+        // Otherwise use the current tenant filter
+        return tenantFilter;
       };
+
       const processedActionData = processActionData(action.data, row, action.replacementBehaviour);
 
       if (!processedActionData || Object.keys(processedActionData).length === 0) {
@@ -146,6 +151,11 @@ export const CippApiDialog = (props) => {
         // MULTI ROW CASES
         if (Array.isArray(row)) {
           const arrayData = row.map((singleRow) => {
+            const commonData = {
+              tenantFilter: getRowTenantFilter(singleRow),
+              ...formData,
+              ...addedFieldData,
+            };
             const itemData = { ...commonData };
             Object.keys(processedActionData).forEach((key) => {
               const rowValue = singleRow[processedActionData[key]];
@@ -173,6 +183,14 @@ export const CippApiDialog = (props) => {
           return;
         }
       }
+
+      // SINGLE ROW CASE
+      const commonData = {
+        tenantFilter: getRowTenantFilter(row),
+        ...formData,
+        ...addedFieldData,
+      };
+
       // ✅ FIXED: DIRECT MERGE INSTEAD OF CORRUPT TRANSFORMATION
       finalData = {
         ...commonData,

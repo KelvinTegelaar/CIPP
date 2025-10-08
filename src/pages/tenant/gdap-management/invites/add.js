@@ -67,6 +67,7 @@ const Page = () => {
     if (!formControl.formState.isValid) return;
     const eachInvite = Array.from({ length: values.inviteCount }, (_, i) => ({
       roleMappings: values.roleMappings.value,
+      Reference: values.Reference,
     }));
 
     addInvites.mutate({
@@ -180,13 +181,22 @@ const Page = () => {
                 }}
               />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <CippFormComponent
                 type="number"
                 name="inviteCount"
                 label="Number of Invites to generate"
                 formControl={formControl}
                 required={true}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <CippFormComponent
+                type="textField"
+                name="Reference"
+                label="Internal Reference Message"
+                formControl={formControl}
+                required={false}
               />
             </Grid>
             {selectedTemplate?.value && (
