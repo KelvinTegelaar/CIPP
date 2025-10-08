@@ -10,6 +10,12 @@
       "type": "shell",
       "command": "azurite --location ../",
       "isBackground": true,
+      "options": {
+        "env": {
+          "LC_ALL": "en-US.UTF-8",
+          "LANG": "en-US"
+        }
+      },
       "problemMatcher": {
         "pattern": [
           {
