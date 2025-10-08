@@ -727,11 +727,6 @@ export const nativeMenuItems = [
             permissions: ["Exchange.SpamFilter.*"],
           },
           {
-            title: "Safe Links Filters",
-            path: "/email/reports/safelinks-filters",
-            permissions: ["Exchange.SafeLinks.*"],
-          },
-          {
             title: "Safe Attachments Filters",
             path: "/email/reports/safeattachments-filters",
             permissions: ["Exchange.SafeLinks.*"],
