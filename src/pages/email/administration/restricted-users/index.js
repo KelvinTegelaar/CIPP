@@ -1,6 +1,6 @@
 ﻿import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Alert } from "@mui/material";
+import { Alert, Link, Typography, List, ListItem, ListItemText } from "@mui/material";
 import { Block as BlockIcon } from "@mui/icons-material";
 
 const Page = () => {
@@ -32,26 +32,59 @@ const Page = () => {
   return (
     <>
       <Alert severity="warning" sx={{ mx: 3, mt: 5, mb: -2 }}>
-        <strong>
-          Users in this list have been restricted from sending email due to exceeding outbound spam
-          limits.
-        </strong>
-        <br />
-        This typically indicates a compromised account.{" "}
-        <a href="https://aka.ms/O365-compromise" target="_blank" rel="noopener noreferrer">
-          Before unblocking, ensure you have properly secured the account.
-        </a>
-        Recommended actions include:
-        <ul>
-          <li>Checked for suspicious sign-ins and activities</li>
-          <li>Reviewed their mailbox rules and forwarding settings</li>
-          <li>
-            Investigated any unusual mailbox activity, such as unexpected sent items via message
-            trace
-          </li>
-          <li>Reset the user&apos;s password if compromised</li>
-          <li>Enabled MFA on the account if not already enabled</li>
-        </ul>
+        <Typography variant="body1">
+          <strong>
+            Users in this list have been restricted from sending email due to exceeding outbound spam
+            limits.
+          </strong>
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 1 }}>
+          This typically indicates a compromised account.{" "}
+          <Link
+            href="https://aka.ms/O365-compromise"
+            target="_blank"
+            rel="noreferrer"
+            sx={{ color: "primary.main" }}
+            underline="hover"
+          >
+            Before unblocking, ensure you have properly secured the account.
+          </Link>
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 1, mb: 1 }}>
+          <strong>Recommended actions include:</strong>
+        </Typography>
+        <List sx={{ listStyleType: 'disc', pl: 2 }}>
+          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+            <ListItemText
+              primary="Checked for suspicious sign-ins and activities"
+              sx={{ my: 0 }}
+            />
+          </ListItem>
+          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+            <ListItemText
+              primary="Reviewed their mailbox rules and forwarding settings"
+              sx={{ my: 0 }}
+            />
+          </ListItem>
+          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+            <ListItemText
+              primary="Investigated any unusual mailbox activity, such as unexpected sent items via message trace"
+              sx={{ my: 0 }}
+            />
+          </ListItem>
+          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+            <ListItemText
+              primary="Reset the user's password if compromised"
+              sx={{ my: 0 }}
+            />
+          </ListItem>
+          <ListItem sx={{ display: 'list-item', py: 0.25 }}>
+            <ListItemText
+              primary="Enabled MFA on the account if not already enabled"
+              sx={{ my: 0 }}
+            />
+          </ListItem>
+        </List>
       </Alert>
       <CippTablePage
         title={pageTitle}
