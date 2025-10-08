@@ -23,7 +23,7 @@ import { ApiGetCall } from "/src/api/ApiCall";
 const Page = () => {
   const pageTitle = "Quarantine Policies";
   const { currentTenant } = useSettings();
-  
+
   const createDialog = useDialog();
 
   // Use ApiGetCall directly as a hook
@@ -40,7 +40,6 @@ const Page = () => {
 
   const hasGlobalQuarantinePolicyData = !!globalQuarantineData;
 
-
   if (hasGlobalQuarantinePolicyData) {
     globalQuarantineData.EndUserSpamNotificationFrequency =
       globalQuarantineData?.EndUserSpamNotificationFrequency === "P1D"
@@ -49,42 +48,40 @@ const Page = () => {
         ? "Weekly"
         : globalQuarantineData?.EndUserSpamNotificationFrequency === "PT4H"
         ? "4 hours"
-        : globalQuarantineData?.EndUserSpamNotificationFrequency
+        : globalQuarantineData?.EndUserSpamNotificationFrequency;
   }
 
   const multiLanguagePropertyItems = hasGlobalQuarantinePolicyData
-  ? (
-      Array.isArray(globalQuarantineData?.MultiLanguageSetting) && globalQuarantineData.MultiLanguageSetting.length > 0
-        ? globalQuarantineData.MultiLanguageSetting.map((language, idx) => ({
-            language: language == "Default" ? "English_USA" 
-              : language == "English" ? "English_GB"
-              : language,
-            senderDisplayName:
-              globalQuarantineData.MultiLanguageSenderName[idx] &&
-              globalQuarantineData.MultiLanguageSenderName[idx].trim() !== ""
-                ? globalQuarantineData.MultiLanguageSenderName[idx]
-                : "None",
-            subject:
-              globalQuarantineData.EsnCustomSubject[idx] &&
-              globalQuarantineData.EsnCustomSubject[idx].trim() !== ""
-                ? globalQuarantineData.EsnCustomSubject[idx]
-                : "None",
-            disclaimer:
-              globalQuarantineData.MultiLanguageCustomDisclaimer[idx] &&
-              globalQuarantineData.MultiLanguageCustomDisclaimer[idx].trim() !== ""
-                ? globalQuarantineData.MultiLanguageCustomDisclaimer[idx]
-                : "None",
-          }))
-        : [
-            {
-              language: "None",
-              senderDisplayName: "None",
-              subject: "None",
-              disclaimer: "None",
-            },
-          ]
-    )
-  : [];
+    ? Array.isArray(globalQuarantineData?.MultiLanguageSetting) &&
+      globalQuarantineData.MultiLanguageSetting.length > 0
+      ? globalQuarantineData.MultiLanguageSetting.map((language, idx) => ({
+          language:
+            language == "Default" ? "English_USA" : language == "English" ? "English_GB" : language,
+          senderDisplayName:
+            globalQuarantineData.MultiLanguageSenderName[idx] &&
+            globalQuarantineData.MultiLanguageSenderName[idx].trim() !== ""
+              ? globalQuarantineData.MultiLanguageSenderName[idx]
+              : "None",
+          subject:
+            globalQuarantineData.EsnCustomSubject[idx] &&
+            globalQuarantineData.EsnCustomSubject[idx].trim() !== ""
+              ? globalQuarantineData.EsnCustomSubject[idx]
+              : "None",
+          disclaimer:
+            globalQuarantineData.MultiLanguageCustomDisclaimer[idx] &&
+            globalQuarantineData.MultiLanguageCustomDisclaimer[idx].trim() !== ""
+              ? globalQuarantineData.MultiLanguageCustomDisclaimer[idx]
+              : "None",
+        }))
+      : [
+          {
+            language: "None",
+            senderDisplayName: "None",
+            subject: "None",
+            disclaimer: "None",
+          },
+        ]
+    : [];
 
   const buttonCardActions = [
     <>
@@ -92,34 +89,28 @@ const Page = () => {
         Edit Settings
       </Button>
       <Tooltip title="Refresh Data">
-          <IconButton
-            className="MuiIconButton"
-            disabled={
-              GlobalQuarantinePolicy?.isLoading ||
-              GlobalQuarantinePolicy?.isFetching
-            }
-            onClick={() => {
-              GlobalQuarantinePolicy.refetch();
+        <IconButton
+          className="MuiIconButton"
+          disabled={GlobalQuarantinePolicy?.isLoading || GlobalQuarantinePolicy?.isFetching}
+          onClick={() => {
+            GlobalQuarantinePolicy.refetch();
+          }}
+        >
+          <SvgIcon
+            fontSize="small"
+            sx={{
+              animation: GlobalQuarantinePolicy?.isFetching ? "spin 1s linear infinite" : "none",
+              "@keyframes spin": {
+                "0%": { transform: "rotate(0deg)" },
+                "100%": { transform: "rotate(360deg)" },
+              },
             }}
           >
-            <SvgIcon
-              fontSize="small"
-              sx={{
-                animation:
-                  GlobalQuarantinePolicy?.isFetching
-                    ? "spin 1s linear infinite"
-                    : "none",
-                "@keyframes spin": {
-                  "0%": { transform: "rotate(0deg)" },
-                  "100%": { transform: "rotate(360deg)" },
-                },
-              }}
-            >
-              <Sync />
-            </SvgIcon>
-          </IconButton>
+            <Sync />
+          </SvgIcon>
+        </IconButton>
       </Tooltip>
-    </>
+    </>,
   ];
 
   // Actions to perform (Edit,Delete Policy)
@@ -140,8 +131,8 @@ const Page = () => {
           type: "autoComplete",
           name: "ReleaseActionPreference",
           label: "Select release action preference",
-          multiple : false,
-          creatable : false,
+          multiple: false,
+          creatable: false,
           options: [
             { label: "Release", value: "Release" },
             { label: "Request Release", value: "RequestRelease" },
@@ -156,7 +147,7 @@ const Page = () => {
           type: "switch",
           name: "Preview",
           label: "Preview",
-        },        
+        },
         {
           type: "switch",
           name: "BlockSender",
@@ -196,11 +187,11 @@ const Page = () => {
       },
       confirmText: (
         <>
-          <Typography variant="body1">
-            Are you sure you want to delete this policy?
-          </Typography>
+          <Typography variant="body1">Are you sure you want to delete this policy?</Typography>
           <Typography variant="body2">
-            <strong>Note:</strong> This will delete the Quarantine policy, even if it is currently in use.<br />
+            <strong>Note:</strong> This will delete the Quarantine policy, even if it is currently
+            in use.
+            <br />
             Removing the Admin and User Access it applies to emails.
           </Typography>
           <Alert severity="warning">
@@ -224,7 +215,7 @@ const Page = () => {
       "Id", // Policy Name/Id
       "Name", // Policy Name
       "EndUserQuarantinePermissions",
-      "Guid", 
+      "Guid",
       "Builtin",
       "WhenCreated", // Creation Date
       "WhenChanged", // Last Modified Date
@@ -244,7 +235,6 @@ const Page = () => {
       type: "column",
     },
   ];
-
 
   const customLanguageOffcanvas =
     multiLanguagePropertyItems && multiLanguagePropertyItems.length > 0
@@ -269,22 +259,22 @@ const Page = () => {
                       .map(([key, value]) => (
                         <Stack spacing={0.5} key={key}>
                           <Typography variant="subtitle2" color="text.secondary">
-                            {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                            {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, (str) => str.toUpperCase())}
                           </Typography>
-                          <Typography variant="body2">
-                            {value}
-                          </Typography>
+                          <Typography variant="body2">{value}</Typography>
                         </Stack>
                       ))}
                   </Stack>
                 </CippButtonCard>
               ),
             })),
-          }
+          },
         }
       : {};
 
-    // Simplified columns for the table
+  // Simplified columns for the table
   const simpleColumns = [
     "Name",
     "ReleaseActionPreference",
@@ -298,8 +288,6 @@ const Page = () => {
     "WhenChanged",
   ];
 
-
-
   // Prepare data for CippInfoBar as a const to clean up the code
   const infoBarData = [
     {
@@ -310,31 +298,28 @@ const Page = () => {
     {
       icon: <CorporateFare />,
       data: hasGlobalQuarantinePolicyData
-        ? (globalQuarantineData?.OrganizationBrandingEnabled 
-            ? "Enabled" 
-            : "Disabled"
-          ) 
+        ? globalQuarantineData?.OrganizationBrandingEnabled
+          ? "Enabled"
+          : "Disabled"
         : "n/a",
       name: "Branding",
     },
     {
       icon: <AlternateEmail />,
-      data: hasGlobalQuarantinePolicyData 
-        ? (globalQuarantineData?.EndUserSpamNotificationCustomFromAddress
-            ? globalQuarantineData?.EndUserSpamNotificationCustomFromAddress
-            : "None") 
-        : "n/a" ,
+      data: hasGlobalQuarantinePolicyData
+        ? globalQuarantineData?.EndUserSpamNotificationCustomFromAddress
+          ? globalQuarantineData?.EndUserSpamNotificationCustomFromAddress
+          : "None"
+        : "n/a",
       name: "Custom Sender Address",
     },
     {
       icon: <Language />,
       toolTip: "More Info",
       data: hasGlobalQuarantinePolicyData
-        ? (
-            multiLanguagePropertyItems.length > 0
-              ? multiLanguagePropertyItems.map(item => item.language).join(", ")
-              : "None"
-          )
+        ? multiLanguagePropertyItems.length > 0
+          ? multiLanguagePropertyItems.map((item) => item.language).join(", ")
+          : "None"
         : "n/a",
       name: "Custom Language",
       ...customLanguageOffcanvas,
@@ -351,14 +336,11 @@ const Page = () => {
         >
           <Grid container spacing={2}>
             <Grid size={12}>
-              <CippInfoBar
-                isFetching={GlobalQuarantinePolicy.isFetching}
-                data={infoBarData}
-              />
+              <CippInfoBar isFetching={GlobalQuarantinePolicy.isFetching} data={infoBarData} />
             </Grid>
           </Grid>
-        </CippButtonCard> 
-      </Stack> 
+        </CippButtonCard>
+      </Stack>
       <CippTablePage
         title={pageTitle}
         apiUrl="/api/ListQuarantinePolicy"
@@ -368,16 +350,16 @@ const Page = () => {
         filters={filterList}
         simpleColumns={simpleColumns}
         cardButton={
-        <>
-          <Button
-            component={Link}
-            href="/email/spamfilter/list-quarantine-policies/add"
-            startIcon={<RocketLaunch />}
-          >
-            Deploy Custom Policy
-          </Button>
-        </>
-      }
+          <>
+            <Button
+              component={Link}
+              href="/email/spamfilter/list-quarantine-policies/add"
+              startIcon={<RocketLaunch />}
+            >
+              Deploy Custom Policy
+            </Button>
+          </>
+        }
       />
       <CippApiDialog
         title="Edit - Global Quarantine Settings"
@@ -391,8 +373,7 @@ const Page = () => {
             Identity: "Guid",
           },
           relatedQueryKeys: [`GlobalQuarantinePolicy-${currentTenant}`],
-          confirmText:
-            "Are you sure you want to update Global Quarantine settings?",
+          confirmText: "Are you sure you want to update Global Quarantine settings?",
         }}
         // row={globalQuarantineData}
         row={globalQuarantineData}
@@ -402,8 +383,8 @@ const Page = () => {
             type: "autoComplete",
             name: "EndUserSpamNotificationFrequency",
             label: "Notification Frequency",
-            multiple : false,
-            creatable : false,
+            multiple: false,
+            creatable: false,
             required: true,
             options: [
               { label: "4 hours", value: "PT4H" },
@@ -430,6 +411,6 @@ const Page = () => {
 };
 
 // Layout configuration: ensure page uses DashboardLayout
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;
