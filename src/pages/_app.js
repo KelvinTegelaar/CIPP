@@ -201,7 +201,7 @@ const App = (props) => {
       // add clear cache action that removes the persisted query cache from local storage and reloads the page
       id: "clearCache",
       icon: <ClearAllIcon />,
-      name: "Clear Cache",
+      name: "Clear Cache and Reload",
       onClick: () => {
         // Clear the TanStack Query cache
         queryClient.clear();
@@ -216,8 +216,8 @@ const App = (props) => {
           });
         }
 
-        // Reload the page to ensure clean state
-        window.location.reload();
+        // Force refresh the page to bypass browser cache and reload JavaScript
+        window.location.reload(true);
       },
     },
     {
