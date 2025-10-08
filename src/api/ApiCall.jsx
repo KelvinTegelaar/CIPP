@@ -177,8 +177,6 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
       }
     },
     onSuccess: () => {
-      console.log("ApiPostCall onSuccess triggered with relatedQueryKeys:", relatedQueryKeys);
-
       if (relatedQueryKeys) {
         const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
         setTimeout(() => {
@@ -192,15 +190,8 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
               .map((key) => key.slice(0, -1));
             const exactKeys = clearKeys.filter((key) => !key.endsWith("*"));
 
-            console.log("ApiPostCall Invalidation Debug:", {
-              clearKeys,
-              wildcardPatterns,
-              exactKeys,
-            });
-
             // Use single predicate call for all wildcard patterns
             if (wildcardPatterns.length > 0) {
-              console.log("Running predicate invalidation for patterns:", wildcardPatterns);
               queryClient.invalidateQueries({
                 predicate: (query) => {
                   if (!query.queryKey || !query.queryKey[0]) return false;
@@ -227,13 +218,10 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
 
             // Handle exact keys
             exactKeys.forEach((key) => {
-              console.log("Invalidating exact key:", key);
               queryClient.invalidateQueries({ queryKey: [key] });
             });
           }
         }, 1000);
-      } else {
-        console.log("No relatedQueryKeys provided to ApiPostCall");
       }
     },
   });
