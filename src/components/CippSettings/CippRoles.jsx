@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, SvgIcon } from "@mui/material";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
@@ -19,6 +19,34 @@ const CippRoles = () => {
         </SvgIcon>
       ),
       link: "/cipp/super-admin/cipp-roles/edit?role=[RoleName]",
+    },
+    {
+      label: "Clone",
+      icon: (
+        <SvgIcon>
+          <DocumentDuplicateIcon />
+        </SvgIcon>
+      ),
+      type: "POST",
+      url: "/api/ExecCustomRole",
+      data: {
+        Action: "Clone",
+        RoleName: "RoleName",
+      },
+      fields: [
+        {
+          label: "New Role Name",
+          name: "NewRoleName",
+          type: "textField",
+          required: true,
+          helperText:
+            "Enter a name for the new cloned role. This cannot be the same as an existing role.",
+          disableVariables: true,
+        },
+      ],
+      relatedQueryKeys: ["customRoleList"],
+      confirmText: "Are you sure you want to clone this custom role?",
+      condition: (row) => row?.Type === "Custom",
     },
     {
       label: "Delete",
