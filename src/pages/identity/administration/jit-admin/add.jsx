@@ -10,7 +10,7 @@ import gdaproles from "/src/data/GDAPRoles.json";
 import { CippFormDomainSelector } from "../../../../components/CippComponents/CippFormDomainSelector";
 import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
 const Page = () => {
-  const formControl = useForm({ Mode: "onChange" });
+  const formControl = useForm({ mode: "onChange" });
   return (
     <>
       <CippFormPage
@@ -45,6 +45,7 @@ const Page = () => {
                   { label: "Existing User", value: "select" },
                 ]}
                 required={true}
+                validators={{ required: "You must select an option" }}
               />
               <Divider sx={{ my: 2 }} />
             </Grid>
@@ -62,6 +63,7 @@ const Page = () => {
                   name="firstName"
                   formControl={formControl}
                   required={true}
+                  validators={{ required: "First Name is required" }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -72,6 +74,7 @@ const Page = () => {
                   name="lastName"
                   formControl={formControl}
                   required={true}
+                  validators={{ required: "Last Name is required" }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -82,6 +85,7 @@ const Page = () => {
                   name="userName"
                   formControl={formControl}
                   required={true}
+                  validators={{ required: "Username is required" }}
                 />
               </Grid>
               <Grid size={{ md: 6, xs: 12 }}>
@@ -90,14 +94,7 @@ const Page = () => {
                   name="domain"
                   label="Domain Name"
                   required={true}
-                  validators={{
-                    validate: (option) => {
-                      if (!option?.value) {
-                        return "Domain is required";
-                      }
-                      return true;
-                    },
-                  }}
+                  validators={{ required: "Domain is required" }}
                 />
               </Grid>
               <Grid size={{ md: 12, xs: 12 }}>
@@ -118,6 +115,7 @@ const Page = () => {
                     name="existingUser"
                     label="User"
                     required={true}
+                    validators={{ required: "User is required" }}
                   />
                 </Grid>
               </Grid>
@@ -130,14 +128,7 @@ const Page = () => {
                 name="startDate"
                 formControl={formControl}
                 required={true}
-                validators={{
-                  validate: (value) => {
-                    if (!value) {
-                      return "Start date is required";
-                    }
-                    return true;
-                  },
-                }}
+                validators={{ required: "Start date is required" }}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
@@ -149,12 +140,10 @@ const Page = () => {
                 formControl={formControl}
                 required={true}
                 validators={{
+                  required: "End date is required",
                   validate: (value) => {
                     const startDate = formControl.getValues("startDate");
-                    if (!value) {
-                      return "End date is required";
-                    }
-                    if (new Date(value) < new Date(startDate)) {
+                    if (value && startDate && new Date(value) < new Date(startDate)) {
                       return "End date must be after start date";
                     }
                     return true;
@@ -172,6 +161,7 @@ const Page = () => {
                 formControl={formControl}
                 required={true}
                 validators={{
+                  required: "At least one role is required",
                   validate: (options) => {
                     if (!options?.length) {
                       return "At least one role is required";
@@ -179,6 +169,19 @@ const Page = () => {
                     return true;
                   },
                 }}
+              />
+            </Grid>
+            <Grid size={{ md: 12, xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Reason"
+                name="reason"
+                placeholder="Enter the reason for adding this JIT Admin"
+                multiline
+                rows={3}
+                formControl={formControl}
+                required={true}
+                validators={{ required: "A reason is required" }}
               />
             </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
@@ -196,21 +199,14 @@ const Page = () => {
                 label="Expiration Action"
                 name="expireAction"
                 multiple={false}
+                required={true}
                 options={[
                   { label: "Delete User", value: "DeleteUser" },
                   { label: "Disable User", value: "DisableUser" },
                   { label: "Remove Roles", value: "RemoveRoles" },
                 ]}
                 formControl={formControl}
-                required={true}
-                validators={{
-                  validate: (option) => {
-                    if (!option?.value) {
-                      return "Expiration action is required";
-                    }
-                    return true;
-                  },
-                }}
+                validators={{ required: "Expiration action is required" }}
               />
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
