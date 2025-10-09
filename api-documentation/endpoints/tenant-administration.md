@@ -92,6 +92,18 @@
 [OpenAPI cyberdrain-api-tenant](https://raw.githubusercontent.com/KelvinTegelaar/CIPP-API/refs/heads/dev/Tools/tenant-openapispec.json)
 {% endopenapi-operation %}
 
+{% openapi-operation spec="cyberdrain-api-tenant" path="/ExecGDAPRoleTemplate" method="get" %}
+[OpenAPI cyberdrain-api-tenant](https://raw.githubusercontent.com/KelvinTegelaar/CIPP-API/refs/heads/dev/Tools/tenant-openapispec.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="cyberdrain-api-tenant" path="/ListGDAPRoles" method="get" %}
+[OpenAPI cyberdrain-api-tenant](https://raw.githubusercontent.com/KelvinTegelaar/CIPP-API/refs/heads/dev/Tools/tenant-openapispec.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="cyberdrain-api-tenant" path="/ExecGDAPInvite" method="post" %}
+[OpenAPI cyberdrain-api-tenant](https://raw.githubusercontent.com/KelvinTegelaar/CIPP-API/refs/heads/dev/Tools/tenant-openapispec.json)
+{% endopenapi-operation %}
+
 {% openapi-schemas spec="cyberdrain-api-tenant" schemas="StandardResponse" grouped="true" %}
 [OpenAPI cyberdrain-api-tenant](https://raw.githubusercontent.com/KelvinTegelaar/CIPP-API/refs/heads/dev/Tools/tenant-openapispec.json)
 {% endopenapi-schemas %}
