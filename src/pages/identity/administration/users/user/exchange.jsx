@@ -890,7 +890,7 @@ const Page = () => {
                     label: "Remove Permission",
                     type: "POST",
                     icon: <Delete />,
-                    url: "/api/ExecModifyCalPerms",
+                    url: "/api/ExecModifyContactPerms",
                     data: {
                       userID: graphUserRequest.data?.[0]?.userPrincipalName,
                       tenantFilter: userSettingsDefaults.currentTenant,
