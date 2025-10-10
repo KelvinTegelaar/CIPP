@@ -182,7 +182,6 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
-      backUrl="/tenant/standards/list-standards"
       actions={[]}
       actionsData={{}}
       isFetching={backupList.isFetching || existingBackupConfig.isFetching}
