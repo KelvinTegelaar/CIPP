@@ -10,7 +10,7 @@ import { CippApiResults } from "./CippApiResults";
 import { ApiPostCall } from "../../api/ApiCall";
 
 export const CippAddTransportRuleDrawer = ({
-  buttonText = "Deploy Transport Rule",
+  buttonText = "Deploy Template",
   requiredPermissions = [],
   PermissionButton = Button,
 }) => {

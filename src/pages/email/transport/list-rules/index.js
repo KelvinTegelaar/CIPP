@@ -3,6 +3,9 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Book, DoDisturb, Done } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippAddTransportRuleDrawer } from "../../../../components/CippComponents/CippAddTransportRuleDrawer";
+import { Button } from "@mui/material";
+import { RocketLaunch } from "@mui/icons-material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Transport Rules";
@@ -97,7 +100,18 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       filters={filters}
-      cardButton={<CippAddTransportRuleDrawer requiredPermissions={cardButtonPermissions} />}
+      cardButton={
+        <>
+          <CippAddTransportRuleDrawer requiredPermissions={cardButtonPermissions} />
+          <Button
+            component={Link}
+            href="/email/transport/new-rules/add"
+            startIcon={<RocketLaunch />}
+          >
+            New Transport Rule
+          </Button>
+        </>
+      }
     />
   );
 };
