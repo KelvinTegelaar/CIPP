@@ -624,6 +624,18 @@
           "compareType": "is",
           "compareValue": true
         }
+      },
+      {
+        "type": "datePicker",
+        "name": "Hudu.NextSync",
+        "label": "Reschedule next sync date",
+        "helperText": "Set a future date to delay the next scheduled sync. Leave blank to sync during the next scheduled sync.",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": true,
