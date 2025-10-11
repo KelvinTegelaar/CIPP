@@ -1,13 +1,13 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { Button } from "@mui/material";
-import { RocketLaunch, GitHub } from "@mui/icons-material";
-import Link from "next/link";
+import { GitHub } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";
+import { CippAddTransportRuleDrawer } from "../../../../components/CippComponents/CippAddTransportRuleDrawer";
 
 const Page = () => {
   const pageTitle = "Transport Rule Templates";
+  const cardButtonPermissions = ["Exchange.TransportRule.ReadWrite"];
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
@@ -84,17 +84,7 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      cardButton={
-        <>
-          <Button
-            component={Link}
-            href="/email/transport/list-rules/add"
-            startIcon={<RocketLaunch />}
-          >
-            Deploy Template
-          </Button>
-        </>
-      }
+      cardButton={ <CippAddTransportRuleDrawer requiredPermissions={cardButtonPermissions} />}
     />
   );
 };

@@ -2579,7 +2579,6 @@ export const ExecutiveReportButton = (props) => {
     data: {
       tenantFilter: settings.currentTenant,
     },
-    dataKey: "Results",
     queryKey: `ca-policies-report-${settings.currentTenant}`,
     waiting: previewOpen,
   });
@@ -2663,7 +2662,7 @@ export const ExecutiveReportButton = (props) => {
           licensingData={licenseData.isSuccess ? licenseData?.data : null}
           deviceData={deviceData.isSuccess ? deviceData?.data : null}
           conditionalAccessData={
-            conditionalAccessData.isSuccess ? conditionalAccessData?.data : null
+            conditionalAccessData.isSuccess ? conditionalAccessData?.data?.Results : null
           }
           standardsCompareData={standardsCompareData.isSuccess ? standardsCompareData?.data : null}
           driftComplianceData={driftComplianceData.isSuccess ? driftComplianceData?.data : null}
@@ -3015,7 +3014,7 @@ export const ExecutiveReportButton = (props) => {
                   licensingData={licenseData.isSuccess ? licenseData?.data : null}
                   deviceData={deviceData.isSuccess ? deviceData?.data : null}
                   conditionalAccessData={
-                    conditionalAccessData.isSuccess ? conditionalAccessData?.data : null
+                    conditionalAccessData.isSuccess ? conditionalAccessData?.data?.Results : null
                   }
                   standardsCompareData={
                     standardsCompareData.isSuccess ? standardsCompareData?.data : null
