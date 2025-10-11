@@ -5,15 +5,14 @@ import { useForm, useWatch } from "react-hook-form";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { useSettings } from "../../../../hooks/use-settings";
+import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { getCippValidator } from "/src/utils/get-cipp-validator";
 
 const AddTenantAllowBlockList = () => {
-  const tenantDomain = useSettings().currentTenant;
-
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
+      tenantID: [],
       entries: "",
       notes: "",
       listType: null,
@@ -31,18 +30,19 @@ const AddTenantAllowBlockList = () => {
   const isListMethodBlock = listMethod?.value === "Block";
   const isListTypeFileHash = listType?.value === "FileHash";
   const isListTypeSenderUrlOrFileHash = ["Sender", "Url", "FileHash"].includes(listType?.value);
-  const isNoExpirationCompatible = isListMethodBlock || 
+  const isNoExpirationCompatible =
+    isListMethodBlock ||
     (listMethod?.value === "Allow" && (listType?.value === "Url" || listType?.value === "IP"));
 
   useEffect(() => {
     if (noExpiration) {
       formControl.setValue("RemoveAfter", false);
     }
-    
+
     if (removeAfter) {
       formControl.setValue("NoExpiration", false);
     }
-    
+
     if (isListMethodBlock) {
       formControl.setValue("RemoveAfter", false);
     }
@@ -61,62 +61,59 @@ const AddTenantAllowBlockList = () => {
       }
     }
   }, [
-    noExpiration, 
-    removeAfter, 
-    isListMethodBlock, 
-    listType, 
+    noExpiration,
+    removeAfter,
+    isListMethodBlock,
+    listType,
     isListTypeSenderUrlOrFileHash,
     isListTypeFileHash,
     isNoExpirationCompatible,
-    formControl
+    formControl,
   ]);
 
   const validateEntries = (value) => {
     if (!value) return true;
-    
-    const entries = value.split(/[,;]/).map(e => e.trim());
+
+    const entries = value.split(/[,;]/).map((e) => e.trim());
     const currentListType = listType?.value;
-    
+
     if (currentListType === "FileHash") {
       for (const entry of entries) {
-        if (entry.length !== 64) 
-          return "File hash entries must be exactly 64 characters";
-        
+        if (entry.length !== 64) return "File hash entries must be exactly 64 characters";
+
         const hashResult = getCippValidator(entry, "sha256");
-        if (hashResult !== true)
-          return hashResult;
+        if (hashResult !== true) return hashResult;
       }
     } else if (currentListType === "IP") {
       for (const entry of entries) {
         const ipv6Result = getCippValidator(entry, "ipv6");
         const ipv6CidrResult = getCippValidator(entry, "ipv6cidr");
-        
-        if (ipv6Result !== true && ipv6CidrResult !== true) 
+
+        if (ipv6Result !== true && ipv6CidrResult !== true)
           return "Invalid IPv6 address format. Use colon-hexadecimal or CIDR notation";
       }
     } else if (currentListType === "Url") {
       for (const entry of entries) {
-        if (entry.length > 250) 
-          return "URL entries must be 250 characters or less";
-        
+        if (entry.length > 250) return "URL entries must be 250 characters or less";
+
         // For entries with wildcards, use the improved wildcard validators
-        if (entry.includes('*') || entry.includes('~')) {
+        if (entry.includes("*") || entry.includes("~")) {
           // Try both wildcard validators
           const wildcardUrlResult = getCippValidator(entry, "wildcardUrl");
           const wildcardDomainResult = getCippValidator(entry, "wildcardDomain");
-          
+
           if (wildcardUrlResult !== true && wildcardDomainResult !== true) {
             // If basic pattern check fails too, give a more specific message
             if (!/^[a-zA-Z0-9\.\-\*\~\/]+$/.test(entry)) {
               return "Invalid wildcard pattern. Use only letters, numbers, dots, hyphens, slashes, and wildcards (* or ~)";
             }
-            
+
             // If it has basic valid characters but doesn't match our patterns
             return "Invalid wildcard format. Common formats are *.domain.com or domain.*";
           }
           continue;
         }
-        
+
         // For non-wildcard entries, use standard validators
         const ipv4Result = getCippValidator(entry, "ip");
         const ipv4CidrResult = getCippValidator(entry, "ipv4cidr");
@@ -124,38 +121,40 @@ const AddTenantAllowBlockList = () => {
         const ipv6CidrResult = getCippValidator(entry, "ipv6cidr");
         const hostnameResult = getCippValidator(entry, "hostname");
         const urlResult = getCippValidator(entry, "url");
-        
+
         // If none of the validators pass
-        if (ipv4Result !== true && 
-            ipv4CidrResult !== true && 
-            ipv6Result !== true && 
-            ipv6CidrResult !== true && 
-            hostnameResult !== true && 
-            urlResult !== true) {
+        if (
+          ipv4Result !== true &&
+          ipv4CidrResult !== true &&
+          ipv6Result !== true &&
+          ipv6CidrResult !== true &&
+          hostnameResult !== true &&
+          urlResult !== true
+        ) {
           return "Invalid URL format. Enter hostnames, IPv4, or IPv6 addresses";
         }
       }
     } else if (currentListType === "Sender") {
       for (const entry of entries) {
         // Check for wildcards first
-        if (entry.includes('*') || entry.includes('~')) {
+        if (entry.includes("*") || entry.includes("~")) {
           const wildcardDomainResult = getCippValidator(entry, "wildcardDomain");
-          
+
           if (wildcardDomainResult !== true) {
             return "Invalid sender wildcard pattern. Common format is *.domain.com";
           }
           continue;
         }
-        
+
         // For non-wildcard entries, use senderEntry validator
         const senderResult = getCippValidator(entry, "senderEntry");
-        
+
         if (senderResult !== true) {
           return senderResult;
         }
       }
     }
-    
+
     return true;
   };
 
@@ -168,17 +167,29 @@ const AddTenantAllowBlockList = () => {
       postUrl="/api/AddTenantAllowBlockList"
       customDataformatter={(values) => {
         return {
-          tenantID: tenantDomain,
+          tenantID: values.tenantID,
           entries: values.entries,
           listType: values.listType?.value,
           notes: values.notes,
           listMethod: values.listMethod?.value,
           NoExpiration: values.NoExpiration,
-          RemoveAfter: values.RemoveAfter
+          RemoveAfter: values.RemoveAfter,
         };
       }}
     >
       <Grid container spacing={2}>
+        <Grid size={{ xs: 12 }}>
+          <CippFormTenantSelector
+            formControl={formControl}
+            label="Select Tenants"
+            name="tenantID"
+            type="multiple"
+            preselectedEnabled={true}
+            allTenants={true}
+            validators={{ required: "At least one tenant must be selected" }}
+          />
+        </Grid>
+
         {/* Entries */}
         <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
@@ -186,9 +197,9 @@ const AddTenantAllowBlockList = () => {
             label="Entries"
             name="entries"
             formControl={formControl}
-            validators={{ 
+            validators={{
               required: "Entries field is required",
-              validate: validateEntries
+              validate: validateEntries,
             }}
             helperText={
               listType?.value === "FileHash"
@@ -266,11 +277,12 @@ const AddTenantAllowBlockList = () => {
                 : "Available only for Block entries or specific Allow entries (URL/IP)"
             }
             disabled={
-              removeAfter || 
-              !(isListMethodBlock || 
-                (listMethod?.value === "Allow" && 
-                (listType?.value === "Url" || 
-                  listType?.value === "IP")))
+              removeAfter ||
+              !(
+                isListMethodBlock ||
+                (listMethod?.value === "Allow" &&
+                  (listType?.value === "Url" || listType?.value === "IP"))
+              )
             }
           />
         </Grid>
@@ -284,8 +296,8 @@ const AddTenantAllowBlockList = () => {
             formControl={formControl}
             helperText="If checked, allow entries will be removed after 45 days of last use"
             disabled={
-              noExpiration || 
-              listMethod?.value !== "Allow" || 
+              noExpiration ||
+              listMethod?.value !== "Allow" ||
               !["Sender", "FileHash", "Url"].includes(listType?.value)
             }
           />
