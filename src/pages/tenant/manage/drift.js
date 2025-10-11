@@ -811,7 +811,6 @@ const ManageDriftPage = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
-      backUrl="/tenant/standards/list-standards"
       actions={actions}
       actionsData={{}}
       isFetching={driftApi.isFetching || standardsApi.isFetching || comparisonApi.isFetching}

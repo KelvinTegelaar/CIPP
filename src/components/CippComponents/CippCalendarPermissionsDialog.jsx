@@ -33,15 +33,12 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
           type="autoComplete"
           label="Add Access"
           name="UserToGetPermissions"
-          multiple={false}
+          multiple={true}
           formControl={formHook}
           isFetching={isUserGroupLoading}
           options={combinedOptions}
           creatable={false}
-          required={true}
-          validators={{
-            validate: (value) => (value ? true : "Select a user or group to assign permissions to"),
-          }}
+          validators={{ required: "Select a user or group to assign permissions to" }}
           placeholder="Select a user or group to assign permissions to"
         />
       </Box>
@@ -50,11 +47,8 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
           type="autoComplete"
           label="Permission Level"
           name="Permissions"
-          required={true}
           creatable={false}
-          validators={{
-            validate: (value) => (value ? true : "Select the permission level for the calendar"),
-          }}
+          validators={{ required: "Select the permission level for the calendar" }}
           options={[
             { value: "Author", label: "Author" },
             { value: "Contributor", label: "Contributor" },

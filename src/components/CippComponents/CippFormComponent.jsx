@@ -611,6 +611,11 @@ export const CippFormComponent = (props) => {
               )}
             />
           </div>
+          {helperText && (
+            <Typography variant="subtitle3" color="text.secondary">
+              {helperText}
+            </Typography>
+          )}
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}
           </Typography>

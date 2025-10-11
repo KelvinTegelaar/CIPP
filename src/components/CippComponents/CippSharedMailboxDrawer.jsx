@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { Divider } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
@@ -56,6 +55,18 @@ export const CippSharedMailboxDrawer = ({
       domain: null,
     });
   };
+
+  // Reset form on successful creation, preserving the selected domain
+  useEffect(() => {
+    if (createSharedMailbox.isSuccess) {
+      const domain = formControl.getValues("domain");
+      formControl.reset({
+        displayName: "",
+        username: "",
+        domain: domain,
+      });
+    }
+  }, [createSharedMailbox.isSuccess, formControl]);
 
   return (
     <>
