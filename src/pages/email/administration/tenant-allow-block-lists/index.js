@@ -2,8 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
-import { PlaylistAdd } from "@mui/icons-material";
+import { Delete, PlaylistAdd } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Tenant Allow/Block Lists";
@@ -19,7 +18,7 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to delete this entry?",
       color: "danger",
-      icon: <TrashIcon />,
+      icon: <Delete />,
     },
   ];
 
@@ -39,6 +38,7 @@ const Page = () => {
       apiUrl="/api/ListTenantAllowBlockList"
       actions={actions}
       simpleColumns={simpleColumns}
+      apiDataKey="Results"
       titleButton={{
         label: "Add",
         href: "/email/administration/tenant-allow-block-list/add",
