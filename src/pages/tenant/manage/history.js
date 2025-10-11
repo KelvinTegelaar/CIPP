@@ -143,7 +143,6 @@ const Page = () => {
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
       title={title}
-      backUrl="/tenant/standards/list-standards"
       actions={actions}
       actionsData={{}}
       isFetching={logsData.isLoading}
