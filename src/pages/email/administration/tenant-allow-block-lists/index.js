@@ -1,11 +1,11 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import Link from "next/link";
-import { Delete, PlaylistAdd } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
+import { CippAddTenantAllowBlockListDrawer } from "/src/components/CippComponents/CippAddTenantAllowBlockListDrawer.jsx";
 
 const Page = () => {
   const pageTitle = "Tenant Allow/Block Lists";
+  const cardButtonPermissions = ["Exchange.SpamFilter.ReadWrite"];
 
   const actions = [
     {
@@ -39,21 +39,7 @@ const Page = () => {
       actions={actions}
       simpleColumns={simpleColumns}
       apiDataKey="Results"
-      titleButton={{
-        label: "Add",
-        href: "/email/administration/tenant-allow-block-list/add",
-      }}
-      cardButton={
-        <>
-          <Button
-            component={Link}
-            href="/email/administration/tenant-allow-block-lists/add"
-            startIcon={<PlaylistAdd />}
-          >
-            Add Entry
-          </Button>
-        </>
-      }
+      cardButton={<CippAddTenantAllowBlockListDrawer requiredPermissions={cardButtonPermissions} />}
     />
   );
 };
