@@ -26,6 +26,8 @@ import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
 import { CogIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
+import DocumentTextIcon from "@heroicons/react/24/outline/DocumentTextIcon";
+import { useReleaseNotes } from "../contexts/release-notes-context";
 
 export const AccountPopover = (props) => {
   const {
@@ -39,6 +41,7 @@ export const AccountPopover = (props) => {
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const popover = usePopover();
   const queryClient = useQueryClient();
+  const { openReleaseNotes } = useReleaseNotes();
   const orgData = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
@@ -151,6 +154,19 @@ export const AccountPopover = (props) => {
                 </SvgIcon>
               </ListItemIcon>
               <ListItemText primary="Preferences" />
+            </ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                popover.handleClose();
+                openReleaseNotes();
+              }}
+            >
+              <ListItemIcon>
+                <SvgIcon fontSize="small">
+                  <DocumentTextIcon />
+                </SvgIcon>
+              </ListItemIcon>
+              <ListItemText primary="View release notes" />
             </ListItemButton>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon>
