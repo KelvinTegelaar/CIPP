@@ -1,4 +1,13 @@
-﻿import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+﻿import {
+  Component,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Box,
   Button,
@@ -13,9 +22,13 @@ import {
 } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
 import rehypeRaw from "rehype-raw";
+import { unified } from "unified";
 import packageInfo from "../../public/version.json";
 import { ApiGetCall } from "../api/ApiCall";
+import { GitHub } from "@mui/icons-material";
+import { CippAutoComplete } from "./CippComponents/CippAutocomplete";
 
 const RELEASE_COOKIE_KEY = "cipp_release_notice";
 const RELEASE_OWNER = "KelvinTegelaar";
@@ -80,17 +93,47 @@ const formatReleaseBody = (body) => {
   });
 };
 
+class MarkdownErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error) {
+    if (process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line no-console
+      console.error("Failed to render release notes", error);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback(this.state.error);
+    }
+
+    return this.props.children;
+  }
+}
+
 export const ReleaseNotesDialog = forwardRef((_props, ref) => {
+  const releaseMeta = useMemo(() => buildReleaseMetadata(packageInfo.version), []);
   const [isEligible, setIsEligible] = useState(false);
   const [open, setOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [manualOpenRequested, setManualOpenRequested] = useState(false);
+  const [selectedReleaseTag, setSelectedReleaseTag] = useState(releaseMeta.releaseTag);
   const hasOpenedRef = useRef(false);
-
-  const releaseMeta = useMemo(() => buildReleaseMetadata(packageInfo.version), []);
 
   useEffect(() => {
     hasOpenedRef.current = false;
+  }, [releaseMeta.releaseTag]);
+
+  useEffect(() => {
+    setSelectedReleaseTag(releaseMeta.releaseTag);
   }, [releaseMeta.releaseTag]);
 
   useEffect(() => {
@@ -105,15 +148,97 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
     }
   }, [releaseMeta.releaseTag]);
 
-  const releaseQuery = ApiGetCall({
+  const shouldFetchReleaseList = isEligible || manualOpenRequested || open;
+
+  const releaseListQuery = ApiGetCall({
     url: "/api/ListGitHubReleaseNotes",
-    queryKey: ["list-github-release-notes", releaseMeta.releaseTag],
+    queryKey: "list-github-release-options",
     data: {
       Owner: RELEASE_OWNER,
       Repository: RELEASE_REPO,
-      Version: releaseMeta.releaseTag,
     },
+    waiting: shouldFetchReleaseList,
+    staleTime: 300000,
   });
+
+  const isReleaseListLoading = releaseListQuery.isLoading || releaseListQuery.isFetching;
+
+  const releaseCatalog = useMemo(() => {
+    return Array.isArray(releaseListQuery.data) ? releaseListQuery.data : [];
+  }, [releaseListQuery.data]);
+
+  useEffect(() => {
+    if (!releaseCatalog.length) {
+      return;
+    }
+
+    if (!selectedReleaseTag) {
+      setSelectedReleaseTag(releaseCatalog[0].releaseTag);
+      return;
+    }
+
+    const hasSelected = releaseCatalog.some((release) => release.releaseTag === selectedReleaseTag);
+
+    if (!hasSelected) {
+      const fallbackRelease =
+        releaseCatalog.find((release) => release.releaseTag === releaseMeta.releaseTag) ||
+        releaseCatalog[0];
+      if (fallbackRelease) {
+        setSelectedReleaseTag(fallbackRelease.releaseTag);
+      }
+    }
+  }, [releaseCatalog, selectedReleaseTag, releaseMeta.releaseTag]);
+
+  const releaseOptions = useMemo(() => {
+    const mapped = releaseCatalog.map((release) => {
+      const tag = release.releaseTag ?? release.tagName;
+      const label = release.name ? `${release.name} (${tag})` : tag;
+      return {
+        label,
+        value: tag,
+        addedFields: {
+          htmlUrl: release.htmlUrl,
+          publishedAt: release.publishedAt,
+        },
+      };
+    });
+
+    if (selectedReleaseTag && !mapped.some((option) => option.value === selectedReleaseTag)) {
+      mapped.push({
+        label: selectedReleaseTag,
+        value: selectedReleaseTag,
+        addedFields: {
+          htmlUrl: releaseMeta.releaseUrl,
+          publishedAt: null,
+        },
+      });
+    }
+
+    return mapped;
+  }, [releaseCatalog, selectedReleaseTag, releaseMeta.releaseUrl]);
+
+  const selectedReleaseValue = useMemo(() => {
+    if (!selectedReleaseTag) {
+      return null;
+    }
+
+    return (
+      releaseOptions.find((option) => option.value === selectedReleaseTag) || {
+        label: selectedReleaseTag,
+        value: selectedReleaseTag,
+      }
+    );
+  }, [releaseOptions, selectedReleaseTag]);
+
+  const handleReleaseChange = useCallback(
+    (newValue) => {
+      const nextValue = Array.isArray(newValue) ? newValue[0] : newValue;
+      if (nextValue?.value && nextValue.value !== selectedReleaseTag) {
+        setSelectedReleaseTag(nextValue.value);
+      }
+    },
+    [selectedReleaseTag]
+  );
 
   useImperativeHandle(ref, () => ({
     open: () => {
@@ -122,8 +247,21 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
     },
   }));
 
+  const selectedReleaseData = useMemo(() => {
+    if (!selectedReleaseTag) {
+      return null;
+    }
+
+    return (
+      releaseCatalog.find((release) => release.releaseTag === selectedReleaseTag) ||
+      releaseCatalog.find((release) => release.releaseTag === releaseMeta.releaseTag) ||
+      null
+    );
+  }, [releaseCatalog, selectedReleaseTag, releaseMeta.releaseTag]);
+
   const handleDismissUntilNextRelease = () => {
-    const tagToStore = releaseQuery.data?.releaseTag ?? releaseMeta.releaseTag;
+    const tagToStore =
+      selectedReleaseData?.releaseTag ?? selectedReleaseTag ?? releaseMeta.releaseTag;
     setCookie(RELEASE_COOKIE_KEY, tagToStore);
     setOpen(false);
     setIsExpanded(false);
@@ -141,21 +279,40 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
     setIsExpanded((prev) => !prev);
   };
 
-  const releaseName = releaseQuery.data?.name || `CIPP ${releaseMeta.currentTag}`;
-  const releaseBody = releaseQuery.data?.body || "";
-  const releaseUrl = releaseQuery.data?.url ?? releaseMeta.releaseUrl;
+  const requestedVersionLabel =
+    selectedReleaseData?.releaseTag ?? selectedReleaseTag ?? releaseMeta.currentTag;
+  const releaseName =
+    selectedReleaseData?.name || selectedReleaseValue?.label || `CIPP ${releaseMeta.currentTag}`;
+  const releaseHeading = releaseName || requestedVersionLabel;
+  const releaseBody = typeof selectedReleaseData?.body === "string" ? selectedReleaseData.body : "";
+  const releaseUrl =
+    selectedReleaseData?.htmlUrl ??
+    selectedReleaseValue?.addedFields?.htmlUrl ??
+    releaseMeta.releaseUrl;
   const formattedReleaseBody = useMemo(() => formatReleaseBody(releaseBody), [releaseBody]);
+  const gfmSupport = useMemo(() => {
+    if (!formattedReleaseBody) {
+      return { plugins: [remarkGfm], error: null };
+    }
+
+    try {
+      unified().use(remarkParse).use(remarkGfm).parse(formattedReleaseBody);
+      return { plugins: [remarkGfm], error: null };
+    } catch (err) {
+      return { plugins: [], error: err };
+    }
+  }, [formattedReleaseBody]);
 
   useEffect(() => {
     if (!isEligible || hasOpenedRef.current) {
       return;
     }
 
-    if (releaseQuery.data || releaseQuery.error) {
+    if (releaseCatalog.length || releaseListQuery.error) {
       setOpen(true);
       hasOpenedRef.current = true;
     }
-  }, [isEligible, releaseQuery.data, releaseQuery.error]);
+  }, [isEligible, releaseCatalog.length, releaseListQuery.error]);
 
   return (
     <Dialog
@@ -179,55 +336,103 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
       }}
     >
       <DialogTitle sx={{ alignItems: "center", display: "flex", justifyContent: "space-between" }}>
-        {`What's new in CIPP ${releaseMeta.currentTag}`}
-        <Button onClick={toggleExpanded} size="small" variant="outlined">
-          {isExpanded ? "Shrink" : "Expand"}
-        </Button>
+        <Stack
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          direction={{ xs: "column", sm: "row" }}
+          spacing={1.5}
+          sx={{ width: "100%" }}
+        >
+          <Typography sx={{ flexGrow: 1 }} variant="h6">
+            {`Release notes for ${releaseHeading}`}
+          </Typography>
+          <CippAutoComplete
+            creatable={false}
+            disableClearable
+            isFetching={isReleaseListLoading}
+            label="Release"
+            multiple={false}
+            onChange={handleReleaseChange}
+            options={releaseOptions}
+            placeholder="Select a release"
+            size="small"
+            sx={{ minWidth: { xs: "100%", sm: 260 }, maxWidth: { xs: "100%", sm: 320 } }}
+            value={selectedReleaseValue}
+          />
+          <Button onClick={toggleExpanded} size="small" variant="outlined">
+            {isExpanded ? "Shrink" : "Expand"}
+          </Button>
+        </Stack>
       </DialogTitle>
       <DialogContent dividers sx={{ pt: 1, flex: 1, display: "flex" }}>
         <Stack spacing={2} sx={{ flex: 1, minHeight: 0 }}>
-          <Typography variant="subtitle1">{releaseName}</Typography>
-          <Typography color="text.secondary" variant="body2">
-            The latest release notes are provided below. You can always read them on GitHub if you
-            prefer.
-          </Typography>
-          {releaseQuery.isLoading ? (
+          {releaseListQuery.error ? (
+            <Typography color="error" variant="body2">
+              We couldn't load additional releases right now. The latest release notes are shown
+              below.
+              {releaseListQuery.error?.message ? ` (${releaseListQuery.error.message})` : ""}
+            </Typography>
+          ) : null}
+          {gfmSupport.error ? (
+            <Typography color="warning.main" variant="body2">
+              Displaying these release notes without GitHub-flavoured markdown enhancements due to a
+              parsing issue. Formatting may look different.
+            </Typography>
+          ) : null}
+          {isReleaseListLoading && !selectedReleaseData ? (
             <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
               <CircularProgress />
             </Box>
-          ) : releaseQuery.error ? (
+          ) : releaseListQuery.error ? (
             <Typography color="error" variant="body2">
               We couldn't load the release notes right now. You can view them on GitHub instead.
-              {releaseQuery.error?.message ? ` (${releaseQuery.error.message})` : ""}
+              {releaseListQuery.error?.message ? ` (${releaseListQuery.error.message})` : ""}
             </Typography>
           ) : (
             <Box
               sx={{
                 flexGrow: 1,
-                maxHeight: isExpanded ? "calc(100vh - 260px)" : 400,
+                maxHeight: isExpanded ? "calc(100vh - 260px)" : 600,
                 overflowY: "auto",
               }}
             >
-              <ReactMarkdown
-                components={{
-                  a: ({ node, ...props }) => (
-                    <Link {...props} rel="noopener" target="_blank" underline="hover" />
-                  ),
-                  img: ({ node, ...props }) => (
+              <MarkdownErrorBoundary
+                fallback={(error) => (
+                  <Stack spacing={1.5}>
+                    <Typography color="error" variant="body2">
+                      We couldn't format these release notes
+                      {error?.message ? ` (${error.message})` : ""}. A plain-text version is shown
+                      below.
+                    </Typography>
                     <Box
-                      alt={props.alt}
-                      component="img"
-                      loading="lazy"
-                      sx={{ borderRadius: 1, display: "block", height: "auto", maxWidth: "100%" }}
-                      {...props}
-                    />
-                  ),
-                }}
-                rehypePlugins={[rehypeRaw]}
-                remarkPlugins={[remarkGfm]}
+                      component="pre"
+                      sx={{ whiteSpace: "pre-wrap", fontFamily: "inherit", m: 0 }}
+                    >
+                      {releaseBody}
+                    </Box>
+                  </Stack>
+                )}
               >
-                {formattedReleaseBody}
-              </ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    a: ({ node, ...props }) => (
+                      <Link {...props} rel="noopener" target="_blank" underline="hover" />
+                    ),
+                    img: ({ node, ...props }) => (
+                      <Box
+                        alt={props.alt}
+                        component="img"
+                        loading="lazy"
+                        sx={{ borderRadius: 1, display: "block", height: "auto", maxWidth: "100%" }}
+                        {...props}
+                      />
+                    ),
+                  }}
+                  rehypePlugins={[rehypeRaw]}
+                  remarkPlugins={gfmSupport.plugins}
+                >
+                  {formattedReleaseBody}
+                </ReactMarkdown>
+              </MarkdownErrorBoundary>
             </Box>
           )}
         </Stack>
@@ -243,9 +448,15 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
           py: 2,
         }}
       >
-        <Link href={releaseUrl} rel="noopener" target="_blank" underline="hover">
+        <Button
+          href={releaseUrl}
+          rel="noopener"
+          target="_blank"
+          variant="text"
+          startIcon={<GitHub />}
+        >
           View release notes on GitHub
-        </Link>
+        </Button>
         <Stack direction="row" spacing={1}>
           <Button onClick={handleRemindLater} variant="outlined">
             Remind me next time
