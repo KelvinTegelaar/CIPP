@@ -16,7 +16,7 @@ const CodeContainer = styled("div")`
   padding-bottom: 1rem;
   .cipp-code-copy-button {
     position: absolute;
-    right: 0.5rem;
+    right: 1rem; /* Moved further left to avoid Monaco scrollbar */
     top: 0.5rem;
     z-index: 1; /* Ensure the button is above the code block */
   }
@@ -54,7 +54,7 @@ export const CippCodeBlock = (props) => {
           options={{
             wordWrap: true,
             lineNumbers: showLineNumbers ? "on" : "off",
-            minimap: { enabled: showLineNumbers},
+            minimap: { enabled: showLineNumbers },
           }}
           {...other}
         />

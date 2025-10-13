@@ -25,15 +25,12 @@ const CippContactPermissionsDialog = ({ formHook, combinedOptions, isUserGroupLo
           type="autoComplete"
           label="Add Access"
           name="UserToGetPermissions"
-          multiple={false}
+          multiple={true}
           formControl={formHook}
           isFetching={isUserGroupLoading}
           options={combinedOptions}
           creatable={false}
-          required={true}
-          validators={{
-            validate: (value) => (value ? true : "Select a user or group to assign permissions to"),
-          }}
+          validators={{ required: "Select a user or group to assign permissions to" }}
           placeholder="Select a user or group to assign permissions to"
         />
       </Box>
@@ -42,7 +39,6 @@ const CippContactPermissionsDialog = ({ formHook, combinedOptions, isUserGroupLo
           type="autoComplete"
           label="Permission Level"
           name="Permissions"
-          required={true}
           creatable={false}
           validators={{
             validate: (value) => (value ? true : "Select the permission level for the contact"),
@@ -58,6 +54,7 @@ const CippContactPermissionsDialog = ({ formHook, combinedOptions, isUserGroupLo
             { value: "Reviewer", label: "Reviewer" },
             { value: "LimitedDetails", label: "Limited Details" },
             { value: "AvailabilityOnly", label: "Availability Only" },
+            { value: "None", label: "None" },
           ]}
           multiple={false}
           formControl={formHook}
