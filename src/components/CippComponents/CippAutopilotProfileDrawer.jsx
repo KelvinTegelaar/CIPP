@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Divider, Button } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch, useFormState } from "react-hook-form";
 import { AccountCircle } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
@@ -23,9 +23,9 @@ export const CippAutopilotProfileDrawer = ({
       Description: "",
       DeviceNameTemplate: "",
       languages: null,
-      CollectHash: true,
+      CollectHash: false,
       Assignto: true,
-      DeploymentMode: true,
+      DeploymentMode: false,
       HideTerms: true,
       HidePrivacy: true,
       HideChangeAccount: true,
@@ -37,15 +37,36 @@ export const CippAutopilotProfileDrawer = ({
 
   const createProfile = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["Autopilot Profiles"],
+    relatedQueryKeys: ["Autopilot Profiles*"],
   });
+
+  // Watch the deployment mode to conditionally disable white glove
+  const deploymentMode = useWatch({
+    control: formControl.control,
+    name: "DeploymentMode",
+  });
+
+  // Watch form state for validation
+  const { isValid, isDirty } = useFormState({
+    control: formControl.control,
+  });
+
+  // Automatically disable white glove when self-deploying mode (shared) is enabled
+  useEffect(() => {
+    if (deploymentMode === true) {
+      // Self-deploying mode is enabled (shared mode), disable white glove
+      formControl.setValue("allowWhiteglove", false);
+    }
+  }, [deploymentMode, formControl]);
 
   const handleSubmit = () => {
     const formData = formControl.getValues();
+    // Always set HideChangeAccount to true regardless of form state
+    formData.HideChangeAccount = true;
     createProfile.mutate({
       url: "/api/AddAutopilotConfig",
       data: formData,
-      relatedQueryKeys: ["Autopilot Profiles"],
+      relatedQueryKeys: ["Autopilot Profiles*"],
     });
   };
 
@@ -69,22 +90,32 @@ export const CippAutopilotProfileDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={createProfile.isLoading}
+          <div>
+            <CippApiResults apiObject={createProfile} />
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                justifyContent: "flex-start",
+                marginTop: "16px",
+              }}
             >
-              {createProfile.isLoading
-                ? "Creating..."
-                : createProfile.isSuccess
-                ? "Create Another"
-                : "Create Profile"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={createProfile.isLoading || !isValid}
+              >
+                {createProfile.isLoading
+                  ? "Creating..."
+                  : createProfile.isSuccess
+                  ? "Create Another"
+                  : "Create Profile"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
           </div>
         }
       >
@@ -114,6 +145,7 @@ export const CippAutopilotProfileDrawer = ({
               name="DisplayName"
               formControl={formControl}
               validators={{ required: "Display Name is required" }}
+              required={true}
             />
           </Grid>
 
@@ -188,6 +220,8 @@ export const CippAutopilotProfileDrawer = ({
               label="Hide Change Account Options"
               name="HideChangeAccount"
               formControl={formControl}
+              disabled={true}
+              helperText="This setting requires Hybrid Azure AD Join which is not supported in CIPP"
             />
             <CippFormComponent
               type="switch"
@@ -200,6 +234,12 @@ export const CippAutopilotProfileDrawer = ({
               label="Allow White Glove OOBE"
               name="allowWhiteglove"
               formControl={formControl}
+              disabled={deploymentMode === true}
+              helperText={
+                deploymentMode === true
+                  ? "White Glove is not supported with Self-deploying mode (shared devices)"
+                  : undefined
+              }
             />
             <CippFormComponent
               type="switch"
@@ -208,8 +248,6 @@ export const CippAutopilotProfileDrawer = ({
               formControl={formControl}
             />
           </Grid>
-
-          <CippApiResults apiObject={createProfile} />
         </Grid>
       </CippOffCanvas>
     </>

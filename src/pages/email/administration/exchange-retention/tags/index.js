@@ -13,56 +13,63 @@ const Page = () => {
   const pageTitle = "Retention Tag Management";
   const tenant = useSettings().currentTenant;
 
-  const actions = useMemo(() => [
-    {
-      label: "Edit Tag",
-      link: "/email/administration/exchange-retention/tags/tag?name=[Name]",
-      multiPost: false,
-      postEntireRow: true,
-      icon: <Edit />,
-      color: "warning",
-    },
-    {
-      label: "Delete Tag",
-      type: "POST",
-      url: "/api/ExecManageRetentionTags",
-      confirmText: "Are you sure you want to delete retention tag [Name]? This action cannot be undone and may affect retention policies that use this tag.",
-      color: "danger", 
-      icon: <TrashIcon />,
-      customDataformatter: (rows) => {
-        const tags = Array.isArray(rows) ? rows : [rows];
-        return {
-          DeleteTags: tags.map(tag => tag.Name),
-          tenantFilter: tenant,
-        };
+  const actions = useMemo(
+    () => [
+      {
+        label: "Edit Tag",
+        link: "/email/administration/exchange-retention/tags/tag?name=[Name]",
+        multiPost: false,
+        postEntireRow: true,
+        icon: <Edit />,
+        color: "warning",
       },
-    },
-  ], [tenant]);
+      {
+        label: "Delete Tag",
+        type: "POST",
+        url: "/api/ExecManageRetentionTags",
+        confirmText:
+          "Are you sure you want to delete retention tag [Name]? This action cannot be undone and may affect retention policies that use this tag.",
+        color: "danger",
+        icon: <TrashIcon />,
+        customDataformatter: (rows) => {
+          const tags = Array.isArray(rows) ? rows : [rows];
+          return {
+            DeleteTags: tags.map((tag) => tag.Name),
+            tenantFilter: tenant,
+          };
+        },
+      },
+    ],
+    [tenant]
+  );
 
-  const simpleColumns = useMemo(() => [
-    "Name",
-    "Type",
-    "RetentionAction", 
-    "AgeLimitForRetention",
-    "RetentionEnabled",
-    "Comment"
-  ], []);
+  const simpleColumns = useMemo(
+    () => [
+      "Name",
+      "Type",
+      "RetentionAction",
+      "AgeLimitForRetention",
+      "RetentionEnabled",
+      "Comment",
+    ],
+    []
+  );
 
-  const cardButton = useMemo(() => (
-    <Button
-      component={Link}
-      href="/email/administration/exchange-retention/tags/tag"
-      startIcon={<Sell />}
-    >
-      Add Retention Tag
-    </Button>
-  ), []);
+  const cardButton = useMemo(
+    () => (
+      <Button
+        component={Link}
+        href="/email/administration/exchange-retention/tags/tag"
+        startIcon={<Sell />}
+      >
+        Add Retention Tag
+      </Button>
+    ),
+    []
+  );
 
   return (
-    <HeaderedTabbedLayout
-      tabOptions={tabOptions}
-      title={pageTitle}
-    >
+    <HeaderedTabbedLayout tabOptions={tabOptions} title={pageTitle}>
       <CippTablePage
         apiUrl="/api/ExecManageRetentionTags"
         queryKey={`RetentionTags-${tenant}`}
@@ -75,6 +82,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

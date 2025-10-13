@@ -31,7 +31,7 @@ const OutOfOfficeForm = ({ formControl }) => {
   // Watch the Auto Reply State value
   const autoReplyState = useWatch({
     control: formControl.control,
-    name: "ooo.AutoReplyState",
+    name: "AutoReplyState",
   });
 
   // Calculate if date fields should be disabled

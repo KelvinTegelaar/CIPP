@@ -41,6 +41,7 @@ const Page = () => {
       actions={actions}
       simpleColumns={[
         "Tenant",
+        "Parameters.Users.addedFields.userPrincipalName",
         "Name",
         "TaskState",
         "ScheduledTime",

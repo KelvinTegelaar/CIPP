@@ -186,6 +186,16 @@ export const CippOffboardingDefaultSettings = (props) => {
           ),
         },
         {
+          label: "Remove Teams Phone DID",
+          value: (
+            <CippFormComponent
+              type="switch"
+              name="offboardingDefaults.RemoveTeamsPhoneDID"
+              formControl={formControl}
+            />
+          ),
+        },
+        {
           label: "Clear Immutable ID",
           value: (
             <CippFormComponent

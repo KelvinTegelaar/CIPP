@@ -172,6 +172,7 @@ export const CippAuditLogSearchDrawer = ({
       label: "Search Name",
       required: true,
       validators: { required: "Search name is required" },
+      disableVariables: true,
     },
     {
       type: "autoComplete",

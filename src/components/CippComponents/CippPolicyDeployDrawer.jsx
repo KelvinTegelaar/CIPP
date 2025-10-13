@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, Stack, Box } from "@mui/material";
 import { RocketLaunch } from "@mui/icons-material";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, useFormState } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
-import { CippIntunePolicy } from "../CippWizard/CippIntunePolicy";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import CippFormComponent from "./CippFormComponent";
 import CippJsonView from "../CippFormPages/CippJSONView";
@@ -19,7 +18,10 @@ export const CippPolicyDeployDrawer = ({
   PermissionButton = Button,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const formControl = useForm();
+  const formControl = useForm({
+    mode: "onChange",
+  });
+  const { isValid } = useFormState({ control: formControl.control });
   const tenantFilter = useSettings()?.tenantFilter;
   const selectedTenants = useWatch({ control: formControl.control, name: "tenantFilter" }) || [];
   const CATemplates = ApiGetCall({ url: "/api/ListIntuneTemplates", queryKey: "IntuneTemplates" });
@@ -50,6 +52,12 @@ export const CippPolicyDeployDrawer = ({
   });
 
   const handleSubmit = () => {
+    formControl.trigger();
+    // Check if the form is valid before proceeding
+    if (!isValid) {
+      return;
+    }
+
     const formData = formControl.getValues();
     console.log("Submitting form data:", formData);
     deployPolicy.mutate({
@@ -89,7 +97,7 @@ export const CippPolicyDeployDrawer = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={deployPolicy.isLoading}
+              disabled={deployPolicy.isLoading || !isValid}
             >
               {deployPolicy.isLoading
                 ? "Deploying..."

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { Send } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
@@ -16,7 +16,7 @@ export const CippInviteGuestDrawer = ({
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const userSettingsDefaults = useSettings();
-  
+
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -28,12 +28,19 @@ export const CippInviteGuestDrawer = ({
     },
   });
 
+  const { isValid } = useFormState({ control: formControl.control });
+
   const inviteGuest = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
   });
 
   const handleSubmit = () => {
+    formControl.trigger();
+    // Check if the form is valid before proceeding
+    if (!isValid) {
+      return;
+    }
     const formData = formControl.getValues();
     inviteGuest.mutate({
       url: "/api/AddGuest",
@@ -73,7 +80,7 @@ export const CippInviteGuestDrawer = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={inviteGuest.isLoading}
+              disabled={inviteGuest.isLoading || !isValid}
             >
               {inviteGuest.isLoading
                 ? "Sending Invite..."
@@ -105,12 +112,12 @@ export const CippInviteGuestDrawer = ({
               label="E-mail Address"
               name="mail"
               formControl={formControl}
-              validators={{ 
+              validators={{
                 required: "Email address is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address"
-                }
+                  message: "Invalid email address",
+                },
               }}
             />
           </Grid>

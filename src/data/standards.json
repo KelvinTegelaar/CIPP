@@ -965,10 +965,18 @@
     "name": "standards.DisableGuests",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "helpText": "Blocks login for guest users that have not logged in for 90 days",
-    "executiveText": "Automatically disables external guest accounts that haven't been used for 90 days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
-    "addedComponent": [],
-    "label": "Disable Guest accounts that have not logged on for 90 days",
+    "helpText": "Blocks login for guest users that have not logged in for a number of days",
+    "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.DisableGuests.days",
+        "required": true,
+        "defaultValue": 90,
+        "label": "Days of inactivity"
+      }
+    ],
+    "label": "Disable Guest accounts that have not logged on for a number of days",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2022-10-20",
@@ -2284,6 +2292,13 @@
     "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.SafeLinksPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default SafeLinks Policy"
+      },
+      {
         "type": "switch",
         "label": "AllowClickThrough",
         "name": "standards.SafeLinksPolicy.AllowClickThrough"
@@ -2330,6 +2345,13 @@
     ],
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mail tips.",
     "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.AntiPhishPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Anti-Phishing Policy"
+      },
       {
         "type": "number",
         "label": "Phishing email threshold. (Default 1)",
@@ -2541,6 +2563,13 @@
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.SafeAttachmentPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Safe Attachment Policy"
+      },
+      {
         "type": "select",
         "multiple": false,
         "label": "Safe Attachment Action",
@@ -2685,6 +2714,13 @@
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.MalwareFilterPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Malware Policy"
+      },
+      {
         "type": "select",
         "multiple": false,
         "label": "FileTypeAction",
@@ -2805,6 +2841,13 @@
     "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
     "docsDescription": "This standard creates a Spam filter policy similar to the default strict policy, the following settings are configured to on by default: IncreaseScoreWithNumericIps, IncreaseScoreWithRedirectToOtherPort, MarkAsSpamEmptyMessages, MarkAsSpamJavaScriptInHtml, MarkAsSpamSpfRecordHardFail, MarkAsSpamFromAddressAuthFail, MarkAsSpamNdrBackscatter, MarkAsSpamBulkMail, InlineSafetyTipsEnabled, PhishZapEnabled, SpamZapEnabled",
     "addedComponent": [
+      {
+        "type": "textField",
+        "name": "standards.SpamFilterPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Spam Filter Policy"
+      },
       {
         "type": "number",
         "label": "Bulk email threshold (Default 7)",
@@ -3427,6 +3470,163 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2025-04-01",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Sets the Windows Hello for Business configuration during device enrollment.",
+    "executiveText": "Enables or disables Windows Hello for Business during device enrollment, enhancing security through biometric or PIN-based authentication methods. This ensures that devices meet corporate security standards while providing a user-friendly sign-in experience.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.state",
+        "label": "Configure Windows Hello for Business",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not configured",
+            "value": "notConfigured"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.securityDeviceRequired",
+        "label": "Use a Trusted Platform Module (TPM)",
+        "default": true
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinMinimumLength",
+        "label": "Minimum PIN length (4-127)",
+        "default": 4
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinMaximumLength",
+        "label": "Maximum PIN length (4-127)",
+        "default": 127
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinLowercaseCharactersUsage",
+        "label": "Lowercase letters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinUppercaseCharactersUsage",
+        "label": "Uppercase letters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinSpecialCharactersUsage",
+        "label": "Special characters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinExpirationInDays",
+        "label": "PIN expiration (days) - 0 to disable",
+        "default": 0
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinPreviousBlockCount",
+        "label": "PIN history - 0 to disable",
+        "default": 0
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.unlockWithBiometricsEnabled",
+        "label": "Allow biometric authentication",
+        "default": true
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.enhancedBiometricsState",
+        "label": "Use enhanced anti-spoofing when available",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not configured",
+            "value": "notConfigured"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.remotePassportEnabled",
+        "label": "Allow phone sign-in",
+        "default": true
+      }
+    ],
+    "label": "Windows Hello for Business enrollment configuration",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-09-25",
     "powershellEquivalent": "Graph API",
     "recommendedBy": []
   },
@@ -4057,6 +4257,34 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.TeamsChatProtection",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Configures Teams chat protection settings including weaponizable file protection and malicious URL protection.",
+    "docsDescription": "Configures Teams messaging safety features to protect users from weaponizable files and malicious URLs in chats and channels. Weaponizable File Protection automatically blocks messages containing potentially dangerous file types (like .exe, .dll, .bat, etc.). Malicious URL Protection scans URLs in messages and displays warnings when potentially harmful links are detected. These protections work across internal and external collaboration scenarios.",
+    "executiveText": "Enables automated security protections in Microsoft Teams to block dangerous files and warn users about malicious links in chat messages. This helps protect employees from file-based attacks and phishing attempts. These safeguards work seamlessly in the background, providing essential protection without disrupting normal business communication.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.TeamsChatProtection.FileTypeCheck",
+        "label": "Enable Weaponizable File Protection",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsChatProtection.UrlReputationCheck",
+        "label": "Enable Malicious URL Protection",
+        "defaultValue": true
+      }
+    ],
+    "label": "Set Teams Chat Protection Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-10-02",
+    "powershellEquivalent": "Set-CsTeamsMessagingConfiguration -FileTypeCheck 'Enabled' -UrlReputationCheck 'Enabled' -ReportIncorrectSecurityDetections 'Enabled'",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.TeamsEmailIntegration",
     "cat": "Teams Standards",
     "helpText": "Should users be allowed to send emails directly to a channel email addresses?",
@@ -4652,7 +4880,31 @@
         "label": "Exclude Groups",
         "type": "textField",
         "required": false,
-        "helpText": "Enter the group name to exclude from the assignment. Wildcards are allowed."
+        "helpText": "Enter the group name(s) to exclude from the assignment. Wildcards are allowed. Multiple group names are comma-seperated."
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "assignmentFilter",
+        "label": "Assignment Filter Name (Optional)",
+        "helpText": "Enter the assignment filter name to apply to this policy assignment. Wildcards are allowed."
+      },
+      {
+        "name": "assignmentFilterType",
+        "label": "Assignment Filter Mode (Optional)",
+        "type": "radio",
+        "required": false,
+        "helpText": "Choose whether to include or exclude devices matching the filter. Only applies if you specified a filter name above. Defaults to Include if not specified.",
+        "options": [
+          {
+            "label": "Include - Assign to devices matching the filter",
+            "value": "include"
+          },
+          {
+            "label": "Exclude - Assign to devices NOT matching the filter",
+            "value": "exclude"
+          }
+        ]
       }
     ]
   },
@@ -4797,6 +5049,35 @@
     ]
   },
   {
+    "name": "standards.AssignmentFilterTemplate",
+    "label": "Assignment Filter Template",
+    "multi": true,
+    "cat": "Templates",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "Medium Impact",
+    "addedDate": "2025-10-04",
+    "helpText": "Deploy and manage assignment filter templates.",
+    "executiveText": "Creates standardized assignment filters with predefined settings. These templates ensure consistent assignment filter configurations across the organization, streamlining assignment management.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "assignmentFilterTemplate",
+        "label": "Select Assignment Filter Template",
+        "api": {
+          "url": "/api/ListAssignmentFilterTemplates",
+          "labelField": "Displayname",
+          "altLabelField": "displayName",
+          "valueField": "GUID",
+          "queryKey": "ListAssignmentFilterTemplates"
+        }
+      }
+    ]
+  },
+  {
     "name": "standards.MailboxRecipientLimits",
     "cat": "Exchange Standards",
     "tag": [],
@@ -4876,5 +5157,134 @@
     "addedDate": "2025-08-26",
     "powershellEquivalent": "None",
     "recommendedBy": ["Microsoft"]
+  },
+  {
+    "name": "standards.DeployCheckChromeExtension",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Deploys the Check Chrome extension via Intune OMA-URI custom policies for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
+    "docsDescription": "Creates Intune OMA-URI custom policies that automatically install and configure the Check Chrome extension on managed devices for both Google Chrome and Microsoft Edge browsers. This ensures the extension is deployed consistently across all corporate devices with customizable settings.",
+    "executiveText": "Automatically deploys the Check browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableValidPageBadge",
+        "label": "Enable valid page badge",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enablePageBlocking",
+        "label": "Enable page blocking",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableCippReporting",
+        "label": "Enable CIPP reporting",
+        "defaultValue": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.cippServerUrl",
+        "label": "CIPP Server URL",
+        "placeholder": "https://YOUR-CIPP-SERVER-URL",
+        "required": false
+      },
+
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.customRulesUrl",
+        "label": "Custom Rules URL",
+        "placeholder": "https://YOUR-CIPP-SERVER-URL/rules.json",
+        "required": false
+      },
+      {
+        "type": "number",
+        "name": "standards.DeployCheckChromeExtension.updateInterval",
+        "label": "Update interval (hours)",
+        "defaultValue": 12
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableDebugLogging",
+        "label": "Enable debug logging",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.companyName",
+        "label": "Company Name",
+        "placeholder": "YOUR-COMPANY",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.productName",
+        "label": "Product Name",
+        "placeholder": "YOUR-PRODUCT-NAME",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.supportEmail",
+        "label": "Support Email",
+        "placeholder": "support@yourcompany.com",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.primaryColor",
+        "label": "Primary Color",
+        "placeholder": "#0044CC",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.logoUrl",
+        "label": "Logo URL",
+        "placeholder": "https://yourcompany.com/logo.png",
+        "required": false
+      },
+      {
+        "name": "AssignTo",
+        "label": "Who should this policy be assigned to?",
+        "type": "radio",
+        "options": [
+          {
+            "label": "Do not assign",
+            "value": "On"
+          },
+          {
+            "label": "Assign to all users",
+            "value": "allLicensedUsers"
+          },
+          {
+            "label": "Assign to all devices",
+            "value": "AllDevices"
+          },
+          {
+            "label": "Assign to all users and devices",
+            "value": "AllDevicesAndUsers"
+          },
+          {
+            "label": "Assign to Custom Group",
+            "value": "customGroup"
+          }
+        ]
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "customGroup",
+        "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
+      }
+    ],
+    "label": "Deploy Check Chrome Extension",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-09-18",
+    "powershellEquivalent": "New-GraphPostRequest -uri 'https://graph.microsoft.com/beta/deviceManagement/configurationPolicies'",
+    "recommendedBy": ["CIPP"]
   }
 ]

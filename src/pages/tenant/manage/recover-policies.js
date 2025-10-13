@@ -101,7 +101,6 @@ const RecoverPoliciesPage = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
-      backUrl="/tenant/standards/list-standards"
       actions={actions}
       actionsData={{}}
       isFetching={recoverApi.isPending}

@@ -184,18 +184,6 @@ export const nativeMenuItems = [
         permissions: ["Tenant.Relationship.*"],
       },
       {
-        title: "Configuration Backup",
-        path: "/tenant/backup",
-        permissions: ["CIPP.Backup.*"],
-        items: [
-          {
-            title: "Backups",
-            path: "/tenant/backup/backup-wizard",
-            permissions: ["CIPP.Backup.*"],
-          },
-        ],
-      },
-      {
         title: "Standards & Drift",
         path: "/tenant/standards",
         permissions: [
@@ -305,6 +293,11 @@ export const nativeMenuItems = [
           {
             title: "MDO Alerts",
             path: "/security/incidents/list-mdo-alerts",
+            permissions: ["Security.Alert.*"],
+          },
+          {
+            title: "Check Alerts",
+            path: "/security/incidents/list-check-alerts",
             permissions: ["Security.Alert.*"],
           },
         ],
@@ -453,6 +446,16 @@ export const nativeMenuItems = [
             permissions: ["Endpoint.MEM.*"],
           },
           {
+            title: "Assignment Filters",
+            path: "/endpoint/MEM/assignment-filters",
+            permissions: ["Endpoint.MEM.*"],
+          },
+          {
+            title: "Assignment Filter Templates",
+            path: "/endpoint/MEM/assignment-filter-templates",
+            permissions: ["Endpoint.MEM.*"],
+          },
+          {
             title: "Scripts",
             path: "/endpoint/MEM/list-scripts",
             permissions: ["Endpoint.MEM.*"],
@@ -591,6 +594,11 @@ export const nativeMenuItems = [
             permissions: ["Exchange.SpamFilter.*"],
           },
           {
+            title: "Restricted Users",
+            path: "/email/administration/restricted-users",
+            permissions: ["Exchange.Mailbox.*"],
+          },
+          {
             title: "Tenant Allow/Block Lists",
             path: "/email/administration/tenant-allow-block-lists",
             permissions: ["Exchange.SpamFilter.*"],
@@ -717,11 +725,6 @@ export const nativeMenuItems = [
             title: "Malware Filters",
             path: "/email/reports/malware-filters",
             permissions: ["Exchange.SpamFilter.*"],
-          },
-          {
-            title: "Safe Links Filters",
-            path: "/email/reports/safelinks-filters",
-            permissions: ["Exchange.SafeLinks.*"],
           },
           {
             title: "Safe Attachments Filters",

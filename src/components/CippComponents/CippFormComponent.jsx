@@ -13,6 +13,7 @@ import {
   Input,
 } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
+import { CippTextFieldWithVariables } from "./CippTextFieldWithVariables";
 import { Controller, useFormState } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
 import CSVReader from "../CSVReader";
@@ -52,6 +53,8 @@ export const CippFormComponent = (props) => {
     labelLocation = "behind", // Default location for switches
     defaultValue,
     helperText,
+    disableVariables = false,
+    includeSystemVariables = false,
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });
@@ -121,16 +124,75 @@ export const CippFormComponent = (props) => {
       return (
         <>
           <div>
-            <TextField
-              variant="filled"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              {...other}
-              {...formControl.register(convertedName, { ...validators })}
-              label={label}
-              defaultValue={defaultValue}
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              defaultValue={defaultValue || ""}
+              rules={validators}
+              render={({ field }) =>
+                !disableVariables ? (
+                  <CippTextFieldWithVariables
+                    {...other}
+                    variant="filled"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    label={label}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    includeSystemVariables={includeSystemVariables}
+                  />
+                ) : (
+                  <TextField
+                    variant="filled"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    {...other}
+                    label={label}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )
+              }
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {get(errors, convertedName, {})?.message}
+          </Typography>
+          {helperText && (
+            <Typography variant="subtitle3" color="text.secondary">
+              {helperText}
+            </Typography>
+          )}
+        </>
+      );
+    case "textFieldWithVariables":
+      return (
+        <>
+          <div>
+            <Controller
+              name={convertedName}
+              control={formControl.control}
+              defaultValue={defaultValue || ""}
+              rules={validators}
+              render={({ field }) => (
+                <CippTextFieldWithVariables
+                  {...other}
+                  variant="filled"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  label={label}
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  tenantFilter={tenantFilter}
+                  includeSystemVariables={includeSystemVariables}
+                />
+              )}
             />
           </div>
           <Typography variant="subtitle3" color="error">
@@ -204,11 +266,11 @@ export const CippFormComponent = (props) => {
             <Controller
               name={convertedName}
               control={formControl.control}
-              defaultValue={defaultValue}
+              defaultValue={defaultValue || false}
               render={({ field }) =>
                 renderSwitchWithLabel(
                   <Switch
-                    checked={field.value}
+                    checked={Boolean(field.value)}
                     {...other}
                     {...formControl.register(convertedName, { ...validators })}
                   />
@@ -306,9 +368,11 @@ export const CippFormComponent = (props) => {
               )}
             />
           </div>
-          <Typography variant="subtitle3" color="error">
-            {get(errors, convertedName, {}).message}
-          </Typography>
+          {get(errors, convertedName, {})?.message && (
+            <Typography variant="subtitle3" color="error">
+              {get(errors, convertedName, {})?.message}
+            </Typography>
+          )}
         </>
       );
 
@@ -332,9 +396,11 @@ export const CippFormComponent = (props) => {
               )}
             />
           </div>
-          <Typography variant="subtitle3" color="error">
-            {get(errors, convertedName, {}).message}
-          </Typography>
+          {get(errors, convertedName, {})?.message && (
+            <Typography variant="subtitle3" color="error">
+              {get(errors, convertedName, {})?.message}
+            </Typography>
+          )}
           {helperText && (
             <Typography variant="subtitle3" color="text.secondary">
               {helperText}
@@ -545,6 +611,11 @@ export const CippFormComponent = (props) => {
               )}
             />
           </div>
+          {helperText && (
+            <Typography variant="subtitle3" color="text.secondary">
+              {helperText}
+            </Typography>
+          )}
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}
           </Typography>

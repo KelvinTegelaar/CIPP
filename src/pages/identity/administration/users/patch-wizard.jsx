@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
@@ -17,7 +17,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 import { CippWizardStepButtons } from "/src/components/CippWizard/CippWizardStepButtons";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall, ApiGetCall } from "/src/api/ApiCall";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { Delete } from "@mui/icons-material";
@@ -176,8 +176,47 @@ const UsersDisplayStep = (props) => {
 
 // Step 2: Property selection and input
 const PropertySelectionStep = (props) => {
-  const { onNextStep, onPreviousStep, formControl, currentStep } = props;
+  const { onNextStep, onPreviousStep, formControl, currentStep, users } = props;
   const [selectedProperties, setSelectedProperties] = useState([]);
+
+  // Get unique tenant domains from users
+  const tenantDomains =
+    [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || [];
+
+  // Fetch custom data mappings for all tenants
+  const customDataMappings = ApiGetCall({
+    url:
+      tenantDomains.length > 0
+        ? `/api/ListCustomDataMappings?sourceType=Manual Entry&directoryObject=User&tenantFilter=${tenantDomains[0]}`
+        : null,
+    queryKey: `ManualEntryMappings-${tenantDomains.join(",")}`,
+    enabled: tenantDomains.length > 0,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+
+  // Process custom data mappings into property format
+  const customDataProperties = useMemo(() => {
+    if (customDataMappings.isSuccess && customDataMappings.data?.Results) {
+      return customDataMappings.data.Results.filter((mapping) => {
+        // Only include single-value properties, filter out multivalue ones
+        const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase();
+        const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue;
+        return !isMultiValue && dataType !== "collection";
+      }).map((mapping) => ({
+        property: mapping.customDataAttribute.value, // Use the actual attribute name, not nested under customData
+        label: `${mapping.manualEntryFieldLabel} (Custom)`,
+        type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || "string",
+        isCustomData: true,
+      }));
+    }
+    return [];
+  }, [customDataMappings.isSuccess, customDataMappings.data]);
+
+  // Combine standard properties with custom data properties
+  const allProperties = useMemo(() => {
+    return [...PATCHABLE_PROPERTIES, ...customDataProperties];
+  }, [customDataProperties]);
 
   // Register form fields
   formControl.register("selectedProperties", { required: true });
@@ -191,7 +230,7 @@ const PropertySelectionStep = (props) => {
   };
 
   const renderPropertyInput = (propertyName) => {
-    const property = PATCHABLE_PROPERTIES.find((p) => p.property === propertyName);
+    const property = allProperties.find((p) => p.property === propertyName);
     const currentValue = formControl.getValues("propertyValues")?.[propertyName];
 
     if (property?.type === "boolean") {
@@ -245,7 +284,15 @@ const PropertySelectionStep = (props) => {
         <Typography variant="h6">Select Properties to update</Typography>
         <Typography color="text.secondary" variant="body2">
           Choose which user properties you want to modify and provide the new values.
+          {customDataProperties.length > 0 && (
+            <> Custom data fields are available based on your tenant's manual entry mappings.</>
+          )}
         </Typography>
+        {customDataMappings.isLoading && (
+          <Typography color="text.secondary" variant="body2" sx={{ fontStyle: "italic" }}>
+            Loading custom data mappings...
+          </Typography>
+        )}
       </Stack>
 
       <Autocomplete
@@ -254,20 +301,20 @@ const PropertySelectionStep = (props) => {
         options={[
           {
             property: "select-all",
-            label: `Select All (${PATCHABLE_PROPERTIES.length} properties)`,
+            label: `Select All (${allProperties.length} properties)`,
             isSelectAll: true,
           },
-          ...PATCHABLE_PROPERTIES,
+          ...allProperties,
         ]}
-        value={PATCHABLE_PROPERTIES.filter((prop) => selectedProperties.includes(prop.property))}
+        value={allProperties.filter((prop) => selectedProperties.includes(prop.property))}
         onChange={(event, newValue) => {
           // Check if "Select All" was clicked
           const selectAllOption = newValue.find((option) => option.isSelectAll);
 
           if (selectAllOption) {
             // If Select All is in the new value, select all properties
-            const allSelected = selectedProperties.length === PATCHABLE_PROPERTIES.length;
-            const newProperties = allSelected ? [] : PATCHABLE_PROPERTIES.map((p) => p.property);
+            const allSelected = selectedProperties.length === allProperties.length;
+            const newProperties = allSelected ? [] : allProperties.map((p) => p.property);
             setSelectedProperties(newProperties);
             formControl.setValue("selectedProperties", newProperties);
 
@@ -305,10 +352,9 @@ const PropertySelectionStep = (props) => {
         isOptionEqualToValue={(option, value) => option.property === value.property}
         size="small"
         renderOption={(props, option, { selected }) => {
-          const isAllSelected = selectedProperties.length === PATCHABLE_PROPERTIES.length;
+          const isAllSelected = selectedProperties.length === allProperties.length;
           const isIndeterminate =
-            selectedProperties.length > 0 &&
-            selectedProperties.length < PATCHABLE_PROPERTIES.length;
+            selectedProperties.length > 0 && selectedProperties.length < allProperties.length;
 
           if (option.isSelectAll) {
             return (
@@ -390,7 +436,7 @@ const PropertySelectionStep = (props) => {
 
 // Step 3: Confirmation
 const ConfirmationStep = (props) => {
-  const { lastStep, formControl, onPreviousStep, currentStep, users } = props;
+  const { lastStep, formControl, onPreviousStep, currentStep, users, allProperties } = props;
   const formValues = formControl.getValues();
   const { selectedProperties = [], propertyValues = {} } = formValues;
 
@@ -412,11 +458,31 @@ const ConfirmationStep = (props) => {
         id: user.id,
         tenantFilter: user.Tenant || user.tenantFilter,
       };
+
       selectedProperties.forEach((propName) => {
         if (propertyValues[propName] !== undefined && propertyValues[propName] !== "") {
-          userData[propName] = propertyValues[propName];
+          // Handle dot notation properties (e.g., "extension_abc123.customField")
+          if (propName.includes(".")) {
+            const parts = propName.split(".");
+            let current = userData;
+
+            // Navigate to the nested object, creating it if it doesn't exist
+            for (let i = 0; i < parts.length - 1; i++) {
+              if (!current[parts[i]]) {
+                current[parts[i]] = {};
+              }
+              current = current[parts[i]];
+            }
+
+            // Set the final property value
+            current[parts[parts.length - 1]] = propertyValues[propName];
+          } else {
+            // Handle regular properties
+            userData[propName] = propertyValues[propName];
+          }
         }
       });
+
       return userData;
     });
 
@@ -459,7 +525,7 @@ const ConfirmationStep = (props) => {
             </Typography>
             <Stack spacing={1}>
               {selectedProperties.map((propName) => {
-                const property = PATCHABLE_PROPERTIES.find((p) => p.property === propName);
+                const property = allProperties.find((p) => p.property === propName);
                 const value = propertyValues[propName];
                 const displayValue =
                   property?.type === "boolean" ? (value ? "Yes" : "No") : value || "Not set";
@@ -565,6 +631,48 @@ const Page = () => {
     }
   }, [router.query.users]);
 
+  // Get unique tenant domains from users
+  const tenantDomains = useMemo(() => {
+    return (
+      [...new Set(users?.map((user) => user.Tenant || user.tenantFilter).filter(Boolean))] || []
+    );
+  }, [users]);
+
+  // Fetch custom data mappings for all tenants
+  const customDataMappings = ApiGetCall({
+    url:
+      tenantDomains.length > 0
+        ? `/api/ListCustomDataMappings?sourceType=Manual Entry&directoryObject=User&tenantFilter=${tenantDomains[0]}`
+        : null,
+    queryKey: `ManualEntryMappings-${tenantDomains.join(",")}`,
+    enabled: tenantDomains.length > 0,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+
+  // Process custom data mappings into property format
+  const customDataProperties = useMemo(() => {
+    if (customDataMappings.isSuccess && customDataMappings.data?.Results) {
+      return customDataMappings.data.Results.filter((mapping) => {
+        // Only include single-value properties, filter out multivalue ones
+        const dataType = mapping.customDataAttribute.addedFields.dataType?.toLowerCase();
+        const isMultiValue = mapping.customDataAttribute.addedFields.isMultiValue;
+        return !isMultiValue && dataType !== "collection";
+      }).map((mapping) => ({
+        property: mapping.customDataAttribute.value, // Use the actual attribute name, not nested under customData
+        label: `${mapping.manualEntryFieldLabel} (Custom)`,
+        type: mapping.customDataAttribute.addedFields.dataType?.toLowerCase() || "string",
+        isCustomData: true,
+      }));
+    }
+    return [];
+  }, [customDataMappings.isSuccess, customDataMappings.data]);
+
+  // Combine standard properties with custom data properties
+  const allProperties = useMemo(() => {
+    return [...PATCHABLE_PROPERTIES, ...customDataProperties];
+  }, [customDataProperties]);
+
   const steps = [
     {
       title: "Step 1",
@@ -579,6 +687,12 @@ const Page = () => {
       title: "Step 2",
       description: "Select Properties",
       component: PropertySelectionStep,
+      componentProps: {
+        users: users,
+        allProperties: allProperties,
+        customDataMappings: customDataMappings,
+        customDataProperties: customDataProperties,
+      },
     },
     {
       title: "Step 3",
@@ -586,6 +700,7 @@ const Page = () => {
       component: ConfirmationStep,
       componentProps: {
         users: users,
+        allProperties: allProperties,
       },
     },
   ];
