@@ -260,8 +260,9 @@ export const ReleaseNotesDialog = forwardRef((_props, ref) => {
   }, [releaseCatalog, selectedReleaseTag, releaseMeta.releaseTag]);
 
   const handleDismissUntilNextRelease = () => {
+    const newestRelease = releaseCatalog[0];
     const tagToStore =
-      selectedReleaseData?.releaseTag ?? selectedReleaseTag ?? releaseMeta.releaseTag;
+      newestRelease?.releaseTag ?? newestRelease?.tagName ?? releaseMeta.releaseTag;
     setCookie(RELEASE_COOKIE_KEY, tagToStore);
     setOpen(false);
     setIsExpanded(false);
