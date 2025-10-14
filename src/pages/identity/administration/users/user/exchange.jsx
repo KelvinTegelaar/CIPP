@@ -1245,7 +1245,7 @@ const Page = () => {
                       isCollapsible={true}
                     />
                     <CippBannerListCard
-                      isFetching={calPermissions.isLoading}
+                      isFetching={contactPermissions.isLoading}
                       items={contactCard}
                       isCollapsible={true}
                     />
