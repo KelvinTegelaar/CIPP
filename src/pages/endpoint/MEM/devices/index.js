@@ -123,7 +123,7 @@ const Page = () => {
       confirmText: "Are you sure you want to locate [deviceName]?",
     },
     {
-      label: "Retrieve LAPs password",
+      label: "Retrieve LAPS password",
       type: "POST",
       icon: <Password />,
       url: "/api/ExecGetLocalAdminPassword",
