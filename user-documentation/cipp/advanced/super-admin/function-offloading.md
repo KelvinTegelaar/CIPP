@@ -387,6 +387,10 @@ After successful deployment of the offloading function apps, follow these steps 
 
 After setting up your additional function apps, make sure to enable CI/CD from the Deployment Center on each of them to ensure they stay on the same version as your main function app. Please see the [runfrompackage.md](../../../../setup/self-hosting-guide/runfrompackage.md "mention")document for the section "Run from Package" for more information.
 
+## Limitations / Considerations
+
+Using function offloading introduces a delay in starting background tasks. Background tasks are queued and run in 15 minute intervals (0,15,30,45).&#x20;
+
 ***
 
 ### Feature Requests / Ideas
