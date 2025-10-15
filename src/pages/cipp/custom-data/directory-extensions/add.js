@@ -62,6 +62,7 @@ const Page = () => {
       type: "textField",
       required: true,
       placeholder: "Enter a unique name for the directory extension",
+      disableVariables: true,
     },
     {
       name: "dataType",
