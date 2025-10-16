@@ -1,6 +1,6 @@
 ---
 name: NodeJS Project Check
-on: # yamllint disable-line rule:truthy
+on:
   pull_request:
     branches:
       - main
@@ -10,6 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   install-build:
+    if: github.repository_owner == 'KelvinTegelaar'
     name: NPM Install and Build
     runs-on: ubuntu-latest
     strategy:

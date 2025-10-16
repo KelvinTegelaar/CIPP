@@ -1,32 +1,84 @@
-name: ✨ Feature request
-description: Suggest a new feature or improvement
-title: '[Feature Request]: '
-labels: [enhancement, no-priority]
+name: "✨ Feature request"
+description: "Suggest a new feature or improvement"
+title: "[Feature Request]: "
+labels:
+  - "enhancement"
+  - "no-priority"
 
 body:
-- type: markdown
-  attributes:
-    value: >
-      Thanks for suggesting a feature!
-      
-      - Please search the existing feature request to see if there has been a similar issue filed.
-      
-      - If a feature has been filed before, but not followed up by a contributor, you can develop the feature yourself by checking the development documentation [here](https://cipp.app/docs/dev/).
-      
-      - Repeat feature requests are allowed if the previous request has been closed for more than 30 days
-      
-      - drive-by feature requests without effort will be closed.
-      
-      - A feature request has 14 days to be fullfilled before automatically being closed. if you want to work on the feature yourself use the phrase "I'd like to work on this please!"
-      
-      - Feature requests that are detrimental to security will also be closed without notice.
-- type: textarea
-  attributes:
-    label: Description of the new feature - must be an in-depth explanation of the feature you want, reasoning why, and the added benefits for MSPs as a whole.
-  validations:
-    required: true
-- type: textarea
-  attributes:
-    label: PowerShell commands you would normally use to achieve above request
-  validations:
-    required: false
+  # Introductory Markdown
+  - type: markdown
+    attributes:
+      value: |
+        **Thank you for suggesting a new feature or improvement for CIPP**
+
+        Before creating a request, please:
+
+        1. Check that you have an active sponsorship, only users that are sponsoring CIPP at the $99,- sponsorship level can create feature requests.
+        1. Search existing **open and closed** feature requests to avoid duplicates.
+        2. Note that **repeat feature requests** are permitted if a previous request was closed more than 30 days ago.
+        3. Consider implementing the feature yourself by reviewing the [development documentation](https://docs.cipp.app/dev-documentation/cipp-dev-guide/setting-up-for-local-development).
+        4. Feature requests that lack sufficient detail or feasibility may be closed at any time.
+        5. **This request will auto-close in 14 days** if no meaningful progress or collaboration occurs.
+        6. If you would like to work on this feature, comment `"I'd like to work on this please!"`
+        7. Any request that is detrimental to security or the product’s stability will be closed without notice.
+
+  # Checkboxes for Confirmations
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: "Please confirm:"
+      description: "Check all boxes that apply."
+      options:
+        - label: "**I have searched existing feature requests** (open and closed) and found no duplicates."
+          required: true
+        - label: "**me or my organization is currently an active sponsor of the product at the $99,- level."
+          required: true
+
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: "Problem Statement"
+      description: |
+        **What problem does this feature solve or what gap does it fill?**  
+        Provide a concise explanation. For example:
+        - "When I need to enable MFA for all users, it takes a lot of time to do it per user. I'd like to enable this for all users in button press"
+        - "To update a user property for exchange I need to go through 5 portals and 2 systems to be able to make a change."
+    validations:
+      required: true
+
+  # Field 2: Benefits for MSPs
+  - type: textarea
+    id: msp-benefits
+    attributes:
+      label: "Benefits for MSPs"
+      description: |
+        **How would this feature help MSPs in their day-to-day tasks or overall operations?**  
+        - Does it reduce manual work?  
+        - Does it improve security or scalability?  
+        - Does it offer clarity or automation to commonly repeated tasks?
+    validations:
+      required: true
+
+  # Field 3: Value or Importance
+  - type: textarea
+    id: feature-value
+    attributes:
+      label: "Value or Importance"
+      description: |
+        **Why is this feature particularly valuable or important to add?**  
+        - If it's critical, explain why.  
+        - If it's optional or nice-to-have, describe how it still adds notable value.
+    validations:
+      required: true
+
+  # Optional field for PowerShell commands
+  - type: textarea
+    id: powershell-commands
+    attributes:
+      label: "PowerShell Commands (Optional)"
+      description: |
+        If you currently achieve this functionality or a similar workaround using PowerShell, please share your scripts or snippets here.  
+        This information helps contributors understand the existing workflow and aids in development.
+    validations:
+      required: false

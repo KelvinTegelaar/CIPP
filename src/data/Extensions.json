@@ -1,0 +1,910 @@
+[
+  {
+    "name": "CIPP-API",
+    "id": "cippapi",
+    "type": "CIPP-API",
+    "cat": "API",
+    "logo": "/assets/integrations/cipp-api.png",
+    "forceSyncButton": false,
+    "hideTestButton": true,
+    "description": "The CIPP API allows you to access CIPP data outside of CIPP using a RESTful API.",
+    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. This is useful for integrations with other systems or custom scripts.",
+    "links": [
+      {
+        "name": "CIPP API Documentation",
+        "url": "https://docs.cipp.app/api-documentation/setup-and-authentication"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "Sherweb",
+    "id": "Sherweb",
+    "type": "Sherweb",
+    "cat": "CSP",
+    "logo": "/assets/integrations/sherweb.png",
+    "logoDark": "/assets/integrations/sherweb_dark.png",
+    "description": "Enable the Sherweb integration to manage your CSP licensing from CIPP.",
+    "helpText": "This integration allows you to manage your CSP licensing from CIPP. Purchase new licenses while adding or editing users in CIPP. Not a Sherweb partner? Sign up for the Sherweb Cloud Services for MSPs program.",
+    "mappingRequired": true,
+    "links": [
+      {
+        "name": "Sherweb CIPP Integration",
+        "url": "https://info.sherweb.com/sherweb-cipp-integration"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "Sherweb.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "Sherweb.clientId",
+        "label": "Client ID",
+        "placeholder": "Enter your Sherweb Client ID",
+        "required": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "Sherweb.SubscriptionKey",
+        "label": "Subscription Key",
+        "placeholder": "Enter your Sherweb Subscription Key",
+        "required": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Sherweb.APIKey",
+        "label": "Client Secret",
+        "placeholder": "Enter your Sherweb Client Secret",
+        "required": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.AllowedCustomRoles",
+        "label": "Select CIPP roles that are allowed to purchase licenses",
+        "api": {
+          "url": "/api/ListCustomRole",
+          "queryKey": "CustomRoles",
+          "labelField": "RoleName",
+          "valueField": "RoleName"
+        },
+        "multiple": true,
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Sherweb.AutoMigrations",
+        "label": "Enable automated migration to Sherweb",
+        "condition": {
+          "field": "Sherweb.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.migrationMethods",
+        "label": "Select how you'd like automated migrations to be handled",
+        "options": [
+          {
+            "label": "Notify only - This will notify you when a subscription is in its cancellation window for non Sherweb subscriptions",
+            "value": "notifyOnly"
+          },
+          {
+            "label": "Buy and notify - This will automatically buy the subscription and notify you when a subscription is in its cancellation window for non Sherweb subscriptions",
+            "value": "buyAndNotify"
+          },
+          {
+            "label": "Buy and cancel - This will automatically buy the subscription and cancel the old subscription when a subscription is in its cancellation window for non Sherweb subscriptions",
+            "value": "buyAndCancel"
+          }
+        ],
+        "multiple": false,
+        "condition": {
+          "field": "Sherweb.AutoMigrations",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.migrateFrom",
+        "label": "Select the vendor to automatically migrate from",
+        "options": [
+          {
+            "label": "Pax8",
+            "value": "Pax8"
+          }
+        ],
+        "multiple": false,
+        "condition": {
+          "field": "Sherweb.migrationMethods",
+          "compareType": "is",
+          "compareValue": "buyAndCancel"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Sherweb.migrateToLicense",
+        "label": "Select the type of license to automatically migrate to",
+        "options": [
+          {
+            "label": "Yearly",
+            "value": "Y1Y"
+          },
+          {
+            "label": "Annual paid monthly",
+            "value": "M1Y"
+          },
+          {
+            "label": "Monthly",
+            "value": "M2M"
+          }
+        ],
+        "multiple": false,
+        "condition": {
+          "field": "Sherweb.migrationMethods",
+          "compareType": "contains",
+          "compareValue": "buy"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Pax8.clientId",
+        "label": "Pax8 Client ID",
+        "placeholder": "Enter your Pax8 Client ID",
+        "required": true,
+        "condition": {
+          "field": "Sherweb.migrateFrom",
+          "compareType": "is",
+          "compareValue": "Pax8"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Pax8.APIKey",
+        "label": "Pax8 Client Secret",
+        "placeholder": "Enter your Pax Client Secret",
+        "required": true,
+        "condition": {
+          "field": "Sherweb.migrateFrom",
+          "compareType": "is",
+          "compareValue": "Pax8"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Gradient",
+    "id": "Gradient",
+    "type": "Gradient",
+    "cat": "Billing & Invoicing",
+    "logo": "/assets/integrations/gradient.png",
+    "logoDark": "/assets/integrations/gradient_dark.png",
+    "forceSyncButton": true,
+    "description": "Enable the Gradient integration to send license counts and create tickets.",
+    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
+    "links": [
+      {
+        "name": "Gradient Documentation",
+        "url": "https://support.meetgradient.com/cipp"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "Gradient.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "Gradient.VendorKey",
+        "label": "Gradient Vendor API Key",
+        "placeholder": "Enter your Gradient Vendor Key.",
+        "required": true,
+        "condition": {
+          "field": "Gradient.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Gradient.APIKey",
+        "label": "Gradient Partner API Key",
+        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key.",
+        "required": true,
+        "condition": {
+          "field": "Gradient.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Gradient.BillingEnabled",
+        "label": "Enable sending all license information to Gradient",
+        "condition": {
+          "field": "Gradient.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "Halo PSA Ticketing",
+    "id": "HaloPSA",
+    "type": "HaloPSA",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/halo.png",
+    "forceSyncButton": false,
+    "description": "Enable the HaloPSA integration to send alerts to your ticketing system.",
+    "helpText": "This integration allows you to send alerts to your ticketing system.",
+    "links": [
+      {
+        "name": "HaloPSA Documentation",
+        "url": "https://halopsa.com/guides/"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "HaloPSA.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "switch",
+        "name": "HaloPSA.ConsolidateTickets",
+        "label": "Consolidate Tickets",
+        "placeholder": "Consolidate tickets for the same alert into one ticket.",
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.ResourceURL",
+        "label": "HaloPSA Resource Server URL",
+        "placeholder": "Enter your HaloPSA Resource Server URL.",
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.AuthURL",
+        "label": "HaloPSA Authorisation Endpoint URL",
+        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL.",
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.Tenant",
+        "label": "HaloPSA Tenant",
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted)",
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.ClientID",
+        "label": "HaloPSA Client ID",
+        "placeholder": "Enter your HaloPSA Client ID",
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "HaloPSA.APIKey",
+        "label": "HaloPSA Client Secret",
+        "placeholder": "Enter your client Secret. Leave blank to keep your current key.",
+        "required": true,
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "HaloPSA.TicketType",
+        "label": "HaloPSA Ticket Type",
+        "placeholder": "Select your HaloPSA Ticket Type, leave blank for default",
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloTicketTypes",
+          "dataKey": "TicketTypes",
+          "labelField": "name",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "HaloPSA.Outcome",
+        "label": "HaloPSA Outcome",
+        "placeholder": "Select your HaloPSA Outcome, leave blank for default",
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloOutcomes",
+          "dataKey": "Outcomes",
+          "labelField": "buttonname",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.ConsolidateTickets",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": true
+  },
+  {
+    "name": "NinjaOne",
+    "id": "NinjaOne",
+    "type": "NinjaOne",
+    "cat": "Documentation & Monitoring",
+    "logo": "/assets/integrations/ninjaone.png",
+    "logoDark": "/assets/integrations/ninjaone_dark.png",
+    "forceSyncButton": true,
+    "description": "Enable the NinjaOne integration to sync documentation and monitor device compliance.",
+    "helpText": "This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+    "links": [
+      {
+        "name": "NinjaOne Documentation",
+        "url": "https://www.ninjaone.com/integrations/cyberdrain/"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "NinjaOne.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "NinjaOne.Instance",
+        "label": "Please enter your NinjaOne Instance hostname",
+        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com",
+        "required": true,
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "NinjaOne.ClientID",
+        "label": "NinjaOne API Client ID",
+        "placeholder": "Enter your NinjaOne API Client ID",
+        "required": true,
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "NinjaOne.APIKey",
+        "label": "NinjaOne API Client Secret",
+        "placeholder": "Enter your NinjaOne API Client Secret",
+        "required": true,
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.LicenseDocumentsEnabled",
+        "label": "Sync Licenses (Requires NinjaOne Documentation)",
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.UserDocumentsEnabled",
+        "label": "Sync Users (Requires NinjaOne Documentation)",
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.LicensedOnly",
+        "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)",
+        "condition": {
+          "field": "NinjaOne.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "autoMapSyncApi": true,
+    "showSyncButton": true
+  },
+  {
+    "name": "Hudu",
+    "id": "Hudu",
+    "type": "Hudu",
+    "cat": "Documentation",
+    "logo": "/assets/integrations/hudu.png",
+    "logoDark": "/assets/integrations/hudu_dark.png",
+    "forceSyncButton": true,
+    "description": "Enable the Hudu integration to sync documentation",
+    "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu.",
+    "links": [
+      {
+        "name": "Hudu Documentation",
+        "url": "https://support.hudu.com/hc/en-us/articles/24970807130391-CIPP#h_01J3NTF188BX3P64RKX3H52P3W"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "Hudu.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "Hudu.BaseUrl",
+        "label": "Please enter your Hudu URL",
+        "placeholder": "https://yourcompany.huducloud.com",
+        "required": true,
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Hudu.APIKey",
+        "label": "Hudu API Key",
+        "placeholder": "Enter your Hudu API Key",
+        "required": true,
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.CreateMissingUsers",
+        "label": "Create missing users in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.CreateMissingDevices",
+        "label": "Create missing devices in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "Hudu.ExcludeSerials",
+        "label": "Exclude device serials (comma separated)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.ImportDomains",
+        "label": "Import domains from M365",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.MonitorDomains",
+        "label": "Monitor domains in Hudu",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "_comment": "I have added this switch as a logic check for the Hudu integration script to check against when CIPP first connects to the Hudu Instance via Connect-HuduAPI.ps1",
+        "type": "switch",
+        "name": "Hudu.CFEnabled",
+        "label": "Connect to HUDU through CloudFlare Tunnel with the Service Account credentials.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "datePicker",
+        "name": "Hudu.NextSync",
+        "label": "Reschedule next sync date",
+        "helperText": "Set a future date to delay the next scheduled sync. Leave blank to sync during the next scheduled sync.",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "showSyncButton": true
+  },
+  {
+    "name": "PasswordPusher",
+    "id": "PWPush",
+    "type": "PWPush",
+    "cat": "Passwords",
+    "logo": "/assets/integrations/pwpush_light.png",
+    "logoDark": "/assets/integrations/pwpush_dark.png",
+    "forceSyncButton": false,
+    "description": "Enable the PasswordPusher integration to generate password links instead of plain text passwords.",
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords. If you are a Hosted PWPush Pro customer you can also select an account for branding if you enable Bearer Authentication. Self-Hosted must use the Email Address and API Key method for authenticated pushes.",
+    "links": [
+      {
+        "name": "PWPush Documentation",
+        "url": "https://docs.pwpush.com"
+      },
+      {
+        "name": "GitHub Project",
+        "url": "https://github.com/pglombardo/PasswordPusher"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "PWPush.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.UseBearerAuth",
+        "label": "Use Bearer Authentication (Hosted only)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "PWPush.BaseUrl",
+        "label": "PWPush URL",
+        "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "PWPush.APIKey",
+        "label": "PWPush API Key",
+        "placeholder": "Enter your PWPush API Key. (optional)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "PWPush.EmailAddress",
+        "label": "PWPush email address",
+        "placeholder": "Enter your email address for PWPush. (Email & API Key auth)",
+        "condition": {
+          "field": "PWPush.UseBearerAuth",
+          "compareType": "is",
+          "compareValue": false
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "PWPush.AccountId",
+        "label": "Select your PWPush Account for branding (Pro/Premium only, optional with Custom Domain)",
+        "multiple": false,
+        "creatable": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping?List=PWPushFields",
+          "queryKey": "PWPushAccounts",
+          "dataKey": "Accounts",
+          "labelField": "name",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "PWPush.UseBearerAuth",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "number",
+        "name": "PWPush.ExpireAfterDays",
+        "label": "Expiration in Days",
+        "placeholder": "Expiration time in days. (optional)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "number",
+        "name": "PWPush.ExpireAfterViews",
+        "label": "Expiration after views",
+        "placeholder": "Expiration after views. (optional)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.RetrievalStep",
+        "label": "Click to retrieve password (recommended)",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.DeletableByViewer",
+        "label": "Allow deletion of passwords",
+        "condition": {
+          "field": "PWPush.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "Have I been Pwned",
+    "id": "HIBP",
+    "type": "darkweb",
+    "cat": "Darkweb Scanning",
+    "logo": "/assets/integrations/hibp.png",
+    "logoDark": "/assets/integrations/hibp.png",
+    "forceSyncButton": false,
+    "description": "Enable the HIBP integration to scan your tenant for compromised credentials.",
+    "helpText": "This integration allows you to scan your tenant for compromised credentials, breaches, and darkweb scanning.",
+    "links": [
+      {
+        "name": "Have I Been Pwned",
+        "url": "https://haveibeenpwned.com/"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "password",
+        "name": "HIBP.APIKey",
+        "label": "Enter your own HIBP API Key. When you are a CyberDrain hosted partner, leave this key blank.",
+        "condition": {
+          "field": "HIBP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "HIBP.Enabled",
+        "label": "Enable Integration - Allow darkweb scanning through tools and alerts"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "CloudFlare ZTNA Tunnel",
+    "id": "CFZTNA",
+    "type": "ztna",
+    "cat": "Zero Trust Network Tunnel",
+    "logo": "/assets/integrations/cloudflare.png",
+    "forceSyncButton": false,
+    "hideTestButton": true,
+    "description": "Enter your CloudFlare ZTNA Tunnel API Credentials to use with other Integrations",
+    "helpText": "These credentials can be used to allow traffic through a CloudFlare ZTNA Tunnel if your other Integrations are protected behind one. You need to select 'Behind a CF-ZTNA Tunnel' within the other Integration's settings to enable.",
+    "links": [
+      {
+        "name": "CloudFlare ZTNA Tunnel Information",
+        "url": "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/"
+      },
+      {
+        "name": "Installing Hudu behind Cloudflare Zero Trust Tunnel",
+        "url": "https://support.hudu.com/hc/en-us/articles/13929358997399-Installing-Hudu-behind-Cloudflare-Zero-Trust-Tunnel"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "CFZTNA.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "CFZTNA.ClientID",
+        "label": "CloudFlare Tunnel Service Account Client ID",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "CFZTNA.APIKey",
+        "label": "CloudFlare Tunnel Service Account Client Secret",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "GitHub",
+    "id": "GitHub",
+    "type": "DevOps",
+    "cat": "Source Control",
+    "logo": "/assets/integrations/github.png",
+    "logoDark": "/assets/integrations/github_dark.png",
+    "description": "Enable the GitHub integration to manage your repositories from CIPP.",
+    "helpText": "This integration allows you to manage GitHub repositories from CIPP, including the Community Repositories functionality. Requires a GitHub Personal Access Token (PAT) with a minimum of repo:public_repo permissions. If you plan on saving your templates to GitHub or accessing private/internal repositories, you will need to grant the whole repo scope. You can create a PAT in your GitHub account settings, see the GitHub Token documentation for more info. If you do not enable the extension, a read-only API will be provided.",
+    "links": [
+      {
+        "name": "GitHub Token",
+        "url": "https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "GitHub.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "password",
+        "name": "GitHub.APIKey",
+        "label": "GitHub Personal Access Token",
+        "placeholder": "Enter your GitHub PAT",
+        "required": true,
+        "condition": {
+          "field": "GitHub.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": false
+  }
+]
