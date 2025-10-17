@@ -216,7 +216,7 @@
   {
     "name": "MXRecordChanged",
     "label": "Alert on MX record changes",
-    "recommendedRunInterval": "4h",
+    "recommendedRunInterval": "1d",
     "description": "Monitors MX records for all domains and alerts when changes are detected. This helps identify potential mail routing changes that could indicate security issues or unauthorized modifications."
   },
   {
