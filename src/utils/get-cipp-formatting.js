@@ -32,6 +32,13 @@ import { getCippTranslation } from "./get-cipp-translation";
 import DOMPurify from "dompurify";
 import { getSignInErrorCodeTranslation } from "./get-cipp-signin-errorcode-translation";
 import { CollapsibleChipList } from "../components/CippComponents/CollapsibleChipList";
+import countryList from "../data/countryList.json";
+
+// Helper function to convert country codes to country names
+const getCountryNameFromCode = (countryCode) => {
+  const country = countryList.find((c) => c.Code === countryCode);
+  return country ? country.Name : countryCode;
+};
 
 export const getCippFormatting = (data, cellName, type, canReceive, flatten = true) => {
   const isText = type === "text";
@@ -414,6 +421,19 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
 
   if (cellName === "ClientId" || cellName === "role") {
     return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
+  }
+
+  if (cellName === "countriesAndRegions") {
+    if (Array.isArray(data)) {
+      const countryNames = data
+        .filter((item) => item !== null && item !== undefined)
+        .map((countryCode) => getCountryNameFromCode(countryCode));
+
+      return isText ? countryNames.join(", ") : renderChipList(countryNames);
+    } else {
+      const countryName = getCountryNameFromCode(data);
+      return isText ? countryName : <CippCopyToClipBoard text={countryName} type="chip" />;
+    }
   }
 
   if (cellName === "excludedTenants") {
