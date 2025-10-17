@@ -157,6 +157,17 @@ const Page = () => {
       confirmText: "Are you sure you want to retrieve the BitLocker keys?",
     },
     {
+      label: "Retrieve File Fault Key",
+      type: "POST",
+      icon: <Security />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "getFileVaultKey",
+      },
+      confirmText: "Are you sure you want to retrieve the file vault key for [deviceName]?",
+    },
+    {
       label: "Windows Defender Full Scan",
       type: "POST",
       icon: <Security />,
