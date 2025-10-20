@@ -131,7 +131,7 @@ const Page = () => {
         GUID: "azureADDeviceId",
       },
       condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to retrieve the local admin password?",
+      confirmText: "Are you sure you want to retrieve the local admin password for [deviceName]?",
     },
     {
       label: "Rotate Local Admin Password",
@@ -154,7 +154,7 @@ const Page = () => {
         GUID: "azureADDeviceId",
       },
       condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to retrieve the BitLocker keys?",
+      confirmText: "Are you sure you want to retrieve the BitLocker keys for [deviceName]?",
     },
     {
       label: "Retrieve File Fault Key",
@@ -165,6 +165,7 @@ const Page = () => {
         GUID: "id",
         Action: "getFileVaultKey",
       },
+      condition: (row) => row.operatingSystem === "macOS",
       confirmText: "Are you sure you want to retrieve the file vault key for [deviceName]?",
     },
     {
