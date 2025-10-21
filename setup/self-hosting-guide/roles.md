@@ -29,7 +29,7 @@ After the invite link is sent to the user, they must click on it to accept the i
 
 ### Additional User Setup
 
-Once you have your initial `superadmin` user added, you are now able to set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
+Once you have your initial `superadmin` user added, you are now ready to finish the first setup.  After completing the setup you can return here to set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
 
 ### Built-In Roles
 
