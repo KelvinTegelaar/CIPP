@@ -11,10 +11,12 @@ export const CippSchedulerDrawer = ({
   requiredPermissions = [],
   PermissionButton = Button,
   onSuccess,
+  onClose,
   taskId = null,
   cloneMode = false,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [formKey, setFormKey] = useState(0);
   const userSettingsDefaults = useSettings();
 
   const formControl = useForm({
@@ -28,12 +30,21 @@ export const CippSchedulerDrawer = ({
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
-    // Reset form to default values
-    formControl.reset({
-      tenantFilter: userSettingsDefaults.currentTenant,
-      Recurrence: { value: "0", label: "Once" },
-      taskType: { value: "scheduled", label: "Scheduled Task" },
-    });
+    // Increment form key to force complete remount when reopening
+    setFormKey((prev) => prev + 1);
+    // Call onClose callback if provided (to clear parent state)
+    if (onClose) {
+      onClose();
+    }
+    // Add a small delay before resetting to ensure drawer is closed
+    setTimeout(() => {
+      // Reset form to default values
+      formControl.reset({
+        tenantFilter: userSettingsDefaults.currentTenant,
+        Recurrence: { value: "0", label: "Once" },
+        taskType: { value: "scheduled", label: "Scheduled Task" },
+      });
+    }, 100);
   };
 
   const handleOpenDrawer = () => {
@@ -73,6 +84,7 @@ export const CippSchedulerDrawer = ({
           </Alert>
 
           <CippSchedulerForm
+            key={formKey}
             formControl={formControl}
             fullWidth={true}
             taskId={taskId}

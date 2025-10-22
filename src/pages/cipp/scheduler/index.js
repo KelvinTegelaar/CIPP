@@ -91,6 +91,7 @@ const Page = () => {
           key={`edit-${editTaskId}`}
           taskId={editTaskId}
           onSuccess={() => setEditTaskId(null)}
+          onClose={() => setEditTaskId(null)}
           PermissionButton={({ children }) => <>{children}</>}
         />
       )}
@@ -102,6 +103,7 @@ const Page = () => {
           taskId={cloneTaskId}
           cloneMode={true}
           onSuccess={() => setCloneTaskId(null)}
+          onClose={() => setCloneTaskId(null)}
           PermissionButton={({ children }) => <>{children}</>}
         />
       )}
