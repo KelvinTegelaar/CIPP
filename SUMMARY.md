@@ -21,7 +21,7 @@
   * [Tenant Onboarding](setup/installation/gdap-invite-wizard.md)
   * [Adding Tenants & Consenting the CIPP-SAM Application](setup/installation/adding-tenants-and-consenting-the-cipp-sam-application.md)
   * [Adding a Custom Domain Name](setup/installation/customdomain.md)
-  * [I Want to Manage My Own Tenant](setup/installation/owntenant.md)
+  * [I want to manage my own tenant](setup/installation/owntenant.md)
   * [Recommended Roles](setup/installation/recommended-roles.md)
   * [CIPP-SAM Permissions](setup/installation/permissions.md)
 * [Implementing CIPP](setup/implementation-guide/README.md)
