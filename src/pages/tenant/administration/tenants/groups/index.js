@@ -2,21 +2,30 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import tabOptions from "../tabOptions";
-import { Edit } from "@mui/icons-material";
-import { Button, SvgIcon } from "@mui/material";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import NextLink from "next/link";
+import { Edit, PlayArrow } from "@mui/icons-material";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { CippAddTenantGroupDrawer } from "/src/components/CippComponents/CippAddTenantGroupDrawer";
 
 const Page = () => {
   const pageTitle = "Tenant Groups";
 
-  const simpleColumns = ["Name", "Description", "Members"];
+  const simpleColumns = ["Name", "Description", "GroupType", "Members"];
 
   const actions = [
     {
       label: "Edit Group",
       link: "/tenant/administration/tenants/groups/edit?id=[Id]",
       icon: <Edit />,
+    },
+    {
+      label: "Run Dynamic Rules",
+      icon: <PlayArrow />,
+      url: "/api/ExecRunTenantGroupRule",
+      type: "POST",
+      data: { groupId: "Id" },
+      queryKey: "TenantGroupListPage",
+      confirmText: "Are you sure you want to run dynamic rules for [Name]?",
+      condition: (row) => row.GroupType === 'dynamic'
     },
     {
       label: "Delete Group",
@@ -39,20 +48,7 @@ const Page = () => {
       apiDataKey="Results"
       actions={actions}
       cardButton={
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          component={NextLink}
-          href="/tenant/administration/tenants/groups/add"
-          startIcon={
-            <SvgIcon fontSize="small">
-              <PlusIcon />
-            </SvgIcon>
-          }
-        >
-          Add Tenant Group
-        </Button>
+        <CippAddTenantGroupDrawer />
       }
     />
   );
