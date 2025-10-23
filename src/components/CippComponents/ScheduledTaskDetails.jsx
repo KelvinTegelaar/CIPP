@@ -118,6 +118,31 @@ const ScheduledTaskDetails = ({ data, showActions = true }) => {
           isFetching={taskDetailResults.isFetching}
         />
 
+        {taskDetails?.Task?.Trigger && (
+          <Accordion
+            variant="outlined"
+            expanded={expanded === "task-trigger"}
+            onChange={handleChange("task-trigger")}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h6">Trigger Configuration</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <CippPropertyListCard
+                showDivider={false}
+                layout="dual"
+                propertyItems={Object.entries(taskDetails.Task.Trigger).map(([key, value]) => {
+                  return {
+                    label: key,
+                    value: getCippFormatting(value, key),
+                  };
+                })}
+                isFetching={taskDetailResults.isFetching}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+
         {taskDetailResults.isFetching ? (
           <Skeleton variant="rectangular" width="100%" height={200} />
         ) : (
