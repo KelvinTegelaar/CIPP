@@ -29,7 +29,7 @@ After the invite link is sent to the user, they must click on it to accept the i
 
 ### Additional User Setup
 
-Once you have your initial `superadmin` user added, you are now able to set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
+Once you have your initial `superadmin` user added, you are now ready to finish the first setup. After completing the setup, you can return hereto set up additional users using the built-in roles or custom CIPP roles via [custom-roles](../../user-documentation/cipp/advanced/super-admin/custom-roles/ "mention").
 
 ### Built-In Roles
 
@@ -61,12 +61,13 @@ Set up Custom Roles by following these steps:
 * Go to CIPP -> Advanced -> Super Admin -> CIPP Roles.
 * Select a Custom Role from the list or start typing to create a new one if you do not yet have any.
   * Please ensure that your custom role is entirely in lowercase and does not contain spaces or special characters.
-* Optionally select a Entra group this role will be mapped to. Adding an Entra group allows all users in this group to access CIPP.
+* Optionally select a Entra group this role will be mapped to. Adding an Entra group removes the requirement to add the user to either the SWA or inviting via the Management Portal.
 * For Allowed Tenants select a subset of tenants to manage, tenant groups, or AllTenants.
   * If AllTenants is selected, you can block a subset of tenants or tenant groups using Blocked Tenants.
 * Optionally select the CIPP endpoints that you want to block for the role. For example, if you do not want the role to have access to delete users/mailboxes you would block `RemoveUser`.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
   * To find out which API endpoints are affected by these selections, click on the Info button.
+  * Not defining a category is the same as setting None. Be sure that you define all base role permissions you want to apply to the user.
 * You must be sure to assign both the custom role and the base role `readonly` or `editor` to the users.
   * If using Entra ID groups, you can map the base role to a Entra group (eg. `CIPP readonly` mapped to `readonly`) and add the user to the base role Entra group and the custom role Entra group to properly manage permissions
   * If using SWA role management (self-hosted) or management portal (CyberDrain hosted) be sure to add both roles to the user manually.

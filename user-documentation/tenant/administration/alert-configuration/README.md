@@ -10,13 +10,15 @@ This page displays all current configured Audit Log and Scripted Alerts for CIPP
 
 ### Table Details
 
-| Column        | Description                                           |
-| ------------- | ----------------------------------------------------- |
-| Tenants       | Shows the tenants selected for the alert              |
-| Event Type    | "Audit log Alert" or "Scheduled Task"                 |
-| Conditions    | Shows the alert conditions configured                 |
-| Repeats Every | Shows the cadence for the alert                       |
-| Actions       | Shows the actions selected when an alert is generated |
+| Column           | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| Tenants          | Shows the tenants selected for the alert              |
+| Event Type       | "Audit log Alert" or "Scheduled Task"                 |
+| Conditions       | Shows the alert conditions configured                 |
+| Repeats Every    | Shows the cadence for the alert                       |
+| Actions          | Shows the actions selected when an alert is generated |
+| Alert Comment    | Shows the comment added when the alert was created.   |
+| Excluded Tenants | Displays the excluded tenants                         |
 
 ### Table Actions
 

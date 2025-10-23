@@ -2,19 +2,25 @@
 description: Lists all deleted users, groups and applications in the tenant
 ---
 
-# Deleted items
+# Deleted Items
 
 Shows deleted items in the tenant. What else did you expect? Monkeys? 🐒
 
 ### Available Deleted Item Types
 
+* Administrative Unit
 * Application
+* Certificate Authority Detail
+* Certificate Based Auth PKI
+* External User Profile
 * Group
+* Pending External User Profile
+* Service Principal
 * User
 
 ### Column Details
 
-The table will show some basic default information regarding the deleted object. The full list of columns available represent the Graph resource type [`application`](https://learn.microsoft.com/en-us/graph/api/resources/application?view=graph-rest-1.0#properties), [`group`](https://learn.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties), and [`user`](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties).
+The table will show some basic default information regarding the deleted object. The full list of columns available represent the Graph resource type [`administrativeUnit`](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0#properties), [`application`](https://learn.microsoft.com/en-us/graph/api/resources/application?view=graph-rest-1.0#properties), [`certificateAuthorityDetail`](https://learn.microsoft.com/en-us/graph/api/resources/certificateauthoritydetail?view=graph-rest-1.0#properties), [`certificateBasedAuthPki`](https://learn.microsoft.com/en-us/graph/api/resources/certificatebasedauthpki?view=graph-rest-1.0#properties), [`externalUserProfile`](https://learn.microsoft.com/en-us/graph/api/resources/externaluserprofile?view=graph-rest-beta#properties), [`group`](https://learn.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties), [`pendingExternalUserProfile`](https://learn.microsoft.com/en-us/graph/api/resources/pendingexternaluserprofile?view=graph-rest-beta#properties), [`servicePrincipal`](https://learn.microsoft.com/en-us/graph/api/resources/serviceprincipal?view=graph-rest-1.0#properties), and [`user`](https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties).
 
 ### Table Actions
 
