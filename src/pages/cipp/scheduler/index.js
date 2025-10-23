@@ -1,14 +1,26 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
-import Link from "next/link";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import ScheduledTaskDetails from "../../../components/CippComponents/ScheduledTaskDetails";
 import { CippScheduledTaskActions } from "../../../components/CippComponents/CippScheduledTaskActions";
+import { CippSchedulerDrawer } from "../../../components/CippComponents/CippSchedulerDrawer";
 
 const Page = () => {
-  const actions = CippScheduledTaskActions();
+  const [editTaskId, setEditTaskId] = useState(null);
+  const [cloneTaskId, setCloneTaskId] = useState(null);
+
+  const drawerHandlers = {
+    openEditDrawer: (row) => {
+      setEditTaskId(row.RowKey);
+    },
+    openCloneDrawer: (row) => {
+      setCloneTaskId(row.RowKey);
+    },
+  };
+
+  const actions = CippScheduledTaskActions(drawerHandlers);
 
   const filterList = [
     {
@@ -40,39 +52,62 @@ const Page = () => {
   };
   const [showHiddenJobs, setShowHiddenJobs] = useState(false);
   return (
-    <CippTablePage
-      cardButton={
-        <>
-          <Button onClick={() => setShowHiddenJobs((prev) => !prev)}>
-            {showHiddenJobs ? "Hide" : "Show"} System Jobs
-          </Button>
-          <Button startIcon={<CalendarDaysIcon />} component={Link} href="/cipp/scheduler/job">
-            Add Job
-          </Button>
-        </>
-      }
-      tenantInTitle={false}
-      title="Scheduled Tasks"
-      apiUrl={
-        showHiddenJobs ? "/api/ListScheduledItems?ShowHidden=true" : "/api/ListScheduledItems"
-      }
-      queryKey={showHiddenJobs ? `ListScheduledItems-hidden` : `ListScheduledItems`}
-      simpleColumns={[
-        "ExecutedTime",
-        "TaskState",
-        "Tenant",
-        "Name",
-        "ScheduledTime",
-        "Command",
-        "Parameters",
-        "PostExecution",
-        "Recurrence",
-        "Results",
-      ]}
-      actions={actions}
-      offCanvas={offCanvas}
-      filters={filterList}
-    />
+    <>
+      <CippTablePage
+        cardButton={
+          <>
+            <Button onClick={() => setShowHiddenJobs((prev) => !prev)}>
+              {showHiddenJobs ? "Hide" : "Show"} System Jobs
+            </Button>
+            <CippSchedulerDrawer buttonText="Add Task" />
+          </>
+        }
+        tenantInTitle={false}
+        title="Scheduled Tasks"
+        apiUrl={
+          showHiddenJobs ? "/api/ListScheduledItems?ShowHidden=true" : "/api/ListScheduledItems"
+        }
+        queryKey={showHiddenJobs ? `ListScheduledItems-hidden` : `ListScheduledItems`}
+        simpleColumns={[
+          "ExecutedTime",
+          "TaskState",
+          "Tenant",
+          "Name",
+          "ScheduledTime",
+          "Command",
+          "Parameters",
+          "PostExecution",
+          "Recurrence",
+          "Results",
+        ]}
+        actions={actions}
+        offCanvas={offCanvas}
+        filters={filterList}
+      />
+
+      {/* Edit Drawer */}
+      {editTaskId && (
+        <CippSchedulerDrawer
+          key={`edit-${editTaskId}`}
+          taskId={editTaskId}
+          onSuccess={() => setEditTaskId(null)}
+          onClose={() => setEditTaskId(null)}
+          PermissionButton={({ children }) => <>{children}</>}
+        />
+      )}
+
+      {/* Clone Drawer */}
+      {cloneTaskId && (
+        <CippSchedulerDrawer
+          key={`clone-${cloneTaskId}`}
+          taskId={cloneTaskId}
+          cloneMode={true}
+          onSuccess={() => setCloneTaskId(null)}
+          onClose={() => setCloneTaskId(null)}
+          PermissionButton={({ children }) => <>{children}</>}
+        />
+      )}
+    </>
   );
 };
 
