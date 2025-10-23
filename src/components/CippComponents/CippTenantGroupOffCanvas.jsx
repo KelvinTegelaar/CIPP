@@ -44,6 +44,8 @@ export const CippTenantGroupOffCanvas = ({ data }) => {
     const operatorDisplay = {
       eq: "equals",
       ne: "not equals",
+      in: "in",
+      notIn: "not in",
       contains: "contains",
       startsWith: "starts with",
       endsWith: "ends with",
