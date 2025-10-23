@@ -21,6 +21,8 @@ export function ApiGetCall(props) {
     refetchOnReconnect = true,
     keepPreviousData = false,
     refetchInterval = false,
+    responseType = "json",
+    convertToDataUrl = false,
   } = props;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
@@ -107,9 +109,22 @@ export function ApiGetCall(props) {
           headers: {
             "Content-Type": "application/json",
           },
+          responseType: responseType,
         });
+
+        let responseData = response.data;
+
+        // Convert blob to data URL if requested
+        if (convertToDataUrl && responseType === "blob" && response.data) {
+          responseData = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(response.data);
+          });
+        }
+
         if (onResult) {
-          onResult(response.data); // Emit each result as it arrives
+          onResult(responseData); // Emit each result as it arrives
         }
         if (relatedQueryKeys) {
           const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
@@ -137,7 +152,7 @@ export function ApiGetCall(props) {
             });
           }, 1000);
         }
-        return response.data;
+        return responseData;
       }
     },
     staleTime: staleTime,

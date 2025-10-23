@@ -8,6 +8,7 @@ import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 import CippAddEditUser from "../CippFormPages/CippAddEditUser";
+import { Stack } from "@mui/system";
 
 export const CippAddUserDrawer = ({
   buttonText = "Add User",
@@ -105,23 +106,26 @@ export const CippAddUserDrawer = ({
         onClose={handleCloseDrawer}
         size="xl"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={formControl.handleSubmit(handleSubmit)}
-              disabled={createUser.isPending || !isValid || (!isDirty && !createUser.isSuccess)}
-            >
-              {createUser.isPending
-                ? "Creating User..."
-                : createUser.isSuccess
-                ? "Create Another User"
-                : "Create User"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={createUser} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={formControl.handleSubmit(handleSubmit)}
+                disabled={createUser.isPending || !isValid || (!isDirty && !createUser.isSuccess)}
+              >
+                {createUser.isPending
+                  ? "Creating User..."
+                  : createUser.isSuccess
+                  ? "Create Another User"
+                  : "Create User"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Box sx={{ my: 2 }}>
@@ -162,7 +166,6 @@ export const CippAddUserDrawer = ({
             formType="add"
           />
         </Box>
-        <CippApiResults apiObject={createUser} />
       </CippOffCanvas>
     </>
   );

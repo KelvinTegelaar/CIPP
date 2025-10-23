@@ -123,7 +123,7 @@ const Page = () => {
       confirmText: "Are you sure you want to locate [deviceName]?",
     },
     {
-      label: "Retrieve LAPs password",
+      label: "Retrieve LAPS password",
       type: "POST",
       icon: <Password />,
       url: "/api/ExecGetLocalAdminPassword",
@@ -131,7 +131,7 @@ const Page = () => {
         GUID: "azureADDeviceId",
       },
       condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to retrieve the local admin password?",
+      confirmText: "Are you sure you want to retrieve the local admin password for [deviceName]?",
     },
     {
       label: "Rotate Local Admin Password",
@@ -154,7 +154,19 @@ const Page = () => {
         GUID: "azureADDeviceId",
       },
       condition: (row) => row.operatingSystem === "Windows",
-      confirmText: "Are you sure you want to retrieve the BitLocker keys?",
+      confirmText: "Are you sure you want to retrieve the BitLocker keys for [deviceName]?",
+    },
+    {
+      label: "Retrieve File Vault Key",
+      type: "POST",
+      icon: <Security />,
+      url: "/api/ExecDeviceAction",
+      data: {
+        GUID: "id",
+        Action: "getFileVaultKey",
+      },
+      condition: (row) => row.operatingSystem === "macOS",
+      confirmText: "Are you sure you want to retrieve the file vault key for [deviceName]?",
     },
     {
       label: "Windows Defender Full Scan",

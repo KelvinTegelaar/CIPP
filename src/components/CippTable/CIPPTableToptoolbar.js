@@ -475,6 +475,9 @@ export const CIPPTableToptoolbar = ({
       }
       setCurrentEffectiveQueryKey(queryKey || title); // Reset to original query key
       setActiveFilterName(null); // Clear active filter
+      if (settings.persistFilters && settings.setLastUsedFilter) {
+        settings.setLastUsedFilter(pageName, { type: "reset", value: null, name: null });
+      }
     }
     if (filterType === "graph") {
       const filterProps = [

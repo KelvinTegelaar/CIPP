@@ -11,6 +11,7 @@ import {
   BarChart,
 } from "@mui/icons-material";
 import { Chip, Link, SvgIcon } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
@@ -31,6 +32,13 @@ import { getCippTranslation } from "./get-cipp-translation";
 import DOMPurify from "dompurify";
 import { getSignInErrorCodeTranslation } from "./get-cipp-signin-errorcode-translation";
 import { CollapsibleChipList } from "../components/CippComponents/CollapsibleChipList";
+import countryList from "../data/countryList.json";
+
+// Helper function to convert country codes to country names
+const getCountryNameFromCode = (countryCode) => {
+  const country = countryList.find((c) => c.Code === countryCode);
+  return country ? country.Name : countryCode;
+};
 
 export const getCippFormatting = (data, cellName, type, canReceive, flatten = true) => {
   const isText = type === "text";
@@ -415,6 +423,19 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
   }
 
+  if (cellName === "countriesAndRegions") {
+    if (Array.isArray(data)) {
+      const countryNames = data
+        .filter((item) => item !== null && item !== undefined)
+        .map((countryCode) => getCountryNameFromCode(countryCode));
+
+      return isText ? countryNames.join(", ") : renderChipList(countryNames);
+    } else {
+      const countryName = getCountryNameFromCode(data);
+      return isText ? countryName : <CippCopyToClipBoard text={countryName} type="chip" />;
+    }
+  }
+
   if (cellName === "excludedTenants") {
     // Handle null or undefined data
     if (data === null || data === undefined) {
@@ -467,13 +488,56 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   }
 
   if (cellName === "state") {
-    data =
-      data === "enabled"
+    if (typeof data !== "string") {
+      return isText ? data : <Chip variant="filled" label={data} size="small" color="info" />;
+    }
+
+    const normalized = data.trim().toLowerCase();
+    const label =
+      normalized === "enabled"
         ? "Enabled"
-        : data === "enabledForReportingButNotEnforced"
+        : normalized === "disabled"
+        ? "Disabled"
+        : normalized === "enabledforreportingbutnotenforced" ||
+          normalized === "report-only" ||
+          normalized === "reportonly"
         ? "Report Only"
-        : data;
-    return isText ? data : <Chip variant="outlined" label={data} size="small" color="info" />;
+        : data.charAt(0).toUpperCase() + data.slice(1);
+
+    if (isText) {
+      return label;
+    }
+
+    const chipProps = {
+      size: "small",
+      label,
+      variant: "filled",
+      color: "info",
+    };
+
+    if (normalized === "enabled") {
+      chipProps.color = "info";
+    } else if (normalized === "disabled") {
+      chipProps.color = "default";
+      chipProps.sx = (theme) => ({
+        bgcolor:
+          theme.palette.mode === "dark"
+            ? alpha(theme.palette.common.white, 0.12)
+            : alpha(theme.palette.text.primary, 0.08),
+        color: theme.palette.text.primary,
+        borderColor: "transparent",
+      });
+    } else if (
+      normalized === "enabledforreportingbutnotenforced" ||
+      normalized === "report-only" ||
+      normalized === "reportonly"
+    ) {
+      chipProps.color = "warning";
+    } else {
+      chipProps.variant = "outlined";
+    }
+
+    return <Chip {...chipProps} />;
   }
 
   if (cellName === "Parameters.ScheduledBackupValues") {

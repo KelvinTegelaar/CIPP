@@ -139,13 +139,14 @@ const Page = () => {
     size: "lg",
   };
 
-  const simpleColumns = ["displayName", "package", "description", "Type"];
+  const simpleColumns = ["displayName", "isSynced", "package", "description", "Type"];
 
   return (
     <>
       <CippTablePage
         title={pageTitle}
         apiUrl="/api/ListIntuneTemplates?View=true"
+        tenantInTitle={false}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}

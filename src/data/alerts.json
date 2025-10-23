@@ -214,6 +214,12 @@
     "description": "Monitors domain security scores from the DomainAnalyser and alerts when scores fall below the specified threshold."
   },
   {
+    "name": "MXRecordChanged",
+    "label": "Alert on MX record changes",
+    "recommendedRunInterval": "1d",
+    "description": "Monitors MX records for all domains and alerts when changes are detected. This helps identify potential mail routing changes that could indicate security issues or unauthorized modifications."
+  },
+  {
     "name": "GlobalAdminNoAltEmail",
     "label": "Alert on Global Admin accounts without alternate email address",
     "recommendedRunInterval": "7d",

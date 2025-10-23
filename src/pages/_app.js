@@ -4,6 +4,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { ReleaseNotesProvider } from "../contexts/release-notes-context";
 import { SettingsConsumer, SettingsProvider } from "../contexts/settings-context";
 import { RTL } from "../components/rtl";
 import { store } from "../store";
@@ -298,7 +299,9 @@ const App = (props) => {
                         <RTL direction={settings.direction}>
                           <CssBaseline />
                           <ErrorBoundary FallbackComponent={Error500}>
-                            <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
+                            <ReleaseNotesProvider>
+                              <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
+                            </ReleaseNotesProvider>
                           </ErrorBoundary>
                           <Toaster position="top-center" />
                           <CippSpeedDial
