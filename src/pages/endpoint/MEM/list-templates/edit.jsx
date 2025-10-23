@@ -19,7 +19,7 @@ const EditIntuneTemplate = () => {
   });
 
   const templateData = Array.isArray(templateQuery.data)
-    ? templateQuery.data.find((t) => t.id === id)
+    ? templateQuery.data.find((t) => t.id === id || t.GUID === id)
     : templateQuery.data;
 
   // Custom data formatter to convert autoComplete objects to values
