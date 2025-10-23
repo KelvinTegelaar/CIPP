@@ -11,6 +11,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { LocationOn } from "@mui/icons-material";
+import countryList from "/src/data/countryList.json";
 
 const Page = () => {
   const pageTitle = "Named Locations";
@@ -62,8 +63,18 @@ const Page = () => {
         namedLocationId: "id",
         change: "!addLocation",
       },
-      fields: [{ type: "textField", name: "input", label: "Country Code" }],
-      confirmText: "Enter a two-letter country code, e.g., US.",
+      fields: [
+        {
+          type: "autoComplete",
+          name: "input",
+          label: "Country",
+          options: countryList.map(({ Code, Name }) => ({
+            value: Code,
+            label: `${Name} (${Code})`,
+          })),
+        },
+      ],
+      confirmText: "Select a country to add to this named location.",
       condition: (row) => row["@odata.type"] == "#microsoft.graph.countryNamedLocation",
     },
     {
@@ -75,8 +86,18 @@ const Page = () => {
         namedLocationId: "id",
         change: "!removeLocation",
       },
-      fields: [{ type: "textField", name: "input", label: "Country Code" }],
-      confirmText: "Enter a two-letter country code, e.g., US.",
+      fields: [
+        {
+          type: "autoComplete",
+          name: "input",
+          label: "Country",
+          options: countryList.map(({ Code, Name }) => ({
+            value: Code,
+            label: `${Name} (${Code})`,
+          })),
+        },
+      ],
+      confirmText: "Select a country to remove from this named location.",
       condition: (row) => row["@odata.type"] == "#microsoft.graph.countryNamedLocation",
     },
     {
