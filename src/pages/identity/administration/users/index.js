@@ -7,6 +7,7 @@ import { CippInviteGuestDrawer } from "/src/components/CippComponents/CippInvite
 import { CippBulkUserDrawer } from "/src/components/CippComponents/CippBulkUserDrawer.jsx";
 import { CippAddUserDrawer } from "/src/components/CippComponents/CippAddUserDrawer.jsx";
 import { CippApiLogsDrawer } from "/src/components/CippComponents/CippApiLogsDrawer.jsx";
+import { Box } from "@mui/material";
 
 const Page = () => {
   const userActions = useCippUserActions();
@@ -58,7 +59,7 @@ const Page = () => {
       title={pageTitle}
       apiUrl="/api/ListGraphRequest"
       cardButton={
-        <>
+        <Box sx={{ display: "flex", gap: 1 }}>
           <CippAddUserDrawer
             requiredPermissions={cardButtonPermissions}
             PermissionButton={PermissionButton}
@@ -78,7 +79,7 @@ const Page = () => {
             PermissionButton={PermissionButton}
             tenantFilter={tenant}
           />
-        </>
+        </Box>
       }
       apiData={{
         Endpoint: "users",
