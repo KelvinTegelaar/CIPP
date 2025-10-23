@@ -118,7 +118,7 @@ const Page = () => {
                   The onboarding process will also run on a nightly schedule. For automated
                   onboardings, please check out{" "}
                   <Link component={NextLink} href="/cipp/settings/partner-webhooks">
-                    Partner Webhooks
+                    Automated Onboarding
                   </Link>{" "}
                   in Application Settings.
                 </Typography>
