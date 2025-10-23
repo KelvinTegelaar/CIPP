@@ -63,10 +63,7 @@ const Page = () => {
         cardButton={
           <Box sx={{ display: "flex", gap: 1 }}>
             <CippAddTenantGroupDrawer />
-            <Button
-              onClick={createDefaultGroupsDialog.handleOpen}
-              startIcon={<GroupAdd />}
-            >
+            <Button onClick={createDefaultGroupsDialog.handleOpen} startIcon={<GroupAdd />}>
               Create Default Groups
             </Button>
             <CippApiLogsDrawer
@@ -85,7 +82,8 @@ const Page = () => {
           type: "POST",
           url: "/api/ExecCreateDefaultGroups",
           data: {},
-          confirmText: "Are you sure you want to create default tenant groups? This will create standard groups like 'All Tenants', 'Enterprise Tenants', etc.",
+          confirmText:
+            "Are you sure you want to create default tenant groups? This will create a selection of groups we recommend by default to use as templates.",
         }}
         queryKey="TenantGroupListPage"
       />
