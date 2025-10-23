@@ -6,6 +6,7 @@ import { useCippUserActions } from "/src/components/CippComponents/CippUserActio
 import { CippInviteGuestDrawer } from "/src/components/CippComponents/CippInviteGuestDrawer.jsx";
 import { CippBulkUserDrawer } from "/src/components/CippComponents/CippBulkUserDrawer.jsx";
 import { CippAddUserDrawer } from "/src/components/CippComponents/CippAddUserDrawer.jsx";
+import { CippApiLogsDrawer } from "/src/components/CippComponents/CippApiLogsDrawer.jsx";
 
 const Page = () => {
   const userActions = useCippUserActions();
@@ -69,6 +70,13 @@ const Page = () => {
           <CippInviteGuestDrawer
             requiredPermissions={cardButtonPermissions}
             PermissionButton={PermissionButton}
+          />
+          <CippApiLogsDrawer
+            apiFilter="(?<!Scheduler_)User"
+            buttonText="View Logs"
+            title="User Logs"
+            PermissionButton={PermissionButton}
+            tenantFilter={tenant}
           />
         </>
       }

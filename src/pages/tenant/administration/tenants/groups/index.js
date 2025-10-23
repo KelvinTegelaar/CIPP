@@ -5,12 +5,21 @@ import tabOptions from "../tabOptions";
 import { Edit, PlayArrow } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippAddTenantGroupDrawer } from "/src/components/CippComponents/CippAddTenantGroupDrawer";
+import { CippApiLogsDrawer } from "/src/components/CippComponents/CippApiLogsDrawer";
+import { CippTenantGroupOffCanvas } from "/src/components/CippComponents/CippTenantGroupOffCanvas";
+import { Box } from "@mui/material";
 
 const Page = () => {
   const pageTitle = "Tenant Groups";
 
   const simpleColumns = ["Name", "Description", "GroupType", "Members"];
 
+  const offcanvas = {
+    children: (row) => {
+      return <CippTenantGroupOffCanvas data={row} />;
+    },
+    size: "xl",
+  };
   const actions = [
     {
       label: "Edit Group",
@@ -25,7 +34,7 @@ const Page = () => {
       data: { groupId: "Id" },
       queryKey: "TenantGroupListPage",
       confirmText: "Are you sure you want to run dynamic rules for [Name]?",
-      condition: (row) => row.GroupType === 'dynamic'
+      condition: (row) => row.GroupType === "dynamic",
     },
     {
       label: "Delete Group",
@@ -35,7 +44,7 @@ const Page = () => {
       data: { action: "Delete", groupId: "Id" },
       queryKey: "TenantGroupListPage",
       confirmText: "Are you sure you want to delete [Name]?",
-    }
+    },
   ];
 
   return (
@@ -48,8 +57,16 @@ const Page = () => {
       apiDataKey="Results"
       actions={actions}
       cardButton={
-        <CippAddTenantGroupDrawer />
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <CippAddTenantGroupDrawer />
+          <CippApiLogsDrawer
+            apiFilter="TenantGroups"
+            buttonText="View Logs"
+            title="Tenant Groups Logs"
+          />
+        </Box>
       }
+      offCanvas={offcanvas}
     />
   );
 };
