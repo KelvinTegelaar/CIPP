@@ -13,7 +13,6 @@ The Defender Deployment page allows you to set up default defender policies for 
   * **Block unsupported OS versions**: Blocks devices with unsupported OS versions from connecting.
   * **Connect Android devices to Microsoft Defender for Endpoint**: Connects Android devices to Defender.
   * **Connect iOS/iPadOS devices to Microsoft Defender for Endpoint**: Connects iOS devices to Defender.
-  * **EDR: Connect Defender Configuration Package automatically from Connector**: Automatically connects the Defender configuration package.
   * **EDR: Enable Sample Sharing**: Enables sharing of samples for analysis.
 * **Defender Defaults Policy Options**: Set default policies for scanning, monitoring, and protection.
   * **Allow Archive Scanning**: Enables scanning of archive files.
