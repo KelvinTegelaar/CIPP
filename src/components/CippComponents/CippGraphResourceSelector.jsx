@@ -17,11 +17,11 @@ const CippGraphResourceSelector = ({
   formControl,
   name,
   resourceFieldName = "DeltaResource",
+  tenantFilterFieldName = "tenantFilter",
   label = "Filter Specific Resources (Optional)",
   helperText,
   multiple = true,
   required = false,
-  tenantFilter,
   ...otherProps
 }) => {
   // Watch for changes in the resource type field
@@ -30,14 +30,31 @@ const CippGraphResourceSelector = ({
     name: resourceFieldName,
   });
 
+  // Watch for changes in the tenant filter field
+  const tenantFilter = useWatch({
+    control: formControl.control,
+    name: tenantFilterFieldName,
+  });
+
   // Extract the value whether selectedResource is an object or string
   const resourceValue = selectedResource?.value || selectedResource;
+
+  // Extract the tenant filter value - handle both object and string formats
+  const tenantFilterValue = tenantFilter?.value || tenantFilter;
 
   const getHelperText = () => {
     if (helperText) return helperText;
 
     if (!resourceValue) {
       return "Select a resource type above to filter specific resources";
+    }
+
+    if (
+      !tenantFilterValue ||
+      tenantFilterValue === "AllTenants" ||
+      (tenantFilter && typeof tenantFilter === "object" && tenantFilter.type === "Group")
+    ) {
+      return "Resource filtering is not available for All Tenants or tenant groups";
     }
 
     if (multiple) {
@@ -47,21 +64,44 @@ const CippGraphResourceSelector = ({
     return "Optionally select a specific resource to monitor";
   };
 
-  const api = resourceValue
+  // Check if we should make the API call
+  const shouldFetchResources = () => {
+    // Must have a resource type selected
+    if (!resourceValue) return false;
+
+    // Must have a tenant filter
+    if (!tenantFilterValue) return false;
+
+    // Cannot be null or undefined
+    if (tenantFilterValue === null || tenantFilterValue === undefined) return false;
+
+    // Cannot be AllTenants
+    if (tenantFilterValue === "AllTenants") return false;
+
+    // Cannot be a tenant group (check if tenantFilter object has type: "Group")
+    if (tenantFilter && typeof tenantFilter === "object" && tenantFilter.type === "Group")
+      return false;
+
+    return true;
+  };
+
+  const isDisabled = !resourceValue || !shouldFetchResources();
+
+  const api = shouldFetchResources()
     ? {
         url: "/api/ListGraphRequest",
-        queryKey: `graph-resources-${resourceValue}-${tenantFilter}`,
+        queryKey: `graph-resources-${resourceValue}-${tenantFilterValue}`,
         data: {
           Endpoint: resourceValue,
           IgnoreErrors: true,
           $select: "id,displayName",
           $top: 100,
-          tenantFilter,
+          tenantFilter: tenantFilterValue,
         },
         labelField: (item) => item.displayName || item.id,
         valueField: "id",
         dataKey: "Results",
-        waiting: tenantFilter ? true : false,
+        waiting: true,
       }
     : null;
 
@@ -73,11 +113,17 @@ const CippGraphResourceSelector = ({
       multiple={multiple}
       creatable={false}
       required={required}
-      disabled={!resourceValue}
+      disabled={isDisabled}
       formControl={formControl}
       api={api}
       helperText={getHelperText()}
-      placeholder={!resourceValue ? "Select a resource type first" : undefined}
+      placeholder={
+        !resourceValue
+          ? "Select a resource type first"
+          : !shouldFetchResources()
+          ? "Resource filtering not available"
+          : undefined
+      }
       {...otherProps}
     />
   );

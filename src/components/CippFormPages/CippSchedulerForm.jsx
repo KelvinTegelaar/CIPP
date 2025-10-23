@@ -666,6 +666,7 @@ const CippSchedulerForm = (props) => {
                           name="Trigger.ResourceFilter"
                           formControl={formControl}
                           resourceFieldName="Trigger.DeltaResource"
+                          tenantFilterFieldName="tenantFilter"
                           label="Filter Specific Resources (Optional)"
                           multiple={true}
                           required={false}
@@ -674,9 +675,6 @@ const CippSchedulerForm = (props) => {
                             isResourcePickerDisabled
                               ? "Resource filtering is not available when All Tenants or tenant groups are selected"
                               : "Select specific resources to monitor"
-                          }
-                          tenantFilter={
-                            selectedTenant?.type !== "Group" ? selectedTenant.value : null
                           }
                         />
                       </Grid>
