@@ -10,8 +10,9 @@ import {
   Typography,
   Tooltip,
   CircularProgress,
+  IconButton,
 } from "@mui/material";
-import { Check, Error } from "@mui/icons-material";
+import { Check, Error, Sync } from "@mui/icons-material";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
@@ -74,13 +75,19 @@ const CippExchangeSettingsForm = (props) => {
       // If this was an OOO submission, preserve the submitted values
       if (relatedQueryKeys.includes(`ooo-${userId}`)) {
         const submittedValues = formControl.getValues();
-        const oooFields = ['AutoReplyState', 'InternalMessage', 'ExternalMessage', 'StartTime', 'EndTime'];
-        
+        const oooFields = [
+          "AutoReplyState",
+          "InternalMessage",
+          "ExternalMessage",
+          "StartTime",
+          "EndTime",
+        ];
+
         // Reset the form
         formControl.reset();
-        
+
         // Restore the submitted OOO values
-        oooFields.forEach(field => {
+        oooFields.forEach((field) => {
           const value = submittedValues.ooo?.[field];
           if (value !== undefined) {
             formControl.setValue(`ooo.${field}`, value);
@@ -144,14 +151,14 @@ const CippExchangeSettingsForm = (props) => {
       cardLabelBox: {
         cardLabelBoxHeader: isFetching ? (
           <CircularProgress size="25px" color="inherit" />
-        ) : (currentSettings?.ForwardingAddress) ? (
-          <Check/>
+        ) : currentSettings?.ForwardingAddress ? (
+          <Check />
         ) : (
-          <Error/>
+          <Error />
         ),
       },
       text: "Mailbox Forwarding",
-      subtext: (currentSettings?.ForwardingAddress)
+      subtext: currentSettings?.ForwardingAddress
         ? "Email forwarding is configured for this mailbox"
         : "No email forwarding configured for this mailbox",
       formContent: (
@@ -171,6 +178,16 @@ const CippExchangeSettingsForm = (props) => {
       },
       text: "Out Of Office",
       subtext: "Set automatic replies for when you are away",
+      action: oooRequest
+        ? {
+            tooltip: oooRequest.isFetching
+              ? "Refreshing Out Of Office data"
+              : "Refresh Out Of Office data",
+            onClick: () => oooRequest.refetch(),
+            disabled: oooRequest.isFetching,
+            isLoading: oooRequest.isFetching,
+          }
+        : null,
       formContent: (
         <Stack spacing={2}>
           <Grid container spacing={2}>
@@ -190,8 +207,12 @@ const CippExchangeSettingsForm = (props) => {
               />
             </Grid>
             <Grid size={6}>
-              <Tooltip 
-                title={areDateFieldsDisabled ? "Scheduling is only available when Auto Reply State is set to Scheduled" : ""}
+              <Tooltip
+                title={
+                  areDateFieldsDisabled
+                    ? "Scheduling is only available when Auto Reply State is set to Scheduled"
+                    : ""
+                }
                 placement="bottom"
               >
                 <Box>
@@ -206,8 +227,12 @@ const CippExchangeSettingsForm = (props) => {
               </Tooltip>
             </Grid>
             <Grid size={6}>
-              <Tooltip 
-                title={areDateFieldsDisabled ? "Scheduling is only available when Auto Reply State is set to Scheduled" : ""}
+              <Tooltip
+                title={
+                  areDateFieldsDisabled
+                    ? "Scheduling is only available when Auto Reply State is set to Scheduled"
+                    : ""
+                }
                 placement="bottom"
               >
                 <Box>
@@ -277,7 +302,7 @@ const CippExchangeSettingsForm = (props) => {
                 validators={{
                   required: "Please enter a number",
                   min: { value: 1, message: "The minimum is 1" },
-                  max: { value: 1000, message: "The maximum is 1000" }, 
+                  max: { value: 1000, message: "The maximum is 1000" },
                 }}
               />
             </Grid>
@@ -348,15 +373,49 @@ const CippExchangeSettingsForm = (props) => {
                 </Box>
               </Stack>
 
-              <SvgIcon
-                fontSize="small"
-                sx={{
-                  transition: "transform 150ms",
-                  transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                }}
-              >
-                <ChevronDownIcon />
-              </SvgIcon>
+              <Stack direction="row" spacing={1} alignItems="center">
+                {section.action && (
+                  <Tooltip title={section.action.tooltip} placement="left">
+                    <span>
+                      <IconButton
+                        size="small"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          section.action.onClick?.();
+                        }}
+                        disabled={section.action.disabled}
+                        sx={{
+                          color: "text.secondary",
+                        }}
+                      >
+                        <SvgIcon
+                          fontSize="small"
+                          sx={{
+                            animation: section.action.isLoading
+                              ? "spin 1s linear infinite"
+                              : "none",
+                            "@keyframes spin": {
+                              "0%": { transform: "rotate(0deg)" },
+                              "100%": { transform: "rotate(360deg)" },
+                            },
+                          }}
+                        >
+                          <Sync />
+                        </SvgIcon>
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                )}
+                <SvgIcon
+                  fontSize="small"
+                  sx={{
+                    transition: "transform 150ms",
+                    transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
+                >
+                  <ChevronDownIcon />
+                </SvgIcon>
+              </Stack>
             </Box>
             <Collapse in={isExpanded} unmountOnExit>
               <Divider />

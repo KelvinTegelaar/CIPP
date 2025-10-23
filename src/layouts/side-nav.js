@@ -135,6 +135,11 @@ export const SideNav = (props) => {
       imagesrc: "/sponsors/huntress_teal.png",
       priority: 1,
     },
+    {
+      link: "https://rightofboom.com/rob-2026-overview/rob-2026-registration/?utm_source=CIPP&utm_medium=referral&utm_campaign=CIPPM365&utm_content=cta_button",
+      imagesrc: theme === "light" ? "/sponsors/RoB-light.png" : "/sponsors/RoB.png",
+      priority: 1,
+    },
   ];
 
   const randomSponsorImage = () => {
@@ -237,7 +242,7 @@ export const SideNav = (props) => {
                         cursor: "pointer",
                         maxHeight: "50px", // Limit the height of the image
                         width: "auto",
-                        maxWidth: "100px" // Maintain aspect ratio with max width
+                        maxWidth: "100px", // Maintain aspect ratio with max width
                       }}
                       onClick={() => window.open(randomimg.link)}
                     />
