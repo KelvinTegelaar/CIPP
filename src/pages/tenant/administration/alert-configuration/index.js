@@ -64,6 +64,7 @@ const Page = () => {
         "Conditions",
         "RepeatsEvery",
         "Actions",
+        "AlertComment",
         "excludedTenants",
       ]}
       queryKey="ListAlertsQueue"
