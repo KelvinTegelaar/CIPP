@@ -1,20 +1,39 @@
-import { Box, Button, Divider, Skeleton, SvgIcon, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Skeleton,
+  SvgIcon,
+  Typography,
+  ButtonGroup,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  IconButton,
+  Alert,
+} from "@mui/material";
 import { Grid } from "@mui/system";
 import { useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
+import CippGraphResourceSelector from "/src/components/CippComponents/CippGraphResourceSelector";
+import CippGraphAttributeSelector from "/src/components/CippComponents/CippGraphAttributeSelector";
 import { getCippValidator } from "/src/utils/get-cipp-validator";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CippFormInputArray from "../CippComponents/CippFormInputArray";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { ExpandMoreOutlined, Delete, Add } from "@mui/icons-material";
 
 const CippSchedulerForm = (props) => {
-  const { formControl, fullWidth = false } = props; // Added fullWidth prop
+  const { formControl, fullWidth = false, taskId = null, cloneMode = false } = props;
   const selectedCommand = useWatch({ control: formControl.control, name: "command" });
+  const [addedConditions, setAddedConditions] = useState([{ id: 0 }]);
+  const [isResourcePickerDisabled, setIsResourcePickerDisabled] = useState(false);
 
   const fieldRequired = (field) => {
     if (field?.Required) {
@@ -24,6 +43,17 @@ const CippSchedulerForm = (props) => {
     } else {
       return {};
     }
+  };
+
+  const handleAddCondition = () => {
+    setAddedConditions([...addedConditions, { id: addedConditions.length }]);
+  };
+
+  const handleRemoveCondition = (id) => {
+    const currentConditions = formControl.getValues("Trigger.DeltaConditions") || [];
+    const updatedConditions = currentConditions.filter((_, index) => index !== id);
+    formControl.setValue("Trigger.DeltaConditions", updatedConditions);
+    setAddedConditions(addedConditions.filter((condition, index) => index !== id));
   };
 
   const postCall = ApiPostCall({
@@ -57,18 +87,97 @@ const CippSchedulerForm = (props) => {
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ];
+
+  const triggerRecurrenceOptions = [
+    { value: "15m", label: "Every 15 minutes" },
+    { value: "30m", label: "Every 30 minutes" },
+    { value: "1h", label: "Every 1 hour" },
+    { value: "4h", label: "Every 4 hours" },
+    { value: "12h", label: "Every 12 hours" },
+    { value: "1d", label: "Every 1 day" },
+  ];
+
+  const taskTypeOptions = [
+    { value: "scheduled", label: "Scheduled Task" },
+    { value: "triggered", label: "Triggered Task" },
+  ];
+
+  const triggerTypeOptions = [{ value: "DeltaQuery", label: "Delta Query" }];
+
+  const deltaResourceOptions = [
+    { value: "users", label: "Users" },
+    { value: "groups", label: "Groups" },
+    { value: "contacts", label: "Contacts" },
+    { value: "orgContact", label: "Organizational Contacts" },
+    { value: "devices", label: "Devices" },
+    { value: "applications", label: "Applications" },
+    { value: "servicePrincipals", label: "Service Principals" },
+    { value: "directoryObjects", label: "Directory Objects" },
+    { value: "directoryRole", label: "Directory Roles" },
+    { value: "administrativeUnits", label: "Administrative Units" },
+    { value: "oAuth2PermissionGrant", label: "OAuth2 Permission Grants" },
+  ];
+
+  const simpleEventOptions = [
+    { value: "created", label: "Resource Created" },
+    { value: "updated", label: "Resource Updated" },
+    { value: "deleted", label: "Resource Deleted" },
+  ];
+
+  const operatorOptions = [
+    { value: "eq", label: "Equals to" },
+    { value: "ne", label: "Not Equals to" },
+    { value: "like", label: "Like" },
+    { value: "notlike", label: "Not like" },
+    { value: "notmatch", label: "Does not match" },
+    { value: "gt", label: "Greater than" },
+    { value: "lt", label: "Less than" },
+    { value: "in", label: "In" },
+    { value: "notIn", label: "Not In" },
+  ];
+
+  // Watch for trigger-related fields
+  const selectedTaskType = useWatch({ control: formControl.control, name: "taskType" });
+  const selectedTriggerType = useWatch({ control: formControl.control, name: "Trigger.Type" });
+  const selectedDeltaResource = useWatch({
+    control: formControl.control,
+    name: "Trigger.DeltaResource",
+  });
+  const selectedTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
+
+  // Watch for summary display
+  const selectedSimpleEvent = useWatch({ control: formControl.control, name: "Trigger.EventType" });
+  const selectedRecurrence = useWatch({ control: formControl.control, name: "Recurrence" });
+  const selectedScheduledTime = useWatch({ control: formControl.control, name: "ScheduledTime" });
+  const selectedExecutePerResource = useWatch({
+    control: formControl.control,
+    name: "Trigger.ExecutePerResource",
+  });
+  const selectedDeltaExecutionMode = useWatch({
+    control: formControl.control,
+    name: "Trigger.ExecutionMode",
+  });
+  const selectedUseConditions = useWatch({
+    control: formControl.control,
+    name: "Trigger.UseConditions",
+  });
+  const selectedDeltaConditions = useWatch({
+    control: formControl.control,
+    name: "Trigger.DeltaConditions",
+  });
   const commands = ApiGetCall({
     url: "/api/ListFunctionParameters?Module=CIPPCore",
     queryKey: "ListCommands",
   });
 
   const router = useRouter();
+
   const scheduledTaskList = ApiGetCall({
     url: "/api/ListScheduledItems",
-    queryKey: "ListScheduledItems-Edit-" + router.query.id,
-    waiting: !!router.query.id,
+    queryKey: "ListScheduledItems-Edit-" + (taskId || router.query.id),
+    waiting: !!(taskId || router.query.id),
     data: {
-      Id: router.query.id,
+      Id: taskId || router.query.id,
     },
   });
 
@@ -76,19 +185,113 @@ const CippSchedulerForm = (props) => {
     url: "/api/ListTenants?AllTenantSelector=true",
     queryKey: "ListTenants-AllTenants",
   });
+
+  // Check if resource picker should be disabled
   useEffect(() => {
-    if (scheduledTaskList.isSuccess && router.query.id) {
-      const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+    console.log(selectedTenant);
+    if (!selectedTenant) {
+      setIsResourcePickerDisabled(false);
+      return;
+    }
+
+    // Disable if AllTenants is selected
+    if (selectedTenant.value === "AllTenants") {
+      setIsResourcePickerDisabled(true);
+      return;
+    }
+
+    // Disable if a tenant group is selected (groups have type: "Group")
+    if (selectedTenant.type === "Group") {
+      setIsResourcePickerDisabled(true);
+      return;
+    }
+
+    setIsResourcePickerDisabled(false);
+  }, [selectedTenant]);
+
+  // Helper functions for accordion summaries
+  const getTriggerSummary = () => {
+    if (!selectedTriggerType || selectedTaskType?.value !== "triggered") return "";
+
+    let summary = selectedTriggerType.label;
+
+    if (selectedTriggerType.value === "DeltaQuery") {
+      if (selectedDeltaResource?.label) {
+        summary += ` - ${selectedDeltaResource.label}`;
+      }
+      if (selectedSimpleEvent?.label) {
+        summary += ` (${selectedSimpleEvent.label})`;
+      }
+      if (selectedUseConditions && selectedDeltaConditions?.length > 0) {
+        summary += ` with ${selectedDeltaConditions.length} condition${
+          selectedDeltaConditions.length > 1 ? "s" : ""
+        }`;
+      }
+    }
+
+    return summary;
+  };
+
+  const getScheduleSummary = () => {
+    if (selectedTaskType?.value !== "scheduled") return "";
+
+    let summary = "";
+    if (selectedScheduledTime) {
+      // Handle both Unix timestamp and regular date formats
+      let date;
+      if (
+        typeof selectedScheduledTime === "number" ||
+        (typeof selectedScheduledTime === "string" && /^\d+$/.test(selectedScheduledTime))
+      ) {
+        // Unix timestamp (seconds or milliseconds)
+        const timestamp = parseInt(selectedScheduledTime);
+        date = new Date(timestamp > 1000000000000 ? timestamp : timestamp * 1000);
+      } else {
+        date = new Date(selectedScheduledTime);
+      }
+      // Include both date and time
+      summary += `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    }
+    if (selectedRecurrence) {
+      summary += summary ? ` - ${selectedRecurrence.label}` : selectedRecurrence.label;
+    }
+
+    return summary;
+  };
+
+  const getCommandSummary = () => {
+    if (!selectedCommand) return "";
+
+    let summary = selectedCommand.label;
+
+    if (selectedTaskType?.value === "triggered" && selectedTriggerType?.value === "DeltaQuery") {
+      if (selectedExecutePerResource) {
+        summary += " (per resource)";
+      }
+      if (selectedDeltaExecutionMode) {
+        summary += ` - ${selectedDeltaExecutionMode.label}`;
+      }
+    }
+
+    return summary;
+  };
+  useEffect(() => {
+    if (scheduledTaskList.isSuccess && (taskId || router.query.id)) {
+      const task = scheduledTaskList.data.find(
+        (task) => task.RowKey === (taskId || router.query.id)
+      );
 
       // Early return if task is not found
       if (!task) {
-        console.warn(`Task with RowKey ${router.query.id} not found`);
+        console.warn(`Task with RowKey ${taskId || router.query.id} not found`);
         return;
       }
 
-      const postExecution = task?.postExecution?.split(",").map((item) => {
-        return { label: item, value: item };
-      });
+      const postExecution = task?.PostExecution
+        ? task.PostExecution.split(",").map((item) => {
+            return { label: item.trim(), value: item.trim() };
+          })
+        : [];
 
       // Find tenantFilter in tenantList, and create a label/value pair for the autocomplete
       if (tenantList.isSuccess) {
@@ -180,13 +383,29 @@ const CippSchedulerForm = (props) => {
 
           const ResetParams = {
             tenantFilter: tenantFilterForForm,
-            RowKey: router.query.Clone ? null : task.RowKey,
-            Name: router.query.Clone ? `${task.Name} (Clone)` : task?.Name,
+            RowKey: router.query.Clone || cloneMode ? null : task.RowKey,
+            Name: router.query.Clone || cloneMode ? `${task.Name} (Clone)` : task?.Name,
             command: { label: task.Command, value: task.Command, addedFields: commandForForm },
             ScheduledTime: task.ScheduledTime,
             Recurrence: recurrence,
             parameters: task.Parameters,
             postExecution: postExecution,
+            // Set task type based on whether trigger exists
+            taskType: task.Trigger
+              ? { value: "triggered", label: "Triggered Task" }
+              : { value: "scheduled", label: "Scheduled Task" },
+            // Trigger configuration - use the trigger data directly since it's already in the correct format
+            ...(task.Trigger && {
+              "Trigger.Type": task.Trigger.Type,
+              "Trigger.DeltaResource": task.Trigger.DeltaResource,
+              "Trigger.EventType": task.Trigger.EventType,
+              "Trigger.ResourceFilter": task.Trigger.ResourceFilter || [],
+              "Trigger.WatchedAttributes": task.Trigger.WatchedAttributes || [],
+              "Trigger.UseConditions": task.Trigger.UseConditions || false,
+              "Trigger.DeltaConditions": task.Trigger.DeltaConditions || [],
+              "Trigger.ExecutePerResource": task.Trigger.ExecutePerResource || false,
+              "Trigger.ExecutionMode": task.Trigger.ExecutionMode,
+            }),
             // Show advanced parameters if:
             // 1. RawJsonParameters exist
             // 2. It's a system command with no defined parameters
@@ -200,14 +419,32 @@ const CippSchedulerForm = (props) => {
             RawJsonParameters: task.RawJsonParameters || "",
           };
           formControl.reset(ResetParams);
+
+          // Set up condition builder if task has delta conditions
+          if (
+            task.Trigger?.DeltaConditions &&
+            Array.isArray(task.Trigger.DeltaConditions) &&
+            task.Trigger.DeltaConditions.length > 0
+          ) {
+            const conditionsWithIds = task.Trigger.DeltaConditions.map((condition, index) => ({
+              id: index,
+              ...condition,
+            }));
+            setAddedConditions(conditionsWithIds);
+          } else {
+            // Reset to default single condition if no conditions exist
+            setAddedConditions([{ id: 0 }]);
+          }
         }
       }
     }
   }, [
+    taskId,
     router.query.id,
     scheduledTaskList.isSuccess,
     tenantList.isSuccess,
     router.query.Clone,
+    cloneMode,
     commands.isSuccess,
   ]);
 
@@ -230,8 +467,10 @@ const CippSchedulerForm = (props) => {
 
       // Get the original task parameters if we're editing (to preserve complex objects)
       let parametersToUse = null;
-      if (router.query.id && scheduledTaskList.isSuccess) {
-        const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
+      if ((taskId || router.query.id) && scheduledTaskList.isSuccess) {
+        const task = scheduledTaskList.data.find(
+          (task) => task.RowKey === (taskId || router.query.id)
+        );
         if (task?.Parameters) {
           parametersToUse = task.Parameters;
         }
@@ -258,7 +497,7 @@ const CippSchedulerForm = (props) => {
         formControl.setValue("RawJsonParameters", "{}");
       }
     }
-  }, [advancedParameters, router.query.id, scheduledTaskList.isSuccess]);
+  }, [advancedParameters, taskId, router.query.id, scheduledTaskList.isSuccess]);
 
   const gridSize = fullWidth ? 12 : 4; // Adjust size based on fullWidth prop
 
@@ -268,6 +507,7 @@ const CippSchedulerForm = (props) => {
         {(scheduledTaskList.isFetching || tenantList.isLoading || commands.isLoading) && (
           <Skeleton width={"100%"} />
         )}
+        {/* Top section: Tenant and Task Name */}
         <Grid size={{ md: 12, xs: 12 }}>
           <CippFormTenantSelector
             label="Select a Tenant"
@@ -285,199 +525,10 @@ const CippSchedulerForm = (props) => {
             name="Name"
             label="Task Name"
             formControl={formControl}
-          />
-        </Grid>
-
-        <Grid size={{ md: gridSize, xs: 12 }}>
-          <CippFormComponent
-            name="command"
-            type="autoComplete"
-            label="Select Command"
-            multiple={false}
-            creatable={false}
             required={true}
-            formControl={formControl}
-            isFetching={commands.isFetching}
-            options={(() => {
-              const baseOptions =
-                commands.data?.map((command) => {
-                  return {
-                    label: command.Function,
-                    value: command.Function,
-                    addedFields: command,
-                  };
-                }) || [];
-
-              // If we're editing a task and the command isn't in the base options, add it
-              if (router.query.id && scheduledTaskList.isSuccess) {
-                const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
-                if (task?.Command && !baseOptions.find((opt) => opt.value === task.Command)) {
-                  baseOptions.unshift({
-                    label: task.Command,
-                    value: task.Command,
-                    addedFields: {
-                      Function: task.Command,
-                      Parameters: [],
-                    },
-                  });
-                }
-              }
-
-              return baseOptions;
-            })()}
-            validators={{
-              validate: (value) => {
-                if (!value) {
-                  return "Please select a Command";
-                }
-                return true;
-              },
-            }}
           />
         </Grid>
-        <Grid size={{ md: gridSize, xs: 12 }}>
-          <CippFormComponent
-            type="datePicker"
-            name="ScheduledTime"
-            label="Start Date"
-            fullWidth
-            formControl={formControl}
-            validators={{
-              required: { value: true, message: "You must set a start date." },
-            }}
-          />
-        </Grid>
-        <Grid size={{ md: gridSize, xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            name="Recurrence"
-            label="Recurrence"
-            formControl={formControl}
-            options={(() => {
-              let options = [...recurrenceOptions];
 
-              // If we're editing a task and the recurrence isn't in the base options, add it
-              if (router.query.id && scheduledTaskList.isSuccess) {
-                const task = scheduledTaskList.data.find((task) => task.RowKey === router.query.id);
-                if (task?.Recurrence && !options.find((opt) => opt.value === task.Recurrence)) {
-                  options.push({
-                    value: task.Recurrence,
-                    label: `Custom: ${task.Recurrence}`,
-                  });
-                }
-              }
-
-              return options;
-            })()}
-            multiple={false}
-            disableClearable={true}
-            creatable={true}
-          />
-        </Grid>
-        {selectedCommand?.addedFields?.Synopsis && (
-          <Grid size={{ md: 12, xs: 12 }}>
-            <Box sx={{ my: 1 }}>
-              <Typography variant="h6">PowerShell Command:</Typography>
-              <Typography variant="body2" color={"text.secondary"}>
-                {selectedCommand.addedFields.Synopsis}
-              </Typography>
-            </Box>
-          </Grid>
-        )}
-
-        {selectedCommand?.addedFields?.Parameters?.map((param, idx) => (
-          <CippFormCondition
-            field="advancedParameters"
-            compareType="isNot"
-            compareValue={true}
-            formControl={formControl}
-            key={idx}
-          >
-            <Grid
-              size={{ md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize, xs: 12 }}
-            >
-              {param.Type === "System.Boolean" ||
-              param.Type === "System.Management.Automation.SwitchParameter" ? (
-                <CippFormComponent
-                  type="switch"
-                  name={`parameters.${param.Name}`}
-                  label={param.Name}
-                  formControl={formControl}
-                  helperText={param.Description}
-                />
-              ) : param.Type === "System.Collections.Hashtable" ? (
-                <CippFormInputArray
-                  formControl={formControl}
-                  name={`parameters.${param.Name}`}
-                  label={`${param.Name}`}
-                  helperText={param.Description}
-                  key={idx}
-                />
-              ) : param.Type?.startsWith("System.String") ? (
-                <CippFormComponent
-                  type="textField"
-                  name={`parameters.${param.Name}`}
-                  label={param.Name}
-                  formControl={formControl}
-                  placeholder={`Enter a value for ${param.Name}`}
-                  helperText={param.Description}
-                  validators={fieldRequired(param)}
-                  required={param.Required}
-                />
-              ) : (
-                <CippFormComponent
-                  type="textField"
-                  name={`parameters.${param.Name}`}
-                  label={param.Name}
-                  formControl={formControl}
-                  placeholder={`Enter a value for ${param.Name}`}
-                  helperText={param.Description}
-                  validators={fieldRequired(param)}
-                  required={param.Required}
-                />
-              )}
-            </Grid>
-          </CippFormCondition>
-        ))}
-        <Grid size={{ md: 12, xs: 12 }}>
-          <Divider />
-        </Grid>
-        <Grid size={{ md: 12, xs: 12 }}>
-          <CippFormComponent
-            type="switch"
-            name="advancedParameters"
-            label="Advanced Parameters (JSON Input)"
-            formControl={formControl}
-          />
-        </Grid>
-        <CippFormCondition
-          field="advancedParameters"
-          compareType="is"
-          compareValue={true}
-          formControl={formControl}
-        >
-          <Grid size={{ md: 12, xs: 12 }}>
-            <CippFormComponent
-              type="textField"
-              name="RawJsonParameters"
-              label="Advanced Parameters (JSON Input)"
-              validators={{
-                validate: (value) => getCippValidator(value, "json"),
-              }}
-              formControl={formControl}
-              multiline
-              rows={6}
-              maxRows={30}
-              sx={{
-                "& .MuiInputBase-root": {
-                  overflow: "auto",
-                  minHeight: "200px",
-                },
-              }}
-              placeholder={`Enter a JSON object`}
-            />
-          </Grid>
-        </CippFormCondition>
         <Grid size={{ md: 12, xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
@@ -493,6 +544,546 @@ const CippSchedulerForm = (props) => {
             ]}
           />
         </Grid>
+
+        {/* Divider */}
+        <Grid size={{ md: 12, xs: 12 }}>
+          <Divider sx={{ my: 2 }} />
+        </Grid>
+
+        {/* Task Type Selection */}
+        <Grid size={{ md: 12, xs: 12 }}>
+          <ButtonGroup variant="outlined" fullWidth sx={{ mb: 2 }}>
+            {taskTypeOptions.map((option) => (
+              <Button
+                key={option.value}
+                variant={selectedTaskType?.value === option.value ? "contained" : "outlined"}
+                color={selectedTaskType?.value === option.value ? "primary" : "inherit"}
+                onClick={() => {
+                  formControl.setValue("taskType", option);
+                }}
+                fullWidth
+              >
+                {option.label}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Grid>
+
+        {/* Trigger Configuration Accordion */}
+        <CippFormCondition
+          field="taskType"
+          compareType="is"
+          compareValue={{ value: "triggered", label: "Triggered Task" }}
+          formControl={formControl}
+        >
+          <Grid size={{ md: 12, xs: 12 }}>
+            <Accordion defaultExpanded variant="outlined">
+              <AccordionSummary expandIcon={<ExpandMoreOutlined />}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+                  <Typography variant="h6">Trigger Configuration</Typography>
+                  {getTriggerSummary() && (
+                    <Typography variant="body2" color="text.secondary">
+                      - {getTriggerSummary()}
+                    </Typography>
+                  )}
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid size={{ md: 12, xs: 12 }}>
+                    <CippFormComponent
+                      name="Trigger.Type"
+                      type="autoComplete"
+                      label="Trigger Type"
+                      multiple={false}
+                      creatable={false}
+                      required={true}
+                      formControl={formControl}
+                      options={triggerTypeOptions}
+                    />
+                  </Grid>
+
+                  {/* Delta Query Configuration */}
+                  <CippFormCondition
+                    field="Trigger.Type"
+                    compareType="is"
+                    compareValue={{ value: "DeltaQuery", label: "Delta Query" }}
+                    formControl={formControl}
+                  >
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <Alert severity="info" sx={{ mb: 2 }}>
+                        <Typography variant="body2">
+                          Delta queries track changes to Microsoft Graph resources. Learn more about{" "}
+                          <Link
+                            href="https://learn.microsoft.com/en-us/graph/delta-query-overview"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "inherit", textDecoration: "underline" }}
+                          >
+                            delta query concepts and usage
+                          </Link>{" "}
+                          in the Microsoft documentation.
+                        </Typography>
+                      </Alert>
+                    </Grid>
+
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        name="Trigger.DeltaResource"
+                        type="autoComplete"
+                        label="Resource Type"
+                        multiple={false}
+                        creatable={false}
+                        required={true}
+                        formControl={formControl}
+                        options={deltaResourceOptions}
+                        helperText="Select the type of Microsoft Graph resource to monitor for changes. Different resources support different properties and events."
+                      />
+                    </Grid>
+
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        name="Trigger.EventType"
+                        type="autoComplete"
+                        label="Event Type"
+                        multiple={false}
+                        creatable={false}
+                        required={true}
+                        formControl={formControl}
+                        options={simpleEventOptions}
+                        helperText="Choose what type of change to monitor: Created (new resources), Updated (modified resources), or Deleted (removed resources). Created events are limited to resources with a createdDateTime property."
+                      />
+                    </Grid>
+
+                    <CippFormCondition
+                      field="Trigger.EventType"
+                      compareType="valueNotEq"
+                      compareValue={"created"}
+                      formControl={formControl}
+                    >
+                      <Grid size={{ md: 12, xs: 12 }}>
+                        <CippGraphResourceSelector
+                          name="Trigger.ResourceFilter"
+                          formControl={formControl}
+                          resourceFieldName="Trigger.DeltaResource"
+                          tenantFilterFieldName="tenantFilter"
+                          label="Filter Specific Resources (Optional)"
+                          multiple={true}
+                          required={false}
+                          disabled={isResourcePickerDisabled}
+                          helperText={
+                            isResourcePickerDisabled
+                              ? "Resource filtering is not available when All Tenants or tenant groups are selected"
+                              : "Select specific resources to monitor"
+                          }
+                        />
+                      </Grid>
+                    </CippFormCondition>
+
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippGraphAttributeSelector
+                        name="Trigger.WatchedAttributes"
+                        formControl={formControl}
+                        resourceFieldName="Trigger.DeltaResource"
+                        label="Attributes to Monitor"
+                        multiple={true}
+                        required={false}
+                        helperText="Specify which properties to monitor for changes. Leave empty to monitor all properties. Only changes to selected attributes will trigger the task."
+                      />
+                    </Grid>
+
+                    {/* Condition Builder for all event types */}
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        type="switch"
+                        name="Trigger.UseConditions"
+                        label="Add Conditions"
+                        formControl={formControl}
+                        helperText="Enable to add PowerShell-style filters that determine which specific resources should trigger the task. Use this to create more targeted triggers based on resource properties."
+                      />
+                    </Grid>
+
+                    <CippFormCondition
+                      field="Trigger.UseConditions"
+                      compareType="is"
+                      compareValue={true}
+                      formControl={formControl}
+                    >
+                      <Grid size={{ md: 12, xs: 12 }}>
+                        <Divider sx={{ my: 2 }} />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            mb: 2,
+                          }}
+                        >
+                          <Typography variant="h6">Delta Query Conditions</Typography>
+                          <Button
+                            startIcon={<Add />}
+                            onClick={handleAddCondition}
+                            variant="outlined"
+                            size="small"
+                          >
+                            Add Condition
+                          </Button>
+                        </Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                          Create PowerShell-style Where-Object conditions to filter delta query
+                          results. Each condition compares a resource property against a specific
+                          value. Multiple conditions work as AND logic - all must be true to trigger
+                          the task.
+                        </Typography>
+                      </Grid>
+
+                      {addedConditions.map((condition, index) => (
+                        <Grid container spacing={2} key={condition.id}>
+                          <Grid size={4}>
+                            <CippFormComponent
+                              type="textField"
+                              name={`Trigger.DeltaConditions.${index}.Property`}
+                              formControl={formControl}
+                              label="Property Name"
+                              placeholder="displayName"
+                              required={true}
+                            />
+                          </Grid>
+                          <Grid size={3}>
+                            <CippFormComponent
+                              type="autoComplete"
+                              multiple={false}
+                              name={`Trigger.DeltaConditions.${index}.Operator`}
+                              formControl={formControl}
+                              label="Operator"
+                              options={operatorOptions}
+                              required={true}
+                              disableClearable={true}
+                            />
+                          </Grid>
+                          <Grid size={4}>
+                            <CippFormComponent
+                              type="textField"
+                              name={`Trigger.DeltaConditions.${index}.Value`}
+                              formControl={formControl}
+                              label="Value"
+                              placeholder="*admin*"
+                            />
+                          </Grid>
+                          <Grid size={1}>
+                            <IconButton onClick={() => handleRemoveCondition(index)} color="error">
+                              <Delete />
+                            </IconButton>
+                          </Grid>
+                        </Grid>
+                      ))}
+                    </CippFormCondition>
+
+                    {/* Delta Query Execution Options */}
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        type="switch"
+                        name="Trigger.ExecutePerResource"
+                        label="Execute Command Per Resource"
+                        formControl={formControl}
+                        helperText="When enabled, the command will be executed once for each resource that matches the delta query. When disabled, the command runs once with all matching resources passed as a parameter."
+                      />
+                    </Grid>
+
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        type="autoComplete"
+                        name="Trigger.ExecutionMode"
+                        label="Execution Mode"
+                        formControl={formControl}
+                        options={[
+                          { value: "once", label: "Run Once" },
+                          { value: "repeat", label: "Repeat Indefinitely" },
+                        ]}
+                        multiple={false}
+                        disableClearable={true}
+                        creatable={false}
+                        required={true}
+                        helperText="Run Once: Execute the task when changes are detected, then stop monitoring. Repeat Indefinitely: Continue monitoring and executing the task every time changes are detected."
+                      />
+                    </Grid>
+
+                    {/* Trigger Recurrence */}
+                    <Grid size={{ md: 12, xs: 12 }}>
+                      <CippFormComponent
+                        type="autoComplete"
+                        name="Recurrence"
+                        label="Check Frequency"
+                        formControl={formControl}
+                        options={triggerRecurrenceOptions}
+                        multiple={false}
+                        disableClearable={true}
+                        creatable={false}
+                        required={true}
+                        helperText="How often to poll Microsoft Graph for changes. More frequent checks provide faster response times but consume more API quota. Consider your monitoring needs and Graph API rate limits."
+                      />
+                    </Grid>
+                  </CippFormCondition>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </Grid>
+        </CippFormCondition>
+
+        {/* Schedule Configuration - Only for scheduled tasks */}
+        <CippFormCondition
+          field="taskType"
+          compareType="is"
+          compareValue={{ value: "scheduled", label: "Scheduled Task" }}
+          formControl={formControl}
+        >
+          <Grid size={{ md: 12, xs: 12 }}>
+            <Accordion defaultExpanded variant="outlined">
+              <AccordionSummary expandIcon={<ExpandMoreOutlined />}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+                  <Typography variant="h6">Schedule Configuration</Typography>
+                  {getScheduleSummary() && (
+                    <Typography variant="body2" color="text.secondary">
+                      - {getScheduleSummary()}
+                    </Typography>
+                  )}
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid size={{ md: gridSize, xs: 12 }}>
+                    <CippFormComponent
+                      type="datePicker"
+                      name="ScheduledTime"
+                      label="Start Date"
+                      fullWidth
+                      formControl={formControl}
+                      validators={{
+                        required: { value: true, message: "You must set a start date." },
+                      }}
+                    />
+                  </Grid>
+                  <Grid size={{ md: gridSize, xs: 12 }}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="Recurrence"
+                      label="Recurrence"
+                      formControl={formControl}
+                      options={(() => {
+                        let options = [...recurrenceOptions];
+
+                        // If we're editing a task and the recurrence isn't in the base options, add it
+                        if ((taskId || router.query.id) && scheduledTaskList.isSuccess) {
+                          const task = scheduledTaskList.data.find(
+                            (task) => task.RowKey === (taskId || router.query.id)
+                          );
+                          if (
+                            task?.Recurrence &&
+                            !options.find((opt) => opt.value === task.Recurrence)
+                          ) {
+                            options.push({
+                              value: task.Recurrence,
+                              label: `Custom: ${task.Recurrence}`,
+                            });
+                          }
+                        }
+
+                        return options;
+                      })()}
+                      multiple={false}
+                      disableClearable={true}
+                      creatable={true}
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </Grid>
+        </CippFormCondition>
+
+        {/* Command & Parameters - For both scheduled and triggered tasks */}
+        <Grid size={{ md: 12, xs: 12 }}>
+          <Accordion defaultExpanded variant="outlined">
+            <AccordionSummary expandIcon={<ExpandMoreOutlined />}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+                <Typography variant="h6">Command & Parameters</Typography>
+                {getCommandSummary() && (
+                  <Typography variant="body2" color="text.secondary">
+                    - {getCommandSummary()}
+                  </Typography>
+                )}
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={2}>
+                {/* Command selection for both scheduled and triggered tasks */}
+                <Grid size={{ md: gridSize, xs: 12 }}>
+                  <CippFormComponent
+                    name="command"
+                    type="autoComplete"
+                    label="Select Command"
+                    multiple={false}
+                    creatable={false}
+                    required={true}
+                    formControl={formControl}
+                    isFetching={commands.isFetching}
+                    options={(() => {
+                      const baseOptions =
+                        commands.data?.map((command) => {
+                          return {
+                            label: command.Function,
+                            value: command.Function,
+                            addedFields: command,
+                          };
+                        }) || [];
+
+                      // If we're editing a task and the command isn't in the base options, add it
+                      if ((taskId || router.query.id) && scheduledTaskList.isSuccess) {
+                        const task = scheduledTaskList.data.find(
+                          (task) => task.RowKey === (taskId || router.query.id)
+                        );
+                        if (
+                          task?.Command &&
+                          !baseOptions.find((opt) => opt.value === task.Command)
+                        ) {
+                          baseOptions.unshift({
+                            label: task.Command,
+                            value: task.Command,
+                            addedFields: {
+                              Function: task.Command,
+                              Parameters: [],
+                            },
+                          });
+                        }
+                      }
+
+                      return baseOptions;
+                    })()}
+                    validators={{
+                      validate: (value) => {
+                        if (!value) {
+                          return "Please select a Command";
+                        }
+                        return true;
+                      },
+                    }}
+                  />
+                </Grid>
+
+                {selectedCommand?.addedFields?.Synopsis && (
+                  <Grid size={{ md: 12, xs: 12 }}>
+                    <Box sx={{ my: 1 }}>
+                      <Typography variant="h6">PowerShell Command:</Typography>
+                      <Typography variant="body2" color={"text.secondary"}>
+                        {selectedCommand.addedFields.Synopsis}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                )}
+
+                {selectedCommand?.addedFields?.Parameters?.map((param, idx) => (
+                  <CippFormCondition
+                    field="advancedParameters"
+                    compareType="isNot"
+                    compareValue={true}
+                    formControl={formControl}
+                    key={idx}
+                  >
+                    <Grid
+                      size={{
+                        md: param.Type === "System.Collections.Hashtable" ? 12 : gridSize,
+                        xs: 12,
+                      }}
+                    >
+                      {param.Type === "System.Boolean" ||
+                      param.Type === "System.Management.Automation.SwitchParameter" ? (
+                        <CippFormComponent
+                          type="switch"
+                          name={`parameters.${param.Name}`}
+                          label={param.Name}
+                          formControl={formControl}
+                          helperText={param.Description}
+                        />
+                      ) : param.Type === "System.Collections.Hashtable" ? (
+                        <CippFormInputArray
+                          formControl={formControl}
+                          name={`parameters.${param.Name}`}
+                          label={`${param.Name}`}
+                          helperText={param.Description}
+                          key={idx}
+                        />
+                      ) : param.Type?.startsWith("System.String") ? (
+                        <CippFormComponent
+                          type="textField"
+                          name={`parameters.${param.Name}`}
+                          label={param.Name}
+                          formControl={formControl}
+                          placeholder={`Enter a value for ${param.Name}`}
+                          helperText={param.Description}
+                          validators={fieldRequired(param)}
+                          required={param.Required}
+                          disableVariables={true}
+                        />
+                      ) : (
+                        <CippFormComponent
+                          type="textField"
+                          name={`parameters.${param.Name}`}
+                          label={param.Name}
+                          formControl={formControl}
+                          placeholder={`Enter a value for ${param.Name}`}
+                          helperText={param.Description}
+                          validators={fieldRequired(param)}
+                          required={param.Required}
+                          disableVariables={true}
+                        />
+                      )}
+                    </Grid>
+                  </CippFormCondition>
+                ))}
+
+                <Grid size={{ md: 12, xs: 12 }}>
+                  <CippFormComponent
+                    type="switch"
+                    name="advancedParameters"
+                    label="Use advanced parameters"
+                    formControl={formControl}
+                    helperText="Advanced Parameters are used when you want to use parameters not available in the standard fields."
+                  />
+                </Grid>
+
+                <CippFormCondition
+                  field="advancedParameters"
+                  compareType="is"
+                  compareValue={true}
+                  formControl={formControl}
+                >
+                  <Grid size={{ md: 12, xs: 12 }}>
+                    <CippFormComponent
+                      type="textField"
+                      name="RawJsonParameters"
+                      label="Advanced Parameters (JSON Input)"
+                      validators={{
+                        validate: (value) => getCippValidator(value, "json"),
+                      }}
+                      formControl={formControl}
+                      multiline
+                      rows={6}
+                      maxRows={30}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          overflow: "auto",
+                          minHeight: "200px",
+                        },
+                      }}
+                      placeholder={`Enter a JSON object`}
+                    />
+                  </Grid>
+                </CippFormCondition>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
+
         <Grid size={{ xs: 12 }} sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
           <Button
             onClick={() => {
@@ -509,7 +1100,7 @@ const CippSchedulerForm = (props) => {
               </SvgIcon>
             }
           >
-            {router.query.id ? "Edit" : "Add"} Schedule
+            {taskId || router.query.id ? "Edit" : "Add"} Schedule
           </Button>
         </Grid>
         <Grid size={{ xs: 12 }}>

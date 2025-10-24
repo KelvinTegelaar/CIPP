@@ -418,9 +418,9 @@ const CippStandardsSideBar = ({
           {/* Show drift error */}
           {isDriftMode && driftError && <Alert severity="error">{driftError}</Alert>}
 
-          {watchForm.tenantFilter?.some(
+          {(watchForm.tenantFilter?.some(
             (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
-          ) && (
+          ) || (watchForm.excludedTenants && watchForm.excludedTenants.length > 0)) && (
             <>
               <Divider />
               <CippFormTenantSelector

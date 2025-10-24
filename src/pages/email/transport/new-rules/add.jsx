@@ -31,6 +31,107 @@ const AddTransportRule = () => {
   const exceptionTypeWatch = useWatch({ control: formControl.control, name: "exceptionType" });
   const applyToAllMessagesWatch = useWatch({ control: formControl.control, name: "applyToAllMessages" });
 
+  // Helper function to get field names for a condition
+  const getConditionFieldNames = (conditionValue) => {
+    const fields = [conditionValue];
+    // Add related fields for special cases
+    if (conditionValue === "HeaderContainsWords") {
+      fields.push("HeaderContainsWordsMessageHeader");
+    } else if (conditionValue === "HeaderMatchesPatterns") {
+      fields.push("HeaderMatchesPatternsMessageHeader");
+    }
+    return fields;
+  };
+
+  // Helper function to get field names for an action
+  const getActionFieldNames = (actionValue) => {
+    const fields = [];
+    switch (actionValue) {
+      case "RejectMessage":
+        fields.push("RejectMessageReasonText", "RejectMessageEnhancedStatusCode");
+        break;
+      case "SetHeader":
+        fields.push("SetHeaderName", "SetHeaderValue");
+        break;
+      case "ApplyHtmlDisclaimer":
+        fields.push("ApplyHtmlDisclaimerText", "ApplyHtmlDisclaimerLocation", "ApplyHtmlDisclaimerFallbackAction");
+        break;
+      default:
+        fields.push(actionValue);
+    }
+    return fields;
+  };
+
+  // Update selected conditions and clean up removed ones
+  useEffect(() => {
+    const newConditions = conditionTypeWatch || [];
+    const newConditionValues = newConditions.map(c => c.value || c);
+    const oldConditionValues = selectedConditions.map(c => c.value || c);
+
+    // Find removed conditions
+    const removedConditions = oldConditionValues.filter(
+      oldVal => !newConditionValues.includes(oldVal)
+    );
+
+    // Clear form values for removed conditions
+    removedConditions.forEach(conditionValue => {
+      const fieldNames = getConditionFieldNames(conditionValue);
+      fieldNames.forEach(fieldName => {
+        formControl.setValue(fieldName, undefined);
+      });
+    });
+
+    setSelectedConditions(newConditions);
+  }, [conditionTypeWatch]);
+
+  // Update selected actions and clean up removed ones
+  useEffect(() => {
+    const newActions = actionTypeWatch || [];
+    const newActionValues = newActions.map(a => a.value || a);
+    const oldActionValues = selectedActions.map(a => a.value || a);
+
+    // Find removed actions
+    const removedActions = oldActionValues.filter(
+      oldVal => !newActionValues.includes(oldVal)
+    );
+
+    // Clear form values for removed actions
+    removedActions.forEach(actionValue => {
+      const fieldNames = getActionFieldNames(actionValue);
+      fieldNames.forEach(fieldName => {
+        formControl.setValue(fieldName, undefined);
+      });
+    });
+
+    setSelectedActions(newActions);
+  }, [actionTypeWatch]);
+
+  // Update selected exceptions and clean up removed ones
+  useEffect(() => {
+    const newExceptions = exceptionTypeWatch || [];
+    const newExceptionValues = newExceptions.map(e => e.value || e);
+    const oldExceptionValues = selectedExceptions.map(e => e.value || e);
+
+    // Find removed exceptions
+    const removedExceptions = oldExceptionValues.filter(
+      oldVal => !newExceptionValues.includes(oldVal)
+    );
+
+    // Clear form values for removed exceptions
+    removedExceptions.forEach(exceptionValue => {
+      // Get base condition name (remove ExceptIf prefix)
+      const baseCondition = exceptionValue.replace("ExceptIf", "");
+      const fieldNames = getConditionFieldNames(baseCondition).map(
+        field => field.includes("MessageHeader") ? `ExceptIf${field}` : exceptionValue
+      );
+      fieldNames.forEach(fieldName => {
+        formControl.setValue(fieldName, undefined);
+      });
+    });
+
+    setSelectedExceptions(newExceptions);
+  }, [exceptionTypeWatch]);
+
   // Update selected conditions when conditionType changes
   useEffect(() => {
     setSelectedConditions(conditionTypeWatch || []);

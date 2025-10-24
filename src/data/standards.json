@@ -913,6 +913,39 @@
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
+    "name": "standards.BitLockerKeysForOwnedDevice",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Controls whether standard users can recover BitLocker keys for devices they own.",
+    "docsDescription": "Updates the Microsoft Entra authorization policy that controls whether standard users can read BitLocker recovery keys for devices they own. Choose to restrict access for tighter security or allow self-service recovery when operational needs require it.",
+    "executiveText": "Gives administrators centralized control over BitLocker recovery secrets—restrict access to ensure IT-assisted recovery flows, or allow self-service when rapid device unlocks are a priority.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select state",
+        "name": "standards.BitLockerKeysForOwnedDevice.state",
+        "options": [
+          {
+            "label": "Restrict",
+            "value": "restrict"
+          },
+          {
+            "label": "Allow",
+            "value": "allow"
+          }
+        ]
+      }
+    ],
+    "label": "Control BitLocker key recovery for owned devices",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-10-12",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthorizationPolicy",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.DisableSecurityGroupUsers",
     "cat": "Entra (AAD) Standards",
     "tag": ["CISA (MS.AAD.20.1v1)", "NIST CSF 2.0 (PR.AA-05)"],

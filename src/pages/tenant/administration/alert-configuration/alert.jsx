@@ -148,6 +148,7 @@ const AlertWizard = () => {
           recurrence: recurrenceOption,
           postExecution: postExecutionValue,
           startDateTime: startDateTimeForForm,
+          AlertComment: alert.RawAlert.AlertComment || "",
         };
 
         // Parse Parameters field if it exists and is a string
@@ -211,6 +212,7 @@ const AlertWizard = () => {
           Actions: alert.RawAlert.Actions,
           conditions: formattedConditions,
           logbook: foundLogbook,
+          AlertComment: alert.RawAlert.AlertComment || "",
         };
 
         formControl.reset(resetData);
@@ -344,6 +346,7 @@ const AlertWizard = () => {
       DesiredStartTime: values.startDateTime ? values.startDateTime.toString() : null,
       Recurrence: values.recurrence,
       PostExecution: values.postExecution,
+      AlertComment: values.AlertComment,
     };
     apiRequest.mutate({ url: "/api/AddScheduledItem?hidden=true", data: postObject });
   };
@@ -624,6 +627,17 @@ const AlertWizard = () => {
                             />
                           </Grid>
                           <Grid size={12} sx={{ mt: 2 }}>
+                            <CippFormComponent
+                              type="textField"
+                              name="AlertComment"
+                              label="Alert Comment"
+                              formControl={formControl}
+                              multiline={true}
+                              rows={3}
+                              placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
+                            />
+                          </Grid>
+                          <Grid size={12} sx={{ mt: 2 }}>
                             <CippApiResults apiObject={apiRequest} />
                           </Grid>
                         </CippButtonCard>
@@ -755,6 +769,17 @@ const AlertWizard = () => {
                                 multiple={true}
                                 creatable={false}
                                 options={postExecutionOptions}
+                              />
+                            </Grid>
+                            <Grid size={12}>
+                              <CippFormComponent
+                                type="textField"
+                                name="AlertComment"
+                                label="Alert Comment"
+                                formControl={formControl}
+                                multiline={true}
+                                rows={3}
+                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
                               />
                             </Grid>
                             <Grid size={12}>

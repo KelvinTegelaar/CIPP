@@ -30,7 +30,7 @@ export const CippPolicyDeployDrawer = ({
   const jsonWatch = useWatch({ control: formControl.control, name: "RAWJson" });
   useEffect(() => {
     if (CATemplates.isSuccess && watcher?.value) {
-      const template = CATemplates.data.find((template) => template.GUID === watcher.value);
+      const template = CATemplates.data?.find((template) => template.GUID === watcher.value);
       if (template) {
         const jsonTemplate = template.RAWJson ? JSON.parse(template.RAWJson) : null;
         setJSONData(jsonTemplate);
@@ -129,7 +129,7 @@ export const CippPolicyDeployDrawer = ({
             multiple={false}
             formControl={formControl}
             options={
-              CATemplates.isSuccess
+              CATemplates.isSuccess && Array.isArray(CATemplates.data)
                 ? CATemplates.data.map((template) => ({
                     label: template.Displayname,
                     value: template.GUID,

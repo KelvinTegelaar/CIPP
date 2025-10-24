@@ -27,7 +27,7 @@ import { useState } from "react";
 import { Close } from "@mui/icons-material";
 
 const Page = () => {
-  const pageTitle = "Partner Webhooks";
+  const pageTitle = "Automated onboarding";
   const [testRunning, setTestRunning] = useState(false);
   const [correlationId, setCorrelationId] = useState(null);
   const [validateRunning, setValidateRunning] = useState(false);

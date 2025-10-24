@@ -646,7 +646,11 @@ export const CippDataTable = (props) => {
         <Card style={{ width: "100%" }} {...props.cardProps}>
           {cardButton || !hideTitle ? (
             <>
-              <CardHeader action={cardButton} title={hideTitle ? "" : title} />
+              <CardHeader
+                action={cardButton}
+                title={hideTitle ? "" : title}
+                {...props.cardHeaderProps}
+              />
               <Divider />
             </>
           ) : null}

@@ -128,6 +128,16 @@ const Page = () => {
       };
     }
 
+    // Handle arrays by joining them
+    if (Array.isArray(userIdentifier)) {
+      userIdentifier = userIdentifier.join(", ");
+    }
+
+    // Ensure userIdentifier is a string
+    if (typeof userIdentifier !== "string") {
+      userIdentifier = String(userIdentifier);
+    }
+
     // Handle special built-in cases
     if (userIdentifier === "Default" || userIdentifier === "Anonymous") {
       return {
@@ -147,7 +157,7 @@ const Page = () => {
         // Exact match on display name
         (group.displayName && group.displayName === userIdentifier) ||
         // Partial match - permission identifier starts with group display name (handles timestamps)
-        (group.displayName && userIdentifier?.startsWith(group.displayName))
+        (group.displayName && userIdentifier.startsWith(group.displayName))
       );
     });
 
@@ -316,9 +326,14 @@ const Page = () => {
   useEffect(() => {
     if (userRequest.isSuccess && userRequest.data?.[0]) {
       const currentSettings = userRequest.data[0];
-      const forwardingAddress = currentSettings.ForwardingAddress;
+      let forwardingAddress = currentSettings.ForwardingAddress;
       const forwardingSmtpAddress = currentSettings.MailboxActionsData?.ForwardingSmtpAddress;
       const forwardAndDeliver = currentSettings.ForwardAndDeliver;
+
+      // Handle ForwardingAddress being an array or string
+      if (Array.isArray(forwardingAddress)) {
+        forwardingAddress = forwardingAddress.join(", ");
+      }
 
       let forwardingType = "disabled";
       let cleanAddress = "";
@@ -1245,7 +1260,7 @@ const Page = () => {
                       isCollapsible={true}
                     />
                     <CippBannerListCard
-                      isFetching={calPermissions.isLoading}
+                      isFetching={contactPermissions.isLoading}
                       items={contactCard}
                       isCollapsible={true}
                     />
