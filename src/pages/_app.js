@@ -299,9 +299,11 @@ const App = (props) => {
                         <RTL direction={settings.direction}>
                           <CssBaseline />
                           <ErrorBoundary FallbackComponent={Error500}>
-                            <ReleaseNotesProvider>
-                              <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
-                            </ReleaseNotesProvider>
+                            <PrivateRoute>
+                              <ReleaseNotesProvider>
+                                {getLayout(<Component {...pageProps} />)}
+                              </ReleaseNotesProvider>
+                            </PrivateRoute>
                           </ErrorBoundary>
                           <Toaster position="top-center" />
                           <CippSpeedDial
