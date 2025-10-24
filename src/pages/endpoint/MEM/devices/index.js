@@ -157,7 +157,7 @@ const Page = () => {
       confirmText: "Are you sure you want to retrieve the BitLocker keys for [deviceName]?",
     },
     {
-      label: "Retrieve File Fault Key",
+      label: "Retrieve File Vault Key",
       type: "POST",
       icon: <Security />,
       url: "/api/ExecDeviceAction",
