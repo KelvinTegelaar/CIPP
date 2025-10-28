@@ -21,7 +21,7 @@ This guide walks you through setting up **Standards** in CIPP for the first time
 
 ## **Accessing Standards**
 
-1. Navigate to **Tenant Administration > Standards**.
+1. Navigate to **Tenant Administration > Standards & Drift**.
 2. Here you'll be presented with a table of Standards templates and an action in the upper right to create new templates.
 
 ## **Reporting Options**
