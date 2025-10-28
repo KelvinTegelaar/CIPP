@@ -26,6 +26,55 @@ import { Box } from "@mui/system";
 import { useSettings } from "../../hooks/use-settings";
 import { isEqual } from "lodash"; // Import lodash for deep comparison
 
+// Resolve dot-delimited property paths against arbitrary data objects.
+const getNestedValue = (source, path) => {
+  if (!source) {
+    return undefined;
+  }
+  if (!path) {
+    return source;
+  }
+
+  return path.split(".").reduce((acc, key) => {
+    if (acc === undefined || acc === null) {
+      return undefined;
+    }
+    if (typeof acc !== "object") {
+      return undefined;
+    }
+    return acc[key];
+  }, source);
+};
+
+// Resolve dot-delimited column ids against the original row data so nested fields can sort/filter properly.
+const getRowValueByColumnId = (row, columnId) => {
+  if (!row?.original || !columnId) {
+    return undefined;
+  }
+
+  if (columnId.includes("@odata")) {
+    return row.original[columnId];
+  }
+
+  return getNestedValue(row.original, columnId);
+};
+
+const compareNullable = (aVal, bVal) => {
+  if (aVal === null && bVal === null) {
+    return 0;
+  }
+  if (aVal === null) {
+    return 1;
+  }
+  if (bVal === null) {
+    return -1;
+  }
+  if (aVal === bVal) {
+    return 0;
+  }
+  return aVal > bVal ? 1 : -1;
+};
+
 export const CippDataTable = (props) => {
   const {
     queryKey,
@@ -107,22 +156,6 @@ export const CippDataTable = (props) => {
   useEffect(() => {
     if (getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages;
-      const getNestedValue = (obj, path) => {
-        if (!path) {
-          return obj;
-        }
-
-        const keys = path.split(".");
-        let result = obj;
-        for (const key of keys) {
-          if (result && typeof result === "object" && key in result) {
-            result = result[key];
-          } else {
-            return undefined;
-          }
-        }
-        return result;
-      };
 
       const combinedResults = allPages.flatMap((page) => {
         const nestedData = getNestedValue(page, api.dataKey);
@@ -448,49 +481,56 @@ export const CippDataTable = (props) => {
     },
     sortingFns: {
       dateTimeNullsLast: (a, b, id) => {
-        const aVal = a?.original?.[id] ?? null;
-        const bVal = b?.original?.[id] ?? null;
-        if (aVal === null && bVal === null) {
-          return 0;
-        }
-        if (aVal === null) {
-          return 1;
-        }
-        if (bVal === null) {
-          return -1;
-        }
-        return aVal > bVal ? 1 : -1;
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const aDate = aRaw ? new Date(aRaw) : null;
+        const bDate = bRaw ? new Date(bRaw) : null;
+        const aTime = aDate && !Number.isNaN(aDate.getTime()) ? aDate.getTime() : null;
+        const bTime = bDate && !Number.isNaN(bDate.getTime()) ? bDate.getTime() : null;
+
+        return compareNullable(aTime, bTime);
       },
       number: (a, b, id) => {
-        const aVal = a?.original?.[id] ?? null;
-        const bVal = b?.original?.[id] ?? null;
-        if (aVal === null && bVal === null) {
-          return 0;
-        }
-        if (aVal === null) {
-          return 1;
-        }
-        if (bVal === null) {
-          return -1;
-        }
-        return aVal - bVal;
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const aNum = typeof aRaw === "number" ? aRaw : Number(aRaw);
+        const bNum = typeof bRaw === "number" ? bRaw : Number(bRaw);
+        const aVal = Number.isNaN(aNum) ? null : aNum;
+        const bVal = Number.isNaN(bNum) ? null : bNum;
+
+        return compareNullable(aVal, bVal);
       },
       boolean: (a, b, id) => {
-        const aVal = a?.original?.[id] ?? null;
-        const bVal = b?.original?.[id] ?? null;
-        if (aVal === null && bVal === null) {
-          return 0;
-        }
-        if (aVal === null) {
-          return 1;
-        }
-        if (bVal === null) {
-          return -1;
-        }
-        // Convert to numbers: true = 1, false = 0
-        const aNum = aVal === true ? 1 : 0;
-        const bNum = bVal === true ? 1 : 0;
-        return aNum - bNum;
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const toBool = (value) => {
+          if (value === null || value === undefined) {
+            return null;
+          }
+          if (typeof value === "boolean") {
+            return value;
+          }
+          if (typeof value === "string") {
+            const lower = value.toLowerCase();
+            if (lower === "true" || lower === "yes") {
+              return true;
+            }
+            if (lower === "false" || lower === "no") {
+              return false;
+            }
+          }
+          if (typeof value === "number") {
+            return value !== 0;
+          }
+          return null;
+        };
+
+        const aBool = toBool(aRaw);
+        const bBool = toBool(bRaw);
+        const aNumeric = aBool === null ? null : aBool ? 1 : 0;
+        const bNumeric = bBool === null ? null : bBool ? 1 : 0;
+
+        return compareNullable(aNumeric, bNumeric);
       },
     },
     filterFns: {
