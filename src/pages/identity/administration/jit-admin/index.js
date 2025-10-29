@@ -15,7 +15,7 @@ const Page = () => {
         </>
       }
       title="JIT Admin Table"
-      apiUrl="/api/ExecJITAdmin?Action=List"
+      apiUrl="/api/ListJITAdmin"
       apiDataKey="Results"
       simpleColumns={[]}
     />
