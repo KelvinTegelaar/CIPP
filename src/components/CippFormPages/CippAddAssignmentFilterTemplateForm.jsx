@@ -46,8 +46,9 @@ const CippAddAssignmentFilterTemplateForm = (props) => {
           options={[
             { label: "Windows 10 and Later", value: "windows10AndLater" },
             { label: "iOS", value: "iOS" },
-            { label: "Android", value: "android" },
             { label: "macOS", value: "macOS" },
+            { label: "Android Enterprise", value: "androidForWork" },
+            { label: "Android device administrator", value: "android" },
             { label: "Android Work Profile", value: "androidWorkProfile" },
             { label: "Android AOSP", value: "androidAOSP" },
           ]}

@@ -8,12 +8,13 @@ import { useEffect } from "react";
 export const CippWizardAssignmentFilterTemplates = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
-  
+
   const platformOptions = [
     { label: "Windows 10 and Later", value: "windows10AndLater" },
     { label: "iOS", value: "iOS" },
-    { label: "Android", value: "android" },
     { label: "macOS", value: "macOS" },
+    { label: "Android Enterprise", value: "androidForWork" },
+    { label: "Android device administrator", value: "android" },
     { label: "Android Work Profile", value: "androidWorkProfile" },
     { label: "Android AOSP", value: "androidAOSP" },
   ];
@@ -35,7 +36,10 @@ export const CippWizardAssignmentFilterTemplates = (props) => {
         formControl.setValue("displayName", watcher.addedFields.displayName);
         formControl.setValue("description", watcher.addedFields.description);
         formControl.setValue("rule", watcher.addedFields.rule);
-        formControl.setValue("assignmentFilterManagementType", watcher.addedFields.assignmentFilterManagementType);
+        formControl.setValue(
+          "assignmentFilterManagementType",
+          watcher.addedFields.assignmentFilterManagementType
+        );
 
         console.log("Set rule to:", watcher.addedFields.rule);
       }, 100);
