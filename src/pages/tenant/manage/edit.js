@@ -191,6 +191,10 @@ const Page = () => {
                   label: "Tenant ID",
                   value: getCippFormatting(tenantDetails.data?.id, "Tenant"),
                 },
+                {
+                  label: "Default Domain",
+                  value: currentTenant,
+                },
               ]}
               showDivider={false}
               isFetching={tenantDetails.isFetching}
