@@ -36,27 +36,6 @@ const CippAddAssignmentFilterForm = (props) => {
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="radio"
-          name="platform"
-          label="Platform"
-          formControl={formControl}
-          required
-          disabled={isEdit}
-          helperText={isEdit ? "Platform cannot be changed after creation" : undefined}
-          options={[
-            { label: "Windows 10 and Later", value: "windows10AndLater" },
-            { label: "iOS", value: "iOS" },
-            { label: "macOS", value: "macOS" },
-            { label: "Android Enterprise", value: "androidForWork" },
-            { label: "Android device administrator", value: "android" },
-            { label: "Android Work Profile", value: "androidWorkProfile" },
-            { label: "Android AOSP", value: "androidAOSP" },
-          ]}
-        />
-      </Grid>
-
-      <Grid size={{ xs: 12 }}>
-        <CippFormComponent
-          type="radio"
           name="assignmentFilterManagementType"
           label="Filter Type"
           formControl={formControl}
@@ -65,6 +44,27 @@ const CippAddAssignmentFilterForm = (props) => {
           options={[
             { label: "Devices", value: "devices" },
             { label: "Apps", value: "apps" },
+          ]}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12 }}>
+        <CippFormComponent
+          type="radio"
+          name="platform"
+          label="Platform"
+          formControl={formControl}
+          required
+          disabled={isEdit}
+          helperText={isEdit ? "Platform cannot be changed after creation" : undefined}
+          options={[
+            { label: "Windows 10 and later", value: "windows10AndLater" },
+            { label: "iOS", value: "iOS" },
+            { label: "macOS", value: "macOS" },
+            { label: "Android Enterprise", value: "androidForWork" },
+            { label: "Android device administrator", value: "android" },
+            { label: "Android Work Profile", value: "androidWorkProfile" },
+            { label: "Android (AOSP)", value: "androidAOSP" },
           ]}
         />
       </Grid>

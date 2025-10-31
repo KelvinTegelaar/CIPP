@@ -10,13 +10,13 @@ export const CippWizardAssignmentFilterTemplates = (props) => {
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
 
   const platformOptions = [
-    { label: "Windows 10 and Later", value: "windows10AndLater" },
+    { label: "Windows 10 and later", value: "windows10AndLater" },
     { label: "iOS", value: "iOS" },
     { label: "macOS", value: "macOS" },
     { label: "Android Enterprise", value: "androidForWork" },
     { label: "Android device administrator", value: "android" },
     { label: "Android Work Profile", value: "androidWorkProfile" },
-    { label: "Android AOSP", value: "androidAOSP" },
+    { label: "Android (AOSP)", value: "androidAOSP" },
   ];
 
   const filterTypeOptions = [
@@ -78,20 +78,20 @@ export const CippWizardAssignmentFilterTemplates = (props) => {
         <Grid size={12}>
           <CippFormComponent
             type="radio"
-            name="platform"
-            label="Platform"
+            name="assignmentFilterManagementType"
+            label="Filter Type"
             formControl={formControl}
-            options={platformOptions}
-            validators={{ required: "Please select a platform" }}
+            options={filterTypeOptions}
           />
         </Grid>
         <Grid size={12}>
           <CippFormComponent
             type="radio"
-            name="assignmentFilterManagementType"
-            label="Filter Type"
+            name="platform"
+            label="Platform"
             formControl={formControl}
-            options={filterTypeOptions}
+            options={platformOptions}
+            validators={{ required: "Please select a platform" }}
           />
         </Grid>
         <Grid size={12}>

@@ -39,18 +39,12 @@ const CippAddAssignmentFilterTemplateForm = (props) => {
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="radio"
-          name="platform"
-          label="Platform"
+          name="assignmentFilterManagementType"
+          label="Filter Type"
           formControl={formControl}
-          required
           options={[
-            { label: "Windows 10 and Later", value: "windows10AndLater" },
-            { label: "iOS", value: "iOS" },
-            { label: "macOS", value: "macOS" },
-            { label: "Android Enterprise", value: "androidForWork" },
-            { label: "Android device administrator", value: "android" },
-            { label: "Android Work Profile", value: "androidWorkProfile" },
-            { label: "Android AOSP", value: "androidAOSP" },
+            { label: "Devices", value: "devices" },
+            { label: "Apps", value: "apps" },
           ]}
         />
       </Grid>
@@ -58,12 +52,18 @@ const CippAddAssignmentFilterTemplateForm = (props) => {
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="radio"
-          name="assignmentFilterManagementType"
-          label="Filter Type"
+          name="platform"
+          label="Platform"
           formControl={formControl}
+          required
           options={[
-            { label: "Devices", value: "devices" },
-            { label: "Apps", value: "apps" },
+            { label: "Windows 10 and later", value: "windows10AndLater" },
+            { label: "iOS", value: "iOS" },
+            { label: "macOS", value: "macOS" },
+            { label: "Android Enterprise", value: "androidForWork" },
+            { label: "Android device administrator", value: "android" },
+            { label: "Android Work Profile", value: "androidWorkProfile" },
+            { label: "Android (AOSP)", value: "androidAOSP" },
           ]}
         />
       </Grid>
