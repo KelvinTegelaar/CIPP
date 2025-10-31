@@ -1,15 +1,35 @@
-import { useEffect } from "react";
 import "@mui/material";
 import { Grid } from "@mui/system";
+import { useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+
+const DEVICE_PLATFORM_OPTIONS = [
+  { label: "Windows 10 and later", value: "windows10AndLater" },
+  { label: "iOS", value: "iOS" },
+  { label: "macOS", value: "macOS" },
+  { label: "Android Enterprise", value: "androidForWork" },
+  { label: "Android device administrator", value: "android" },
+  { label: "Android Work Profile", value: "androidWorkProfile" },
+  { label: "Android (AOSP)", value: "androidAOSP" },
+];
+
+const APP_PLATFORM_OPTIONS = [
+  { label: "Windows", value: "windowsMobileApplicationManagement" },
+  { label: "Android", value: "androidMobileApplicationManagement" },
+  { label: "iOS/iPadOS", value: "iOSMobileApplicationManagement" },
+];
 
 const CippAddAssignmentFilterTemplateForm = (props) => {
   const { formControl } = props;
 
-  useEffect(() => {
-    const subscription = formControl.watch((value, { name, type }) => {});
-    return () => subscription.unsubscribe();
-  }, [formControl]);
+  const assignmentFilterManagementType =
+    useWatch({
+      control: formControl?.control ?? formControl,
+      name: "assignmentFilterManagementType",
+      defaultValue: "devices",
+    }) ?? "devices";
+  const platformOptions =
+    assignmentFilterManagementType === "apps" ? APP_PLATFORM_OPTIONS : DEVICE_PLATFORM_OPTIONS;
 
   return (
     <Grid container spacing={2}>
@@ -23,6 +43,7 @@ const CippAddAssignmentFilterTemplateForm = (props) => {
           name="displayName"
           required
           formControl={formControl}
+          validators={{ required: "Display Name is required" }}
           fullWidth
         />
       </Grid>
@@ -42,6 +63,7 @@ const CippAddAssignmentFilterTemplateForm = (props) => {
           name="assignmentFilterManagementType"
           label="Filter Type"
           formControl={formControl}
+          validators={{ required: "Filter Type is required" }}
           options={[
             { label: "Devices", value: "devices" },
             { label: "Apps", value: "apps" },
@@ -56,15 +78,8 @@ const CippAddAssignmentFilterTemplateForm = (props) => {
           label="Platform"
           formControl={formControl}
           required
-          options={[
-            { label: "Windows 10 and later", value: "windows10AndLater" },
-            { label: "iOS", value: "iOS" },
-            { label: "macOS", value: "macOS" },
-            { label: "Android Enterprise", value: "androidForWork" },
-            { label: "Android device administrator", value: "android" },
-            { label: "Android Work Profile", value: "androidWorkProfile" },
-            { label: "Android (AOSP)", value: "androidAOSP" },
-          ]}
+          validators={{ required: "Platform is required" }}
+          options={platformOptions}
         />
       </Grid>
 
@@ -91,6 +106,7 @@ const CippAddAssignmentFilterTemplateForm = (props) => {
           required
           multiline
           rows={6}
+          validators={{ required: "Filter Rule is required" }}
           fullWidth
         />
       </Grid>
