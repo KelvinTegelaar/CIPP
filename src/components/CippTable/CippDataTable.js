@@ -64,6 +64,8 @@ export const CippDataTable = (props) => {
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
+  const [customComponentData, setCustomComponentData] = useState({});
+  const [customComponentVisible, setCustomComponentVisible] = useState(false);
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [graphFilterData, setGraphFilterData] = useState({});
   const [sorting, setSorting] = useState([]);
@@ -363,19 +365,29 @@ export const CippDataTable = (props) => {
                     currentTenant: row.original.Tenant,
                   });
                 }
+                
+                if (action.noConfirm && action.customFunction) {
+                  action.customFunction(row.original, action, {});
+                  closeMenu();
+                  return;
+                }
+                
+                // Handle custom component differently
+                if (typeof action.customComponent === 'function') {
+                  setCustomComponentData({ data: row.original, action: action });
+                  setCustomComponentVisible(true);
+                  closeMenu();
+                  return;
+                }
+                
+                // Standard dialog flow
                 setActionData({
                   data: row.original,
                   action: action,
                   ready: true,
                 });
-                if (action.noConfirm && action.customFunction) {
-                  action.customFunction(row.original, action, {});
-                  closeMenu();
-                  return;
-                } else {
-                  createDialog.handleOpen();
-                  closeMenu();
-                }
+                createDialog.handleOpen();
+                closeMenu();
               }}
               disabled={handleActionDisabled(row.original, action)}
             >
@@ -692,8 +704,20 @@ export const CippDataTable = (props) => {
         customComponent={offCanvas?.customComponent}
         {...offCanvas}
       />
+      {/* Render custom component */}
+      {customComponentVisible &&
+        customComponentData?.action &&
+        typeof customComponentData.action.customComponent === 'function' &&
+        customComponentData.action.customComponent(customComponentData.data, {
+          drawerVisible: customComponentVisible,
+          setDrawerVisible: setCustomComponentVisible,
+          fromRowAction: true,
+        })
+      }
+
+      {/* Render standard dialog */}
       {useMemo(() => {
-        if (!actionData.ready) return null;
+        if (!actionData.ready || (actionData.action && typeof actionData.action.customComponent === 'function')) return null;
         return (
           <CippApiDialog
             createDialog={createDialog}
