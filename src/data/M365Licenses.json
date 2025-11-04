@@ -528,6 +528,14 @@
     "Service_Plans_Included_Friendly_Names": "Compliance Manager Premium Assessment Add-On"
   },
   {
+    "Product_Display_Name": "Compliance Program for Microsoft Cloud",
+    "String_Id": "Compliance_Program_for_Microsoft_Cloud",
+    "GUID": "10dd46b2-c5ad-4de3-865c-a6fa1363fb51",
+    "Service_Plan_Name": "CPMC",
+    "Service_Plan_Id": "1265e154-5544-4197-bba1-03ef69c3b180",
+    "Service_Plans_Included_Friendly_Names": "Compliance Program for Microsoft Cloud"
+  },
+  {
     "Product_Display_Name": "Defender Threat Intelligence",
     "String_Id": "Defender_Threat_Intelligence",
     "GUID": "a9c51c15-ffad-4c66-88c0-8771455c832d",
@@ -30168,6 +30176,14 @@
     "Service_Plans_Included_Friendly_Names": "Entra Identity Governance"
   },
   {
+    "Product_Display_Name": "Microsoft Entra Workload ID",
+    "String_Id": "Workload_Identities_P2",
+    "GUID": "52cdf00e-8303-4223-a749-ff69a13e2dd0",
+    "Service_Plan_Name": "AAD_WRKLDID_P2",
+    "Service_Plan_Id": "7dc0e92d-bf15-401d-907e-0884efe7c760",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Entra Workload ID"
+  },
+  {
     "Product_Display_Name": "Microsoft Fabric (Free)",
     "String_Id": "POWER_BI_STANDARD",
     "GUID": "a403ebcc-fae0-4ca2-8c8c-7a907fd6c235",
@@ -35371,6 +35387,310 @@
     "Product_Display_Name": "Office 365 E1",
     "String_Id": "STANDARDPACK",
     "GUID": "18181a46-0d4e-45cd-891e-60aabd171b4e",
+    "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_O365_P1",
+    "Service_Plan_Id": "0683001c-0492-4d59-9515-d9a6426b5813",
+    "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Office 365"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MESH_AVATARS_FOR_TEAMS",
+    "Service_Plan_Id": "dcf9d2f4-772e-4434-b757-77a453cfbc02",
+    "Service_Plans_Included_Friendly_Names": "Avatars for Teams"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MESH_AVATARS_ADDITIONAL_FOR_TEAMS",
+    "Service_Plan_Id": "3efbd4ed-8958-4824-8389-1321f8730af8",
+    "Service_Plans_Included_Friendly_Names": "Avatars for Teams (additional)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "CDS_O365_P1",
+    "Service_Plan_Id": "bed136c6-b799-4462-824d-fc045d3a9d25",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service for Teams"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MICROSOFT_MYANALYTICS_FULL",
+    "Service_Plan_Id": "0403bb98-9d17-4f94-b53e-eca56a7698a6",
+    "Service_Plans_Included_Friendly_Names": "DO NOT USE - Microsoft MyAnalytics (Full)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "EXCHANGE_S_STANDARD",
+    "Service_Plan_Id": "9aaf7827-d63c-4b61-89c3-182f06f82e5c",
+    "Service_Plans_Included_Friendly_Names": "Exchange Online (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "GRAPH_CONNECTORS_SEARCH_INDEX",
+    "Service_Plan_Id": "a6520331-d7d4-4276-95f5-15c0933bc757",
+    "Service_Plans_Included_Friendly_Names": "Graph Connectors Search with Index"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MESH_IMMERSIVE_FOR_TEAMS",
+    "Service_Plan_Id": "f0ff6ac6-297d-49cd-be34-6dfef97f0c28",
+    "Service_Plans_Included_Friendly_Names": "Immersive spaces for Teams"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MYANALYTICS_P2",
+    "Service_Plan_Id": "33c4f319-9bdd-48d6-9c4d-410b750a4a5a",
+    "Service_Plans_Included_Friendly_Names": "Insights by MyAnalytics"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "INSIGHTS_BY_MYANALYTICS",
+    "Service_Plan_Id": "b088306e-925b-44ab-baa0-63291c629a91",
+    "Service_Plans_Included_Friendly_Names": "Insights by MyAnalytics Backend"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "M365_LIGHTHOUSE_CUSTOMER_PLAN1",
+    "Service_Plan_Id": "6f23d6a9-adbf-481c-8538-b4c095654487",
+    "Service_Plans_Included_Friendly_Names": "Microsoft 365 Lighthouse (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MICROSOFTBOOKINGS",
+    "Service_Plan_Id": "199a5c09-e0ca-4e37-8f7c-b05d533e1ea2",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Bookings"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "FORMS_PLAN_E1",
+    "Service_Plan_Id": "159f4cd6-e380-449f-a816-af1a9ef76344",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Forms (Plan E1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "KAIZALA_O365_P2",
+    "Service_Plan_Id": "54fc630f-5a40-48ee-8965-af0503c1386e",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Kaizala Pro"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "PROJECTWORKMANAGEMENT",
+    "Service_Plan_Id": "b737dad2-2f6c-4c65-90e3-ca563267e8b9",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Planner"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MICROSOFT_SEARCH",
+    "Service_Plan_Id": "94065c59-bc8e-4e8b-89e5-5138d471eaff",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Search"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "Deskless",
+    "Service_Plan_Id": "8c7d2df8-86f0-4902-b2ed-a0458298f3b3",
+    "Service_Plans_Included_Friendly_Names": "Microsoft StaffHub"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "INTUNE_O365",
+    "Service_Plan_Id": "882e1d05-acd1-4ccb-8708-6ee03664b117",
+    "Service_Plans_Included_Friendly_Names": "Mobile Device Management for Office 365"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "Nucleus",
+    "Service_Plan_Id": "db4d623d-b514-490b-b7ef-8885eee514de",
+    "Service_Plans_Included_Friendly_Names": "Nucleus"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "SHAREPOINTWAC",
+    "Service_Plan_Id": "e95bec33-7c88-4a70-8e19-b10bd9d0c014",
+    "Service_Plans_Included_Friendly_Names": "Office for the Web"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "OFFICEMOBILE_SUBSCRIPTION",
+    "Service_Plan_Id": "c63d4d19-e8cb-460e-b37c-4d6c34603745",
+    "Service_Plans_Included_Friendly_Names": "Office Mobile Apps for Office 365"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "PEOPLE_SKILLS_FOUNDATION",
+    "Service_Plan_Id": "13b6da2c-0d84-450e-9f69-a33e221387ca",
+    "Service_Plans_Included_Friendly_Names": "People Skills - Foundation"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "PROJECT_O365_P1",
+    "Service_Plan_Id": "a55dfd10-0864-46d9-a3cd-da5991a3e0e2",
+    "Service_Plans_Included_Friendly_Names": "Project for Office (Plan E1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "Bing_Chat_Enterprise",
+    "Service_Plan_Id": "0d0c0d31-fae7-41f2-b909-eaf4d7f26dba",
+    "Service_Plans_Included_Friendly_Names": "RETIRED - Commercial data protection for Microsoft Copilot"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "PLACES_CORE",
+    "Service_Plan_Id": "1fe6227d-3e01-46d0-9510-0acad4ff6e94",
+    "Service_Plans_Included_Friendly_Names": "RETIRED - Places Core"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "SHAREPOINTSTANDARD",
+    "Service_Plan_Id": "c7699d2e-19aa-44de-8edf-1736da088ca1",
+    "Service_Plans_Included_Friendly_Names": "SharePoint (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "MCOSTANDARD",
+    "Service_Plan_Id": "0feaeb32-d00e-4d66-bd5a-43b5b83db82c",
+    "Service_Plans_Included_Friendly_Names": "Skype for Business Online (Plan 2)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "SWAY",
+    "Service_Plan_Id": "a23b959c-7ce8-4e57-9140-b90eb88a9e97",
+    "Service_Plans_Included_Friendly_Names": "Sway"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "BPOS_S_TODO_1",
+    "Service_Plan_Id": "5e62787c-c316-451f-b873-1d05acd4d12c",
+    "Service_Plans_Included_Friendly_Names": "To-Do (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "VIVAENGAGE_CORE",
+    "Service_Plan_Id": "a82fbf69-b4d7-49f4-83a6-915b2cf354f4",
+    "Service_Plans_Included_Friendly_Names": "Viva Engage Core"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "VIVA_LEARNING_SEEDED",
+    "Service_Plan_Id": "b76fb638-6ba6-402a-b9f9-83d28acb3d86",
+    "Service_Plans_Included_Friendly_Names": "Viva Learning Seeded"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "WHITEBOARD_PLAN1",
+    "Service_Plan_Id": "b8afc642-032e-4de5-8c0a-507a7bba7e5d",
+    "Service_Plans_Included_Friendly_Names": "Whiteboard (Plan 1)"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "YAMMER_ENTERPRISE",
+    "Service_Plan_Id": "7547a3fe-08ee-4ccb-b430-5077c5041653",
+    "Service_Plans_Included_Friendly_Names": "Yammer Enterprise"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "DYN365_CDS_O365_P1",
+    "Service_Plan_Id": "40b010bb-0b69-4654-ac5e-ba161433f4b4",
+    "Service_Plans_Included_Friendly_Names": "Common Data Service"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "RMS_S_BASIC",
+    "Service_Plan_Id": "31cf2cfc-6b0d-4adc-a336-88b724ed8122",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Azure Rights Management Service"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "STREAM_O365_E1",
+    "Service_Plan_Id": "743dd19e-1ce3-4c62-a3ad-49ba8f63a2f6",
+    "Service_Plans_Included_Friendly_Names": "Microsoft Stream for Office 365 E1"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "POWERAPPS_O365_P1",
+    "Service_Plan_Id": "92f7a6f3-b89b-4bbd-8c30-809e6da5ad1c",
+    "Service_Plans_Included_Friendly_Names": "Power Apps for Office 365"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
+    "Service_Plan_Name": "FLOW_O365_P1",
+    "Service_Plan_Id": "0f9b09cb-62d1-4ff4-9129-43f4996f83f4",
+    "Service_Plans_Included_Friendly_Names": "Power Automate for Office 365"
+  },
+  {
+    "Product_Display_Name": "Office 365 E1 (no Teams)",
+    "String_Id": "Office_365_E1_(no_Teams)",
+    "GUID": "f8ced641-8e17-4dc5-b014-f5a2d53f6ac8",
     "Service_Plan_Name": "POWER_VIRTUAL_AGENTS_O365_P1",
     "Service_Plan_Id": "0683001c-0492-4d59-9515-d9a6426b5813",
     "Service_Plans_Included_Friendly_Names": "Power Virtual Agents for Office 365"
