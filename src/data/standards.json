@@ -4318,6 +4318,38 @@
     "recommendedBy": ["CIPP"]
   },
   {
+    "name": "standards.TeamsExternalChatWithAnyone",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Controls whether users can start Teams chats with any email address, inviting external recipients as guests via email.",
+    "docsDescription": "Manages the Teams messaging policy setting UseB2BInvitesToAddExternalUsers. When enabled, users can start chats with any email address and recipients receive an invitation to join the chat as guests. Disabling the setting prevents these external email chats from being created, keeping conversations limited to internal users and approved guests.",
+    "executiveText": "Allows organizations to decide if employees can launch Microsoft Teams chats with anyone on the internet using just an email address. Disabling the feature keeps conversations inside trusted boundaries and helps prevent accidental data exposure through unexpected external invitations.",
+    "addedComponent": [
+      {
+        "type": "radio",
+        "name": "standards.TeamsExternalChatWithAnyone.UseB2BInvitesToAddExternalUsers",
+        "label": "Allow chatting with anyone via email",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ],
+        "defaultValue": "Disabled"
+      }
+    ],
+    "label": "Set Teams chat with anyone setting",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-11-03",
+    "powershellEquivalent": "Set-CsTeamsMessagingPolicy -Identity Global -UseB2BInvitesToAddExternalUsers $false/$true",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.TeamsEmailIntegration",
     "cat": "Teams Standards",
     "helpText": "Should users be allowed to send emails directly to a channel email addresses?",
