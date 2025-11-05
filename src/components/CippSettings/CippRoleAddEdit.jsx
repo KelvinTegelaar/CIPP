@@ -46,6 +46,12 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   const formState = useFormState({ control: formControl.control });
 
   const validateRoleName = (value) => {
+    const alphaNumRegex = /^[A-Za-z0-9]+$/;
+
+    if (!alphaNumRegex.test(value)) {
+      return "Role name must contain only letters and numbers, no spaces or special characters";
+    }
+    
     if (
       customRoleList?.pages?.[0]?.some(
         (role) => role?.RowKey?.toLowerCase() === value?.toLowerCase()
