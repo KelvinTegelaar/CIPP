@@ -378,24 +378,23 @@ export const CippFormComponent = (props) => {
 
     case "autoComplete":
       return (
-        <>
-          <div>
-            <Controller
-              name={convertedName}
-              control={formControl.control}
-              rules={validators}
-              render={({ field }) => (
-                <MemoizedCippAutoComplete
-                  {...other}
-                  isFetching={other.isFetching}
-                  variant="filled"
-                  defaultValue={field.value}
-                  label={label}
-                  onChange={(value) => field.onChange(value)}
-                />
-              )}
-            />
-          </div>
+        <div>
+          <Controller
+            name={convertedName}
+            control={formControl.control}
+            rules={validators}
+            render={({ field }) => (
+              <MemoizedCippAutoComplete
+                {...other}
+                isFetching={other.isFetching}
+                variant="filled"
+                defaultValue={field.value}
+                label={label}
+                onChange={(value) => field.onChange(value)}
+              />
+            )}
+          />
+
           {get(errors, convertedName, {})?.message && (
             <Typography variant="subtitle3" color="error">
               {get(errors, convertedName, {})?.message}
@@ -406,7 +405,7 @@ export const CippFormComponent = (props) => {
               {helperText}
             </Typography>
           )}
-        </>
+        </div>
       );
 
     case "richText": {

@@ -1,11 +1,12 @@
 import { useState, useEffect, use } from "react";
-import { Alert, Skeleton, Stack, Typography, Button, Box } from "@mui/material";
+import { Alert, Skeleton, Stack, Typography, Button, Box, Link } from "@mui/material";
 import { CippFormComponent } from "./CippFormComponent";
 import { CippFormCondition } from "./CippFormCondition";
 import { CippApiResults } from "./CippApiResults";
 import { Grid } from "@mui/system";
 import CippPermissionPreview from "./CippPermissionPreview";
 import { useWatch } from "react-hook-form";
+import { CippPermissionSetDrawer } from "./CippPermissionSetDrawer";
 
 const AppApprovalTemplateForm = ({
   formControl,
@@ -19,6 +20,7 @@ const AppApprovalTemplateForm = ({
 }) => {
   const [selectedPermissionSet, setSelectedPermissionSet] = useState(null);
   const [permissionsLoaded, setPermissionsLoaded] = useState(false);
+  const [permissionSetDrawerVisible, setPermissionSetDrawerVisible] = useState(false);
 
   // Watch for app type selection changes
   const selectedAppType = useWatch({
@@ -413,6 +415,7 @@ const AppApprovalTemplateForm = ({
                   creatable={false}
                   required={true}
                   validators={{ required: "Application is required" }}
+                  helperText="Select a multi-tenant application to deploy in this template."
                 />
               </CippFormCondition>
               <CippFormCondition
@@ -522,6 +525,17 @@ const AppApprovalTemplateForm = ({
                   creatable={false}
                   required={true}
                   validators={{ required: "Permission Set is required" }}
+                  helperText={
+                    <>
+                      Select a permission set to apply to this application.{" "}
+                      <CippPermissionSetDrawer
+                        buttonText="Create Permission Set"
+                        isEditMode={false}
+                        drawerVisible={permissionSetDrawerVisible}
+                        setDrawerVisible={setPermissionSetDrawerVisible}
+                      />
+                    </>
+                  }
                 />
               </CippFormCondition>
 
