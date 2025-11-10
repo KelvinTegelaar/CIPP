@@ -497,19 +497,19 @@ const CippAddEditUser = (props) => {
                 <CippFormComponent
                   type="switch"
                   label="Send results to Webhook"
-                  name="webhook"
+                  name="postExecution.webhook"
                   formControl={formControl}
                 />
                 <CippFormComponent
                   type="switch"
                   label="Send results to E-mail"
-                  name="email"
+                  name="postExecution.email"
                   formControl={formControl}
                 />
                 <CippFormComponent
                   type="switch"
                   label="Send results to PSA"
-                  name="psa"
+                  name="postExecution.psa"
                   formControl={formControl}
                 />
               </Grid>
