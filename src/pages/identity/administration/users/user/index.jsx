@@ -524,7 +524,7 @@ const Page = () => {
               {
                 icon: <PencilIcon />,
                 label: "Edit Group",
-                link: "/identity/administration/groups/edit?groupId=[id]",
+                link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
               },
             ],
             data: userMemberOf?.filter(
