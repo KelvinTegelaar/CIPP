@@ -32,7 +32,7 @@ Enter the WinGet Package Identifier, Application Name, and Description
 {% endstep %}
 
 {% step %}
-### (Optoinal) Mark for Uninstallation
+### (Optional) Mark for Uninstallation
 
 You can also use the wizard to remove the application
 {% endstep %}
