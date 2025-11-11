@@ -85,6 +85,13 @@ export const CippFormComponent = (props) => {
   };
 
   switch (type) {
+    case "heading":
+      return (
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          {label}
+        </Typography>
+      );
+
     case "hidden":
       return (
         <input
