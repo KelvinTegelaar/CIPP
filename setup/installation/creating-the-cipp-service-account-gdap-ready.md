@@ -42,13 +42,17 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FsTTkLSePkCmuzgTg9nFYvJ_doc.png?alt=media\&token=2017aff5-ecc2-4030-ba90-9b955a14ec97\&time=Fri%20Jul%2026%202024%2021:57:44%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
-3. Enter a username in the field, we recommend something identifiable like "CIPP Service Account"
+3. Enter a username in the field, we recommend something identifiable like "CIPPServiceAccount"
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2Fmp4FiwSvkpKyfKgcbQ3Ac9_doc.png?alt=media\&token=eda4079d-869a-40bd-8a0f-2c436806be3e\&time=Fri%20Jul%2026%202024%2021:57:46%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
 4. Enter "CIPP Service Account" in the Display Name field. Set the password to something strong, and save this password in a secure location
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FhLEJyFsy7Dxs69tcJkYt4p_doc.png?alt=media\&token=216ec97e-b904-4dcb-8a4c-1f359ae5fc91\&time=Fri%20Jul%2026%202024%2021:57:47%20GMT-0400%20\(Eastern%20Daylight%20Time\))
+
+{% hint style="info" %}
+It is recommended to use these values since the Permissions Check in [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") will look to ensure "CIPP" or "Service" exists in the Display Name or User Principal Name of the account. The permisisons check is a often used tool when troubleshooting CIPP errors.
+{% endhint %}
 
 5. Click on "Next: Properties".
 
