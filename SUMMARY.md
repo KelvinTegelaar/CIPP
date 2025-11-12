@@ -303,7 +303,7 @@
     * [View Scheduled Task Details](user-documentation/tools/scheduler/task.md)
 * [CIPP](user-documentation/cipp/README.md)
   * [Application Settings](user-documentation/cipp/settings/README.md)
-    * [Permissions](user-documentation/cipp/settings/permissions.md)
+    * [Permissionss](user-documentation/cipp/settings/permissions.md)
     * [Tenants](user-documentation/cipp/settings/tenants.md)
     * [Backend](user-documentation/cipp/settings/backend.md)
     * [Notifications](user-documentation/cipp/settings/notifications.md)
