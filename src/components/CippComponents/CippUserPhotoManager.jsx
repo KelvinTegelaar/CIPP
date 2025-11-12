@@ -16,7 +16,13 @@ import { PhotoCamera, Delete, AccountCircle } from "@mui/icons-material";
 import { ApiPostCall } from "../../api/ApiCall";
 import PropTypes from "prop-types";
 
-export const CippUserPhotoManager = ({ userId, tenantFilter, currentPhotoUrl, onPhotoChange, compact = false }) => {
+export const CippUserPhotoManager = ({
+  userId,
+  tenantFilter,
+  currentPhotoUrl,
+  onPhotoChange,
+  compact = false,
+}) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [uploadError, setUploadError] = useState(null);
@@ -229,12 +235,7 @@ export const CippUserPhotoManager = ({ userId, tenantFilter, currentPhotoUrl, on
                 >
                   {isLoading ? "Uploading..." : "Save"}
                 </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={handleCancel}
-                  disabled={isLoading}
-                >
+                <Button size="small" variant="outlined" onClick={handleCancel} disabled={isLoading}>
                   Cancel
                 </Button>
               </>

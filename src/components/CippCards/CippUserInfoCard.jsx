@@ -1,5 +1,16 @@
 import PropTypes from "prop-types";
-import { Avatar, Card, CardHeader, Divider, Skeleton, Typography, Alert, IconButton, Tooltip, CircularProgress } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardHeader,
+  Divider,
+  Skeleton,
+  Typography,
+  Alert,
+  IconButton,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
 import { AccountCircle, PhotoCamera, Delete } from "@mui/icons-material";
 import { PropertyList } from "/src/components/property-list";
 import { PropertyListItem } from "/src/components/property-list-item";
@@ -20,7 +31,8 @@ export const CippUserInfoCard = (props) => {
   const removePhotoMutation = ApiPostCall({ urlFromData: true });
 
   // Helper function to check if a section has any data
-  const hasWorkInfo = user?.jobTitle || user?.department || user?.manager?.displayName || user?.companyName;
+  const hasWorkInfo =
+    user?.jobTitle || user?.department || user?.manager?.displayName || user?.companyName;
   const hasAddressInfo =
     user?.streetAddress || user?.postalCode || user?.city || user?.country || user?.officeLocation;
   const hasContactInfo =
@@ -28,7 +40,9 @@ export const CippUserInfoCard = (props) => {
 
   // Handle image URL with timestamp for cache busting
   const imageUrl =
-    user?.id && tenant ? `/api/ListUserPhoto?TenantFilter=${tenant}&UserId=${user.id}&t=${photoTimestamp}` : undefined;
+    user?.id && tenant
+      ? `/api/ListUserPhoto?TenantFilter=${tenant}&UserId=${user.id}&t=${photoTimestamp}`
+      : undefined;
 
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];
@@ -47,7 +61,9 @@ export const CippUserInfoCard = (props) => {
     // Validate file size (4MB max)
     const maxSize = 4 * 1024 * 1024;
     if (file.size > maxSize) {
-      setUploadError(`File size exceeds 4MB limit. Current size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
+      setUploadError(
+        `File size exceeds 4MB limit. Current size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`
+      );
       return;
     }
 
@@ -157,9 +173,9 @@ export const CippUserInfoCard = (props) => {
                           size="small"
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isLoading}
-                          sx={{ 
+                          sx={{
                             backgroundColor: "action.hover",
-                            "&:hover": { backgroundColor: "action.selected" }
+                            "&:hover": { backgroundColor: "action.selected" },
                           }}
                         >
                           <PhotoCamera fontSize="small" />
@@ -170,9 +186,12 @@ export const CippUserInfoCard = (props) => {
                           size="small"
                           onClick={handleRemovePhoto}
                           disabled={isLoading}
-                          sx={{ 
+                          sx={{
                             backgroundColor: "action.hover",
-                            "&:hover": { backgroundColor: "error.light", color: "error.contrastText" }
+                            "&:hover": {
+                              backgroundColor: "error.light",
+                              color: "error.contrastText",
+                            },
                           }}
                         >
                           <Delete fontSize="small" />
