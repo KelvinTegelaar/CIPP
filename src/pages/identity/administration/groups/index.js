@@ -28,7 +28,7 @@ const Page = () => {
     {
       //tested
       label: "Edit Group",
-      link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
+      link: "/identity/administration/groups/edit?groupId=[id]&groupType=[groupType]",
       multiPost: false,
       icon: <Edit />,
       color: "success",
@@ -40,7 +40,7 @@ const Page = () => {
       icon: <VisibilityOff />,
       data: {
         ID: "mail",
-        GroupType: "calculatedGroupType",
+        GroupType: "groupType",
         HidefromGAL: true,
       },
       confirmText:
@@ -54,7 +54,7 @@ const Page = () => {
       icon: <Visibility />,
       data: {
         ID: "mail",
-        GroupType: "calculatedGroupType",
+        GroupType: "groupType",
         HidefromGAL: false,
       },
       confirmText:
@@ -68,7 +68,7 @@ const Page = () => {
       icon: <Lock />,
       data: {
         ID: "mail",
-        GroupType: "calculatedGroupType",
+        GroupType: "groupType",
         OnlyAllowInternal: true,
       },
       confirmText:
@@ -82,7 +82,7 @@ const Page = () => {
       url: "/api/ExecGroupsDeliveryManagement",
       data: {
         ID: "mail",
-        GroupType: "calculatedGroupType",
+        GroupType: "groupType",
         OnlyAllowInternal: false,
       },
       confirmText:
@@ -106,13 +106,147 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: "Create Team from Group",
+      type: "POST",
+      url: "/api/AddGroupTeam",
+      icon: <GroupAdd />,
+      data: {
+        GroupId: "id",
+      },
+      confirmText:
+        "Are you sure you want to create a Team from this group? Note: The group must be at least 15 minutes old for this to work.",
+      multiPost: false,
+      defaultvalues: {
+        TeamSettings: {
+          memberSettings: {
+            allowCreatePrivateChannels: false,
+            allowCreateUpdateChannels: true,
+            allowDeleteChannels: false,
+            allowAddRemoveApps: false,
+            allowCreateUpdateRemoveTabs: false,
+            allowCreateUpdateRemoveConnectors: false,
+          },
+          messagingSettings: {
+            allowUserEditMessages: true,
+            allowUserDeleteMessages: true,
+            allowOwnerDeleteMessages: false,
+            allowTeamMentions: false,
+            allowChannelMentions: false,
+          },
+          funSettings: {
+            allowGiphy: true,
+            giphyContentRating: "strict",
+            allowStickersAndMemes: false,
+            allowCustomMemes: false,
+          },
+        },
+      },
+      fields: [
+        {
+          type: "heading",
+          name: "memberSettingsHeading",
+          label: "Member Settings",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.memberSettings.allowCreatePrivateChannels",
+          label: "Allow members to create private channels",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.memberSettings.allowCreateUpdateChannels",
+          label: "Allow members to create and update channels",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.memberSettings.allowDeleteChannels",
+          label: "Allow members to delete channels",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.memberSettings.allowAddRemoveApps",
+          label: "Allow members to add and remove apps",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.memberSettings.allowCreateUpdateRemoveTabs",
+          label: "Allow members to create, update and remove tabs",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.memberSettings.allowCreateUpdateRemoveConnectors",
+          label: "Allow members to create, update and remove connectors",
+        },
+        {
+          type: "heading",
+          name: "messagingSettingsHeading",
+          label: "Messaging Settings",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.messagingSettings.allowUserEditMessages",
+          label: "Allow users to edit their messages",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.messagingSettings.allowUserDeleteMessages",
+          label: "Allow users to delete their messages",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.messagingSettings.allowOwnerDeleteMessages",
+          label: "Allow owners to delete messages",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.messagingSettings.allowTeamMentions",
+          label: "Allow @team mentions",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.messagingSettings.allowChannelMentions",
+          label: "Allow @channel mentions",
+        },
+        {
+          type: "heading",
+          name: "funSettingsHeading",
+          label: "Fun Settings",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.funSettings.allowGiphy",
+          label: "Allow Giphy",
+        },
+        {
+          type: "select",
+          name: "TeamSettings.funSettings.giphyContentRating",
+          label: "Giphy content rating",
+          options: [
+            { value: "strict", label: "Strict" },
+            { value: "moderate", label: "Moderate" },
+          ],
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.funSettings.allowStickersAndMemes",
+          label: "Allow stickers and memes",
+        },
+        {
+          type: "switch",
+          name: "TeamSettings.funSettings.allowCustomMemes",
+          label: "Allow custom memes",
+        },
+      ],
+      condition: (row) => row?.calculatedGroupType === "m365",
+    },
+    {
       label: "Delete Group",
       type: "POST",
       url: "/api/ExecGroupsDelete",
       icon: <TrashIcon />,
       data: {
         ID: "id",
-        GroupType: "calculatedGroupType",
+        GroupType: "groupType",
         DisplayName: "displayName",
       },
       confirmText: "Are you sure you want to delete this group.",
@@ -160,7 +294,7 @@ const Page = () => {
         "mail",
         "mailEnabled",
         "mailNickname",
-        "calculatedGroupType",
+        "groupType",
         "assignedLicenses",
         "visibility",
         "onPremisesSamAccountName",
