@@ -195,7 +195,7 @@ const AlertWizard = () => {
           if (condition.Property.value === "String") {
             // For String type, we need to set both the nested value and the direct value
             formattedCondition.Input = {
-              value: condition.Input.value,
+              value: condition.Input?.value ?? "",
             };
           } else {
             // For List type, use the full Input object
@@ -352,7 +352,7 @@ const AlertWizard = () => {
   };
 
   const handleAddCondition = () => {
-    setAddedEvent([...addedEvent, { id: addedEvent.length + 1 }]);
+    setAddedEvent([...addedEvent, { id: addedEvent?.length + 1 }]);
   };
 
   const handleRemoveCondition = (id) => {
