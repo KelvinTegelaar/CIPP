@@ -245,6 +245,31 @@ const AlertWizard = () => {
   const logbookWatcher = useWatch({ control: formControl.control, name: "logbook" });
   const propertyWatcher = useWatch({ control: formControl.control, name: "conditions" });
 
+  // Clear input value when operator type changes between textField and autocomplete
+  useEffect(() => {
+    if (propertyWatcher) {
+      propertyWatcher.forEach((condition, index) => {
+        if (condition?.Operator?.value) {
+          const isInOrNotIn = condition.Operator.value === "in" || condition.Operator.value === "notIn";
+          const isStringProperty = condition?.Property?.value === "String";
+
+          // Clear input when switching to in/notIn (textField → autocomplete)
+          if (isInOrNotIn) {
+            formControl.setValue(`conditions.${index}.Input`, [], { shouldValidate: false });
+          }
+          // Clear input when switching from in/notIn (autocomplete → textField)
+          else {
+            if (isStringProperty) {
+              formControl.setValue(`conditions.${index}.Input`, { value: '' }, { shouldValidate: false });
+            } else {
+              formControl.setValue(`conditions.${index}.Input`, '', { shouldValidate: false });
+            }
+          }
+        }
+      });
+    }
+  }, [propertyWatcher]);
+
   useEffect(() => {
     formControl.reset();
   }, [alertType]);
@@ -568,35 +593,80 @@ const AlertWizard = () => {
                                 />
                               </Grid>
                               <Grid size={3}>
+                                {/* Show textField for String properties when NOT using in/notIn operators */}
                                 <CippFormCondition
                                   field={`conditions.${event.id}.Property`}
                                   formControl={formControl}
                                   compareType="contains"
                                   compareValue={"String"}
                                 >
+                                  <CippFormCondition
+                                    field={`conditions.${event.id}.Operator`}
+                                    formControl={formControl}
+                                    compareType="isNotOneOf"
+                                    compareValue={[{ value: "in", label: "In" }, { value: "notIn", label: "Not In" }]}
+                                  >
+                                    <CippFormComponent
+                                      type="textField"
+                                      name={`conditions.${event.id}.Input.value`}
+                                      formControl={formControl}
+                                      label="Input"
+                                    />
+                                  </CippFormCondition>
+                                </CippFormCondition>
+
+                                {/* Show autocomplete with creatable for in/notIn operators (any property type) */}
+                                <CippFormCondition
+                                  field={`conditions.${event.id}.Operator`}
+                                  formControl={formControl}
+                                  compareType="isOneOf"
+                                  compareValue={[{ value: "in", label: "In" }, { value: "notIn", label: "Not In" }]}
+                                >
                                   <CippFormComponent
-                                    type="textField"
-                                    name={`conditions.${event.id}.Input.value`}
+                                    type="autoComplete"
+                                    multiple={true}
+                                    name={`conditions.${event.id}.Input`}
                                     formControl={formControl}
                                     label="Input"
+                                    creatable={true}
+                                    options={
+                                      propertyWatcher?.[event.id]?.Property?.value?.startsWith("List:")
+                                        ? auditLogSchema[propertyWatcher?.[event.id]?.Property?.value]
+                                        : []
+                                    }
+                                    onCreateOption={(inputValue) => {
+                                      if (typeof inputValue === 'string') {
+                                        return { label: inputValue, value: inputValue };
+                                      }
+                                      return inputValue;
+                                    }}
                                   />
                                 </CippFormCondition>
+
+                                {/* Show autocomplete for List properties when NOT using in/notIn operators */}
                                 <CippFormCondition
                                   field={`conditions.${event.id}.Property`}
                                   formControl={formControl}
                                   compareType="contains"
                                   compareValue="List:"
                                 >
-                                  <CippFormComponent
-                                    type="autoComplete"
-                                    multiple={propertyWatcher?.[event.id]?.Property?.multi ?? false}
-                                    name={`conditions.${event.id}.Input`}
+                                  <CippFormCondition
+                                    field={`conditions.${event.id}.Operator`}
                                     formControl={formControl}
-                                    label="Input"
-                                    options={
-                                      auditLogSchema[propertyWatcher?.[event.id]?.Property?.value]
-                                    }
-                                  />
+                                    compareType="isNotOneOf"
+                                    compareValue={[{ value: "in", label: "In" }, { value: "notIn", label: "Not In" }]}
+                                  >
+                                    <CippFormComponent
+                                      type="autoComplete"
+                                      multiple={propertyWatcher?.[event.id]?.Property?.multi ?? false}
+                                      name={`conditions.${event.id}.Input`}
+                                      formControl={formControl}
+                                      label="Input"
+                                      options={
+                                        auditLogSchema[propertyWatcher?.[event.id]?.Property?.value]
+                                      }
+                                    />
+                                  </CippFormCondition>
                                 </CippFormCondition>
                               </Grid>
                               <Grid size={1}>
