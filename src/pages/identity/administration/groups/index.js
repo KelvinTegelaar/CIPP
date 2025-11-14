@@ -113,7 +113,7 @@ const Page = () => {
         },
       ],
       confirmText:
-        "Are you sure you want to change the source of authority for this group? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
+        "Are you sure you want to change the source of authority for '[displayName]'? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
       multiPost: false,
     },
     {

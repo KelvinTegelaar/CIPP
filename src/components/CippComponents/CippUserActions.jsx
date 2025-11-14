@@ -11,13 +11,13 @@ import {
   LockPerson,
   LockReset,
   MeetingRoom,
-  NoMeetingRoom,
   Password,
   PersonOff,
   PhonelinkLock,
   PhonelinkSetup,
   Shortcut,
   EditAttributes,
+  CloudSync,
 } from "@mui/icons-material";
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 import { useSettings } from "/src/hooks/use-settings.js";
@@ -513,6 +513,32 @@ export const useCippUserActions = () => {
       confirmText: "Are you sure you want to clear the Immutable ID for [userPrincipalName]?",
       multiPost: false,
       condition: (row) => !row?.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
+    },
+    {
+      label: "Set Source of Authority",
+      type: "POST",
+      url: "/api/ExecSetCloudManaged",
+      icon: <CloudSync />,
+      data: {
+        ID: "id",
+        displayName: "displayName",
+        type: "!User",
+      },
+      fields: [
+        {
+          type: "radio",
+          name: "isCloudManaged",
+          label: "Source of Authority",
+          options: [
+            { label: "Cloud Managed", value: true },
+            { label: "On-Premises Managed", value: false },
+          ],
+          validators: { required: "Please select a source of authority" },
+        },
+      ],
+      confirmText:
+        "Are you sure you want to change the source of authority for [userPrincipalName]? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
+      multiPost: false,
     },
     {
       label: "Revoke all user sessions",
