@@ -93,7 +93,7 @@ const Page = () => {
     {
       label: "Set Source of Authority",
       type: "POST",
-      url: "/api/ExecSetCloudManaged½",
+      url: "/api/ExecSetCloudManaged",
       icon: <CloudSync />,
       data: {
         ID: "id",
