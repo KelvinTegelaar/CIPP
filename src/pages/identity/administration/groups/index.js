@@ -98,6 +98,7 @@ const Page = () => {
       data: {
         ID: "id",
         displayName: "displayName",
+        type: "!Group",
       },
       fields: [
         {
