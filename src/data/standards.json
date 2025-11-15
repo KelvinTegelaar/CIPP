@@ -1635,6 +1635,38 @@
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
+    "name": "standards.EnableExchangeCloudManagement",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures cloud-based management of Exchange attributes for directory-synced users with remote mailboxes in Exchange Online. This allows you to enable or disable management of Exchange attributes directly in the cloud without requiring an on-premises Exchange server. More information can be found [here](https://learn.microsoft.com/da-dk/exchange/hybrid-deployment/enable-exchange-attributes-cloud-management).",
+    "docsDescription": "Configures the IsExchangeCloudManaged property for mailboxes, allowing Exchange attributes (aliases, mailbox flags, custom attributes, etc.) to be managed directly in Exchange Online or revert back to on-premises management. This feature helps organizations retire their last on-premises Exchange server in hybrid deployments while maintaining the ability to manage recipient attributes. Identity attributes (names, UPN) remain managed on-premises via Active Directory. More information can be found [here](https://learn.microsoft.com/da-dk/exchange/hybrid-deployment/enable-exchange-attributes-cloud-management).",
+    "executiveText": "Configures cloud-based management of Exchange mailbox attributes for hybrid organizations. When enabled, eliminates the dependency on on-premises Exchange servers for attribute management. This modernizes email administration, reduces infrastructure complexity, and allows direct management of mailbox properties through cloud portals and PowerShell. When disabled, returns management to on-premises Exchange servers.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "name": "standards.EnableExchangeCloudManagement.state",
+        "label": "Cloud Management State",
+        "options": [
+          {
+            "label": "Cloud Management",
+            "value": true
+          },
+          {
+            "label": "On-Premises Management",
+            "value": false
+          }
+        ]
+      }
+    ],
+    "label": "Configure Exchange Cloud Management for Remote/On-Premises Mailboxes",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-11-15",
+    "powershellEquivalent": "Set-Mailbox -Identity user@domain.com -IsExchangeCloudManaged $true or $false",
+    "recommendedBy": ["Microsoft", "CIPP"]
+  },
+  {
     "name": "standards.AddDKIM",
     "cat": "Exchange Standards",
     "tag": ["CIS M365 5.0 (2.1.9)"],
