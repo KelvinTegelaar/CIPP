@@ -51,7 +51,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
     if (!alphaNumRegex.test(value)) {
       return "Role name must contain only letters and numbers, no spaces or special characters";
     }
-    
+
     if (
       customRoleList?.pages?.[0]?.some(
         (role) => role?.RowKey?.toLowerCase() === value?.toLowerCase()
@@ -89,7 +89,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
 
   const { data: { pages = [] } = {}, isSuccess: tenantsSuccess } = ApiGetCallWithPagination({
     url: "/api/ListTenants?AllTenantSelector=true",
-    queryKey: "ListTenants-AllTenantSelector",
+    queryKey: "ListTenants-All",
   });
   const tenants = pages[0] || [];
 
@@ -169,7 +169,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           });
         } else {
           // Handle tenant customer IDs (legacy format)
-          var tenantInfo = tenants.find((t) => t.customerId === item);
+          var tenantInfo = tenants.find((t) => t?.customerId === item);
           if (tenantInfo?.displayName) {
             var label = `${tenantInfo.displayName} (${tenantInfo.defaultDomainName})`;
             newAllowedTenants.push({
@@ -198,7 +198,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           });
         } else {
           // Handle tenant customer IDs (legacy format)
-          var tenantInfo = tenants.find((t) => t.customerId === item);
+          var tenantInfo = tenants.find((t) => t?.customerId === item);
           if (tenantInfo?.displayName) {
             var label = `${tenantInfo.displayName} (${tenantInfo.defaultDomainName})`;
             newBlockedTenants.push({
