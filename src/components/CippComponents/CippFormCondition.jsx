@@ -13,6 +13,7 @@ export const CippFormCondition = (props) => {
     children,
     formControl,
     disabled = false,
+    clearOnHide = true, // New prop to control whether to clear values when hidden
   } = props;
 
   if (
@@ -206,13 +207,7 @@ export const CippFormCondition = (props) => {
 
   // Reset field values when condition is not met and action is "hide"
   useEffect(() => {
-    if (action === "hide" && !isConditionMet()) {
-      // Check for hidden initialization flag to prevent clearing during form load
-      const isInitializing = formControl.getValues("_isInitializing");
-      if (isInitializing) {
-        return; // Skip clearing during initialization
-      }
-
+    if (action === "hide" && !isConditionMet() && clearOnHide) {
       const fieldNames = extractFieldNames(children);
 
       // Reset each field
@@ -226,7 +221,7 @@ export const CippFormCondition = (props) => {
         }
       });
     }
-  }, [watcher, action]);
+  }, [watcher, action, clearOnHide]);
 
   const disableChildren = (children) => {
     return React.Children.map(children, (child) => {

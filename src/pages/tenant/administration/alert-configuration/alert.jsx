@@ -231,7 +231,6 @@ const AlertWizard = () => {
           logbook: foundLogbook,
           AlertComment: alert.RawAlert.AlertComment || "",
           conditions: [], // Include empty array to register field structure
-          _isInitializing: true, // Hidden flag for CippFormCondition to prevent clearing during load
         };
         // Spawn condition rows
         setAddedEvent(formattedConditions.map((_, i) => ({ id: i })));
@@ -289,12 +288,7 @@ const AlertWizard = () => {
           });
 
           formControl.trigger();
-
-          // Release guard after longer delay to let CippFormCondition components stabilize
-          setTimeout(() => {
-            formControl.setValue("_isInitializing", false, { shouldValidate: false });
-            setIsLoadingExistingAlert(false);
-          }, 200);
+          setIsLoadingExistingAlert(false);
         }, 100);
       }
     }
@@ -391,7 +385,15 @@ const AlertWizard = () => {
 
   const handleAuditSubmit = (values) => {
     values.conditions = values.conditions.filter((condition) => condition?.Property);
-    apiRequest.mutate({ url: "/api/AddAlert", data: values });
+    apiRequest.mutate(
+      { url: "/api/AddAlert", data: values },
+      {
+        onSuccess: () => {
+          // Prevent form reload after successful save
+          setHasLoadedExistingAlert(true);
+        },
+      }
+    );
   };
 
   const handleScriptSubmit = (values) => {
@@ -417,7 +419,15 @@ const AlertWizard = () => {
       PostExecution: values.postExecution,
       AlertComment: values.AlertComment,
     };
-    apiRequest.mutate({ url: "/api/AddScheduledItem?hidden=true", data: postObject });
+    apiRequest.mutate(
+      { url: "/api/AddScheduledItem?hidden=true", data: postObject },
+      {
+        onSuccess: () => {
+          // Prevent form reload after successful save
+          setHasLoadedExistingAlert(true);
+        },
+      }
+    );
   };
 
   const handleAddCondition = () => {
@@ -514,6 +524,7 @@ const AlertWizard = () => {
                               formControl={formControl}
                               compareType="valueContains"
                               compareValue="AllTenants"
+                              clearOnHide={false}
                             >
                               <Grid size={12}>
                                 <CippFormTenantSelector
@@ -643,6 +654,7 @@ const AlertWizard = () => {
                                   formControl={formControl}
                                   compareType="contains"
                                   compareValue={"String"}
+                                  clearOnHide={false}
                                 >
                                   <CippFormCondition
                                     field={`conditions.${event.id}.Operator`}
@@ -671,6 +683,7 @@ const AlertWizard = () => {
                                     { value: "in", label: "In" },
                                     { value: "notIn", label: "Not In" },
                                   ]}
+                                  clearOnHide={false}
                                 >
                                   <CippFormComponent
                                     type="autoComplete"
@@ -703,6 +716,7 @@ const AlertWizard = () => {
                                   formControl={formControl}
                                   compareType="contains"
                                   compareValue="List:"
+                                  clearOnHide={false}
                                 >
                                   <CippFormCondition
                                     field={`conditions.${event.id}.Operator`}
@@ -807,6 +821,7 @@ const AlertWizard = () => {
                               formControl={formControl}
                               compareType="contains"
                               compareValue="AllTenants"
+                              clearOnHide={false}
                             >
                               <Grid size={12}>
                                 <CippFormTenantSelector
