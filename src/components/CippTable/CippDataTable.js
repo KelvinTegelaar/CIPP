@@ -106,6 +106,7 @@ export const CippDataTable = (props) => {
     maxHeightOffset = "380px",
     defaultSorting = [],
     isInDialog = false,
+    showBulkExportAction = true,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
@@ -398,21 +399,21 @@ export const CippDataTable = (props) => {
                     currentTenant: row.original.Tenant,
                   });
                 }
-                
+
                 if (action.noConfirm && action.customFunction) {
                   action.customFunction(row.original, action, {});
                   closeMenu();
                   return;
                 }
-                
+
                 // Handle custom component differently
-                if (typeof action.customComponent === 'function') {
+                if (typeof action.customComponent === "function") {
                   setCustomComponentData({ data: row.original, action: action });
                   setCustomComponentVisible(true);
                   closeMenu();
                   return;
                 }
-                
+
                 // Standard dialog flow
                 setActionData({
                   data: row.original,
@@ -486,6 +487,7 @@ export const CippDataTable = (props) => {
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
               queueMetadata={getRequestData.data?.pages?.[0]?.Metadata}
               isInDialog={isInDialog}
+              showBulkExportAction={showBulkExportAction}
             />
           )}
         </>
@@ -747,17 +749,20 @@ export const CippDataTable = (props) => {
       {/* Render custom component */}
       {customComponentVisible &&
         customComponentData?.action &&
-        typeof customComponentData.action.customComponent === 'function' &&
+        typeof customComponentData.action.customComponent === "function" &&
         customComponentData.action.customComponent(customComponentData.data, {
           drawerVisible: customComponentVisible,
           setDrawerVisible: setCustomComponentVisible,
           fromRowAction: true,
-        })
-      }
+        })}
 
       {/* Render standard dialog */}
       {useMemo(() => {
-        if (!actionData.ready || (actionData.action && typeof actionData.action.customComponent === 'function')) return null;
+        if (
+          !actionData.ready ||
+          (actionData.action && typeof actionData.action.customComponent === "function")
+        )
+          return null;
         return (
           <CippApiDialog
             createDialog={createDialog}
