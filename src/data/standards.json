@@ -4232,19 +4232,19 @@
         "label": "Default value of the `Who can present?`",
         "options": [
           {
-            "label": "EveryoneUserOverride",
+            "label": "Everyone",
             "value": "EveryoneUserOverride"
           },
           {
-            "label": "EveryoneInCompanyUserOverride",
+            "label": "People in my organization",
             "value": "EveryoneInCompanyUserOverride"
           },
           {
-            "label": "EveryoneInSameAndFederatedCompanyUserOverride",
+            "label": "People in my organization and trusted organizations",
             "value": "EveryoneInSameAndFederatedCompanyUserOverride"
           },
           {
-            "label": "OrganizerOnlyUserOverride",
+            "label": "Only organizer",
             "value": "OrganizerOnlyUserOverride"
           }
         ]
@@ -4253,6 +4253,29 @@
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToJoinMeeting",
         "label": "Allow anonymous users to join meeting"
+      },
+      {
+        "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.AutoAdmittedUsers",
+        "label": "Who can bypass the lobby?",
+        "helperText": "If left blank, the current value will not be changed.",
+        "options": [
+          {
+            "label": "Only organizers and co-organizers",
+            "value": "OrganizerOnly"
+          },
+          {
+            "label": "People in organization excluding guests",
+            "value": "EveryoneInCompanyExcludingGuests"
+          },
+          {
+            "label": "People who were invited",
+            "value": "InvitedUsers"
+          }
+        ]
       },
       {
         "type": "autoComplete",
@@ -4286,7 +4309,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
     "recommendedBy": ["CIS"]
   },
   {
