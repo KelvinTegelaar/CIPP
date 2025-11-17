@@ -207,6 +207,12 @@ export const CippFormCondition = (props) => {
   // Reset field values when condition is not met and action is "hide"
   useEffect(() => {
     if (action === "hide" && !isConditionMet()) {
+      // Check for hidden initialization flag to prevent clearing during form load
+      const isInitializing = formControl.getValues("_isInitializing");
+      if (isInitializing) {
+        return; // Skip clearing during initialization
+      }
+
       const fieldNames = extractFieldNames(children);
 
       // Reset each field

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -79,33 +79,69 @@ const AlertWizard = () => {
     { value: "Audit.Exchange", label: "Exchange" },
   ];
 
+  // Existing alert load effect moved below state declarations for guard usage
+
+  const [alertType, setAlertType] = useState("none");
+  const [addedEvent, setAddedEvent] = useState([{ id: 1 }]); // Track added inputs
+  const [isLoadingPreset, setIsLoadingPreset] = useState(false); // Guard against clearing during preset load
+  const [isLoadingExistingAlert, setIsLoadingExistingAlert] = useState(false); // Guard during existing alert load
+  const [hasLoadedExistingAlert, setHasLoadedExistingAlert] = useState(false); // Prevent double-load
+  const prevOperatorValuesRef = useRef([]); // Track previous operator values
+
+  const formControl = useForm({ mode: "onChange" });
+  const selectedPreset = useWatch({ control: formControl.control, name: "preset" }); // Watch the preset
+  const commandValue = useWatch({ control: formControl.control, name: "command" });
+  const logbookWatcher = useWatch({ control: formControl.control, name: "logbook" });
+  const propertyWatcher = useWatch({ control: formControl.control, name: "conditions" });
+
+  // Clear input value only on actual operator transitions, skip while preset loading
   useEffect(() => {
-    if (existingAlert.isSuccess && editAlert) {
-      const alert = existingAlert?.data?.find((alert) => alert.RowKey === router.query.id);
+    if (!propertyWatcher || isLoadingPreset || isLoadingExistingAlert) return;
+    propertyWatcher.forEach((condition, index) => {
+      const currentOp = condition?.Operator?.value?.toLowerCase();
+      if (!currentOp) return;
+      const prevOp = prevOperatorValuesRef.current[index];
+      if (currentOp !== prevOp) {
+        const isInOrNotIn = currentOp === "in" || currentOp === "notin";
+        const isStringProperty = condition?.Property?.value === "String";
+        if (isInOrNotIn) {
+          formControl.setValue(`conditions.${index}.Input`, [], { shouldValidate: false });
+        } else {
+          if (isStringProperty) {
+            formControl.setValue(
+              `conditions.${index}.Input`,
+              { value: "" },
+              { shouldValidate: false }
+            );
+          } else {
+            formControl.setValue(`conditions.${index}.Input`, "", { shouldValidate: false });
+          }
+        }
+        prevOperatorValuesRef.current[index] = currentOp;
+      }
+    });
+  }, [propertyWatcher, isLoadingPreset, isLoadingExistingAlert]);
+  // Load existing alert (edit mode) with guarded batching similar to preset loading
+  useEffect(() => {
+    if (existingAlert.isSuccess && editAlert && !hasLoadedExistingAlert) {
+      const alert = existingAlert?.data?.find((a) => a.RowKey === router.query.id);
+      if (!alert) return;
+      setHasLoadedExistingAlert(true); // Mark as loaded to prevent re-execution
+      // Scripted alert path (no conditions operator clearing needed)
       if (alert?.LogType === "Scripted") {
         setAlertType("script");
-
-        // Create formatted excluded tenants array if it exists
         const excludedTenantsFormatted = Array.isArray(alert.excludedTenants)
           ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
           : [];
-
-        // Format the command object
         const usedCommand = alertList?.find(
           (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
         );
-
-        // Format recurrence option
         const recurrenceOption = recurrenceOptions?.find(
           (opt) => opt.value === alert.RawAlert.Recurrence
         );
-
-        // Format post execution values
         const postExecutionValue = postExecutionOptions.filter((opt) =>
           alert.RawAlert.PostExecution.split(",").includes(opt.value)
         );
-
-        // Create tenant filter object - handle both regular tenants and tenant groups
         let tenantFilterForForm;
         if (alert.RawAlert.TenantGroup) {
           try {
@@ -118,7 +154,6 @@ const AlertWizard = () => {
             };
           } catch (error) {
             console.error("Error parsing tenant group:", error);
-            // Fall back to regular tenant
             tenantFilterForForm = {
               value: alert.RawAlert.Tenant,
               label: alert.RawAlert.Tenant,
@@ -132,15 +167,11 @@ const AlertWizard = () => {
             type: "Tenant",
           };
         }
-
-        // Parse the original desired start date-time from DesiredStartTime field if it exists
         let startDateTimeForForm = null;
         if (alert.RawAlert.DesiredStartTime && alert.RawAlert.DesiredStartTime !== "0") {
           const desiredStartEpoch = parseInt(alert.RawAlert.DesiredStartTime);
           startDateTimeForForm = desiredStartEpoch;
         }
-
-        // Create the reset object with all the form values
         const resetObject = {
           tenantFilter: tenantFilterForForm,
           excludedTenants: excludedTenantsFormatted,
@@ -150,17 +181,12 @@ const AlertWizard = () => {
           startDateTime: startDateTimeForForm,
           AlertComment: alert.RawAlert.AlertComment || "",
         };
-
-        // Parse Parameters field if it exists and is a string
         if (usedCommand?.requiresInput && alert.RawAlert.Parameters) {
           try {
-            // Check if Parameters is a string that needs parsing
             const params =
               typeof alert.RawAlert.Parameters === "string"
                 ? JSON.parse(alert.RawAlert.Parameters)
                 : alert.RawAlert.Parameters;
-
-            // Set the input value if it exists
             if (params.InputValue) {
               resetObject[usedCommand.inputName] = params.InputValue;
             }
@@ -168,107 +194,111 @@ const AlertWizard = () => {
             console.error("Error parsing parameters:", error);
           }
         }
-
-        // Reset the form with all values at once
         formControl.reset(resetObject, { keepDirty: false });
       }
+      // Audit alert path
       if (alert?.PartitionKey === "Webhookv2") {
         setAlertType("audit");
+        setIsLoadingExistingAlert(true);
         const foundLogbook = logbookOptions?.find(
           (logbook) => logbook.value === alert.RawAlert.type
         );
-        //make sure that for every condition, we spawn the field using setAddedEvent
-        setAddedEvent(
-          alert.RawAlert.Conditions.map((_, index) => ({
-            id: index,
-          }))
-        );
-
-        // Format conditions properly for form
-        const formattedConditions = alert.RawAlert.Conditions.map((condition) => {
-          const formattedCondition = {
-            Property: condition.Property,
-            Operator: condition.Operator,
-          };
-
-          // Handle Input based on Property type
-          if (condition.Property.value === "String") {
-            // For String type, we need to set both the nested value and the direct value
-            formattedCondition.Input = {
-              value: condition.Input?.value ?? "",
-            };
+        const rawConditions = alert.RawAlert.Conditions || [];
+        const formattedConditions = rawConditions.map((cond) => {
+          const opVal = cond?.Operator?.value || "";
+          const lower = opVal.toLowerCase();
+          const mappedOp = lower === "notin" ? "notIn" : lower; // keep UI canonical value
+          const normalizedOperator = { ...cond.Operator, value: mappedOp };
+          const isString = cond?.Property?.value === "String";
+          const isList = cond?.Property?.value?.startsWith("List:");
+          const isInSet = mappedOp === "in" || mappedOp === "notIn";
+          let Input;
+          // For in/notIn operators, always treat Input as array regardless of Property type
+          if (isInSet) {
+            Input = Array.isArray(cond.Input) ? cond.Input : [];
+          } else if (isString) {
+            Input = { value: cond.Input?.value ?? "" };
           } else {
-            // For List type, use the full Input object
-            formattedCondition.Input = condition.Input;
+            Input = cond.Input ?? (isList ? [] : "");
           }
-
-          return formattedCondition;
+          return { Property: cond.Property, Operator: normalizedOperator, Input };
         });
-
         const resetData = {
           RowKey: router.query.clone ? undefined : router.query.id ? router.query.id : undefined,
           tenantFilter: alert.RawAlert.Tenants,
-          excludedTenants: alert.excludedTenants?.filter((tenant) => tenant !== null) || [],
+          excludedTenants: alert.excludedTenants?.filter((t) => t !== null) || [],
           Actions: alert.RawAlert.Actions,
-          conditions: formattedConditions,
           logbook: foundLogbook,
           AlertComment: alert.RawAlert.AlertComment || "",
+          conditions: [], // Include empty array to register field structure
+          _isInitializing: true, // Hidden flag for CippFormCondition to prevent clearing during load
         };
-
+        // Spawn condition rows
+        setAddedEvent(formattedConditions.map((_, i) => ({ id: i })));
         formControl.reset(resetData);
-
-        // After reset, manually set the Input values to ensure they're properly registered
+        // Set conditions in timeout to ensure proper registration after reset
         setTimeout(() => {
-          formattedConditions.forEach((condition, index) => {
-            if (condition.Property.value === "String") {
-              // For String properties, set the nested value path
-              formControl.setValue(`conditions.${index}.Input.value`, condition.Input.value);
-            } else {
-              // For List properties, set the direct Input value
-              formControl.setValue(`conditions.${index}.Input`, condition.Input);
+          // Seed previous operator values BEFORE setting conditions to prevent clearing
+          prevOperatorValuesRef.current = formattedConditions.map((c) =>
+            (c.Operator?.value || "").toLowerCase()
+          );
+
+          // Process each condition with proper normalization
+          const processedConditions = formattedConditions.map((cond, idx) => {
+            let finalInput = cond.Input;
+            const isList = cond.Property?.value?.startsWith("List:");
+            const operatorVal = cond.Operator?.value;
+            const isMembership = operatorVal === "in" || operatorVal === "notIn";
+
+            // Normalize based on operator and property type
+            if (Array.isArray(finalInput)) {
+              finalInput = finalInput.map((item) =>
+                typeof item === "string" ? { label: item, value: item } : item
+              );
+            } else if (isList && !isMembership) {
+              // Single selection list value
+              if (typeof finalInput === "string") {
+                finalInput = { label: finalInput, value: finalInput };
+              } else if (
+                finalInput &&
+                typeof finalInput === "object" &&
+                !finalInput.label &&
+                finalInput.value
+              ) {
+                finalInput = { label: finalInput.value, value: finalInput.value };
+              }
             }
+
+            return {
+              Property: cond.Property,
+              Operator: cond.Operator,
+              Input: finalInput,
+            };
           });
 
-          // Trigger validation to ensure all fields are properly registered
+          // Set the entire conditions array at once with processed values
+          formControl.setValue("conditions", processedConditions, {
+            shouldValidate: false,
+            shouldDirty: true,
+            shouldTouch: false,
+          });
+
+          // Try setting individual paths as backup
+          processedConditions.forEach((cond, idx) => {
+            formControl.setValue(`conditions.${idx}`, cond, { shouldValidate: false });
+          });
+
           formControl.trigger();
+
+          // Release guard after longer delay to let CippFormCondition components stabilize
+          setTimeout(() => {
+            formControl.setValue("_isInitializing", false, { shouldValidate: false });
+            setIsLoadingExistingAlert(false);
+          }, 200);
         }, 100);
       }
     }
   }, [existingAlert.isSuccess, router, editAlert]);
-
-  const [alertType, setAlertType] = useState("none");
-  const [addedEvent, setAddedEvent] = useState([{ id: 1 }]); // Track added inputs
-
-  const formControl = useForm({ mode: "onChange" });
-  const selectedPreset = useWatch({ control: formControl.control, name: "preset" }); // Watch the preset
-  const commandValue = useWatch({ control: formControl.control, name: "command" });
-  const logbookWatcher = useWatch({ control: formControl.control, name: "logbook" });
-  const propertyWatcher = useWatch({ control: formControl.control, name: "conditions" });
-
-  // Clear input value when operator type changes between textField and autocomplete
-  useEffect(() => {
-    if (propertyWatcher) {
-      propertyWatcher.forEach((condition, index) => {
-        if (condition?.Operator?.value) {
-          const isInOrNotIn = condition.Operator.value === "in" || condition.Operator.value === "notIn";
-          const isStringProperty = condition?.Property?.value === "String";
-
-          // Clear input when switching to in/notIn (textField → autocomplete)
-          if (isInOrNotIn) {
-            formControl.setValue(`conditions.${index}.Input`, [], { shouldValidate: false });
-          }
-          // Clear input when switching from in/notIn (autocomplete → textField)
-          else {
-            if (isStringProperty) {
-              formControl.setValue(`conditions.${index}.Input`, { value: '' }, { shouldValidate: false });
-            } else {
-              formControl.setValue(`conditions.${index}.Input`, '', { shouldValidate: false });
-            }
-          }
-        }
-      });
-    }
-  }, [propertyWatcher]);
 
   useEffect(() => {
     formControl.reset();
@@ -298,41 +328,55 @@ const AlertWizard = () => {
   }, [commandValue, editAlert]);
 
   useEffect(() => {
-    // Logic to handle template-based form updates when a preset is selected
-    if (selectedPreset) {
-      const selectedTemplate = auditLogTemplates?.find(
-        (template) => template.value === selectedPreset.value
-      );
-
-      if (selectedTemplate) {
-        // Ensure the conditions array exists and update it
-        const conditions = selectedTemplate.template.conditions || [];
-
-        conditions.forEach((condition, index) => {
-          // Ensure form structure is in place for 0th condition
-          formControl.setValue(`conditions.${index}.Property`, condition.Property || "");
-          formControl.setValue(`conditions.${index}.Operator`, condition.Operator || "");
-          //if Condition.Property.value is "String" then set the input value, otherwise
-          formControl.setValue(
-            condition.Property.value === "String"
-              ? `conditions.${index}.Input.value`
-              : `conditions.${index}.Input`,
-            condition.Property.value === "String" ? condition.Input.value : condition.Input
-          );
-        });
-
-        // Set the logbook or other fields based on the template
-        if (selectedTemplate.template.logbook) {
-          formControl.setValue("logbook", selectedTemplate.template.logbook);
-        }
-        // Ensure the addedEvent array reflects the correct number of conditions
-        setAddedEvent(
-          conditions.map((_, index) => ({
-            id: index,
-          }))
-        );
-      }
+    if (!selectedPreset) return;
+    setIsLoadingPreset(true);
+    const selectedTemplate = auditLogTemplates?.find(
+      (template) => template.value === selectedPreset.value
+    );
+    if (!selectedTemplate) {
+      setIsLoadingPreset(false);
+      return;
     }
+    const rawConditions = selectedTemplate.template.conditions || [];
+    const formattedConditions = rawConditions.map((condition) => {
+      const opVal = condition.Operator?.value || "";
+      const lower = opVal.toLowerCase();
+      const mappedOp = lower === "notin" ? "notIn" : lower; // keep UI canonical value for notIn
+      const normalizedOp = { ...condition.Operator, value: mappedOp };
+      const isString = condition.Property?.value === "String";
+      const isList = condition.Property?.value?.startsWith("List:");
+      const isInSet = mappedOp === "in" || mappedOp === "notIn";
+      let Input;
+      if (isString) {
+        Input = { value: condition.Input?.value ?? "" };
+      } else if (isList && isInSet) {
+        Input = Array.isArray(condition.Input) ? condition.Input : [];
+      } else {
+        Input = condition.Input ?? (isList ? [] : "");
+      }
+      return { Property: condition.Property, Operator: normalizedOp, Input };
+    });
+    formControl.setValue("conditions", formattedConditions);
+    if (selectedTemplate.template.logbook) {
+      formControl.setValue("logbook", selectedTemplate.template.logbook);
+    }
+    setAddedEvent(formattedConditions.map((_, i) => ({ id: i })));
+    prevOperatorValuesRef.current = formattedConditions.map((c) =>
+      (c.Operator?.value || "").toLowerCase()
+    );
+    // Ensure React Hook Form registers nested fields before releasing the guard
+    setTimeout(() => {
+      formattedConditions.forEach((cond, idx) => {
+        if (cond.Property?.value === "String") {
+          formControl.setValue(`conditions.${idx}.Input.value`, cond.Input?.value ?? "", {
+            shouldValidate: false,
+          });
+        } else {
+          formControl.setValue(`conditions.${idx}.Input`, cond.Input, { shouldValidate: false });
+        }
+      });
+      setIsLoadingPreset(false);
+    }, 75);
   }, [selectedPreset]);
 
   const getAuditLogSchema = (logbook) => {
@@ -604,7 +648,10 @@ const AlertWizard = () => {
                                     field={`conditions.${event.id}.Operator`}
                                     formControl={formControl}
                                     compareType="isNotOneOf"
-                                    compareValue={[{ value: "in", label: "In" }, { value: "notIn", label: "Not In" }]}
+                                    compareValue={[
+                                      { value: "in", label: "In" },
+                                      { value: "notIn", label: "Not In" },
+                                    ]}
                                   >
                                     <CippFormComponent
                                       type="textField"
@@ -620,7 +667,10 @@ const AlertWizard = () => {
                                   field={`conditions.${event.id}.Operator`}
                                   formControl={formControl}
                                   compareType="isOneOf"
-                                  compareValue={[{ value: "in", label: "In" }, { value: "notIn", label: "Not In" }]}
+                                  compareValue={[
+                                    { value: "in", label: "In" },
+                                    { value: "notIn", label: "Not In" },
+                                  ]}
                                 >
                                   <CippFormComponent
                                     type="autoComplete"
@@ -630,12 +680,16 @@ const AlertWizard = () => {
                                     label="Input"
                                     creatable={true}
                                     options={
-                                      propertyWatcher?.[event.id]?.Property?.value?.startsWith("List:")
-                                        ? auditLogSchema[propertyWatcher?.[event.id]?.Property?.value]
+                                      propertyWatcher?.[event.id]?.Property?.value?.startsWith(
+                                        "List:"
+                                      )
+                                        ? auditLogSchema[
+                                            propertyWatcher?.[event.id]?.Property?.value
+                                          ]
                                         : []
                                     }
                                     onCreateOption={(inputValue) => {
-                                      if (typeof inputValue === 'string') {
+                                      if (typeof inputValue === "string") {
                                         return { label: inputValue, value: inputValue };
                                       }
                                       return inputValue;
@@ -654,11 +708,16 @@ const AlertWizard = () => {
                                     field={`conditions.${event.id}.Operator`}
                                     formControl={formControl}
                                     compareType="isNotOneOf"
-                                    compareValue={[{ value: "in", label: "In" }, { value: "notIn", label: "Not In" }]}
+                                    compareValue={[
+                                      { value: "in", label: "In" },
+                                      { value: "notIn", label: "Not In" },
+                                    ]}
                                   >
                                     <CippFormComponent
                                       type="autoComplete"
-                                      multiple={propertyWatcher?.[event.id]?.Property?.multi ?? false}
+                                      multiple={
+                                        propertyWatcher?.[event.id]?.Property?.multi ?? false
+                                      }
                                       name={`conditions.${event.id}.Input`}
                                       formControl={formControl}
                                       label="Input"
