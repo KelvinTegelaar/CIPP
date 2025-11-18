@@ -327,7 +327,7 @@ export const useCippUserActions = () => {
                 : option?.displayName ?? "",
             valueField: "id",
             addedField: {
-              groupType: "calculatedGroupType",
+              groupType: "groupType",
               groupName: "displayName",
             },
             queryKey: `groups-${tenant}`,
