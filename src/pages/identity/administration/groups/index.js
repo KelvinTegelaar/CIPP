@@ -11,6 +11,7 @@ import {
   LockOpen,
   Lock,
   GroupSharp,
+  CloudSync,
 } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { useState } from "react";
@@ -87,6 +88,32 @@ const Page = () => {
       },
       confirmText:
         "Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.",
+      multiPost: false,
+    },
+    {
+      label: "Set Source of Authority",
+      type: "POST",
+      url: "/api/ExecSetCloudManaged",
+      icon: <CloudSync />,
+      data: {
+        ID: "id",
+        displayName: "displayName",
+        type: "!Group",
+      },
+      fields: [
+        {
+          type: "radio",
+          name: "isCloudManaged",
+          label: "Source of Authority",
+          options: [
+            { label: "Cloud Managed", value: true },
+            { label: "On-Premises Managed", value: false },
+          ],
+          validators: { required: "Please select a source of authority" },
+        },
+      ],
+      confirmText:
+        "Are you sure you want to change the source of authority for '[displayName]'? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
       multiPost: false,
     },
     {
