@@ -35,31 +35,28 @@ const Page = () => {
       color: "success",
     },
     {
-      label: "Hide from Global Address List",
-      type: "POST",
-      url: "/api/ExecGroupsHideFromGAL",
-      icon: <VisibilityOff />,
-      data: {
-        ID: "mail",
-        GroupType: "groupType",
-        HidefromGAL: true,
-      },
-      confirmText:
-        "Are you sure you want to hide this mailbox from the global address list? Remember this will not work if the group is AD Synched.",
-      multiPost: false,
-    },
-    {
-      label: "Unhide from Global Address List",
+      label: "Set Global Address List Visibility",
       type: "POST",
       url: "/api/ExecGroupsHideFromGAL",
       icon: <Visibility />,
       data: {
         ID: "mail",
         GroupType: "groupType",
-        HidefromGAL: false,
       },
+      fields: [
+        {
+          type: "radio",
+          name: "HidefromGAL",
+          label: "Global Address List Visibility",
+          options: [
+            { label: "Hidden", value: true },
+            { label: "Shown", value: false },
+          ],
+          validators: { required: "Please select a visibility option" },
+        },
+      ],
       confirmText:
-        "Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the group is AD Synched.",
+        "Are you sure you want to hide this group from the global address list? Remember this will not work if the group is AD Synched.",
       multiPost: false,
     },
     {
