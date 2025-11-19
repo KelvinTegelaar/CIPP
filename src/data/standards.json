@@ -5374,5 +5374,83 @@
     "addedDate": "2025-09-18",
     "powershellEquivalent": "New-GraphPostRequest -uri 'https://graph.microsoft.com/beta/deviceManagement/configurationPolicies'",
     "recommendedBy": ["CIPP"]
+  },
+  {
+    "name": "standards.SecureScoreRemediation",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Allows bulk updating of Secure Score control profiles across tenants. Select controls and assign them to different states: Default, Ignored, Third-Party, or Reviewed.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SecureScoreRemediation.Default",
+        "label": "Controls to set to Default",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SecureScoreRemediation.Ignored",
+        "label": "Controls to set to Ignored",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SecureScoreRemediation.Ignored",
+        "label": "Controls to set to Ignored",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SecureScoreRemediation.ThirdParty",
+        "label": "Controls to set to Third-Party",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "required": false,
+        "creatable": true,
+        "name": "standards.SecureScoreRemediation.Reviewed",
+        "label": "Controls to set to Reviewed",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      }
+    ],
+    "label": "Update Secure Score Control Profiles",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-11-19",
+    "powershellEquivalent": "New-GraphPostRequest to /beta/security/secureScoreControlProfiles/{id}"
   }
 ]
