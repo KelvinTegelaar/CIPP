@@ -5412,19 +5412,6 @@
         "multiple": true,
         "creatable": true,
         "required": false,
-        "name": "standards.SecureScoreRemediation.Ignored",
-        "label": "Controls to set to Ignored",
-        "api": {
-          "url": "/secureScore.json",
-          "labelField": "title",
-          "valueField": "id"
-        }
-      },
-      {
-        "type": "autoComplete",
-        "multiple": true,
-        "creatable": true,
-        "required": false,
         "name": "standards.SecureScoreRemediation.ThirdParty",
         "label": "Controls to set to Third-Party",
         "api": {
