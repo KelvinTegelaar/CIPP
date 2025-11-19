@@ -118,12 +118,12 @@ const CippAddEditUser = (props) => {
       if (!displayNameManuallySet) {
         // Build base display name from first and last name
         let displayName = `${watcher.givenName} ${watcher.surname}`;
-        
+
         // Add template displayName as suffix if it exists
         if (selectedTemplate?.displayName) {
           displayName += selectedTemplate.displayName;
         }
-        
+
         formControl.setValue("displayName", displayName);
       }
 
