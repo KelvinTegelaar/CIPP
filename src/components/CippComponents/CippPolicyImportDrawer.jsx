@@ -51,6 +51,7 @@ export const CippPolicyImportDrawer = ({
         ? `/api/listStandardTemplates?TenantFilter=${tenantFilter?.value || ""}`
         : `/api/ListIntunePolicy?type=ESP&TenantFilter=${tenantFilter?.value || ""}`,
     queryKey: `TenantPolicies-${mode}-${tenantFilter?.value || "none"}`,
+    waiting: tenantFilter === undefined || tenantFilter === null,
   });
 
   const repoPolicies = ApiGetCall({
@@ -58,7 +59,7 @@ export const CippPolicyImportDrawer = ({
       selectedSource?.value || ""
     }&Branch=main`,
     queryKey: `RepoPolicies-${mode}-${selectedSource?.value || "none"}`,
-    enabled: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
+    waiting: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
   });
 
   const repositoryFiles = ApiGetCall({
@@ -66,7 +67,7 @@ export const CippPolicyImportDrawer = ({
       selectedSource?.value || ""
     }&Branch=main`,
     queryKey: `RepositoryFiles-${selectedSource?.value || "none"}`,
-    enabled: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
+    waiting: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
   });
 
   const importPolicy = ApiPostCall({
@@ -500,7 +501,13 @@ export const CippPolicyImportDrawer = ({
           ) : (
             <CippJsonView
               object={viewingPolicy || {}}
-              type={mode === "ConditionalAccess" ? "conditionalaccess" : mode === "Standards" ? "standards" : "intune"}
+              type={
+                mode === "ConditionalAccess"
+                  ? "conditionalaccess"
+                  : mode === "Standards"
+                  ? "standards"
+                  : "intune"
+              }
               defaultOpen={true}
             />
           )}

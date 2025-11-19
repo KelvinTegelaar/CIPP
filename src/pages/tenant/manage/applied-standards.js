@@ -795,7 +795,7 @@ const Page = () => {
       actionsData={{}}
       isFetching={comparisonApi.isFetching || templateDetails.isFetching}
     >
-      <Box sx={{ py: 2 }}>
+      <Box sx={{ py: 2, mr: 2 }}>
         {comparisonApi.isFetching && (
           <>
             {[1, 2, 3].map((item) => (
