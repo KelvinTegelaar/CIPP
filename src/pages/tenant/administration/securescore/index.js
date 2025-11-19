@@ -56,16 +56,18 @@ const Page = () => {
 
   const getFilteredControlScores = () => {
     if (!secureScore.isSuccess) return [];
-    
+
     const controlScores = secureScore.translatedData.controlScores || [];
-    
+
     switch (selectedFilter) {
       case "completed":
-        return controlScores.filter(score => score.scoreInPercentage === 100);
+        return controlScores.filter((score) => score.scoreInPercentage === 100);
       case "zero":
-        return controlScores.filter(score => score.scoreInPercentage === 0);
+        return controlScores.filter((score) => score.scoreInPercentage === 0);
       case "started":
-        return controlScores.filter(score => score.scoreInPercentage > 0 && score.scoreInPercentage < 100);
+        return controlScores.filter(
+          (score) => score.scoreInPercentage > 0 && score.scoreInPercentage < 100
+        );
       default:
         return controlScores;
     }
@@ -99,6 +101,29 @@ const Page = () => {
         )}
         {currentTenant !== "AllTenants" && (
           <>
+            <Grid
+              size={{ md: 12, xs: 12 }}
+              sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+            >
+              <Button variant="outlined" startIcon={<FilterList />} onClick={handleFilterClick}>
+                Filter: {filterOptions.find((opt) => opt.value === selectedFilter)?.label}
+              </Button>
+              <Menu
+                anchorEl={filterAnchorEl}
+                open={Boolean(filterAnchorEl)}
+                onClose={handleFilterClose}
+              >
+                {filterOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    selected={selectedFilter === option.value}
+                    onClick={() => handleFilterSelect(option.value)}
+                  >
+                    <ListItemText>{option.label}</ListItemText>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
               <CippInfoBar
                 isFetching={secureScore.isFetching}
@@ -148,33 +173,6 @@ const Page = () => {
                 chartType="area"
               />
             </Grid>
-
-            {currentTenant !== "AllTenants" && secureScore.isSuccess && (
-              <Grid size={{ md: 12, xs: 12 }} sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-                <Button
-                  variant="outlined"
-                  startIcon={<FilterList />}
-                  onClick={handleFilterClick}
-                >
-                  Filter: {filterOptions.find(opt => opt.value === selectedFilter)?.label}
-                </Button>
-                <Menu
-                  anchorEl={filterAnchorEl}
-                  open={Boolean(filterAnchorEl)}
-                  onClose={handleFilterClose}
-                >
-                  {filterOptions.map((option) => (
-                    <MenuItem
-                      key={option.value}
-                      selected={selectedFilter === option.value}
-                      onClick={() => handleFilterSelect(option.value)}
-                    >
-                      <ListItemText>{option.label}</ListItemText>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Grid>
-            )}
 
             {currentTenant !== "AllTenants" &&
               secureScore.isSuccess &&
