@@ -19,7 +19,7 @@ import {
   ServerIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { useSettings } from "../../hooks/use-settings";
@@ -54,7 +54,7 @@ export const CippTenantSelector = (props) => {
   });
 
   // Filter portal actions based on user preferences
-  const getFilteredPortalActions = () => {
+  const filteredPortalActions = useMemo(() => {
     // Define all available portal actions with current tenant data
     const allPortalActions = [
       {
@@ -164,7 +164,7 @@ export const CippTenantSelector = (props) => {
     });
 
     return filteredActions;
-  };
+  }, [currentTenant, settings]);
 
   // This effect handles updates when the tenant is changed via dropdown selection
   useEffect(() => {
@@ -363,7 +363,7 @@ export const CippTenantSelector = (props) => {
           "onPremisesLastSyncDateTime",
           "onPremisesLastPasswordSyncDateTime",
         ]}
-        actions={getFilteredPortalActions()}
+        actions={filteredPortalActions}
       />
     </>
   );
