@@ -28,6 +28,7 @@ export const CippAddVacationModeDrawer = ({
       PolicyId: null,
       startDate: null,
       endDate: null,
+      excludeLocationAuditAlerts: false,
     },
   });
 
@@ -53,6 +54,18 @@ export const CippAddVacationModeDrawer = ({
     waiting: caPoliciesWaiting,
   });
 
+  // Selected policy object & whether it targets locations (include or exclude)
+  const selectedPolicyObject = (caPolicies?.data?.pages || [])
+    .flatMap((page) => page?.Results || [])
+    .find((p) => p.id === selectedPolicy?.value);
+  const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  const locationSets = selectedPolicyObject?.conditions?.locations;
+  const allLocationIds = [
+    ...(locationSets?.includeLocations || []),
+    ...(locationSets?.excludeLocations || []),
+  ];
+  const policyHasLocationTarget = allLocationIds.some((loc) => guidRegex.test(loc));
+
   useEffect(() => {
     // monitor changes to selectedTenant, if null change waiting to false on caPolicies
     if (!selectedTenant?.value === null || selectedTenant?.value === undefined) {
@@ -72,6 +85,7 @@ export const CippAddVacationModeDrawer = ({
         PolicyId: null,
         startDate: null,
         endDate: null,
+        excludeLocationAuditAlerts: false,
       });
     }
   }, [addVacationMode.isSuccess, formControl]);
@@ -91,6 +105,7 @@ export const CippAddVacationModeDrawer = ({
       StartDate: formData.startDate,
       EndDate: formData.endDate,
       vacation: true,
+      excludeLocationAuditAlerts: formData.excludeLocationAuditAlerts || false,
     };
 
     addVacationMode.mutate({
@@ -271,6 +286,17 @@ export const CippAddVacationModeDrawer = ({
                 }}
               />
             </Grid>
+            {policyHasLocationTarget && (
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="checkbox"
+                  label="Exclude from location-based audit log alerts"
+                  name="excludeLocationAuditAlerts"
+                  formControl={formControl}
+                  helperText="If enabled, hidden scheduled tasks will manage AuditLogUserExclusions for this period."
+                />
+              </Grid>
+            )}
             <Grid size={{ xs: 12 }}>
               <CippJsonView
                 object={
