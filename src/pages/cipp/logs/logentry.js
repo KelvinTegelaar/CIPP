@@ -127,7 +127,7 @@ const Page = () => {
                   showDivider={false}
                 />
               )}
-              {logData?.Standard && (
+              {logData?.Standard?.Standard && (
                 <CippPropertyListCard
                   title="Standard"
                   propertyItems={Object.entries(logData.Standard).map(([key, value]) => ({
