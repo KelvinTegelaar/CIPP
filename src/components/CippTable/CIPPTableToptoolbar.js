@@ -202,8 +202,7 @@ export const CIPPTableToptoolbar = ({
   const builtInBulkExportAvailable =
     showBulkExportAction && exportEnabled && selectedRows.length > 0;
   const customBulkActions = getBulkActions(actions, selectedRows);
-  const showBulkActionsButton =
-    hasSelection && (customBulkActions.length > 0 || builtInBulkExportAvailable);
+  const showBulkActionsButton = hasSelection && customBulkActions.length > 0;
 
   const handleExportSelectedToCsv = () => {
     if (!selectedRows.length) {
@@ -1021,6 +1020,34 @@ export const CIPPTableToptoolbar = ({
                 </ListItemIcon>
                 <ListItemText primary="Export to PDF" />
               </MenuItem>
+              {builtInBulkExportAvailable && (
+                <>
+                  <Divider sx={{ my: 0.5 }} />
+                  <MenuItem
+                    onClick={() => {
+                      handleExportSelectedToCsv();
+                      setExportAnchor(null);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <CsvIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Export Selected to CSV" />
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleExportSelectedToPdf();
+                      setExportAnchor(null);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <PdfIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Export Selected to PDF" />
+                  </MenuItem>
+                </>
+              )}
+              <Divider sx={{ my: 0.5 }} />
               <MenuItem
                 onClick={() => {
                   if (isInDialog) {
@@ -1163,35 +1190,6 @@ export const CIPPTableToptoolbar = ({
           vertical: "top",
         }}
       >
-        {/* Default bulk export entries (CSV/PDF) render before any custom bulk actions */}
-        {builtInBulkExportAvailable && (
-          <>
-            <MenuItem
-              onClick={() => {
-                handleExportSelectedToCsv();
-                popover.handleClose();
-              }}
-            >
-              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                <CsvIcon />
-              </SvgIcon>
-              <ListItemText>Export Selected to CSV</ListItemText>
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleExportSelectedToPdf();
-                popover.handleClose();
-              }}
-            >
-              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
-                <PdfIcon />
-              </SvgIcon>
-              <ListItemText>Export Selected to PDF</ListItemText>
-            </MenuItem>
-            {customBulkActions.length > 0 && <Divider sx={{ my: 0.5 }} />}
-          </>
-        )}
-
         {actions &&
           customBulkActions.map((action, index) => (
             <MenuItem

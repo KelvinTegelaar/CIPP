@@ -1,10 +1,8 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
-import { Button } from "@mui/material";
-import { EventAvailable } from "@mui/icons-material";
-import Link from "next/link";
 import { Delete } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
+import { CippAddVacationModeDrawer } from "/src/components/CippComponents/CippAddVacationModeDrawer";
 
 const Page = () => {
   const actions = [
@@ -29,13 +27,11 @@ const Page = () => {
     <CippTablePage
       cardButton={
         <>
-          <Button component={Link} href="deploy-vacation/add" startIcon={<EventAvailable />}>
-            Add Vacation Schedule
-          </Button>
+          <CippAddVacationModeDrawer />
         </>
       }
       title="Vacation Mode"
-      apiUrl="/api/ListScheduledItems?Type=Set-CIPPCAExclusion"
+      apiUrl="/api/ListScheduledItems?SearchTitle=*CA Exclusion Vacation*"
       queryKey="VacationMode"
       tenantInTitle={false}
       actions={actions}
