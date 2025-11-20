@@ -94,13 +94,14 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} />,
+    children: (row) => <CippJsonView object={row} defaultOpen={true} />,
     size: "xl",
   };
   return (
     <>
       <CippTablePage
         title={pageTitle}
+        tenantInTitle={false}
         apiUrl="/api/ListCATemplates"
         queryKey="ListCATemplates-table"
         actions={actions}
