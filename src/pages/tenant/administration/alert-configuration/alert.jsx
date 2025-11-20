@@ -82,11 +82,13 @@ const AlertWizard = () => {
   // Existing alert load effect moved below state declarations for guard usage
 
   const [alertType, setAlertType] = useState("none");
-  const [addedEvent, setAddedEvent] = useState([{ id: 1 }]); // Track added inputs
+  // Track condition row indices; start empty to avoid off-by-one when loading presets
+  const [addedEvent, setAddedEvent] = useState([]);
   const [isLoadingPreset, setIsLoadingPreset] = useState(false); // Guard against clearing during preset load
   const [isLoadingExistingAlert, setIsLoadingExistingAlert] = useState(false); // Guard during existing alert load
   const [hasLoadedExistingAlert, setHasLoadedExistingAlert] = useState(false); // Prevent double-load
   const prevOperatorValuesRef = useRef([]); // Track previous operator values
+  const originalMembershipInputsRef = useRef({}); // Preserve original in/notIn arrays for rehydration
 
   const formControl = useForm({ mode: "onChange" });
   const selectedPreset = useWatch({ control: formControl.control, name: "preset" }); // Watch the preset
@@ -216,6 +218,17 @@ const AlertWizard = () => {
           // For in/notIn operators, always treat Input as array regardless of Property type
           if (isInSet) {
             Input = Array.isArray(cond.Input) ? cond.Input : [];
+            // Normalize items to {value, label} consistently and store original
+            Input = Input.map((item) => {
+              if (typeof item === "string") return { value: item, label: item };
+              if (item && typeof item === "object") {
+                return {
+                  value: item.value ?? item.label ?? "",
+                  label: item.label ?? item.value ?? "",
+                };
+              }
+              return { value: "", label: "" };
+            });
           } else if (isString) {
             Input = { value: cond.Input?.value ?? "" };
           } else {
@@ -232,8 +245,7 @@ const AlertWizard = () => {
           AlertComment: alert.RawAlert.AlertComment || "",
           conditions: [], // Include empty array to register field structure
         };
-        // Spawn condition rows
-        setAddedEvent(formattedConditions.map((_, i) => ({ id: i })));
+        // Reset first without spawning rows to avoid rendering empty operator fields
         formControl.reset(resetData);
         // Set conditions in timeout to ensure proper registration after reset
         setTimeout(() => {
@@ -254,6 +266,16 @@ const AlertWizard = () => {
               finalInput = finalInput.map((item) =>
                 typeof item === "string" ? { label: item, value: item } : item
               );
+              // Further ensure label/value presence and rebuild from schema if possible
+              const schemaOptions = auditLogSchema[cond.Property?.value] || [];
+              finalInput = finalInput.map((item) => {
+                const match = schemaOptions.find((opt) => opt.value === item.value);
+                return {
+                  value: item.value,
+                  label: item.label || match?.label || item.value,
+                };
+              });
+              originalMembershipInputsRef.current[idx] = finalInput;
             } else if (isList && !isMembership) {
               // Single selection list value
               if (typeof finalInput === "string") {
@@ -287,7 +309,28 @@ const AlertWizard = () => {
             formControl.setValue(`conditions.${idx}`, cond, { shouldValidate: false });
           });
 
+          // Spawn condition rows only after conditions exist to ensure autocomplete visibility
+          setAddedEvent(processedConditions.map((_, i) => ({ id: i })));
           formControl.trigger();
+          // Defer another snapshot to catch any async UI transformations
+          setTimeout(() => {
+            const deferredSnapshot = formControl.getValues("conditions") || [];
+            // Rehydrate membership arrays if they were nulled out by Autocomplete uncontrolled clears
+            deferredSnapshot.forEach((cond, idx) => {
+              const op = cond?.Operator?.value;
+              if (
+                (op === "in" || op === "notIn") &&
+                (cond.Input === null || cond.Input === undefined)
+              ) {
+                const original = originalMembershipInputsRef.current[idx];
+                if (original && Array.isArray(original) && original.length > 0) {
+                  formControl.setValue(`conditions.${idx}.Input`, original, {
+                    shouldValidate: false,
+                  });
+                }
+              }
+            });
+          }, 150);
           setIsLoadingExistingAlert(false);
         }, 100);
       }
@@ -431,15 +474,19 @@ const AlertWizard = () => {
   };
 
   const handleAddCondition = () => {
-    setAddedEvent([...addedEvent, { id: addedEvent?.length + 1 }]);
+    const currentConditions = formControl.getValues("conditions") || [];
+    // Append a blank condition placeholder so indices align immediately
+    currentConditions.push({ Property: null, Operator: null, Input: null });
+    formControl.setValue("conditions", currentConditions, { shouldValidate: false });
+    setAddedEvent(currentConditions.map((_, idx) => ({ id: idx })));
   };
 
   const handleRemoveCondition = (id) => {
-    //remove the condition from the form
     const currentConditions = formControl.getValues("conditions") || [];
     const updatedConditions = currentConditions.filter((_, index) => index !== id);
-    formControl.setValue("conditions", updatedConditions);
-    setAddedEvent(addedEvent.filter((event) => event.id !== id));
+    formControl.setValue("conditions", updatedConditions, { shouldValidate: false });
+    // Rebuild addedEvent to keep ids aligned with new indices
+    setAddedEvent(updatedConditions.map((_, idx) => ({ id: idx })));
   };
 
   const { isValid } = useFormState({ control: formControl.control });

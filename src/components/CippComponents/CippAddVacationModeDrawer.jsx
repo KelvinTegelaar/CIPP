@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button, Typography, Divider, Stack } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Alert, Button, Typography, Divider, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch, useFormState } from "react-hook-form";
 import { EventAvailable } from "@mui/icons-material";
@@ -164,12 +164,20 @@ export const CippAddVacationModeDrawer = ({
           </Stack>
         }
       >
-        <Stack spacing={3} sx={{ my: 2 }}>
-          <Typography variant="body1" sx={{ mb: 2 }}>
+        <Stack spacing={2} sx={{ mb: 2 }}>
+          <Alert severity="info">
             Vacation mode adds scheduled tasks to add and remove users from Conditional Access (CA)
-            exclusions for a specific period of time. Select the CA policy and the date range.
-          </Typography>
-          <Grid container spacing={2}>
+            exclusions for a specific period of time. Select the CA policy and the date range. If
+            the CA policy targets a named location, you now have the ability to exclude the targeted
+            users from location-based audit log alerts.
+          </Alert>
+          <Alert severity="warning">
+            Note: Vacation mode has recently been updated to use Group based exclusions for better
+            reliability. Existing vacation mode entries will continue to function as before, but it
+            is recommended to recreate them to take advantage of the new functionality. The
+            exclusion group follows the format: 'Vacation Exclusion - $Policy.displayName'
+          </Alert>
+          <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid size={{ xs: 12 }}>
               <CippFormTenantSelector
                 label="Select Tenant"
@@ -220,6 +228,7 @@ export const CippAddVacationModeDrawer = ({
                         data: {
                           tenantFilter: tenantDomain,
                           Endpoint: "conditionalAccess/policies",
+                          AsApp: true,
                         },
                         dataKey: "Results",
                         labelField: (option) => `${option.displayName}`,
