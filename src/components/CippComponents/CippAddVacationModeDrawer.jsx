@@ -8,7 +8,8 @@ import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
 import { CippFormUserSelector } from "./CippFormUserSelector";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
-import { ApiPostCall } from "../../api/ApiCall";
+import { ApiPostCall, ApiGetCallWithPagination } from "../../api/ApiCall";
+import CippJsonView from "/src/components/CippFormPages/CippJSONView";
 
 export const CippAddVacationModeDrawer = ({
   buttonText = "Add Vacation Schedule",
@@ -16,6 +17,7 @@ export const CippAddVacationModeDrawer = ({
   PermissionButton = Button,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [caPoliciesWaiting, setCaPoliciesWaiting] = useState(false);
 
   const formControl = useForm({
     mode: "onChange",
@@ -33,6 +35,7 @@ export const CippAddVacationModeDrawer = ({
 
   // Watch the selected tenant to update dependent fields
   const selectedTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
+  const selectedPolicy = useWatch({ control: formControl.control, name: "PolicyId" });
   const tenantDomain = selectedTenant?.value || selectedTenant;
 
   const addVacationMode = ApiPostCall({
@@ -40,12 +43,31 @@ export const CippAddVacationModeDrawer = ({
     relatedQueryKeys: ["VacationMode"],
   });
 
+  const caPolicies = ApiGetCallWithPagination({
+    url: "/api/ListGraphRequest",
+    data: {
+      tenantFilter: tenantDomain,
+      Endpoint: "conditionalAccess/policies",
+    },
+    queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
+    waiting: caPoliciesWaiting,
+  });
+
+  useEffect(() => {
+    // monitor changes to selectedTenant, if null change waiting to false on caPolicies
+    if (!selectedTenant?.value === null || selectedTenant?.value === undefined) {
+      setCaPoliciesWaiting(false);
+    } else {
+      setCaPoliciesWaiting(true);
+    }
+  }, [selectedTenant]);
+
   // Reset form fields on successful creation
   useEffect(() => {
     if (addVacationMode.isSuccess) {
       formControl.reset({
         vacation: true,
-        tenantFilter: null,
+        tenantFilter: tenantDomain,
         Users: [],
         PolicyId: null,
         startDate: null,
@@ -105,23 +127,26 @@ export const CippAddVacationModeDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={addVacationMode.isLoading || !isValid}
-            >
-              {addVacationMode.isLoading
-                ? "Creating..."
-                : addVacationMode.isSuccess
-                ? "Create Another"
-                : "Create Vacation Schedule"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={addVacationMode} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={addVacationMode.isLoading || !isValid}
+              >
+                {addVacationMode.isLoading
+                  ? "Creating..."
+                  : addVacationMode.isSuccess
+                  ? "Create Another"
+                  : "Create Vacation Schedule"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Stack spacing={3} sx={{ my: 2 }}>
@@ -176,8 +201,11 @@ export const CippAddVacationModeDrawer = ({
                   tenantDomain
                     ? {
                         queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
-                        url: "/api/ListConditionalAccessPolicies",
-                        data: { tenantFilter: tenantDomain },
+                        url: "/api/ListGraphRequest",
+                        data: {
+                          tenantFilter: tenantDomain,
+                          Endpoint: "conditionalAccess/policies",
+                        },
                         dataKey: "Results",
                         labelField: (option) => `${option.displayName}`,
                         valueField: "id",
@@ -243,9 +271,17 @@ export const CippAddVacationModeDrawer = ({
                 }}
               />
             </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippJsonView
+                object={
+                  caPolicies?.data?.pages[0]?.Results?.filter(
+                    (policy) => policy.id === selectedPolicy?.value
+                  )[0] || {}
+                }
+                title="Selected Policy JSON"
+              />
+            </Grid>
           </Grid>
-
-          <CippApiResults apiObject={addVacationMode} />
         </Stack>
       </CippOffCanvas>
     </>

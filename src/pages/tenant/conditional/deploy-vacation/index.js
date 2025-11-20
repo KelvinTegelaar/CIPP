@@ -37,22 +37,18 @@ const Page = () => {
       actions={actions}
       simpleColumns={[
         "Tenant",
-        "Parameters.Users.addedFields.userPrincipalName",
         "Name",
+        "Parameters.Member",
         "TaskState",
         "ScheduledTime",
         "ExecutedTime",
-        "Parameters.ExclusionType",
-        "Parameters.Users",
-        "Parameters.UserName",
       ]}
       offCanvas={{
         extendedInfoFields: [
           "Name",
           "TaskState",
           "ScheduledTime",
-          "Parameters.Users",
-          "Parameters.UserName",
+          "Parameters.Member",
           "Parameters.PolicyId",
           "Tenant",
           "ExecutedTime",
