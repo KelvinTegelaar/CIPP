@@ -35,7 +35,7 @@ const Page = () => {
         </>
       }
       title="Vacation Mode"
-      apiUrl="/api/ListScheduledItems?Type=Set-CIPPCAExclusion"
+      apiUrl="/api/ListScheduledItems?SearchTitle=*CA Exclusion Vacation*"
       queryKey="VacationMode"
       tenantInTitle={false}
       actions={actions}
