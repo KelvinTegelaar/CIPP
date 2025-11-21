@@ -17,6 +17,7 @@ This wizard will allow you to set all of the necessary properties to create a si
 3. Choose your starting point:
    * Start with blank form
    * Use "Copy properties from another user" dropdown to pre-fill fields
+   * Use a User Template
 
 {% hint style="info" %}
 When using the **Copy properties from another user** dropdown, the specific fields that get copied are: `id`, `userPrincipalName`, `displayName`, `givenName`, `surname`, `mailNickname`, `jobTitle`, `department`, `streetAddress`, `city`, `state`, `postalCode`, `companyName`, `mobilePhone`, `businessPhones`, `usageLocation`, `office`

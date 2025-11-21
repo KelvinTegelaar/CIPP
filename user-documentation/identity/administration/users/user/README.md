@@ -20,13 +20,13 @@ The actions dropdown carries forward the same [#table-actions](../#table-actions
 
 #### Profile & Identity
 
-| Field                        | Description                                                            |
-| ---------------------------- | ---------------------------------------------------------------------- |
-| User Photo                   | Displays user's Entra ID photo; shows initials if no photo is uploaded |
-| Display Name                 | User's full display name as shown in the directory                     |
-| User Principal Name          | Primary username/login identity for the user                           |
-| Account Enabled              | Boolean indicator showing if user can sign in (✓/✗)                    |
-| Synced from Active Directory | Boolean indicator showing if account is AD-synced (✓/✗)                |
+| Field                        | Description                                                                                                                                     |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| User Photo                   | Displays user's Entra ID photo; shows initials if no photo is uploaded. Includes the ability to upload a new photo or delete the current photo. |
+| Display Name                 | User's full display name as shown in the directory                                                                                              |
+| User Principal Name          | Primary username/login identity for the user                                                                                                    |
+| Account Enabled              | Boolean indicator showing if user can sign in (✓/✗)                                                                                             |
+| Synced from Active Directory | Boolean indicator showing if account is AD-synced (✓/✗)                                                                                         |
 
 #### Licensing & Contact
 
