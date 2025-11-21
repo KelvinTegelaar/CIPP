@@ -3,6 +3,7 @@ import axios, { isAxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
 import { getCippError } from "../utils/get-cipp-error";
+import { buildVersionedHeaders } from "../utils/cippVersion";
 
 export function ApiGetCall(props) {
   const {
@@ -66,9 +67,7 @@ export function ApiGetCall(props) {
           const response = await axios.get(url, {
             signal: signal,
             params: element,
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: await buildVersionedHeaders(),
           });
           results.push(response.data);
           if (onResult) {
@@ -106,9 +105,7 @@ export function ApiGetCall(props) {
         const response = await axios.get(url, {
           signal: url === "/api/tenantFilter" ? null : signal,
           params: data,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: await buildVersionedHeaders(),
           responseType: responseType,
         });
 
@@ -176,7 +173,9 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
         const results = [];
         for (let i = 0; i < data.length; i++) {
           let element = data[i];
-          const response = await axios.post(url, element);
+          const response = await axios.post(url, element, {
+            headers: await buildVersionedHeaders(),
+          });
           results.push(response);
           if (onResult) {
             onResult(response.data); // Emit each result as it arrives
@@ -184,7 +183,7 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
         }
         return results;
       } else {
-        const response = await axios.post(url, data);
+        const response = await axios.post(url, data, { headers: await buildVersionedHeaders() });
         if (onResult) {
           onResult(response.data); // Emit each result as it arrives
         }
@@ -284,9 +283,7 @@ export function ApiGetCallWithPagination({
       const response = await axios.get(url, {
         signal: signal,
         params: { ...data, ...pageParam },
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: await buildVersionedHeaders(),
       });
       return response.data;
     },
