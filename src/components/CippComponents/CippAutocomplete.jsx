@@ -89,6 +89,7 @@ export const CippAutoComplete = (props) => {
   const [offCanvasVisible, setOffCanvasVisible] = useState(false);
   const [fullObject, setFullObject] = useState(null);
   const [internalValue, setInternalValue] = useState(null); // Track selected value internally
+  const [open, setOpen] = useState(false); // Control popover open state
 
   // Sync internalValue when external value or defaultValue prop changes (e.g., when editing a form)
   useEffect(() => {
@@ -295,6 +296,15 @@ export const CippAutoComplete = (props) => {
       <Autocomplete
         ref={autocompleteRef}
         key={stableKey}
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={(event, reason) => {
+          // Keep open if Tab was used in multiple mode
+          if (reason === "selectOption" && multiple && event?.type === "click") {
+            return;
+          }
+          setOpen(false);
+        }}
         disabled={disabled || actionGetRequest.isFetching || isFetching}
         popupIcon={
           actionGetRequest.isFetching || isFetching ? (
@@ -425,6 +435,17 @@ export const CippAutoComplete = (props) => {
               event.preventDefault();
               // Trigger a click on the highlighted option
               highlightedOption.click();
+
+              // In multiple mode, keep the popover open and refocus
+              if (multiple) {
+                setTimeout(() => {
+                  setOpen(true);
+                  const input = autocompleteRef.current?.querySelector("input");
+                  if (input) {
+                    input.focus();
+                  }
+                }, 50);
+              }
             }
           }
         }}
