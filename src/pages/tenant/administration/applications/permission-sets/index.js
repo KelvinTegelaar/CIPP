@@ -5,17 +5,36 @@ import { Edit, Delete, ContentCopy, Add } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { CippPermissionSetDrawer } from "/src/components/CippComponents/CippPermissionSetDrawer";
+import { useRef } from "react";
 
 const Page = () => {
   const pageTitle = "Permission Sets";
   const apiUrl = "/api/ExecAppPermissionTemplate";
+  const tableRef = useRef();
+
+  const handlePermissionSetSuccess = () => {
+    // Refresh the table after successful create/edit
+    if (tableRef.current) {
+      tableRef.current.refreshData();
+    }
+  };
 
   const actions = [
     {
       icon: <Edit />,
       label: "Edit Permission Set",
       color: "warning",
-      link: "/tenant/administration/applications/permission-sets/edit?template=[TemplateId]&name=[TemplateName]",
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippPermissionSetDrawer
+          isEditMode={true}
+          templateId={row.TemplateId}
+          onSuccess={handlePermissionSetSuccess}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+      multiPost: false,
     },
     {
       icon: <ContentCopy />,
@@ -46,6 +65,7 @@ const Page = () => {
 
   return (
     <CippTablePage
+      ref={tableRef}
       title={pageTitle}
       apiUrl={apiUrl}
       queryKey="ExecAppPermissionTemplate"
@@ -54,13 +74,11 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       cardButton={
-        <Button
-          component={Link}
-          href="/tenant/administration/applications/permission-sets/add"
-          startIcon={<Add />}
-        >
-          Add Permission Set
-        </Button>
+        <CippPermissionSetDrawer
+          buttonText="Add Permission Set"
+          isEditMode={false}
+          onSuccess={handlePermissionSetSuccess}
+        />
       }
     />
   );

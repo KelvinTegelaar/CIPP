@@ -11,7 +11,7 @@ const Page = () => {
   const actions = [
     {
       label: "Edit Group",
-      link: "/identity/administration/groups/edit?groupId=[id]",
+      link: "/identity/administration/groups/edit?groupId=[id]&groupType=Microsoft 365",
       multiPost: false,
       color: "warning",
       icon: <Edit />,

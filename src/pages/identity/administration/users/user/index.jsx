@@ -93,32 +93,36 @@ const Page = () => {
     urlFromData: true,
   });
 
+  function refreshFunction() {
+    userBulkRequest.mutate({
+      url: "/api/ListGraphBulkRequest",
+      data: {
+        Requests: [
+          {
+            id: "userMemberOf",
+            url: `/users/${userId}/memberOf`,
+            method: "GET",
+          },
+          {
+            id: "mfaDevices",
+            url: `/users/${userId}/authentication/methods?$top=99`,
+            method: "GET",
+          },
+          {
+            id: "signInLogs",
+            url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
+            method: "GET",
+          },
+        ],
+        tenantFilter: userSettingsDefaults.currentTenant,
+        noPaginateIds: ["signInLogs"],
+      },
+    });
+  }
+
   useEffect(() => {
     if (userId && userSettingsDefaults.currentTenant && !userBulkRequest.isSuccess) {
-      userBulkRequest.mutate({
-        url: "/api/ListGraphBulkRequest",
-        data: {
-          Requests: [
-            {
-              id: "userMemberOf",
-              url: `/users/${userId}/memberOf`,
-              method: "GET",
-            },
-            {
-              id: "mfaDevices",
-              url: `/users/${userId}/authentication/methods?$top=99`,
-              method: "GET",
-            },
-            {
-              id: "signInLogs",
-              url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
-              method: "GET",
-            },
-          ],
-          tenantFilter: userSettingsDefaults.currentTenant,
-          noPaginateIds: ["signInLogs"],
-        },
-      });
+      refreshFunction();
     }
   }, [userId, userSettingsDefaults.currentTenant, userBulkRequest.isSuccess]);
 
@@ -517,6 +521,11 @@ const Page = () => {
           },
           text: "Groups",
           subtext: "List of groups the user is a member of",
+          statusText: ` ${
+            userMemberOf?.filter((item) => item?.["@odata.type"] === "#microsoft.graph.group")
+              .length
+          } Group(s)`,
+          statusColor: "info.main",
           table: {
             title: "Group Memberships",
             hideTitle: true,
@@ -524,12 +533,13 @@ const Page = () => {
               {
                 icon: <PencilIcon />,
                 label: "Edit Group",
-                link: "/identity/administration/groups/edit?groupId=[id]",
+                link: "/identity/administration/groups/edit?groupId=[id]&groupType=[calculatedGroupType]",
               },
             ],
             data: userMemberOf?.filter(
               (item) => item?.["@odata.type"] === "#microsoft.graph.group"
             ),
+            refreshFunction: refreshFunction,
             simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
           },
         },
@@ -545,6 +555,12 @@ const Page = () => {
           },
           text: "Admin Roles",
           subtext: "List of roles the user is a member of",
+          statusText: ` ${
+            userMemberOf?.filter(
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+            ).length
+          } Role(s)`,
+          statusColor: "info.main",
           table: {
             title: "Admin Roles",
             hideTitle: true,
@@ -552,6 +568,7 @@ const Page = () => {
               (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
             ),
             simpleColumns: ["displayName", "description"],
+            refreshFunction: refreshFunction,
           },
         },
       ]
@@ -606,12 +623,12 @@ const Page = () => {
                 <CippBannerListCard
                   isFetching={userBulkRequest.isPending}
                   items={groupMembershipItems}
-                  isCollapsible={groupMembershipItems.length > 0 ? true : false}
+                  isCollapsible={true}
                 />
                 <CippBannerListCard
                   isFetching={userBulkRequest.isPending}
                   items={roleMembershipItems}
-                  isCollapsible={roleMembershipItems.length > 0 ? true : false}
+                  isCollapsible={true}
                 />
               </Stack>
             </Grid>

@@ -25,8 +25,6 @@ import {
   ViewColumn as ViewColumnIcon,
   FileDownload as ExportIcon,
   KeyboardArrowDown as ArrowDownIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
   Code as CodeIcon,
   PictureAsPdf as PdfIcon,
   TableChart as CsvIcon,
@@ -38,9 +36,8 @@ import {
 } from "@mui/icons-material";
 import { ExclamationCircleIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { styled, alpha } from "@mui/material/styles";
-import { MRT_ToggleFullScreenButton } from "material-react-table";
-import { PDFExportButton } from "../pdfExportButton";
-import { CSVExportButton } from "../csvExportButton";
+import { PDFExportButton, exportRowsToPdf } from "../pdfExportButton";
+import { CSVExportButton, exportRowsToCsv } from "../csvExportButton";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { useMediaQuery } from "@mui/material";
 import { CippQueueTracker } from "./CippQueueTracker";
@@ -52,7 +49,6 @@ import { useRouter } from "next/router";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
-import { useQueryClient } from "@tanstack/react-query";
 import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
 import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
 import { Stack } from "@mui/system";
@@ -163,6 +159,7 @@ export const CIPPTableToptoolbar = ({
   setConfiguredSimpleColumns,
   queueMetadata,
   isInDialog = false,
+  showBulkExportAction = true,
 }) => {
   const popover = usePopover();
   const [filtersAnchor, setFiltersAnchor] = useState(null);
@@ -186,9 +183,6 @@ export const CIPPTableToptoolbar = ({
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = settings?.currentTenant;
 
-  // Track if we've restored filters for this page to prevent infinite loops
-  const restoredFiltersRef = useRef(new Set());
-
   const getBulkActions = (actions, selectedRows) => {
     return (
       actions
@@ -201,6 +195,42 @@ export const CIPPTableToptoolbar = ({
         })) || []
     );
   };
+
+  const selectedRows = table.getSelectedRowModel().rows;
+  const hasSelection = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
+  // Built-in export actions should only appear when the page opts in and rows are selected.
+  const builtInBulkExportAvailable =
+    showBulkExportAction && exportEnabled && selectedRows.length > 0;
+  const customBulkActions = getBulkActions(actions, selectedRows);
+  const showBulkActionsButton = hasSelection && customBulkActions.length > 0;
+
+  const handleExportSelectedToCsv = () => {
+    if (!selectedRows.length) {
+      return;
+    }
+    exportRowsToCsv({
+      rows: selectedRows,
+      columns: usedColumns,
+      reportName: `${title}`,
+      columnVisibility,
+    });
+  };
+
+  const handleExportSelectedToPdf = () => {
+    if (!selectedRows.length) {
+      return;
+    }
+    exportRowsToPdf({
+      rows: selectedRows,
+      columns: usedColumns,
+      reportName: `${title}`,
+      columnVisibility,
+      brandingSettings: settings?.customBranding,
+    });
+  };
+
+  // Track if we've restored filters for this page to prevent infinite loops
+  const restoredFiltersRef = useRef(new Set());
 
   useEffect(() => {
     //if usedData changes, deselect all rows
@@ -990,6 +1020,34 @@ export const CIPPTableToptoolbar = ({
                 </ListItemIcon>
                 <ListItemText primary="Export to PDF" />
               </MenuItem>
+              {builtInBulkExportAvailable && (
+                <>
+                  <Divider sx={{ my: 0.5 }} />
+                  <MenuItem
+                    onClick={() => {
+                      handleExportSelectedToCsv();
+                      setExportAnchor(null);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <CsvIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Export Selected to CSV" />
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleExportSelectedToPdf();
+                      setExportAnchor(null);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <PdfIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Export Selected to PDF" />
+                  </MenuItem>
+                </>
+              )}
+              <Divider sx={{ my: 0.5 }} />
               <MenuItem
                 onClick={() => {
                   if (isInDialog) {
@@ -1056,31 +1114,29 @@ export const CIPPTableToptoolbar = ({
           )}
 
           {/* Bulk Actions - inline with toolbar */}
-          {actions &&
-            getBulkActions(actions, table.getSelectedRowModel().rows).length > 0 &&
-            (table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && (
-              <Button
-                onClick={popover.handleOpen}
-                ref={popover.anchorRef}
-                startIcon={
-                  <SvgIcon fontSize="small">
-                    <ChevronDownIcon />
-                  </SvgIcon>
-                }
-                variant="outlined"
-                size="small"
-                sx={{
-                  flexShrink: 0,
-                  whiteSpace: "nowrap",
-                  minWidth: "auto",
-                  height: "32px",
-                  fontSize: { xs: "12px", md: "14px" },
-                  mr: 1,
-                }}
-              >
-                Bulk Actions
-              </Button>
-            )}
+          {showBulkActionsButton && (
+            <Button
+              onClick={popover.handleOpen}
+              ref={popover.anchorRef}
+              startIcon={
+                <SvgIcon fontSize="small">
+                  <ChevronDownIcon />
+                </SvgIcon>
+              }
+              variant="outlined"
+              size="small"
+              sx={{
+                flexShrink: 0,
+                whiteSpace: "nowrap",
+                minWidth: "auto",
+                height: "32px",
+                fontSize: { xs: "12px", md: "14px" },
+                mr: 1,
+              }}
+            >
+              Bulk Actions
+            </Button>
+          )}
 
           {/* Cold start indicator */}
           {getRequestData?.data?.pages?.[0].Metadata?.ColdStart === true && (
@@ -1135,22 +1191,39 @@ export const CIPPTableToptoolbar = ({
         }}
       >
         {actions &&
-          getBulkActions(actions, table.getSelectedRowModel().rows).map((action, index) => (
+          customBulkActions.map((action, index) => (
             <MenuItem
               key={index}
               disabled={action.disabled}
               onClick={() => {
-                if (action.disabled) return;
+                if (action.disabled) {
+                  return;
+                }
+
+                const selectedRows = table.getSelectedRowModel().rows;
+                const selectedData = selectedRows.map((row) => row.original);
+
+                if (typeof action.customBulkHandler === "function") {
+                  action.customBulkHandler({
+                    rows: selectedRows,
+                    data: selectedData,
+                    closeMenu: popover.handleClose,
+                    clearSelection: () => table.toggleAllRowsSelected(false),
+                  });
+                  popover.handleClose();
+                  return;
+                }
+
                 setActionData({
-                  data: table.getSelectedRowModel().rows.map((row) => row.original),
+                  data: selectedData,
                   action: action,
                   ready: true,
                 });
 
                 if (action?.noConfirm && action.customFunction) {
-                  table
-                    .getSelectedRowModel()
-                    .rows.map((row) => action.customFunction(row.original.original, action, {}));
+                  selectedRows.map((row) =>
+                    action.customFunction(row.original.original, action, {})
+                  );
                 } else {
                   createDialog.handleOpen();
                   popover.handleClose();

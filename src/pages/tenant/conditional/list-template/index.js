@@ -4,7 +4,6 @@ import { Button } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { Delete, GitHub, Edit, RocketLaunch } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";
-import Link from "next/link";
 import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
 import { CippCADeployDrawer } from "/src/components/CippComponents/CippCADeployDrawer.jsx";
 import { useState } from "react";
@@ -95,13 +94,14 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} />,
+    children: (row) => <CippJsonView object={row} defaultOpen={true} />,
     size: "xl",
   };
   return (
     <>
       <CippTablePage
         title={pageTitle}
+        tenantInTitle={false}
         apiUrl="/api/ListCATemplates"
         queryKey="ListCATemplates-table"
         actions={actions}

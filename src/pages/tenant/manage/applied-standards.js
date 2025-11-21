@@ -43,6 +43,7 @@ import { ClockIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
 import tabOptions from "./tabOptions.json";
 import { createDriftManagementActions } from "./driftManagementActions";
+import { CippApiLogsDrawer } from "../../../components/CippComponents/CippApiLogsDrawer";
 
 const Page = () => {
   const router = useRouter();
@@ -64,6 +65,21 @@ const Page = () => {
     url: `/api/listStandardTemplates`,
     queryKey: `listStandardTemplates-reports`,
   });
+
+  // Normalize template data structure to always work with an array
+  const templates = useMemo(() => {
+    const raw = templateDetails?.data;
+    if (Array.isArray(raw)) return raw;
+    if (raw && Array.isArray(raw.templates)) return raw.templates; // alternate key
+    if (raw && Array.isArray(raw.data)) return raw.data; // nested data property
+    return [];
+  }, [templateDetails?.data]);
+
+  // Selected template object (safe lookup)
+  const selectedTemplate = useMemo(
+    () => templates.find((t) => t.GUID === templateId),
+    [templates, templateId]
+  );
 
   // Run the report once
   const runReport = ApiPostCall({ relatedQueryKeys: ["ListStandardsCompare"] });
@@ -617,8 +633,8 @@ const Page = () => {
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
   // Simple filter for all templates (no type filtering)
-  const templateOptions = templateDetails.data
-    ? templateDetails.data.map((template) => ({
+  const templateOptions = templates
+    ? templates.map((template) => ({
         label:
           template.displayName ||
           template.templateName ||
@@ -630,8 +646,15 @@ const Page = () => {
 
   // Find currently selected template
   const selectedTemplateOption =
-    templateId && templateOptions.length
-      ? templateOptions.find((option) => option.value === templateId) || null
+    templateId && selectedTemplate
+      ? {
+          label:
+            selectedTemplate.displayName ||
+            selectedTemplate.templateName ||
+            selectedTemplate.name ||
+            `Template ${selectedTemplate.GUID}`,
+          value: selectedTemplate.GUID,
+        }
       : null;
 
   // Effect to refetch APIs when templateId changes (needed for shallow routing)
@@ -642,45 +665,54 @@ const Page = () => {
   }, [templateId]);
 
   // Prepare title and subtitle for HeaderedTabbedLayout
-  const title =
-    templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.templateName ||
-    "Tenant Report";
+  const title = selectedTemplate?.templateName || selectedTemplate?.displayName || "Tenant Report";
 
   const subtitle = [
     {
       icon: <Policy />,
       text: (
-        <CippAutoComplete
-          options={templateOptions}
-          label="Select Template"
-          multiple={false}
-          creatable={false}
-          isFetching={templateDetails.isFetching}
-          defaultValue={selectedTemplateOption}
-          value={selectedTemplateOption}
-          onChange={(selectedTemplate) => {
-            const query = { ...router.query };
-            if (selectedTemplate && selectedTemplate.value) {
-              query.templateId = selectedTemplate.value;
-            } else {
-              delete query.templateId;
-            }
-            router.replace(
-              {
-                pathname: router.pathname,
-                query: query,
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-          sx={{ minWidth: 300 }}
-          placeholder="Select a template..."
-        />
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <CippAutoComplete
+            options={templateOptions}
+            label="Select Template"
+            multiple={false}
+            creatable={false}
+            isFetching={templateDetails.isFetching}
+            defaultValue={selectedTemplateOption}
+            value={selectedTemplateOption}
+            onChange={(selectedTemplate) => {
+              const query = { ...router.query };
+              if (selectedTemplate && selectedTemplate.value) {
+                query.templateId = selectedTemplate.value;
+              } else {
+                delete query.templateId;
+              }
+              router.replace(
+                {
+                  pathname: router.pathname,
+                  query: query,
+                },
+                undefined,
+                { shallow: true }
+              );
+            }}
+            sx={{ minWidth: 300 }}
+            placeholder="Select a template..."
+          />
+          {templateId && (
+            <CippApiLogsDrawer
+              standardFilter={templateId}
+              buttonText="Logs"
+              title="Standard Logs"
+              variant="outlined"
+              tenantFilter={currentTenant}
+            />
+          )}
+        </Stack>
       ),
     },
     // Add compliance badges when template data is available (show even if no comparison data yet)
-    ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
+    ...(selectedTemplate
       ? [
           {
             component: (
@@ -728,7 +760,7 @@ const Page = () => {
         ]
       : []),
     // Add description if available
-    ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.description
+    ...(selectedTemplate?.description
       ? [
           {
             component: (
@@ -746,10 +778,7 @@ const Page = () => {
                   mt: 1,
                 }}
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(
-                    templateDetails?.data?.filter((template) => template.GUID === templateId)[0]
-                      .description
-                  ),
+                  __html: DOMPurify.sanitize(selectedTemplate.description),
                 }}
               />
             ),
@@ -759,14 +788,16 @@ const Page = () => {
   ];
 
   // Actions for the header
-  const actions = createDriftManagementActions({
-    templateId,
-    onRefresh: () => {
-      comparisonApi.refetch();
-      templateDetails.refetch();
-    },
-    currentTenant,
-  });
+  const actions = [
+    ...createDriftManagementActions({
+      templateId,
+      onRefresh: () => {
+        comparisonApi.refetch();
+        templateDetails.refetch();
+      },
+      currentTenant,
+    }),
+  ];
 
   return (
     <HeaderedTabbedLayout
@@ -778,7 +809,7 @@ const Page = () => {
       actionsData={{}}
       isFetching={comparisonApi.isFetching || templateDetails.isFetching}
     >
-      <Box sx={{ py: 2 }}>
+      <Box sx={{ py: 2, mr: 2 }}>
         {comparisonApi.isFetching && (
           <>
             {[1, 2, 3].map((item) => (
