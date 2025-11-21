@@ -5,42 +5,53 @@ import { Grid } from "@mui/system";
 import { useWatch } from "react-hook-form";
 import { useEffect } from "react";
 
+const DEVICE_PLATFORM_OPTIONS = [
+  { label: "Windows 10 and later", value: "windows10AndLater" },
+  { label: "iOS", value: "iOS" },
+  { label: "macOS", value: "macOS" },
+  { label: "Android Enterprise", value: "androidForWork" },
+  { label: "Android device administrator", value: "android" },
+  { label: "Android Work Profile", value: "androidWorkProfile" },
+  { label: "Android (AOSP)", value: "androidAOSP" },
+];
+
+const APP_PLATFORM_OPTIONS = [
+  { label: "Windows", value: "windowsMobileApplicationManagement" },
+  { label: "Android", value: "androidMobileApplicationManagement" },
+  { label: "iOS/iPadOS", value: "iOSMobileApplicationManagement" },
+];
+
+const FILTER_TYPE_OPTIONS = [
+  { label: "Devices", value: "devices" },
+  { label: "Apps", value: "apps" },
+];
+
 export const CippWizardAssignmentFilterTemplates = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
-  const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
-  
-  const platformOptions = [
-    { label: "Windows 10 and Later", value: "windows10AndLater" },
-    { label: "iOS", value: "iOS" },
-    { label: "Android", value: "android" },
-    { label: "macOS", value: "macOS" },
-    { label: "Android Work Profile", value: "androidWorkProfile" },
-    { label: "Android AOSP", value: "androidAOSP" },
-  ];
-
-  const filterTypeOptions = [
-    { label: "Devices", value: "devices" },
-    { label: "Apps", value: "apps" },
-  ];
+  const templateSelection = useWatch({ control: formControl.control, name: "TemplateList" });
+  const assignmentFilterManagementType =
+    useWatch({
+      control: formControl?.control ?? formControl,
+      name: "assignmentFilterManagementType",
+      defaultValue: "devices",
+    }) ?? "devices";
+  const platformOptions =
+    assignmentFilterManagementType === "apps" ? APP_PLATFORM_OPTIONS : DEVICE_PLATFORM_OPTIONS;
 
   useEffect(() => {
-    if (watcher?.value) {
-      console.log("Loading template:", watcher);
+    if (templateSelection?.value) {
+      const { addedFields } = templateSelection;
 
-      // Set platform first to ensure conditional fields are visible
-      formControl.setValue("platform", watcher.addedFields.platform);
-
-      // Use setTimeout to ensure the DOM updates before setting other fields
-      setTimeout(() => {
-        formControl.setValue("displayName", watcher.addedFields.displayName);
-        formControl.setValue("description", watcher.addedFields.description);
-        formControl.setValue("rule", watcher.addedFields.rule);
-        formControl.setValue("assignmentFilterManagementType", watcher.addedFields.assignmentFilterManagementType);
-
-        console.log("Set rule to:", watcher.addedFields.rule);
-      }, 100);
+      formControl.setValue(
+        "assignmentFilterManagementType",
+        addedFields.assignmentFilterManagementType || "devices"
+      );
+      formControl.setValue("platform", addedFields.platform || "");
+      formControl.setValue("displayName", addedFields.displayName || "");
+      formControl.setValue("description", addedFields.description || "");
+      formControl.setValue("rule", addedFields.rule || "");
     }
-  }, [watcher]);
+  }, [templateSelection, formControl]);
 
   return (
     <Stack spacing={3}>
@@ -74,20 +85,21 @@ export const CippWizardAssignmentFilterTemplates = (props) => {
         <Grid size={12}>
           <CippFormComponent
             type="radio"
-            name="platform"
-            label="Platform"
+            name="assignmentFilterManagementType"
+            label="Filter Type"
             formControl={formControl}
-            options={platformOptions}
-            validators={{ required: "Please select a platform" }}
+            validators={{ required: "Filter Type is required" }}
+            options={FILTER_TYPE_OPTIONS}
           />
         </Grid>
         <Grid size={12}>
           <CippFormComponent
             type="radio"
-            name="assignmentFilterManagementType"
-            label="Filter Type"
+            name="platform"
+            label="Platform"
             formControl={formControl}
-            options={filterTypeOptions}
+            options={platformOptions}
+            validators={{ required: "Platform is required" }}
           />
         </Grid>
         <Grid size={12}>
@@ -96,7 +108,7 @@ export const CippWizardAssignmentFilterTemplates = (props) => {
             name="displayName"
             label="Filter Display Name"
             formControl={formControl}
-            validators={{ required: "Filter display name is required" }}
+            validators={{ required: "Display Name is required" }}
           />
         </Grid>
         <Grid size={12}>
@@ -115,7 +127,7 @@ export const CippWizardAssignmentFilterTemplates = (props) => {
             formControl={formControl}
             multiline
             rows={6}
-            validators={{ required: "Filter rule is required" }}
+            validators={{ required: "Filter Rule is required" }}
           />
         </Grid>
       </Grid>

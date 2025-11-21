@@ -2,11 +2,11 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import CippPermissionPreview from "/src/components/CippComponents/CippPermissionPreview.jsx";
-import { Edit, Delete, ContentCopy, Add, GitHub } from "@mui/icons-material";
+import { Edit, Delete, ContentCopy, Add, GitHub, RocketLaunch } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
+import { ApiGetCall } from "/src/api/ApiCall";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Templates";
@@ -220,13 +220,16 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       cardButton={
-        <Button
-          component={Link}
-          href="/tenant/administration/applications/templates/add"
-          startIcon={<Add />}
-        >
-          Add App Approval Template
-        </Button>
+        <>
+          <Button
+            component={Link}
+            href="/tenant/administration/applications/templates/add"
+            startIcon={<Add />}
+            sx={{ mr: 1 }}
+          >
+            Add Template
+          </Button>
+        </>
       }
     />
   );

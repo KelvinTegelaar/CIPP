@@ -152,21 +152,22 @@ const Page = () => {
       url: "/api/ExecGetRecoveryKey",
       data: {
         GUID: "azureADDeviceId",
+        RecoveryKeyType: "!BitLocker",
       },
       condition: (row) => row.operatingSystem === "Windows",
       confirmText: "Are you sure you want to retrieve the BitLocker keys for [deviceName]?",
     },
     {
-      label: "Retrieve File Vault Key",
+      label: "Retrieve FileVault Key",
       type: "POST",
       icon: <Security />,
-      url: "/api/ExecDeviceAction",
+      url: "/api/ExecGetRecoveryKey",
       data: {
         GUID: "id",
-        Action: "getFileVaultKey",
+        RecoveryKeyType: "!FileVault",
       },
       condition: (row) => row.operatingSystem === "macOS",
-      confirmText: "Are you sure you want to retrieve the file vault key for [deviceName]?",
+      confirmText: "Are you sure you want to retrieve the FileVault key for [deviceName]?",
     },
     {
       label: "Windows Defender Full Scan",

@@ -1,4 +1,4 @@
- import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Box, Button, IconButton, Typography, Alert, Paper } from "@mui/material";
 import { Grid } from "@mui/system";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
@@ -9,7 +9,9 @@ import {
   getTenantGroupPropertyOptions,
   getTenantGroupOperatorOptions,
   getTenantGroupValueOptions,
+  getTenantGroupsQuery,
 } from "../../utils/get-cipp-tenant-group-options";
+import { ApiGetCallWithPagination } from "../../api/ApiCall";
 
 const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
   const [ruleCount, setRuleCount] = useState(1);
@@ -25,10 +27,29 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
   const ruleLogic = useWatch({
     control: formControl.control,
     name: "ruleLogic",
-    defaultValue: "and"
+    defaultValue: "and",
   });
 
   const propertyOptions = getTenantGroupPropertyOptions();
+
+  // Fetch tenant groups using ApiGetCallWithPagination
+  const tenantGroupsQuery = ApiGetCallWithPagination(getTenantGroupsQuery());
+
+  const tenantGroupOptions = useMemo(() => {
+    if (tenantGroupsQuery.isSuccess && tenantGroupsQuery.data?.pages) {
+      // Flatten all pages and extract Results
+      const allGroups = tenantGroupsQuery.data.pages.flatMap((page) => page?.Results || []);
+      return allGroups
+        .filter((group) => group.GroupType === "static")
+        .map((group) => ({
+          label: group.Name || group.displayName,
+          value: group.Id || group.RowKey,
+          type: group.GroupType,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+    }
+    return [];
+  }, [tenantGroupsQuery.isSuccess, tenantGroupsQuery.data]);
 
   const addRule = () => {
     const currentRules = formControl.getValues(name) || [];
@@ -48,6 +69,12 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
     const rules = watchedRules || [];
     const rule = rules[ruleIndex];
     const propertyType = rule?.property?.type;
+
+    // Return tenant group options for tenantGroup type
+    if (propertyType === "tenantGroup") {
+      return tenantGroupOptions;
+    }
+
     return getTenantGroupValueOptions(propertyType);
   };
 
@@ -69,7 +96,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
             variant="body2"
             sx={{ mb: 1, fontWeight: "bold", color: "primary.main", textAlign: "center" }}
           >
-            {(ruleLogic || 'and').toUpperCase()}
+            {(ruleLogic || "and").toUpperCase()}
           </Typography>
         )}
 
@@ -119,15 +146,63 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
               compareType="hasValue"
               compareValue={true}
             >
-              <CippFormComponent
-                type="autoComplete"
-                name={`${name}.${ruleIndex}.value`}
-                label="Value"
-                options={getValueOptions(ruleIndex)}
-                formControl={formControl}
-                required
-                placeholder="Select value"
-              />
+              {/* Custom Variable - Two-field input */}
+              {watchedRules?.[ruleIndex]?.property?.type === "customVariable" ? (
+                <Grid container spacing={2}>
+                  <Grid size={6}>
+                    <CippFormComponent
+                      type="autoComplete"
+                      name={`${name}.${ruleIndex}.value.variableName`}
+                      label="Variable Name"
+                      formControl={formControl}
+                      required
+                      placeholder="Select or type variable name"
+                      fullWidth
+                      multiple={false}
+                      freeSolo={true}
+                      creatable={true}
+                      api={{
+                        url: "/api/ListCustomVariables?includeSystem=false&excludeGlobalReserved=true",
+                        labelField: (option) => {
+                          if (typeof option === "string") return option;
+                          return option.Name || option;
+                        },
+                        valueField: (option) => {
+                          if (typeof option === "string") return option;
+                          return option.Name || option;
+                        },
+                        queryKey: "CustomVariables-TenantSpecific",
+                        dataKey: "Results",
+                      }}
+                    />
+                  </Grid>
+                  <Grid size={6}>
+                    <CippFormComponent
+                      type="textField"
+                      name={`${name}.${ruleIndex}.value.value`}
+                      label="Expected Value"
+                      formControl={formControl}
+                      required
+                      placeholder="Value to match"
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+              ) : (
+                <CippFormComponent
+                  type="autoComplete"
+                  name={`${name}.${ruleIndex}.value`}
+                  label="Value"
+                  options={getValueOptions(ruleIndex)}
+                  formControl={formControl}
+                  required
+                  placeholder="Select value"
+                  isFetching={
+                    tenantGroupsQuery.isFetching &&
+                    watchedRules?.[ruleIndex]?.property?.type === "tenantGroup"
+                  }
+                />
+              )}
             </CippFormCondition>
           </Grid>
 
@@ -151,8 +226,13 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
       </Typography>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Define rules to automatically include tenants in this group. Rules are combined with the selected logic operator.
-        Example: "Available License equals Microsoft 365 E3" {(ruleLogic || 'and').toUpperCase()} "Delegated Access Status equals Direct Tenant"
+        Define rules to automatically include tenants in this group. Rules are combined with the
+        selected logic operator. Examples: "Available License equals Microsoft 365 E3"{" "}
+        {(ruleLogic || "and").toUpperCase()} "Delegated Access Status equals Direct Tenant"
+        {" | "}
+        "Member of Tenant Group equals 'Production Tenants'"
+        {" | "}
+        "Custom Variable: Environment equals Production"
       </Alert>
 
       {/* Logic Operator Selection */}
@@ -163,7 +243,7 @@ const CippTenantGroupRuleBuilder = ({ formControl, name = "dynamicRules" }) => {
           label="Rule Logic"
           options={[
             { label: "AND (All rules must match)", value: "and" },
-            { label: "OR (Any rule must match)", value: "or" }
+            { label: "OR (Any rule must match)", value: "or" },
           ]}
           formControl={formControl}
           defaultValue="and"

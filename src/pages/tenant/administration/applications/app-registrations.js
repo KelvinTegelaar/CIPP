@@ -5,7 +5,17 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent.jsx";
 import { CertificateCredentialRemovalForm } from "/src/components/CippComponents/CertificateCredentialRemovalForm.jsx";
 import CippPermissionPreview from "/src/components/CippComponents/CippPermissionPreview.jsx";
-import { Launch, Delete, Edit, Key, Security, Block, CheckCircle, Save } from "@mui/icons-material";
+import {
+  Launch,
+  Delete,
+  Edit,
+  Key,
+  Security,
+  Block,
+  CheckCircle,
+  Save,
+  ContentCopy,
+} from "@mui/icons-material";
 import { usePermissions } from "/src/hooks/use-permissions.js";
 import tabOptions from "./tabOptions";
 
@@ -20,7 +30,7 @@ const Page = () => {
     {
       icon: <Launch />,
       label: "View App Registration",
-      link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/[appId]`,
+      link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/[appId]/isMSAApp/`,
       color: "info",
       target: "_blank",
       multiPost: false,
@@ -29,11 +39,27 @@ const Page = () => {
     {
       icon: <Launch />,
       label: "View API Permissions",
-      link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/[appId]`,
+      link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/[appId]/isMSAApp/`,
       color: "info",
       target: "_blank",
       multiPost: false,
       external: true,
+    },
+    {
+      icon: <ContentCopy />,
+      label: "Create Template from App",
+      type: "POST",
+      color: "info",
+      multiPost: false,
+      url: "/api/ExecCreateAppTemplate",
+      data: {
+        AppId: "appId",
+        DisplayName: "displayName",
+        Type: "application",
+      },
+      confirmText:
+        "Create a deployment template from '[displayName]'? This will copy all permissions and create a reusable template.",
+      condition: () => canWriteApplication,
     },
     {
       icon: <Key />,

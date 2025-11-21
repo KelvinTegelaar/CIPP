@@ -15,6 +15,8 @@ import { CippApiDialog } from "../../../../components/CippComponents/CippApiDial
 import { useDialog } from "../../../../hooks/use-dialog";
 import { useState } from "react";
 import { CippTableDialog } from "../../../../components/CippComponents/CippTableDialog";
+import { Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
+import { FilterList } from "@mui/icons-material";
 import { CippImageCard } from "../../../../components/CippCards/CippImageCard";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useRouter } from "next/navigation";
@@ -26,6 +28,8 @@ const Page = () => {
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [updatesData, setUpdatesData] = useState({ data: {}, ready: false });
   const cippTableDialog = useDialog();
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState("all");
   const router = useRouter();
   const timeAgo = new TimeAgo("en-US");
 
@@ -36,6 +40,45 @@ const Page = () => {
       router.push(url);
     }
   };
+
+  const handleFilterClick = (event) => {
+    setFilterAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setFilterAnchorEl(null);
+  };
+
+  const handleFilterSelect = (filter) => {
+    setSelectedFilter(filter);
+    handleFilterClose();
+  };
+
+  const getFilteredControlScores = () => {
+    if (!secureScore.isSuccess) return [];
+
+    const controlScores = secureScore.translatedData.controlScores || [];
+
+    switch (selectedFilter) {
+      case "completed":
+        return controlScores.filter((score) => score.scoreInPercentage === 100);
+      case "zero":
+        return controlScores.filter((score) => score.scoreInPercentage === 0);
+      case "started":
+        return controlScores.filter(
+          (score) => score.scoreInPercentage > 0 && score.scoreInPercentage < 100
+        );
+      default:
+        return controlScores;
+    }
+  };
+
+  const filterOptions = [
+    { value: "all", label: "All Recommendations" },
+    { value: "completed", label: "Completed (100%)" },
+    { value: "zero", label: "Not Started (0%)" },
+    { value: "started", label: "In Progress (Started)" },
+  ];
   return (
     <Container
       sx={{
@@ -58,6 +101,29 @@ const Page = () => {
         )}
         {currentTenant !== "AllTenants" && (
           <>
+            <Grid
+              size={{ md: 12, xs: 12 }}
+              sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+            >
+              <Button variant="outlined" startIcon={<FilterList />} onClick={handleFilterClick}>
+                Filter: {filterOptions.find((opt) => opt.value === selectedFilter)?.label}
+              </Button>
+              <Menu
+                anchorEl={filterAnchorEl}
+                open={Boolean(filterAnchorEl)}
+                onClose={handleFilterClose}
+              >
+                {filterOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    selected={selectedFilter === option.value}
+                    onClick={() => handleFilterSelect(option.value)}
+                  >
+                    <ListItemText>{option.label}</ListItemText>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Grid>
             <Grid size={{ md: 12, xs: 12 }}>
               <CippInfoBar
                 isFetching={secureScore.isFetching}
@@ -110,7 +176,7 @@ const Page = () => {
 
             {currentTenant !== "AllTenants" &&
               secureScore.isSuccess &&
-              secureScore.translatedData.controlScores.map((secureScoreControl) => (
+              getFilteredControlScores().map((secureScoreControl) => (
                 <Grid size={{ md: 3, xs: 12 }} key={secureScoreControl.controlName}>
                   <CippButtonCard
                     title={secureScoreControl.title}

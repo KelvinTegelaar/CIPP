@@ -3,7 +3,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import Link from "next/link";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { FilterAlt, Edit, Add } from "@mui/icons-material";
+import { Edit, Add, Book } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { useSettings } from "../../../../hooks/use-settings";
 
@@ -13,17 +13,10 @@ const Page = () => {
 
   const actions = [
     {
-      label: "Edit Filter",
-      link: "/endpoint/MEM/assignment-filters/edit?filterId=[id]",
-      multiPost: false,
-      icon: <Edit />,
-      color: "success",
-    },
-    {
       label: "Create template based on filter",
       type: "POST",
       url: "/api/AddAssignmentFilterTemplate",
-      icon: <FilterAlt />,
+      icon: <Book />,
       data: {
         displayName: "displayName",
         description: "description",
@@ -33,6 +26,13 @@ const Page = () => {
       },
       confirmText: "Are you sure you want to create a template based on this filter?",
       multiPost: false,
+    },
+    {
+      label: "Edit Filter",
+      link: "/endpoint/MEM/assignment-filters/edit?filterId=[id]",
+      multiPost: false,
+      icon: <Edit />,
+      color: "success",
     },
     {
       label: "Delete Filter",

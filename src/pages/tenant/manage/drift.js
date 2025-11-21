@@ -544,8 +544,9 @@ const ManageDriftPage = () => {
   const deviationItemsWithActions = deviationItems.map((item) => {
     // Check if this is a template that supports delete action
     const supportsDelete =
-      item.standardName?.includes("ConditionalAccessTemplate") ||
-      item.standardName?.includes("IntuneTemplate");
+      (item.standardName?.includes("ConditionalAccessTemplate") ||
+        item.standardName?.includes("IntuneTemplate")) &&
+      item.expectedValue === "This policy only exists in the tenant, not in the template.";
 
     return {
       ...item,
@@ -592,8 +593,9 @@ const ManageDriftPage = () => {
   const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => {
     // Check if this is a template that supports delete action
     const supportsDelete =
-      item.standardName?.includes("ConditionalAccessTemplate") ||
-      item.standardName?.includes("IntuneTemplate");
+      (item.standardName?.includes("ConditionalAccessTemplate") ||
+        item.standardName?.includes("IntuneTemplate")) &&
+      item.expectedValue === "This policy only exists in the tenant, not in the template.";
 
     return {
       ...item,
@@ -636,8 +638,9 @@ const ManageDriftPage = () => {
   const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => {
     // Check if this is a template that supports delete action
     const supportsDelete =
-      item.standardName?.includes("ConditionalAccessTemplate") ||
-      item.standardName?.includes("IntuneTemplate");
+      (item.standardName?.includes("ConditionalAccessTemplate") ||
+        item.standardName?.includes("IntuneTemplate")) &&
+      item.expectedValue === "This policy only exists in the tenant, not in the template.";
 
     return {
       ...item,
@@ -725,15 +728,20 @@ const ManageDriftPage = () => {
     ? standardsApi.data
         .filter((template) => template.type === "drift" || template.Type === "drift")
         .map((template) => ({
-          label: template.displayName || template.templateName || template.name || `Template ${template.GUID}`,
+          label:
+            template.displayName ||
+            template.templateName ||
+            template.name ||
+            `Template ${template.GUID}`,
           value: template.GUID,
         }))
     : [];
 
   // Find currently selected template
-  const selectedTemplateOption = templateId && driftTemplateOptions.length
-    ? driftTemplateOptions.find((option) => option.value === templateId) || null
-    : null;
+  const selectedTemplateOption =
+    templateId && driftTemplateOptions.length
+      ? driftTemplateOptions.find((option) => option.value === templateId) || null
+      : null;
   const title = "Manage Drift";
   const subtitle = [
     {
@@ -895,8 +903,10 @@ const ManageDriftPage = () => {
                         {/* Only show delete option if there are template deviations that support deletion */}
                         {processedDriftData.currentDeviations.some(
                           (deviation) =>
-                            deviation.standardName?.includes("ConditionalAccessTemplate") ||
-                            deviation.standardName?.includes("IntuneTemplate")
+                            (deviation.standardName?.includes("ConditionalAccessTemplate") ||
+                              deviation.standardName?.includes("IntuneTemplate")) &&
+                            deviation.expectedValue ===
+                              "This policy only exists in the tenant, not in the template."
                         ) && (
                           <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
                             <Block sx={{ mr: 1, color: "error.main" }} />

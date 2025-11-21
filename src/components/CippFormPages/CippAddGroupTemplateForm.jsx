@@ -85,6 +85,21 @@ const CippAddGroupTemplateForm = (props) => {
       <CippFormCondition
         formControl={formControl}
         field="groupType"
+        compareType="is"
+        compareValue="m365"
+      >
+        <Grid size={{ xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label="Subscribe members to receive group emails"
+            name="subscribeMembers"
+            formControl={formControl}
+          />
+        </Grid>
+      </CippFormCondition>
+      <CippFormCondition
+        formControl={formControl}
+        field="groupType"
         compareType="contains"
         compareValue="dynamic"
       >

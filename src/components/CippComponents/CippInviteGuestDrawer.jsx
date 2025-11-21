@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
@@ -34,6 +34,13 @@ export const CippInviteGuestDrawer = ({
     urlFromData: true,
     relatedQueryKeys: [`Users-${userSettingsDefaults.currentTenant}`],
   });
+
+  // Reset form fields on successful invitation
+  useEffect(() => {
+    if (inviteGuest.isSuccess) {
+      formControl.reset();
+    }
+  }, [inviteGuest.isSuccess, formControl]);
 
   const handleSubmit = () => {
     formControl.trigger();
