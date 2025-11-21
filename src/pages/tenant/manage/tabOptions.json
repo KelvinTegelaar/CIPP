@@ -20,6 +20,10 @@
     "path": "/tenant/manage/policies-deployed"
   },
   {
+    "label": "User Defaults",
+    "path": "/tenant/manage/user-defaults"
+  },
+  {
     "label": "History",
     "path": "/tenant/manage/history"
   }
