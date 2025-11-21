@@ -9,14 +9,26 @@ import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useWatch } from "react-hook-form";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 const CippAddEditUser = (props) => {
   const { formControl, userSettingsDefaults, formType = "add" } = props;
   const tenantDomain = useSettings().currentTenant;
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [displayNameManuallySet, setDisplayNameManuallySet] = useState(false);
+  const [usernameManuallySet, setUsernameManuallySet] = useState(false);
   const router = useRouter();
   const { userId } = router.query;
+
+  // Get user default templates (only in add mode)
+  const userTemplates = ApiGetCall({
+    url: `/api/ListNewUserDefaults?TenantFilter=${tenantDomain}`,
+    queryKey: `UserDefaults-${tenantDomain}`,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    enabled: formType === "add",
+  });
   const integrationSettings = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "ListExtensionsConfig",
@@ -71,15 +83,202 @@ const CippAddEditUser = (props) => {
   }, [tenantGroups.isSuccess, userGroups.isSuccess, tenantGroups.data, userGroups.data]);
 
   const watcher = useWatch({ control: formControl.control });
+
+  // Helper function to generate username from template format
+  const generateUsername = (format, firstName, lastName) => {
+    if (!format || !firstName || !lastName) return "";
+
+    // Ensure format is a string
+    const formatString = typeof format === "string" ? format : String(format);
+
+    let username = formatString;
+
+    // Replace %FirstName[n]% patterns (extract first n characters)
+    username = username.replace(/%FirstName\[(\d+)\]%/gi, (match, num) => {
+      return firstName.substring(0, parseInt(num));
+    });
+
+    // Replace %LastName[n]% patterns (extract first n characters)
+    username = username.replace(/%LastName\[(\d+)\]%/gi, (match, num) => {
+      return lastName.substring(0, parseInt(num));
+    });
+
+    // Replace %FirstName% and %LastName%
+    username = username.replace(/%FirstName%/gi, firstName);
+    username = username.replace(/%LastName%/gi, lastName);
+
+    // Convert to lowercase
+    return username.toLowerCase();
+  };
+
   useEffect(() => {
     //if watch.firstname changes, and watch.lastname changes, set displayname to firstname + lastname
     if (watcher.givenName && watcher.surname && formType === "add") {
-      formControl.setValue("displayName", `${watcher.givenName} ${watcher.surname}`);
+      // Only auto-set display name if user hasn't manually changed it
+      if (!displayNameManuallySet) {
+        // Build base display name from first and last name
+        let displayName = `${watcher.givenName} ${watcher.surname}`;
+
+        // Add template displayName as suffix if it exists
+        if (selectedTemplate?.displayName) {
+          displayName += selectedTemplate.displayName;
+        }
+
+        formControl.setValue("displayName", displayName);
+      }
+
+      // Auto-generate username if template has usernameFormat
+      if (selectedTemplate?.usernameFormat && !usernameManuallySet) {
+        // Extract the actual format string - it might be an object {label, value} or a string
+        const formatString =
+          typeof selectedTemplate.usernameFormat === "string"
+            ? selectedTemplate.usernameFormat
+            : selectedTemplate.usernameFormat?.value || selectedTemplate.usernameFormat?.label;
+
+        if (formatString) {
+          const generatedUsername = generateUsername(
+            formatString,
+            watcher.givenName,
+            watcher.surname
+          );
+          if (generatedUsername) {
+            formControl.setValue("username", generatedUsername);
+          }
+        }
+      }
     }
-  }, [watcher.givenName, watcher.surname]);
+  }, [watcher.givenName, watcher.surname, selectedTemplate]);
+
+  // Auto-select default template for tenant
+  useEffect(() => {
+    if (formType === "add" && userTemplates.isSuccess && !watcher.userTemplate) {
+      const defaultTemplate = userTemplates.data?.find(
+        (template) => template.defaultForTenant === true
+      );
+      if (defaultTemplate) {
+        formControl.setValue("userTemplate", {
+          label: defaultTemplate.templateName,
+          value: defaultTemplate.GUID,
+          addedFields: defaultTemplate,
+        });
+        setSelectedTemplate(defaultTemplate);
+      }
+    }
+  }, [userTemplates.isSuccess, formType]);
+
+  // Auto-populate fields when template selected
+  useEffect(() => {
+    if (formType === "add" && watcher.userTemplate?.addedFields) {
+      const template = watcher.userTemplate.addedFields;
+      setSelectedTemplate(template);
+
+      // Reset manual edit flags when template changes
+      setDisplayNameManuallySet(false);
+      setUsernameManuallySet(false);
+
+      // Only set fields if they don't already have values (don't override user input)
+      const setFieldIfEmpty = (fieldName, value) => {
+        if (!watcher[fieldName] && value) {
+          formControl.setValue(fieldName, value);
+        }
+      };
+
+      // Populate form fields from template
+      if (template.primDomain) {
+        // If primDomain is an object, use it as-is; if it's a string, convert to object
+        const primDomainValue =
+          typeof template.primDomain === "string"
+            ? { label: template.primDomain, value: template.primDomain }
+            : template.primDomain;
+        setFieldIfEmpty("primDomain", primDomainValue);
+      }
+      if (template.usageLocation) {
+        // Handle both object and string formats
+        const usageLocationCode =
+          typeof template.usageLocation === "string"
+            ? template.usageLocation
+            : template.usageLocation?.value;
+        const country = countryList.find((c) => c.Code === usageLocationCode);
+        if (country) {
+          setFieldIfEmpty("usageLocation", {
+            label: country.Name,
+            value: country.Code,
+          });
+        }
+      }
+      setFieldIfEmpty("jobTitle", template.jobTitle);
+      setFieldIfEmpty("streetAddress", template.streetAddress);
+      setFieldIfEmpty("city", template.city);
+      setFieldIfEmpty("state", template.state);
+      setFieldIfEmpty("postalCode", template.postalCode);
+      setFieldIfEmpty("country", template.country);
+      setFieldIfEmpty("companyName", template.companyName);
+      setFieldIfEmpty("department", template.department);
+      setFieldIfEmpty("mobilePhone", template.mobilePhone);
+      setFieldIfEmpty("businessPhones[0]", template.businessPhones);
+
+      // Handle licenses - need to match the format expected by CippFormLicenseSelector
+      if (template.licenses && Array.isArray(template.licenses)) {
+        setFieldIfEmpty("licenses", template.licenses);
+      }
+    }
+  }, [watcher.userTemplate, formType]);
 
   return (
     <Grid container spacing={2}>
+      {formType === "add" && (
+        <>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormUserSelector
+              formControl={formControl}
+              name="userProperties"
+              label="Copy properties from another user"
+              multiple={false}
+              select={
+                "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
+              }
+              addedField={{
+                groupType: "calculatedGroupType",
+                displayName: "displayName",
+                userPrincipalName: "userPrincipalName",
+                id: "id",
+                givenName: "givenName",
+                surname: "surname",
+                mailNickname: "mailNickname",
+                jobTitle: "jobTitle",
+                department: "department",
+                streetAddress: "streetAddress",
+                city: "city",
+                state: "state",
+                postalCode: "postalCode",
+                companyName: "companyName",
+                mobilePhone: "mobilePhone",
+                businessPhones: "businessPhones",
+                usageLocation: "usageLocation",
+                office: "office",
+              }}
+            />
+          </Grid>
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="User Template (optional)"
+              name="userTemplate"
+              multiple={false}
+              options={
+                userTemplates.isSuccess
+                  ? userTemplates.data?.map((template) => ({
+                      label: template.templateName,
+                      value: template.GUID,
+                      addedFields: template,
+                    }))
+                  : []
+              }
+              formControl={formControl}
+            />
+          </Grid>
+        </>
+      )}
       <Grid size={{ md: 6, xs: 12 }}>
         <CippFormComponent
           type="textField"
@@ -105,6 +304,9 @@ const CippAddEditUser = (props) => {
           label="Display Name"
           name="displayName"
           formControl={formControl}
+          onChange={(e) => {
+            setDisplayNameManuallySet(true);
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -117,6 +319,9 @@ const CippAddEditUser = (props) => {
           }}
           name="username"
           formControl={formControl}
+          onChange={(e) => {
+            setUsernameManuallySet(true);
+          }}
         />
       </Grid>
       <Grid size={{ md: 6, xs: 12 }}>
@@ -497,19 +702,19 @@ const CippAddEditUser = (props) => {
                 <CippFormComponent
                   type="switch"
                   label="Send results to Webhook"
-                  name="webhook"
+                  name="postExecution.webhook"
                   formControl={formControl}
                 />
                 <CippFormComponent
                   type="switch"
                   label="Send results to E-mail"
-                  name="email"
+                  name="postExecution.email"
                   formControl={formControl}
                 />
                 <CippFormComponent
                   type="switch"
                   label="Send results to PSA"
-                  name="psa"
+                  name="postExecution.psa"
                   formControl={formControl}
                 />
               </Grid>

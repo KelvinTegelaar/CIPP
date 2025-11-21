@@ -246,5 +246,10 @@
     "label": "Alert on users restricted from sending email",
     "recommendedRunInterval": "30m",
     "description": "Monitors for users who have been restricted from sending email due to exceeding outbound spam limits. These users typically indicate a compromised account that needs immediate attention."
+  },
+  {
+    "name": "ReportOnlyCA",
+    "label": "Alert on tenants with Conditional Access policies in report-only mode",
+    "recommendedRunInterval": "1d"
   }
 ]

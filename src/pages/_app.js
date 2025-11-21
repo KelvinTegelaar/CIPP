@@ -18,6 +18,29 @@ import Error500 from "./500";
 import { ErrorBoundary } from "react-error-boundary";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import {
+  enUS,
+  enGB,
+  nl,
+  fr,
+  de,
+  es,
+  it,
+  pt,
+  sv,
+  da,
+  nb,
+  fi,
+  is,
+  pl,
+  cs,
+  sk,
+  hu,
+  ro,
+  ru,
+  enAU,
+  enNZ,
+} from "date-fns/locale";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import CippSpeedDial from "../components/CippComponents/CippSpeedDial";
@@ -54,6 +77,68 @@ const App = (props) => {
   const pathname = usePathname();
   const route = useRouter();
   const [_0x8h9i, _0x2j3k] = useState(false); // toRemove
+
+  const [dateLocale, setDateLocale] = useState(enUS);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const language = navigator.language || navigator.userLanguage || "en-US";
+    const baseLang = language.split("-")[0];
+
+    const localeMap = {
+      // English variants
+      en: enUS,
+      "en-US": enUS,
+      "en-GB": enGB,
+      "en-AU": enAU,
+      "en-NZ": enNZ,
+
+      // Western Europe
+      nl: nl,
+      "nl-NL": nl,
+      fr: fr,
+      "fr-FR": fr,
+      de: de,
+      "de-DE": de,
+      es: es,
+      "es-ES": es,
+      it: it,
+      "it-IT": it,
+      pt: pt,
+      "pt-PT": pt,
+      "pt-BR": pt,
+
+      // Scandinavia / Nordics
+      sv: sv,
+      "sv-SE": sv,
+      da: da,
+      "da-DK": da,
+      nb: nb,
+      "nb-NO": nb,
+      fi: fi,
+      "fi-FI": fi,
+      is: is,
+      "is-IS": is,
+
+      // Eastern Europe
+      pl: pl,
+      "pl-PL": pl,
+      cs: cs,
+      "cs-CZ": cs,
+      sk: sk,
+      "sk-SK": sk,
+      hu: hu,
+      "hu-HU": hu,
+      ro: ro,
+      "ro-RO": ro,
+      ru: ru,
+      "ru-RU": ru,
+    };
+
+    const resolvedLocale = localeMap[language] || localeMap[baseLang] || enUS;
+    setDateLocale(resolvedLocale);
+  }, []);
 
   const excludeQueryKeys = ["authmeswa", "alertsDashboard"];
 
@@ -278,7 +363,7 @@ const App = (props) => {
       <ReduxProvider store={store}>
         <QueryClientProvider client={queryClient}>
           <SettingsProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dateLocale}>
               <SettingsConsumer>
                 {(settings) => {
                   if (!settings.isInitialized) {
