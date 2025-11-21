@@ -1,18 +1,13 @@
-# Backups
+# Configuration Backup
 
 ### Action Buttons
 
-{% content-ref url="restore.md" %}
-[restore.md](restore.md)
-{% endcontent-ref %}
-
-{% content-ref url="add.md" %}
-[add.md](add.md)
-{% endcontent-ref %}
+* Add Backup Schedule: Select the tenant (or All Tenants) you want to create a backup task for. Toggle on or off the settings you want backed up prior to hitting the Submit button at the bottom of the page.
+* Remove Backup Schedule: If a backup has been scheduled, this button will display to allow you to delete the scheduled task.
 
 ### Table Details
 
-This table will output information for any configured backup tasks.
+This table will output information for the backup history for the tenant(s) if it has been configured.
 
 ### Table Actions
 

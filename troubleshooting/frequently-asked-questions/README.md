@@ -123,7 +123,7 @@ To have the new tenant's name show up in CIPP, you have two options
 
 #### Utilize the Tenant Alias Functionality
 
-CIPP can also set an alias via the [#properties](../../user-documentation/tenant/administration/tenants/edit.md#properties "mention") section of [edit.md](../../user-documentation/tenant/administration/tenants/edit.md "mention").
+CIPP can also set an alias via the [#properties](../../user-documentation/tenant/manage/edit.md#properties "mention") section of [edit.md](../../user-documentation/tenant/manage/edit.md "mention").
 
 </details>
 

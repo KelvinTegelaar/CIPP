@@ -25,6 +25,7 @@ You can also use this page to jump to the most common portals or actions
 
 **Actions**
 
+* Manage Tenant - Opens [edit.md](../../tenant/manage/edit.md "mention")
 * M365 Portal
 * Exchange Portal
 * Entra Portal
