@@ -43,6 +43,7 @@ import { ClockIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
 import tabOptions from "./tabOptions.json";
 import { createDriftManagementActions } from "./driftManagementActions";
+import { CippApiLogsDrawer } from "../../../components/CippComponents/CippApiLogsDrawer";
 
 const Page = () => {
   const router = useRouter();
@@ -670,33 +671,44 @@ const Page = () => {
     {
       icon: <Policy />,
       text: (
-        <CippAutoComplete
-          options={templateOptions}
-          label="Select Template"
-          multiple={false}
-          creatable={false}
-          isFetching={templateDetails.isFetching}
-          defaultValue={selectedTemplateOption}
-          value={selectedTemplateOption}
-          onChange={(selectedTemplate) => {
-            const query = { ...router.query };
-            if (selectedTemplate && selectedTemplate.value) {
-              query.templateId = selectedTemplate.value;
-            } else {
-              delete query.templateId;
-            }
-            router.replace(
-              {
-                pathname: router.pathname,
-                query: query,
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-          sx={{ minWidth: 300 }}
-          placeholder="Select a template..."
-        />
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <CippAutoComplete
+            options={templateOptions}
+            label="Select Template"
+            multiple={false}
+            creatable={false}
+            isFetching={templateDetails.isFetching}
+            defaultValue={selectedTemplateOption}
+            value={selectedTemplateOption}
+            onChange={(selectedTemplate) => {
+              const query = { ...router.query };
+              if (selectedTemplate && selectedTemplate.value) {
+                query.templateId = selectedTemplate.value;
+              } else {
+                delete query.templateId;
+              }
+              router.replace(
+                {
+                  pathname: router.pathname,
+                  query: query,
+                },
+                undefined,
+                { shallow: true }
+              );
+            }}
+            sx={{ minWidth: 300 }}
+            placeholder="Select a template..."
+          />
+          {templateId && (
+            <CippApiLogsDrawer
+              standardFilter={templateId}
+              buttonText="Logs"
+              title="Standard Logs"
+              variant="outlined"
+              tenantFilter={currentTenant}
+            />
+          )}
+        </Stack>
       ),
     },
     // Add compliance badges when template data is available (show even if no comparison data yet)
@@ -776,14 +788,16 @@ const Page = () => {
   ];
 
   // Actions for the header
-  const actions = createDriftManagementActions({
-    templateId,
-    onRefresh: () => {
-      comparisonApi.refetch();
-      templateDetails.refetch();
-    },
-    currentTenant,
-  });
+  const actions = [
+    ...createDriftManagementActions({
+      templateId,
+      onRefresh: () => {
+        comparisonApi.refetch();
+        templateDetails.refetch();
+      },
+      currentTenant,
+    }),
+  ];
 
   return (
     <HeaderedTabbedLayout
