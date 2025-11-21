@@ -24,7 +24,8 @@ export const CippAppApprovalTemplateDrawer = ({
   const [refetchKey, setRefetchKey] = useState(0);
 
   // Use external drawer state if provided, otherwise use internal state
-  const drawerVisible = externalDrawerVisible !== undefined ? externalDrawerVisible : internalDrawerVisible;
+  const drawerVisible =
+    externalDrawerVisible !== undefined ? externalDrawerVisible : internalDrawerVisible;
   const setDrawerVisible = externalSetDrawerVisible || setInternalDrawerVisible;
 
   const formControl = useForm({
@@ -33,8 +34,14 @@ export const CippAppApprovalTemplateDrawer = ({
 
   // Get the specified template if template ID is provided
   const { data: templateData, isLoading: templateLoading } = ApiGetCall({
-    url: (isEditMode || isCopy) && templateId ? `/api/ExecAppApprovalTemplate?Action=Get&TemplateId=${templateId}` : null,
-    queryKey: (isEditMode || isCopy) && templateId ? ["ExecAppApprovalTemplate", templateId, refetchKey] : null,
+    url:
+      (isEditMode || isCopy) && templateId
+        ? `/api/ExecAppApprovalTemplate?Action=Get&TemplateId=${templateId}`
+        : null,
+    queryKey:
+      (isEditMode || isCopy) && templateId
+        ? ["ExecAppApprovalTemplate", templateId, refetchKey]
+        : null,
     waiting: !!((isEditMode || isCopy) && templateId),
   });
 
@@ -59,7 +66,7 @@ export const CippAppApprovalTemplateDrawer = ({
         onSuccess: (data) => {
           // Refresh the data
           setRefetchKey((prev) => prev + 1);
-          
+
           // Call the onSuccess callback if provided
           if (onSuccess) {
             onSuccess(data);
@@ -140,10 +147,16 @@ export const CippAppApprovalTemplateDrawer = ({
               disabled={updatePermissions.isPending}
             >
               {updatePermissions.isPending
-                ? isEditMode ? "Updating..." : "Creating..."
+                ? isEditMode
+                  ? "Updating..."
+                  : "Creating..."
                 : updatePermissions.isSuccess
-                ? isEditMode ? "Update Another" : "Create Another"
-                : isEditMode ? "Update Template" : "Create Template"}
+                ? isEditMode
+                  ? "Update Another"
+                  : "Create Another"
+                : isEditMode
+                ? "Update Template"
+                : "Create Template"}
             </Button>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
