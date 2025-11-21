@@ -193,19 +193,24 @@ const EditEquipmentMailbox = () => {
           </Grid>
 
           <Grid size={{ md: 4, xs: 12 }}>
+            {/* MaximumDurationInMinutes: 0 = Unlimited, 0..2147483647 (default 1440) per Exchange/EXO spec */}
             <CippFormComponent
               type="number"
               label="Maximum Booking Duration (Minutes)"
               name="maximumDurationInMinutes"
               formControl={formControl}
               validators={{
-                min: { value: 1, message: "Minimum duration is 1 minute" },
-                max: { value: 1440, message: "Maximum duration is 1440 minutes (24 hours)" },
+                min: { value: 0, message: "Minimum is 0 (0 = Unlimited)" },
+                max: {
+                  value: 2147483647,
+                  message: "Maximum is 2,147,483,647 minutes",
+                },
               }}
               InputProps={{
-                inputProps: { min: 1, max: 1440 },
+                inputProps: { min: 0, max: 2147483647 },
               }}
               fullWidth
+              helperText="Set to 0 for unlimited duration"
             />
           </Grid>
 
