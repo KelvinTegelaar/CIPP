@@ -17,6 +17,7 @@ const AppApprovalTemplateForm = ({
   updatePermissions,
   onSubmit,
   refetchKey,
+  hideSubmitButton = false, // New prop to hide the submit button when used in a drawer
 }) => {
   const [selectedPermissionSet, setSelectedPermissionSet] = useState(null);
   const [permissionsLoaded, setPermissionsLoaded] = useState(false);
@@ -539,19 +540,21 @@ const AppApprovalTemplateForm = ({
                 />
               </CippFormCondition>
 
-              <Stack spacing={2} sx={{ mt: 2 }}>
-                <Box>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={formControl.handleSubmit(handleSubmit)}
-                    disabled={updatePermissions.isPending}
-                  >
-                    {isEditing ? "Update Template" : "Create Template"}
-                  </Button>
-                </Box>
-                <CippApiResults apiObject={updatePermissions} />
-              </Stack>
+              {!hideSubmitButton && (
+                <Stack spacing={2} sx={{ mt: 2 }}>
+                  <Box>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={formControl.handleSubmit(handleSubmit)}
+                      disabled={updatePermissions.isPending}
+                    >
+                      {isEditing ? "Update Template" : "Create Template"}
+                    </Button>
+                  </Box>
+                  <CippApiResults apiObject={updatePermissions} />
+                </Stack>
+              )}
             </>
           )}
         </Stack>
