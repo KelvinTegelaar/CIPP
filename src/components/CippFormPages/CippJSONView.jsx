@@ -345,12 +345,12 @@ function CippJsonView({
 
   const handleItemClick = (itemData, level) => {
     const updatedData = drilldownData.slice(0, level + 1);
-    
+
     // Compress single-property objects and single-item arrays into the same pane
     let dataToAdd = itemData;
     const compressedKeys = [];
     let wasCompressed = false;
-    
+
     while (dataToAdd && typeof dataToAdd === "object") {
       // Handle single-item arrays
       if (Array.isArray(dataToAdd) && dataToAdd.length === 1) {
@@ -364,12 +364,12 @@ function CippJsonView({
           break;
         }
       }
-      
+
       // Handle single-property objects
       if (!Array.isArray(dataToAdd) && Object.keys(dataToAdd).length === 1) {
         const singleKey = Object.keys(dataToAdd)[0];
         const singleValue = dataToAdd[singleKey];
-        
+
         // Only compress if the value is also an object or single-item array
         if (singleValue && typeof singleValue === "object") {
           compressedKeys.push(singleKey);
@@ -378,13 +378,13 @@ function CippJsonView({
           continue;
         }
       }
-      
+
       break;
     }
-    
+
     // Create title from compressed keys if compression occurred
     const title = wasCompressed ? compressedKeys.join(" > ") : null;
-    
+
     updatedData[level + 1] = { data: dataToAdd, title };
     setDrilldownData(updatedData);
 
