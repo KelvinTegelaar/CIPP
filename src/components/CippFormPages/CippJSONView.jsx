@@ -20,8 +20,7 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import intuneCollection from "/src/data/intuneCollection.json";
-import { ApiPostCall } from "../../api/ApiCall";
-import { useSettings } from "../../hooks/use-settings";
+import { useGuidResolver } from "../../hooks/use-guid-resolver";
 
 const cleanObject = (obj) => {
   if (Array.isArray(obj)) {
@@ -42,29 +41,7 @@ const cleanObject = (obj) => {
   }
 };
 
-// Function to check if a string is a GUID
-const isGuid = (str) => {
-  if (typeof str !== "string") return false;
-  const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return guidRegex.test(str);
-};
-
-// Function to recursively scan an object for GUIDs
-const findGuids = (obj, guidsSet = new Set()) => {
-  if (!obj) return guidsSet;
-
-  if (typeof obj === "string" && isGuid(obj)) {
-    guidsSet.add(obj);
-  } else if (Array.isArray(obj)) {
-    obj.forEach((item) => findGuids(item, guidsSet));
-  } else if (typeof obj === "object") {
-    Object.values(obj).forEach((value) => findGuids(value, guidsSet));
-  }
-
-  return guidsSet;
-};
-
-const renderListItems = (data, onItemClick, guidMapping = {}, isLoadingGuids = false) => {
+const renderListItems = (data, onItemClick, guidMapping = {}, isLoadingGuids = false, isGuid) => {
   return Object.entries(data).map(([key, value]) => {
     if (Array.isArray(value)) {
       return (
@@ -135,94 +112,10 @@ function CippJsonView({
 }) {
   const [viewJson, setViewJson] = useState(false);
   const [accordionOpen, setAccordionOpen] = useState(defaultOpen);
-  const [drilldownData, setDrilldownData] = useState([]);
-  const [guidMapping, setGuidMapping] = useState({});
-  const [notFoundGuids, setNotFoundGuids] = useState(new Set());
-  const [isLoadingGuids, setIsLoadingGuids] = useState(false);
-  const [pendingGuids, setPendingGuids] = useState([]);
-  const [lastRequestTime, setLastRequestTime] = useState(0);
-  const tenantFilter = useSettings().currentTenant;
+  const [drilldownData, setDrilldownData] = useState([]); // Array of { data, title }
 
-  // Setup API call for directory objects resolution
-  const directoryObjectsMutation = ApiPostCall({
-    relatedQueryKeys: ["directoryObjects"],
-    onResult: (data) => {
-      if (data && Array.isArray(data.value)) {
-        const newMapping = {};
-
-        // Process the returned results
-        data.value.forEach((item) => {
-          if (item.id && (item.displayName || item.userPrincipalName || item.mail)) {
-            // Prefer displayName, fallback to UPN or mail if available
-            newMapping[item.id] = item.displayName || item.userPrincipalName || item.mail;
-          }
-        });
-
-        // Find GUIDs that were sent but not returned in the response
-        const processedGuids = new Set(pendingGuids);
-        const returnedGuids = new Set(data.value.map((item) => item.id));
-        const notReturned = [...processedGuids].filter((guid) => !returnedGuids.has(guid));
-
-        // Add them to the notFoundGuids set
-        if (notReturned.length > 0) {
-          setNotFoundGuids((prev) => {
-            const newSet = new Set(prev);
-            notReturned.forEach((guid) => newSet.add(guid));
-            return newSet;
-          });
-        }
-
-        setGuidMapping((prevMapping) => ({ ...prevMapping, ...newMapping }));
-        setPendingGuids([]);
-        setIsLoadingGuids(false);
-      }
-    },
-  });
-
-  // Function to handle resolving GUIDs - used in both useEffect and handleItemClick
-  const resolveGuids = (objectToScan) => {
-    const guidsSet = findGuids(objectToScan);
-
-    if (guidsSet.size === 0) return;
-
-    const guidsArray = Array.from(guidsSet);
-    // Filter out GUIDs that are already resolved or known to not be resolvable
-    const notResolvedGuids = guidsArray.filter(
-      (guid) => !guidMapping[guid] && !notFoundGuids.has(guid)
-    );
-
-    if (notResolvedGuids.length === 0) return;
-
-    // Merge with any pending GUIDs to avoid duplicate requests
-    const allPendingGuids = [...new Set([...pendingGuids, ...notResolvedGuids])];
-    setPendingGuids(allPendingGuids);
-    setIsLoadingGuids(true);
-
-    // Implement throttling - only send a new request every 2 seconds
-    const now = Date.now();
-    if (now - lastRequestTime < 2000) {
-      return;
-    }
-
-    setLastRequestTime(now);
-
-    // Only send a maximum of 1000 GUIDs per request
-    const batchSize = 1000;
-    const guidsToSend = allPendingGuids.slice(0, batchSize);
-
-    if (guidsToSend.length > 0) {
-      directoryObjectsMutation.mutate({
-        url: "/api/ListDirectoryObjects",
-        data: {
-          tenantFilter: tenantFilter,
-          ids: guidsToSend,
-          $select: "id,displayName,userPrincipalName,mail",
-        },
-      });
-    } else {
-      setIsLoadingGuids(false);
-    }
-  };
+  // Use the GUID resolver hook
+  const { guidMapping, isLoadingGuids, resolveGuids, isGuid } = useGuidResolver();
 
   const renderIntuneItems = (data) => {
     const items = [];
@@ -441,53 +334,62 @@ function CippJsonView({
     const filteredObj = Object.fromEntries(
       Object.entries(cleanedObj).filter(([key]) => !blacklist.includes(key))
     );
-    setDrilldownData([filteredObj]);
+    setDrilldownData([{ data: filteredObj, title: null }]);
 
-    // Using the centralized resolveGuids function to handle GUID resolution
+    // Using the resolveGuids function from the hook to handle GUID resolution
     resolveGuids(cleanedObj);
-  }, [object, tenantFilter]);
-
-  // Effect to reprocess any pending GUIDs when the guidMapping changes or throttling window passes
-  useEffect(() => {
-    if (pendingGuids.length > 0 && !isLoadingGuids) {
-      const now = Date.now();
-      if (now - lastRequestTime >= 2000) {
-        // Only send a maximum of 1000 GUIDs per request
-        const batchSize = 1000;
-        const guidsToSend = pendingGuids.slice(0, batchSize);
-
-        setLastRequestTime(now);
-        setIsLoadingGuids(true);
-
-        directoryObjectsMutation.mutate({
-          url: "/api/ListDirectoryObjects",
-          data: {
-            tenantFilter: tenantFilter,
-            ids: guidsToSend,
-            $select: "id,displayName,userPrincipalName,mail",
-          },
-        });
-      }
-    }
-  }, [
-    guidMapping,
-    notFoundGuids,
-    pendingGuids,
-    lastRequestTime,
-    isLoadingGuids,
-    directoryObjectsMutation,
-    tenantFilter,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [object]);
 
   const toggleView = () => setViewJson(!viewJson);
 
   const handleItemClick = (itemData, level) => {
     const updatedData = drilldownData.slice(0, level + 1);
-    updatedData[level + 1] = itemData;
+    
+    // Compress single-property objects and single-item arrays into the same pane
+    let dataToAdd = itemData;
+    const compressedKeys = [];
+    let wasCompressed = false;
+    
+    while (dataToAdd && typeof dataToAdd === "object") {
+      // Handle single-item arrays
+      if (Array.isArray(dataToAdd) && dataToAdd.length === 1) {
+        const singleItem = dataToAdd[0];
+        if (singleItem && typeof singleItem === "object") {
+          compressedKeys.push("[0]");
+          dataToAdd = singleItem;
+          wasCompressed = true;
+          continue;
+        } else {
+          break;
+        }
+      }
+      
+      // Handle single-property objects
+      if (!Array.isArray(dataToAdd) && Object.keys(dataToAdd).length === 1) {
+        const singleKey = Object.keys(dataToAdd)[0];
+        const singleValue = dataToAdd[singleKey];
+        
+        // Only compress if the value is also an object or single-item array
+        if (singleValue && typeof singleValue === "object") {
+          compressedKeys.push(singleKey);
+          dataToAdd = singleValue;
+          wasCompressed = true;
+          continue;
+        }
+      }
+      
+      break;
+    }
+    
+    // Create title from compressed keys if compression occurred
+    const title = wasCompressed ? compressedKeys.join(" > ") : null;
+    
+    updatedData[level + 1] = { data: dataToAdd, title };
     setDrilldownData(updatedData);
 
-    // Use the centralized resolveGuids function to handle GUID resolution for drill-down data
-    resolveGuids(itemData);
+    // Use the resolveGuids function from the hook to handle GUID resolution for drill-down data
+    resolveGuids(dataToAdd);
   };
 
   return (
@@ -520,8 +422,8 @@ function CippJsonView({
         ) : (
           <Grid container spacing={2}>
             {drilldownData
-              ?.filter((data) => data !== null && data !== undefined)
-              .map((data, index) => (
+              ?.filter((item) => item !== null && item !== undefined)
+              .map((item, index) => (
                 <Grid
                   size={{ sm: type === "intune" ? 12 : 3, xs: 12 }}
                   key={index}
@@ -535,17 +437,23 @@ function CippJsonView({
                     paddingRight: 2,
                   }}
                 >
+                  {item.title && (
+                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: "bold" }}>
+                      {getCippTranslation(item.title)}
+                    </Typography>
+                  )}
                   {type !== "intune" && (
                     <PropertyList>
                       {renderListItems(
-                        data,
+                        item.data,
                         (itemData) => handleItemClick(itemData, index),
                         guidMapping,
-                        isLoadingGuids
+                        isLoadingGuids,
+                        isGuid
                       )}
                     </PropertyList>
                   )}
-                  {type === "intune" && <PropertyList>{renderIntuneItems(data)}</PropertyList>}
+                  {type === "intune" && <PropertyList>{renderIntuneItems(item.data)}</PropertyList>}
                 </Grid>
               ))}
           </Grid>
