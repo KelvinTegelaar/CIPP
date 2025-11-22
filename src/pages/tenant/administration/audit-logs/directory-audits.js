@@ -6,7 +6,9 @@ import tabOptions from "./tabOptions.json";
 
 const DirectoryAuditsPage = () => {
   const offCanvas = {
-    children: (row) => <CippJsonView object={row} defaultOpen={true} />,
+    children: (row) => (
+      <CippJsonView object={row} defaultOpen={true} title="Directory Audit Details" />
+    ),
     size: "xl",
   };
 

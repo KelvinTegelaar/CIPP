@@ -42,7 +42,92 @@ const cleanObject = (obj) => {
 };
 
 const renderListItems = (data, onItemClick, guidMapping = {}, isLoadingGuids = false, isGuid) => {
+  // Check if this data object is from a diff
+  const isDiffData = data?.__isDiffData === true;
+
+  // Helper to try parsing JSON strings
+  const tryParseJson = (str) => {
+    if (typeof str !== "string") return null;
+    try {
+      return JSON.parse(str);
+    } catch {
+      return null;
+    }
+  };
+
+  // Helper to get deep object differences
+  const getObjectDiff = (oldObj, newObj, path = "") => {
+    const changes = [];
+    const allKeys = new Set([...Object.keys(oldObj || {}), ...Object.keys(newObj || {})]);
+
+    allKeys.forEach((key) => {
+      const currentPath = path ? `${path}.${key}` : key;
+      const oldVal = oldObj?.[key];
+      const newVal = newObj?.[key];
+
+      if (oldVal === undefined && newVal !== undefined) {
+        changes.push({ path: currentPath, type: "added", newValue: newVal });
+      } else if (oldVal !== undefined && newVal === undefined) {
+        changes.push({ path: currentPath, type: "removed", oldValue: oldVal });
+      } else if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+        if (typeof oldVal === "object" && typeof newVal === "object" && oldVal && newVal) {
+          changes.push(...getObjectDiff(oldVal, newVal, currentPath));
+        } else {
+          changes.push({ path: currentPath, type: "modified", oldValue: oldVal, newValue: newVal });
+        }
+      }
+    });
+
+    return changes;
+  };
+
   return Object.entries(data).map(([key, value]) => {
+    // Skip the diff marker key
+    if (key === "__isDiffData") {
+      return null;
+    }
+
+    // Special handling for oldValue/newValue pairs
+    if (key === "oldValue" && data.newValue !== undefined) {
+      const oldObj = tryParseJson(value);
+      const newObj = tryParseJson(data.newValue);
+
+      // If both are JSON objects, show detailed diff
+      if (oldObj && newObj) {
+        const diff = getObjectDiff(oldObj, newObj);
+        if (diff.length > 0) {
+          return (
+            <PropertyListItem
+              key={key}
+              label="Changes"
+              value={
+                <Button variant="text" onClick={() => onItemClick({ changes: diff })}>
+                  View {diff.length} change{diff.length > 1 ? "s" : ""}
+                </Button>
+              }
+            />
+          );
+        }
+      } else {
+        // For simple strings or non-JSON values, show old → new
+        return (
+          <PropertyListItem
+            key={key}
+            label="Change"
+            value={`${getCippFormatting(value, key)} → ${getCippFormatting(
+              data.newValue,
+              "newValue"
+            )}`}
+          />
+        );
+      }
+    }
+
+    // Skip newValue if we already handled it with oldValue
+    if (key === "newValue" && data.oldValue !== undefined) {
+      return null;
+    }
+
     if (Array.isArray(value)) {
       return (
         <PropertyListItem
@@ -94,13 +179,10 @@ const renderListItems = (data, onItemClick, guidMapping = {}, isLoadingGuids = f
         />
       );
     } else {
-      return (
-        <PropertyListItem
-          key={key}
-          label={getCippTranslation(key)}
-          value={getCippFormatting(value, key)}
-        />
-      );
+      // If this is diff data, show the value directly without formatting
+      const displayValue = isDiffData ? value : getCippFormatting(value, key);
+
+      return <PropertyListItem key={key} label={getCippTranslation(key)} value={displayValue} />;
     }
   });
 };
@@ -109,6 +191,7 @@ function CippJsonView({
   object = { "No Data Selected": "No Data Selected" },
   type,
   defaultOpen = false,
+  title = "Policy Details",
 }) {
   const [viewJson, setViewJson] = useState(false);
   const [accordionOpen, setAccordionOpen] = useState(defaultOpen);
@@ -346,10 +429,104 @@ function CippJsonView({
   const handleItemClick = (itemData, level) => {
     const updatedData = drilldownData.slice(0, level + 1);
 
+    // Helper to check if an array contains only simple key/value objects
+    const isArrayOfKeyValuePairs = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return false;
+      return arr.every((item) => {
+        if (typeof item !== "object" || item === null || Array.isArray(item)) return false;
+        // Check if all values are primitives (not nested objects/arrays)
+        return Object.values(item).every((val) => typeof val !== "object" || val === null);
+      });
+    };
+
     // Compress single-property objects and single-item arrays into the same pane
     let dataToAdd = itemData;
     const compressedKeys = [];
     let wasCompressed = false;
+
+    // Special handling for diff changes object
+    if (dataToAdd?.changes && Array.isArray(dataToAdd.changes)) {
+      const diffObject = {};
+      const blacklistFields = ["createdDateTime", "modifiedDateTime", "id"];
+
+      dataToAdd.changes.forEach((change) => {
+        const label = change.path;
+
+        // Skip blacklisted fields in nested paths
+        const pathParts = label.split(".");
+        const lastPart = pathParts[pathParts.length - 1];
+        if (blacklistFields.includes(lastPart)) {
+          return;
+        }
+
+        let hasValue = false;
+        let displayValue = "";
+
+        if (change.type === "added") {
+          if (change.newValue !== null && change.newValue !== undefined && change.newValue !== "") {
+            displayValue = `[ADDED] ${JSON.stringify(change.newValue)}`;
+            hasValue = true;
+          }
+        } else if (change.type === "removed") {
+          if (change.oldValue !== null && change.oldValue !== undefined && change.oldValue !== "") {
+            displayValue = `[REMOVED] ${JSON.stringify(change.oldValue)}`;
+            hasValue = true;
+          }
+        } else if (change.type === "modified") {
+          const oldHasValue =
+            change.oldValue !== null && change.oldValue !== undefined && change.oldValue !== "";
+          const newHasValue =
+            change.newValue !== null && change.newValue !== undefined && change.newValue !== "";
+
+          // Only show if at least one side has a meaningful value (not both empty)
+          if (oldHasValue || newHasValue) {
+            // If both have values, show the change
+            if (oldHasValue && newHasValue) {
+              displayValue = `${JSON.stringify(change.oldValue)} → ${JSON.stringify(
+                change.newValue
+              )}`;
+              hasValue = true;
+            }
+            // If only new has value, treat as added
+            else if (newHasValue) {
+              displayValue = `[ADDED] ${JSON.stringify(change.newValue)}`;
+              hasValue = true;
+            }
+            // If only old has value, treat as removed
+            else if (oldHasValue) {
+              displayValue = `[REMOVED] ${JSON.stringify(change.oldValue)}`;
+              hasValue = true;
+            }
+          }
+        }
+
+        if (hasValue) {
+          diffObject[label] = displayValue;
+        }
+      });
+      // Mark this object as containing diff data
+      dataToAdd = { ...diffObject, __isDiffData: true };
+    }
+
+    // Check if this is an array of items with oldValue/newValue (modifiedProperties pattern)
+    const hasOldNewValues = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return false;
+      return arr.some((item) => item?.oldValue !== undefined || item?.newValue !== undefined);
+    };
+
+    // If the data is an array of key/value pairs, convert to a flat object
+    // But skip if it's an array with oldValue/newValue properties (let normal rendering handle it)
+    if (isArrayOfKeyValuePairs(dataToAdd) && !hasOldNewValues(dataToAdd)) {
+      const flatObject = {};
+      dataToAdd.forEach((item) => {
+        const key = item.key || item.name || item.displayName;
+        const value = item.value || item.newValue || "";
+        if (key) {
+          flatObject[key] = value;
+        }
+      });
+      dataToAdd = flatObject;
+    }
 
     while (dataToAdd && typeof dataToAdd === "object") {
       // Handle single-item arrays
@@ -404,7 +581,7 @@ function CippJsonView({
       >
         <Stack direction="row" spacing={1} alignItems="space-between" sx={{ width: "100%" }}>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Policy Details
+            {title}
           </Typography>
           {isLoadingGuids && (
             <Typography variant="caption" sx={{ display: "flex", alignItems: "center" }}>
