@@ -17,6 +17,8 @@ const DirectoryAuditsPage = () => {
       apiData={{
         Endpoint: "auditLogs/directoryAudits",
         $orderby: "activityDateTime desc",
+        $top: 999,
+        manualPagination: true,
       }}
       apiDataKey="Results"
       actions={[]}
