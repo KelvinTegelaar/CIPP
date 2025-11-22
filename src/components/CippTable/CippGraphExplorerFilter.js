@@ -41,6 +41,7 @@ const CippGraphExplorerFilter = ({
     mode: "onChange",
     defaultValues: {
       endpoint: "",
+      Version: { label: "beta", value: "beta" },
       $select: [],
       $filter: "",
       $expand: "",
@@ -209,6 +210,21 @@ const CippGraphExplorerFilter = ({
             ?.split(",")
             .map((item) => ({ label: item, value: item })))
         : (selectedPresets.addedFields.params.$select = []);
+
+      // Convert Version string to autocomplete object format, default to beta if not present
+      if (selectedPresets.addedFields.params.Version) {
+        const versionValue =
+          typeof selectedPresets.addedFields.params.Version === "string"
+            ? selectedPresets.addedFields.params.Version
+            : selectedPresets.addedFields.params.Version.value;
+        selectedPresets.addedFields.params.Version = {
+          label: versionValue,
+          value: versionValue,
+        };
+      } else {
+        selectedPresets.addedFields.params.Version = { label: "beta", value: "beta" };
+      }
+
       selectedPresets.addedFields.params.id = selectedPresets.value;
       setSelectedPreset(selectedPresets.value);
       selectedPresets.addedFields.params.name = selectedPresets.label;
@@ -367,6 +383,11 @@ const CippGraphExplorerFilter = ({
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(",");
     }
+    if (newvals.Version && newvals.Version.value) {
+      newvals.Version = newvals.Version.value;
+    } else if (!newvals.Version) {
+      newvals.Version = "beta";
+    }
     delete newvals["reportTemplate"];
     delete newvals["tenantFilter"];
     delete newvals["IsShared"];
@@ -431,6 +452,11 @@ const CippGraphExplorerFilter = ({
   const onSubmit = (values) => {
     if (values.$select && Array.isArray(values.$select) && values.$select.length > 0) {
       values.$select = values?.$select?.map((item) => item.value)?.join(",");
+    }
+    if (values.Version && values.Version.value) {
+      values.Version = values.Version.value;
+    } else if (!values.Version) {
+      values.Version = "beta";
     }
     if (values.ReverseTenantLookup === false) {
       delete values.ReverseTenantLookup;
@@ -599,6 +625,22 @@ const CippGraphExplorerFilter = ({
                   to query (e.g. https://graph.microsoft.com/beta/$Endpoint)
                 </>
               }
+            />
+          </Grid>
+
+          <Grid size={gridItemSize}>
+            <CippFormComponent
+              type="autoComplete"
+              name="Version"
+              label="API Version"
+              formControl={formControl}
+              multiple={false}
+              options={[
+                { label: "beta", value: "beta" },
+                { label: "v1.0", value: "v1.0" },
+              ]}
+              placeholder="Select API version"
+              helperText="Graph API version to use"
             />
           </Grid>
 
