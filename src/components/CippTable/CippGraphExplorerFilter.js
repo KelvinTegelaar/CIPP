@@ -41,7 +41,7 @@ const CippGraphExplorerFilter = ({
     mode: "onChange",
     defaultValues: {
       endpoint: "",
-      Version: { label: "beta", value: "beta" },
+      version: { label: "beta", value: "beta" },
       $select: [],
       $filter: "",
       $expand: "",
@@ -211,18 +211,18 @@ const CippGraphExplorerFilter = ({
             .map((item) => ({ label: item, value: item })))
         : (selectedPresets.addedFields.params.$select = []);
 
-      // Convert Version string to autocomplete object format, default to beta if not present
-      if (selectedPresets.addedFields.params.Version) {
+      // Convert version string to autocomplete object format, default to beta if not present
+      if (selectedPresets.addedFields.params.version) {
         const versionValue =
-          typeof selectedPresets.addedFields.params.Version === "string"
-            ? selectedPresets.addedFields.params.Version
-            : selectedPresets.addedFields.params.Version.value;
-        selectedPresets.addedFields.params.Version = {
+          typeof selectedPresets.addedFields.params.version === "string"
+            ? selectedPresets.addedFields.params.version
+            : selectedPresets.addedFields.params.version.value;
+        selectedPresets.addedFields.params.version = {
           label: versionValue,
           value: versionValue,
         };
       } else {
-        selectedPresets.addedFields.params.Version = { label: "beta", value: "beta" };
+        selectedPresets.addedFields.params.version = { label: "beta", value: "beta" };
       }
 
       selectedPresets.addedFields.params.id = selectedPresets.value;
@@ -383,10 +383,10 @@ const CippGraphExplorerFilter = ({
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(",");
     }
-    if (newvals.Version && newvals.Version.value) {
-      newvals.Version = newvals.Version.value;
-    } else if (!newvals.Version) {
-      newvals.Version = "beta";
+    if (newvals.version && newvals.version.value) {
+      newvals.version = newvals.version.value;
+    } else if (!newvals.version) {
+      newvals.version = "beta";
     }
     delete newvals["reportTemplate"];
     delete newvals["tenantFilter"];
@@ -453,10 +453,10 @@ const CippGraphExplorerFilter = ({
     if (values.$select && Array.isArray(values.$select) && values.$select.length > 0) {
       values.$select = values?.$select?.map((item) => item.value)?.join(",");
     }
-    if (values.Version && values.Version.value) {
-      values.Version = values.Version.value;
-    } else if (!values.Version) {
-      values.Version = "beta";
+    if (values.version && values.version.value) {
+      values.version = values.version.value;
+    } else if (!values.version) {
+      values.version = "beta";
     }
     if (values.ReverseTenantLookup === false) {
       delete values.ReverseTenantLookup;
@@ -631,7 +631,7 @@ const CippGraphExplorerFilter = ({
           <Grid size={gridItemSize}>
             <CippFormComponent
               type="autoComplete"
-              name="Version"
+              name="version"
               label="API Version"
               formControl={formControl}
               multiple={false}
