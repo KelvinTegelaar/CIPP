@@ -5,17 +5,7 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent.jsx";
 import { CertificateCredentialRemovalForm } from "/src/components/CippComponents/CertificateCredentialRemovalForm.jsx";
 import CippPermissionPreview from "/src/components/CippComponents/CippPermissionPreview.jsx";
-import {
-  Launch,
-  Delete,
-  Edit,
-  Key,
-  Security,
-  Block,
-  CheckCircle,
-  Save,
-  ContentCopy,
-} from "@mui/icons-material";
+import { Launch, Delete, Key, Security, ContentCopy } from "@mui/icons-material";
 import { usePermissions } from "/src/hooks/use-permissions.js";
 import tabOptions from "./tabOptions";
 
@@ -59,7 +49,7 @@ const Page = () => {
       },
       confirmText:
         "Create a deployment template from '[displayName]'? This will copy all permissions and create a reusable template. If you run this from a customer tenant, the App Registration will first be copied to the partner tenant as a multi-tenant app.",
-      condition: () => canWriteApplication,
+      condition: (row) => canWriteApplication && !row?.applicationTemplateId,
     },
     {
       icon: <ContentCopy />,
@@ -92,6 +82,8 @@ const Page = () => {
           "servicePrincipalLockConfiguration",
           "identifierUris",
           "applicationIdUris",
+          "keyCredentials",
+          "passwordCredentials",
           "Tenant",
           "CippStatus",
         ];
@@ -110,7 +102,8 @@ const Page = () => {
         };
       },
       confirmText: "Are you sure you want to create a template from this app registration?",
-      condition: (row) => canWriteApplication && row.signInAudience === "AzureADMyOrg",
+      condition: (row) =>
+        canWriteApplication && row.signInAudience === "AzureADMyOrg" && !row?.applicationTemplateId,
     },
     {
       icon: <Key />,
