@@ -9,7 +9,7 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 
 const Page = () => {
-  const pageTitle = "Templates";
+  const pageTitle = "Application Templates";
   const apiUrl = "/api/ListAppApprovalTemplates";
 
   // Fetch GitHub integration status
@@ -213,6 +213,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
+      tenantInTitle={false}
       queryKey="ListAppApprovalTemplates"
       columns={columns}
       simpleColumns={simpleColumns}
