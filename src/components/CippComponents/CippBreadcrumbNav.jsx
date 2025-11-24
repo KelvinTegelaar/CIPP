@@ -8,14 +8,64 @@ import { useSettings } from "../../hooks/use-settings";
 const MAX_HISTORY_STORAGE = 20; // Maximum number of pages to keep in history
 const MAX_BREADCRUMB_DISPLAY = 5; // Maximum number of breadcrumbs to display at once
 
+/**
+ * Load all tabOptions.json files dynamically
+ */
+async function loadTabOptions() {
+  const tabOptionPaths = [
+    "/email/administration/exchange-retention",
+    "/cipp/custom-data",
+    "/cipp/super-admin",
+    "/tenant/standards/list-standards",
+    "/tenant/manage",
+    "/tenant/administration/applications",
+    "/tenant/administration/tenants",
+    "/tenant/administration/audit-logs",
+    "/identity/administration/users/user",
+    "/tenant/administration/securescore",
+    "/tenant/gdap-management",
+    "/tenant/gdap-management/relationships/relationship",
+    "/cipp/settings",
+  ];
+
+  const tabOptions = [];
+
+  for (const basePath of tabOptionPaths) {
+    try {
+      const module = await import(`/src/pages${basePath}/tabOptions.json`);
+      const options = module.default || module;
+
+      // Add each tab option with metadata
+      options.forEach((option) => {
+        tabOptions.push({
+          title: option.label,
+          path: option.path,
+          type: "tab",
+          basePath: basePath,
+        });
+      });
+    } catch (error) {
+      // Silently skip if file doesn't exist or can't be loaded
+    }
+  }
+
+  return tabOptions;
+}
+
 export const CippBreadcrumbNav = () => {
   const router = useRouter();
   const settings = useSettings();
   const [history, setHistory] = useState([]);
   const [mode, setMode] = useState(settings.breadcrumbMode || "hierarchical");
+  const [tabOptions, setTabOptions] = useState([]);
   const lastRouteRef = useRef(null);
   const titleCheckCountRef = useRef(0);
   const titleCheckIntervalRef = useRef(null);
+
+  // Load tab options on mount
+  useEffect(() => {
+    loadTabOptions().then(setTabOptions);
+  }, []);
 
   useEffect(() => {
     // Only update when the route actually changes, not on every render
@@ -70,6 +120,12 @@ export const CippBreadcrumbNav = () => {
         return;
       }
 
+      // Normalize URL for comparison (remove trailing slashes and query params)
+      const normalizeUrl = (url) => {
+        // Remove query params and trailing slashes for comparison
+        return url.split("?")[0].replace(/\/$/, "").toLowerCase();
+      };
+
       const currentPage = {
         title: pageTitle,
         path: router.pathname,
@@ -78,76 +134,66 @@ export const CippBreadcrumbNav = () => {
         timestamp: Date.now(),
       };
 
+      const normalizedCurrentUrl = normalizeUrl(currentPage.fullUrl);
+
       setHistory((prevHistory) => {
-        // Check if this exact URL is already the last entry
+        // Check if last entry has same title AND similar path (prevent duplicate with same content)
         const lastEntry = prevHistory[prevHistory.length - 1];
-        if (lastEntry && lastEntry.fullUrl === currentPage.fullUrl) {
-          // Update title if it changed, but don't add duplicate
-          if (lastEntry.title !== currentPage.title) {
-            // Stop checking once we have a valid title
+        if (lastEntry) {
+          const sameTitle = lastEntry.title.trim() === currentPage.title.trim();
+          const samePath = normalizeUrl(lastEntry.fullUrl) === normalizedCurrentUrl;
+
+          if (sameTitle && samePath) {
+            // Exact duplicate - don't add, just stop checking
             if (titleCheckIntervalRef.current) {
               clearInterval(titleCheckIntervalRef.current);
               titleCheckIntervalRef.current = null;
             }
+            return prevHistory;
+          }
+
+          if (samePath && !sameTitle) {
+            // Same URL but title changed - update the entry
             const updated = [...prevHistory];
-            updated[updated.length - 1] = currentPage;
-            return updated;
-          }
-          // Stop checking if title hasn't changed
-          if (titleCheckIntervalRef.current) {
-            clearInterval(titleCheckIntervalRef.current);
-            titleCheckIntervalRef.current = null;
-          }
-          return prevHistory;
-        }
-
-        // Check if this URL exists anywhere in history (user clicked back or navigated to previous page)
-        const existingIndex = prevHistory.findIndex(
-          (entry) => entry.fullUrl === currentPage.fullUrl
-        );
-
-        if (existingIndex !== -1) {
-          // User navigated back - truncate everything after this point and update the entry
-          if (titleCheckIntervalRef.current) {
-            clearInterval(titleCheckIntervalRef.current);
-            titleCheckIntervalRef.current = null;
-          }
-          const updated = prevHistory.slice(0, existingIndex + 1);
-          updated[existingIndex] = currentPage; // Update with latest timestamp/title
-          return updated;
-        }
-
-        // Check if the last 2 entries have the same title (duplicate pages with different URLs)
-        // This happens when navigating between tabs on the same page
-        if (prevHistory.length > 0) {
-          const lastTitle = prevHistory[prevHistory.length - 1]?.title;
-          if (lastTitle === currentPage.title) {
-            // Replace the last entry instead of adding a duplicate
+            updated[prevHistory.length - 1] = currentPage;
             if (titleCheckIntervalRef.current) {
               clearInterval(titleCheckIntervalRef.current);
               titleCheckIntervalRef.current = null;
             }
-            const updated = [...prevHistory];
-            updated[updated.length - 1] = currentPage;
             return updated;
           }
         }
 
-        // Stop checking once we have a valid title and added it to history
+        // Find if this URL exists anywhere EXCEPT the last position in history
+        const existingIndex = prevHistory.findIndex((entry, index) => {
+          // Skip the last entry since we already checked it above
+          if (index === prevHistory.length - 1) return false;
+          return normalizeUrl(entry.fullUrl) === normalizedCurrentUrl;
+        });
+
+        // URL not in history (except possibly as last entry which we handled) - add as new entry
+        if (existingIndex === -1) {
+          const newHistory = [...prevHistory, currentPage];
+
+          // Keep only the last MAX_HISTORY_STORAGE pages
+          const trimmedHistory =
+            newHistory.length > MAX_HISTORY_STORAGE
+              ? newHistory.slice(-MAX_HISTORY_STORAGE)
+              : newHistory;
+
+          // Don't stop checking yet - title might still be loading
+          return trimmedHistory;
+        }
+
+        // URL exists in history but not as last entry - user navigated back
+        // Truncate history after this point and update the entry
         if (titleCheckIntervalRef.current) {
           clearInterval(titleCheckIntervalRef.current);
           titleCheckIntervalRef.current = null;
         }
-
-        // Add new page to history
-        const newHistory = [...prevHistory, currentPage];
-
-        // Keep only the last MAX_HISTORY_STORAGE pages
-        if (newHistory.length > MAX_HISTORY_STORAGE) {
-          return newHistory.slice(-MAX_HISTORY_STORAGE);
-        }
-
-        return newHistory;
+        const updated = prevHistory.slice(0, existingIndex + 1);
+        updated[existingIndex] = currentPage;
+        return updated;
       });
     };
 
@@ -238,7 +284,6 @@ export const CippBreadcrumbNav = () => {
   // Build hierarchical breadcrumbs from config.js navigation structure
   const buildHierarchicalBreadcrumbs = () => {
     const currentPath = router.pathname;
-    const breadcrumbPath = [];
 
     // Helper to check if paths match (handles dynamic routes)
     const pathsMatch = (menuPath, currentPath) => {
@@ -265,11 +310,19 @@ export const CippBreadcrumbNav = () => {
             title: item.title,
             path: item.path,
             type: item.type,
+            query: {}, // Menu items don't have query params by default
           });
         }
 
         // Check if this item matches the current path
         if (item.path && pathsMatch(item.path, currentPath)) {
+          // If this is the current page, include current query params
+          if (item.path === currentPath) {
+            const lastItem = currentBreadcrumb[currentBreadcrumb.length - 1];
+            if (lastItem) {
+              lastItem.query = { ...router.query };
+            }
+          }
           return currentBreadcrumb;
         }
 
@@ -286,8 +339,74 @@ export const CippBreadcrumbNav = () => {
 
     let result = findPathInMenu(nativeMenuItems);
 
-    // Check if we're on a tab page by looking for the base path in result
-    // and the current path being different (e.g., base: /user, current: /user/edit)
+    // If not found in main menu, check if it's a tab page
+    if (result.length === 0 && tabOptions.length > 0) {
+      const normalizedCurrentPath = currentPath.replace(/\/$/, "");
+
+      // Find matching tab option
+      const matchingTab = tabOptions.find((tab) => {
+        const normalizedTabPath = tab.path.replace(/\/$/, "");
+        return normalizedTabPath === normalizedCurrentPath;
+      });
+
+      if (matchingTab) {
+        // Find the base page in the menu and build full path to it
+        const normalizedBasePath = matchingTab.basePath?.replace(/\/$/, "");
+
+        // Recursively find the base page and build breadcrumb path
+        const findBasePageWithPath = (items, path = []) => {
+          for (const item of items) {
+            const currentBreadcrumb = [...path];
+
+            // Add current item to path if it has a title
+            if (item.title) {
+              currentBreadcrumb.push({
+                title: item.title,
+                path: item.path,
+                type: item.type,
+                query: {}, // Menu items don't have query params by default
+              });
+            }
+
+            // Check if this item matches the base path
+            if (item.path) {
+              const normalizedItemPath = item.path.replace(/\/$/, "");
+              if (
+                normalizedItemPath === normalizedBasePath ||
+                normalizedItemPath.startsWith(normalizedBasePath)
+              ) {
+                return currentBreadcrumb;
+              }
+            }
+
+            // Recursively search children
+            if (item.items && item.items.length > 0) {
+              const found = findBasePageWithPath(item.items, currentBreadcrumb);
+              if (found.length > 0) {
+                return found;
+              }
+            }
+          }
+          return [];
+        };
+
+        const basePagePath = findBasePageWithPath(nativeMenuItems);
+
+        if (basePagePath.length > 0) {
+          result = basePagePath;
+
+          // Add the tab as the final breadcrumb with current query params
+          result.push({
+            title: matchingTab.title,
+            path: matchingTab.path,
+            type: "tab",
+            query: { ...router.query }, // Include current query params for tab page
+          });
+        }
+      }
+    }
+
+    // Check if we're on a nested page under a menu item (e.g., edit page)
     if (result.length > 0) {
       const lastItem = result[result.length - 1];
       if (lastItem.path && lastItem.path !== currentPath && currentPath.startsWith(lastItem.path)) {
@@ -304,6 +423,7 @@ export const CippBreadcrumbNav = () => {
             title: tabTitle,
             path: currentPath,
             type: "tab",
+            query: { ...router.query }, // Include current query params
           });
         }
       }
@@ -313,9 +433,16 @@ export const CippBreadcrumbNav = () => {
   };
 
   // Handle click for hierarchical breadcrumbs
-  const handleHierarchicalClick = (path) => {
+  const handleHierarchicalClick = (path, query) => {
     if (path) {
-      router.push(path);
+      if (query && Object.keys(query).length > 0) {
+        router.push({
+          pathname: path,
+          query: query,
+        });
+      } else {
+        router.push(path);
+      }
     }
   };
 
@@ -372,7 +499,7 @@ export const CippBreadcrumbNav = () => {
                 key={index}
                 component="button"
                 variant="subtitle2"
-                onClick={() => handleHierarchicalClick(crumb.path)}
+                onClick={() => handleHierarchicalClick(crumb.path, crumb.query)}
                 sx={{
                   textDecoration: "none",
                   color: isLast ? "text.primary" : "text.secondary",
