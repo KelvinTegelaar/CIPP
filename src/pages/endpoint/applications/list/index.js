@@ -139,8 +139,7 @@ const Page = () => {
       url: "/api/ExecAssignApp",
       icon: <UserGroupIcon />,
       color: "info",
-      confirmText:
-        "Select the target groups and intent for this application assignment. Assignments are scoped to the current tenant context.",
+      confirmText: 'Select the target groups and intent for "[displayName]".',
       fields: [
         {
           type: "autoComplete",
