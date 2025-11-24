@@ -109,6 +109,7 @@ function filterItemsByPermissionsAndRoles(items, userPermissions, userRoles) {
           if (requiredPerm.includes("*")) {
             // Convert wildcard pattern to regex
             const regexPattern = requiredPerm
+              .replace(/\\/g, "\\\\") // Escape backslashes
               .replace(/\./g, "\\.") // Escape dots
               .replace(/\*/g, ".*"); // Convert * to .*
             const regex = new RegExp(`^${regexPattern}$`);
