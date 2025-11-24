@@ -53,6 +53,15 @@ const Page = () => {
           helperText:
             "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
         },
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
+        },
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       icon: <UserIcon />,
@@ -77,6 +86,15 @@ const Page = () => {
           helperText:
             "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
         },
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
+        },
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       icon: <LaptopMac />,
@@ -100,6 +118,15 @@ const Page = () => {
           validators: { required: "Select an assignment intent" },
           helperText:
             "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
+        },
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
         },
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
@@ -160,7 +187,7 @@ const Page = () => {
           options: assignmentModeOptions,
           defaultValue: "replace",
           helperText:
-            "Replace will overwrite existing assignments. Append keeps current assignments and adds the selected groups/intents.",
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.",
         },
       ],
       customDataformatter: (row, action, formData) => {
