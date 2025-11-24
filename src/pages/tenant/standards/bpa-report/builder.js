@@ -187,25 +187,10 @@ const Page = () => {
       <Box
         sx={{
           flexGrow: 1,
-          py: 4,
         }}
       >
         <Container maxWidth={false}>
           <Stack spacing={4}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Button
-                color="inherit"
-                onClick={() => router.back()}
-                startIcon={
-                  <SvgIcon fontSize="small">
-                    <ArrowLeftIcon />
-                  </SvgIcon>
-                }
-              >
-                Back to Templates
-              </Button>
-            </Stack>
-
             <Typography variant="h4" gutterBottom>
               {pageTitle}
             </Typography>
@@ -234,7 +219,7 @@ const Page = () => {
                   type="select"
                   options={[
                     { label: "Block", value: "Tenant" },
-                    { label: "Table", value: "Table" }
+                    { label: "Table", value: "Table" },
                   ]}
                   formControl={formControl}
                 />
@@ -255,7 +240,11 @@ const Page = () => {
           <Grid container spacing={2}>
             {blockCards.map((block, index) => (
               <Grid
-                size={{ md: layoutMode === "Table" ? 12 : 4, sm: layoutMode === "Table" ? 12 : 6, xs: 10 }}
+                size={{
+                  md: layoutMode === "Table" ? 12 : 4,
+                  sm: layoutMode === "Table" ? 12 : 6,
+                  xs: 10,
+                }}
                 key={block.id}
               >
                 <CippButtonCard

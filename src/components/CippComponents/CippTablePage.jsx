@@ -24,7 +24,7 @@ export const CippTablePage = (props) => {
     tableFilter,
     tenantInTitle = true,
     filters,
-    sx = { flexGrow: 1, py: 4 },
+    sx = { flexGrow: 1, pb: 4 },
     ...other
   } = props;
   const tenant = useSettings().currentTenant;
@@ -65,10 +65,12 @@ export const CippTablePage = (props) => {
                 offCanvas={offCanvas}
                 filters={tableFilters}
                 initialState={{
-                  columnFilters: filters ? filters.map(filter => ({
-                    id: filter.id || filter.columnId,
-                    value: filter.value
-                  })) : []
+                  columnFilters: filters
+                    ? filters.map((filter) => ({
+                        id: filter.id || filter.columnId,
+                        value: filter.value,
+                      }))
+                    : [],
                 }}
                 {...other}
               />

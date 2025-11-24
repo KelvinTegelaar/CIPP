@@ -31,7 +31,7 @@ const Page = () => {
 
   return (
     <>
-      <Alert severity="warning" sx={{ mx: 3, mt: 5, mb: -2 }}>
+      <Alert severity="warning" sx={{ mx: 3, mb: 2 }}>
         <Typography variant="body1">
           <strong>
             Users in this list have been restricted from sending email due to exceeding outbound

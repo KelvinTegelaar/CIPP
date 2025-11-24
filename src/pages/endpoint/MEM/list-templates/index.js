@@ -42,6 +42,10 @@ const Page = () => {
         },
       ],
       data: { GUID: "GUID", Type: "!IntuneTemplate" },
+      defaultvalues: (row) => ({
+        displayName: row.displayName,
+        description: row.description,
+      }),
       confirmText:
         "Enter the new name and description for the template. Warning: This will disconnect the template from a template library if applied.",
       multiPost: false,

@@ -10,6 +10,7 @@ export const CippApiLogsDrawer = ({
   apiFilter = null,
   tenantFilter = null,
   standardFilter = null,
+  scheduledTaskFilter = null,
   requiredPermissions = [],
   PermissionButton = Button,
   title = "API Logs",
@@ -28,7 +29,9 @@ export const CippApiLogsDrawer = ({
   // Build the API URL with the filter
   const apiUrl = `/api/ListLogs?Filter=true${apiFilter ? `&API=${apiFilter}` : ""}${
     tenantFilter ? `&Tenant=${tenantFilter}` : ""
-  }${standardFilter ? `&StandardTemplateId=${standardFilter}` : ""}`;
+  }${standardFilter ? `&StandardTemplateId=${standardFilter}` : ""}${
+    scheduledTaskFilter ? `&ScheduledTaskId=${scheduledTaskFilter}` : ""
+  }`;
 
   // Define the columns for the logs table
   const simpleColumns = [
@@ -74,7 +77,9 @@ export const CippApiLogsDrawer = ({
               url: apiUrl,
               dataKey: "",
             }}
-            queryKey={`APILogs-${apiFilter || "All"}`}
+            queryKey={`APILogs-${apiFilter || "All"}-${tenantFilter || "AllTenants"}-${
+              standardFilter || "NoStandard"
+            }-${scheduledTaskFilter || "NoTask"}`}
             simpleColumns={simpleColumns}
             exportEnabled={true}
             offCanvas={{

@@ -80,6 +80,7 @@ const initialSettings = {
   },
   persistFilters: false,
   lastUsedFilters: {},
+  breadcrumbMode: "hierarchical",
 };
 
 const initialState = {
@@ -110,6 +111,12 @@ export const SettingsProvider = (props) => {
       setState((prevState) => ({
         ...prevState,
         ...restored,
+        isInitialized: true,
+      }));
+    } else {
+      // No stored settings found, initialize with defaults
+      setState((prevState) => ({
+        ...prevState,
         isInitialized: true,
       }));
     }

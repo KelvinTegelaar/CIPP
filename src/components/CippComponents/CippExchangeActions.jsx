@@ -301,12 +301,14 @@ export const CippExchangeActions = () => {
       label: "Set Copy Sent Items for Delegated Mailboxes",
       type: "POST",
       icon: <MailOutline />,
+      condition: (row) =>
+        row.recipientTypeDetails === "UserMailbox" || row.recipientTypeDetails === "SharedMailbox",
       url: "/api/ExecCopyForSent",
       data: { ID: "UPN" },
       fields: [
         {
           type: "radio",
-          name: "MessageCopyForSentAsEnabled",
+          name: "messageCopyState",
           label: "Copy Sent Items",
           options: [
             { label: "Enabled", value: true },

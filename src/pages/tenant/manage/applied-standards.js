@@ -44,6 +44,7 @@ import ReactMarkdown from "react-markdown";
 import tabOptions from "./tabOptions.json";
 import { createDriftManagementActions } from "./driftManagementActions";
 import { CippApiLogsDrawer } from "../../../components/CippComponents/CippApiLogsDrawer";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const router = useRouter();
@@ -809,6 +810,7 @@ const Page = () => {
       actionsData={{}}
       isFetching={comparisonApi.isFetching || templateDetails.isFetching}
     >
+      <CippHead title={title} />
       <Box sx={{ py: 2, mr: 2 }}>
         {comparisonApi.isFetching && (
           <>

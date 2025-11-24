@@ -17,6 +17,7 @@ import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall";
 import Link from "next/link";
 import { Grid } from "@mui/system";
+import { CippHead } from "/src/components/CippComponents/CippHead";
 
 const Page = () => {
   const settings = useSettings();
@@ -31,12 +32,13 @@ const Page = () => {
 
   return (
     <Container maxWidth={"xl"}>
+      <CippHead title="Integrations" noTenant={true} />
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
         spacing={4}
-        sx={{ mb: 3, mt: 3 }}
+        sx={{ mb: 3 }}
       >
         <Typography variant="h4">Integrations</Typography>
         <Button

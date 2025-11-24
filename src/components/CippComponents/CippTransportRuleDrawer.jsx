@@ -104,8 +104,10 @@ export const CippTransportRuleDrawer = ({
     const conditionFieldMap = {
       From: "The sender is...",
       FromScope: "The sender is located...",
+      FromMemberOf: "The sender is a member of...",
       SentTo: "The recipient is...",
       SentToScope: "The recipient is located...",
+      SentToMemberOf: "The recipient is a member of...",
       SubjectContainsWords: "Subject contains words...",
       SubjectMatchesPatterns: "Subject matches patterns...",
       SubjectOrBodyContainsWords: "Subject or body contains words...",
@@ -122,8 +124,19 @@ export const CippTransportRuleDrawer = ({
       MessageTypeMatches: "Message type is...",
       SenderDomainIs: "Sender domain is...",
       RecipientDomainIs: "Recipient domain is...",
+      SenderIpRanges: "Sender IP address belongs to any of these ranges...",
       HeaderContainsWords: "Message header contains words...",
       HeaderMatchesPatterns: "Message header matches patterns...",
+      AnyOfToHeader: "Any To header contains...",
+      AnyOfToHeaderMemberOf: "Any To header is a member of...",
+      AnyOfCcHeader: "Any Cc header contains...",
+      AnyOfCcHeaderMemberOf: "Any Cc header is a member of...",
+      AnyOfToCcHeader: "Any To or Cc header contains...",
+      AnyOfToCcHeaderMemberOf: "Any To or Cc header is a member of...",
+      RecipientAddressContainsWords: "Recipient address contains words...",
+      RecipientAddressMatchesPatterns: "Recipient address matches patterns...",
+      AnyOfRecipientAddressContainsWords: "Any recipient address contains words...",
+      AnyOfRecipientAddressMatchesPatterns: "Any recipient address matches patterns...",
     };
 
     const actionFieldMap = {
@@ -232,6 +245,26 @@ export const CippTransportRuleDrawer = ({
           formData[field] = rule[field] !== null
             ? { value: rule[field].toString(), label: rule[field].toString() }
             : undefined;
+        } else if (field === "SenderIpRanges") {
+          // Transform array of IP strings to autocomplete format
+          if (Array.isArray(rule[field])) {
+            formData[field] = rule[field].map(ip => ({ value: ip, label: ip }));
+          } else {
+            formData[field] = rule[field];
+          }
+        } else if (
+          // Fields that use creatable autocomplete with API (users/groups)
+          field === "From" || field === "SentTo" || 
+          field === "AnyOfToHeader" || field === "AnyOfCcHeader" || field === "AnyOfToCcHeader" ||
+          field === "FromMemberOf" || field === "SentToMemberOf" || 
+          field === "AnyOfToHeaderMemberOf" || field === "AnyOfCcHeaderMemberOf" || field === "AnyOfToCcHeaderMemberOf"
+        ) {
+          // Transform array of email/UPN strings to autocomplete format
+          if (Array.isArray(rule[field])) {
+            formData[field] = rule[field].map(item => ({ value: item, label: item }));
+          } else {
+            formData[field] = rule[field];
+          }
         } else {
           formData[field] = rule[field];
         }
@@ -287,6 +320,26 @@ export const CippTransportRuleDrawer = ({
           formData[exceptionField] = rule[exceptionField] !== null
             ? { value: rule[exceptionField].toString(), label: rule[exceptionField].toString() }
             : undefined;
+        } else if (field === "SenderIpRanges") {
+          // Transform array of IP strings to autocomplete format
+          if (Array.isArray(rule[exceptionField])) {
+            formData[exceptionField] = rule[exceptionField].map(ip => ({ value: ip, label: ip }));
+          } else {
+            formData[exceptionField] = rule[exceptionField];
+          }
+        } else if (
+          // Fields that use creatable autocomplete with API (users/groups)
+          field === "From" || field === "SentTo" || 
+          field === "AnyOfToHeader" || field === "AnyOfCcHeader" || field === "AnyOfToCcHeader" ||
+          field === "FromMemberOf" || field === "SentToMemberOf" || 
+          field === "AnyOfToHeaderMemberOf" || field === "AnyOfCcHeaderMemberOf" || field === "AnyOfToCcHeaderMemberOf"
+        ) {
+          // Transform array of email/UPN strings to autocomplete format
+          if (Array.isArray(rule[exceptionField])) {
+            formData[exceptionField] = rule[exceptionField].map(item => ({ value: item, label: item }));
+          } else {
+            formData[exceptionField] = rule[exceptionField];
+          }
         } else {
           formData[exceptionField] = rule[exceptionField];
         }
@@ -345,9 +398,22 @@ export const CippTransportRuleDrawer = ({
         const conditionValue = condition.value || condition;
         if (values[conditionValue] !== undefined) {
           const fieldValue = values[conditionValue];
-          if (fieldValue && typeof fieldValue === 'object' && fieldValue.value !== undefined) {
+          
+          // Handle single object with value property
+          if (fieldValue && typeof fieldValue === 'object' && !Array.isArray(fieldValue) && fieldValue.value !== undefined) {
             apiData[conditionValue] = fieldValue.value;
-          } else {
+          } 
+          // Handle array of objects with value property (for creatable autocomplete fields)
+          else if (Array.isArray(fieldValue)) {
+            apiData[conditionValue] = fieldValue.map(item => {
+              if (item && typeof item === 'object' && item.value !== undefined) {
+                return item.value;
+              }
+              return item;
+            });
+          } 
+          // Handle plain values
+          else {
             apiData[conditionValue] = fieldValue;
           }
         }
@@ -389,9 +455,22 @@ export const CippTransportRuleDrawer = ({
           }
         } else if (values[actionValue] !== undefined) {
           const fieldValue = values[actionValue];
-          if (fieldValue && typeof fieldValue === 'object' && fieldValue.value !== undefined) {
+          
+          // Handle single object with value property
+          if (fieldValue && typeof fieldValue === 'object' && !Array.isArray(fieldValue) && fieldValue.value !== undefined) {
             apiData[actionValue] = fieldValue.value;
-          } else {
+          } 
+          // Handle array of objects with value property (for creatable autocomplete fields)
+          else if (Array.isArray(fieldValue)) {
+            apiData[actionValue] = fieldValue.map(item => {
+              if (item && typeof item === 'object' && item.value !== undefined) {
+                return item.value;
+              }
+              return item;
+            });
+          } 
+          // Handle plain values
+          else {
             apiData[actionValue] = fieldValue;
           }
         }
@@ -402,9 +481,22 @@ export const CippTransportRuleDrawer = ({
         const exceptionValue = exception.value || exception;
         if (values[exceptionValue] !== undefined) {
           const fieldValue = values[exceptionValue];
-          if (fieldValue && typeof fieldValue === 'object' && fieldValue.value !== undefined) {
+          
+          // Handle single object with value property
+          if (fieldValue && typeof fieldValue === 'object' && !Array.isArray(fieldValue) && fieldValue.value !== undefined) {
             apiData[exceptionValue] = fieldValue.value;
-          } else {
+          } 
+          // Handle array of objects with value property (for creatable autocomplete fields)
+          else if (Array.isArray(fieldValue)) {
+            apiData[exceptionValue] = fieldValue.map(item => {
+              if (item && typeof item === 'object' && item.value !== undefined) {
+                return item.value;
+              }
+              return item;
+            });
+          } 
+          // Handle plain values
+          else {
             apiData[exceptionValue] = fieldValue;
           }
         }
@@ -535,8 +627,10 @@ export const CippTransportRuleDrawer = ({
   const conditionOptions = [
     { value: "From", label: "The sender is..." },
     { value: "FromScope", label: "The sender is located..." },
+    { value: "FromMemberOf", label: "The sender is a member of..." },
     { value: "SentTo", label: "The recipient is..." },
     { value: "SentToScope", label: "The recipient is located..." },
+    { value: "SentToMemberOf", label: "The recipient is a member of..." },
     { value: "SubjectContainsWords", label: "Subject contains words..." },
     { value: "SubjectMatchesPatterns", label: "Subject matches patterns..." },
     { value: "SubjectOrBodyContainsWords", label: "Subject or body contains words..." },
@@ -553,8 +647,19 @@ export const CippTransportRuleDrawer = ({
     { value: "MessageTypeMatches", label: "Message type is..." },
     { value: "SenderDomainIs", label: "Sender domain is..." },
     { value: "RecipientDomainIs", label: "Recipient domain is..." },
+    { value: "SenderIpRanges", label: "Sender IP address belongs to any of these ranges..." },
     { value: "HeaderContainsWords", label: "Message header contains words..." },
     { value: "HeaderMatchesPatterns", label: "Message header matches patterns..." },
+    { value: "AnyOfToHeader", label: "Any To header contains..." },
+    { value: "AnyOfToHeaderMemberOf", label: "Any To header is a member of..." },
+    { value: "AnyOfCcHeader", label: "Any Cc header contains..." },
+    { value: "AnyOfCcHeaderMemberOf", label: "Any Cc header is a member of..." },
+    { value: "AnyOfToCcHeader", label: "Any To or Cc header contains..." },
+    { value: "AnyOfToCcHeaderMemberOf", label: "Any To or Cc header is a member of..." },
+    { value: "RecipientAddressContainsWords", label: "Recipient address contains words..." },
+    { value: "RecipientAddressMatchesPatterns", label: "Recipient address matches patterns..." },
+    { value: "AnyOfRecipientAddressContainsWords", label: "Any recipient address contains words..." },
+    { value: "AnyOfRecipientAddressMatchesPatterns", label: "Any recipient address matches patterns..." },
   ];
 
   // Action options
@@ -585,6 +690,9 @@ export const CippTransportRuleDrawer = ({
     switch (conditionValue) {
       case "From":
       case "SentTo":
+      case "AnyOfToHeader":
+      case "AnyOfCcHeader":
+      case "AnyOfToCcHeader":
         return (
           <Grid size={12} key={conditionValue}>
             <CippFormComponent
@@ -593,6 +701,7 @@ export const CippTransportRuleDrawer = ({
               name={conditionValue}
               formControl={formControl}
               multiple={true}
+              creatable={true}
               api={{
                 url: "/api/ListGraphRequest",
                 data: {
@@ -603,6 +712,36 @@ export const CippTransportRuleDrawer = ({
                 },
                 labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
                 valueField: "userPrincipalName",
+                dataKey: "Results",
+              }}
+            />
+          </Grid>
+        );
+
+      case "FromMemberOf":
+      case "SentToMemberOf":
+      case "AnyOfToHeaderMemberOf":
+      case "AnyOfCcHeaderMemberOf":
+      case "AnyOfToCcHeaderMemberOf":
+        return (
+          <Grid size={12} key={conditionValue}>
+            <CippFormComponent
+              type="autoComplete"
+              label={conditionLabel}
+              name={conditionValue}
+              formControl={formControl}
+              multiple={true}
+              creatable={true}
+              api={{
+                url: "/api/ListGraphRequest",
+                data: {
+                  Endpoint: "groups",
+                  tenantFilter: currentTenant,
+                  $select: "id,displayName,mail",
+                  $top: 999,
+                },
+                labelField: (option) => `${option.displayName}${option.mail ? ` (${option.mail})` : ''}`,
+                valueField: "mail",
                 dataKey: "Results",
               }}
             />
@@ -714,6 +853,22 @@ export const CippTransportRuleDrawer = ({
               label={conditionLabel}
               name={conditionValue}
               formControl={formControl}
+            />
+          </Grid>
+        );
+
+      case "SenderIpRanges":
+        return (
+          <Grid size={12} key={conditionValue}>
+            <CippFormComponent
+              type="autoComplete"
+              label={conditionLabel}
+              name={conditionValue}
+              formControl={formControl}
+              multiple={true}
+              creatable={true}
+              options={[]}
+              placeholder="Enter IP addresses or CIDR ranges (e.g., 192.168.1.1 or 10.0.0.0/24)"
             />
           </Grid>
         );

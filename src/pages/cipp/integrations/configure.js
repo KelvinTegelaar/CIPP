@@ -125,6 +125,7 @@ const Page = () => {
           backButtonTitle="Integrations"
           headerText={extension.headerText}
           hideTitleText={true}
+          noTenantInHead={true}
         >
           <CardContent sx={{ pb: 0, mb: 0 }}>
             {logo && (
@@ -193,13 +194,8 @@ const Page = () => {
               {extension?.links && (
                 <>
                   {extension.links.map((link, index) => (
-                    <Box key={index}> 
-                      <Button
-                        href={link.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        color="inherit"
-                      >
+                    <Box key={index}>
+                      <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
                         <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                           <ArrowTopRightOnSquareIcon />
                         </SvgIcon>

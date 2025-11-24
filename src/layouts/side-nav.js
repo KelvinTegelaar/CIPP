@@ -15,7 +15,8 @@ const markOpenItems = (items, pathname) => {
   return items.map((item) => {
     const checkPath = !!(item.path && pathname);
     const exactMatch = checkPath ? pathname === item.path : false;
-    const partialMatch = checkPath ? pathname.startsWith(item.path) : false;
+    // Special handling for root path "/" to avoid matching all paths
+    const partialMatch = checkPath && item.path !== "/" ? pathname.startsWith(item.path) : false;
 
     let openImmediately = exactMatch;
     let newItems = item.items || [];
@@ -42,7 +43,8 @@ const renderItems = ({ collapse = false, depth = 0, items, pathname }) =>
 const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
   const checkPath = !!(item.path && pathname);
   const exactMatch = checkPath && pathname === item.path;
-  const partialMatch = checkPath && pathname.startsWith(item.path);
+  // Special handling for root path "/" to avoid matching all paths
+  const partialMatch = checkPath && item.path !== "/" ? pathname.startsWith(item.path) : false;
 
   const hasChildren = item.items && item.items.length > 0;
   const isActive = exactMatch || (partialMatch && !hasChildren);
