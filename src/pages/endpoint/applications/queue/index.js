@@ -1,15 +1,15 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
-import { PlayArrow, Add } from "@mui/icons-material";
-import Link from "next/link";
-import { ApiPostCall } from "../../../../api/ApiCall";
-import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import { PlayArrow } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
+import { useDialog } from "../../../../hooks/use-dialog";
 
 const Page = () => {
   const pageTitle = "Queued Applications";
+  const runQueueDialog = useDialog();
 
   const actions = [
     {
@@ -22,35 +22,38 @@ const Page = () => {
       color: "danger",
     },
   ];
-  const handlePostCall = ApiPostCall({
-    urlFromdata: true,
-    relatedQueryKeys: "ListApplicationQueue",
-  });
+
   const simpleColumns = ["tenantName", "applicationName", "cmdLine", "assignTo"];
-  const handleRunQueue = () => {
-    handlePostCall.mutate({ url: "/api/ExecAppUpload" });
-  };
 
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl="/api/ListApplicationQueue"
-      actions={actions}
-      tableFilter={<CippApiResults apiObject={handlePostCall} />}
-      simpleColumns={simpleColumns}
-      tenantInTitle={false}
-      cardButton={
-        <>
-          <Button onClick={() => handleRunQueue()} startIcon={<PlayArrow />}>
-            Run Queue now
-          </Button>
-
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl="/api/ListApplicationQueue"
+        actions={actions}
+        simpleColumns={simpleColumns}
+        tenantInTitle={false}
+        cardButton={
           <>
+            <Button onClick={runQueueDialog.handleOpen} startIcon={<PlayArrow />}>
+              Run Queue now
+            </Button>
             <CippApplicationDeployDrawer />
           </>
-        </>
-      }
-    />
+        }
+      />
+      <CippApiDialog
+        createDialog={runQueueDialog}
+        title="Run Application Queue"
+        fields={[]}
+        api={{
+          type: "POST",
+          url: "/api/ExecAppUpload",
+          relatedQueryKeys: ["ListApplicationQueue"],
+          confirmText: "Are you sure you want to run the application queue now? This will process all queued applications."
+        }}
+      />
+    </>
   );
 };
 
