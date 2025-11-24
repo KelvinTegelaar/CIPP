@@ -80,6 +80,7 @@ const initialSettings = {
   },
   persistFilters: false,
   lastUsedFilters: {},
+  breadcrumbMode: "hierarchical",
 };
 
 const initialState = {

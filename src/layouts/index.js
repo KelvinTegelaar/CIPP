@@ -326,7 +326,7 @@ export const Layout = (props) => {
           {(currentTenant === "AllTenants" || !currentTenant) && !allTenantsSupport ? (
             <Box sx={{ flexGrow: 1 }}>
               <Container maxWidth={false}>
-                <CippBreadcrumbNav />
+                <CippBreadcrumbNav mode="hierarchical" />
                 <Grid container spacing={3}>
                   <Grid size={6}>
                     <CippImageCard
@@ -343,7 +343,7 @@ export const Layout = (props) => {
           ) : (
             <Stack>
               <Box sx={{ mx: 3, mt: 3 }}>
-                <CippBreadcrumbNav />
+                <CippBreadcrumbNav mode="hierarchical" />
               </Box>
               <Divider sx={{ mb: 2 }} />
               {children}
