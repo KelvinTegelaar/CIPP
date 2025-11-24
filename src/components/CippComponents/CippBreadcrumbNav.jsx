@@ -13,7 +13,9 @@ export const CippBreadcrumbNav = () => {
   const settings = useSettings();
   const [history, setHistory] = useState([]);
   const [mode, setMode] = useState(settings.breadcrumbMode || "hierarchical");
+  const [currentTitle, setCurrentTitle] = useState("");
   const lastRouteRef = useRef(null);
+  const titleCheckIntervalRef = useRef(null);
 
   useEffect(() => {
     // Only update when the route actually changes, not on every render
@@ -26,8 +28,13 @@ export const CippBreadcrumbNav = () => {
 
     lastRouteRef.current = currentRoute;
 
-    // Wait a tick for document.title to be updated
-    const timer = setTimeout(() => {
+    // Clear any existing title check interval
+    if (titleCheckIntervalRef.current) {
+      clearInterval(titleCheckIntervalRef.current);
+    }
+
+    // Function to check and update title
+    const checkTitle = () => {
       let pageTitle = document.title.replace(" - CIPP", "").trim();
 
       // Remove tenant domain from title (e.g., "Groups - domain.onmicrosoft.com" -> "Groups")
@@ -103,9 +110,16 @@ export const CippBreadcrumbNav = () => {
 
         return newHistory;
       });
-    }, 100); // Small delay to let title update
+    };
 
-    return () => clearTimeout(timer);
+    // Start checking for title updates
+    titleCheckIntervalRef.current = setInterval(checkTitle, 100);
+
+    return () => {
+      if (titleCheckIntervalRef.current) {
+        clearInterval(titleCheckIntervalRef.current);
+      }
+    };
   }, [router.asPath]);
 
   const handleBreadcrumbClick = (index) => {
@@ -117,6 +131,34 @@ export const CippBreadcrumbNav = () => {
       });
     }
   };
+
+  // State to track current page title for hierarchical mode
+  const [currentPageTitle, setCurrentPageTitle] = useState(null);
+
+  // Watch for title changes to update hierarchical breadcrumbs
+  useEffect(() => {
+    if (mode === "hierarchical") {
+      const updateTitle = () => {
+        const pageTitle = document.title.replace(" - CIPP", "").trim();
+        const parts = pageTitle.split(" - ");
+        const cleanTitle =
+          parts.length > 1 && parts[parts.length - 1].includes(".")
+            ? parts.slice(0, -1).join(" - ").trim()
+            : pageTitle;
+
+        if (cleanTitle && cleanTitle !== "CIPP" && !cleanTitle.toLowerCase().includes("loading")) {
+          setCurrentPageTitle(cleanTitle);
+        }
+      };
+
+      // Initial update
+      updateTitle();
+
+      // Check for title changes periodically
+      const interval = setInterval(updateTitle, 500);
+      return () => clearInterval(interval);
+    }
+  }, [mode, router.pathname]);
 
   // Build hierarchical breadcrumbs from config.js navigation structure
   const buildHierarchicalBreadcrumbs = () => {
@@ -174,14 +216,15 @@ export const CippBreadcrumbNav = () => {
     if (result.length > 0) {
       const lastItem = result[result.length - 1];
       if (lastItem.path && lastItem.path !== currentPath && currentPath.startsWith(lastItem.path)) {
-        // Try to extract tab title from document title
-        const pageTitle = document.title.replace(" - CIPP", "").trim();
-        const parts = pageTitle.split(" - ");
-        const tabTitle =
-          parts.length > 1 && parts[parts.length - 1].includes(".") ? parts[0] : pageTitle;
+        // Use the tracked page title if available, otherwise fall back to document.title
+        const tabTitle = currentPageTitle || document.title.replace(" - CIPP", "").trim();
 
         // Add tab as an additional breadcrumb item
-        if (tabTitle && tabTitle !== lastItem.title) {
+        if (
+          tabTitle &&
+          tabTitle !== lastItem.title &&
+          !tabTitle.toLowerCase().includes("loading")
+        ) {
           result.push({
             title: tabTitle,
             path: currentPath,
