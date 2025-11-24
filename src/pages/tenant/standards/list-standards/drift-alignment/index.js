@@ -23,6 +23,7 @@ const Page = () => {
       apiUrl="/api/ListTenantAlignment"
       tenantInTitle={false}
       actions={actions}
+      tableFilter={<div></div>}
       simpleColumns={[
         "tenantFilter",
         "standardName",
