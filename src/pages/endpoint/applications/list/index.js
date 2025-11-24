@@ -42,7 +42,19 @@ const Page = () => {
         AssignTo: "!AllUsers",
         ID: "id",
       },
-      confirmText: "Are you sure you want to assign this app to all users?",
+      fields: [
+        {
+          type: "radio",
+          name: "Intent",
+          label: "Assignment intent",
+          options: assignmentIntentOptions,
+          defaultValue: "Required",
+          validators: { required: "Select an assignment intent" },
+          helperText:
+            "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       icon: <UserIcon />,
       color: "info",
     },
@@ -54,7 +66,19 @@ const Page = () => {
         AssignTo: "!AllDevices",
         ID: "id",
       },
-      confirmText: "Are you sure you want to assign this app to all devices?",
+      fields: [
+        {
+          type: "radio",
+          name: "Intent",
+          label: "Assignment intent",
+          options: assignmentIntentOptions,
+          defaultValue: "Required",
+          validators: { required: "Select an assignment intent" },
+          helperText:
+            "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       icon: <LaptopMac />,
       color: "info",
     },
@@ -66,7 +90,19 @@ const Page = () => {
         AssignTo: "!AllDevicesAndUsers",
         ID: "id",
       },
-      confirmText: "Are you sure you want to assign this app to all users and devices?",
+      fields: [
+        {
+          type: "radio",
+          name: "Intent",
+          label: "Assignment intent",
+          options: assignmentIntentOptions,
+          defaultValue: "Required",
+          validators: { required: "Select an assignment intent" },
+          helperText:
+            "Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       icon: <GlobeAltIcon />,
       color: "info",
     },
@@ -148,7 +184,7 @@ const Page = () => {
       data: {
         ID: "id",
       },
-      confirmText: "Are you sure you want to delete this application?",
+      confirmText: 'Are you sure you want to delete "[displayName]"?',
       icon: <TrashIcon />,
       color: "danger",
     },
