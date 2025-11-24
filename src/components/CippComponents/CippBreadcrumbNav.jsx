@@ -13,8 +13,8 @@ export const CippBreadcrumbNav = () => {
   const settings = useSettings();
   const [history, setHistory] = useState([]);
   const [mode, setMode] = useState(settings.breadcrumbMode || "hierarchical");
-  const [currentTitle, setCurrentTitle] = useState("");
   const lastRouteRef = useRef(null);
+  const titleCheckCountRef = useRef(0);
   const titleCheckIntervalRef = useRef(null);
 
   useEffect(() => {
@@ -31,10 +31,25 @@ export const CippBreadcrumbNav = () => {
     // Clear any existing title check interval
     if (titleCheckIntervalRef.current) {
       clearInterval(titleCheckIntervalRef.current);
+      titleCheckIntervalRef.current = null;
     }
+
+    // Reset check counter
+    titleCheckCountRef.current = 0;
 
     // Function to check and update title
     const checkTitle = () => {
+      titleCheckCountRef.current++;
+
+      // Stop checking after 50 attempts (5 seconds) to prevent infinite intervals
+      if (titleCheckCountRef.current > 50) {
+        if (titleCheckIntervalRef.current) {
+          clearInterval(titleCheckIntervalRef.current);
+          titleCheckIntervalRef.current = null;
+        }
+        return;
+      }
+
       let pageTitle = document.title.replace(" - CIPP", "").trim();
 
       // Remove tenant domain from title (e.g., "Groups - domain.onmicrosoft.com" -> "Groups")
@@ -69,9 +84,19 @@ export const CippBreadcrumbNav = () => {
         if (lastEntry && lastEntry.fullUrl === currentPage.fullUrl) {
           // Update title if it changed, but don't add duplicate
           if (lastEntry.title !== currentPage.title) {
+            // Stop checking once we have a valid title
+            if (titleCheckIntervalRef.current) {
+              clearInterval(titleCheckIntervalRef.current);
+              titleCheckIntervalRef.current = null;
+            }
             const updated = [...prevHistory];
             updated[updated.length - 1] = currentPage;
             return updated;
+          }
+          // Stop checking if title hasn't changed
+          if (titleCheckIntervalRef.current) {
+            clearInterval(titleCheckIntervalRef.current);
+            titleCheckIntervalRef.current = null;
           }
           return prevHistory;
         }
@@ -83,6 +108,10 @@ export const CippBreadcrumbNav = () => {
 
         if (existingIndex !== -1) {
           // User navigated back - truncate everything after this point and update the entry
+          if (titleCheckIntervalRef.current) {
+            clearInterval(titleCheckIntervalRef.current);
+            titleCheckIntervalRef.current = null;
+          }
           const updated = prevHistory.slice(0, existingIndex + 1);
           updated[existingIndex] = currentPage; // Update with latest timestamp/title
           return updated;
@@ -94,10 +123,20 @@ export const CippBreadcrumbNav = () => {
           const lastTitle = prevHistory[prevHistory.length - 1]?.title;
           if (lastTitle === currentPage.title) {
             // Replace the last entry instead of adding a duplicate
+            if (titleCheckIntervalRef.current) {
+              clearInterval(titleCheckIntervalRef.current);
+              titleCheckIntervalRef.current = null;
+            }
             const updated = [...prevHistory];
             updated[updated.length - 1] = currentPage;
             return updated;
           }
+        }
+
+        // Stop checking once we have a valid title and added it to history
+        if (titleCheckIntervalRef.current) {
+          clearInterval(titleCheckIntervalRef.current);
+          titleCheckIntervalRef.current = null;
         }
 
         // Add new page to history
@@ -118,9 +157,10 @@ export const CippBreadcrumbNav = () => {
     return () => {
       if (titleCheckIntervalRef.current) {
         clearInterval(titleCheckIntervalRef.current);
+        titleCheckIntervalRef.current = null;
       }
     };
-  }, [router.asPath]);
+  }, [router.asPath, router.pathname, router.query]);
 
   const handleBreadcrumbClick = (index) => {
     const page = history[index];
@@ -134,11 +174,33 @@ export const CippBreadcrumbNav = () => {
 
   // State to track current page title for hierarchical mode
   const [currentPageTitle, setCurrentPageTitle] = useState(null);
+  const hierarchicalTitleCheckRef = useRef(null);
+  const hierarchicalCheckCountRef = useRef(0);
 
   // Watch for title changes to update hierarchical breadcrumbs
   useEffect(() => {
     if (mode === "hierarchical") {
+      // Clear any existing interval
+      if (hierarchicalTitleCheckRef.current) {
+        clearInterval(hierarchicalTitleCheckRef.current);
+        hierarchicalTitleCheckRef.current = null;
+      }
+
+      // Reset counter
+      hierarchicalCheckCountRef.current = 0;
+
       const updateTitle = () => {
+        hierarchicalCheckCountRef.current++;
+
+        // Stop after 20 attempts (10 seconds) to prevent infinite checking
+        if (hierarchicalCheckCountRef.current > 20) {
+          if (hierarchicalTitleCheckRef.current) {
+            clearInterval(hierarchicalTitleCheckRef.current);
+            hierarchicalTitleCheckRef.current = null;
+          }
+          return;
+        }
+
         const pageTitle = document.title.replace(" - CIPP", "").trim();
         const parts = pageTitle.split(" - ");
         const cleanTitle =
@@ -148,15 +210,28 @@ export const CippBreadcrumbNav = () => {
 
         if (cleanTitle && cleanTitle !== "CIPP" && !cleanTitle.toLowerCase().includes("loading")) {
           setCurrentPageTitle(cleanTitle);
+          // Stop checking once we have a valid title
+          if (hierarchicalTitleCheckRef.current) {
+            clearInterval(hierarchicalTitleCheckRef.current);
+            hierarchicalTitleCheckRef.current = null;
+          }
         }
       };
 
       // Initial update
       updateTitle();
 
-      // Check for title changes periodically
-      const interval = setInterval(updateTitle, 500);
-      return () => clearInterval(interval);
+      // Only start interval if we don't have a valid title yet
+      if (!currentPageTitle || currentPageTitle.toLowerCase().includes("loading")) {
+        hierarchicalTitleCheckRef.current = setInterval(updateTitle, 500);
+      }
+
+      return () => {
+        if (hierarchicalTitleCheckRef.current) {
+          clearInterval(hierarchicalTitleCheckRef.current);
+          hierarchicalTitleCheckRef.current = null;
+        }
+      };
     }
   }, [mode, router.pathname]);
 

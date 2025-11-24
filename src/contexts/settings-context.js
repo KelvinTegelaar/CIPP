@@ -113,6 +113,12 @@ export const SettingsProvider = (props) => {
         ...restored,
         isInitialized: true,
       }));
+    } else {
+      // No stored settings found, initialize with defaults
+      setState((prevState) => ({
+        ...prevState,
+        isInitialized: true,
+      }));
     }
   }, []);
 
