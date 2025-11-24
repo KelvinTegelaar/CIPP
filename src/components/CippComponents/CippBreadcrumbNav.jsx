@@ -33,8 +33,14 @@ export const CippBreadcrumbNav = () => {
         pageTitle = parts.slice(0, -1).join(" - ").trim();
       }
 
-      // Skip if title is empty or generic
-      if (!pageTitle || pageTitle === "CIPP") {
+      // Skip if title is empty, generic, or error page
+      if (
+        !pageTitle ||
+        pageTitle === "CIPP" ||
+        pageTitle.toLowerCase().includes("error") ||
+        pageTitle === "404" ||
+        pageTitle === "500"
+      ) {
         return;
       }
 
