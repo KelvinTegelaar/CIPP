@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import {
+  Alert,
   Button,
   Container,
   Stack,
@@ -18,11 +19,12 @@ import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { useState, useEffect } from "react";
 import { Search, Close } from "@mui/icons-material";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const simpleColumns = ["Cmdlet"];
 const roleColumns = ["Error", "Name", "Description"];
 const apiUrl = "/api/ListExoRequest";
-const pageTitle = "Available Exchange Cmdlets";
+const pageTitle = "Exchange Cmdlets";
 
 const Page = () => {
   const formControl = useForm({
@@ -95,7 +97,14 @@ const Page = () => {
 
   return (
     <Container>
-      <Stack spacing={2} sx={{ p: 3, mt: 1 }}>
+      <CippHead title={pageTitle} />
+      <Stack spacing={2} sx={{ mt: 1 }}>
+        <Alert severity="info">
+          This tool allows you to search for Exchange cmdlets available in your environment based on
+          tenant, compliance, and application context. You can also check which management roles are
+          permitted to use specific cmdlets. Cmdlet availability may vary depending on the tenant
+          licensing and configuration.
+        </Alert>
         <CippButtonCard component="accordion" title="Cmdlet Search" accordionExpanded={true}>
           <Grid container spacing={2}>
             {/* Tenant Filter */}

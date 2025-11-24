@@ -23,23 +23,10 @@ const CippWizardPage = (props) => {
         sx={{
           backgroundColor: "background.default",
           flexGrow: 1,
-          py: 4,
+          pb: 4,
         }}
       >
         <Container maxWidth={maxWidth}>
-          {backButton && (
-            <Button
-              color="inherit"
-              onClick={() => router.back()}
-              startIcon={
-                <SvgIcon fontSize="small">
-                  <ArrowLeftIcon />
-                </SvgIcon>
-              }
-            >
-              Back
-            </Button>
-          )}
           <Stack spacing={6}>
             <Stack spacing={5}>
               <Stack spacing={1}>

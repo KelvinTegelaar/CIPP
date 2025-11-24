@@ -148,7 +148,7 @@ const Page = () => {
 
   return (
     <>
-      <Stack spacing={2} sx={{ p: 3, mt: 1 }}>
+      <Stack spacing={2} sx={{ px: 3 }}>
         <CippButtonCard
           component="accordion"
           title="Message Trace Options"
