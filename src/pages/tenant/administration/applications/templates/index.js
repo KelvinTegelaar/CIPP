@@ -6,10 +6,11 @@ import { Edit, Delete, ContentCopy, Add, GitHub, RocketLaunch } from "@mui/icons
 import tabOptions from "../tabOptions";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { Button } from "@mui/material";
+import { Stack } from "@mui/system";
 import Link from "next/link";
 
 const Page = () => {
-  const pageTitle = "Templates";
+  const pageTitle = "Application Templates";
   const apiUrl = "/api/ListAppApprovalTemplates";
 
   // Fetch GitHub integration status
@@ -213,6 +214,7 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
+      tenantInTitle={false}
       queryKey="ListAppApprovalTemplates"
       columns={columns}
       simpleColumns={simpleColumns}
@@ -220,7 +222,7 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       cardButton={
-        <>
+        <Stack direction="row" spacing={2}>
           <Button
             component={Link}
             href="/tenant/administration/applications/templates/add"
@@ -229,7 +231,15 @@ const Page = () => {
           >
             Add Template
           </Button>
-        </>
+          <Button
+            component={Link}
+            href="/tenant/tools/appapproval"
+            startIcon={<RocketLaunch />}
+            sx={{ mr: 1 }}
+          >
+            Deploy Template
+          </Button>
+        </Stack>
       }
     />
   );
