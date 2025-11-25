@@ -64,7 +64,10 @@ const Page = () => {
 
   const templateDetails = ApiGetCall({
     url: `/api/listStandardTemplates`,
-    queryKey: `listStandardTemplates-reports`,
+    data: {
+      templateId: templateId,
+    },
+    queryKey: `listStandardTemplates-reports-${templateId}`,
   });
 
   // Normalize template data structure to always work with an array
@@ -426,12 +429,7 @@ const Page = () => {
               // For GroupTemplate, the value is true if compliant
               if (directStandardValue === true) {
                 isCompliant = true;
-              } else if (
-                directStandardValue !== undefined &&
-                typeof directStandardValue !== "object"
-              ) {
-                isCompliant = true;
-              } else if (currentTenantStandard) {
+              } else if (currentTenantStandard?.value) {
                 isCompliant = currentTenantStandard.value === true;
               }
 
