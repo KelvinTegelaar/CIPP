@@ -53,7 +53,7 @@ Enter a webhook URL. Data is formatted based on the receiving server:
 | All other services   | JSON array of data values. Method is `POST`           |
 
 {% hint style="info" %}
-Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler_CIPPNotifications).
+Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API](https://github.com/KelvinTegelaar/CIPP-API/tree/dev).
 {% endhint %}
 
 ### Notification Setting Options
