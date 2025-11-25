@@ -16,7 +16,7 @@ const Page = () => {
       url: "/api/AddIntuneTemplate",
       data: {
         ID: "id",
-        URLName: "managedAppPolicies",
+        URLName: "URLName",
       },
       confirmText: "Are you sure you want to create a template based on this policy?",
       icon: <Book />,
@@ -28,7 +28,7 @@ const Page = () => {
       url: "/api/RemovePolicy",
       data: {
         ID: "id",
-        URLName: "managedAppPolicies",
+        URLName: "URLName",
       },
       confirmText: "Are you sure you want to delete this policy?",
       icon: <TrashIcon />,
@@ -42,22 +42,17 @@ const Page = () => {
       "displayName",
       "lastModifiedDateTime",
       "PolicyTypeName",
+      "PolicySource",
     ],
     actions: actions,
   };
 
-  const simpleColumns = ["displayName", "isAssigned", "lastModifiedDateTime"];
+  const simpleColumns = ["displayName", "PolicyTypeName", "isAssigned", "lastModifiedDateTime"];
 
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListGraphRequest"
-      apiData={{
-        Endpoint: "deviceAppManagement/managedAppPolicies",
-        $orderby: "displayName",
-        manualPagination: true,
-      }}
-      apiDataKey="Results"
+      apiUrl="/api/ListAppProtectionPolicies"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
