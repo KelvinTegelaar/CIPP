@@ -64,7 +64,10 @@ const Page = () => {
 
   const templateDetails = ApiGetCall({
     url: `/api/listStandardTemplates`,
-    queryKey: `listStandardTemplates-reports`,
+    data: {
+      templateId: templateId,
+    },
+    queryKey: `listStandardTemplates-reports-${templateId}`,
   });
 
   // Normalize template data structure to always work with an array
@@ -407,6 +410,92 @@ const Page = () => {
                     });
                   }
                 }
+              });
+            } else if (standardKey === "GroupTemplate") {
+              // GroupTemplate structure has groupTemplate array and action array at the top level
+              const groupTemplates = standardConfig.groupTemplate || [];
+              const actions = standardConfig.action || [];
+              const standardId = `standards.GroupTemplate`;
+              const standardInfo = standards.find((s) => s.name === standardId);
+
+              // Find the tenant's value for this template
+              const currentTenantStandard = currentTenantData.find(
+                (s) => s.standardId === standardId
+              );
+              const standardObject = currentTenantObj?.[standardId];
+              const directStandardValue = standardObject?.Value;
+              let isCompliant = false;
+
+              // For GroupTemplate, the value is true if compliant
+              if (directStandardValue === true) {
+                isCompliant = true;
+              } else if (currentTenantStandard?.value) {
+                isCompliant = currentTenantStandard.value === true;
+              }
+
+              // Build a list of all group names with their types
+              const groupList = groupTemplates
+                .map((groupTemplate) => {
+                  const rawGroupType = (
+                    groupTemplate.rawData?.groupType || "generic"
+                  ).toLowerCase();
+                  let prettyGroupType = "Generic";
+
+                  if (rawGroupType.includes("dynamicdistribution")) {
+                    prettyGroupType = "Dynamic Distribution Group";
+                  } else if (rawGroupType.includes("dynamic")) {
+                    prettyGroupType = "Dynamic Security Group";
+                  } else if (rawGroupType.includes("azurerole")) {
+                    prettyGroupType = "Azure Role-Assignable Group";
+                  } else if (
+                    rawGroupType.includes("m365") ||
+                    rawGroupType.includes("unified") ||
+                    rawGroupType.includes("microsoft")
+                  ) {
+                    prettyGroupType = "Microsoft 365 Group";
+                  } else if (
+                    rawGroupType.includes("distribution") ||
+                    rawGroupType.includes("mail")
+                  ) {
+                    prettyGroupType = "Distribution Group";
+                  } else if (
+                    rawGroupType.includes("security") ||
+                    rawGroupType === "mail-enabled security"
+                  ) {
+                    prettyGroupType = "Security Group";
+                  } else if (rawGroupType.includes("generic")) {
+                    prettyGroupType = "Security Group";
+                  }
+
+                  const groupName =
+                    groupTemplate.label || groupTemplate.rawData?.displayName || "Unknown Group";
+                  return `- ${groupName} (${prettyGroupType})`;
+                })
+                .join("\n");
+
+              // Create a single standard entry for all groups
+              const templateSettings = {
+                Groups: groupList,
+              };
+
+              allStandards.push({
+                standardId,
+                standardName: `Group Templates`,
+                currentTenantValue:
+                  standardObject !== undefined
+                    ? {
+                        Value: directStandardValue,
+                        LastRefresh: standardObject?.LastRefresh,
+                      }
+                    : currentTenantStandard?.value,
+                standardValue: templateSettings,
+                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
+                standardDescription: standardInfo?.helpText || "",
+                standardImpact: standardInfo?.impact || "Medium Impact",
+                standardImpactColour: standardInfo?.impactColour || "warning",
+                templateName: selectedTemplate?.templateName || "Standard Template",
+                templateActions: actions,
               });
             } else {
               // Regular handling for other standards
@@ -1129,14 +1218,18 @@ const Page = () => {
                                   typeof standard.standardValue === "object" &&
                                   Object.keys(standard.standardValue).length > 0 ? (
                                     Object.entries(standard.standardValue).map(([key, value]) => (
-                                      <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                      <Box key={key} sx={{ mb: 0.5 }}>
                                         <Typography
                                           variant="body2"
                                           sx={{ fontWeight: "medium", mr: 1 }}
                                         >
                                           {key}:
                                         </Typography>
-                                        <Typography variant="body2">
+                                        <Typography
+                                          variant="body2"
+                                          component="div"
+                                          sx={{ whiteSpace: "pre-line", mt: 0.5 }}
+                                        >
                                           {typeof value === "object" && value !== null
                                             ? value?.label || JSON.stringify(value)
                                             : value === true
