@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Book } from "@mui/icons-material";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { Book, LaptopChromebook } from "@mui/icons-material";
+import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { PermissionButton } from "/src/utils/permissions.js";
 import { CippPolicyDeployDrawer } from "/src/components/CippComponents/CippPolicyDeployDrawer.jsx";
 
@@ -21,6 +21,70 @@ const Page = () => {
       confirmText: "Are you sure you want to create a template based on this policy?",
       icon: <Book />,
       color: "info",
+    },
+    {
+      label: "Assign to All Users",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      data: {
+        AssignTo: "allLicensedUsers",
+        ID: "id",
+        type: "URLName",
+        platformType: "!deviceAppManagement",
+      },
+      confirmText: "Are you sure you want to assign this policy to all users?",
+      icon: <UserIcon />,
+      color: "info",
+    },
+    {
+      label: "Assign to All Devices",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      data: {
+        AssignTo: "AllDevices",
+        ID: "id",
+        type: "URLName",
+        platformType: "!deviceAppManagement",
+      },
+      confirmText: "Are you sure you want to assign this policy to all devices?",
+      icon: <LaptopChromebook />,
+      color: "info",
+    },
+    {
+      label: "Assign Globally (All Users / All Devices)",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      data: {
+        AssignTo: "AllDevicesAndUsers",
+        ID: "id",
+        type: "URLName",
+        platformType: "!deviceAppManagement",
+      },
+      confirmText: "Are you sure you want to assign this policy to all users and devices?",
+      icon: <GlobeAltIcon />,
+      color: "info",
+    },
+    {
+      label: "Assign to Custom Group",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      data: {
+        ID: "id",
+        type: "URLName",
+        platformType: "!deviceAppManagement",
+      },
+      confirmText:
+        "Enter the name of the group to assign this policy to. Wildcards (*) are allowed.",
+      icon: <UserGroupIcon />,
+      color: "info",
+      fields: [
+        {
+          type: "textField",
+          name: "AssignTo",
+          label: "Group Name(s), optionally comma-separated",
+          placeholder: "IT-*, Sales Team",
+        },
+      ],
     },
     {
       label: "Delete Policy",
