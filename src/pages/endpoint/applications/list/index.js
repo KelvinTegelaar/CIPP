@@ -236,8 +236,10 @@ const Page = () => {
   const simpleColumns = [
     "displayName",
     "publishingState",
-    "installCommandLine",
-    "uninstallCommandLine",
+    "isAssigned",
+    "lastModifiedDateTime",
+    "createdDateTime",
+    "applicableDeviceType",
   ];
 
   return (
