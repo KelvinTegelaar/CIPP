@@ -96,29 +96,12 @@ const CippFormPage = (props) => {
       <Box
         sx={{
           flexGrow: 1,
-          py: 4,
         }}
       >
         <Container maxWidth="lg">
-          <Stack spacing={4}>
+          <Stack spacing={2}>
             {!hideTitle && (
               <Stack spacing={2}>
-                {!hideBackButton && (
-                  <div>
-                    <Button
-                      color="inherit"
-                      onClick={handleBackClick} // Go back to the previous page
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <ArrowLeftIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      {backButtonTitle}
-                    </Button>
-                  </div>
-                )}
-
                 <div
                   style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
                 >

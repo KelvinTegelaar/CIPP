@@ -1,6 +1,6 @@
 {
   "name": "cipp",
-  "version": "8.7.0",
+  "version": "8.7.1",
   "author": "CIPP Contributors",
   "homepage": "https://cipp.app/",
   "bugs": {
@@ -89,8 +89,6 @@
     "react-leaflet": "5.0.0",
     "react-leaflet-markercluster": "^5.0.0-rc.0",
     "react-markdown": "10.1.0",
-    "rehype-raw": "^7.0.0",
-    "remark-gfm": "^3.0.1",
     "react-media-hook": "^0.5.0",
     "react-papaparse": "^4.4.0",
     "react-quill": "^2.0.0",
@@ -103,6 +101,8 @@
     "redux-devtools-extension": "2.13.9",
     "redux-persist": "^6.0.0",
     "redux-thunk": "3.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^3.0.1",
     "simplebar": "6.3.2",
     "simplebar-react": "3.3.2",
     "stylis-plugin-rtl": "2.1.1",

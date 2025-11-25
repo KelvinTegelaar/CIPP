@@ -5,6 +5,7 @@ import {
   createFilterOptions,
   TextField,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useSettings } from "../../hooks/use-settings";
@@ -89,6 +90,7 @@ export const CippAutoComplete = (props) => {
   const [offCanvasVisible, setOffCanvasVisible] = useState(false);
   const [fullObject, setFullObject] = useState(null);
   const [internalValue, setInternalValue] = useState(null); // Track selected value internally
+  const [open, setOpen] = useState(false); // Control popover open state
 
   // Sync internalValue when external value or defaultValue prop changes (e.g., when editing a form)
   useEffect(() => {
@@ -295,6 +297,15 @@ export const CippAutoComplete = (props) => {
       <Autocomplete
         ref={autocompleteRef}
         key={stableKey}
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={(event, reason) => {
+          // Keep open if Tab was used in multiple mode
+          if (reason === "selectOption" && multiple && event?.type === "click") {
+            return;
+          }
+          setOpen(false);
+        }}
         disabled={disabled || actionGetRequest.isFetching || isFetching}
         popupIcon={
           actionGetRequest.isFetching || isFetching ? (
@@ -425,6 +436,17 @@ export const CippAutoComplete = (props) => {
               event.preventDefault();
               // Trigger a click on the highlighted option
               highlightedOption.click();
+
+              // In multiple mode, keep the popover open and refocus
+              if (multiple) {
+                setTimeout(() => {
+                  setOpen(true);
+                  const input = autocompleteRef.current?.querySelector("input");
+                  if (input) {
+                    input.focus();
+                  }
+                }, 50);
+              }
             }
           }
         }}
@@ -439,79 +461,83 @@ export const CippAutoComplete = (props) => {
               {...other}
             />
             {api?.url && api?.showRefresh && (
-              <IconButton
-                size="small"
-                onClick={() => {
-                  actionGetRequest.refetch();
-                }}
-              >
-                <Sync />
-              </IconButton>
+              <Tooltip title="Refresh">
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    actionGetRequest.refetch();
+                  }}
+                >
+                  <Sync />
+                </IconButton>
+              </Tooltip>
             )}
             {api?.templateView && (
-              <IconButton
-                size="small"
-                onClick={() => {
-                  // Use internalValue if value prop is not available
-                  const currentValue = value || internalValue;
+              <Tooltip title={`View ${api?.templateView.title}` || "View details"}>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    // Use internalValue if value prop is not available
+                    const currentValue = value || internalValue;
 
-                  // Get the full object from the selected value
-                  if (multiple) {
-                    // For multiple selection, get all full objects
-                    const fullObjects = currentValue
-                      .map((v) => {
-                        const valueToFind = v?.value || v;
-                        const found = usedOptions.find((opt) => opt.value === valueToFind);
-                        let rawData = found?.rawData;
+                    // Get the full object from the selected value
+                    if (multiple) {
+                      // For multiple selection, get all full objects
+                      const fullObjects = currentValue
+                        .map((v) => {
+                          const valueToFind = v?.value || v;
+                          const found = usedOptions.find((opt) => opt.value === valueToFind);
+                          let rawData = found?.rawData;
 
-                        // If property is specified, extract and parse JSON from that property
-                        if (rawData && api?.templateView?.property) {
-                          try {
-                            const propertyValue = rawData[api.templateView.property];
-                            if (typeof propertyValue === "string") {
-                              rawData = JSON.parse(propertyValue);
-                            } else {
-                              rawData = propertyValue;
+                          // If property is specified, extract and parse JSON from that property
+                          if (rawData && api?.templateView?.property) {
+                            try {
+                              const propertyValue = rawData[api.templateView.property];
+                              if (typeof propertyValue === "string") {
+                                rawData = JSON.parse(propertyValue);
+                              } else {
+                                rawData = propertyValue;
+                              }
+                            } catch (e) {
+                              console.error("Failed to parse JSON from property:", e);
+                              // Keep original rawData if parsing fails
                             }
-                          } catch (e) {
-                            console.error("Failed to parse JSON from property:", e);
-                            // Keep original rawData if parsing fails
                           }
-                        }
 
-                        return rawData;
-                      })
-                      .filter(Boolean);
-                    setFullObject(fullObjects);
-                  } else {
-                    // For single selection, get the full object
-                    const valueToFind = currentValue?.value || currentValue;
-                    const selectedOption = usedOptions.find((opt) => opt.value === valueToFind);
-                    let rawData = selectedOption?.rawData || null;
+                          return rawData;
+                        })
+                        .filter(Boolean);
+                      setFullObject(fullObjects);
+                    } else {
+                      // For single selection, get the full object
+                      const valueToFind = currentValue?.value || currentValue;
+                      const selectedOption = usedOptions.find((opt) => opt.value === valueToFind);
+                      let rawData = selectedOption?.rawData || null;
 
-                    // If property is specified, extract and parse JSON from that property
-                    if (rawData && api?.templateView?.property) {
-                      try {
-                        const propertyValue = rawData[api.templateView.property];
-                        if (typeof propertyValue === "string") {
-                          rawData = JSON.parse(propertyValue);
-                        } else {
-                          rawData = propertyValue;
+                      // If property is specified, extract and parse JSON from that property
+                      if (rawData && api?.templateView?.property) {
+                        try {
+                          const propertyValue = rawData[api.templateView.property];
+                          if (typeof propertyValue === "string") {
+                            rawData = JSON.parse(propertyValue);
+                          } else {
+                            rawData = propertyValue;
+                          }
+                        } catch (e) {
+                          console.error("Failed to parse JSON from property:", e);
+                          // Keep original rawData if parsing fails
                         }
-                      } catch (e) {
-                        console.error("Failed to parse JSON from property:", e);
-                        // Keep original rawData if parsing fails
                       }
-                    }
 
-                    setFullObject(rawData);
-                  }
-                  setOffCanvasVisible(true);
-                }}
-                title={api?.templateView.title || "View details"}
-              >
-                <Visibility />
-              </IconButton>
+                      setFullObject(rawData);
+                    }
+                    setOffCanvasVisible(true);
+                  }}
+                  title={api?.templateView.title || "View details"}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>
             )}
           </Stack>
         )}

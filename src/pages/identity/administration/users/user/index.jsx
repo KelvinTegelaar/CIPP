@@ -25,6 +25,7 @@ import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/mat
 import { Close } from "@mui/icons-material";
 import { CippPropertyList } from "../../../../../components/CippComponents/CippPropertyList";
 import { CippCodeBlock } from "../../../../../components/CippComponents/CippCodeBlock";
+import { CippHead } from "../../../../../components/CippComponents/CippHead";
 
 const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
   return (
@@ -136,7 +137,7 @@ const Page = () => {
   const mfaDevices = mfaDevicesData?.body?.value || [];
 
   // Set the title and subtitle for the layout
-  const title = userRequest.isSuccess ? <>{userRequest.data?.[0]?.displayName}</> : "Loading...";
+  const title = userRequest.isSuccess ? userRequest.data?.[0]?.displayName : "Loading...";
 
   const subtitle = userRequest.isSuccess
     ? [
@@ -591,6 +592,7 @@ const Page = () => {
             py: 4,
           }}
         >
+          <CippHead title={title} />
           <Grid container spacing={2}>
             <Grid size={4}>
               <CippUserInfoCard

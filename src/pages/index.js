@@ -248,10 +248,10 @@ const Page = () => {
       const tenantLookup = currentTenantInfo.data?.find(
         (tenant) => tenant.defaultDomainName === currentTenant
       );
-      
+
       // Get filtered portals based on user preferences
       const filteredPortals = getFilteredPortals();
-      
+
       const menuItems = filteredPortals.map((portal) => ({
         label: portal.label,
         target: "_blank",
@@ -267,7 +267,7 @@ const Page = () => {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <Box sx={{ flexGrow: 1, py: 4 }}>
+      <Box sx={{ flexGrow: 1, pb: 4 }}>
         <Container maxWidth={false}>
           <Grid container spacing={3}>
             <Grid size={{ md: 12, xs: 12 }}>
@@ -444,7 +444,7 @@ const Page = () => {
           </Grid>
         </Container>
       </Box>
-      
+
     </>
   );
 };

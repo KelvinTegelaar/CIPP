@@ -41,7 +41,7 @@ export const CippApiDialog = (props) => {
   }
 
   const formHook = useForm({
-    defaultValues: defaultvalues || {},
+    defaultValues: typeof defaultvalues === "function" ? defaultvalues(row) : defaultvalues || {},
     mode: "onChange", // Enable real-time validation
   });
 

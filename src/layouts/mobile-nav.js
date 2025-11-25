@@ -24,7 +24,8 @@ const renderItems = ({ depth = 0, items, pathname }) =>
 
 const reduceChildRoutes = ({ acc, depth, item, pathname }) => {
   const checkPath = !!(item.path && pathname);
-  const partialMatch = checkPath ? pathname.includes(item.path) : false;
+  // Special handling for root path "/" to avoid matching all paths
+  const partialMatch = checkPath && item.path !== "/" ? pathname.includes(item.path) : false;
   const exactMatch = checkPath ? pathname === item.path : false;
 
   if (item.items) {
