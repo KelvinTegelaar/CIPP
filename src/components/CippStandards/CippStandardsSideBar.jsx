@@ -454,6 +454,28 @@ const CippStandardsSideBar = ({
               />
             </>
           )}
+          {/* Run interval - available for both standard and drift templates */}
+          <Divider />
+          <CippFormComponent
+            type="number"
+            name="runInterval"
+            label="Run Interval (Hours)"
+            formControl={formControl}
+            placeholder="3"
+            helperText="How often this template should run (must be a multiple of 3 hours, e.g. 3, 6, 12, 24). Default is 3 hours if not set."
+            fullWidth
+            inputProps={{ min: 3, step: 3 }}
+            validators={{
+              validate: (value) => {
+                if (value === "" || value === undefined || value === null) return true;
+                const num = Number(value);
+                if (!Number.isInteger(num)) return "Run interval must be a whole number";
+                if (num < 3) return "Run interval must be at least 3 hours";
+                if (num % 3 !== 0) return "Run interval must be a multiple of 3 hours";
+                return true;
+              },
+            }}
+          />
           {/* Hide schedule options in drift mode */}
           {!isDriftMode && (
             <>
@@ -539,10 +561,10 @@ const CippStandardsSideBar = ({
         title="Add Standard"
         api={{
           confirmText: isDriftMode
-            ? "This template will automatically every hour to detect drift. Are you sure you want to apply this Drift Template?"
+            ? `This template will run automatically every ${watchForm.runInterval || 3} hours to detect drift. Are you sure you want to apply this Drift Template?`
             : watchForm.runManually
             ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
-            : "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
+            : `Are you sure you want to apply this standard? This will apply the template and run every ${watchForm.runInterval || 3} hours.`,
           url: "/api/AddStandardsTemplate",
           type: "POST",
           replacementBehaviour: "removeNulls",
@@ -552,6 +574,7 @@ const CippStandardsSideBar = ({
             description: "description",
             templateName: "templateName",
             standards: "standards",
+            runInterval: "runInterval",
             ...(edit ? { GUID: "GUID" } : {}),
             ...(savedItem ? { GUID: savedItem } : {}),
             runManually: isDriftMode ? false : "runManually",
