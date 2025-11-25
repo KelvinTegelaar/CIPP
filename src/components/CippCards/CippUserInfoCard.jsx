@@ -1,24 +1,125 @@
 import PropTypes from "prop-types";
-import { Avatar, Card, CardHeader, Divider, Skeleton, Typography, Alert } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
+import {
+  Avatar,
+  Card,
+  CardHeader,
+  Divider,
+  Skeleton,
+  Typography,
+  Alert,
+  IconButton,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
+import { AccountCircle, PhotoCamera, Delete } from "@mui/icons-material";
 import { PropertyList } from "/src/components/property-list";
 import { PropertyListItem } from "/src/components/property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import { Stack, Grid } from "@mui/system";
+import { Stack, Grid, Box } from "@mui/system";
+import { useState, useRef, useCallback } from "react";
+import { ApiPostCall } from "../../api/ApiCall";
 
 export const CippUserInfoCard = (props) => {
   const { user, tenant, isFetching = false, ...other } = props;
+  const [photoTimestamp, setPhotoTimestamp] = useState(Date.now());
+  const [uploadError, setUploadError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const fileInputRef = useRef(null);
+
+  // API mutations
+  const setPhotoMutation = ApiPostCall({ urlFromData: true });
+  const removePhotoMutation = ApiPostCall({ urlFromData: true });
 
   // Helper function to check if a section has any data
-  const hasWorkInfo = user?.jobTitle || user?.department || user?.manager?.displayName || user?.companyName;
+  const hasWorkInfo =
+    user?.jobTitle || user?.department || user?.manager?.displayName || user?.companyName;
   const hasAddressInfo =
     user?.streetAddress || user?.postalCode || user?.city || user?.country || user?.officeLocation;
   const hasContactInfo =
     user?.mobilePhone || (user?.businessPhones && user?.businessPhones.length > 0);
 
-  // Handle image URL - only set if user and tenant exist, otherwise let Avatar fall back to children
+  // Handle image URL with timestamp for cache busting
   const imageUrl =
-    user?.id && tenant ? `/api/ListUserPhoto?TenantFilter=${tenant}&UserId=${user.id}` : undefined;
+    user?.id && tenant
+      ? `/api/ListUserPhoto?TenantFilter=${tenant}&UserId=${user.id}&t=${photoTimestamp}`
+      : undefined;
+
+  const handleFileSelect = async (event) => {
+    const file = event.target.files[0];
+    setUploadError(null);
+    setSuccessMessage(null);
+
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!validTypes.includes(file.type)) {
+      setUploadError("Please select a valid image file (JPEG or PNG)");
+      return;
+    }
+
+    // Validate file size (4MB max)
+    const maxSize = 4 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setUploadError(
+        `File size exceeds 4MB limit. Current size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`
+      );
+      return;
+    }
+
+    // Convert to base64 and upload
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        await setPhotoMutation.mutateAsync({
+          url: "/api/ExecSetUserPhoto",
+          data: {
+            userId: user.id,
+            tenantFilter: tenant,
+            action: "set",
+            photoData: reader.result,
+          },
+        });
+        setPhotoTimestamp(Date.now());
+        setSuccessMessage("Profile picture updated successfully!");
+        setTimeout(() => setSuccessMessage(null), 3000);
+      } catch (error) {
+        setUploadError(error.message || "Failed to upload photo");
+      }
+    };
+    reader.onerror = () => {
+      setUploadError("Failed to read file");
+    };
+    reader.readAsDataURL(file);
+
+    // Clear the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    setUploadError(null);
+    setSuccessMessage(null);
+
+    try {
+      await removePhotoMutation.mutateAsync({
+        url: "/api/ExecSetUserPhoto",
+        data: {
+          userId: user.id,
+          tenantFilter: tenant,
+          action: "remove",
+        },
+      });
+      setPhotoTimestamp(Date.now());
+      setSuccessMessage("Profile picture removed successfully!");
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (error) {
+      setUploadError(error.message || "Failed to remove photo");
+    }
+  };
+
+  const isLoading = setPhotoMutation.isPending || removePhotoMutation.isPending;
 
   return (
     <Card {...other}>
@@ -34,17 +135,80 @@ export const CippUserInfoCard = (props) => {
               <Grid container spacing={3} alignItems="center">
                 {/* Avatar section */}
                 <Grid size={{ xs: 12, sm: 4, md: 3 }}>
-                  <Stack alignItems="center">
-                    <Avatar
-                      sx={{
-                        height: 64,
-                        width: 64,
-                      }}
-                      variant="circular"
-                      src={imageUrl}
-                    >
-                      <AccountCircle sx={{ fontSize: 40 }} />
-                    </Avatar>
+                  <Stack alignItems="center" spacing={1}>
+                    <Box position="relative">
+                      <Avatar
+                        sx={{
+                          height: 64,
+                          width: 64,
+                        }}
+                        variant="circular"
+                        src={imageUrl}
+                      >
+                        <AccountCircle sx={{ fontSize: 40 }} />
+                      </Avatar>
+                      {isLoading && (
+                        <CircularProgress
+                          size={68}
+                          sx={{
+                            position: "absolute",
+                            top: -2,
+                            left: -2,
+                            zIndex: 1,
+                          }}
+                        />
+                      )}
+                    </Box>
+                    {/* Photo management buttons */}
+                    <Stack direction="row" spacing={0.5}>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        accept="image/jpeg,image/jpg,image/png"
+                        onChange={handleFileSelect}
+                      />
+                      <Tooltip title="Change Photo">
+                        <IconButton
+                          size="small"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={isLoading}
+                          sx={{
+                            backgroundColor: "action.hover",
+                            "&:hover": { backgroundColor: "action.selected" },
+                          }}
+                        >
+                          <PhotoCamera fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Remove Photo">
+                        <IconButton
+                          size="small"
+                          onClick={handleRemovePhoto}
+                          disabled={isLoading}
+                          sx={{
+                            backgroundColor: "action.hover",
+                            "&:hover": {
+                              backgroundColor: "error.light",
+                              color: "error.contrastText",
+                            },
+                          }}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                    {/* Status messages */}
+                    {successMessage && (
+                      <Typography variant="caption" color="success.main" textAlign="center">
+                        {successMessage}
+                      </Typography>
+                    )}
+                    {uploadError && (
+                      <Typography variant="caption" color="error" textAlign="center">
+                        {uploadError}
+                      </Typography>
+                    )}
                   </Stack>
                 </Grid>
 
