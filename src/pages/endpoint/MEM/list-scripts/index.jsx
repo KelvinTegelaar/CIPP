@@ -32,9 +32,10 @@ const Page = () => {
   const dispatch = useDispatch();
 
   const language = useMemo(() => {
-    return currentScript?.scriptType?.toLowerCase() === ("macos" || "linux") ? "shell" : "powershell";
+    return currentScript?.scriptType?.toLowerCase() === ("macos" || "linux")
+      ? "shell"
+      : "powershell";
   }, [currentScript?.scriptType]);
-
 
   const tenantFilter = useSettings().currentTenant;
   const {
@@ -197,6 +198,8 @@ const Page = () => {
   const simpleColumns = [
     "scriptType",
     "displayName",
+    "ScriptAssignment",
+    "ScriptExclude",
     "description",
     "runAsAccount",
     "lastModifiedDateTime",
