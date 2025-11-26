@@ -219,7 +219,13 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = ["displayName", "PolicyTypeName", "isAssigned", "lastModifiedDateTime"];
+  const simpleColumns = [
+    "displayName",
+    "PolicyTypeName",
+    "PolicyAssignment",
+    "PolicyExclude",
+    "lastModifiedDateTime",
+  ];
 
   return (
     <CippTablePage

@@ -214,20 +214,19 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = ["displayName", "description", "lastModifiedDateTime"];
+  const simpleColumns = [
+    "displayName",
+    "PolicyTypeName",
+    "PolicyAssignment",
+    "PolicyExclude",
+    "description",
+    "lastModifiedDateTime",
+  ];
 
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListGraphRequest"
-      apiDataKey="Results"
-      apiData={{
-        Endpoint: "deviceManagement/deviceCompliancePolicies",
-        $orderby: "displayName",
-        $count: true,
-        $expand: "assignments",
-        manualPagination: true,
-      }}
+      apiUrl="/api/ListCompliancePolicies"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
