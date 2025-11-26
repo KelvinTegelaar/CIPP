@@ -18,7 +18,7 @@ You can add Office applications to deploy through Microsoft Endpoint Manager.
 | Remove other versions          | Whether the install removes other versions of Office.                                                                                                                                                        |
 | Accept License                 | Whether the install accepts the Office EULA license.                                                                                                                                                         |
 | Use Custom XML Configuration   | Provide a custom Office Configuration XML. When using custom XML, all other Office configuration options above will be ignored. See [Office Customization Tool](https://config.office.com/) to generate XML. |
-| Assignment Options             | Select the radial for how you want to assign this application: `Do not assign`, `Assign to all users`, `Assign to all devices`, or `Assign to all users and devices`                                         |
+| Assignment Options             | Select the radial for how you want to assign this application: `Do not assign`, `Assign to all users`, `Assign to all devices`, `Assign to all users and devices`,or`Assign to Custom Group`.                |
 
 ***
 

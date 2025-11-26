@@ -2,13 +2,13 @@
 
 ### **Action Buttons**
 
-{% content-ref url="deploy-template.md" %}
-[deploy-template.md](deploy-template.md)
-{% endcontent-ref %}
+#### Deploy Template
 
-{% content-ref url="add.md" %}
-[add.md](add.md)
-{% endcontent-ref %}
+This wizard allows you to deploy a transport rule to the selected tenant(s) or All Tenants. Choose either a template or enter the raw JSON into the box and click `Submit`.
+
+#### New Transport Rule
+
+This wizard allows you to create a new template rule.&#x20;
 
 ### Table Details
 
