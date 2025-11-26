@@ -11,6 +11,11 @@ const assignmentModeOptions = [
   { label: "Append to existing assignments", value: "append" },
 ];
 
+const assignmentFilterTypeOptions = [
+  { label: "Include - Apply policy to devices matching filter", value: "include" },
+  { label: "Exclude - Apply policy to devices NOT matching filter", value: "exclude" },
+];
+
 const Page = () => {
   const pageTitle = "Intune Compliance Policies";
   const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
@@ -146,6 +151,27 @@ const Page = () => {
           helperText:
             "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups.",
         },
+        {
+          type: "autoComplete",
+          name: "assignmentFilter",
+          label: "Assignment Filter (Optional)",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/ListAssignmentFilters",
+            queryKey: `ListAssignmentFilters-${tenant}`,
+            labelField: (filter) => filter.displayName,
+            valueField: "displayName",
+          },
+        },
+        {
+          type: "radio",
+          name: "assignmentFilterType",
+          label: "Assignment Filter Mode",
+          options: assignmentFilterTypeOptions,
+          defaultValue: "include",
+          helperText: "Choose whether to include or exclude devices matching the filter.",
+        },
       ],
       customDataformatter: (row, action, formData) => {
         const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
@@ -157,6 +183,10 @@ const Page = () => {
           GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
           GroupNames: selectedGroups.map((group) => group.label).filter(Boolean),
           assignmentMode: formData?.assignmentMode || "replace",
+          AssignmentFilterName: formData?.assignmentFilter?.value || null,
+          AssignmentFilterType: formData?.assignmentFilter?.value
+            ? formData?.assignmentFilterType || "include"
+            : null,
         };
       },
     },
