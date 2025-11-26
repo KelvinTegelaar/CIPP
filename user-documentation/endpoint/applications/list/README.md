@@ -12,7 +12,9 @@ The List Applications page shows a list of line-of-business applications configu
 [add-application](add-application/)
 {% endcontent-ref %}
 
-* Sync VPP - This button will sync Apple Volume Purchase Program tokens for the tenant.
+#### Sync VPP
+
+This button will sync Apple Volume Purchase Program tokens for the tenant.
 
 ### Details
 

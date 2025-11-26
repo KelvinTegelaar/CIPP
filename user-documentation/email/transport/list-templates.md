@@ -2,8 +2,8 @@
 
 ### **Action Buttons**
 
-{% content-ref url="list-rules/deploy-template.md" %}
-[deploy-template.md](list-rules/deploy-template.md)
+{% content-ref url="/broken/pages/V4XNOjWFBVVlZnBIEOK4" %}
+[Broken link](/broken/pages/V4XNOjWFBVVlZnBIEOK4)
 {% endcontent-ref %}
 
 ### Table Details

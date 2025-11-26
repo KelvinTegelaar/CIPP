@@ -1,4 +1,4 @@
-# Templates
+# Application Templates
 
 This page will contain your application appoval templates.
 
@@ -7,6 +7,10 @@ This page will contain your application appoval templates.
 {% content-ref url="add.md" %}
 [add.md](add.md)
 {% endcontent-ref %}
+
+#### Deploy Template
+
+This button will launch [appapproval.md](../../../tools/tenant-tools/appapproval.md "mention").
 
 ### Table Details
 

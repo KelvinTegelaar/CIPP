@@ -4,6 +4,12 @@ This page shows all the enterprise applications that are available in the tenant
 
 To do this, first clear the filter and then select the `All-non-Microsoft Enterprise Apps` filter. If not done in this order, the filter will not work as expected.
 
+### Page Actions
+
+#### Deploy Template
+
+This button will launch [appapproval.md](../../tools/tenant-tools/appapproval.md "mention").
+
 ### Table Details
 
 The properties returned are for the Graph resource type `servicePrincipal`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/serviceprincipal?view=graph-rest-1.0#properties).
