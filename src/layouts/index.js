@@ -114,14 +114,6 @@ export const Layout = (props) => {
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
-            // role
-            if (item.roles && item.roles.length > 0) {
-              const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
-              if (!hasRole) {
-                return null;
-              }
-            }
-
             // Check permission with pattern matching support
             if (item.permissions && item.permissions.length > 0) {
               const hasPermission = userPermissions?.some((userPerm) => {

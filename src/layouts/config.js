@@ -744,6 +744,7 @@ export const nativeMenuItems = [
       "Tenant.Application.*",
       "Tenant.DomainAnalyser.*",
       "Exchange.Mailbox.*",
+      "CIPP.Scheduler.*",
     ],
     items: [
       {
