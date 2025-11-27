@@ -281,6 +281,7 @@ export const useCippUserActions = () => {
       icon: <GroupAdd />,
       url: "/api/EditGroup",
       customDataformatter: (row, action, formData) => {
+        // Build the member list from selected users
         let addMember = [];
         if (Array.isArray(row)) {
           row
@@ -305,20 +306,26 @@ export const useCippUserActions = () => {
             },
           });
         }
-        return {
+
+        // Handle multiple groups - return an array of requests (one per group)
+        const selectedGroups = Array.isArray(formData.groupId)
+          ? formData.groupId
+          : [formData.groupId];
+
+        return selectedGroups.map((group) => ({
           addMember: addMember,
           tenantFilter: tenant,
-          groupId: formData.groupId,
-        };
+          groupId: group,
+        }));
       },
       fields: [
         {
           type: "autoComplete",
           name: "groupId",
-          label: "Select a group to add the user to",
-          multiple: false,
+          label: "Select groups to add the user to",
+          multiple: true,
           creatable: false,
-          validators: { required: "Please select a group" },
+          validators: { required: "Please select at least one group" },
           api: {
             url: "/api/ListGroups",
             labelField: (option) =>
@@ -335,8 +342,8 @@ export const useCippUserActions = () => {
           },
         },
       ],
-      confirmText: "Are you sure you want to add [userPrincipalName] to this group?",
-      multiPost: true,
+      confirmText: "Are you sure you want to add [userPrincipalName] to the selected groups?",
+      multiPost: false,
       allowResubmit: true,
       condition: () => canWriteGroup,
     },
