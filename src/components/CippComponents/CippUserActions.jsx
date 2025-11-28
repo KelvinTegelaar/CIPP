@@ -144,7 +144,8 @@ export const useCippUserActions = () => {
       type: "GET",
       icon: <MagnifyingGlassIcon />,
       link: "/identity/administration/users/user/bec?userId=[id]",
-      confirmText: "Are you sure you want to research this compromised account?",
+      confirmText:
+        "Are you sure you want to research if [userPrincipalName] is a compromised account?",
       multiPost: false,
     },
     {
@@ -173,7 +174,8 @@ export const useCippUserActions = () => {
           dateTimeType: "datetime",
         },
       ],
-      confirmText: "Are you sure you want to create a Temporary Access Password?",
+      confirmText:
+        "Are you sure you want to create a Temporary Access Password for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -184,7 +186,7 @@ export const useCippUserActions = () => {
       icon: <PhonelinkSetup />,
       url: "/api/ExecResetMFA",
       data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to reset MFA for this user?",
+      confirmText: "Are you sure you want to reset MFA for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -195,7 +197,7 @@ export const useCippUserActions = () => {
       icon: <PhonelinkLock />,
       url: "/api/ExecSendPush",
       data: { UserEmail: "userPrincipalName" },
-      confirmText: "Are you sure you want to send an MFA request?",
+      confirmText: "Are you sure you want to send an MFA request to [userPrincipalName]?",
       multiPost: false,
     },
     {
@@ -410,7 +412,7 @@ export const useCippUserActions = () => {
       icon: <CloudDone />,
       url: "/api/ExecOneDriveProvision",
       data: { UserPrincipalName: "userPrincipalName" },
-      confirmText: "Are you sure you want to pre-provision OneDrive for this user?",
+      confirmText: "Are you sure you want to pre-provision OneDrive for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
