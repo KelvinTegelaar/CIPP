@@ -15,7 +15,7 @@
     "recommendedRunInterval": "1d"
   },
   {
-    "name": "AlertSmtpAuthSuccess",
+    "name": "SmtpAuthSuccess",
     "label": "Alert on SMTP AUTH usage with success, helps to phase out SMTP AUTH (Entra P1 Required)",
     "recommendedRunInterval": "1d"
   },
