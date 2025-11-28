@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Alert, Button, Dialog, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Dialog,
+  Divider,
+  DialogContent,
+  DialogTitle,
+  useMediaQuery,
+} from "@mui/material";
+import { Stack } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import { useSettings } from "../hooks/use-settings";
 import { Footer } from "./footer";
@@ -15,6 +24,7 @@ import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboardingv2";
 import { useDialog } from "../hooks/use-dialog";
 import { nativeMenuItems } from "/src/layouts/config";
+import { CippBreadcrumbNav } from "../components/CippComponents/CippBreadcrumbNav";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -104,14 +114,6 @@ export const Layout = (props) => {
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
-            // role
-            if (item.roles && item.roles.length > 0) {
-              const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
-              if (!hasRole) {
-                return null;
-              }
-            }
-
             // Check permission with pattern matching support
             if (item.permissions && item.permissions.length > 0) {
               const hasPermission = userPermissions?.some((userPerm) => {
@@ -314,8 +316,9 @@ export const Layout = (props) => {
             </Box>
           )}
           {(currentTenant === "AllTenants" || !currentTenant) && !allTenantsSupport ? (
-            <Box sx={{ flexGrow: 1, py: 4 }}>
+            <Box sx={{ flexGrow: 1 }}>
               <Container maxWidth={false}>
+                <CippBreadcrumbNav mode="hierarchical" />
                 <Grid container spacing={3}>
                   <Grid size={6}>
                     <CippImageCard
@@ -330,7 +333,13 @@ export const Layout = (props) => {
               </Container>
             </Box>
           ) : (
-            <>{children}</>
+            <Stack>
+              <Box sx={{ mx: 3, mt: 3 }}>
+                <CippBreadcrumbNav mode="hierarchical" />
+              </Box>
+              <Divider sx={{ mb: 2 }} />
+              {children}
+            </Stack>
           )}
           <Footer />
         </LayoutContainer>

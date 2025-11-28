@@ -43,6 +43,8 @@ import { ClockIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
 import tabOptions from "./tabOptions.json";
 import { createDriftManagementActions } from "./driftManagementActions";
+import { CippApiLogsDrawer } from "../../../components/CippComponents/CippApiLogsDrawer";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const router = useRouter();
@@ -62,8 +64,26 @@ const Page = () => {
 
   const templateDetails = ApiGetCall({
     url: `/api/listStandardTemplates`,
-    queryKey: `listStandardTemplates-reports`,
+    data: {
+      templateId: templateId,
+    },
+    queryKey: `listStandardTemplates-reports-${templateId}`,
   });
+
+  // Normalize template data structure to always work with an array
+  const templates = useMemo(() => {
+    const raw = templateDetails?.data;
+    if (Array.isArray(raw)) return raw;
+    if (raw && Array.isArray(raw.templates)) return raw.templates; // alternate key
+    if (raw && Array.isArray(raw.data)) return raw.data; // nested data property
+    return [];
+  }, [templateDetails?.data]);
+
+  // Selected template object (safe lookup)
+  const selectedTemplate = useMemo(
+    () => templates.find((t) => t.GUID === templateId),
+    [templates, templateId]
+  );
 
   // Run the report once
   const runReport = ApiPostCall({ relatedQueryKeys: ["ListStandardsCompare"] });
@@ -391,6 +411,92 @@ const Page = () => {
                   }
                 }
               });
+            } else if (standardKey === "GroupTemplate") {
+              // GroupTemplate structure has groupTemplate array and action array at the top level
+              const groupTemplates = standardConfig.groupTemplate || [];
+              const actions = standardConfig.action || [];
+              const standardId = `standards.GroupTemplate`;
+              const standardInfo = standards.find((s) => s.name === standardId);
+
+              // Find the tenant's value for this template
+              const currentTenantStandard = currentTenantData.find(
+                (s) => s.standardId === standardId
+              );
+              const standardObject = currentTenantObj?.[standardId];
+              const directStandardValue = standardObject?.Value;
+              let isCompliant = false;
+
+              // For GroupTemplate, the value is true if compliant
+              if (directStandardValue === true) {
+                isCompliant = true;
+              } else if (currentTenantStandard?.value) {
+                isCompliant = currentTenantStandard.value === true;
+              }
+
+              // Build a list of all group names with their types
+              const groupList = groupTemplates
+                .map((groupTemplate) => {
+                  const rawGroupType = (
+                    groupTemplate.rawData?.groupType || "generic"
+                  ).toLowerCase();
+                  let prettyGroupType = "Generic";
+
+                  if (rawGroupType.includes("dynamicdistribution")) {
+                    prettyGroupType = "Dynamic Distribution Group";
+                  } else if (rawGroupType.includes("dynamic")) {
+                    prettyGroupType = "Dynamic Security Group";
+                  } else if (rawGroupType.includes("azurerole")) {
+                    prettyGroupType = "Azure Role-Assignable Group";
+                  } else if (
+                    rawGroupType.includes("m365") ||
+                    rawGroupType.includes("unified") ||
+                    rawGroupType.includes("microsoft")
+                  ) {
+                    prettyGroupType = "Microsoft 365 Group";
+                  } else if (
+                    rawGroupType.includes("distribution") ||
+                    rawGroupType.includes("mail")
+                  ) {
+                    prettyGroupType = "Distribution Group";
+                  } else if (
+                    rawGroupType.includes("security") ||
+                    rawGroupType === "mail-enabled security"
+                  ) {
+                    prettyGroupType = "Security Group";
+                  } else if (rawGroupType.includes("generic")) {
+                    prettyGroupType = "Security Group";
+                  }
+
+                  const groupName =
+                    groupTemplate.label || groupTemplate.rawData?.displayName || "Unknown Group";
+                  return `- ${groupName} (${prettyGroupType})`;
+                })
+                .join("\n");
+
+              // Create a single standard entry for all groups
+              const templateSettings = {
+                Groups: groupList,
+              };
+
+              allStandards.push({
+                standardId,
+                standardName: `Group Templates`,
+                currentTenantValue:
+                  standardObject !== undefined
+                    ? {
+                        Value: directStandardValue,
+                        LastRefresh: standardObject?.LastRefresh,
+                      }
+                    : currentTenantStandard?.value,
+                standardValue: templateSettings,
+                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
+                standardDescription: standardInfo?.helpText || "",
+                standardImpact: standardInfo?.impact || "Medium Impact",
+                standardImpactColour: standardInfo?.impactColour || "warning",
+                templateName: selectedTemplate?.templateName || "Standard Template",
+                templateActions: actions,
+              });
             } else {
               // Regular handling for other standards
               const standardId = `standards.${standardKey}`;
@@ -617,8 +723,8 @@ const Page = () => {
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
   // Simple filter for all templates (no type filtering)
-  const templateOptions = templateDetails.data
-    ? templateDetails.data.map((template) => ({
+  const templateOptions = templates
+    ? templates.map((template) => ({
         label:
           template.displayName ||
           template.templateName ||
@@ -630,8 +736,15 @@ const Page = () => {
 
   // Find currently selected template
   const selectedTemplateOption =
-    templateId && templateOptions.length
-      ? templateOptions.find((option) => option.value === templateId) || null
+    templateId && selectedTemplate
+      ? {
+          label:
+            selectedTemplate.displayName ||
+            selectedTemplate.templateName ||
+            selectedTemplate.name ||
+            `Template ${selectedTemplate.GUID}`,
+          value: selectedTemplate.GUID,
+        }
       : null;
 
   // Effect to refetch APIs when templateId changes (needed for shallow routing)
@@ -642,45 +755,54 @@ const Page = () => {
   }, [templateId]);
 
   // Prepare title and subtitle for HeaderedTabbedLayout
-  const title =
-    templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.templateName ||
-    "Tenant Report";
+  const title = selectedTemplate?.templateName || selectedTemplate?.displayName || "Tenant Report";
 
   const subtitle = [
     {
       icon: <Policy />,
       text: (
-        <CippAutoComplete
-          options={templateOptions}
-          label="Select Template"
-          multiple={false}
-          creatable={false}
-          isFetching={templateDetails.isFetching}
-          defaultValue={selectedTemplateOption}
-          value={selectedTemplateOption}
-          onChange={(selectedTemplate) => {
-            const query = { ...router.query };
-            if (selectedTemplate && selectedTemplate.value) {
-              query.templateId = selectedTemplate.value;
-            } else {
-              delete query.templateId;
-            }
-            router.replace(
-              {
-                pathname: router.pathname,
-                query: query,
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-          sx={{ minWidth: 300 }}
-          placeholder="Select a template..."
-        />
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <CippAutoComplete
+            options={templateOptions}
+            label="Select Template"
+            multiple={false}
+            creatable={false}
+            isFetching={templateDetails.isFetching}
+            defaultValue={selectedTemplateOption}
+            value={selectedTemplateOption}
+            onChange={(selectedTemplate) => {
+              const query = { ...router.query };
+              if (selectedTemplate && selectedTemplate.value) {
+                query.templateId = selectedTemplate.value;
+              } else {
+                delete query.templateId;
+              }
+              router.replace(
+                {
+                  pathname: router.pathname,
+                  query: query,
+                },
+                undefined,
+                { shallow: true }
+              );
+            }}
+            sx={{ minWidth: 300 }}
+            placeholder="Select a template..."
+          />
+          {templateId && (
+            <CippApiLogsDrawer
+              standardFilter={templateId}
+              buttonText="Logs"
+              title="Standard Logs"
+              variant="outlined"
+              tenantFilter={currentTenant}
+            />
+          )}
+        </Stack>
       ),
     },
     // Add compliance badges when template data is available (show even if no comparison data yet)
-    ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]
+    ...(selectedTemplate
       ? [
           {
             component: (
@@ -728,7 +850,7 @@ const Page = () => {
         ]
       : []),
     // Add description if available
-    ...(templateDetails?.data?.filter((template) => template.GUID === templateId)?.[0]?.description
+    ...(selectedTemplate?.description
       ? [
           {
             component: (
@@ -746,10 +868,7 @@ const Page = () => {
                   mt: 1,
                 }}
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(
-                    templateDetails?.data?.filter((template) => template.GUID === templateId)[0]
-                      .description
-                  ),
+                  __html: DOMPurify.sanitize(selectedTemplate.description),
                 }}
               />
             ),
@@ -759,14 +878,16 @@ const Page = () => {
   ];
 
   // Actions for the header
-  const actions = createDriftManagementActions({
-    templateId,
-    onRefresh: () => {
-      comparisonApi.refetch();
-      templateDetails.refetch();
-    },
-    currentTenant,
-  });
+  const actions = [
+    ...createDriftManagementActions({
+      templateId,
+      onRefresh: () => {
+        comparisonApi.refetch();
+        templateDetails.refetch();
+      },
+      currentTenant,
+    }),
+  ];
 
   return (
     <HeaderedTabbedLayout
@@ -778,7 +899,8 @@ const Page = () => {
       actionsData={{}}
       isFetching={comparisonApi.isFetching || templateDetails.isFetching}
     >
-      <Box sx={{ py: 2 }}>
+      <CippHead title={title} />
+      <Box sx={{ py: 2, mr: 2 }}>
         {comparisonApi.isFetching && (
           <>
             {[1, 2, 3].map((item) => (
@@ -1096,14 +1218,18 @@ const Page = () => {
                                   typeof standard.standardValue === "object" &&
                                   Object.keys(standard.standardValue).length > 0 ? (
                                     Object.entries(standard.standardValue).map(([key, value]) => (
-                                      <Box key={key} sx={{ display: "flex", mb: 0.5 }}>
+                                      <Box key={key} sx={{ mb: 0.5 }}>
                                         <Typography
                                           variant="body2"
                                           sx={{ fontWeight: "medium", mr: 1 }}
                                         >
                                           {key}:
                                         </Typography>
-                                        <Typography variant="body2">
+                                        <Typography
+                                          variant="body2"
+                                          component="div"
+                                          sx={{ whiteSpace: "pre-line", mt: 0.5 }}
+                                        >
                                           {typeof value === "object" && value !== null
                                             ? value?.label || JSON.stringify(value)
                                             : value === true
