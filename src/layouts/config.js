@@ -456,7 +456,7 @@ export const nativeMenuItems = [
       },
       {
         title: "Reports",
-        permissions: ["Endpoint.Device.*", "Endpoint.Autopilot.*"],
+        permissions: ["Endpoint.Device.*", "Endpoint.Autopilot.*", "Endpoint.MEM.*"],
         items: [
           {
             title: "Analytics Device Score",
@@ -472,6 +472,11 @@ export const nativeMenuItems = [
             title: "Autopilot Deployments",
             path: "/endpoint/reports/autopilot-deployment",
             permissions: ["Endpoint.Autopilot.*"],
+          },
+          {
+            title: "Discovered Apps",
+            path: "/endpoint/reports/detected-apps",
+            permissions: ["Endpoint.MEM.*"],
           },
         ],
       },
