@@ -190,7 +190,17 @@ const AlertWizard = () => {
                 ? JSON.parse(alert.RawAlert.Parameters)
                 : alert.RawAlert.Parameters;
             if (params.InputValue) {
-              resetObject[usedCommand.inputName] = params.InputValue;
+              if (usedCommand.multipleInput) {
+                // Load multiple input values from InputValue object
+                usedCommand.inputs.forEach((input) => {
+                  if (params.InputValue[input.inputName] !== undefined) {
+                    resetObject[input.inputName] = params.InputValue[input.inputName];
+                  }
+                });
+              } else {
+                // Backward compatibility: single input value
+                resetObject[usedCommand.inputName] = params.InputValue;
+              }
             }
           } catch (error) {
             console.error("Error parsing parameters:", error);
@@ -442,9 +452,20 @@ const AlertWizard = () => {
   const handleScriptSubmit = (values) => {
     const getInputParams = () => {
       if (values.command.value.requiresInput) {
-        return {
-          InputValue: values[values.command.value.inputName],
-        };
+        if (values.command.value.multipleInput) {
+          // Collect all input values into InputValue object
+          const inputValue = {};
+          values.command.value.inputs.forEach((input) => {
+            if (values[input.inputName] !== undefined && values[input.inputName] !== null) {
+              inputValue[input.inputName] = values[input.inputName];
+            }
+          });
+          return { InputValue: inputValue };
+        } else {
+          return {
+            InputValue: values[values.command.value.inputName],
+          };
+        }
       }
       return {};
     };
@@ -939,14 +960,33 @@ const AlertWizard = () => {
                               />
                             </Grid>
                             <Grid size={12}>
-                              {commandValue?.value?.requiresInput && (
-                                <CippFormComponent
-                                  type={commandValue.value?.inputType}
-                                  name={commandValue.value?.inputName}
-                                  formControl={formControl}
-                                  label={commandValue.value?.inputLabel}
-                                />
-                              )}
+                              {commandValue?.value?.requiresInput &&
+                                !commandValue.value?.multipleInput && (
+                                  <CippFormComponent
+                                    type={commandValue.value?.inputType}
+                                    name={commandValue.value?.inputName}
+                                    formControl={formControl}
+                                    label={commandValue.value?.inputLabel}
+                                  />
+                                )}
+                              {commandValue?.value?.multipleInput &&
+                                commandValue.value?.inputs?.map((input, index) => (
+                                  <Grid
+                                    container
+                                    spacing={2}
+                                    key={index}
+                                    sx={{ mt: index > 0 ? 2 : 0 }}
+                                  >
+                                    <Grid size={12}>
+                                      <CippFormComponent
+                                        type={input.inputType}
+                                        name={input.inputName}
+                                        formControl={formControl}
+                                        label={input.inputLabel}
+                                      />
+                                    </Grid>
+                                  </Grid>
+                                ))}
                             </Grid>
                             <Grid size={12}>
                               <CippFormComponent

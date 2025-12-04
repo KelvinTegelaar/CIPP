@@ -76,8 +76,22 @@
   },
   {
     "name": "ExpiringLicenses",
-    "label": "Alert on licenses expiring in 30 days",
-    "recommendedRunInterval": "7d"
+    "label": "Alert on licenses expiring in X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days until expiration (default: 30)",
+        "inputName": "ExpiringLicensesDays"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert only on unassigned licenses",
+        "inputName": "ExpiringLicensesUnassignedOnly"
+      }
+    ]
   },
   {
     "name": "NewAppApproval",
