@@ -29,6 +29,7 @@ import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog"
 import { Grid } from "@mui/system";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultValues }) => {
   const fields = useWatch({ control: formControl.control, name: "fields" });
@@ -276,7 +277,8 @@ const Page = () => {
   };
 
   return (
-    <Container maxWidth={false} sx={{ mt: 4, width: "100%" }}>
+    <Container maxWidth={false} sx={{ width: "100%" }}>
+      <CippHead title={pageTitle} noTenant={true} />
       <Typography variant="h4" gutterBottom>
         {pageTitle}
       </Typography>

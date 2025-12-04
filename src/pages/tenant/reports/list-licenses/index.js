@@ -11,6 +11,8 @@ const Page = () => {
     "CountUsed",
     "CountAvailable",
     "TotalLicenses",
+    "AssignedUsers",
+    "AssignedGroups",
     "TermInfo", // TODO TermInfo is not showing as a clickable json object in the table, like CApolicies does in the mfa report. IDK how to fix it. -Bobby
   ];
 

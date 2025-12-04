@@ -51,6 +51,8 @@ export const CippPolicyImportDrawer = ({
         ? `/api/listStandardTemplates?TenantFilter=${tenantFilter?.value || ""}`
         : `/api/ListIntunePolicy?type=ESP&TenantFilter=${tenantFilter?.value || ""}`,
     queryKey: `TenantPolicies-${mode}-${tenantFilter?.value || "none"}`,
+    // Enable fetching only after a tenant is selected when source is tenant
+    waiting: selectedSource?.value === "tenant" && !!tenantFilter?.value,
   });
 
   const repoPolicies = ApiGetCall({
@@ -58,7 +60,7 @@ export const CippPolicyImportDrawer = ({
       selectedSource?.value || ""
     }&Branch=main`,
     queryKey: `RepoPolicies-${mode}-${selectedSource?.value || "none"}`,
-    enabled: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
+    waiting: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
   });
 
   const repositoryFiles = ApiGetCall({
@@ -66,7 +68,7 @@ export const CippPolicyImportDrawer = ({
       selectedSource?.value || ""
     }&Branch=main`,
     queryKey: `RepositoryFiles-${selectedSource?.value || "none"}`,
-    enabled: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
+    waiting: !!(selectedSource?.value && selectedSource?.value !== "tenant"),
   });
 
   const importPolicy = ApiPostCall({
@@ -247,7 +249,17 @@ export const CippPolicyImportDrawer = ({
   // Get policies based on source
   let availablePolicies = [];
   if (selectedSource?.value === "tenant" && tenantPolicies.isSuccess && tenantFilter?.value) {
-    availablePolicies = Array.isArray(tenantPolicies.data) ? tenantPolicies.data : [];
+    const tpData = tenantPolicies.data;
+    if (Array.isArray(tpData)) {
+      availablePolicies = tpData;
+    } else if (Array.isArray(tpData?.Results)) {
+      availablePolicies = tpData.Results;
+    } else if (tpData?.Results && typeof tpData.Results === "object") {
+      // Handle edge case where Results might be an object of keyed items
+      availablePolicies = Object.values(tpData.Results).filter(Boolean);
+    } else {
+      availablePolicies = [];
+    }
   } else if (
     selectedSource?.value &&
     selectedSource?.value !== "tenant" &&
@@ -500,7 +512,13 @@ export const CippPolicyImportDrawer = ({
           ) : (
             <CippJsonView
               object={viewingPolicy || {}}
-              type={mode === "ConditionalAccess" ? "conditionalaccess" : mode === "Standards" ? "standards" : "intune"}
+              type={
+                mode === "ConditionalAccess"
+                  ? "conditionalaccess"
+                  : mode === "Standards"
+                  ? "standards"
+                  : "intune"
+              }
               defaultOpen={true}
             />
           )}
