@@ -23,6 +23,29 @@ const Page = () => {
     },
   ];
 
+  const filterList = [
+    {
+      filterName: "Planned",
+      value: [{ id: "TaskState", value: "Planned" }],
+      type: "column",
+    },
+    {
+      filterName: "Running",
+      value: [{ id: "TaskState", value: "Running" }],
+      type: "column",
+    },
+    {
+      filterName: "Completed",
+      value: [{ id: "TaskState", value: "Completed" }],
+      type: "column",
+    },
+    {
+      filterName: "Failed",
+      value: [{ id: "TaskState", value: "Failed" }],
+      type: "column",
+    },
+  ];
+
   return (
     <CippTablePage
       cardButton={
@@ -43,6 +66,7 @@ const Page = () => {
         "ScheduledTime",
         "ExecutedTime",
       ]}
+      filters={filterList}
       offCanvas={{
         extendedInfoFields: [
           "Name",
