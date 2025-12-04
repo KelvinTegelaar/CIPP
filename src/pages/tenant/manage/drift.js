@@ -250,26 +250,8 @@ const ManageDriftPage = () => {
 
     // If it's an object (policy object from API)
     if (typeof value === "object" && value !== null) {
-      // Extract key information from policy objects
-      const keyFields = [];
-
-      if (value.id) keyFields.push(`ID: ${value.id}`);
-      if (value.displayName) keyFields.push(`Name: ${value.displayName}`);
-      if (value.description) keyFields.push(`Description: ${value.description}`);
-      if (value["@odata.type"]) keyFields.push(`Type: ${value["@odata.type"].split(".").pop()}`);
-      if (value.state) keyFields.push(`State: ${value.state}`);
-      if (value.createdDateTime)
-        keyFields.push(`Created: ${new Date(value.createdDateTime).toLocaleDateString()}`);
-      if (value.modifiedDateTime)
-        keyFields.push(`Modified: ${new Date(value.modifiedDateTime).toLocaleDateString()}`);
-
-      // If we have key fields, return them as a formatted string
-      if (keyFields.length > 0) {
-        return keyFields.join(" | ");
-      }
-
-      // Fallback to showing object keys count
-      return `Policy Object (${Object.keys(value).length} properties)`;
+      // Pretty-print the object as JSON
+      return JSON.stringify(value, null, 2);
     }
 
     return String(value);
