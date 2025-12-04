@@ -131,32 +131,28 @@ export const CippFormComponent = (props) => {
     case "textField":
       return (
         <>
-          <div>
-            <Controller
-              name={convertedName}
-              control={formControl.control}
-              defaultValue={defaultValue || ""}
-              rules={validators}
-              render={({ field }) =>
-                !disableVariables ? (
-                  <Tooltip title={label || ""} placement="top" arrow>
-                    <Box>
-                      <CippTextFieldWithVariables
-                        {...other}
-                        variant="filled"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        label={label}
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                        includeSystemVariables={includeSystemVariables}
-                      />
-                    </Box>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title={label || ""} placement="top" arrow>
+          <Tooltip title={label || ""} placement="top" arrow>
+            <div>
+              <Controller
+                name={convertedName}
+                control={formControl.control}
+                defaultValue={defaultValue || ""}
+                rules={validators}
+                render={({ field }) =>
+                  !disableVariables ? (
+                    <CippTextFieldWithVariables
+                      {...other}
+                      variant="filled"
+                      fullWidth
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      label={label}
+                      value={field.value || ""}
+                      onChange={field.onChange}
+                      includeSystemVariables={includeSystemVariables}
+                    />
+                  ) : (
                     <TextField
                       variant="filled"
                       fullWidth
@@ -168,11 +164,11 @@ export const CippFormComponent = (props) => {
                       value={field.value || ""}
                       onChange={field.onChange}
                     />
-                  </Tooltip>
-                )
-              }
-            />
-          </div>
+                  )
+                }
+              />
+            </div>
+          </Tooltip>
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}
           </Typography>
@@ -186,33 +182,31 @@ export const CippFormComponent = (props) => {
     case "textFieldWithVariables":
       return (
         <>
-          <div>
-            <Controller
-              name={convertedName}
-              control={formControl.control}
-              defaultValue={defaultValue || ""}
-              rules={validators}
-              render={({ field }) => (
-                <Tooltip title={label || ""} placement="top" arrow>
-                  <Box>
-                    <CippTextFieldWithVariables
-                      {...other}
-                      variant="filled"
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      label={label}
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                      tenantFilter={tenantFilter}
-                      includeSystemVariables={includeSystemVariables}
-                    />
-                  </Box>
-                </Tooltip>
-              )}
-            />
-          </div>
+          <Tooltip title={label || ""} placement="top" arrow>
+            <div>
+              <Controller
+                name={convertedName}
+                control={formControl.control}
+                defaultValue={defaultValue || ""}
+                rules={validators}
+                render={({ field }) => (
+                  <CippTextFieldWithVariables
+                    {...other}
+                    variant="filled"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    label={label}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    tenantFilter={tenantFilter}
+                    includeSystemVariables={includeSystemVariables}
+                  />
+                )}
+              />
+            </div>
+          </Tooltip>
           <Typography variant="subtitle3" color="error">
             {get(errors, convertedName, {})?.message}
           </Typography>
