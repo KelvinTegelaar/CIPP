@@ -913,6 +913,12 @@ export const nativeMenuItems = [
             roles: ["superadmin"],
             permissions: ["CIPP.SuperAdmin.*"],
           },
+          {
+            title: "Diagnostics",
+            path: "/cipp/advanced/diagnostics",
+            roles: ["superadmin"],
+            permissions: ["CIPP.SuperAdmin.*"],
+          },
         ],
       },
     ],
