@@ -51,6 +51,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
       label: preset.name,
       value: preset.id,
       query: preset.query,
+      columns: preset.columns || null,
       isBuiltin: true,
     }));
 
@@ -143,6 +144,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
       onSubmitFilter({
         ...values,
         presetDisplayName: values.presetName || selectedPreset?.label || null,
+        columns: selectedPreset?.columns || null,
       });
       setExpanded(false);
     }
@@ -150,7 +152,7 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
 
   const handleClear = () => {
     formControl.reset({ query: "", presetName: "", queryPreset: null });
-    onSubmitFilter({ query: "", presetDisplayName: null });
+    onSubmitFilter({ query: "", presetDisplayName: null, columns: null });
     setSelectedPreset(null);
     setExpanded(true);
   };

@@ -4,31 +4,24 @@ import CippDiagnosticsFilter from "/src/components/CippTable/CippDiagnosticsFilt
 import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { useState } from "react";
 import { Grid } from "@mui/system";
-import {
-  Box,
-  Typography,
-  Chip,
-  Stack,
-  Divider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import { Box, Typography, Chip, Stack, Divider } from "@mui/material";
 import {
   Error as ErrorIcon,
   Warning as WarningIcon,
   Info as InfoIcon,
   BugReport as DebugIcon,
-  ExpandMore as ExpandMoreIcon,
 } from "@mui/icons-material";
 
 const Page = () => {
-  const [apiFilter, setApiFilter] = useState({ query: "", presetDisplayName: null });
+  const [apiFilter, setApiFilter] = useState({ query: "", presetDisplayName: null, columns: null });
   const queryKey = JSON.stringify(apiFilter);
 
   const pageTitle = apiFilter.presetDisplayName
     ? `Diagnostics - ${apiFilter.presetDisplayName}`
     : "Diagnostics - Application Insights Query";
+
+  // Determine simpleColumns based on preset columns
+  const simpleColumns = apiFilter.columns || [];
 
   return (
     <CippTablePage
@@ -395,7 +388,7 @@ const Page = () => {
       apiUrl={apiFilter.query ? "/api/ExecAppInsightsQuery" : "/api/ListEmptyResults"}
       apiData={apiFilter}
       queryKey={queryKey}
-      simpleColumns={[]}
+      simpleColumns={simpleColumns}
       actions={[]}
     />
   );
