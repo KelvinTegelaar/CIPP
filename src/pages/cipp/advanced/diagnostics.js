@@ -1,14 +1,25 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import CippDiagnosticsFilter from "/src/components/CippTable/CippDiagnosticsFilter";
+import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
 import { useState } from "react";
 import { Grid } from "@mui/system";
-import { Box, Typography, Chip, Stack, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Chip,
+  Stack,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 import {
   Error as ErrorIcon,
   Warning as WarningIcon,
   Info as InfoIcon,
   BugReport as DebugIcon,
+  ExpandMore as ExpandMoreIcon,
 } from "@mui/icons-material";
 
 const Page = () => {
@@ -32,107 +43,141 @@ const Page = () => {
       offCanvas={{
         size: "lg",
         children: (row) => {
-          const getSeverityConfig = (level) => {
-            const levelStr = String(level || "").toLowerCase();
-            switch (levelStr) {
-              case "error":
-              case "4":
-                return { icon: <ErrorIcon />, color: "error", label: "Error" };
-              case "warning":
-              case "3":
-                return { icon: <WarningIcon />, color: "warning", label: "Warning" };
-              case "debug":
-              case "0":
-                return { icon: <DebugIcon />, color: "default", label: "Debug" };
-              case "verbose":
-              case "1":
-                return { icon: <InfoIcon />, color: "info", label: "Verbose" };
-              default:
-                return { icon: <InfoIcon />, color: "info", label: "Information" };
-            }
-          };
+          // Detect event type
+          const eventName = row.name || "";
+          const isConsoleLog = eventName === "CIPP.ConsoleLog";
+          const isTaskCompleted = eventName === "CIPP.TaskCompleted";
+          const isStandardCompleted = eventName === "CIPP.StandardCompleted";
 
-          const message = row.customDimensions?.Message || row.message || "No message";
-          const level = row.customDimensions?.Level || row.severityLevel;
-          const timestamp =
-            row.customDimensions?.Timestamp || row.timestamp || new Date().toISOString();
-          const severityConfig = getSeverityConfig(level);
+          // Console Log Renderer
+          if (isConsoleLog) {
+            const getSeverityConfig = (level) => {
+              const levelStr = String(level || "").toLowerCase();
+              switch (levelStr) {
+                case "error":
+                case "4":
+                  return { icon: <ErrorIcon />, color: "error", label: "Error" };
+                case "warning":
+                case "3":
+                  return { icon: <WarningIcon />, color: "warning", label: "Warning" };
+                case "debug":
+                case "0":
+                  return { icon: <DebugIcon />, color: "default", label: "Debug" };
+                case "verbose":
+                case "1":
+                  return { icon: <InfoIcon />, color: "info", label: "Verbose" };
+                default:
+                  return { icon: <InfoIcon />, color: "info", label: "Information" };
+              }
+            };
 
-          // Try to extract and parse JSON from message
-          let parsedMessage = null;
-          let isJson = false;
-          let preJsonText = "";
-          let postJsonText = "";
+            const message = row.customDimensions?.Message || row.message || "No message";
+            const level = row.customDimensions?.Level || row.severityLevel;
+            const timestamp =
+              row.customDimensions?.Timestamp || row.timestamp || new Date().toISOString();
+            const severityConfig = getSeverityConfig(level);
 
-          if (typeof message === "string") {
-            // Try to find JSON object or array in the message
-            const jsonObjectMatch = message.match(/(\{[\s\S]*\})/);
-            const jsonArrayMatch = message.match(/(\[[\s\S]*\])/);
-            const jsonMatch = jsonObjectMatch || jsonArrayMatch;
+            // Try to extract and parse JSON from message
+            let parsedMessage = null;
+            let isJson = false;
+            let preJsonText = "";
+            let postJsonText = "";
 
-            if (jsonMatch) {
-              try {
-                parsedMessage = JSON.parse(jsonMatch[1]);
-                isJson = true;
-                const jsonStart = jsonMatch.index;
-                const jsonEnd = jsonStart + jsonMatch[1].length;
-                preJsonText = message.substring(0, jsonStart).trim();
-                postJsonText = message.substring(jsonEnd).trim();
-              } catch (e) {
-                // Not valid JSON, treat as regular text
+            if (typeof message === "string") {
+              // Try to find JSON object or array in the message
+              const jsonObjectMatch = message.match(/(\{[\s\S]*\})/);
+              const jsonArrayMatch = message.match(/(\[[\s\S]*\])/);
+              const jsonMatch = jsonObjectMatch || jsonArrayMatch;
+
+              if (jsonMatch) {
+                try {
+                  parsedMessage = JSON.parse(jsonMatch[1]);
+                  isJson = true;
+                  const jsonStart = jsonMatch.index;
+                  const jsonEnd = jsonStart + jsonMatch[1].length;
+                  preJsonText = message.substring(0, jsonStart).trim();
+                  postJsonText = message.substring(jsonEnd).trim();
+                } catch (e) {
+                  // Not valid JSON, treat as regular text
+                }
               }
             }
-          }
 
-          return (
-            <Box sx={{ p: 3 }}>
-              <Stack spacing={3}>
-                {/* Header with severity and timestamp */}
-                <Box>
-                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Chip
-                      icon={severityConfig.icon}
-                      label={severityConfig.label}
-                      color={severityConfig.color}
-                      size="medium"
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {new Date(timestamp).toLocaleString()}
-                    </Typography>
-                  </Stack>
-                  <Divider />
-                </Box>
+            return (
+              <Box sx={{ p: 3 }}>
+                <Stack spacing={3}>
+                  {/* Header with severity and timestamp */}
+                  <Box>
+                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                      <Chip
+                        icon={severityConfig.icon}
+                        label={severityConfig.label}
+                        color={severityConfig.color}
+                        size="medium"
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        {new Date(timestamp).toLocaleString()}
+                      </Typography>
+                    </Stack>
+                    <Divider />
+                  </Box>
 
-                {/* Message */}
-                <Box>
-                  <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                    <Typography variant="h6">Message</Typography>
-                    {isJson && (
-                      <Chip label="JSON" size="small" color="primary" variant="outlined" />
-                    )}
-                  </Stack>
-                  <Box
-                    sx={{
-                      p: 2,
-                      bgcolor: "background.default",
-                      borderRadius: 1,
-                      border: "1px solid",
-                      borderColor: "divider",
-                    }}
-                  >
-                    {isJson ? (
-                      <Stack spacing={1}>
-                        {preJsonText && (
+                  {/* Message */}
+                  <Box>
+                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                      <Typography variant="h6">Message</Typography>
+                      {isJson && (
+                        <Chip label="JSON" size="small" color="primary" variant="outlined" />
+                      )}
+                    </Stack>
+                    <Box
+                      sx={{
+                        p: 2,
+                        bgcolor: "background.default",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      {isJson ? (
+                        <Stack spacing={1}>
+                          {preJsonText && (
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                fontSize: "0.875rem",
+                                wordBreak: "break-word",
+                              }}
+                            >
+                              {preJsonText}
+                            </Typography>
+                          )}
                           <Typography
                             variant="body1"
+                            component="pre"
                             sx={{
+                              fontFamily: "monospace",
                               fontSize: "0.875rem",
+                              whiteSpace: "pre-wrap",
                               wordBreak: "break-word",
+                              m: 0,
                             }}
                           >
-                            {preJsonText}
+                            {JSON.stringify(parsedMessage, null, 2)}
                           </Typography>
-                        )}
+                          {postJsonText && (
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                fontSize: "0.875rem",
+                                wordBreak: "break-word",
+                              }}
+                            >
+                              {postJsonText}
+                            </Typography>
+                          )}
+                        </Stack>
+                      ) : (
                         <Typography
                           variant="body1"
                           component="pre"
@@ -144,68 +189,260 @@ const Page = () => {
                             m: 0,
                           }}
                         >
-                          {JSON.stringify(parsedMessage, null, 2)}
+                          {message}
                         </Typography>
-                        {postJsonText && (
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              fontSize: "0.875rem",
-                              wordBreak: "break-word",
-                            }}
-                          >
-                            {postJsonText}
-                          </Typography>
-                        )}
-                      </Stack>
-                    ) : (
+                      )}
+                    </Box>
+                  </Box>
+
+                  {/* Full Details */}
+                  <Box>
+                    <Typography variant="h6" gutterBottom>
+                      Full Details
+                    </Typography>
+                    <Box
+                      sx={{
+                        p: 2,
+                        bgcolor: "background.default",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        maxHeight: "400px",
+                        overflow: "auto",
+                      }}
+                    >
                       <Typography
-                        variant="body1"
                         component="pre"
                         sx={{
                           fontFamily: "monospace",
-                          fontSize: "0.875rem",
+                          fontSize: "0.75rem",
                           whiteSpace: "pre-wrap",
                           wordBreak: "break-word",
                           m: 0,
                         }}
                       >
-                        {message}
+                        {JSON.stringify(row, null, 2)}
                       </Typography>
-                    )}
+                    </Box>
                   </Box>
-                </Box>
+                </Stack>
+              </Box>
+            );
+          }
 
-                {/* Full Details */}
-                <Box>
-                  <Typography variant="h6" gutterBottom>
-                    Full Details
-                  </Typography>
-                  <Box
-                    sx={{
-                      p: 2,
-                      bgcolor: "background.default",
-                      borderRadius: 1,
-                      border: "1px solid",
-                      borderColor: "divider",
-                      maxHeight: "400px",
-                      overflow: "auto",
-                    }}
-                  >
-                    <Typography
-                      component="pre"
+          // Task/Standard Completed Renderer
+          if (isTaskCompleted || isStandardCompleted) {
+            const taskName = row.customDimensions?.TaskName || "Unknown Task";
+            const command =
+              row.customDimensions?.Command || row.customDimensions?.Standard || "N/A";
+            const tenant = row.customDimensions?.Tenant || "N/A";
+            const duration = row.customDimensions?.Duration || row.customDimensions?.ExecutionTime;
+            const timestamp = row.timestamp || new Date().toISOString();
+            const status = row.customDimensions?.Status || "Completed";
+
+            return (
+              <Box sx={{ p: 3 }}>
+                <Stack spacing={3}>
+                  {/* Header */}
+                  <Box>
+                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                      <Chip
+                        label={isTaskCompleted ? "Task" : "Standard"}
+                        color="success"
+                        size="medium"
+                      />
+                      <Chip label={status} color="default" size="small" variant="outlined" />
+                      <Typography variant="body2" color="text.secondary">
+                        {new Date(timestamp).toLocaleString()}
+                      </Typography>
+                    </Stack>
+                    <Divider />
+                  </Box>
+
+                  {/* Summary */}
+                  <Box>
+                    <Typography variant="h6" gutterBottom>
+                      Summary
+                    </Typography>
+                    <Stack spacing={2}>
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">
+                          {isTaskCompleted ? "Task Name" : "Standard"}
+                        </Typography>
+                        <Typography variant="body1">{taskName}</Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">
+                          Command
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontFamily: "monospace" }}>
+                          {command}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">
+                          Tenant
+                        </Typography>
+                        <Typography variant="body1">{tenant}</Typography>
+                      </Box>
+                      {duration && (
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">
+                            Duration
+                          </Typography>
+                          <Typography variant="body1">{duration}</Typography>
+                        </Box>
+                      )}
+                    </Stack>
+                  </Box>
+
+                  {/* Full Details */}
+                  <Box>
+                    <Typography variant="h6" gutterBottom>
+                      Full Details
+                    </Typography>
+                    <Box
                       sx={{
-                        fontFamily: "monospace",
-                        fontSize: "0.75rem",
-                        whiteSpace: "pre-wrap",
-                        wordBreak: "break-word",
-                        m: 0,
+                        p: 2,
+                        bgcolor: "background.default",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        maxHeight: "400px",
+                        overflow: "auto",
                       }}
                     >
-                      {JSON.stringify(row, null, 2)}
-                    </Typography>
+                      <Typography
+                        component="pre"
+                        sx={{
+                          fontFamily: "monospace",
+                          fontSize: "0.75rem",
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                          m: 0,
+                        }}
+                      >
+                        {JSON.stringify(row, null, 2)}
+                      </Typography>
+                    </Box>
                   </Box>
+                </Stack>
+              </Box>
+            );
+          }
+
+          // Default/Generic Renderer for other event types
+          const renderValue = (value) => {
+            if (value === null || value === undefined) {
+              return (
+                <Typography sx={{ fontStyle: "italic", color: "text.secondary" }}>
+                  {String(value)}
+                </Typography>
+              );
+            }
+            if (typeof value === "boolean") {
+              return (
+                <Chip label={value.toString()} size="small" color={value ? "success" : "default"} />
+              );
+            }
+            if (typeof value === "object") {
+              return (
+                <Typography
+                  component="pre"
+                  sx={{
+                    fontFamily: "monospace",
+                    fontSize: "0.75rem",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    m: 0,
+                  }}
+                >
+                  {JSON.stringify(value, null, 2)}
+                </Typography>
+              );
+            }
+            return String(value);
+          };
+
+          // Build property items for CippPropertyListCard
+          const propertyItems = [];
+
+          // Add timestamp first
+          propertyItems.push({
+            label: "timestamp",
+            value: new Date(row.timestamp || new Date().toISOString()).toLocaleString(),
+          });
+
+          // Add all other properties
+          Object.entries(row)
+            .filter(([key]) => key !== "timestamp" && key !== "customDimensions")
+            .sort(([a], [b]) => a.localeCompare(b))
+            .forEach(([key, value]) => {
+              propertyItems.push({
+                label: key,
+                value: renderValue(value),
+              });
+            });
+
+          // Add customDimensions properties
+          if (row.customDimensions) {
+            Object.entries(row.customDimensions)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .forEach(([key, value]) => {
+                propertyItems.push({
+                  label: `customDimensions.${key}`,
+                  value: renderValue(value),
+                });
+              });
+          }
+
+          return (
+            <Box sx={{ p: 3 }}>
+              <Stack spacing={3}>
+                <Box>
+                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <Chip label={eventName || "Event"} color="default" size="medium" />
+                  </Stack>
                 </Box>
+
+                <CippPropertyListCard
+                  title="Properties"
+                  propertyItems={propertyItems}
+                  layout="single"
+                  copyItems={true}
+                />
+
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="h6">Raw JSON</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Box
+                      sx={{
+                        p: 2,
+                        bgcolor: "background.default",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        maxHeight: "400px",
+                        overflow: "auto",
+                      }}
+                    >
+                      <Typography
+                        component="pre"
+                        sx={{
+                          fontFamily: "monospace",
+                          fontSize: "0.75rem",
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                          m: 0,
+                        }}
+                      >
+                        {JSON.stringify(row, null, 2)}
+                      </Typography>
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
               </Stack>
             </Box>
           );
