@@ -71,10 +71,14 @@ const Page = () => {
               }
             };
 
-            const message = row.customDimensions?.Message || row.message || "No message";
-            const level = row.customDimensions?.Level || row.severityLevel;
+            const message =
+              row.Message || row.customDimensions?.Message || row.message || "No message";
+            const level = row.Level || row.customDimensions?.Level || row.severityLevel;
             const timestamp =
-              row.customDimensions?.Timestamp || row.timestamp || new Date().toISOString();
+              row.Timestamp ||
+              row.customDimensions?.Timestamp ||
+              row.timestamp ||
+              new Date().toISOString();
             const severityConfig = getSeverityConfig(level);
 
             // Try to extract and parse JSON from message
@@ -410,6 +414,7 @@ const Page = () => {
                   propertyItems={propertyItems}
                   layout="single"
                   copyItems={true}
+                  cardSx={{ boxShadow: "none" }}
                 />
 
                 <Accordion>
