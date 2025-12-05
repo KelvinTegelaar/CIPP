@@ -85,6 +85,16 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
     }
   }, [queryPreset, formControl]);
 
+  // Clear selectedPreset when query is manually edited (unless preset is custom or has no columns)
+  useEffect(() => {
+    if (selectedPreset && queryValue !== selectedPreset.query) {
+      // Only clear if preset is built-in and has columns defined
+      if (selectedPreset.isBuiltin && selectedPreset.columns) {
+        setSelectedPreset(null);
+      }
+    }
+  }, [queryValue, selectedPreset]);
+
   const savePresetApi = ApiPostCall({
     relatedQueryKeys: ["ListDiagnosticsPresets"],
   });
