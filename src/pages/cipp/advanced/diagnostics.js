@@ -198,37 +198,6 @@ const Page = () => {
                       )}
                     </Box>
                   </Box>
-
-                  {/* Full Details */}
-                  <Box>
-                    <Typography variant="h6" gutterBottom>
-                      Full Details
-                    </Typography>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: "background.default",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: "divider",
-                        maxHeight: "400px",
-                        overflow: "auto",
-                      }}
-                    >
-                      <Typography
-                        component="pre"
-                        sx={{
-                          fontFamily: "monospace",
-                          fontSize: "0.75rem",
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
-                          m: 0,
-                        }}
-                      >
-                        {JSON.stringify(row, null, 2)}
-                      </Typography>
-                    </Box>
-                  </Box>
                 </Stack>
               </Box>
             );
@@ -298,37 +267,6 @@ const Page = () => {
                         </Box>
                       )}
                     </Stack>
-                  </Box>
-
-                  {/* Full Details */}
-                  <Box>
-                    <Typography variant="h6" gutterBottom>
-                      Full Details
-                    </Typography>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: "background.default",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: "divider",
-                        maxHeight: "400px",
-                        overflow: "auto",
-                      }}
-                    >
-                      <Typography
-                        component="pre"
-                        sx={{
-                          fontFamily: "monospace",
-                          fontSize: "0.75rem",
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
-                          m: 0,
-                        }}
-                      >
-                        {JSON.stringify(row, null, 2)}
-                      </Typography>
-                    </Box>
                   </Box>
                 </Stack>
               </Box>
@@ -416,38 +354,6 @@ const Page = () => {
                   copyItems={true}
                   cardSx={{ boxShadow: "none" }}
                 />
-
-                <Accordion>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h6">Raw JSON</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Box
-                      sx={{
-                        p: 2,
-                        bgcolor: "background.default",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: "divider",
-                        maxHeight: "400px",
-                        overflow: "auto",
-                      }}
-                    >
-                      <Typography
-                        component="pre"
-                        sx={{
-                          fontFamily: "monospace",
-                          fontSize: "0.75rem",
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
-                          m: 0,
-                        }}
-                      >
-                        {JSON.stringify(row, null, 2)}
-                      </Typography>
-                    </Box>
-                  </AccordionDetails>
-                </Accordion>
               </Stack>
             </Box>
           );
