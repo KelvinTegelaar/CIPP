@@ -205,13 +205,19 @@ const Page = () => {
 
           // Task/Standard Completed Renderer
           if (isTaskCompleted || isStandardCompleted) {
-            const taskName = row.customDimensions?.TaskName || "Unknown Task";
+            const taskName = row.TaskName || row.customDimensions?.TaskName || "Unknown Task";
             const command =
-              row.customDimensions?.Command || row.customDimensions?.Standard || "N/A";
-            const tenant = row.customDimensions?.Tenant || "N/A";
-            const duration = row.customDimensions?.Duration || row.customDimensions?.ExecutionTime;
+              row.Command ||
+              row.customDimensions?.Command ||
+              row.customDimensions?.Standard ||
+              "N/A";
+            const tenant = row.Tenant || row.customDimensions?.Tenant || "N/A";
+            const count = row.Count || row.customDimensions?.Count;
+            const totalDuration = row.TotalDurationMs || row.customDimensions?.TotalDurationMs;
+            const avgDuration = row.AvgDurationMs || row.customDimensions?.AvgDurationMs;
+            const maxDuration = row.MaxDurationMs || row.customDimensions?.MaxDurationMs;
             const timestamp = row.timestamp || new Date().toISOString();
-            const status = row.customDimensions?.Status || "Completed";
+            const status = row.Status || row.customDimensions?.Status || "Completed";
 
             return (
               <Box sx={{ p: 3 }}>
@@ -258,12 +264,36 @@ const Page = () => {
                         </Typography>
                         <Typography variant="body1">{tenant}</Typography>
                       </Box>
-                      {duration && (
+                      {count && (
                         <Box>
                           <Typography variant="caption" color="text.secondary">
-                            Duration
+                            Count
                           </Typography>
-                          <Typography variant="body1">{duration}</Typography>
+                          <Typography variant="body1">{count}</Typography>
+                        </Box>
+                      )}
+                      {totalDuration && (
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">
+                            Total Duration (ms)
+                          </Typography>
+                          <Typography variant="body1">{totalDuration.toFixed(2)}</Typography>
+                        </Box>
+                      )}
+                      {avgDuration && (
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">
+                            Average Duration (ms)
+                          </Typography>
+                          <Typography variant="body1">{avgDuration.toFixed(2)}</Typography>
+                        </Box>
+                      )}
+                      {maxDuration && (
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">
+                            Max Duration (ms)
+                          </Typography>
+                          <Typography variant="body1">{maxDuration.toFixed(2)}</Typography>
                         </Box>
                       )}
                     </Stack>
