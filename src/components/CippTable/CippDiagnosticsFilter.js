@@ -162,7 +162,11 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
   const handleClear = () => {
     formControl.reset({ query: "", presetName: "", queryPreset: null });
     onSubmitFilter({ query: "", presetDisplayName: null, columns: null });
-    setSelectedPreset(null);
+    // Only clear selectedPreset if it's a built-in preset
+    // Keep custom preset reference so user can continue editing and saving
+    if (selectedPreset?.isBuiltin) {
+      setSelectedPreset(null);
+    }
     setExpanded(true);
   };
 
