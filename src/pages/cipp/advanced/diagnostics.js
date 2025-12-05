@@ -455,6 +455,7 @@ const Page = () => {
       apiData={apiFilter}
       queryKey={queryKey}
       simpleColumns={[]}
+      actions={[]}
     />
   );
 };
