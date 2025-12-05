@@ -5,8 +5,12 @@ import { useState } from "react";
 import { Grid } from "@mui/system";
 
 const Page = () => {
-  const [apiFilter, setApiFilter] = useState({ query: "" });
+  const [apiFilter, setApiFilter] = useState({ query: "", presetDisplayName: null });
   const queryKey = JSON.stringify(apiFilter);
+
+  const pageTitle = apiFilter.presetDisplayName
+    ? `Diagnostics - ${apiFilter.presetDisplayName}`
+    : "Diagnostics - Application Insights Query";
 
   return (
     <CippTablePage
@@ -17,7 +21,7 @@ const Page = () => {
           </Grid>
         </Grid>
       }
-      title="Diagnostics - Application Insights Query"
+      title={pageTitle}
       tenantInTitle={false}
       apiDataKey="Results"
       apiUrl={apiFilter.query ? "/api/ExecAppInsightsQuery" : "/api/ListEmptyResults"}

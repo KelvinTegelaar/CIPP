@@ -78,10 +78,9 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
         formControl.setValue("query", preset.query);
         formControl.setValue("presetName", preset.label);
         setSelectedPreset(preset);
+        // Clear the preset selection so user can edit freely
+        formControl.setValue("queryPreset", null);
       }
-    } else {
-      // Clear selection when preset is cleared
-      setSelectedPreset(null);
     }
   }, [queryPreset, formControl]);
 
@@ -141,15 +140,19 @@ const CippDiagnosticsFilter = ({ onSubmitFilter }) => {
 
   const onSubmit = (values) => {
     if (values.query && values.query.trim()) {
-      onSubmitFilter(values);
+      onSubmitFilter({
+        ...values,
+        presetDisplayName: values.presetName || selectedPreset?.label || null,
+      });
       setExpanded(false);
     }
   };
 
   const handleClear = () => {
     formControl.reset({ query: "", presetName: "", queryPreset: null });
-    onSubmitFilter({ query: "" });
+    onSubmitFilter({ query: "", presetDisplayName: null });
     setSelectedPreset(null);
+    setExpanded(true);
   };
 
   return (
