@@ -253,10 +253,11 @@ const CippApiClientManagement = () => {
           showDivider={false}
           isFetching={azureConfig.isFetching}
         />
-        {azureConfig.isSuccess && (
+        {azureConfig.isSuccess && apiClients.isSuccess && (
           <>
             {!isEqual(
-              apiClients.data?.pages?.[0]?.Results?.filter((c) => c.Enabled)
+              (apiClients.data?.pages?.[0]?.Results || [])
+                .filter((c) => c.Enabled)
                 .map((c) => c.ClientId)
                 .sort(),
               (azureConfig.data?.Results?.ClientIDs || []).sort()
