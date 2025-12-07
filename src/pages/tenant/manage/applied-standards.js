@@ -102,15 +102,14 @@ const Page = () => {
     confirmText: "Are you sure you want to run this standard report?",
   };
 
-  // Get comparison data
+  // Get comparison data - fetch all standards without filtering by template
   const comparisonApi = ApiGetCall({
     url: "/api/ListStandardsCompare",
     data: {
-      TemplateId: templateId,
       tenantFilter: currentTenant,
       CompareToStandard: true, // Always compare to standard, even in tenant comparison mode
     },
-    queryKey: `ListStandardsCompare-${templateId}-${
+    queryKey: `ListStandardsCompare-${
       formControl.watch("compareTenantId") || "standard"
     }-${currentTenant}`,
     enabled: !!templateId, // Only run the query if templateId is available
@@ -128,6 +127,13 @@ const Page = () => {
         // Find the current tenant's data by matching tenantFilter with currentTenant
         const currentTenantObj = tenantData.find((t) => t.tenantFilter === currentTenant);
         const currentTenantData = currentTenantObj ? currentTenantObj.standardsResults || [] : [];
+
+        // Helper function to get template display name from GUID
+        const getTemplateDisplayName = (guid) => {
+          if (!guid) return null;
+          const template = templateDetails.data.find((t) => t.GUID === guid);
+          return template?.displayName || template?.templateName || template?.name || guid;
+        };
 
         const allStandards = [];
         if (selectedTemplate.standards) {
@@ -150,8 +156,8 @@ const Page = () => {
                   templateItem["TemplateList-Tags"].addedFields.templates.forEach(
                     (expandedTemplate) => {
                       console.log("Expanding IntuneTemplate:", expandedTemplate);
-                      const templateId = expandedTemplate.GUID;
-                      const standardId = `standards.IntuneTemplate.${templateId}`;
+                      const itemTemplateId = expandedTemplate.GUID;
+                      const standardId = `standards.IntuneTemplate.${itemTemplateId}`;
                       const standardInfo = standards.find(
                         (s) => s.name === `standards.IntuneTemplate`
                       );
@@ -192,20 +198,33 @@ const Page = () => {
                         "Included Group": templateItem.customGroup || "",
                       };
 
+                      // Check if this standard is overridden by another template
+                      const tenantTemplateId = standardObject?.TemplateId;
+                      const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                      const overridingTemplateName = isOverridden ? getTemplateDisplayName(tenantTemplateId) : null;
+
                       allStandards.push({
                         standardId,
                         standardName: `Intune Template: ${
-                          expandedTemplate.displayName || expandedTemplate.name || templateId
+                          expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
                         } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
                                 Value: directStandardValue,
                                 LastRefresh: standardObject?.LastRefresh,
+                                TemplateId: tenantTemplateId,
                               }
                             : currentTenantStandard?.value,
                         standardValue: templateSettings,
-                        complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                        complianceStatus: isOverridden
+                          ? "Overridden"
+                          : isCompliant
+                          ? "Compliant"
+                          : "Non-Compliant",
+                        isOverridden,
+                        overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                        overridingTemplateName,
                         complianceDetails:
                           standardInfo?.docsDescription || standardInfo?.helpText || "",
                         standardDescription: standardInfo?.helpText || "",
@@ -218,9 +237,9 @@ const Page = () => {
                   );
                 } else {
                   // Regular TemplateList processing
-                  const templateId = templateItem.TemplateList?.value;
-                  if (templateId) {
-                    const standardId = `standards.IntuneTemplate.${templateId}`;
+                  const itemTemplateId = templateItem.TemplateList?.value;
+                  if (itemTemplateId) {
+                    const standardId = `standards.IntuneTemplate.${itemTemplateId}`;
                     const standardInfo = standards.find(
                       (s) => s.name === `standards.IntuneTemplate`
                     );
@@ -251,27 +270,40 @@ const Page = () => {
 
                     // Create a standardValue object that contains the template settings
                     const templateSettings = {
-                      templateId,
+                      templateId: itemTemplateId,
                       Template: templateItem.TemplateList?.label || "Unknown Template",
                       "Assign to": templateItem.AssignTo || "On",
                       "Excluded Group": templateItem.excludeGroup || "",
                       "Included Group": templateItem.customGroup || "",
                     };
 
+                    // Check if this standard is overridden by another template
+                    const tenantTemplateId = standardObject?.TemplateId;
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                    const overridingTemplateName = isOverridden ? getTemplateDisplayName(tenantTemplateId) : null;
+
                     allStandards.push({
                       standardId,
                       standardName: `Intune Template: ${
-                        templateItem.TemplateList?.label || templateId
+                        templateItem.TemplateList?.label || itemTemplateId
                       }`,
                       currentTenantValue:
                         standardObject !== undefined
                           ? {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
+                              TemplateId: tenantTemplateId,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
-                      complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                      complianceStatus: isOverridden
+                        ? "Overridden"
+                        : isCompliant
+                        ? "Compliant"
+                        : "Non-Compliant",
+                      isOverridden,
+                      overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                      overridingTemplateName,
                       complianceDetails:
                         standardInfo?.docsDescription || standardInfo?.helpText || "",
                       standardDescription: standardInfo?.helpText || "",
@@ -306,8 +338,8 @@ const Page = () => {
                   templateItem["TemplateList-Tags"].addedFields.templates.forEach(
                     (expandedTemplate) => {
                       console.log("Expanding ConditionalAccessTemplate:", expandedTemplate);
-                      const templateId = expandedTemplate.GUID;
-                      const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
+                      const itemTemplateId = expandedTemplate.GUID;
+                      const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`;
                       const standardInfo = standards.find(
                         (s) => s.name === `standards.ConditionalAccessTemplate`
                       );
@@ -318,6 +350,11 @@ const Page = () => {
                       );
                       const standardObject = currentTenantObj?.[standardId];
                       const directStandardValue = standardObject?.Value;
+                      const tenantTemplateId = standardObject?.TemplateId;
+                      const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                      const overridingTemplateName = isOverridden
+                        ? getTemplateDisplayName(tenantTemplateId)
+                        : null;
                       let isCompliant = false;
 
                       // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
@@ -329,7 +366,7 @@ const Page = () => {
 
                       // Create a standardValue object that contains the template settings
                       const templateSettings = {
-                        templateId,
+                        templateId: itemTemplateId,
                         Template:
                           expandedTemplate.displayName ||
                           expandedTemplate.name ||
@@ -339,17 +376,22 @@ const Page = () => {
                       allStandards.push({
                         standardId,
                         standardName: `Conditional Access Template: ${
-                          expandedTemplate.displayName || expandedTemplate.name || templateId
+                          expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
                         } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
                                 Value: directStandardValue,
                                 LastRefresh: standardObject?.LastRefresh,
+                                TemplateId: tenantTemplateId,
                               }
                             : currentTenantStandard?.value,
                         standardValue: templateSettings,
-                        complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                        complianceStatus: isOverridden
+                          ? "Overridden"
+                          : isCompliant
+                          ? "Compliant"
+                          : "Non-Compliant",
                         complianceDetails:
                           standardInfo?.docsDescription || standardInfo?.helpText || "",
                         standardDescription: standardInfo?.helpText || "",
@@ -357,14 +399,17 @@ const Page = () => {
                         standardImpactColour: standardInfo?.impactColour || "warning",
                         templateName: selectedTemplate?.templateName || "Standard Template",
                         templateActions: templateItem.action || [],
+                        isOverridden,
+                        overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                        overridingTemplateName,
                       });
                     }
                   );
                 } else {
                   // Regular TemplateList processing
-                  const templateId = templateItem.TemplateList?.value;
-                  if (templateId) {
-                    const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
+                  const itemTemplateId = templateItem.TemplateList?.value;
+                  if (itemTemplateId) {
+                    const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`;
                     const standardInfo = standards.find(
                       (s) => s.name === `standards.ConditionalAccessTemplate`
                     );
@@ -375,6 +420,11 @@ const Page = () => {
                     );
                     const standardObject = currentTenantObj?.[standardId];
                     const directStandardValue = standardObject?.Value;
+                    const tenantTemplateId = standardObject?.TemplateId;
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                    const overridingTemplateName = isOverridden
+                      ? getTemplateDisplayName(tenantTemplateId)
+                      : null;
                     let isCompliant = false;
 
                     // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
@@ -386,24 +436,29 @@ const Page = () => {
 
                     // Create a standardValue object that contains the template settings
                     const templateSettings = {
-                      templateId,
+                      templateId: itemTemplateId,
                       Template: templateItem.TemplateList?.label || "Unknown Template",
                     };
 
                     allStandards.push({
                       standardId,
                       standardName: `Conditional Access Template: ${
-                        templateItem.TemplateList?.label || templateId
+                        templateItem.TemplateList?.label || itemTemplateId
                       }`,
                       currentTenantValue:
                         standardObject !== undefined
                           ? {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
+                              TemplateId: tenantTemplateId,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
-                      complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                      complianceStatus: isOverridden
+                        ? "Overridden"
+                        : isCompliant
+                        ? "Compliant"
+                        : "Non-Compliant",
                       complianceDetails:
                         standardInfo?.docsDescription || standardInfo?.helpText || "",
                       standardDescription: standardInfo?.helpText || "",
@@ -411,6 +466,9 @@ const Page = () => {
                       standardImpactColour: standardInfo?.impactColour || "warning",
                       templateName: selectedTemplate?.templateName || "Standard Template",
                       templateActions: templateItem.action || [],
+                      isOverridden,
+                      overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                      overridingTemplateName,
                     });
                   }
                 }
@@ -428,6 +486,11 @@ const Page = () => {
               );
               const standardObject = currentTenantObj?.[standardId];
               const directStandardValue = standardObject?.Value;
+              const tenantTemplateId = standardObject?.TemplateId;
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+              const overridingTemplateName = isOverridden
+                ? getTemplateDisplayName(tenantTemplateId)
+                : null;
               let isCompliant = false;
 
               // For GroupTemplate, the value is true if compliant
@@ -490,16 +553,24 @@ const Page = () => {
                     ? {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
+                        TemplateId: tenantTemplateId,
                       }
                     : currentTenantStandard?.value,
                 standardValue: templateSettings,
-                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                complianceStatus: isOverridden
+                  ? "Overridden"
+                  : isCompliant
+                  ? "Compliant"
+                  : "Non-Compliant",
                 complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
                 standardDescription: standardInfo?.helpText || "",
                 standardImpact: standardInfo?.impact || "Medium Impact",
                 standardImpactColour: standardInfo?.impactColour || "warning",
                 templateName: selectedTemplate?.templateName || "Standard Template",
                 templateActions: actions,
+                isOverridden,
+                overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                overridingTemplateName,
               });
             } else {
               // Regular handling for other standards
@@ -561,6 +632,13 @@ const Page = () => {
                 ? "Compliant"
                 : "Non-Compliant";
 
+              // Check if this standard is overridden by another template
+              const tenantTemplateId = standardObject?.TemplateId;
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+              const overridingTemplateName = isOverridden
+                ? getTemplateDisplayName(tenantTemplateId)
+                : null;
+
               // Use the direct standard value from the tenant object if it exists
               allStandards.push({
                 standardId,
@@ -570,11 +648,15 @@ const Page = () => {
                     ? {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
+                        TemplateId: tenantTemplateId,
                       }
                     : currentTenantStandard?.value,
                 standardValue: standardSettings,
-                complianceStatus,
+                complianceStatus: isOverridden ? "Overridden" : complianceStatus,
                 reportingDisabled,
+                isOverridden,
+                overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                overridingTemplateName,
                 complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
                 standardDescription: standardInfo?.helpText || "",
                 standardImpact: standardInfo?.impact || "Medium Impact",
@@ -653,6 +735,7 @@ const Page = () => {
           filter === "all" ||
           (filter === "compliant" && standard.complianceStatus === "Compliant") ||
           (filter === "nonCompliant" && standard.complianceStatus === "Non-Compliant") ||
+          (filter === "overridden" && standard.complianceStatus === "Overridden") ||
           (filter === "nonCompliantWithLicense" &&
             standard.complianceStatus === "Non-Compliant" &&
             !hasLicenseMissing) ||
@@ -685,6 +768,8 @@ const Page = () => {
   const reportingDisabledCount =
     comparisonData?.filter((standard) => standard.complianceStatus === "Reporting Disabled")
       .length || 0;
+  const overriddenCount =
+    comparisonData?.filter((standard) => standard.complianceStatus === "Overridden").length || 0;
 
   // Calculate license-related metrics
   const missingLicenseCount =
@@ -1039,6 +1124,7 @@ const Page = () => {
                   {filter === "all" && `All Standards (${allCount})`}
                   {filter === "compliant" && `Compliant (${compliantCount})`}
                   {filter === "nonCompliant" && `Non-Compliant (${nonCompliantCount})`}
+                  {filter === "overridden" && `Overridden (${overriddenCount})`}
                   {filter === "nonCompliantWithLicense" &&
                     `Non-Compliant (License available) (${nonCompliantWithLicenseCount})`}
                   {filter === "nonCompliantWithoutLicense" &&
@@ -1076,6 +1162,15 @@ const Page = () => {
                   }}
                 >
                   Non-Compliant ({nonCompliantCount})
+                </MenuItem>
+                <MenuItem
+                  selected={filter === "overridden"}
+                  onClick={() => {
+                    setFilter("overridden");
+                    setFilterMenuAnchor(null);
+                  }}
+                >
+                  Overridden ({overriddenCount})
                 </MenuItem>
                 <MenuItem
                   selected={filter === "nonCompliantWithLicense"}
@@ -1205,6 +1300,8 @@ const Page = () => {
                                     bgcolor:
                                       standard.complianceStatus === "Compliant"
                                         ? "success.main"
+                                        : standard.complianceStatus === "Overridden"
+                                        ? "warning.main"
                                         : standard.complianceStatus === "Reporting Disabled"
                                         ? "grey.500"
                                         : "error.main",
@@ -1212,6 +1309,8 @@ const Page = () => {
                                 >
                                   {standard.complianceStatus === "Compliant" ? (
                                     <CheckCircle sx={{ color: "white" }} />
+                                  ) : standard.complianceStatus === "Overridden" ? (
+                                    <Info sx={{ color: "white" }} />
                                   ) : standard.complianceStatus === "Reporting Disabled" ? (
                                     <Info sx={{ color: "white" }} />
                                   ) : (
@@ -1391,6 +1490,8 @@ const Page = () => {
                                       backgroundColor:
                                         standard.complianceStatus === "Compliant"
                                           ? "success.main"
+                                          : standard.complianceStatus === "Overridden"
+                                          ? "warning.main"
                                           : standard.complianceStatus === "Reporting Disabled"
                                           ? "grey.500"
                                           : "error.main",
@@ -1442,7 +1543,13 @@ const Page = () => {
                                   </Alert>
                                 ) : (
                                   <>
-                                    {standard.complianceStatus === "Compliant" ? (
+                                    {standard.complianceStatus === "Overridden" ? (
+                                      <Alert severity="warning" sx={{ mb: 2 }}>
+                                        This setting is configured by template:{" "}
+                                        {standard.overridingTemplateName ||
+                                          standard.overridingTemplateId}
+                                      </Alert>
+                                    ) : standard.complianceStatus === "Compliant" ? (
                                       <Alert severity="success" sx={{ mb: 2 }}>
                                         This setting is configured correctly
                                       </Alert>
@@ -1558,6 +1665,8 @@ const Page = () => {
                                   color:
                                     standard.complianceStatus === "Compliant"
                                       ? "success.main"
+                                      : standard.complianceStatus === "Overridden"
+                                      ? "warning.main"
                                       : standard.complianceStatus === "Reporting Disabled"
                                       ? "text.secondary"
                                       : "error.main",
@@ -1571,6 +1680,12 @@ const Page = () => {
                                   <Alert severity="info" sx={{ mt: 1 }}>
                                     Reporting is disabled for this standard in the template
                                     configuration.
+                                  </Alert>
+                                ) : standard.complianceStatus === "Overridden" ? (
+                                  <Alert severity="warning" sx={{ mt: 1 }}>
+                                    This setting is configured by template:{" "}
+                                    {standard.overridingTemplateName ||
+                                      standard.overridingTemplateId}
                                   </Alert>
                                 ) : standard.complianceStatus === "Compliant" ? (
                                   <Alert severity="success" sx={{ mt: 1 }}>
