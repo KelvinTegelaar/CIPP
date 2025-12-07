@@ -247,7 +247,7 @@ const Page = () => {
                             return label === "Report" || label === "report";
                           });
                           if (hasRemediate && !hasReport) {
-                            return ["Report", ...actions];
+                            return [...actions, "Report"];
                           }
                           return actions;
                         })(),
@@ -343,7 +343,7 @@ const Page = () => {
                           return label === "Report" || label === "report";
                         });
                         if (hasRemediate && !hasReport) {
-                          return ["Report", ...actions];
+                          return [...actions, "Report"];
                         }
                         return actions;
                       })(),
@@ -446,7 +446,7 @@ const Page = () => {
                             return label === "Report" || label === "report";
                           });
                           if (hasRemediate && !hasReport) {
-                            return ["Report", ...actions];
+                            return [...actions, "Report"];
                           }
                           return actions;
                         })(),
@@ -528,7 +528,7 @@ const Page = () => {
                           return label === "Report" || label === "report";
                         });
                         if (hasRemediate && !hasReport) {
-                          return ["Report", ...actions];
+                          return [...actions, "Report"];
                         }
                         return actions;
                       })(),
@@ -644,7 +644,7 @@ const Page = () => {
                     return label === "Report" || label === "report";
                   });
                   if (hasRemediate && !hasReport) {
-                    return ["Report", ...actions];
+                    return [...actions, "Report"];
                   }
                   return actions;
                 })(),
