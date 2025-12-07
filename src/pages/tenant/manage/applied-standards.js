@@ -34,6 +34,7 @@ import {
   Assignment,
   NotificationImportant,
   Construction,
+  Schedule,
 } from "@mui/icons-material";
 import standards from "/src/data/standards.json";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
@@ -909,12 +910,16 @@ const Page = () => {
 
   const compliancePercentage =
     allCount > 0
-      ? Math.round((compliantCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100)
+      ? Math.round(
+          (compliantCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100
+        )
       : 0;
 
   const missingLicensePercentage =
     allCount > 0
-      ? Math.round((missingLicenseCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100)
+      ? Math.round(
+          (missingLicenseCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100
+        )
       : 0;
 
   // Combined score: compliance percentage + missing license percentage
@@ -1173,6 +1178,19 @@ const Page = () => {
             </Stack>
             {selectedTemplate && (
               <Stack direction="row" spacing={1} sx={{ mt: 2, displayPrint: "none" }}>
+                {selectedTemplate?.runManually && (
+                  <Chip
+                    label="Run Manually"
+                    size="small"
+                    color="warning"
+                    variant="outlined"
+                    icon={
+                      <SvgIcon fontSize="small">
+                        <Schedule />
+                      </SvgIcon>
+                    }
+                  />
+                )}
                 <Chip
                   icon={
                     <SvgIcon fontSize="small">
