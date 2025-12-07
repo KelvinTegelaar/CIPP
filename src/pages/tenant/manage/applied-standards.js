@@ -251,7 +251,10 @@ const Page = () => {
                           }
                           return actions;
                         })(),
-                        autoRemediate: templateItem.autoRemediate || false,
+                        autoRemediate:
+                          templateItem.autoRemediate ||
+                          templateItem.TemplateList?.autoRemediate ||
+                          false,
                       });
                     }
                   );
@@ -333,7 +336,8 @@ const Page = () => {
                       standardImpactColour: standardInfo?.impactColour || "warning",
                       templateName: selectedTemplate?.templateName || "Standard Template",
                       templateActions: (() => {
-                        const actions = templateItem.action || [];
+                        const actions =
+                          templateItem.action || templateItem.TemplateList?.action || [];
                         const hasRemediate = actions.some((a) => {
                           const label = typeof a === "object" ? a?.label || a?.value : a;
                           return label === "Remediate" || label === "remediate";
@@ -347,7 +351,10 @@ const Page = () => {
                         }
                         return actions;
                       })(),
-                      autoRemediate: templateItem.autoRemediate || false,
+                      autoRemediate:
+                        templateItem.autoRemediate ||
+                        templateItem.TemplateList?.autoRemediate ||
+                        false,
                     });
                   }
                 }
@@ -450,7 +457,10 @@ const Page = () => {
                           }
                           return actions;
                         })(),
-                        autoRemediate: templateItem.autoRemediate || false,
+                        autoRemediate:
+                          templateItem.autoRemediate ||
+                          templateItem.TemplateList?.autoRemediate ||
+                          false,
                         isOverridden,
                         overridingTemplateId: isOverridden ? tenantTemplateId : null,
                         overridingTemplateName,
@@ -518,7 +528,8 @@ const Page = () => {
                       standardImpactColour: standardInfo?.impactColour || "warning",
                       templateName: selectedTemplate?.templateName || "Standard Template",
                       templateActions: (() => {
-                        const actions = templateItem.action || [];
+                        const actions =
+                          templateItem.action || templateItem.TemplateList?.action || [];
                         const hasRemediate = actions.some((a) => {
                           const label = typeof a === "object" ? a?.label || a?.value : a;
                           return label === "Remediate" || label === "remediate";
@@ -532,7 +543,10 @@ const Page = () => {
                         }
                         return actions;
                       })(),
-                      autoRemediate: templateItem.autoRemediate || false,
+                      autoRemediate:
+                        templateItem.autoRemediate ||
+                        templateItem.TemplateList?.autoRemediate ||
+                        false,
                       isOverridden,
                       overridingTemplateId: isOverridden ? tenantTemplateId : null,
                       overridingTemplateName,
@@ -895,12 +909,12 @@ const Page = () => {
 
   const compliancePercentage =
     allCount > 0
-      ? Math.round((compliantCount / (allCount - reportingDisabledCount || 1)) * 100)
+      ? Math.round((compliantCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100)
       : 0;
 
   const missingLicensePercentage =
     allCount > 0
-      ? Math.round((missingLicenseCount / (allCount - reportingDisabledCount || 1)) * 100)
+      ? Math.round((missingLicenseCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100)
       : 0;
 
   // Combined score: compliance percentage + missing license percentage
