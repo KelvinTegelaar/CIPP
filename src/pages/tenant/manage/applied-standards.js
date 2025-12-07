@@ -986,86 +986,14 @@ const Page = () => {
         </Stack>
       ),
     },
-    // Add compliance badges when template data is available (show even if no comparison data yet)
-    ...(selectedTemplate
-      ? [
-          {
-            component: (
-              <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-                <Chip
-                  icon={
-                    <SvgIcon fontSize="small">
-                      <FactCheck />
-                    </SvgIcon>
-                  }
-                  label={`${compliancePercentage}% Compliant`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    compliancePercentage === 100
-                      ? "success"
-                      : compliancePercentage >= 50
-                      ? "warning"
-                      : "error"
-                  }
-                />
-                <Chip
-                  label={`${missingLicensePercentage}% Missing Required License`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    missingLicensePercentage === 0
-                      ? "success"
-                      : missingLicensePercentage <= 25
-                      ? "warning"
-                      : "error"
-                  }
-                />
-                <Chip
-                  label={`${combinedScore}% Combined Score`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
-                  }
-                />
-              </Stack>
-            ),
-          },
-        ]
-      : []),
-    // Add description if available
-    ...(selectedTemplate?.description
-      ? [
-          {
-            component: (
-              <Box
-                sx={{
-                  "& a": {
-                    color: (theme) => theme.palette.primary.main,
-                    textDecoration: "underline",
-                  },
-                  color: "text.secondary",
-                  fontSize: "0.875rem",
-                  "& p": {
-                    my: 0,
-                  },
-                  mt: 1,
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(selectedTemplate.description),
-                }}
-              />
-            ),
-          },
-        ]
-      : []),
   ];
 
   // Actions for the header
   const actions = [
     ...createDriftManagementActions({
       templateId,
+      templateType: selectedTemplate?.type || "classic",
+      showEditTemplate: true,
       onRefresh: () => {
         comparisonApi.refetch();
         templateDetails.refetch();
@@ -1169,12 +1097,13 @@ const Page = () => {
               spacing={2}
               sx={{
                 alignItems: { xs: "flex-start", sm: "center" },
+                justifyContent: "space-between",
                 displayPrint: "none", // Hide filters in print view
                 flexShrink: 0,
                 mt: 2,
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
+              <Stack direction="row" alignItems="center" spacing={1}>
                 <TextField
                   size="small"
                   variant="filled"
@@ -1227,67 +1156,108 @@ const Page = () => {
                     `Non-Compliant (License not available) (${nonCompliantWithoutLicenseCount})`}
                 </Button>
               </ButtonGroup>
-              <Menu
-                anchorEl={filterMenuAnchor}
-                open={Boolean(filterMenuAnchor)}
-                onClose={() => setFilterMenuAnchor(null)}
-              >
-                <MenuItem
-                  selected={filter === "all"}
-                  onClick={() => {
-                    setFilter("all");
-                    setFilterMenuAnchor(null);
-                  }}
-                >
-                  All ({allCount})
-                </MenuItem>
-                <MenuItem
-                  selected={filter === "compliant"}
-                  onClick={() => {
-                    setFilter("compliant");
-                    setFilterMenuAnchor(null);
-                  }}
-                >
-                  Compliant ({compliantCount})
-                </MenuItem>
-                <MenuItem
-                  selected={filter === "nonCompliant"}
-                  onClick={() => {
-                    setFilter("nonCompliant");
-                    setFilterMenuAnchor(null);
-                  }}
-                >
-                  Non-Compliant ({nonCompliantCount})
-                </MenuItem>
-                <MenuItem
-                  selected={filter === "overridden"}
-                  onClick={() => {
-                    setFilter("overridden");
-                    setFilterMenuAnchor(null);
-                  }}
-                >
-                  Overridden ({overriddenCount})
-                </MenuItem>
-                <MenuItem
-                  selected={filter === "nonCompliantWithLicense"}
-                  onClick={() => {
-                    setFilter("nonCompliantWithLicense");
-                    setFilterMenuAnchor(null);
-                  }}
-                >
-                  Non-Compliant (License available) ({nonCompliantWithLicenseCount})
-                </MenuItem>
-                <MenuItem
-                  selected={filter === "nonCompliantWithoutLicense"}
-                  onClick={() => {
-                    setFilter("nonCompliantWithoutLicense");
-                    setFilterMenuAnchor(null);
-                  }}
-                >
-                  Non-Compliant (License not available) ({nonCompliantWithoutLicenseCount})
-                </MenuItem>
-              </Menu>
             </Stack>
+            {selectedTemplate && (
+              <Stack direction="row" spacing={1} sx={{ mt: 2, displayPrint: "none" }}>
+                <Chip
+                  icon={
+                    <SvgIcon fontSize="small">
+                      <FactCheck />
+                    </SvgIcon>
+                  }
+                  label={`${compliancePercentage}% Compliant`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    compliancePercentage === 100
+                      ? "success"
+                      : compliancePercentage >= 50
+                      ? "warning"
+                      : "error"
+                  }
+                />
+                <Chip
+                  label={`${missingLicensePercentage}% Missing License`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    missingLicensePercentage === 0
+                      ? "success"
+                      : missingLicensePercentage <= 25
+                      ? "warning"
+                      : "error"
+                  }
+                />
+                <Chip
+                  label={`${combinedScore}% Combined`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
+                  }
+                />
+              </Stack>
+            )}
+            <Menu
+              anchorEl={filterMenuAnchor}
+              open={Boolean(filterMenuAnchor)}
+              onClose={() => setFilterMenuAnchor(null)}
+            >
+              <MenuItem
+                selected={filter === "all"}
+                onClick={() => {
+                  setFilter("all");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                All ({allCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "compliant"}
+                onClick={() => {
+                  setFilter("compliant");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Compliant ({compliantCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "nonCompliant"}
+                onClick={() => {
+                  setFilter("nonCompliant");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Non-Compliant ({nonCompliantCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "overridden"}
+                onClick={() => {
+                  setFilter("overridden");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Overridden ({overriddenCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "nonCompliantWithLicense"}
+                onClick={() => {
+                  setFilter("nonCompliantWithLicense");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Non-Compliant (License available) ({nonCompliantWithLicenseCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "nonCompliantWithoutLicense"}
+                onClick={() => {
+                  setFilter("nonCompliantWithoutLicense");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Non-Compliant (License not available) ({nonCompliantWithoutLicenseCount})
+              </MenuItem>
+            </Menu>
             <Box
               sx={{
                 flex: 1,
