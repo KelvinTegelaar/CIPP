@@ -31,6 +31,9 @@ import {
   FactCheck,
   Policy,
   ArrowDropDown,
+  Assignment,
+  NotificationImportant,
+  Construction,
 } from "@mui/icons-material";
 import standards from "/src/data/standards.json";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
@@ -201,7 +204,9 @@ const Page = () => {
                       // Check if this standard is overridden by another template
                       const tenantTemplateId = standardObject?.TemplateId;
                       const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
-                      const overridingTemplateName = isOverridden ? getTemplateDisplayName(tenantTemplateId) : null;
+                      const overridingTemplateName = isOverridden
+                        ? getTemplateDisplayName(tenantTemplateId)
+                        : null;
 
                       allStandards.push({
                         standardId,
@@ -231,7 +236,22 @@ const Page = () => {
                         standardImpact: standardInfo?.impact || "Medium Impact",
                         standardImpactColour: standardInfo?.impactColour || "warning",
                         templateName: selectedTemplate?.templateName || "Standard Template",
-                        templateActions: templateItem.action || [],
+                        templateActions: (() => {
+                          const actions = templateItem.action || [];
+                          const hasRemediate = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Remediate" || label === "remediate";
+                          });
+                          const hasReport = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Report" || label === "report";
+                          });
+                          if (hasRemediate && !hasReport) {
+                            return ["Report", ...actions];
+                          }
+                          return actions;
+                        })(),
+                        autoRemediate: templateItem.autoRemediate || false,
                       });
                     }
                   );
@@ -280,7 +300,9 @@ const Page = () => {
                     // Check if this standard is overridden by another template
                     const tenantTemplateId = standardObject?.TemplateId;
                     const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
-                    const overridingTemplateName = isOverridden ? getTemplateDisplayName(tenantTemplateId) : null;
+                    const overridingTemplateName = isOverridden
+                      ? getTemplateDisplayName(tenantTemplateId)
+                      : null;
 
                     allStandards.push({
                       standardId,
@@ -310,7 +332,22 @@ const Page = () => {
                       standardImpact: standardInfo?.impact || "Medium Impact",
                       standardImpactColour: standardInfo?.impactColour || "warning",
                       templateName: selectedTemplate?.templateName || "Standard Template",
-                      templateActions: templateItem.action || [],
+                      templateActions: (() => {
+                        const actions = templateItem.action || [];
+                        const hasRemediate = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Remediate" || label === "remediate";
+                        });
+                        const hasReport = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Report" || label === "report";
+                        });
+                        if (hasRemediate && !hasReport) {
+                          return ["Report", ...actions];
+                        }
+                        return actions;
+                      })(),
+                      autoRemediate: templateItem.autoRemediate || false,
                     });
                   }
                 }
@@ -398,7 +435,22 @@ const Page = () => {
                         standardImpact: standardInfo?.impact || "Medium Impact",
                         standardImpactColour: standardInfo?.impactColour || "warning",
                         templateName: selectedTemplate?.templateName || "Standard Template",
-                        templateActions: templateItem.action || [],
+                        templateActions: (() => {
+                          const actions = templateItem.action || [];
+                          const hasRemediate = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Remediate" || label === "remediate";
+                          });
+                          const hasReport = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Report" || label === "report";
+                          });
+                          if (hasRemediate && !hasReport) {
+                            return ["Report", ...actions];
+                          }
+                          return actions;
+                        })(),
+                        autoRemediate: templateItem.autoRemediate || false,
                         isOverridden,
                         overridingTemplateId: isOverridden ? tenantTemplateId : null,
                         overridingTemplateName,
@@ -465,7 +517,22 @@ const Page = () => {
                       standardImpact: standardInfo?.impact || "Medium Impact",
                       standardImpactColour: standardInfo?.impactColour || "warning",
                       templateName: selectedTemplate?.templateName || "Standard Template",
-                      templateActions: templateItem.action || [],
+                      templateActions: (() => {
+                        const actions = templateItem.action || [];
+                        const hasRemediate = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Remediate" || label === "remediate";
+                        });
+                        const hasReport = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Report" || label === "report";
+                        });
+                        if (hasRemediate && !hasReport) {
+                          return ["Report", ...actions];
+                        }
+                        return actions;
+                      })(),
+                      autoRemediate: templateItem.autoRemediate || false,
                       isOverridden,
                       overridingTemplateId: isOverridden ? tenantTemplateId : null,
                       overridingTemplateName,
@@ -567,7 +634,21 @@ const Page = () => {
                 standardImpact: standardInfo?.impact || "Medium Impact",
                 standardImpactColour: standardInfo?.impactColour || "warning",
                 templateName: selectedTemplate?.templateName || "Standard Template",
-                templateActions: actions,
+                templateActions: (() => {
+                  const hasRemediate = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Remediate" || label === "remediate";
+                  });
+                  const hasReport = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Report" || label === "report";
+                  });
+                  if (hasRemediate && !hasReport) {
+                    return ["Report", ...actions];
+                  }
+                  return actions;
+                })(),
+                autoRemediate: standardConfig.autoRemediate || false,
                 isOverridden,
                 overridingTemplateId: isOverridden ? tenantTemplateId : null,
                 overridingTemplateName,
@@ -662,7 +743,22 @@ const Page = () => {
                 standardImpact: standardInfo?.impact || "Medium Impact",
                 standardImpactColour: standardInfo?.impactColour || "warning",
                 templateName: selectedTemplate.templateName || "Standard Template",
-                templateActions: standardConfig.action || [],
+                templateActions: (() => {
+                  const actions = standardConfig.action || [];
+                  const hasRemediate = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Remediate" || label === "remediate";
+                  });
+                  const hasReport = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Report" || label === "report";
+                  });
+                  if (hasRemediate && !hasReport) {
+                    return [...actions, "Report"];
+                  }
+                  return actions;
+                })(),
+                autoRemediate: standardConfig.autoRemediate || false,
               });
             }
           });
@@ -1328,14 +1424,60 @@ const Page = () => {
                                   >
                                     {standard?.standardName}
                                   </Typography>
-                                  <Box>
-                                    <Chip
-                                      label="Standard"
-                                      size="small"
-                                      color="info"
-                                      variant="outlined"
-                                      sx={{ mt: 1, px: 2 }}
-                                    />
+                                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
+                                    {standard?.templateActions &&
+                                    standard.templateActions.length > 0 ? (
+                                      <>
+                                        {standard.templateActions.map((action, idx) => {
+                                          const actionLabel =
+                                            typeof action === "object"
+                                              ? action?.label || action?.value || "Unknown"
+                                              : action;
+                                          const actionValue =
+                                            typeof action === "object" ? action?.value : action;
+                                          const isRemediate =
+                                            actionLabel === "Remediate" ||
+                                            actionLabel === "remediate";
+
+                                          return (
+                                            <Chip
+                                              key={idx}
+                                              label={actionLabel}
+                                              size="small"
+                                              color={isRemediate ? "success" : "primary"}
+                                              variant="outlined"
+                                              icon={
+                                                <SvgIcon>
+                                                  {actionValue === "Report" && <Assignment />}
+                                                  {actionValue === "warn" && (
+                                                    <NotificationImportant />
+                                                  )}
+                                                  {actionValue === "Remediate" && <Construction />}
+                                                </SvgIcon>
+                                              }
+                                            />
+                                          );
+                                        })}
+                                        {standard?.autoRemediate && (
+                                          <Chip
+                                            label="Auto-Remediate"
+                                            size="small"
+                                            color="success"
+                                            variant="outlined"
+                                            sx={{ px: 1 }}
+                                            icon={<Construction />}
+                                          />
+                                        )}
+                                      </>
+                                    ) : (
+                                      <Chip
+                                        label="Standard"
+                                        size="small"
+                                        color="info"
+                                        variant="outlined"
+                                        sx={{ px: 2 }}
+                                      />
+                                    )}
                                   </Box>
                                 </Stack>
                               </Stack>
