@@ -9,11 +9,11 @@ Contributions to CIPP are welcome by everyone. There's a couple of things to kee
 
 When contributing, or planning to contribute, please create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues).
 
-* If you are fixing a bug, file a complete bug report and assign it to yourself. You can do this by commenting "I would like to work on this please" on the issue.
-* If you are adding a feature, please add "Feature Request" to the title and assign it to yourself. You can do this by commenting "I would like to work on this please" on the issue.
+* If you are fixing a bug, file a complete bug report and assign it to yourself. You can do this by commenting "I would like to work on this please!" on the issue.
+* If you are adding a feature, please add "Feature Request" to the title and assign it to yourself. You can do this by commenting "I would like to work on this please!" on the issue.
 
 {% hint style="info" %}
-Assigning Yourself an Issue You can assign yourself an issue on GitHub by creating a comment that says `I would like to work on this please!`. You must enter that text verbatim!
+Assigning Yourself an Issue: You can assign yourself an issue on GitHub by creating a comment that says `I would like to work on this please!`. You must enter that text verbatim!
 {% endhint %}
 
 ### Pull Requests
@@ -34,7 +34,7 @@ We follow a naming standard, as based on the name a user might get access to an 
 
 * Make a clone of your forked repository.
 * Optional: mark this repository as private.
-* Add the following GitHub action, this synchronises the repositories every hour:
+* Add the following GitHub action, this synchronizes the repositories every hour:
 
 ```yaml
 name: Pull from master schedule
@@ -60,4 +60,4 @@ jobs:
 * Go to settings of the repository.
 * Select add secret.
 * Name the secret "PAT"
-* Enter the value: a self created [personal access token](https://github.com/settings/tokens).
+* Enter the value: a self-created [personal access token](https://github.com/settings/tokens).

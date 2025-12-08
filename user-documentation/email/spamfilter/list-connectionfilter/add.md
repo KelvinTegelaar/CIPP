@@ -1,8 +1,6 @@
 # Deploy Connection Filter
 
-
-
-{% include "../../../../.gitbook/includes/needs-content-incomplete-page.md" %}
+This page allows you to deploy a connection filter template or raw JSON to selected tenant(s) or All Tenants.
 
 ***
 

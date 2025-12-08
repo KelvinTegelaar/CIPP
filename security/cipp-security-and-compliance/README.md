@@ -21,7 +21,7 @@ CIPP was built with a security-first approach. Each CIPP instance is hosted in i
 * **Encrypted Communication via Azure Static Web Apps:** All data interactions are routed through Azure Static Web Apps, providing secure, encrypted connections between services
 * **Data Privacy:** Your data is never sold or shared. Period.
 
-### Logging and controls
+### Logging and Controls
 
 Data is hosted in the CyberDrain B.V. (Chamber of Commerce number 86594893) Azure Tenant. Sponsors hosted by CyberDrain can receive the following technical compliance information:
 

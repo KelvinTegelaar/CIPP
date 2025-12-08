@@ -1,13 +1,13 @@
 ---
 description: >-
-  The Add User page provides an interface for creating new user accounts in your
-  tenant.
+  The Add User wizard provides an interface for creating new user accounts in
+  your tenant.
 ---
 
 # Add User
 
 {% hint style="info" %}
-This page will allow you to set all of the necessary properties to create a single new user. You can start with a blank slate or select to copy properties from another user in the top dropdown to speed up account creation.
+This wizard will allow you to set all of the necessary properties to create a single new user. You can start with a blank slate or select to copy properties from another user in the top dropdown to speed up account creation.
 {% endhint %}
 
 ## Getting Started
@@ -17,9 +17,10 @@ This page will allow you to set all of the necessary properties to create a sing
 3. Choose your starting point:
    * Start with blank form
    * Use "Copy properties from another user" dropdown to pre-fill fields
+   * Use a User Template
 
 {% hint style="info" %}
-When using the **Copy properties from another user** dropdown, the specific fields that get copied are: `givenName`, `surname`, `jobTitle`, `department`, `streetAddress`, `postalCode`, `companyName`, `mobilePhone`, `businessPhones`, `usageLocation`
+When using the **Copy properties from another user** dropdown, the specific fields that get copied are: `id`, `userPrincipalName`, `displayName`, `givenName`, `surname`, `mailNickname`, `jobTitle`, `department`, `streetAddress`, `city`, `state`, `postalCode`, `companyName`, `mobilePhone`, `businessPhones`, `usageLocation`, `office`
 {% endhint %}
 
 ## Available Settings
@@ -46,13 +47,13 @@ When using the **Copy properties from another user** dropdown, the specific fiel
 2. **SherWeb Integration** (if enabled): Auto-purchase option appears when licenses unavailable, allows you to select license SKU for purchase for system to handle for you along with onboarding.
 
 {% hint style="info" %}
-When [SherWeb integration](../../../cipp/integrations/sherweb.md) is enabled and a license shows "(0 available)", you'll see an alert stating: "_This will Purchase a new Sherweb License for the user, according to the terms and conditions with Sherweb. When the license becomes available, CIPP will assign the license to this user."_
+When the [sherweb.md](../../../cipp/integrations/sherweb.md "mention")integration is enabled and a license shows "(0 available)", you'll see an alert stating: "_This will Purchase a new Sherweb License for the user, according to the terms and conditions with Sherweb. When the license becomes available, CIPP will assign the license to this user."_
 {% endhint %}
 
 ### Contact Information
 
 1. **Professional Details:** `Job Title`, `Department`, `Company Name`
-2. **Contact Details:** `Street Address`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
+2. **Contact Details:** `Street Address`, `City`, `State/Province`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
 3. **Management:** `Set Manager` (select from existing users), `Copy groups from another user`
 4. **Custom Attributes**
    * Custom attributes can be configured in **Preferences > General Settings**

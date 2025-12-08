@@ -5,14 +5,14 @@ description: Installing Your Self-Hosted CIPP
 # Installation
 
 {% hint style="info" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to our [Sponsor Quick Start](https://docs.cipp.app/setup/resources/sponsor-quick-start) guide for further direction.
+If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps and jump over to our [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.
 {% endhint %}
 
 This guide walks you through deploying your **self-hosted** instance of CIPP using our Azure Resource Manager (ARM) templates. Once completed, you’ll have a fully functioning CIPP installation, ready to configure.
 
 ## Confirm You’ve Met All Prerequisites
 
-Before deploying, ensure you’ve completed everything in the [Prerequisites](https://docs.cipp.app/setup/self-hosting-guide/index) section (forks, Azure subscription, GitHub PAT, etc.).
+Before deploying, ensure you’ve completed everything in the [index.md](index.md "mention") section (forks, Azure subscription, GitHub PAT, etc.).
 
 ***
 
@@ -25,15 +25,16 @@ Before deploying, ensure you’ve completed everything in the [Prerequisites](ht
 **When to use**:
 
 * Your Azure region supports [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/) (SWA).
-* You want SWA to deploy automatically to the closest supported data center.
 
-This template creates all necessary resources in your local region, including:
+This template creates all necessary resources in your selected region, including:
 
 * **Azure Function App** (API) with a **Storage Account**
 * **Azure Key Vault** for CIPP secrets
 * **Azure Static Web App** (SWA) that auto-selects a supported region near you
 
-After you have completed the prerequisites in, select the button below to run the automated setup.
+Performance is impacted by your region selection. Make sure you choose the region closest to you for optimal performance.&#x20;
+
+After you have completed the prerequisites in, select the button below to run the automated setup.&#x20;
 
 [![](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate.json)
 
@@ -49,7 +50,7 @@ You **must replace** the preset "Github Repository" and "Github API Repository" 
 {% step %}
 #### Alternative (Central US) Deployment
 
-Azure Static Web Apps (SWA) is global by default (it picks the data center closest to you) however some regions don't support deployment. To work around this use the alternative installation button below.
+Azure Static Web Apps (SWA) is global by default (it picks the data center closest to you) however some regions don't support deployment. To work around this, use the alternative installation button below.
 
 **When to use**:
 

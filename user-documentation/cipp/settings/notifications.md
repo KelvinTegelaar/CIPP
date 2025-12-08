@@ -8,10 +8,12 @@ Configure notifications from CIPP.
 
 CIPP provides alert notifications for Tenants and CIPP actions, sent as one combined table in an email or webhook body.
 
-* [Tenant Alerts](../../security/incidents/list-incidents-1.md) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
+* [alert-configuration](../../tenant/administration/alert-configuration/ "mention") creates notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
 * CIPP Alerts relate to changes initiated via the CIPP platform.
 
 ### Available CIPP Alerts
+
+Under the "Choose which logs you would like to receive alerts from" you will be able to select what you would like to receive alerts from CIPP actions. A sample of the alerts is listed below:
 
 * New Accounts created via CIPP
 * Removed Accounts via CIPP
@@ -25,9 +27,15 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 
 #### E-mail
 
-Enter a many email addresses as you need, separated by a comma.
+Enter as many email addresses as you need, separated by a comma.
 
-Email will be sent from the service account used for the SAM Wizard. The service account must have a mailbox available. This can be accomplished by either assigning a license with Exchange to the service account permanently or temporarily and converting the service account's mailbox to a shared mailbox. If you do not have a mailbox available on the account the log will state we could not send out the notifications.
+Email will be sent from the service account used for the Setup Wizard.&#x20;
+
+{% hint style="warning" %}
+The service account must have a mailbox available. This can be accomplished by either assigning a license with Exchange to the service account permanently or temporarily and converting the service account's mailbox to a shared mailbox. If you do not have a mailbox available on the account, the log will state we could not send out the notifications.
+
+If you have already completed the Setup Wizard prior to converting the service account to a shared mailbox you will want to rerun the Setup Wizard using the option "Refresh Tokens for existing application registration".
+{% endhint %}
 
 {% hint style="info" %}
 Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder.
@@ -42,11 +50,22 @@ Enter a webhook URL. Data is formatted based on the receiving server:
 | _webhook.office.com_ | A basic HTML formatted table.                         |
 | _slack.com_          | A separate markdown-formatted message for each alert. |
 | _discord.com_        | A basic HTML formatted table.                         |
-| All other services   | JSON array of data values.                            |
+| All other services   | JSON array of data values. Method is `POST`           |
 
 {% hint style="info" %}
-Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler_CIPPNotifications).
+Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API](https://github.com/KelvinTegelaar/CIPP-API/tree/dev).
 {% endhint %}
+
+### Notification Setting Options
+
+| Setting                                         | Description                                                                         |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Receive one email per tenant                    | Toggling on this option will separate emailed alerts by tenant                      |
+| Send notifications to configured integration(s) | This will enable notifications to be sent to the integration(s) you have configured |
+
+### Send Test Alert
+
+You are able to select to send a test alert. Select which options you want to include in your test before clicking `Confirm`.
 
 ***
 

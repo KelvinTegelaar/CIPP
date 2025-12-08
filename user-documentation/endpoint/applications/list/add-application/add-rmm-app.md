@@ -46,12 +46,9 @@ Huntress documentation on specifics of how to name organization keys can be foun
 
 ### ImmyBot
 
-| Field                           | Description                                           |
-| ------------------------------- | ----------------------------------------------------- |
-| Intune Application Display Name | Name the application will appear as in MEM            |
-| Client URL                      | Full path to ImmyBot agent installer for your account |
-
-ImmyBot recommends having all newly installed agents land into their holding area before being assigned to groups for onboarding, etc.
+{% hint style="warning" %}
+ImmyBot was removed from our list of deployable applications. Please see [ImmyBot documentation](https://docs.immy.bot/) for supported deployment methods.
+{% endhint %}
 
 ### Syncro RMM
 

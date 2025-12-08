@@ -39,7 +39,7 @@ By the end of the session, you’ll:
 3. Identify and resolve **common performance issues** related to region selection.
 4. Use the **CIPP management portal** for user role assignments and permissions.
 5. Implement **best practices** for inviting and managing additional users.
-6. Gain familiarity with the **SAM wizard** and GDAP setup process.
+6. Gain familiarity with the Setup **Wizard** and GDAP setup process.
 7. Complete a full **GDAP setup for one client** within CIPP.
 
 {% hint style="warning" %}

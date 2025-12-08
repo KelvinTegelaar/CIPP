@@ -1,8 +1,3 @@
----
-hidden: true
-noRobotsIndex: true
----
-
 # Creating the CIPP Service Account
 
 ## Setup Video for the CIPP Service Account
@@ -16,15 +11,8 @@ noRobotsIndex: true
 
 ### Administration Requirements
 
-1. **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
+1. **Must be a Global Administrator while setting up the integration.** These permissions must be removed after the integration has been setup, and the application has been installed.
 2. **Must be added to the AdminAgents group.** This group is required for connection to the Microsoft Partner API.
-
-### GDAP Group Requirements
-
-1. **Recommended Roles:** When going through the invite process in CIPP, these groups will be automatically created. If you performed the migration with CIPP, these groups will start with `M365 GDAP`.
-   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](../gdap/recommended-roles.md "mention")
-2. **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality.
-   1. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
 
 ### Multi-factor Authentication
 
@@ -40,7 +28,11 @@ noRobotsIndex: true
 
 This guide walks you through the process from the video of setting up the CIPP Service Account. Follow the instructions on this page to the letter to ensure a seamless setup process down the line.
 
+The CIPP service account will be the account used to execute any actions on your tenants via CIPP.&#x20;
+
 To get started, head to the Microsoft Entra Portal's user overview at [entra.microsoft.com](https://entra.microsoft.com/)
+
+**If you would like to use notifications, webhook triggers, or exporting to other system the account you use must have a mailbox available. This mailbox will be used for outgoing reports, exports, and notifications.**&#x20;
 
 1. Click on the "New user" button.
 
@@ -50,13 +42,17 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FsTTkLSePkCmuzgTg9nFYvJ_doc.png?alt=media\&token=2017aff5-ecc2-4030-ba90-9b955a14ec97\&time=Fri%20Jul%2026%202024%2021:57:44%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
-3. Enter a username in the field, we recommend something identifiable like "CIPP Service Account"
+3. Enter a username in the field, we recommend something identifiable like "CIPPServiceAccount"
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2Fmp4FiwSvkpKyfKgcbQ3Ac9_doc.png?alt=media\&token=eda4079d-869a-40bd-8a0f-2c436806be3e\&time=Fri%20Jul%2026%202024%2021:57:46%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
 4. Enter "CIPP Service Account" in the Display Name field. Set the password to something strong, and save this password in a secure location
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FhLEJyFsy7Dxs69tcJkYt4p_doc.png?alt=media\&token=216ec97e-b904-4dcb-8a4c-1f359ae5fc91\&time=Fri%20Jul%2026%202024%2021:57:47%20GMT-0400%20\(Eastern%20Daylight%20Time\))
+
+{% hint style="info" %}
+It is recommended to use these values since the Permissions Check in [permissions.md](../../user-documentation/cipp/settings/permissions.md "mention") will look to ensure "CIPP" or "Service" exists in the Display Name or User Principal Name of the account. The permisisons check is a often used tool when troubleshooting CIPP errors.
+{% endhint %}
 
 5. Click on "Next: Properties".
 
@@ -76,7 +72,15 @@ To get started, head to the Microsoft Entra Portal's user overview at [entra.mic
 
 9. Select your GDAP groups
 
-If you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`, For the latest required GDAP roles check our [recommended-roles.md](../gdap/recommended-roles.md "mention") page.
+_**If**_ you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP.`If you have migrated, but not using CIPP check the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
+
+If you have not migrated or used GDAP at all, **or** are planning to onboard your GDAP tenants using CIPP, continue on.
+
+{% hint style="warning" %}
+These groups might not exist if you have not yet migrated to GDAP.&#x20;
+
+If you want to move to using CIPP and Microsoft's best practice recommendation of mapping one role to one security group, you can skip this step for now. CIPP will create the groups when you first setup adding your client tenants in [Adding Tenants](adding-tenants-and-consenting-the-cipp-sam-application.md).
+{% endhint %}
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FohuBSMhxAWuhe35TnuLP9o_doc.png?alt=media\&token=fcdc99db-ea70-46bb-8276-1a21d659948e\&time=Fri%20Jul%2026%202024%2021:58:00%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 

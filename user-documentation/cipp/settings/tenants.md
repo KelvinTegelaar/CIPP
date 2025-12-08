@@ -4,59 +4,27 @@ description: Centralized Tenant Management and Oversight
 
 # Tenants
 
-## Overview
-
 The Tenants page is a centralized platform for administrators to oversee and manage all tenants within CIPP. This page provides detailed information about each tenant and facilitates actions related to their exclusion status and permissions.
 
-This page also shows tenants that have been excluded, or removed due to the amount of errors received.
+This page also shows tenants that have been excluded or removed due to the number of errors received.
 
-## Table Fields
+### Action Buttons
 
-The main table on this page displays the following columns:
+| Action        | Description                                                                                                                |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Force Refresh | This will force a refresh of your tenants list. NOTE: Your tenants list may temporarily clear while CIPP rebuilds the list |
 
-<table><thead><tr><th width="203">Field Name</th><th>Description</th></tr></thead><tbody><tr><td>E Tag</td><td></td></tr><tr><td>Partition Key</td><td></td></tr><tr><td>Row Key</td><td></td></tr><tr><td>Exclude Date</td><td>The date when the tenant was excluded, if applicable.</td></tr><tr><td>Exclude User</td><td>The user who excluded the tenant, if applicable.</td></tr><tr><td>Excluded</td><td>A Boolean field indicating whether the tenant is excluded.</td></tr><tr><td>Graph Error Count</td><td></td></tr><tr><td>Last Graph Error</td><td></td></tr><tr><td>Last Refresh</td><td></td></tr><tr><td>Requires Refresh</td><td></td></tr><tr><td>Customer ID</td><td></td></tr><tr><td>Default Domain Name</td><td>The default domain name for the tenant.</td></tr><tr><td>Delegated Privilege Status</td><td></td></tr><tr><td>Display Name</td><td>The display name of the tenant.</td></tr><tr><td>Domains</td><td></td></tr><tr><td>Has Auto Extend</td><td>A Boolean field indicating whether the tenant has auto extend on the GDAP relationship enabled.</td></tr><tr><td>Initial Domain Name</td><td></td></tr><tr><td>Relationship Count</td><td></td></tr><tr><td>Relationship End</td><td></td></tr></tbody></table>
+### Table Details
 
-## Features and Actions
+The main table on this page displays information relating to all tenants that you have a GDAP relationship with
 
-### Actions List on the Tenants Tab
+### Table Actions
 
-The actions available in the "Actions" column for each tenant include:
-
-* **Exclude Tenants:** Excludes selected tenants from display and actions.
-* **Include Tenants:** Includes selected tenants back into the management list.
-* **Refresh CPV Permissions:** Refreshes the CPV permissions for the selected tenants.
-* **Reset CPV Permissions:** Resets the CPV permissions for the selected tenants by deleting the Service Principal and re-adding it.
-* **Remove Tenant:**&#x20;
-
-### Tenant Exclusion Control
-
-{% hint style="info" %}
-CIPP allows administrators to exclude specific tenants. Excluded tenants are hidden from display and are unaffected by actions within CIPP.
-{% endhint %}
-
-To exclude a tenant:
-
-1. Find the tenant's row in the table.
-2. Click on the eye slash icon in the "Actions" column to trigger a confirmation dialog.
-3. Confirm the action, this excludes the tenant from showing up in the tenant selector and any actions applied to it.
-
-### Removing a Tenant's Exclusion Status
-
-Administrators can remove a tenant's exclusion status by:
-
-1. Locating the tenant's row in the table.
-2. Clicking on the eye icon in the "Actions" column.
-3. confirm the action, this includes the tenant and makes it show up in the tenant selector and have actions applied to it again.
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Exclude Tenants</td><td>Excludes the selected tenant(s) from being managed by CIPP. They will no longer display in the tenant selector and standards, alerts, etc. will not apply</td><td>true</td></tr><tr><td>Include Tenants</td><td>Removes an exclusion on selected tenant(s)</td><td>true</td></tr><tr><td>Refresh CPV Permissions</td><td>Refreshes the CPV permissions for the selected tenant(s) [<a href="tenants.md#refreshing-a-tenants-permissions">More information</a>]</td><td>true</td></tr><tr><td>Reset CPV Permissions</td><td>Resets the CPV permissions for the selected tenant(s) by deleting the Service Principal and re-adding it [<a href="tenants.md#resetting-a-tenants-cpv-permissions">More information</a>]</td><td>true</td></tr><tr><td>Remove Tenant</td><td></td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ### Refreshing a Tenant's Permissions
 
 CIPP works using the Control Panel Vendor API - Also known as the CPV API. The CPV API is used to add the CIPP application to your managed tenants and allows CIPP to execute actions within these tenants. Each night at 00:00 UTC the permissions are refreshed for all tenants. This makes sure that the application always has the latest set of required access.
-
-Sometimes, pressing the CPV Refresh button might be required when a new tenant is added or a new GDAP permission is applied to the CIPP-SAM service account. Administrators can refresh a tenant's permissions by:
-
-1. Finding the tenant's row in the table.
-2. Clicking on the blue refresh icon in the "Actions" column.
-3. Confirming the action to initiate the permissions refresh process.
 
 For more details, see more about this on the [Refreshing a Tenants Permission](tenants.md#refreshing-a-tenants-permissions) section of our troubleshooting documentation.
 
@@ -65,26 +33,6 @@ For more details, see more about this on the [Refreshing a Tenants Permission](t
 {% hint style="warning" %}
 **Note:** The CPV Reset is a powerful tool and should be used only if you cannot manage permissions at all. This action will delete the Service Principal and re-add it, which may be necessary if there are issues with the existing permissions setup.
 {% endhint %}
-
-**To reset a tenant's CPV permissions:**
-
-1. Select the tenant(s) for which you need to reset permissions.
-2. Go to the bulk actions menu and choose "CPV Reset".
-3. Confirm the action to reset the CPV permissions, which will delete and re-add the Service Principal.
-
-## Filtering Tenants
-
-You can filter tenants based on their exclusion status:
-
-* **Excluded Tenants:** Filtered by the condition "Excluded eq true."
-* **Included Tenants:** Filtered by the condition "Excluded eq false."
-
-## Additional Functionality
-
-The Tenants page also provides export and filter functionalities:
-
-* **Export:** Download a CSV or PDF file of the tenant table for offline use or analysis.
-* **Filter:** Use the 'Filter' dropdown to display tenants based on whether they are excluded or included.
 
 ***
 

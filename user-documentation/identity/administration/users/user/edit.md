@@ -21,10 +21,9 @@ description: >-
 ### Basic Information
 
 1. **User Identity:** `First Name`, `Last Name`, `Display Name`, `Username` (before the @ symbol), `Primary Domain name` (select from dropdown)
-2. **Email Aliases:**  Add multiple email aliases one per line without domain (added automatically)
-3. **Professional Details:** `Job Title`, `Department`, `Company Name`
-4. **Contact Details:** `Street Address`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
-5. **Management:** `Set Manager` (select from existing users), `Copy groups from another user`
+2. **Professional Details:** `Job Title`, `Department`, `Company Name`
+3. **Contact Details:** `Street Address`, `Postal Code`, `Mobile Phone`, `Business Phone`, `Alternate Email Address`
+4. **Management:** `Set Manager` (select from existing users), `Copy groups from another user`
 
 ### Account Settings
 
@@ -42,7 +41,7 @@ description: >-
 * **Current Licenses**
   * Shows currently assigned licenses
   * Drop down box allows you to multi-select the licenses you want the user to have after editing
-  * Option to remove all licenses (toggle)
+  * Option to remove all licenses (toggle) - When removing the final license on a user, this must be checked.
 * **SherWeb Integration** (if enabled)
   * Auto-purchase option appears when licenses unavailable
   * Select license SKU for purchase
@@ -54,6 +53,8 @@ description: >-
   * Allows you to select another Entra ID user to copy groups from&#x20;
 * Add to Groups
   * Multi-select dropdown that will allow you to add the user to groups
+* Remove from Groups
+  * Multi-select dropdown that will allow you to remove the user from groups
 
 ### **Custom Attributes**
 

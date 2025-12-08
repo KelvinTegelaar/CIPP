@@ -8,7 +8,7 @@ description: >-
 # Standards Setup
 
 {% hint style="info" %}
-For more information on Standards, what they are, and where to find the available ones, check out the [Standards](../../user-documentation/tenant/standards/) section of the user documentation
+For more information on Standards, what they are, and where to find the available ones, check out the [standards](../../user-documentation/tenant/standards/ "mention") section of the user documentation
 {% endhint %}
 
 ## **Walkthrough Steps for Setting Up Standards**
@@ -21,7 +21,7 @@ This guide walks you through setting up **Standards** in CIPP for the first time
 
 ## **Accessing Standards**
 
-1. Navigate to **Tenant Administration > Standards**.
+1. Navigate to **Tenant Administration > Standards & Drift**.
 2. Here you'll be presented with a table of Standards templates and an action in the upper right to create new templates.
 
 ## **Reporting Options**
@@ -53,7 +53,7 @@ Turning off **Remediate** prevents future fixes but doesn’t undo changes alrea
 ### Categories
 
 * Standards are grouped by categories, like security, compliance, or usability.
-* There are [over 60 standards](../../user-documentation/tenant/standards/list-standards/), with more added regularly.
+* There are over 150 standards ([#available-standards](../../user-documentation/tenant/standards/list-standards/classic-standards/#available-standards "mention")), with more added regularly.
 
 ## Deploying Templates
 

@@ -6,11 +6,7 @@ description: Analyse external domain's mail-related DNS entries
 
 The individual domain check lets you to check any domain enabling you to perform checks on vendors, potential customers, competitors - basically any domain. You are responsible for ensuring your use of this tool complies with applicable laws, registry terms and the terms of service for the Google and / or CloudFlare DNS APIs.
 
-### Details
-
-The checks are the same as those found in the [domains analyser](https://github.com/KelvinTegelaar/CIPP/blob/website/docs/user/usingcipp/tenantadministration/domainsanalyser/README.md#interpreting-results).
-
-#### Options
+### Options
 
 You can use the options, detailed below, to perform specific checks on domains:
 
@@ -20,7 +16,7 @@ You can use the options, detailed below, to perform specific checks on domains:
 
 **Sender Policy Framework pre-validation**
 
-Use this function to simulate a change to your SPF record and test that the syntax is valid and it passes the checks detailed [in the domains analyser](https://github.com/KelvinTegelaar/CIPP/blob/website/docs/user/usingcipp/tenantadministration/domainsanalyser/README.md#sender-policy-framework-pass-test) documentation.
+Use this function to simulate a change to your SPF record and test that the syntax is valid.
 
 **Custom DomainKeys Identified Mail selectors**
 

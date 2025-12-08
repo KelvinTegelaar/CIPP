@@ -1,7 +1,7 @@
 # Configuring Automatic Updates
 
 {% hint style="warning" %}
-If you’re using the **CyberDrain-hosted** version of CIPP, you can skip this page—updates happen automatically for you.
+If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps and jump over to our [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.
 {% endhint %}
 
 ### Overview
@@ -111,6 +111,10 @@ A: Yes—assuming your GitHub Actions workflow triggers on `push` to `main`, the
 A: No—once Pull is set up, you won’t need to manually sync. The Pull app auto-creates a PR whenever upstream changes are detected.
 
 ***
+
+{% hint style="info" %}
+Pull, like CIPP, is an Open Source Software project. Consider sponsoring the developer as a thank you for all the hours you'll save keeping your repository up to date.
+{% endhint %}
 
 ### You’re All Set!
 

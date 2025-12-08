@@ -2,7 +2,7 @@
 
 This page displays all current configured Audit Log and Scripted Alerts for CIPP. It also allows you to remove alert rules.
 
-### Actions
+### Action Buttons
 
 {% content-ref url="alert.md" %}
 [alert.md](alert.md)
@@ -10,21 +10,19 @@ This page displays all current configured Audit Log and Scripted Alerts for CIPP
 
 ### Table Details
 
-| Column        | Description                                           |
-| ------------- | ----------------------------------------------------- |
-| Tenants       | Shows the tenants selected for the alert              |
-| Event Type    | "Audit log Alert" or "Scheduled Task"                 |
-| Conditions    | Shows the alert conditions configured                 |
-| Repeats Every | Shows the cadence for the alert                       |
-| Actions       | Shows the actions selected when an alert is generated |
+| Column           | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| Tenants          | Shows the tenants selected for the alert              |
+| Event Type       | "Audit log Alert" or "Scheduled Task"                 |
+| Conditions       | Shows the alert conditions configured                 |
+| Repeats Every    | Shows the cadence for the alert                       |
+| Actions          | Shows the actions selected when an alert is generated |
+| Alert Comment    | Shows the comment added when the alert was created.   |
+| Excluded Tenants | Displays the excluded tenants                         |
 
-### Per-Row Actions
+### Table Actions
 
-| Action                 | Description                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------- |
-| [Edit Alert](alert.md) | Opens the alert to be able to adjust settings as needed                                     |
-| Clone & Edit Alert     | Copies the selected alert allowing you to make adjustments before saving it as a new alert. |
-| Delete Alert           | Opens a modal to confirm you want to delete the alert                                       |
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Task Details</td><td>When a Scheduled Task is selected, this will open the <a data-mention href="../../../tools/scheduler/task.md">task.md</a>for the task.</td><td>false</td></tr><tr><td>Edit Alert</td><td>Opens the <a data-mention href="alert.md">alert.md</a> page to be able to adjust settings as needed</td><td>false</td></tr><tr><td>Clone &#x26; Edit Alert</td><td>Copies the selected alert allowing you to make adjustments before saving it as a new alert.</td><td>false</td></tr><tr><td>Delete Alert</td><td>Opens a modal to confirm you want to delete the alert</td><td>true</td></tr></tbody></table>
 
 ***
 

@@ -5,14 +5,14 @@ description: View and manage your Microsoft 365 CSP tenants.
 # Tenants
 
 {% hint style="warning" %}
-When you select one of the portal links, the permissions of the currently logged in user are the ones that matter. They need permission to access the portal in question either by virtue of direct administrative roles or the Admin Agent/Helpdesk Agent role in Partner Center.
+When you select one of the portal links, the permissions of the currently logged in user are the ones that matter. The user's GDAP permissions will apply, not the CIPP service account.
 {% endhint %}
 
-The Tenant page provides the ability for you to jump to the specific tenant administration centers for that client using your individual partner credentials. Allowing you to administer that specific tenant.
+The Tenant page provides the ability for you to jump to the specific tenant administration centers for that client using your individual partner tenant user credentials. Allowing you to administer that specific tenant.
 
-Tenants are cached for 24 hours. By using the Clear Tenant Cache button in settings, you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
+Tenants are cached for 24 hours. By using the Clear Tenant Cache button in [settings](../../../cipp/settings/ "mention"), you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
 
-### Details
+### Table Details
 
 | Fields         | Description                  |
 | -------------- | ---------------------------- |
@@ -21,11 +21,9 @@ Tenants are cached for 24 hours. By using the Clear Tenant Cache button in setti
 
 The page also features several columns which contain links to the different Microsoft 365 administration centers for the tenant.
 
-### Per-Row Actions
+### Table Actions
 
-|             |                                                                           |
-| ----------- | ------------------------------------------------------------------------- |
-| Edit Tenant | Opens a page to edit the tenant alias and manage tenant group membership. |
+<table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Edit Tenant</td><td>Opens a page to edit the tenant alias and manage tenant group membership.</td><td>false</td></tr></tbody></table>
 
 ***
 

@@ -1,14 +1,6 @@
 # Tenant Lookup
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
-
-### **Looking for documentation contributors**
-
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
-
-If you are reading this and have the time to contribute, please consider doing so! There's an **Edit on GitHub** button at the right side of this page and others in order to make it easy for users to contribute.
+This page allows you to look up information on any tenant. Enter the domain into the box, click `Check`, and review the displayed information regarding the tenant.
 
 ***
 

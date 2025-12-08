@@ -6,40 +6,23 @@ description: Review all Conditional Access Polcies per tenant
 
 This page lists all the Conditional Access Policies on the selected tenant. This lists everything that's available in the Microsoft Endpoint Manager (MEM) portal, including the applications the CA applies to and used built-in controls.
 
-### Details
+### Page Actions
 
-| Fields               | Description                                           |
-| -------------------- | ----------------------------------------------------- |
-| Name                 | The name of the policy.                               |
-| State                | The current state of the policy, for example enabled. |
-| Last Modified        | The date the policy was last modified.                |
-| Client App Types     | Any client applications targeted.                     |
-| Platform Inc         | Any platforms/operating systems targeted.             |
-| Platform Exc         | Any platforms/operating systems excluded.             |
-| Include Locations    | Any locations targeted.                               |
-| Exclude Locations    | Any locations excluded.                               |
-| Include Users        | Any users targeted.                                   |
-| Exclude Users        | Any users excluded.                                   |
-| Include Groups       | Any groups targeted.                                  |
-| Exclude Groups       | Any groups excluded.                                  |
-| Include Applications | Any Azure AD applications targeted.                   |
-| Exclude Applications | Any Azure AD applications excluded.                   |
-| Control Operator     | The operator used to combine the filters.             |
-| Built-in Controls    | Any built-in controls applied.                        |
+{% content-ref url="deploy.md" %}
+[deploy.md](deploy.md)
+{% endcontent-ref %}
 
-## Actions
+### Table Details
 
-Under the three dots for Conditional Access policies you'll find these actions:
+The properties returned are for the Graph resource type `conditionalAccessPolicy`. For more information on the properties please see the [Graph documentation](https://learn.microsoft.com/en-us/graph/api/resources/conditionalaccesspolicy?view=graph-rest-1.0#properties). CIPP does some additional correlation to convert some of the GUID attributes into display names for ease of reading.
 
-* Create template based on rule - Creates a CIPP template based on this rule to deploy to any other tenant.
-* Enable Rule - Enables the rule
-* Disable Rule - Disables the rule
-* Set rule to report only - Sets the rule to report only
-* Delete Rule - Deletes the rule. This cannot be undone.
+### Table Actions
 
-## Template Creation
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Availables</th></tr></thead><tbody><tr><td>Create template based on policy</td><td>Creates a CIPP template based on the selected policy(ies) to deploy to any other tenant [<a href="./#template-creation">More information</a>]</td><td>true</td></tr><tr><td>Change Display Name</td><td>Opens modal to change the display name of the selected policy(ies)</td><td>true</td></tr><tr><td>Enable policy</td><td>Enables the selected policy(ies) for the tenant</td><td>true</td></tr><tr><td>Disable policy</td><td>Disables the selected policy(ies) for the tenant</td><td>true</td></tr><tr><td>Set policy to report only</td><td>Opens a modal to set the selected policy(ies) to report only</td><td>true</td></tr><tr><td>Add service provider exception to policy</td><td>Opens a modal to add a service provider exception to the selected policy(ies)</td><td>true</td></tr><tr><td>Delete policy</td><td>Opens modal to confirm deletion of the selected policy(ies)</td><td>true</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
-Using the action button "Create Template based on rule" you can create a one-off template of a conditional access rule in a tenant.
+### Template Creation
+
+Using the action button "Create Template based on rule" you can create a one-off template of a conditional access rule in a tenant that will be available in [list-template](../list-template/ "mention").
 
 Creating a template includes all properties of the conditional policy templated; Inclusions and exclusions are translated and stored in CIPP for redeployment. When redeploying the template on any tenant every setting is included, such as Conditional Access Named locations, Authentication strengths, and any other setting.
 

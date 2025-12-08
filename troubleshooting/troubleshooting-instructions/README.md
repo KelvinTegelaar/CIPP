@@ -1,4 +1,4 @@
-# Troubleshooting instructions
+# Troubleshooting Instructions
 
 {% hint style="danger" %}
 <mark style="color:red;">**You must always supply all information requested in this document.**</mark>
@@ -8,18 +8,16 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 
 ## **1. Perform Permissions Check**
 
-* **How to**: Navigate to CIPP -> Settings, and select "Perform Permissions Check".
-* **What to Share**: A screenshot of the results.
+* **How to**: Navigate to CIPP -> Application Settings, and select "Permissions".
+* Click on "Refesh"&#x20;
+* **What to Share**: A screenshot of the page, and an Export of the report by pressing the Export button.
 
 ## **2. Conduct GDAP Check**
 
-* **After successfully completing Permissions Check**, proceed to the GDAP check.
-* **What to Share**: A screenshot of the results.
+* **After successfully completing Permissions Check**, also refresh the GDAP check
+* **What to Share**: A screenshot of the GDAP information.
 
-## **3. Run Tenant Access Check**
 
-* **After a GDAP Check**, choose the relevant tenant and perform a Tenant Access check.
-* **What to Share**: A screenshot of the results.
 
 ***
 
@@ -62,7 +60,7 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 #### GDAP Group Requirements
 
 1. **Recommended Roles:** When going through the invite process in CIPP, these groups will be automatically created. If you performed the migration with CIPP, these groups will start with `M365 GDAP`.
-   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](../../setup/gdap/recommended-roles.md "mention")
+   1. **Note that these groups are not roles in your tenant;** they must be **GDAP-assigned groups.** For the latest details, refer to [recommended-roles.md](../../setup/installation/recommended-roles.md "mention")
 2. **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality.
    1. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
 

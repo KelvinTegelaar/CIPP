@@ -1,14 +1,18 @@
 # Connector Templates
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+### **Action Buttons**
 
-### **Looking for documentation contributors**
+{% content-ref url="list-connectors/add.md" %}
+[add.md](list-connectors/add.md)
+{% endcontent-ref %}
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+### Table Details
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+This table will display your previously created connector templates
+
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Save to GitHub</td><td>Saves the selected template(s) to GitHub</td><td>true</td></tr><tr><td>Delete Template</td><td>Deletes the selected template(s)</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

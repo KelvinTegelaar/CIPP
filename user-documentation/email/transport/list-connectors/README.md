@@ -1,14 +1,23 @@
 # Connectors
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+### **Action Buttons**
 
-### **Looking for documentation contributors**
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+### Table Details
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+The properties returned are for the combination of the following Exchange PowerShell commands. For more information on the command please see the Microsoft documentation:
+
+* [Get-OutboundConnector](https://learn.microsoft.com/en-us/powershell/module/exchange/get-outboundconnector?view=exchange-ps)
+* [Get-InboundConnector](https://learn.microsoft.com/en-us/powershell/module/exchange/get-inboundconnector?view=exchange-ps)
+
+### Table Actions
+
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Create template based on connector</td><td>Creates a template based on the selected connector(s)</td><td>true</td></tr><tr><td>Enable Connector</td><td>Enables the selected connector(s). This will be greyed out if the connector is enabled</td><td>true</td></tr><tr><td>Disable Connector</td><td>Disables the selected connector(s). This will be greyed out if the connector is disabled</td><td>true</td></tr><tr><td>Delete Connector</td><td>Deletes the selected connector(s)</td><td>true</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
+
+
 
 ***
 

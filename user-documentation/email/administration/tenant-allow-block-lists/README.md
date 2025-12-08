@@ -1,14 +1,20 @@
 # Tenant Allow/Block Lists
 
-{% hint style="info" %}
-**This page currently lacks content and serves as a placeholder.**
-{% endhint %}
+This page uses a single table to manage both blocking and allowing entries.
 
-### **Looking for documentation contributors**
+### **Action Buttons**
 
-FOSS ([Free and Open-Source Software](https://en.wikipedia.org/wiki/Free_and_open-source_software)) lives and dies by the contributions of their communities. Pages like this go unfinished because no one has been able to spare the time it takes to write something up for this.
+{% content-ref url="add.md" %}
+[add.md](add.md)
+{% endcontent-ref %}
 
-If you are reading this and have the time to contribute, please consider doing so! We have an edit button at the top of this page and others in order to make it easy for users to contribute. Simply click on the three-dot menu for additional options, including Edit.
+### **Table Details**
+
+This table returns the results of the Exchange Online PowerShell command `Get-TenantAllowBlockListItems`.&#x20;
+
+### Table Actions
+
+<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Remove</td><td>Prompts to remove the entry from the tenant allow/block list</td><td>true</td></tr><tr><td>More Info</td><td>Opens the Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 

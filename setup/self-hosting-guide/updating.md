@@ -18,7 +18,7 @@ Update your self-hosted CIPP instance to the latest release using the following 
 {% hint style="info" %}
 Note (Self-Hosted Clients Updating from v6 or earlier)
 
-A few more steps are required to upgrade versions 6 to 7. See the [release notes](https://github.com/KelvinTegelaar/CIPP/releases/tag/v7.0.1) for v7.0.1 and **review the steps in** [**option 2**](updating.md#id-2.-special-case-upgrading-from-v6-or-older-to-v7) **below for how to successfully update in these scenarios.**
+A few more steps are required to upgrade versions 6 to 7. See the [release notes](https://github.com/KelvinTegelaar/CIPP/releases/tag/v7.0.1) for v7.0.1 and **review the steps in** [#id-2.-updating-from-v6-or-older-to-v7](updating.md#id-2.-updating-from-v6-or-older-to-v7 "mention") **below for how to successfully update in these scenarios.**
 {% endhint %}
 
 ***
@@ -75,7 +75,7 @@ For **typical** updates (e.g., moving from any v7+ patch releases):
 The v7 front-end introduced a **Next.js** + **Material-UI** stack, so older forks might need an extra step:
 
 {% hint style="info" %}
-If your "Sync fork" options button presents you with an error that there are conflicts that must be resolved, skip to [Option 3](updating.md#id-3.-updating-from-v6-or-older-to-v7-merge-conflicts).
+If your "Sync fork" options button presents you with an error that there are conflicts that must be resolved, skip to [#id-3.-updating-from-v6-or-older-to-v7-merge-conflicts](updating.md#id-3.-updating-from-v6-or-older-to-v7-merge-conflicts "mention").
 {% endhint %}
 
 
@@ -171,7 +171,7 @@ In many cases, there are so many changes to the repo that GitHub doesn't know ho
 {% endstep %}
 
 {% step %}
-### Resume with Step 2 from [Option 2](updating.md#id-2.-updating-from-v6-or-older-to-v7)
+### Resume with Step 2 from [#id-2.-updating-from-v6-or-older-to-v7](updating.md#id-2.-updating-from-v6-or-older-to-v7 "mention")
 {% endstep %}
 {% endstepper %}
 

@@ -12,12 +12,6 @@ This page will output a table showing the status of Entra ID Connect syncing.
 | On Premises Provisioning Errors | Any errors with syncing the object         |
 | Object Type                     | Type of the object                         |
 
-### Per-Object Actions
-
-| Action | Descrption |
-| ------ | ---------- |
-|        |            |
-
 ***
 
 ### Feature Requests / Ideas

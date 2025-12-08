@@ -12,7 +12,7 @@ The View User page provides a comprehensive overview of user details and setting
 
 ### Actions
 
-The actions dropdown carries forward the same [actions from the list users page](../#per-user-actions).
+The actions dropdown carries forward the same [#table-actions](../#table-actions "mention") from the main Users page.
 
 ***
 
@@ -20,13 +20,13 @@ The actions dropdown carries forward the same [actions from the list users page]
 
 #### Profile & Identity
 
-| Field                        | Description                                                            |
-| ---------------------------- | ---------------------------------------------------------------------- |
-| User Photo                   | Displays user's Entra ID photo; shows initials if no photo is uploaded |
-| Display Name                 | User's full display name as shown in the directory                     |
-| User Principal Name          | Primary username/login identity for the user                           |
-| Account Enabled              | Boolean indicator showing if user can sign in (✓/✗)                    |
-| Synced from Active Directory | Boolean indicator showing if account is AD-synced (✓/✗)                |
+| Field                        | Description                                                                                                                                     |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| User Photo                   | Displays user's Entra ID photo; shows initials if no photo is uploaded. Includes the ability to upload a new photo or delete the current photo. |
+| Display Name                 | User's full display name as shown in the directory                                                                                              |
+| User Principal Name          | Primary username/login identity for the user                                                                                                    |
+| Account Enabled              | Boolean indicator showing if user can sign in (✓/✗)                                                                                             |
+| Synced from Active Directory | Boolean indicator showing if account is AD-synced (✓/✗)                                                                                         |
 
 #### Licensing & Contact
 
@@ -47,10 +47,12 @@ The actions dropdown carries forward the same [actions from the list users page]
 
 #### Address Information
 
-| Field       | Description            |
-| ----------- | ---------------------- |
-| Address     | Street address details |
-| Postal Code | ZIP/Postal code        |
+| Field       | Description             |
+| ----------- | ----------------------- |
+| Address     | Street address details  |
+| Postal Code | ZIP/Postal code         |
+| Country     | The country of the user |
+| City        | The city of the user    |
 
 #### Security & Access
 
@@ -62,10 +64,10 @@ The actions dropdown carries forward the same [actions from the list users page]
 
 #### Group & Role Memberships
 
-| Field             | Description                                                                                                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Group Memberships | <p>Table of all group associations<br>• Includes per-row actions<br>• Direct link to <a href="../../groups/edit.md">Edit Group</a> page for the associated group to manage membership.</p> |
-| Admin Roles       | Table of assigned administrative roles                                                                                                                                                     |
+| Field             | Description                                                                                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Group Memberships | <p>Table of all group associations<br>• Includes per-row actions<br>• Direct link to <a data-mention href="../../groups/edit.md">edit.md</a> page for the associated group to manage membership.</p> |
+| Admin Roles       | Table of assigned administrative roles                                                                                                                                                               |
 
 ### Notes
 

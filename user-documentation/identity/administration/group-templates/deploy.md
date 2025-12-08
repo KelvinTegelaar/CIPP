@@ -33,7 +33,7 @@ However, you have the flexibility to adjust the options as needed:
 
 Remember, the options presented depend on the Group Type selected. For instance, the "Membership Rule" field only appears if you select "Dynamic Group" as the Group Type.
 
-For more details on these settings, please refer to the [Group Templates page](./).
+For more details on these settings, please refer to [.](./ "mention").
 {% endstep %}
 
 {% step %}

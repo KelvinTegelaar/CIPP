@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # CIPP v7 Developer Brief
 
 If you already have a working development environment for the previous v6 setup, transitioning to the new interface should be relatively seamless with some adjustments. Let’s dive into what you need to know.&#x20;
@@ -8,7 +12,7 @@ If you already have a working development environment for the previous v6 setup,
 
 CIPPs new v7 front-end introduces significant enhancements in design, performance, and usability.
 
-1. **Modernized Framework: B**uilt with [Material UI](https://mui.com/material-ui/getting-started/) and React for a cleaner, more consistent design.&#x20;
+1. **Modernized Framework:** Built with [Material UI](https://mui.com/material-ui/getting-started/) and React for a cleaner, more consistent design.&#x20;
 2. **Performance Improvements:** Faster load times locally and online.&#x20;
 3. **Updated Development Workflow:** Minor changes to setup and dependencies.&#x20;
 
