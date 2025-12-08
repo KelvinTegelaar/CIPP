@@ -153,7 +153,19 @@ The contents of your `local.settings.json` file differs depending on whether you
     "FUNCTIONS_EXTENSION_VERSION": "4",
     "AzureWebJobs.BestPracticeAnalyser_OrchestrationStarterTimer.Disabled": true,
     "AzureWebJobs.Domain_OrchestrationStarterTimer.Disabled": true,
-    "WEBSITE_SITE_NAME": "<mylocalcippinstance>",
+    "WEBSITE_SITE_NAME": "mylocalcippinstance",
+    "AzureFunctionsJobHost__Logging__Console__IsEnabled": "true",
+    "AzureFunctionsJobHost__Logging__LogLevel__Default": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Host.Function": "Information",
+    "AzureFunctionsJobHost__Logging__LogLevel__Function": "Information",
+    "AzureFunctionsJobHost__Logging__LogLevel__Microsoft.Azure.WebJobs.Script.WebHost.Middleware": "Information",
+    "AzureFunctionsJobHost__Logging__LogLevel__Host": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Azure": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Azure.Core": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Azure.Storage": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__System": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Microsoft": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__DurableTask": "Error"
   }
 }
 ```
@@ -175,7 +187,19 @@ The contents of your `local.settings.json` file differs depending on whether you
     "FUNCTIONS_EXTENSION_VERSION": "4",
     "AzureWebJobs.BestPracticeAnalyser_OrchestrationStarterTimer.Disabled": true,
     "AzureWebJobs.Domain_OrchestrationStarterTimer.Disabled": true,
-    "WEBSITE_SITE_NAME": "mylocalcippinstance"
+    "WEBSITE_SITE_NAME": "mylocalcippinstance",
+    "AzureFunctionsJobHost__Logging__Console__IsEnabled": "true",
+    "AzureFunctionsJobHost__Logging__LogLevel__Default": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Host.Function": "Information",
+    "AzureFunctionsJobHost__Logging__LogLevel__Function": "Information",
+    "AzureFunctionsJobHost__Logging__LogLevel__Microsoft.Azure.WebJobs.Script.WebHost.Middleware": "Information",
+    "AzureFunctionsJobHost__Logging__LogLevel__Host": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Azure": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Azure.Core": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Azure.Storage": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__System": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__Microsoft": "Error",
+    "AzureFunctionsJobHost__Logging__LogLevel__DurableTask": "Error"
   }
 }
 ```
