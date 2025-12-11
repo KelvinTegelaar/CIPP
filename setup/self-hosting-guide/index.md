@@ -7,7 +7,7 @@ description: >-
 # Prerequisites
 
 {% hint style="warning" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.&#x20;
+If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps and jump over to [sponsor-quick-start.md](../resources/sponsor-quick-start.md "mention") guide for further direction.&#x20;
 {% endhint %}
 
 To get started you must follow or have the following ready. Click on the links for instructions on how to perform some of these tasks, or for more information on the functionality in question.
@@ -38,13 +38,13 @@ You’ll need an **active Azure Subscription** where your CIPP resources (Functi
 {% step %}
 ### GitHub Personal Access Token
 
-CIPP uses Azure Static Web Apps (SWA) to deploy from GitHub. You’ll need a **PAT** (Personal Access Token) with relevant repo permissions. For instructions, see Microsoft’s [Create a GitHub Personal Access Token](https://learn.microsoft.com/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token).
+CIPP uses Azure Static Web Apps (SWA) to deploy from GitHub. You’ll need a classic **PAT** (Personal Access Token) with the relevant repo permissions included in Microsoft’s [Create a GitHub Personal Access Token](https://learn.microsoft.com/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token) documentation.
 {% endstep %}
 
 {% step %}
 ### (Optional) Microsoft 365 Lighthouse License
 
-* **Recommended for MSP Usage**: A [Microsoft 365 Lighthouse license](https://learn.microsoft.com/en-us/microsoft-365/lighthouse/m365-lighthouse-sign-up?view=o365-worldwide#steps-to-sign-up-for-microsoft-365-lighthouse) is needed to access various API endpoints used in CIPP but CIPP will function without it.&#x20;
+* **Recommended for MSP Usage**: A [Microsoft 365 Lighthouse license](https://learn.microsoft.com/en-us/microsoft-365/lighthouse/m365-lighthouse-sign-up?view=o365-worldwide#steps-to-sign-up-for-microsoft-365-lighthouse) is needed to access various API endpoints used in CIPP, but CIPP will function without it.&#x20;
 * If you buy a Lighthouse license purely for CIPP, **remember to accept the EULA** in the [Lighthouse portal](https://lighthouse.microsoft.com/) to activate it.
 {% endstep %}
 
@@ -61,6 +61,8 @@ For the installation and maintenance of CIPP, we assume you’re comfortable wit
 
 {% hint style="warning" %}
 The linked resources above will help you understand the Azure services CIPP depends on that you will be required to configure and maintain. If you’re missing any of these skills, we suggest reviewing these before proceeding. Proper knowledge ensures a smooth deployment and ongoing maintenance.
+
+Failing to understand proper deployment and maintenence of an application deployed to Azure can lead to ballooning costs.&#x20;
 {% endhint %}
 {% endstep %}
 

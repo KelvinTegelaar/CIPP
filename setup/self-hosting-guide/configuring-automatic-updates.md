@@ -102,7 +102,7 @@ That’s it! Your repository will now stay in sync with the latest CIPP releases
 A: Yes—if both repos have `pull_request` triggers in their `.yml` workflow files, remove them in each to avoid conflicts.
 
 **Q: What if I accidentally discard the Pull app’s PR?**\
-A: You can always open the “Closed” Pull Requests and revert that action, or let Pull create a new one. Just make sure you haven’t re-added the `pull_request` lines.
+A: You can always open the “Closed” Pull Requests and revert that action or let Pull create a new one. Just make sure you haven’t re-added the `pull_request` lines.
 
 **Q: Will my Azure deployment automatically pick up changes after I merge the PR?**\
 A: Yes—assuming your GitHub Actions workflow triggers on `push` to `main`, the Static Web App and Function App will redeploy within \~30 minutes.
