@@ -31,6 +31,7 @@ import { CippApiResults } from "../../../../components/CippComponents/CippApiRes
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
+import { CippHead } from "../../../../components/CippComponents/CippHead";
 
 const AlertWizard = () => {
   const apiRequest = ApiPostCall({
@@ -512,22 +513,10 @@ const AlertWizard = () => {
 
   const { isValid } = useFormState({ control: formControl.control });
   return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
+    <Box sx={{ flexGrow: 1, pb: 4 }}>
+      <CippHead title={editAlert ? "Edit Alert" : "Add Alert"} />
       <Container maxWidth={"xl"}>
         <Stack spacing={4}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Button
-              color="inherit"
-              onClick={() => router.back()}
-              startIcon={
-                <SvgIcon fontSize="small">
-                  <ArrowLeftIcon />
-                </SvgIcon>
-              }
-            >
-              Back to Alerts
-            </Button>
-          </Stack>
           {existingAlert.isLoading && <Skeleton />}
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Typography variant="h4">{editAlert ? "Edit" : "Add"} Alert</Typography>
@@ -845,7 +834,7 @@ const AlertWizard = () => {
                               formControl={formControl}
                               multiline={true}
                               rows={3}
-                              placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
+                              placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
                             />
                           </Grid>
                           <Grid size={12} sx={{ mt: 2 }}>
@@ -1010,7 +999,7 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 multiline={true}
                                 rows={3}
-                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
+                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
                               />
                             </Grid>
                             <Grid size={12}>
