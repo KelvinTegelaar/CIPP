@@ -845,7 +845,7 @@ const AlertWizard = () => {
                               formControl={formControl}
                               multiline={true}
                               rows={3}
-                              placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
+                              placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
                             />
                           </Grid>
                           <Grid size={12} sx={{ mt: 2 }}>
