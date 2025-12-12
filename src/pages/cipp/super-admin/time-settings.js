@@ -28,7 +28,7 @@ const Page = () => {
   });
 
   const { timezones, loading: timezonesLoading } = useTimezones();
-  const isFlexConsumption = backendInfo.data?.SKU === "FlexConsumption";
+  const isFlexConsumption = backendInfo.data?.Results?.SKU === "FlexConsumption";
 
   // Generate business hours options (00:00 to 23:00 in hourly increments)
   const businessHoursOptions = useMemo(() => {
