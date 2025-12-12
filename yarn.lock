@@ -2558,6 +2558,11 @@
   resolved "https://registry.yarnpkg.com/@unrs/resolver-binding-win32-x64-msvc/-/resolver-binding-win32-x64-msvc-1.11.1.tgz#538b1e103bf8d9864e7b85cc96fa8d6fb6c40777"
   integrity sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==
 
+"@vvo/tzdb@^6.198.0":
+  version "6.198.0"
+  resolved "https://registry.yarnpkg.com/@vvo/tzdb/-/tzdb-6.198.0.tgz#bcb33c581aec4f1258ad96c963ac96327ce960e3"
+  integrity sha512-bNRWBhWYl0edVgyX6AYbhoCM2tk2lXJjGCyO2VDc2xn6Dw8dLd7WGj2DDXkVOkmOIQTNjEAcxrEpIzz5pWVwFg==
+
 "@yr/monotone-cubic-spline@^1.0.3":
   version "1.0.3"
   resolved "https://registry.npmjs.org/@yr/monotone-cubic-spline/-/monotone-cubic-spline-1.0.3.tgz"

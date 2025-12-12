@@ -51,6 +51,7 @@
     "@tiptap/react": "^3.4.1",
     "@tiptap/starter-kit": "^3.4.1",
     "@uiw/react-json-view": "^2.0.0-alpha.30",
+    "@vvo/tzdb": "^6.198.0",
     "apexcharts": "5.3.5",
     "axios": "^1.7.2",
     "date-fns": "4.1.0",
