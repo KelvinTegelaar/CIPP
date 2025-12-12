@@ -45,13 +45,13 @@ const Page = () => {
 
   useEffect(() => {
     if (backendInfo.isSuccess && backendInfo.data) {
-      const tzStr = backendInfo.data.Timezone || "UTC";
+      const tzStr = backendInfo.data?.Results?.Timezone || "UTC";
       const tzOption = (timezones || []).find((o) => o?.value === tzStr) || {
         label: tzStr,
         value: tzStr,
       };
 
-      const startStr = backendInfo.data.BusinessHoursStart || "09:00";
+      const startStr = backendInfo.data?.Results?.BusinessHoursStart || "09:00";
       const startOption = businessHoursOptions.find((o) => o.value === startStr) || {
         label: startStr,
         value: startStr,
