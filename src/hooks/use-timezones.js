@@ -24,6 +24,7 @@ export const useTimezones = () => {
           return {
             label,
             value: name,
+            alternativeName: tz?.alternativeName ? String(tz.alternativeName) : undefined,
           };
         })
         // de-duplicate by value

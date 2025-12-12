@@ -46,7 +46,9 @@ const Page = () => {
   useEffect(() => {
     if (backendInfo.isSuccess && backendInfo.data) {
       const tzStr = backendInfo.data?.Results?.Timezone || "UTC";
-      const tzOption = (timezones || []).find((o) => o?.value === tzStr) || {
+      const tzOption = (timezones || []).find(
+        (o) => o?.value === tzStr || o?.alternativeName === tzStr
+      ) || {
         label: tzStr,
         value: tzStr,
       };
