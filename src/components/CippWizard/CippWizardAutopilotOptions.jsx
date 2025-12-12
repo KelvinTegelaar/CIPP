@@ -1,4 +1,5 @@
-import { Grid, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippWizardStepButtons from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 export const CippWizardAutopilotOptions = (props) => {
@@ -8,7 +9,7 @@ export const CippWizardAutopilotOptions = (props) => {
     <Stack spacing={3}>
       <>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={12}>
+          <Grid size={{ md: 12, xs: 12 }}>
             <CippFormComponent
               type="textField"
               label="Group Name (Leave blank to automatically generate)"

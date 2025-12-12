@@ -1,8 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import Link from "next/link";
-import { PostAdd } from "@mui/icons-material";
+import { CippAutopilotStatusPageDrawer } from "/src/components/CippComponents/CippAutopilotStatusPageDrawer";
 
 const Page = () => {
   const pageTitle = "Autopilot Status Pages";
@@ -26,13 +24,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/endpoint/autopilot/add-status-page"
-            startIcon={<PostAdd />}
-          >
-            Add Status Page
-          </Button>
+          <CippAutopilotStatusPageDrawer />
         </>
       }
     />

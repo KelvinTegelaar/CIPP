@@ -1,7 +1,6 @@
-import React from "react";
-import { Grid, Divider } from "@mui/material";
+import { Divider } from "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -29,6 +28,7 @@ const AddContact = () => {
       title="Shared Mailbox"
       backButtonTitle="Mailbox Overview"
       postUrl="/api/AddSharedMailbox"
+      resetForm={true}
       customDataformatter={(values) => {
         return {
           tenantID: tenantDomain,
@@ -39,7 +39,7 @@ const AddContact = () => {
       }}
     >
       <Grid container spacing={2}>
-        <Grid item xs={12} md={10}>
+        <Grid size={{ md: 10, xs: 12 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -52,7 +52,7 @@ const AddContact = () => {
         <Divider sx={{ my: 2, width: "100%" }} />
 
         {/* Email */}
-        <Grid item xs={6} md={6}>
+        <Grid size={{ md: 6, xs: 6 }}>
           <CippFormComponent
             type="textField"
             label="username"
@@ -60,7 +60,7 @@ const AddContact = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={6} md={6}>
+        <Grid size={{ md: 6, xs: 6 }}>
           <CippFormDomainSelector formControl={formControl} name="domain" label="Domain" required />
         </Grid>
       </Grid>

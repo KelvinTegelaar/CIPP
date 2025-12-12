@@ -1,6 +1,5 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";

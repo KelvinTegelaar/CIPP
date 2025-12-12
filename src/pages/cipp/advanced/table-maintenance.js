@@ -29,6 +29,7 @@ import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog"
 import { Grid } from "@mui/system";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultValues }) => {
   const fields = useWatch({ control: formControl.control, name: "fields" });
@@ -72,6 +73,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                       name={`fields[${index}].name`}
                       formControl={formControl}
                       label="Name"
+                      disableVariables={true}
                     />
                   </Box>
                   <Box width="10%">
@@ -101,6 +103,7 @@ const CustomAddEditRowDialog = ({ formControl, open, onClose, onSubmit, defaultV
                           return {};
                         }
                       }}
+                      disableVariables={true}
                     />
                   </Box>
 
@@ -274,7 +277,8 @@ const Page = () => {
   };
 
   return (
-    <Container maxWidth={false} sx={{ mt: 4, width: "100%" }}>
+    <Container maxWidth={false} sx={{ width: "100%" }}>
+      <CippHead title={pageTitle} noTenant={true} />
       <Typography variant="h4" gutterBottom>
         {pageTitle}
       </Typography>
@@ -283,7 +287,7 @@ const Page = () => {
         that should only be used when directed by CyberDrain support.
       </Alert>
       <Grid sx={{ flexGrow: 1, display: "flex" }} container spacing={2}>
-        <Grid item size={3}>
+        <Grid size={3}>
           <CippPropertyListCard
             title="Tables"
             propertyItems={propertyItems}
@@ -320,7 +324,7 @@ const Page = () => {
             }
           />
         </Grid>
-        <Grid item size={9}>
+        <Grid size={9}>
           {selectedTable && (
             <Box sx={{ width: "100%" }}>
               <Stack spacing={1}>

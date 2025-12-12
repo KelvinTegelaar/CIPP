@@ -143,7 +143,7 @@ const Page = () => {
         tenantInTitle={false}
         tableFilter={
           <Grid container spacing={2}>
-            <Grid item size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <MemoizedCippAutoComplete
                 fullWidth
                 value={{
@@ -168,7 +168,7 @@ const Page = () => {
                 disableClearable
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 3 }}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <MemoizedCippAutoComplete
                 fullWidth
                 value={

@@ -1,20 +1,13 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { ApiPostCall } from "../../../../../api/ApiCall";
-import { useRouter } from "next/router";
-import {
-  Stack,
-  Box,
-  Typography,
-  Grid,
-} from "@mui/material";
-
+import { Box } from "@mui/material";
+import { Grid } from "@mui/system";
 import CippPageCard from "../../../../../components/CippCards/CippPageCard";
 import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
 import CippAddEditTenantGroups from "/src/components/CippComponents/CippAddEditTenantGroups";
 
 const Page = () => {
-  const router = useRouter();
   const formControl = useForm({
     mode: "onChange",
   });
@@ -39,7 +32,7 @@ const Page = () => {
     <CippPageCard title="Add Tenant Group" backButtonTitle="Tenant Groups" noTenantInHead={true}>
       <Box sx={{ width: "100%" }}>
         <Grid container spacing={2} sx={{ my: 2, px: 2 }}>
-          <Grid item xs={12} md={8}>
+          <Grid size={{ md: 8, xs: 12 }}>
             <CippAddEditTenantGroups
               formControl={formControl}
               onSubmit={handleAddGroup}

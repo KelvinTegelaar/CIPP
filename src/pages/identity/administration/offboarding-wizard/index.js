@@ -16,6 +16,7 @@ const Page = () => {
       componentProps: {
         allTenants: false,
         type: "single",
+        includeOffboardingDefaults: true,
       },
     },
     {
@@ -30,6 +31,7 @@ const Page = () => {
         api: {
           url: "/api/ListGraphRequest",
           dataKey: "Results",
+          queryKey: "Users - {tenant}",
           data: {
             Endpoint: "users",
             manualPagination: true,
@@ -52,6 +54,10 @@ const Page = () => {
       title: "Step 4",
       description: "Confirmation",
       component: CippWizardConfirmation,
+      maxWidth: "lg",
+      componentProps: {
+        columns: 3,
+      },
     },
   ];
 

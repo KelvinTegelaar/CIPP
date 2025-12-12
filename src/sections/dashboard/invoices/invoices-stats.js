@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
-import { Box, Card, CardContent, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
+import { Grid } from "@mui/system";
 import { alpha, useTheme } from '@mui/material/styles';
 import { Chart } from '../../../components/chart';
 
@@ -83,8 +84,7 @@ export const InvoicesStats = (props) => {
           spacing={2}
         >
           <Grid
-            xs={12}
-            md={6}
+            size={{ md: 6, xs: 12 }}
           >
             <Typography
               color="text.secondary"
@@ -110,8 +110,8 @@ export const InvoicesStats = (props) => {
             </Typography>
           </Grid>
           <Grid
-            xs={12}
-            md={6}
+            size={{ md: 6, xs: 12 }}
+
             sx={{
               display: 'flex',
               flexDirection: {

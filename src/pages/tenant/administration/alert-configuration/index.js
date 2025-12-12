@@ -9,6 +9,12 @@ const Page = () => {
   const pageTitle = "Alerts";
   const actions = [
     {
+      label: "View Task Details",
+      link: "/cipp/scheduler/task?id=[RowKey]",
+      icon: <EyeIcon />,
+      condition: (row) => row?.EventType === "Scheduled Task",
+    },
+    {
       label: "Edit Alert",
       link: "/tenant/administration/alert-configuration/alert?id=[RowKey]",
       icon: <EyeIcon />,
@@ -58,6 +64,7 @@ const Page = () => {
         "Conditions",
         "RepeatsEvery",
         "Actions",
+        "AlertComment",
         "excludedTenants",
       ]}
       queryKey="ListAlertsQueue"

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { Button, Card, CardContent, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 
 export const Account2FA = () => {
   const handleActivate = useCallback(() => {
@@ -12,13 +12,13 @@ export const Account2FA = () => {
     <Card>
       <CardContent>
         <Grid container spacing={4}>
-          <Grid xs={12} md={5}>
+          <Grid size={{ md: 5, xs: 12 }}>
             <Typography variant="h6">Two-factor authentication (2FA)</Typography>
             <Typography color="text.secondary" variant="body2">
               Enhanced security for your mention account
             </Typography>
           </Grid>
-          <Grid xs={12} md={7}>
+          <Grid size={{ md: 7, xs: 12 }}>
             <Button onClick={handleActivate} size="large" variant="contained">
               Activate
             </Button>

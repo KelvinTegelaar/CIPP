@@ -6,6 +6,96 @@
     "LCID": "1025"
   },
   {
+    "language": "Arabic",
+    "Geographic area": "Algeria",
+    "tag": "ar-DZ",
+    "LCID": "5121"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Egypt",
+    "tag": "ar-EG",
+    "LCID": "3073"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Bahrain",
+    "tag": "ar-BH",
+    "LCID": "15361"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Iraq",
+    "tag": "ar-IQ",
+    "LCID": "2049"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Jordan",
+    "tag": "ar-JO",
+    "LCID": "11265"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Kuwait",
+    "tag": "ar-KW",
+    "LCID": "13313"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Lebanon",
+    "tag": "ar-LB",
+    "LCID": "12289"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Libya",
+    "tag": "ar-LY",
+    "LCID": "4097"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Morocco",
+    "tag": "ar-MA",
+    "LCID": "6145"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Oman",
+    "tag": "ar-OM",
+    "LCID": "8193"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Qatar",
+    "tag": "ar-QA",
+    "LCID": "16385"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Syria",
+    "tag": "ar-SY",
+    "LCID": "10241"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Tunisia",
+    "tag": "ar-TN",
+    "LCID": "7169"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "UAE",
+    "tag": "ar-AE",
+    "LCID": "14337"
+  },
+  {
+    "language": "Arabic",
+    "Geographic area": "Yemen",
+    "tag": "ar-YE",
+    "LCID": "9217"
+  },
+  {
     "language": "Bulgarian",
     "Geographic area": "Bulgaria",
     "tag": "bg-BG",
@@ -22,6 +112,12 @@
     "Geographic area": "Taiwan",
     "tag": "zh-TW",
     "LCID": "1028"
+  },
+  {
+    "language": "Chinese",
+    "Geographic area": "Hong Kong SAR",
+    "tag": "zh-HK",
+    "LCID": "3076"
   },
   {
     "language": "Croatian",
@@ -54,6 +150,42 @@
     "LCID": "1033"
   },
   {
+    "language": "English",
+    "Geographic area": "Australia",
+    "tag": "en-AU",
+    "LCID": "3081"
+  },
+  {
+    "language": "English",
+    "Geographic area": "United Kingdom",
+    "tag": "en-GB",
+    "LCID": "2057"
+  },
+  {
+    "language": "English",
+    "Geographic area": "New Zealand",
+    "tag": "en-NZ",
+    "LCID": "5129"
+  },
+  {
+    "language": "English",
+    "Geographic area": "Canada",
+    "tag": "en-CA",
+    "LCID": "4105"
+  },
+  {
+    "language": "English",
+    "Geographic area": "South Africa",
+    "tag": "en-ZA",
+    "LCID": "7177"
+  },
+  {
+    "language": "English",
+    "Geographic area": "Singapore",
+    "tag": "en-SG",
+    "LCID": "4100"
+  },
+  {
     "language": "Estonian",
     "Geographic area": "Estonia",
     "tag": "et-EE",
@@ -72,10 +204,28 @@
     "LCID": "1036"
   },
   {
+    "language": "French",
+    "Geographic area": "Canada",
+    "tag": "fr-CA",
+    "LCID": "3084"
+  },
+  {
+    "language": "French",
+    "Geographic area": "Switzerland",
+    "tag": "fr-CH",
+    "LCID": "4108"
+  },
+  {
     "language": "German",
     "Geographic area": "Germany",
     "tag": "de-DE",
     "LCID": "1031"
+  },
+  {
+    "language": "German",
+    "Geographic area": "Switzerland",
+    "tag": "de-CH",
+    "LCID": "2055"
   },
   {
     "language": "Greek",
@@ -156,6 +306,12 @@
     "LCID": "1044"
   },
   {
+    "language": "Persian",
+    "Geographic area": "Iran",
+    "tag": "fa-IR",
+    "LCID": "1065"
+  },
+  {
     "language": "Polish",
     "Geographic area": "Poland",
     "tag": "pl-PL",
@@ -210,6 +366,108 @@
     "LCID": "3082"
   },
   {
+    "language": "Spanish",
+    "Geographic area": "Argentina",
+    "tag": "es-AR",
+    "LCID": "11274"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Bolivia",
+    "tag": "es-BO",
+    "LCID": "16394"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Chile",
+    "tag": "es-CL",
+    "LCID": "13322"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Colombia",
+    "tag": "es-CO",
+    "LCID": "9226"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Costa Rica",
+    "tag": "es-CR",
+    "LCID": "5130"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Dominican Republic",
+    "tag": "es-DO",
+    "LCID": "7178"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Ecuador",
+    "tag": "es-EC",
+    "LCID": "12298"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "El Salvador",
+    "tag": "es-SV",
+    "LCID": "17418"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Guatemala",
+    "tag": "es-GT",
+    "LCID": "4106"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Honduras",
+    "tag": "es-HN",
+    "LCID": "18442"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Mexico",
+    "tag": "es-MX",
+    "LCID": "2058"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Nicaragua",
+    "tag": "es-NI",
+    "LCID": "19466"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Panama",
+    "tag": "es-PA",
+    "LCID": "6154"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Paraguay",
+    "tag": "es-PY",
+    "LCID": "15370"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Peru",
+    "tag": "es-PE",
+    "LCID": "10250"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Uruguay",
+    "tag": "es-UY",
+    "LCID": "14346"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Venezuela",
+    "tag": "es-VE",
+    "LCID": "8202"
+  },
+  {
     "language": "Swedish",
     "Geographic area": "Sweden",
     "tag": "sv-SE",
@@ -229,9 +487,15 @@
   },
   {
     "language": "Ukrainian",
-    "Geographic area": "Ukrainian",
+    "Geographic area": "Ukraine",
     "tag": "uk-UA",
     "LCID": "1058"
+  },
+  {
+    "language": "Urdu",
+    "Geographic area": "Pakistan",
+    "tag": "ur-PK",
+    "LCID": "1056"
   },
   {
     "language": "Vietnamese",

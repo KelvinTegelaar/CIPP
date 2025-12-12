@@ -26,6 +26,7 @@ const CippPasswordSettings = () => {
     const passwordTypes = ["Classic", "Correct-Battery-Horse"];
     return passwordTypes.map((type) => (
       <Button
+        key={type}
         variant={passwordSetting?.data?.Results?.passwordType === type ? "contained" : "outlined"}
         color="primary"
         size="small"
@@ -42,7 +43,22 @@ const CippPasswordSettings = () => {
       cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
       CardButton={
         <>
-          <ButtonGroup disableElevation={true}>
+          <ButtonGroup
+            disableElevation={true}
+            sx={{
+              "& .MuiButtonGroup-grouped": {
+                borderRadius: 0,
+              },
+              "& .MuiButtonGroup-grouped:first-of-type": {
+                borderTopLeftRadius: "4px",
+                borderBottomLeftRadius: "4px",
+              },
+              "& .MuiButtonGroup-grouped:last-of-type": {
+                borderTopRightRadius: "4px",
+                borderBottomRightRadius: "4px",
+              },
+            }}
+          >
             <Button disabled={true} color="primary">
               <SvgIcon fontSize="small">
                 <KeyIcon />

@@ -127,7 +127,9 @@ export const WizardSteps = (props) => {
         {steps.map((step) => (
           <Step key={step.title}>
             <StepLabel error={step.error ?? false} slots={{ stepIcon: WizardStepIcon }}>
-              <Typography variant="subtitle2">{step.title}</Typography>
+              <Typography variant="subtitle2">
+                {`Step ${steps.indexOf(step) ? steps.indexOf(step) + 1 : 1}`}
+              </Typography>
               <Typography color="text.secondary" variant="body2">
                 {step.description}
               </Typography>

@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 const initialValues = {
   newPassword: "",
   password: "",
@@ -47,10 +47,10 @@ export const AccountPassword = (props) => {
     <Card>
       <CardContent>
         <Grid container spacing={4}>
-          <Grid xs={12} md={5}>
+          <Grid size={{ md: 5, xs: 12 }}>
             <Typography variant="h6">Change password</Typography>
           </Grid>
-          <Grid xs={12} md={7}>
+          <Grid size={{ md: 7, xs: 12 }}>
             <form onSubmit={formik.handleSubmit}>
               <Stack spacing={2}>
                 <TextField

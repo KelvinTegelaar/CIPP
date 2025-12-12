@@ -9,6 +9,7 @@ import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import {
   Avatar,
   Box,
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
@@ -23,7 +24,9 @@ import {
 import { usePopover } from "../hooks/use-popover";
 import { paths } from "../paths";
 import { ApiGetCall } from "../api/ApiCall";
-import { CogIcon } from "@heroicons/react/24/outline";
+import { CogIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+import { useReleaseNotes } from "../contexts/release-notes-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const AccountPopover = (props) => {
   const {
@@ -36,21 +39,36 @@ export const AccountPopover = (props) => {
   const router = useRouter();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const popover = usePopover();
-
+  const queryClient = useQueryClient();
+  const { openReleaseNotes } = useReleaseNotes();
   const orgData = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
+  });
+
+  const userDetails = orgData.data?.clientPrincipal?.userDetails;
+
+  // Cache user photo with user-specific key
+  const userPhoto = ApiGetCall({
+    url: "/api/ListUserPhoto",
+    data: { UserID: userDetails },
+    queryKey: `userPhoto-${userDetails}`,
+    waiting: !!userDetails,
+    staleTime: Infinity,
+    responseType: "blob",
+    convertToDataUrl: true,
   });
 
   const handleLogout = useCallback(async () => {
     try {
       popover.handleClose();
+      // delete query cache and persisted data
+      queryClient.clear();
 
       router.push("/.auth/logout?post_logout_redirect_uri=" + encodeURIComponent(paths.index));
     } catch (err) {
       console.error(err);
+      console.log(orgData);
       toast.error("Something went wrong");
     }
   }, [router, popover]);
@@ -60,15 +78,12 @@ export const AccountPopover = (props) => {
       sx={{
         height: 40,
         width: 40,
+        fontSize: 20,
       }}
       variant="rounded"
-      src={
-        orgData.data?.clientPrincipal?.userDetails
-          ? `/api/ListUserPhoto?UserID=${orgData.data?.clientPrincipal?.userDetails}`
-          : ""
-      }
+      src={userPhoto.data && !userPhoto.isError ? userPhoto.data : undefined}
     >
-      {orgData.data?.userDetails?.[0] || ""}
+      {userDetails?.[0]?.toUpperCase() || ""}
     </Avatar>
   );
 
@@ -89,16 +104,22 @@ export const AccountPopover = (props) => {
             <>
               <Box sx={{ minWidth: 100 }}>
                 <Typography color="neutral.400" variant="caption">
-                  {orgData.data?.Org?.Domain}
+                  {orgData.data?.clientPrincipal?.userDetails?.split("@")?.[1]}
                 </Typography>
                 <Typography color="inherit" variant="subtitle2">
                   {orgData.data?.clientPrincipal?.userDetails ?? "Not logged in"}
                 </Typography>
               </Box>
               {orgData.data?.clientPrincipal?.userDetails && (
-                <SvgIcon color="action" fontSize="small">
-                  <ChevronDownIcon />
-                </SvgIcon>
+                <>
+                  {orgData?.isFetching ? (
+                    <CircularProgress size={20} color="textPrimary" />
+                  ) : (
+                    <SvgIcon color="action" fontSize="small">
+                      <ChevronDownIcon />
+                    </SvgIcon>
+                  )}
+                </>
               )}
             </>
           )}
@@ -142,6 +163,19 @@ export const AccountPopover = (props) => {
                 </SvgIcon>
               </ListItemIcon>
               <ListItemText primary="Preferences" />
+            </ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                popover.handleClose();
+                openReleaseNotes();
+              }}
+            >
+              <ListItemIcon>
+                <SvgIcon fontSize="small">
+                  <DocumentTextIcon />
+                </SvgIcon>
+              </ListItemIcon>
+              <ListItemText primary="View release notes" />
             </ListItemButton>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon>

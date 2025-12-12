@@ -1,4 +1,5 @@
-import { Box, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { Grid } from "@mui/system";
 
 const data = [
   {
@@ -27,9 +28,7 @@ export const Stats2 = () => (
     >
       {data.map((item) => (
         <Grid
-          xs={12}
-          sm={6}
-          md={3}
+          size={{ md: 3, sm: 6, xs: 12 }}
           key={item.label}
         >
           <Box

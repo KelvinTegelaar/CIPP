@@ -29,7 +29,6 @@ export const QueryField = (props) => {
         inputRef.current.focus();
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [disabled]);
 
   const handleChange = useCallback((event) => {

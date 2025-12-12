@@ -11,7 +11,6 @@ import {
   CardActions,
 } from "@mui/material";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import Head from "next/head";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect } from "react";
@@ -22,6 +21,7 @@ const CippFormPage = (props) => {
   const {
     title,
     backButtonTitle,
+    titleButton,
     formPageType = "Add",
     children,
     queryKey,
@@ -71,6 +71,11 @@ const CippFormPage = (props) => {
   }, [postCall.isSuccess]);
 
   const handleSubmit = () => {
+    formControl.trigger();
+    // Check if the form is valid before proceeding
+    if (!isValid) {
+      return;
+    }
     const values = customDataformatter
       ? customDataformatter(formControl.getValues())
       : formControl.getValues();
@@ -91,34 +96,20 @@ const CippFormPage = (props) => {
       <Box
         sx={{
           flexGrow: 1,
-          py: 4,
         }}
       >
         <Container maxWidth="lg">
-          <Stack spacing={4}>
+          <Stack spacing={2}>
             {!hideTitle && (
               <Stack spacing={2}>
-                {!hideBackButton && (
-                  <div>
-                    <Button
-                      color="inherit"
-                      onClick={handleBackClick} // Go back to the previous page
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <ArrowLeftIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      {backButtonTitle}
-                    </Button>
-                  </div>
-                )}
-
-                <div>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                >
                   <Typography variant="h4">
                     {!hidePageType && <>{formPageType} - </>}
                     {title}
                   </Typography>
+                  {titleButton && titleButton}
                 </div>
               </Stack>
             )}

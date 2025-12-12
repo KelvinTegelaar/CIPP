@@ -10,7 +10,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { Block, Close, Done, DoneAll, Subject } from "@mui/icons-material";
+import { Block, Close, Done, DoneAll } from "@mui/icons-material";
 import { CippMessageViewer } from "/src/components/CippComponents/CippMessageViewer.jsx";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { useSettings } from "/src/hooks/use-settings";

@@ -24,11 +24,11 @@ const CippDnsSettings = () => {
 
   const DnsButtons = () => {
     const resolvers = ["Google", "Cloudflare", "Quad9"];
-    return resolvers.map((resolver) => (
+    return resolvers.map((resolver, index) => (
       <Button
+        key={resolver}
         variant={dnsSetting?.data?.Resolver === resolver ? "contained" : "outlined"}
         color="primary"
-        size="small"
         disabled={resolverChange.isPending || dnsSetting.isLoading}
         onClick={() => handleResolverChange(resolver)}
       >
@@ -43,7 +43,24 @@ const CippDnsSettings = () => {
       cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
       CardButton={
         <>
-          <ButtonGroup disableElevation={true}>
+          <ButtonGroup
+            disableElevation={true}
+            variant="contained"
+            size="small"
+            sx={{
+              "& .MuiButtonGroup-grouped": {
+                borderRadius: 0,
+              },
+              "& .MuiButtonGroup-grouped:first-of-type": {
+                borderTopLeftRadius: "4px",
+                borderBottomLeftRadius: "4px",
+              },
+              "& .MuiButtonGroup-grouped:last-of-type": {
+                borderTopRightRadius: "4px",
+                borderBottomRightRadius: "4px",
+              },
+            }}
+          >
             <Button disabled={true} color="primary">
               <SvgIcon fontSize="small">
                 <Dns />

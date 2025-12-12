@@ -1,27 +1,158 @@
 import Head from "next/head";
 import { Box, Container, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
 import CippFormComponent from "../../components/CippComponents/CippFormComponent";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import countryList from "../../data/countryList.json";
 import { CippSettingsSideBar } from "../../components/CippComponents/CippSettingsSideBar";
 import CippDevOptions from "/src/components/CippComponents/CippDevOptions";
+import { CippOffboardingDefaultSettings } from "../../components/CippComponents/CippOffboardingDefaultSettings";
 import { ApiGetCall } from "../../api/ApiCall";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import { useEffect, useState } from "react";
 
 const Page = () => {
   const settings = useSettings();
-  const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
+  const [initialUserType, setInitialUserType] = useState(null);
+
+  // Default portal links configuration
+  const defaultPortalLinks = {
+    M365_Portal: true,
+    Exchange_Portal: true,
+    Entra_Portal: true,
+    Teams_Portal: true,
+    Azure_Portal: true,
+    Intune_Portal: true,
+    SharePoint_Admin: true,
+    Security_Portal: true,
+    Compliance_Portal: true,
+    Power_Platform_Portal: true,
+    Power_BI_Portal: true,
+  };
 
   const auth = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
+
+  const cleanedSettings = { ...settings };
+
+  if (cleanedSettings.offboardingDefaults?.keepCopy) {
+    delete cleanedSettings.offboardingDefaults.keepCopy;
+    settings.handleUpdate(cleanedSettings);
+  }
+
+  // Determine if we have user-specific settings and set initial user type
+  useEffect(() => {
+    if (cleanedSettings && auth.data?.clientPrincipal?.userDetails && initialUserType === null) {
+      const hasUserSpecificSettings =
+        cleanedSettings.UserSpecificSettings &&
+        Object.keys(cleanedSettings.UserSpecificSettings).length > 0;
+
+      setInitialUserType(hasUserSpecificSettings ? "currentUser" : "allUsers");
+    }
+  }, [cleanedSettings, auth.data?.clientPrincipal?.userDetails, initialUserType]);
+
+  // Set default portal links if they don't exist at global level
+  if (!cleanedSettings.portalLinks) {
+    cleanedSettings.portalLinks = defaultPortalLinks;
+  }
+
+  // Determine initial portal links based on user type
+  const getInitialPortalLinks = () => {
+    if (initialUserType === "currentUser" && cleanedSettings.UserSpecificSettings?.portalLinks) {
+      // Merge with defaults to ensure all keys exist
+      return { ...defaultPortalLinks, ...cleanedSettings.UserSpecificSettings.portalLinks };
+    }
+
+    // Use global settings or defaults
+    return { ...defaultPortalLinks, ...cleanedSettings.portalLinks };
+  };
+
+  // Set up initial form values with proper user selector default
+  const initialFormValues = {
+    ...cleanedSettings,
+    user:
+      initialUserType === "currentUser"
+        ? {
+            label: "Current User",
+            value: auth.data?.clientPrincipal?.userDetails || "currentUser",
+          }
+        : {
+            label: "All Users",
+            value: "allUsers",
+          },
+    portalLinks: getInitialPortalLinks(),
+  };
+
+  const formcontrol = useForm({
+    mode: "onChange",
+    defaultValues: initialFormValues,
+  });
+
+  // Watch the user selector to determine which settings to show
+  const selectedUser = useWatch({
+    control: formcontrol.control,
+    name: "user",
+  });
+
+  // Update form when initial user type is determined
+  useEffect(() => {
+    if (initialUserType !== null && auth.data?.clientPrincipal?.userDetails) {
+      const userValue =
+        initialUserType === "currentUser"
+          ? {
+              label: "Current User",
+              value: auth.data.clientPrincipal.userDetails,
+            }
+          : {
+              label: "All Users",
+              value: "allUsers",
+            };
+
+      const newFormValues = {
+        ...cleanedSettings,
+        user: userValue,
+        portalLinks: getInitialPortalLinks(),
+      };
+
+      // Reset the entire form with new values
+      formcontrol.reset(newFormValues);
+    }
+  }, [initialUserType, auth.data?.clientPrincipal?.userDetails]);
+
+  // Handle switching between user types
+  useEffect(() => {
+    if (selectedUser?.value && initialUserType !== null) {
+      const getPortalLinksForUserType = () => {
+        if (selectedUser.value === "allUsers") {
+          // Show global settings (root level)
+          return { ...defaultPortalLinks, ...cleanedSettings.portalLinks };
+        } else {
+          // Show user-specific settings if they exist, otherwise show global settings
+          const userSpecificLinks = cleanedSettings.UserSpecificSettings?.portalLinks;
+          const globalLinks = cleanedSettings.portalLinks;
+          return { ...defaultPortalLinks, ...globalLinks, ...userSpecificLinks };
+        }
+      };
+
+      const newPortalLinks = getPortalLinksForUserType();
+      const currentPortalLinks = formcontrol.getValues("portalLinks");
+
+      // Only update if the portal links actually changed
+      if (JSON.stringify(currentPortalLinks) !== JSON.stringify(newPortalLinks)) {
+        // Reset form with updated portal links but preserve other values
+        const currentValues = formcontrol.getValues();
+        formcontrol.reset({
+          ...currentValues,
+          portalLinks: newPortalLinks,
+        });
+      }
+    }
+  }, [selectedUser?.value, cleanedSettings, initialUserType]);
 
   const addedAttributes = [
     { value: "consentProvidedForMinor", label: "consentProvidedForMinor" },
@@ -34,8 +165,6 @@ const Page = () => {
     { value: "officeLocation", label: "officeLocation" },
     { value: "otherMails", label: "otherMails" },
     { value: "showInAddressList", label: "showInAddressList" },
-    { value: "state", label: "state" },
-    { value: "city", label: "city" },
     { value: "sponsor", label: "sponsor" },
   ];
 
@@ -45,9 +174,63 @@ const Page = () => {
     { value: "100", label: "100" },
     { value: "250", label: "250" },
   ];
+
   const languageListOptions = countryList.map((language) => {
     return { value: language.Code, label: language.Name };
   });
+
+  // Portal links configuration
+  const portalLinksConfig = [
+    {
+      name: "portalLinks.M365_Portal",
+      label: "M365 Portal",
+    },
+    {
+      name: "portalLinks.Exchange_Portal",
+      label: "Exchange Portal",
+    },
+    {
+      name: "portalLinks.Entra_Portal",
+      label: "Entra Portal",
+    },
+    {
+      name: "portalLinks.Teams_Portal",
+      label: "Teams Portal",
+    },
+    {
+      name: "portalLinks.Azure_Portal",
+      label: "Azure Portal",
+    },
+    {
+      name: "portalLinks.Intune_Portal",
+      label: "Intune Portal",
+    },
+    {
+      name: "portalLinks.SharePoint_Admin",
+      label: "SharePoint Admin",
+    },
+    {
+      name: "portalLinks.Security_Portal",
+      label: "Security Portal",
+    },
+    {
+      name: "portalLinks.Compliance_Portal",
+      label: "Compliance Portal",
+    },
+    {
+      name: "portalLinks.Power_Platform_Portal",
+      label: "Power Platform Portal",
+    },
+    {
+      name: "portalLinks.Power_BI_Portal",
+      label: "Power BI Portal",
+    },
+  ];
+
+  // Don't render until we've determined the initial user type
+  if (initialUserType === null || !auth.data?.clientPrincipal?.userDetails) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -71,7 +254,7 @@ const Page = () => {
                       title="General Settings"
                       propertyItems={[
                         {
-                          label: "Default new user usage location",
+                          label: "Default usage location for users",
                           value: (
                             <CippFormComponent
                               type="autoComplete"
@@ -92,7 +275,6 @@ const Page = () => {
                           value: (
                             <CippFormComponent
                               type="autoComplete"
-
                               disableClearable={true}
                               defaultValue={{ value: "25", label: "25" }}
                               name="tablePageSize"
@@ -111,162 +293,25 @@ const Page = () => {
                             <CippFormComponent
                               type="autoComplete"
                               options={addedAttributes}
-
                               name="userAttributes"
                               formControl={formcontrol}
                               multiple={true}
                             />
                           ),
                         },
-                      ]}
-                    />
-                    <CippPropertyListCard
-                      layout="two"
-                      showDivider={false}
-                      title="Offboarding Default Settings"
-                      propertyItems={[
                         {
-                          label: "Convert to Shared Mailbox",
+                          label: "Save last used table filter",
                           value: (
                             <CippFormComponent
                               type="switch"
-                              name="offboardingDefaults.ConvertToShared"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Remove from all groups",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.RemoveGroups"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Hide from Global Address List",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.HideFromGAL"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Remove Licenses",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.RemoveLicenses"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Cancel all calendar invites",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.removeCalendarInvites"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Revoke all sessions",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.RevokeSessions"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Remove users mailbox permissions",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.removePermissions"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Remove all Rules",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.RemoveRules"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Reset Password",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.ResetPass"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Keep copy of forwarded mail in source mailbox",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.keepCopy"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Delete user",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.DeleteUser"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Remove all Mobile Devices",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.RemoveMobile"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Disable Sign in",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.DisableSignIn"
-                              formControl={formcontrol}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Remove all MFA Devices",
-                          value: (
-                            <CippFormComponent
-                              type="switch"
-                              name="offboardingDefaults.RemoveMFADevices"
+                              name="persistFilters"
                               formControl={formcontrol}
                             />
                           ),
                         },
                       ]}
                     />
+                    <CippOffboardingDefaultSettings formControl={formcontrol} />
                   </Stack>
                 </Grid>
                 <Grid size={{ xs: 12, lg: 4 }}>
@@ -282,8 +327,26 @@ const Page = () => {
                       showDivider={false}
                     />
 
-                    <CippSettingsSideBar formcontrol={formcontrol} />
+                    <CippSettingsSideBar
+                      formcontrol={formcontrol}
+                      initialUserType={initialUserType}
+                    />
                     <CippDevOptions />
+                    <CippPropertyListCard
+                      layout="two"
+                      showDivider={false}
+                      title="Portal Links Configuration"
+                      propertyItems={portalLinksConfig.map((portal) => ({
+                        label: portal.label,
+                        value: (
+                          <CippFormComponent
+                            type="switch"
+                            name={portal.name}
+                            formControl={formcontrol}
+                          />
+                        ),
+                      }))}
+                    />
                   </Stack>
                 </Grid>
               </Grid>

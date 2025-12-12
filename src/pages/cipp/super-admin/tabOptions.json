@@ -8,8 +8,8 @@
     "path": "/cipp/super-admin/function-offloading"
   },
   {
-    "label": "Custom Roles",
-    "path": "/cipp/super-admin/custom-roles"
+    "label": "CIPP Roles",
+    "path": "/cipp/super-admin/cipp-roles"
   },
   {
     "label": "SAM App Roles",

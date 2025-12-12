@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   Button,
   DialogActions,
-  Alert,
-  CircularProgress,
 } from "@mui/material";
-import { CheckCircle, Error, Sync } from "@mui/icons-material";
+import { Sync } from "@mui/icons-material";
 import { useForm, FormProvider } from "react-hook-form";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 import { ApiPostCall } from "/src/api/ApiCall";
@@ -29,7 +27,7 @@ export const BPASyncDialog = ({ createDialog }) => {
 
   const [isSyncing, setIsSyncing] = useState(false);
   const bpaSyncResults = ApiPostCall({
-    urlfromdata: true,
+    urlFromData: true,
   });
 
   const handleForm = (values) => {

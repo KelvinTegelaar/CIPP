@@ -1,335 +1,446 @@
 [
   {
-    "timezone": "(UTC-12:00) International Date Line West"
+    "timezone": "(UTC-12:00) International Date Line West",
+    "standardTime": "Dateline Standard Time"
   },
   {
-    "timezone": "(UTC-11:00) Coordinated Universal Time-11"
+    "timezone": "(UTC-11:00) Coordinated Universal Time-11",
+    "standardTime": "UTC-11"
   },
   {
-    "timezone": "(UTC-10:00) Hawaii"
+    "timezone": "(UTC-10:00) Hawaii",
+    "standardTime": "Hawaiian Standard Time"
   },
   {
-    "timezone": "(UTC-09:00) Alaska"
+    "timezone": "(UTC-09:00) Alaska",
+    "standardTime": "Alaskan Standard Time"
   },
   {
-    "timezone": "(UTC-08:00) Baja California"
+    "timezone": "(UTC-08:00) Baja California",
+    "standardTime": "Pacific Standard Time (Mexico)"
   },
   {
-    "timezone": "(UTC-08:00) Pacific Time (US and Canada)"
+    "timezone": "(UTC-08:00) Pacific Time (US and Canada)",
+    "standardTime": "Pacific Standard Time"
   },
   {
-    "timezone": "(UTC-07:00) Arizona"
+    "timezone": "(UTC-07:00) Arizona",
+    "standardTime": "US Mountain Standard Time"
   },
   {
-    "timezone": "(UTC-07:00) Chihuahua, La Paz, Mazatlan"
+    "timezone": "(UTC-07:00) Chihuahua, La Paz, Mazatlan",
+    "standardTime": "Mountain Standard Time (Mexico)"
   },
   {
-    "timezone": "(UTC-07:00) Mountain Time (US and Canada)"
+    "timezone": "(UTC-07:00) Mountain Time (US and Canada)",
+    "standardTime": "Mountain Standard Time"
   },
   {
-    "timezone": "(UTC-06:00) Central America"
+    "timezone": "(UTC-06:00) Central America",
+    "standardTime": "Central America Standard Time"
   },
   {
-    "timezone": "(UTC-06:00) Central Time (US and Canada)"
+    "timezone": "(UTC-06:00) Central Time (US and Canada)",
+    "standardTime": "Central Standard Time"
   },
   {
-    "timezone": "(UTC-06:00) Guadalajara, Mexico City, Monterrey"
+    "timezone": "(UTC-06:00) Guadalajara, Mexico City, Monterrey",
+    "standardTime": "Central Standard Time (Mexico)"
   },
   {
-    "timezone": "(UTC-06:00) Saskatchewan"
+    "timezone": "(UTC-06:00) Saskatchewan",
+    "standardTime": "Canada Central Standard Time"
   },
   {
-    "timezone": "(UTC-05:00) Bogota, Lima, Quito"
+    "timezone": "(UTC-05:00) Bogota, Lima, Quito",
+    "standardTime": "SA Pacific Standard Time"
   },
   {
-    "timezone": "(UTC-05:00) Eastern Time (US and Canada)"
+    "timezone": "(UTC-05:00) Eastern Time (US and Canada)",
+    "standardTime": "Eastern Standard Time"
   },
   {
-    "timezone": "(UTC-05:00) Indiana (East)"
+    "timezone": "(UTC-05:00) Indiana (East)",
+    "standardTime": "US Eastern Standard Time"
   },
   {
-    "timezone": "(UTC-04:30) Caracas"
+    "timezone": "(UTC-04:30) Caracas",
+    "standardTime": "Venezuela Standard Time"
   },
   {
-    "timezone": "(UTC-04:00) Asuncion"
+    "timezone": "(UTC-04:00) Asuncion",
+    "standardTime": "Paraguay Standard Time"
   },
   {
-    "timezone": "(UTC-04:00) Atlantic Time (Canada)"
+    "timezone": "(UTC-04:00) Atlantic Time (Canada)",
+    "standardTime": "Atlantic Standard Time"
   },
   {
-    "timezone": "(UTC-04:00) Cuiaba"
+    "timezone": "(UTC-04:00) Cuiaba",
+    "standardTime": "Central Brazilian Standard Time"
   },
   {
-    "timezone": "(UTC-04:00) Georgetown, La Paz, Manaus, San Juan"
+    "timezone": "(UTC-04:00) Georgetown, La Paz, Manaus, San Juan",
+    "standardTime": "SA Western Standard Time"
   },
   {
-    "timezone": "(UTC-04:00) Santiago"
+    "timezone": "(UTC-04:00) Santiago",
+    "standardTime": "Pacific SA Standard Time"
   },
   {
-    "timezone": "(UTC-03:30) Newfoundland"
+    "timezone": "(UTC-03:30) Newfoundland",
+    "standardTime": "Newfoundland Standard Time"
   },
   {
-    "timezone": "(UTC-03:00) Brasilia"
+    "timezone": "(UTC-03:00) Brasilia",
+    "standardTime": "E. South America Standard Time"
   },
   {
-    "timezone": "(UTC-03:00) Buenos Aires"
+    "timezone": "(UTC-03:00) Buenos Aires",
+    "standardTime": "Argentina Standard Time"
   },
   {
-    "timezone": "(UTC-03:00) Cayenne, Fortaleza"
+    "timezone": "(UTC-03:00) Cayenne, Fortaleza",
+    "standardTime": "SA Eastern Standard Time"
   },
   {
-    "timezone": "(UTC-03:00) Greenland"
+    "timezone": "(UTC-03:00) Greenland",
+    "standardTime": "Greenland Standard Time"
   },
   {
-    "timezone": "(UTC-03:00) Montevideo"
+    "timezone": "(UTC-03:00) Montevideo",
+    "standardTime": "Montevideo Standard Time"
   },
   {
-    "timezone": "(UTC-03:00) Salvador"
+    "timezone": "(UTC-03:00) Salvador",
+    "standardTime": "Bahia Standard Time"
   },
   {
-    "timezone": "(UTC-02:00) Coordinated Universal Time-02"
+    "timezone": "(UTC-02:00) Coordinated Universal Time-02",
+    "standardTime": "UTC-02"
   },
   {
-    "timezone": "(UTC-02:00) Mid-Atlantic"
+    "timezone": "(UTC-02:00) Mid-Atlantic",
+    "standardTime": "Mid-Atlantic Standard Time"
   },
   {
-    "timezone": "(UTC-01:00) Azores"
+    "timezone": "(UTC-01:00) Azores",
+    "standardTime": "Azores Standard Time"
   },
   {
-    "timezone": "(UTC-01:00) Cabo Verde"
+    "timezone": "(UTC-01:00) Cabo Verde",
+    "standardTime": "Cape Verde Standard Time"
   },
   {
-    "timezone": "(UTC) Casablanca"
+    "timezone": "(UTC) Casablanca",
+    "standardTime": "Morocco Standard Time"
   },
   {
-    "timezone": "(UTC) Coordinated Universal Time"
+    "timezone": "(UTC) Coordinated Universal Time",
+    "standardTime": "UTC"
   },
   {
-    "timezone": "(UTC) Dublin, Edinburgh, Lisbon, London"
+    "timezone": "(UTC) Dublin, Edinburgh, Lisbon, London",
+    "standardTime": "GMT Standard Time"
   },
   {
-    "timezone": "(UTC) Monrovia, Reykjavik"
+    "timezone": "(UTC) Monrovia, Reykjavik",
+    "standardTime": "Greenwich Standard Time"
   },
   {
-    "timezone": "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"
+    "timezone": "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
+    "standardTime": "W. Europe Standard Time"
   },
   {
-    "timezone": "(UTC+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague"
+    "timezone": "(UTC+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague",
+    "standardTime": "Central Europe Standard Time"
   },
   {
-    "timezone": "(UTC+01:00) Brussels, Copenhagen, Madrid, Paris"
+    "timezone": "(UTC+01:00) Brussels, Copenhagen, Madrid, Paris",
+    "standardTime": "Romance Standard Time"
   },
   {
-    "timezone": "(UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb"
+    "timezone": "(UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb",
+    "standardTime": "Central European Standard Time"
   },
   {
-    "timezone": "(UTC+01:00) West Central Africa"
+    "timezone": "(UTC+01:00) West Central Africa",
+    "standardTime": "W. Central Africa Standard Time"
   },
   {
-    "timezone": "(UTC+01:00) Windhoek"
+    "timezone": "(UTC+01:00) Windhoek",
+    "standardTime": "Namibia Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Amman"
+    "timezone": "(UTC+02:00) Amman",
+    "standardTime": "Jordan Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Athens, Bucharest"
+    "timezone": "(UTC+02:00) Athens, Bucharest",
+    "standardTime": "GTB Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Beirut"
+    "timezone": "(UTC+02:00) Beirut",
+    "standardTime": "Middle East Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Cairo"
+    "timezone": "(UTC+02:00) Cairo",
+    "standardTime": "Egypt Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Damascus"
+    "timezone": "(UTC+02:00) Damascus",
+    "standardTime": "Syria Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Harare, Pretoria"
+    "timezone": "(UTC+02:00) Harare, Pretoria",
+    "standardTime": "South Africa Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius"
+    "timezone": "(UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
+    "standardTime": "FLE Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Jerusalem"
+    "timezone": "(UTC+02:00) Jerusalem",
+    "standardTime": "Israel Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Minsk (old)"
+    "timezone": "(UTC+02:00) Minsk (old)",
+    "standardTime": "Belarus Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) E. Europe"
+    "timezone": "(UTC+02:00) E. Europe",
+    "standardTime": "E. Europe Standard Time"
   },
   {
-    "timezone": "(UTC+02:00) Kaliningrad"
+    "timezone": "(UTC+02:00) Kaliningrad",
+    "standardTime": "Kaliningrad Standard Time"
   },
   {
-    "timezone": "(UTC+03:00) Baghdad"
+    "timezone": "(UTC+03:00) Baghdad",
+    "standardTime": "Arabic Standard Time"
   },
   {
-    "timezone": "(UTC+03:00) Istanbul"
+    "timezone": "(UTC+03:00) Istanbul",
+    "standardTime": "Turkey Standard Time"
   },
   {
-    "timezone": "(UTC+03:00) Kuwait, Riyadh"
+    "timezone": "(UTC+03:00) Kuwait, Riyadh",
+    "standardTime": "Arab Standard Time"
   },
   {
-    "timezone": "(UTC+03:00) Minsk"
+    "timezone": "(UTC+03:00) Minsk",
+    "standardTime": "Belarus Standard Time"
   },
   {
-    "timezone": "(UTC+03:00) Moscow, St. Petersburg, Volgograd"
+    "timezone": "(UTC+03:00) Moscow, St. Petersburg, Volgograd",
+    "standardTime": "Russian Standard Time"
   },
   {
-    "timezone": "(UTC+03:00) Nairobi"
+    "timezone": "(UTC+03:00) Nairobi",
+    "standardTime": "E. Africa Standard Time"
   },
   {
-    "timezone": "(UTC+03:30) Tehran"
+    "timezone": "(UTC+03:30) Tehran",
+    "standardTime": "Iran Standard Time"
   },
   {
-    "timezone": "(UTC+04:00) Abu Dhabi, Muscat"
+    "timezone": "(UTC+04:00) Abu Dhabi, Muscat",
+    "standardTime": "Arabian Standard Time"
   },
   {
-    "timezone": "(UTC+04:00) Astrakhan, Ulyanovsk"
+    "timezone": "(UTC+04:00) Astrakhan, Ulyanovsk",
+    "standardTime": "Astrakhan Standard Time"
   },
   {
-      "timezone": "(UTC+04:00) Baku"
+    "timezone": "(UTC+04:00) Baku",
+    "standardTime": "Azerbaijan Standard Time"
   },
   {
-    "timezone": "(UTC+04:00) Izhevsk, Samara"
+    "timezone": "(UTC+04:00) Izhevsk, Samara",
+    "standardTime": "Russia Time Zone 3"
   },
   {
-    "timezone": "(UTC+04:00) Port Louis"
+    "timezone": "(UTC+04:00) Port Louis",
+    "standardTime": "Mauritius Standard Time"
   },
   {
-    "timezone": "(UTC+04:00) Tbilisi"
+    "timezone": "(UTC+04:00) Tbilisi",
+    "standardTime": "Georgian Standard Time"
   },
   {
-    "timezone": "(UTC+04:00) Yerevan"
+    "timezone": "(UTC+04:00) Yerevan",
+    "standardTime": "Caucasus Standard Time"
   },
   {
-    "timezone": "(UTC+04:30) Kabul"
+    "timezone": "(UTC+04:30) Kabul",
+    "standardTime": "Afghanistan Standard Time"
   },
   {
-    "timezone": "(UTC+05:00) Ekaterinburg"
+    "timezone": "(UTC+05:00) Ekaterinburg",
+    "standardTime": "Ekaterinburg Standard Time"
   },
   {
-    "timezone": "(UTC+05:00) Islamabad, Karachi"
+    "timezone": "(UTC+05:00) Islamabad, Karachi",
+    "standardTime": "Pakistan Standard Time"
   },
   {
-    "timezone": "(UTC+05:00) Tashkent"
+    "timezone": "(UTC+05:00) Tashkent",
+    "standardTime": "West Asia Standard Time"
   },
   {
-    "timezone": "(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi"
+    "timezone": "(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi",
+    "standardTime": "India Standard Time"
   },
   {
-    "timezone": "(UTC+05:30) Sri Jayawardenepura"
+    "timezone": "(UTC+05:30) Sri Jayawardenepura",
+    "standardTime": "Sri Lanka Standard Time"
   },
   {
-    "timezone": "(UTC+05:45) Kathmandu"
+    "timezone": "(UTC+05:45) Kathmandu",
+    "standardTime": "Nepal Standard Time"
   },
   {
-    "timezone": "(UTC+06:00) Astana"
+    "timezone": "(UTC+06:00) Astana",
+    "standardTime": "Qyzylorda Standard Time"
   },
   {
-    "timezone": "(UTC+06:00) Dhaka"
+    "timezone": "(UTC+06:00) Dhaka",
+    "standardTime": "Bangladesh Standard Time"
   },
   {
-    "timezone": "(UTC+06:00) Omsk"
+    "timezone": "(UTC+06:00) Omsk",
+    "standardTime": "Omsk Standard Time"
   },
   {
-    "timezone": "(UTC+06:30) Yangon (Rangoon)"
+    "timezone": "(UTC+06:30) Yangon (Rangoon)",
+    "standardTime": "Myanmar Standard Time"
   },
   {
-    "timezone": "(UTC+07:00) Bangkok, Hanoi, Jakarta"
+    "timezone": "(UTC+07:00) Bangkok, Hanoi, Jakarta",
+    "standardTime": "SE Asia Standard Time"
   },
   {
-    "timezone": "(UTC+07:00) Barnaul, Gorno-Altaysk"
+    "timezone": "(UTC+07:00) Barnaul, Gorno-Altaysk",
+    "standardTime": "Altai Standard Time"
   },
   {
-    "timezone": "(UTC+07:00) Krasnoyarsk"
+    "timezone": "(UTC+07:00) Krasnoyarsk",
+    "standardTime": "North Asia Standard Time"
   },
   {
-    "timezone": "(UTC+07:00) Novosibirsk"
+    "timezone": "(UTC+07:00) Novosibirsk",
+    "standardTime": "N. Central Asia Standard Time"
   },
   {
-    "timezone": "(UTC+07:00) Tomsk"
+    "timezone": "(UTC+07:00) Tomsk",
+    "standardTime": "Tomsk Standard Time"
   },
   {
-    "timezone": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi"
+    "timezone": "(UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi",
+    "standardTime": "China Standard Time"
   },
   {
-    "timezone": "(UTC+08:00) Irkutsk"
+    "timezone": "(UTC+08:00) Irkutsk",
+    "standardTime": "North Asia East Standard Time"
   },
   {
-    "timezone": "(UTC+08:00) Kuala Lumpur, Singapore"
+    "timezone": "(UTC+08:00) Kuala Lumpur, Singapore",
+    "standardTime": "Singapore Standard Time"
   },
   {
-    "timezone": "(UTC+08:00) Perth"
+    "timezone": "(UTC+08:00) Perth",
+    "standardTime": "W. Australia Standard Time"
   },
   {
-    "timezone": "(UTC+08:00) Taipei"
+    "timezone": "(UTC+08:00) Taipei",
+    "standardTime": "Taipei Standard Time"
   },
   {
-    "timezone": "(UTC+08:00) Ulaanbaatar"
+    "timezone": "(UTC+08:00) Ulaanbaatar",
+    "standardTime": "Ulaanbaatar Standard Time"
   },
   {
-    "timezone": "(UTC+09:00) Osaka, Sapporo, Tokyo"
+    "timezone": "(UTC+09:00) Osaka, Sapporo, Tokyo",
+    "standardTime": "Tokyo Standard Time"
   },
   {
-    "timezone": "(UTC+09:00) Seoul"
+    "timezone": "(UTC+09:00) Seoul",
+    "standardTime": "Korea Standard Time"
   },
   {
-    "timezone": "(UTC+09:00) Yakutsk"
+    "timezone": "(UTC+09:00) Yakutsk",
+    "standardTime": "Yakutsk Standard Time"
   },
   {
-    "timezone": "(UTC+09:30) Adelaide"
+    "timezone": "(UTC+09:30) Adelaide",
+    "standardTime": "Cen. Australia Standard Time"
   },
   {
-    "timezone": "(UTC+09:30) Darwin"
+    "timezone": "(UTC+09:30) Darwin",
+    "standardTime": "AUS Central Standard Time"
   },
   {
-    "timezone": "(UTC+10:00) Brisbane"
+    "timezone": "(UTC+10:00) Brisbane",
+    "standardTime": "E. Australia Standard Time"
   },
   {
-    "timezone": "(UTC+10:00) Canberra, Melbourne, Sydney"
+    "timezone": "(UTC+10:00) Canberra, Melbourne, Sydney",
+    "standardTime": "AUS Eastern Standard Time"
   },
   {
-    "timezone": "(UTC+10:00) Guam, Port Moresby"
+    "timezone": "(UTC+10:00) Guam, Port Moresby",
+    "standardTime": "West Pacific Standard Time"
   },
   {
-    "timezone": "(UTC+10:00) Hobart"
+    "timezone": "(UTC+10:00) Hobart",
+    "standardTime": "Tasmania Standard Time"
   },
   {
-    "timezone": "(UTC+10:00) Magadan"
+    "timezone": "(UTC+10:00) Magadan",
+    "standardTime": "Magadan Standard Time"
   },
   {
-    "timezone": "(UTC+10:00) Vladivostok"
+    "timezone": "(UTC+10:00) Vladivostok",
+    "standardTime": "Vladivostok Standard Time"
   },
   {
-    "timezone": "(UTC+11:00) Chokurdakh"
+    "timezone": "(UTC+11:00) Chokurdakh",
+    "standardTime": "Russia Time Zone 10"
   },
   {
-    "timezone": "(UTC+11:00) Sakhalin"
+    "timezone": "(UTC+11:00) Sakhalin",
+    "standardTime": "Sakhalin Standard Time"
   },
   {
-    "timezone": "(UTC+11:00) Solomon Is., New Caledonia"
+    "timezone": "(UTC+11:00) Solomon Is., New Caledonia",
+    "standardTime": "Central Pacific Standard Time"
   },
   {
-    "timezone": "(UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky"
+    "timezone": "(UTC+12:00) Anadyr, Petropavlovsk-Kamchatsky",
+    "standardTime": "Russia Time Zone 11"
   },
   {
-    "timezone": "(UTC+12:00) Auckland, Wellington"
+    "timezone": "(UTC+12:00) Auckland, Wellington",
+    "standardTime": "New Zealand Standard Time"
   },
   {
-    "timezone": "(UTC+12:00) Coordinated Universal Time+12"
+    "timezone": "(UTC+12:00) Coordinated Universal Time+12",
+    "standardTime": "UTC+12"
   },
   {
-    "timezone": "(UTC+12:00) Fiji"
+    "timezone": "(UTC+12:00) Fiji",
+    "standardTime": "Fiji Standard Time"
   },
   {
-    "timezone": "(UTC+12:00) Petropavlovsk-Kamchatsky - Old"
+    "timezone": "(UTC+12:00) Petropavlovsk-Kamchatsky - Old",
+    "standardTime": "Kamchatka Standard Time"
   },
   {
-    "timezone": "(UTC+13:00) Nuku'alofa"
+    "timezone": "(UTC+13:00) Nuku'alofa",
+    "standardTime": "Tonga Standard Time"
   },
   {
-    "timezone": "(UTC+13:00) Samoa"
+    "timezone": "(UTC+13:00) Samoa",
+    "standardTime": "Samoa Standard Time"
   }
 ]

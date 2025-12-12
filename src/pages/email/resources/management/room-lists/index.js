@@ -1,54 +1,69 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Visibility } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { CippAddRoomListDrawer } from "../../../../../components/CippComponents/CippAddRoomListDrawer";
 
 const Page = () => {
   const pageTitle = "Room Lists";
   const apiUrl = "/api/ListRoomLists";
+  const cardButtonPermissions = ["Exchange.Room.ReadWrite"];
 
   const actions = [
     {
-      label: "View included Rooms",
-      link: `/email/resources/management/room-lists/list/view?roomAddress=[emailAddress]`,
-      color: "info",
-      icon: <Visibility />,
+      label: "Edit Room List",
+      link: "/email/resources/management/room-lists/edit?groupId=[PrimarySmtpAddress]",
+      multiPost: false,
+      icon: <Edit />,
+      color: "success",
+    },
+    {
+      label: "Delete Room List",
+      type: "POST",
+      url: "/api/ExecGroupsDelete",
+      icon: <TrashIcon />,
+      data: {
+        id: "Guid",
+        displayName: "DisplayName",
+        GroupType: "!Distribution List",
+      },
+      confirmText: "Are you sure you want to delete this room list?",
+      multiPost: false,
     },
   ];
 
   const offCanvas = {
     extendedInfoFields: [
-      "id",
-      "emailAddress",
-      "displayName",
-      "phone",
-      "placeId",
-      "geoCoordinates",
-      "address.city",
-      "address.countryOrRegion",
+      "Guid",
+      "PrimarySmtpAddress",
+      "DisplayName",
+      "Phone",
+      "Identity",
+      "Notes",
+      "MailNickname",
     ],
     actions: actions,
   };
 
-  const simpleColumns = [
-    "displayName",
-    "geoCoordinates",
-    "placeId",
-    "address.city",
-    "address.countryOrRegion",
-  ];
+  const simpleColumns = ["DisplayName", "PrimarySmtpAddress", "Identity", "Phone", "Notes"];
 
   return (
     <CippTablePage
       title={pageTitle}
       apiUrl={apiUrl}
       actions={actions}
-      apiDataKey="ListRoomListsResults"
+      apiDataKey="Results"
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <>
+          <CippAddRoomListDrawer requiredPermissions={cardButtonPermissions} />
+        </>
+      }
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

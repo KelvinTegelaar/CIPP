@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage";
-import { Code, TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { showToast } from "/src/store/toasts";
 import {
   Button,
@@ -12,13 +12,12 @@ import {
   DialogActions,
 } from "@mui/material";
 import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { Search, Close, Save } from "@mui/icons-material";
+import { Close, Save } from "@mui/icons-material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
 const Page = () => {
   const pageTitle = "Scripts";
@@ -31,6 +30,11 @@ const Page = () => {
   const [currentScript, setCurrentScript] = useState(null);
 
   const dispatch = useDispatch();
+
+  const language = useMemo(() => {
+    return currentScript?.scriptType?.toLowerCase() === ("macos" || "linux") ? "shell" : "powershell";
+  }, [currentScript?.scriptType]);
+
 
   const tenantFilter = useSettings().currentTenant;
   const {
@@ -94,17 +98,19 @@ const Page = () => {
         scriptContent,
         runAsAccount,
         fileName,
-        roleScopeTagIds
+        roleScopeTagIds,
+        scriptType,
       } = currentScript;
       const patchData = {
         TenantFilter: tenantFilter,
         ScriptId: id,
+        ScriptType: scriptType,
         IntuneScript: JSON.stringify({
           runAs32Bit,
           id,
           displayName,
           description,
-          scriptContent: scriptBytes.toString("base64"),  // Convert to base64
+          scriptContent: scriptBytes.toString("base64"), // Convert to base64
           runAsAccount,
           fileName,
           roleScopeTagIds,
@@ -118,7 +124,7 @@ const Page = () => {
       });
 
       if (!response.ok) {
-        dispatch (
+        dispatch(
           showToast({
             title: "Script Save Error",
             message: "Your Intune script could not be saved.",
@@ -126,7 +132,7 @@ const Page = () => {
           })
         );
       }
-      
+
       return response.json();
     },
     enabled: false,
@@ -139,7 +145,7 @@ const Page = () => {
     const { data } = await saveScriptRefetch();
     setCodeContentChanged(false);
     setCodeOpen(!codeOpen);
-    dispatch (
+    dispatch(
       showToast({
         title: "Script Saved",
         message: "Your Intune script has been saved successfully.",
@@ -228,21 +234,18 @@ const Page = () => {
             </IconButton>
           )}
           {isSaving && (
-            <CircularProgress
-              size={20}
-              sx={{ position: "absolute", right: 55, top: 14 }}
-            />
+            <CircularProgress size={20} sx={{ position: "absolute", right: 55, top: 14 }} />
           )}
         </DialogTitle>
         <DialogContent dividers>
           {(scriptIsFetching || scriptIsLoading) && <CircularProgress size={40} />}
-          {(!scriptIsFetching && !scriptIsLoading) && (
+          {!scriptIsFetching && !scriptIsLoading && (
             <CippCodeBlock
               open={codeOpen}
               type="editor"
               code={codeContent}
               onChange={codeChange}
-              language="powershell"
+              language={language}
             />
           )}
         </DialogContent>

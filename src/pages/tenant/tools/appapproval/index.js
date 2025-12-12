@@ -2,7 +2,6 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardConfirmation";
 import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
 import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
-import { useSettings } from "../../../../hooks/use-settings";
 import { CippWizardAppApproval } from "../../../../components/CippWizard/CippWizardAppApproval";
 import { Alert } from "@mui/material";
 
@@ -38,7 +37,7 @@ const Page = () => {
   return (
     <>
       <CippWizardPage
-        initialState={{ CopyPermissions: true }}
+        initialState={{ configMode: "template", CopyPermissions: true }}
         steps={steps}
         postUrl="/api/ExecAddMultiTenantApp"
         wizardTitle="Application Approval Wizard"

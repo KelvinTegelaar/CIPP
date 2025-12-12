@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippDomainCards } from "../../../../components/CippCards/CippDomainCards";
 
@@ -9,7 +9,6 @@ const Page = () => {
     <Box
       sx={{
         flexGrow: 1,
-        py: 4,
       }}
     >
       <Container maxWidth={false}>

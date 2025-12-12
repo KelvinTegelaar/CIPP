@@ -1,5 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { Grid } from "@mui/material";
+import "@mui/material";
+import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
@@ -22,10 +23,10 @@ const AddSiteForm = () => {
       backButtonTitle="Back to Sites"
     >
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent name="siteName" label="Site Name" formControl={formControl} required />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="siteDescription"
             label="Site Description"
@@ -33,7 +34,7 @@ const AddSiteForm = () => {
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="SiteOwner"
             label="Add Owner"
@@ -68,7 +69,7 @@ const AddSiteForm = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="TemplateName"
             label="Template Name"
@@ -90,7 +91,7 @@ const AddSiteForm = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             name="siteDesign"
             label="Site Design Template"

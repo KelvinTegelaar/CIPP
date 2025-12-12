@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Box,
@@ -13,7 +13,7 @@ import {
   Skeleton,
 } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
@@ -180,13 +180,13 @@ export const CippCustomRoles = () => {
 
   const ApiPermissionRow = ({ obj, cat }) => {
     const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+    const [descriptionOffcanvasVisible, setDescriptionOffcanvasVisible] = useState(false);
+    const [selectedDescription, setSelectedDescription] = useState({ name: '', description: '' });
 
-    var items = [];
-    for (var key in apiPermissions[cat][obj])
-      for (var key2 in apiPermissions[cat][obj][key]) {
-        items.push({ heading: "", content: apiPermissions[cat][obj][key][key2] });
-      }
-    var group = [{ items: items }];
+    const handleDescriptionClick = (name, description) => {
+      setSelectedDescription({ name, description });
+      setDescriptionOffcanvasVisible(true);
+    };
 
     return (
       <Stack
@@ -198,7 +198,7 @@ export const CippCustomRoles = () => {
       >
         <Typography variant="h6">{obj}</Typography>
 
-        <Stack direction="row" spacing={3} xl={8}>
+        <Stack direction="row" spacing={3} size={{ xl: 8 }}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
               <InformationCircleIcon />
@@ -223,41 +223,68 @@ export const CippCustomRoles = () => {
             formControl={formControl}
           />
         </Stack>
+        {/* Main offcanvas */}
         <CippOffCanvas
           visible={offcanvasVisible}
-          onClose={() => {
-            setOffcanvasVisible(false);
-          }}
+          onClose={() => setOffcanvasVisible(false)}
+          title={`${cat}.${obj} Endpoints`}
         >
           <Stack spacing={2}>
-            <Typography variant="h3" sx={{ mx: 3 }}>
-              {`${cat}.${obj}`}
-            </Typography>
             <Typography variant="body1" sx={{ mx: 3 }}>
-              Listed below are the available API endpoints based on permission level, ReadWrite
-              level includes endpoints under Read.
+              Listed below are the available API endpoints based on permission level.
+              ReadWrite level includes endpoints under Read.
             </Typography>
-            {[apiPermissions[cat][obj]].map((permissions, key) => {
-              var sections = Object.keys(permissions).map((type) => {
-                var items = [];
-                for (var api in permissions[type]) {
-                  items.push({ heading: "", content: permissions[type][api] });
-                }
-                return (
-                  <Stack key={key} spacing={2}>
-                    <Typography variant="h4">{type}</Typography>
-                    <Stack spacing={1}>
-                      {items.map((item, idx) => (
-                        <Stack key={idx} spacing={1}>
-                          <Typography variant="body2">{item.content}</Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
+            {Object.keys(apiPermissions[cat][obj]).map((type, typeIndex) => {
+              var items = [];
+              for (var api in apiPermissions[cat][obj][type]) {
+                const apiFunction = apiPermissions[cat][obj][type][api];
+                items.push({ 
+                  name: apiFunction.Name, 
+                  description: apiFunction.Description?.[0]?.Text || null
+                });
+              }
+              return (
+                <Stack key={`${type}-${typeIndex}`} spacing={2}>
+                  <Typography variant="h4">{type}</Typography>
+                  <Stack spacing={1}>
+                    {items.map((item, idx) => (
+                      <Stack key={`${type}-${idx}`} direction="row" alignItems="center" spacing={1}>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', flexGrow: 1 }}>
+                          {item.name}
+                        </Typography>
+                        {item.description && (
+                          <Button 
+                            size="small" 
+                            onClick={() => handleDescriptionClick(item.name, item.description)}
+                            sx={{ minWidth: 'auto', p: 0.5 }}
+                          >
+                            <SvgIcon fontSize="small" color="info">
+                              <InformationCircleIcon />
+                            </SvgIcon>
+                          </Button>
+                        )}
+                      </Stack>
+                    ))}
                   </Stack>
-                );
-              });
-              return sections;
+                </Stack>
+              );
             })}
+          </Stack>
+        </CippOffCanvas>
+
+        {/* Description offcanvas */}
+        <CippOffCanvas
+          visible={descriptionOffcanvasVisible}
+          onClose={() => setDescriptionOffcanvasVisible(false)}
+          title="Function Description"
+        >
+          <Stack spacing={2} sx={{ p: 2 }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+              {selectedDescription.name}
+            </Typography>
+            <Typography variant="body1">
+              {selectedDescription.description}
+            </Typography>
           </Stack>
         </CippOffCanvas>
       </Stack>
@@ -391,7 +418,7 @@ export const CippCustomRoles = () => {
           )}
         </Box>
 
-        <Box xl={3} md={12} width="30%">
+        <Box size={{ md: 12, xl: 3 }} width="30%">
           {selectedRole && selectedTenant?.length > 0 && (
             <>
               <h5>Allowed Tenants</h5>

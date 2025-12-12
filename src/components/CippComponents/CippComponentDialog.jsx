@@ -7,7 +7,7 @@ export const CippComponentDialog = (props) => {
     <Dialog fullWidth maxWidth="sm" onClose={createDialog.handleClose} open={createDialog.open}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
         <DialogTitle>{title}</DialogTitle>
-        <DialogContent>{...children}</DialogContent>
+        <DialogContent>{children}</DialogContent>
         <DialogActions>
           <Button color="inherit" onClick={createDialog.handleClose}>
             Close

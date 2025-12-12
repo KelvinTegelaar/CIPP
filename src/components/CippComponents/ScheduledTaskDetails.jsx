@@ -20,8 +20,11 @@ import { ExpandMore, Sync, Search, Close } from "@mui/icons-material";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
+import { ActionsMenu } from "/src/components/actions-menu";
+import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
+import { CippApiLogsDrawer } from "./CippApiLogsDrawer";
 
-const ScheduledTaskDetails = ({ data }) => {
+const ScheduledTaskDetails = ({ data, showActions = true }) => {
   const [taskDetails, setTaskDetails] = useState(null);
   const [expanded, setExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -79,7 +82,26 @@ const ScheduledTaskDetails = ({ data }) => {
   return (
     <>
       <Stack spacing={2}>
-        <Typography variant="h5">{taskDetails?.Task?.Name}</Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Typography variant="h5">
+            {taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name}
+          </Typography>
+          {showActions && (
+            <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
+              <CippApiLogsDrawer
+                scheduledTaskFilter={data?.RowKey}
+                buttonText="View Logs"
+                title="Scheduled Task Logs"
+                variant="outlined"
+              />
+              <ActionsMenu
+                actions={CippScheduledTaskActions()}
+                data={taskDetails?.Task}
+                disabled={taskDetailResults.isLoading}
+              />
+            </Box>
+          )}
+        </Stack>
         <CippPropertyListCard
           actionButton={
             <Tooltip title="Refresh">
@@ -102,6 +124,31 @@ const ScheduledTaskDetails = ({ data }) => {
             })}
           isFetching={taskDetailResults.isFetching}
         />
+
+        {taskDetails?.Task?.Trigger && (
+          <Accordion
+            variant="outlined"
+            expanded={expanded === "task-trigger"}
+            onChange={handleChange("task-trigger")}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h6">Trigger Configuration</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <CippPropertyListCard
+                showDivider={false}
+                layout="dual"
+                propertyItems={Object.entries(taskDetails.Task.Trigger).map(([key, value]) => {
+                  return {
+                    label: key,
+                    value: getCippFormatting(value, key),
+                  };
+                })}
+                isFetching={taskDetailResults.isFetching}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
 
         {taskDetailResults.isFetching ? (
           <Skeleton variant="rectangular" width="100%" height={200} />
@@ -206,7 +253,9 @@ const ScheduledTaskDetails = ({ data }) => {
                             },
                           }}
                         >
-                          <Typography>{result.TenantName || result.Tenant}</Typography>
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            {getCippFormatting(result.TenantName || result.Tenant, "Tenant")}
+                          </Box>
                           <Chip
                             size="small"
                             color="info"
@@ -216,7 +265,7 @@ const ScheduledTaskDetails = ({ data }) => {
                           />
                         </AccordionSummary>
                         <AccordionDetails>
-                          {result.Results === "null" ? (
+                          {result.Results === "null" || !result.Results ? (
                             <Typography color="text.secondary">No data available</Typography>
                           ) : Array.isArray(result.Results) ? (
                             <CippDataTable

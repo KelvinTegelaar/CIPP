@@ -1,4 +1,5 @@
-import { Container, Grid } from "@mui/material";
+import { Container } from "@mui/material";
+import { Grid } from "@mui/system";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
@@ -104,7 +105,7 @@ const Page = () => {
     <Container sx={{ pt: 3 }} maxWidth="xl">
       <Grid container spacing={2}>
         {backendInfo.map((item) => (
-          <Grid item xs={12} sm={12} md={6} lg={4} key={item.id}>
+          <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }} key={item.id}>
             <CippBackendCard backendComponents={backendComponents} item={item} />
           </Grid>
         ))}

@@ -1,0 +1,14 @@
+[
+  {
+    "label": "Saved Logs",
+    "path": "/tenant/administration/audit-logs"
+  },
+  {
+    "label": "Log Searches",
+    "path": "/tenant/administration/audit-logs/searches"
+  },
+  {
+    "label": "Directory Audits",
+    "path": "/tenant/administration/audit-logs/directory-audits"
+  }
+]

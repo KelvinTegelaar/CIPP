@@ -125,6 +125,7 @@ const Page = () => {
           backButtonTitle="Integrations"
           headerText={extension.headerText}
           hideTitleText={true}
+          noTenantInHead={true}
         >
           <CardContent sx={{ pb: 0, mb: 0 }}>
             {logo && (
@@ -154,7 +155,13 @@ const Page = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => handleIntegrationTest()}
-                    disabled={actionTestResults?.isLoading}
+                    disabled={
+                      actionTestResults?.isLoading ||
+                      (extension?.SettingOptions?.find(
+                        (setting) => setting?.name === `${extension.id}.Enabled`
+                      ) &&
+                        integrations?.data?.[extension.id]?.Enabled !== true)
+                    }
                   >
                     <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                       <BeakerIcon />
@@ -169,7 +176,13 @@ const Page = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => handleIntegrationSync()}
-                    disabled={actionSyncResults.isLoading}
+                    disabled={
+                      actionSyncResults.isLoading ||
+                      (extension?.SettingOptions?.find(
+                        (setting) => setting?.name === `${extension.id}.Enabled`
+                      ) &&
+                        integrations?.data?.[extension.id]?.Enabled !== true)
+                    }
                   >
                     <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                       <ArrowPathIcon />
@@ -181,14 +194,8 @@ const Page = () => {
               {extension?.links && (
                 <>
                   {extension.links.map((link, index) => (
-                    <Box>
-                      <Button
-                        href={link.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        color="inherit"
-                        key={index}
-                      >
+                    <Box key={index}>
+                      <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
                         <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                           <ArrowTopRightOnSquareIcon />
                         </SvgIcon>

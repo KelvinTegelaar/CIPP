@@ -1,4 +1,5 @@
-import { Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
+import { Grid } from "@mui/system";
 import Head from "next/head";
 import { CippImageCard } from "../components/CippCards/CippImageCard.jsx";
 import { Layout as DashboardLayout } from "../layouts/index.js";
@@ -37,7 +38,7 @@ const Error500 = (props) => {
                 alignItems="center"
                 sx={{ height: "100%" }}
               >
-                <Grid item xs={12} md={6}>
+                <Grid size={{ md: 6, xs: 12 }}>
                   <CippImageCard
                     isFetching={false}
                     imageUrl="/assets/illustrations/undraw_bug_fixing_oc-7-a.svg"

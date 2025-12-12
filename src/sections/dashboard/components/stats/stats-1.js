@@ -13,7 +13,7 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Grid } from "@mui/system";
 const data = [
   {
     icon: (
@@ -52,7 +52,7 @@ export const Stats1 = () => (
     <Grid container spacing={3}>
       {data.map((item) => {
         return (
-          <Grid xs={12} md={4} key={item.label}>
+          <Grid size={{ md: 4, xs: 12 }} key={item.label}>
             <Card sx={{ height: "100%" }}>
               <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
                 <Avatar

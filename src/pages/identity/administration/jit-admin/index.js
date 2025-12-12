@@ -15,13 +15,13 @@ const Page = () => {
         </>
       }
       title="JIT Admin Table"
-      apiUrl="/api/ExecJITAdmin?Action=List"
+      apiUrl="/api/ListJITAdmin"
       apiDataKey="Results"
       simpleColumns={[]}
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
 
 export default Page;
