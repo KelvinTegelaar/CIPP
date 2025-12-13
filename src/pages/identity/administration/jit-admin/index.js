@@ -10,8 +10,10 @@ const Page = () => {
     "displayName",
     "accountEnabled",
     "jitAdminEnabled",
+    "jitAdminStartDate",
     "jitAdminExpiration",
     "jitAdminReason",
+    "jitAdminCreatedBy",
     "memberOf",
   ];
 
