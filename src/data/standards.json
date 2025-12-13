@@ -1703,6 +1703,32 @@
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
+    "name": "standards.AutoArchive",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures the auto-archiving threshold percentage for the tenant. When a mailbox exceeds this threshold, the oldest items are automatically moved to the archive mailbox. Archive must be enabled manually or via the CIPP standard 'Enable Online Archive for all users'. More information can be found in [Microsoft's documentation.](https://learn.microsoft.com/en-us/exchange/security-and-compliance/messaging-records-management/auto-archiving)",
+    "docsDescription": "Configures the auto-archiving threshold at the organization level. Auto-archiving automatically moves the oldest items from a user's primary mailbox to their archive mailbox when mailbox usage exceeds the configured threshold percentage. This prevents mail flow disruptions caused by full mailboxes. Valid range is 80-100, where 100 disables auto-archiving for the tenant. More information can be found in [Microsoft's documentation.](https://learn.microsoft.com/en-us/exchange/security-and-compliance/messaging-records-management/auto-archiving)",
+    "executiveText": "Configures automatic archiving of mailbox items when storage approaches capacity, preventing email delivery failures due to full mailboxes. This proactive storage management ensures business continuity and reduces helpdesk tickets related to mailbox quota issues.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.AutoArchive.AutoArchivingThresholdPercentage",
+        "label": "Auto-Archiving Threshold Percentage (80-100, default 96, 100 disables)",
+        "defaultValue": 96,
+        "validators": {
+          "min": { "value": 80, "message": "Minimum value is 80" },
+          "max": { "value": 100, "message": "Maximum value is 100" }
+        }
+      }
+    ],
+    "label": "Configure Auto-Archiving Threshold",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-12-11",
+    "powershellEquivalent": "Set-OrganizationConfig -AutoArchivingThresholdPercentage 80-100",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SendReceiveLimitTenant",
     "cat": "Exchange Standards",
     "tag": [],
