@@ -240,6 +240,26 @@
     "description": "Monitors Global Admin accounts and alerts when they don't have an alternate email address set, which is important for password recovery of key accounts."
   },
   {
+    "name": "GlobalAdminAllowList",
+    "label": "Alert on Global Admins outside approved list",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Approved Global Admin UPN prefixes (comma separated)",
+        "inputName": "ApprovedGlobalAdmins"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert per non-compliant admin? (off = single aggregated alert)",
+        "inputName": "AlertEachAdmin"
+      }
+    ],
+    "description": "Alerts when Global Administrator accounts are present whose UPN prefix (before @domain) is not in your approved comma-separated allow list. Toggle per-admin alerts to get one alert per user or a single aggregated alert."
+  },
+  {
     "name": "NewRiskyUsers",
     "label": "Alert on new risky users (P2 License Required)",
     "recommendedRunInterval": "30m",
