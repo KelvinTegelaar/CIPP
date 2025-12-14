@@ -568,6 +568,16 @@ const CippSchedulerForm = (props) => {
           />
         </Grid>
 
+        <Grid size={{ md: 12, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            name="reference"
+            label="Reference"
+            formControl={formControl}
+            placeholder="Optional note to identify this task, this is also added to notification titles"
+          />
+        </Grid>
+
         {/* Divider */}
         <Grid size={{ md: 12, xs: 12 }}>
           <Divider sx={{ my: 2 }} />
