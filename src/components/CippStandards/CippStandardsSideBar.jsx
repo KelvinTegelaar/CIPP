@@ -420,7 +420,8 @@ const CippStandardsSideBar = ({
 
           {(watchForm.tenantFilter?.some(
             (tenant) => tenant.value === "AllTenants" || tenant.type === "Group"
-          ) || (watchForm.excludedTenants && watchForm.excludedTenants.length > 0)) && (
+          ) ||
+            (watchForm.excludedTenants && watchForm.excludedTenants.length > 0)) && (
             <>
               <Divider />
               <CippFormTenantSelector
@@ -465,7 +466,8 @@ const CippStandardsSideBar = ({
                 }}
                 variant="caption"
               >
-                When enabled, email notifications will not be sent for drift alerts. Webhook and PSA alerts will still be sent.
+                When enabled, email notifications will not be sent for drift alerts. Webhook and PSA
+                alerts will still be sent.
               </Typography>
             </>
           )}
