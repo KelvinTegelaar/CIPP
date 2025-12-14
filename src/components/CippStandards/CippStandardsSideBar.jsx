@@ -452,6 +452,21 @@ const CippStandardsSideBar = ({
                 placeholder="Enter email address for drift alerts. Leave blank to use the default email address."
                 fullWidth
               />
+              <CippFormComponent
+                type="switch"
+                name="driftAlertDisableEmail"
+                label="Disable Email Notifications"
+                formControl={formControl}
+                fullWidth
+              />
+              <Typography
+                sx={{
+                  color: "text.secondary",
+                }}
+                variant="caption"
+              >
+                When enabled, email notifications will not be sent for drift alerts. Webhook and PSA alerts will still be sent.
+              </Typography>
             </>
           )}
           {/* Hide schedule options in drift mode */}
@@ -561,6 +576,7 @@ const CippStandardsSideBar = ({
                   type: "drift",
                   driftAlertWebhook: "driftAlertWebhook",
                   driftAlertEmail: "driftAlertEmail",
+                  driftAlertDisableEmail: "driftAlertDisableEmail",
                 }
               : {}),
           },
