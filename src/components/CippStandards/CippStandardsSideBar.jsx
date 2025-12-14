@@ -456,7 +456,7 @@ const CippStandardsSideBar = ({
               <CippFormComponent
                 type="switch"
                 name="driftAlertDisableEmail"
-                label="Disable Email Notifications"
+                label="Disable All Notifications"
                 formControl={formControl}
                 fullWidth
               />
@@ -466,8 +466,8 @@ const CippStandardsSideBar = ({
                 }}
                 variant="caption"
               >
-                When enabled, email notifications will not be sent for drift alerts. Webhook and PSA
-                alerts will still be sent.
+                When enabled, all drift alert notifications (email, webhook, and PSA) will be
+                disabled.
               </Typography>
             </>
           )}
