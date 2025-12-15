@@ -3581,6 +3581,27 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.MDMEnrollmentDuringRegistration",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Controls the \"Allow my organization to manage my device\" prompt when adding a work or school account on Windows. This setting determines whether automatic MDM enrollment occurs during account registration.",
+    "docsDescription": "Controls whether Windows shows the \"Allow my organization to manage my device\" prompt when users add a work or school account. When set to disabled, this setting prevents automatic MDM enrollment during the account registration flow, separating account registration from device enrollment. This is useful for environments where you want to allow users to add work accounts without triggering MDM enrollment.",
+    "executiveText": "Controls automatic device management enrollment during work account setup. When disabled, users can add work accounts to their Windows devices without the prompt asking to allow organizational device management, preventing unintended MDM enrollments on personal or BYOD devices.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.MDMEnrollmentDuringRegistration.disableEnrollment",
+        "label": "Disable MDM enrollment during registration"
+      }
+    ],
+    "label": "Configure MDM enrollment when adding work or school account",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-12-15",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration",
     "cat": "Intune Standards",
     "tag": [],
