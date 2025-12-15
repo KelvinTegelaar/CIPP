@@ -1100,7 +1100,7 @@ const Page = () => {
       url: "/api/RemoveTrustedBlockedSender",
       customDataformatter: (row, action, formData) => {
         return {
-          userPrincipalName: row?.userPrincipalName,
+          userPrincipalName: row?.UserPrincipalName,
           typeProperty: row?.TypeProperty,
           value: row?.Value,
           tenantFilter: userSettingsDefaults.currentTenant,
