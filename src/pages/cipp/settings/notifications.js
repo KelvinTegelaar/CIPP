@@ -16,6 +16,8 @@ const Page = () => {
 
   return (
     <CippFormPage
+      title={pageTitle}
+      hideTitle={true}
       hideBackButton={true}
       hidePageType={true}
       formControl={formControl}
