@@ -77,13 +77,13 @@ const Page = () => {
           {/* Column 1: Tenant Information */}
           <Grid size={{ xs: 12, lg: 4 }}>
             <Card sx={{ height: "100%" }}>
-              <CardHeader 
+              <CardHeader
                 title={
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <BuildingIcon sx={{ fontSize: 20 }} />
                     <Typography variant="subtitle1">Tenant</Typography>
                   </Box>
-                } 
+                }
                 sx={{ pb: 1.5 }}
               />
               <CardContent>
@@ -307,7 +307,12 @@ const Page = () => {
                       <Typography variant="h5" fontWeight="bold">
                         {reportData.TestResultSummary.IdentityPassed}/
                         {reportData.TestResultSummary.IdentityTotal}
-                        <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                        <Typography
+                          component="span"
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ ml: 1 }}
+                        >
                           tests
                         </Typography>
                       </Typography>
@@ -319,7 +324,12 @@ const Page = () => {
                       <Typography variant="h5" fontWeight="bold">
                         {reportData.TestResultSummary.DevicesPassed}/
                         {reportData.TestResultSummary.DevicesTotal}
-                        <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                        <Typography
+                          component="span"
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ ml: 1 }}
+                        >
                           tests
                         </Typography>
                       </Typography>
@@ -636,15 +646,19 @@ const Page = () => {
                   <Box sx={{ display: "flex", gap: 2 }}>
                     <Box sx={{ flex: 1 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#22C55E" }} />
+                        <Box
+                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#22C55E" }}
+                        />
                         <Typography variant="caption" color="text.secondary">
                           Compliant
                         </Typography>
                       </Box>
                       <Typography variant="h6" fontWeight="bold">
                         {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance.compliantDeviceCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance.compliantDeviceCount +
+                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance
+                            .compliantDeviceCount /
+                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance
+                              .compliantDeviceCount +
                               reportData.TenantInfo.DeviceOverview.DeviceCompliance
                                 .nonCompliantDeviceCount)) *
                             100
@@ -655,15 +669,19 @@ const Page = () => {
                     <Divider orientation="vertical" flexItem />
                     <Box sx={{ flex: 1 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#EF4444" }} />
+                        <Box
+                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#EF4444" }}
+                        />
                         <Typography variant="caption" color="text.secondary">
                           Non-compliant
                         </Typography>
                       </Box>
                       <Typography variant="h6" fontWeight="bold">
                         {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance.nonCompliantDeviceCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance.compliantDeviceCount +
+                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance
+                            .nonCompliantDeviceCount /
+                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance
+                              .compliantDeviceCount +
                               reportData.TenantInfo.DeviceOverview.DeviceCompliance
                                 .nonCompliantDeviceCount)) *
                             100
@@ -723,7 +741,9 @@ const Page = () => {
                   <Box sx={{ display: "flex", gap: 2 }}>
                     <Box sx={{ flex: 1 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#3B82F6" }} />
+                        <Box
+                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#3B82F6" }}
+                        />
                         <Typography variant="caption" color="text.secondary">
                           Corporate
                         </Typography>
@@ -741,7 +761,9 @@ const Page = () => {
                     <Divider orientation="vertical" flexItem />
                     <Box sx={{ flex: 1 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#A855F7" }} />
+                        <Box
+                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#A855F7" }}
+                        />
                         <Typography variant="caption" color="text.secondary">
                           Personal
                         </Typography>
@@ -797,14 +819,16 @@ const Page = () => {
                         {(() => {
                           const nodes =
                             reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes || [];
-                          const entraJoined = nodes.find((n) => n.target === "Entra joined")?.value || 0;
+                          const entraJoined =
+                            nodes.find((n) => n.target === "Entra joined")?.value || 0;
                           const windowsDevices =
                             nodes.find(
                               (n) => n.source === "Desktop devices" && n.target === "Windows"
                             )?.value || 0;
                           const macOSDevices =
-                            nodes.find((n) => n.source === "Desktop devices" && n.target === "macOS")
-                              ?.value || 0;
+                            nodes.find(
+                              (n) => n.source === "Desktop devices" && n.target === "macOS"
+                            )?.value || 0;
                           const total = windowsDevices + macOSDevices;
                           return Math.round((entraJoined / (total || 1)) * 100);
                         })()}
@@ -827,8 +851,9 @@ const Page = () => {
                               (n) => n.source === "Desktop devices" && n.target === "Windows"
                             )?.value || 0;
                           const macOSDevices =
-                            nodes.find((n) => n.source === "Desktop devices" && n.target === "macOS")
-                              ?.value || 0;
+                            nodes.find(
+                              (n) => n.source === "Desktop devices" && n.target === "macOS"
+                            )?.value || 0;
                           const total = windowsDevices + macOSDevices;
                           return Math.round((entraHybrid / (total || 1)) * 100);
                         })()}
@@ -851,8 +876,9 @@ const Page = () => {
                               (n) => n.source === "Desktop devices" && n.target === "Windows"
                             )?.value || 0;
                           const macOSDevices =
-                            nodes.find((n) => n.source === "Desktop devices" && n.target === "macOS")
-                              ?.value || 0;
+                            nodes.find(
+                              (n) => n.source === "Desktop devices" && n.target === "macOS"
+                            )?.value || 0;
                           const total = windowsDevices + macOSDevices;
                           return Math.round((entraRegistered / (total || 1)) * 100);
                         })()}
@@ -879,7 +905,9 @@ const Page = () => {
                 <CardContent>
                   <Box sx={{ height: 350 }}>
                     {reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes && (
-                      <MobileSankey data={reportData.TenantInfo.DeviceOverview.MobileSummary.nodes} />
+                      <MobileSankey
+                        data={reportData.TenantInfo.DeviceOverview.MobileSummary.nodes}
+                      />
                     )}
                   </Box>
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
@@ -904,8 +932,9 @@ const Page = () => {
                             )
                             .reduce((sum, n) => sum + (n.value || 0), 0);
                           const androidTotal =
-                            nodes.find((n) => n.source === "Mobile devices" && n.target === "Android")
-                              ?.value || 0;
+                            nodes.find(
+                              (n) => n.source === "Mobile devices" && n.target === "Android"
+                            )?.value || 0;
                           return androidTotal > 0
                             ? Math.round((androidCompliant / androidTotal) * 100)
                             : 0;
@@ -943,8 +972,9 @@ const Page = () => {
                           const nodes =
                             reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes || [];
                           const androidTotal =
-                            nodes.find((n) => n.source === "Mobile devices" && n.target === "Android")
-                              ?.value || 0;
+                            nodes.find(
+                              (n) => n.source === "Mobile devices" && n.target === "Android"
+                            )?.value || 0;
                           const iosTotal =
                             nodes.find((n) => n.source === "Mobile devices" && n.target === "iOS")
                               ?.value || 0;
