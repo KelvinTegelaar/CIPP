@@ -265,7 +265,8 @@ const CippApiClientManagement = () => {
               <Box sx={{ px: 3 }}>
                 <Alert severity="warning">
                   You have unsaved changes. Click Actions &gt; Save Azure Configuration to update
-                  the allowed API Clients.
+                  the allowed API Clients. If you've just saved your API clients, try refreshing the
+                  configuration first.
                 </Alert>
               </Box>
             )}
