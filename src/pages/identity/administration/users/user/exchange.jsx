@@ -1126,10 +1126,10 @@ const Page = () => {
     let statusColor = "green.main";
     
     if (isBypassed) {
-      statusMessage = "⚠️ AUDIT BYPASS ENABLED - This user's actions are excluded from ALL audit logging";
+      statusMessage = "AUDIT BYPASS ENABLED - This user's actions are excluded from ALL audit logging";
       statusColor = "error.main";
     } else if (orgAuditDisabled) {
-      statusMessage = "⚠️ Auditing disabled organization-wide - Mailbox settings ignored";
+      statusMessage = "Auditing disabled organization-wide - Mailbox settings ignored";
       statusColor = "warning.main";
     } else if (auditEnabled) {
       statusMessage = `Auditing active - ${auditData.AuditOwner?.length || 0} Owner, ${auditData.AuditDelegate?.length || 0} Delegate, ${auditData.AuditAdmin?.length || 0} Admin actions`;
