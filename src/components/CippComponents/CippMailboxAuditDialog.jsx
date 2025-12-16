@@ -16,7 +16,6 @@ import {
   Button,
 } from "@mui/material";
 import { Close, Warning } from "@mui/icons-material";
-import CippFormComponent from "./CippFormComponent";
 
 const CippMailboxAuditDialog = ({ formHook, auditData, isLoading }) => {
   const [selectedActions, setSelectedActions] = useState({
@@ -25,10 +24,10 @@ const CippMailboxAuditDialog = ({ formHook, auditData, isLoading }) => {
     Admin: [],
   });
 
-  // Track bypassEnabled from auditData (not user-configurable)
+  // Track bypassEnabled from auditData (not user-configurable at the moment)
   const bypassEnabled = auditData?.BypassEnabled || false;
 
-  // Default audit actions for user/shared mailboxes (from Microsoft docs table, starred actions)
+  // Default audit actions for user/shared mailboxes
   const defaultAuditActions = {
     Owner: [
       "ApplyRecord",
