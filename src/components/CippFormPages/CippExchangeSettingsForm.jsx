@@ -150,7 +150,7 @@ const CippExchangeSettingsForm = (props) => {
       id: "mailboxForwarding",
       cardLabelBox: {
         cardLabelBoxHeader: isFetching ? (
-          <CircularProgress size="25px" color="inherit" />
+          <CircularProgress size={25} color="inherit" thickness={5} />
         ) : currentSettings?.ForwardingAddress ? (
           <Check />
         ) : (
@@ -174,7 +174,11 @@ const CippExchangeSettingsForm = (props) => {
     {
       id: "outOfOffice",
       cardLabelBox: {
-        cardLabelBoxHeader: <Typography variant="subtitle2">OOO</Typography>,
+        cardLabelBoxHeader: oooRequest?.isFetching ? (
+          <CircularProgress size={25} color="inherit" thickness={5} />
+        ) : (
+          <Typography variant="subtitle2">OOO</Typography>
+        ),
       },
       text: "Out Of Office",
       subtext: "Set automatic replies for when you are away",
@@ -285,7 +289,11 @@ const CippExchangeSettingsForm = (props) => {
     {
       id: "recipientLimits",
       cardLabelBox: {
-        cardLabelBoxHeader: <Typography variant="subtitle2">RL</Typography>,
+        cardLabelBoxHeader: isFetching ? (
+          <CircularProgress size={25} color="inherit" thickness={5} />
+        ) : (
+          <Typography variant="subtitle2">RL</Typography>
+        ),
       },
       text: "Recipient Limits",
       subtext: "Set the maximum number of recipients per message",

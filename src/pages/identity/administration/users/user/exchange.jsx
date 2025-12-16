@@ -17,6 +17,7 @@ import {
   PersonAdd,
   Block,
   PlayArrow,
+  Settings,
 } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
@@ -41,6 +42,8 @@ import CippAliasDialog from "../../../../../components/CippComponents/CippAliasD
 import CippMailboxPermissionsDialog from "../../../../../components/CippComponents/CippMailboxPermissionsDialog";
 import CippCalendarPermissionsDialog from "../../../../../components/CippComponents/CippCalendarPermissionsDialog";
 import CippContactPermissionsDialog from "../../../../../components/CippComponents/CippContactPermissionsDialog";
+import CippMailboxAuditDialog from "../../../../../components/CippComponents/CippMailboxAuditDialog";
+import { parseMailboxAuditData } from "../../../../../utils/mailbox-audit-utils";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -52,6 +55,7 @@ const Page = () => {
   const permissionsDialog = useDialog();
   const calendarPermissionsDialog = useDialog();
   const contactPermissionsDialog = useDialog();
+  const auditDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
 
@@ -118,6 +122,11 @@ const Page = () => {
     },
     queryKey: `MailEnabledSecurityGroups-${userSettingsDefaults.currentTenant}`,
   });
+
+  const auditData = useMemo(() => {
+    if (!userRequest.data?.[0]) return null;
+    return parseMailboxAuditData(userRequest.data[0]);
+  }, [userRequest.data]);
 
   const getPermissionInfo = (userIdentifier, groupsList) => {
     // Handle undefined/null cases first
@@ -287,6 +296,20 @@ const Page = () => {
         userID: graphUserRequest.data?.[0]?.userPrincipalName,
         tenantFilter: userSettingsDefaults.currentTenant,
         permissions: [permission],
+      };
+    },
+  };
+
+  const auditApiConfig = {
+    type: "POST",
+    url: "/api/ExecSetMailboxAudit",
+    relatedQueryKeys: `Mailbox-${userId}`, // Uses existing query key!
+    customDataformatter: (row, action, data) => {
+      return {
+        userID: graphUserRequest.data?.[0]?.userPrincipalName,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        AuditEnabled: data.AuditEnabled,
+        AuditActions: data.AuditActions || [],
       };
     },
   };
@@ -1086,6 +1109,112 @@ const Page = () => {
     },
   ];
 
+  const auditConfigCard = useMemo(() => {
+    if (!auditData) return [];
+
+    // Check bypass status (most important - overrides everything)
+    const isBypassed = auditData.AuditBypassEnabled;
+    
+    // Check if audit is disabled org-wide
+    const orgAuditDisabled = auditData.OrgAuditDisabled;
+    
+    // Determine effective status
+    const auditEnabled = auditData.AuditEnabled && !isBypassed && !orgAuditDisabled;
+    
+    // Build status message
+    let statusMessage = "";
+    let statusColor = "green.main";
+    
+    if (isBypassed) {
+      statusMessage = "⚠️ AUDIT BYPASS ENABLED - This user's actions are excluded from ALL audit logging";
+      statusColor = "error.main";
+    } else if (orgAuditDisabled) {
+      statusMessage = "⚠️ Auditing disabled organization-wide - Mailbox settings ignored";
+      statusColor = "warning.main";
+    } else if (auditEnabled) {
+      statusMessage = `Auditing active - ${auditData.AuditOwner?.length || 0} Owner, ${auditData.AuditDelegate?.length || 0} Delegate, ${auditData.AuditAdmin?.length || 0} Admin actions`;
+      statusColor = "green.main";
+    } else {
+      statusMessage = "Mailbox auditing is disabled";
+      statusColor = "warning.main";
+    }
+
+    // Determine effective retention
+    const effectiveRetention = auditData.OrgAuditLogAgeLimit || auditData.AuditLogAgeLimit || "90.00:00:00";
+    const retentionSource = auditData.OrgAuditLogAgeLimit ? "(Organization)" : "(Mailbox)";
+
+    return [
+      {
+        id: 1,
+        cardLabelBox: {
+          cardLabelBoxHeader: userRequest.isFetching ? (
+            <CircularProgress size="25px" color="inherit" />
+          ) : isBypassed ? (
+            <Error />
+          ) : auditEnabled ? (
+            <Check />
+          ) : (
+            <Error />
+          ),
+        },
+        text: "Mailbox Audit Configuration",
+        subtext: statusMessage,
+        statusColor: statusColor,
+        cardLabelBoxActions: (
+          <Button
+            startIcon={<Settings />}
+            onClick={() => auditDialog.handleOpen()}
+            variant="outlined"
+            color="primary"
+            size="small"
+          >
+            Configure Auditing
+          </Button>
+        ),
+        table: {
+          title: "Audit Configuration",
+          hideTitle: true,
+          data: [
+            {
+              Setting: "Audit Bypass",
+              Value: isBypassed ? "Enabled" : "Disabled",
+            },
+            {
+              Setting: "Org Audit Status",
+              Value: orgAuditDisabled ? "Disabled" : "Enabled",
+            },
+            {
+              Setting: "Mailbox Audit",
+              Value: auditData.AuditEnabled ? "Enabled" : "Disabled",
+            },
+            {
+              Setting: "Log Retention",
+              Value: `${effectiveRetention} ${retentionSource}`,
+            },
+            {
+              Setting: "Owner Actions",
+              Value: `${auditData.AuditOwner?.length || 0} enabled`,
+              EnabledActions: auditData.AuditOwner || [],
+            },
+            {
+              Setting: "Delegate Actions",
+              Value: `${auditData.AuditDelegate?.length || 0} enabled`,
+              EnabledActions: auditData.AuditDelegate || [],
+            },
+            {
+              Setting: "Admin Actions",
+              Value: `${auditData.AuditAdmin?.length || 0} enabled`,
+              EnabledActions: auditData.AuditAdmin || [],
+            },
+          ],
+          refreshFunction: () => userRequest.refetch(),
+          isFetching: userRequest.isFetching,
+          simpleColumns: ["Setting", "Value", "Type", "EnabledActions"],
+        },
+      },
+    ];
+  }, [auditData, userRequest.isFetching, auditDialog]);
+
   const proxyAddressActions = [
     {
       label: "Make Primary",
@@ -1276,6 +1405,15 @@ const Page = () => {
                       formControl={formControl}
                       oooRequest={oooRequest}
                     />
+                    {/* Conditionally render auditConfigCard if RecipientTypeDetails includes 'UserMailbox' or 'SharedMailbox' */}
+                    {userRequest.data?.[0]?.RecipientTypeDetails &&
+                      ["UserMailbox", "SharedMailbox"].includes(userRequest.data[0].RecipientTypeDetails) && (
+                        <CippBannerListCard
+                          isFetching={userRequest.isLoading}
+                          items={auditConfigCard}
+                          isCollapsible={true}
+                        />
+                    )}
                   </Stack>
                 </Grid>
               </>
@@ -1345,6 +1483,22 @@ const Page = () => {
             formHook={formHook}
             combinedOptions={contactPermissionOptions}
             isUserGroupLoading={isUserGroupLoading}
+          />
+        )}
+      </CippApiDialog>
+
+      <CippApiDialog
+        createDialog={auditDialog}
+        title="Configure Mailbox Audit Actions"
+        api={auditApiConfig}
+        row={graphUserRequest.data?.[0]}
+        allowResubmit={true}
+      >
+        {({ formHook }) => (
+          <CippMailboxAuditDialog
+            formHook={formHook}
+            auditData={auditData}
+            isLoading={userRequest.isLoading}
           />
         )}
       </CippApiDialog>
