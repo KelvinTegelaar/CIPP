@@ -60,7 +60,7 @@ export const onboardingSteps = [
     component: CippWizardOptionsList,
     componentProps: {
       title: "Select your setup method",
-      subtext: `This wizard will guide you through setting up CIPPs access to your client tenants. If this is your first time setting up CIPP you will want to choose the option "Create application for me and connect to my tenants",`,
+      subtext: `This wizard will guide you through setting up CIPPs access to your client tenants. If this is your first time setting up CIPP you will want to choose the option "Create application for me and connect to my tenants".`,
       valuesKey: "SyncTool",
       options: [
         {
@@ -141,6 +141,6 @@ export const onboardingSteps = [
   {
     description: "Confirmation",
     component: CippWizardConfirmation,
-    //confirm and finish button, perform tasks, launch checks etc.
+    // Final step: displays summary of selections and provides submit button to execute setup
   },
 ];
