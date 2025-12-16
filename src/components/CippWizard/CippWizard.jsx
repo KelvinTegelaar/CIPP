@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
-import { Card, CardContent, Container, Stack } from "@mui/material";
+import { useCallback, useMemo, useState, Suspense } from "react";
+import { Card, CardContent, Container, Stack, CircularProgress, Box } from "@mui/material";
 import { Grid } from "@mui/system";
 import { WizardSteps } from "./wizard-steps";
 import { useForm, useWatch } from "react-hook-form";
@@ -43,21 +43,29 @@ export const CippWizard = (props) => {
     const StepComponent = currentStep.component;
 
     return (
-      <StepComponent
-        onNextStep={handleNext}
-        onPreviousStep={handleBack}
-        formControl={formControl}
-        lastStep={stepsWithVisibility.length - 1}
-        currentStep={activeStep}
-        postUrl={postUrl}
-        options={currentStep.componentProps?.options}
-        title={currentStep.componentProps?.title}
-        subtext={currentStep.componentProps?.subtext}
-        valuesKey={currentStep.componentProps?.valuesKey}
-        {...currentStep.componentProps}
-      />
+      <Suspense
+        fallback={
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress />
+          </Box>
+        }
+      >
+        <StepComponent
+          onNextStep={handleNext}
+          onPreviousStep={handleBack}
+          formControl={formControl}
+          lastStep={stepsWithVisibility.length - 1}
+          currentStep={activeStep}
+          postUrl={postUrl}
+          options={currentStep.componentProps?.options}
+          title={currentStep.componentProps?.title}
+          subtext={currentStep.componentProps?.subtext}
+          valuesKey={currentStep.componentProps?.valuesKey}
+          {...currentStep.componentProps}
+        />
+      </Suspense>
     );
-  }, [activeStep, handleNext, handleBack, stepsWithVisibility, formControl]);
+  }, [activeStep, handleNext, handleBack, stepsWithVisibility, formControl, postUrl]);
 
   // Get the maxWidth for the current step, fallback to global setting
   const currentStepMaxWidth = useMemo(() => {
