@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button, Box } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Button, Box, Alert } from "@mui/material";
 import { useForm, useFormState } from "react-hook-form";
 import { AddCircleOutline } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -102,14 +102,19 @@ export const CippAddDomainDrawer = ({
           </Stack>
         }
       >
-        <Box sx={{ my: 2 }}>
+        <Stack spacing={2}>
+          <Alert severity="info">
+            Add a new domain to the current tenant. Ensure that the appropriate DNS records are
+            configured by checking the verification and service records after adding the domain. You
+            can find these in the "More info" section once the domain is added.
+          </Alert>
           <CippFormComponent
             formControl={formControl}
             fields={formFields}
             name="domain"
             label="Domain Name"
           />
-        </Box>
+        </Stack>
       </CippOffCanvas>
     </>
   );
