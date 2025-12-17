@@ -99,6 +99,7 @@ const Page = () => {
           data: { domain: "id", Action: "setDefault" },
           confirmText: "Are you sure you want to set [id] as the default domain?",
           multiPost: false,
+          hideBulk: true,
         },
         {
           label: "Delete Domain",
