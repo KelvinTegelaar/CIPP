@@ -15,6 +15,8 @@ import {
   ButtonGroup,
   TextField,
   InputAdornment,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
@@ -28,6 +30,11 @@ import {
   Search,
   FactCheck,
   Policy,
+  ArrowDropDown,
+  Assignment,
+  NotificationImportant,
+  Construction,
+  Schedule,
 } from "@mui/icons-material";
 import standards from "/src/data/standards.json";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
@@ -61,6 +68,7 @@ const Page = () => {
   const runReportDialog = useDialog();
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterMenuAnchor, setFilterMenuAnchor] = useState(null);
 
   const templateDetails = ApiGetCall({
     url: `/api/listStandardTemplates`,
@@ -98,15 +106,14 @@ const Page = () => {
     confirmText: "Are you sure you want to run this standard report?",
   };
 
-  // Get comparison data
+  // Get comparison data - fetch all standards without filtering by template
   const comparisonApi = ApiGetCall({
     url: "/api/ListStandardsCompare",
     data: {
-      TemplateId: templateId,
       tenantFilter: currentTenant,
       CompareToStandard: true, // Always compare to standard, even in tenant comparison mode
     },
-    queryKey: `ListStandardsCompare-${templateId}-${
+    queryKey: `ListStandardsCompare-${
       formControl.watch("compareTenantId") || "standard"
     }-${currentTenant}`,
     enabled: !!templateId, // Only run the query if templateId is available
@@ -124,6 +131,13 @@ const Page = () => {
         // Find the current tenant's data by matching tenantFilter with currentTenant
         const currentTenantObj = tenantData.find((t) => t.tenantFilter === currentTenant);
         const currentTenantData = currentTenantObj ? currentTenantObj.standardsResults || [] : [];
+
+        // Helper function to get template display name from GUID
+        const getTemplateDisplayName = (guid) => {
+          if (!guid) return null;
+          const template = templateDetails.data.find((t) => t.GUID === guid);
+          return template?.displayName || template?.templateName || template?.name || guid;
+        };
 
         const allStandards = [];
         if (selectedTemplate.standards) {
@@ -146,8 +160,8 @@ const Page = () => {
                   templateItem["TemplateList-Tags"].addedFields.templates.forEach(
                     (expandedTemplate) => {
                       console.log("Expanding IntuneTemplate:", expandedTemplate);
-                      const templateId = expandedTemplate.GUID;
-                      const standardId = `standards.IntuneTemplate.${templateId}`;
+                      const itemTemplateId = expandedTemplate.GUID;
+                      const standardId = `standards.IntuneTemplate.${itemTemplateId}`;
                       const standardInfo = standards.find(
                         (s) => s.name === `standards.IntuneTemplate`
                       );
@@ -188,35 +202,68 @@ const Page = () => {
                         "Included Group": templateItem.customGroup || "",
                       };
 
+                      // Check if this standard is overridden by another template
+                      const tenantTemplateId = standardObject?.TemplateId;
+                      const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                      const overridingTemplateName = isOverridden
+                        ? getTemplateDisplayName(tenantTemplateId)
+                        : null;
+
                       allStandards.push({
                         standardId,
                         standardName: `Intune Template: ${
-                          expandedTemplate.displayName || expandedTemplate.name || templateId
+                          expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
                         } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
                                 Value: directStandardValue,
                                 LastRefresh: standardObject?.LastRefresh,
+                                TemplateId: tenantTemplateId,
                               }
                             : currentTenantStandard?.value,
                         standardValue: templateSettings,
-                        complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                        complianceStatus: isOverridden
+                          ? "Overridden"
+                          : isCompliant
+                          ? "Compliant"
+                          : "Non-Compliant",
+                        isOverridden,
+                        overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                        overridingTemplateName,
                         complianceDetails:
                           standardInfo?.docsDescription || standardInfo?.helpText || "",
                         standardDescription: standardInfo?.helpText || "",
                         standardImpact: standardInfo?.impact || "Medium Impact",
                         standardImpactColour: standardInfo?.impactColour || "warning",
                         templateName: selectedTemplate?.templateName || "Standard Template",
-                        templateActions: templateItem.action || [],
+                        templateActions: (() => {
+                          const actions = templateItem.action || [];
+                          const hasRemediate = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Remediate" || label === "remediate";
+                          });
+                          const hasReport = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Report" || label === "report";
+                          });
+                          if (hasRemediate && !hasReport) {
+                            return [...actions, "Report"];
+                          }
+                          return actions;
+                        })(),
+                        autoRemediate:
+                          templateItem.autoRemediate ||
+                          templateItem.TemplateList?.autoRemediate ||
+                          false,
                       });
                     }
                   );
                 } else {
                   // Regular TemplateList processing
-                  const templateId = templateItem.TemplateList?.value;
-                  if (templateId) {
-                    const standardId = `standards.IntuneTemplate.${templateId}`;
+                  const itemTemplateId = templateItem.TemplateList?.value;
+                  if (itemTemplateId) {
+                    const standardId = `standards.IntuneTemplate.${itemTemplateId}`;
                     const standardInfo = standards.find(
                       (s) => s.name === `standards.IntuneTemplate`
                     );
@@ -247,34 +294,68 @@ const Page = () => {
 
                     // Create a standardValue object that contains the template settings
                     const templateSettings = {
-                      templateId,
+                      templateId: itemTemplateId,
                       Template: templateItem.TemplateList?.label || "Unknown Template",
                       "Assign to": templateItem.AssignTo || "On",
                       "Excluded Group": templateItem.excludeGroup || "",
                       "Included Group": templateItem.customGroup || "",
                     };
 
+                    // Check if this standard is overridden by another template
+                    const tenantTemplateId = standardObject?.TemplateId;
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                    const overridingTemplateName = isOverridden
+                      ? getTemplateDisplayName(tenantTemplateId)
+                      : null;
+
                     allStandards.push({
                       standardId,
                       standardName: `Intune Template: ${
-                        templateItem.TemplateList?.label || templateId
+                        templateItem.TemplateList?.label || itemTemplateId
                       }`,
                       currentTenantValue:
                         standardObject !== undefined
                           ? {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
+                              TemplateId: tenantTemplateId,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
-                      complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                      complianceStatus: isOverridden
+                        ? "Overridden"
+                        : isCompliant
+                        ? "Compliant"
+                        : "Non-Compliant",
+                      isOverridden,
+                      overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                      overridingTemplateName,
                       complianceDetails:
                         standardInfo?.docsDescription || standardInfo?.helpText || "",
                       standardDescription: standardInfo?.helpText || "",
                       standardImpact: standardInfo?.impact || "Medium Impact",
                       standardImpactColour: standardInfo?.impactColour || "warning",
                       templateName: selectedTemplate?.templateName || "Standard Template",
-                      templateActions: templateItem.action || [],
+                      templateActions: (() => {
+                        const actions =
+                          templateItem.action || templateItem.TemplateList?.action || [];
+                        const hasRemediate = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Remediate" || label === "remediate";
+                        });
+                        const hasReport = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Report" || label === "report";
+                        });
+                        if (hasRemediate && !hasReport) {
+                          return [...actions, "Report"];
+                        }
+                        return actions;
+                      })(),
+                      autoRemediate:
+                        templateItem.autoRemediate ||
+                        templateItem.TemplateList?.autoRemediate ||
+                        false,
                     });
                   }
                 }
@@ -302,8 +383,8 @@ const Page = () => {
                   templateItem["TemplateList-Tags"].addedFields.templates.forEach(
                     (expandedTemplate) => {
                       console.log("Expanding ConditionalAccessTemplate:", expandedTemplate);
-                      const templateId = expandedTemplate.GUID;
-                      const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
+                      const itemTemplateId = expandedTemplate.GUID;
+                      const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`;
                       const standardInfo = standards.find(
                         (s) => s.name === `standards.ConditionalAccessTemplate`
                       );
@@ -314,6 +395,11 @@ const Page = () => {
                       );
                       const standardObject = currentTenantObj?.[standardId];
                       const directStandardValue = standardObject?.Value;
+                      const tenantTemplateId = standardObject?.TemplateId;
+                      const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                      const overridingTemplateName = isOverridden
+                        ? getTemplateDisplayName(tenantTemplateId)
+                        : null;
                       let isCompliant = false;
 
                       // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
@@ -325,7 +411,7 @@ const Page = () => {
 
                       // Create a standardValue object that contains the template settings
                       const templateSettings = {
-                        templateId,
+                        templateId: itemTemplateId,
                         Template:
                           expandedTemplate.displayName ||
                           expandedTemplate.name ||
@@ -335,32 +421,58 @@ const Page = () => {
                       allStandards.push({
                         standardId,
                         standardName: `Conditional Access Template: ${
-                          expandedTemplate.displayName || expandedTemplate.name || templateId
+                          expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
                         } (via ${templateItem["TemplateList-Tags"].value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
                                 Value: directStandardValue,
                                 LastRefresh: standardObject?.LastRefresh,
+                                TemplateId: tenantTemplateId,
                               }
                             : currentTenantStandard?.value,
                         standardValue: templateSettings,
-                        complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                        complianceStatus: isOverridden
+                          ? "Overridden"
+                          : isCompliant
+                          ? "Compliant"
+                          : "Non-Compliant",
                         complianceDetails:
                           standardInfo?.docsDescription || standardInfo?.helpText || "",
                         standardDescription: standardInfo?.helpText || "",
                         standardImpact: standardInfo?.impact || "Medium Impact",
                         standardImpactColour: standardInfo?.impactColour || "warning",
                         templateName: selectedTemplate?.templateName || "Standard Template",
-                        templateActions: templateItem.action || [],
+                        templateActions: (() => {
+                          const actions = templateItem.action || [];
+                          const hasRemediate = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Remediate" || label === "remediate";
+                          });
+                          const hasReport = actions.some((a) => {
+                            const label = typeof a === "object" ? a?.label || a?.value : a;
+                            return label === "Report" || label === "report";
+                          });
+                          if (hasRemediate && !hasReport) {
+                            return [...actions, "Report"];
+                          }
+                          return actions;
+                        })(),
+                        autoRemediate:
+                          templateItem.autoRemediate ||
+                          templateItem.TemplateList?.autoRemediate ||
+                          false,
+                        isOverridden,
+                        overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                        overridingTemplateName,
                       });
                     }
                   );
                 } else {
                   // Regular TemplateList processing
-                  const templateId = templateItem.TemplateList?.value;
-                  if (templateId) {
-                    const standardId = `standards.ConditionalAccessTemplate.${templateId}`;
+                  const itemTemplateId = templateItem.TemplateList?.value;
+                  if (itemTemplateId) {
+                    const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`;
                     const standardInfo = standards.find(
                       (s) => s.name === `standards.ConditionalAccessTemplate`
                     );
@@ -371,6 +483,11 @@ const Page = () => {
                     );
                     const standardObject = currentTenantObj?.[standardId];
                     const directStandardValue = standardObject?.Value;
+                    const tenantTemplateId = standardObject?.TemplateId;
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                    const overridingTemplateName = isOverridden
+                      ? getTemplateDisplayName(tenantTemplateId)
+                      : null;
                     let isCompliant = false;
 
                     // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
@@ -382,31 +499,58 @@ const Page = () => {
 
                     // Create a standardValue object that contains the template settings
                     const templateSettings = {
-                      templateId,
+                      templateId: itemTemplateId,
                       Template: templateItem.TemplateList?.label || "Unknown Template",
                     };
 
                     allStandards.push({
                       standardId,
                       standardName: `Conditional Access Template: ${
-                        templateItem.TemplateList?.label || templateId
+                        templateItem.TemplateList?.label || itemTemplateId
                       }`,
                       currentTenantValue:
                         standardObject !== undefined
                           ? {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
+                              TemplateId: tenantTemplateId,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
-                      complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                      complianceStatus: isOverridden
+                        ? "Overridden"
+                        : isCompliant
+                        ? "Compliant"
+                        : "Non-Compliant",
                       complianceDetails:
                         standardInfo?.docsDescription || standardInfo?.helpText || "",
                       standardDescription: standardInfo?.helpText || "",
                       standardImpact: standardInfo?.impact || "Medium Impact",
                       standardImpactColour: standardInfo?.impactColour || "warning",
                       templateName: selectedTemplate?.templateName || "Standard Template",
-                      templateActions: templateItem.action || [],
+                      templateActions: (() => {
+                        const actions =
+                          templateItem.action || templateItem.TemplateList?.action || [];
+                        const hasRemediate = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Remediate" || label === "remediate";
+                        });
+                        const hasReport = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Report" || label === "report";
+                        });
+                        if (hasRemediate && !hasReport) {
+                          return [...actions, "Report"];
+                        }
+                        return actions;
+                      })(),
+                      autoRemediate:
+                        templateItem.autoRemediate ||
+                        templateItem.TemplateList?.autoRemediate ||
+                        false,
+                      isOverridden,
+                      overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                      overridingTemplateName,
                     });
                   }
                 }
@@ -424,6 +568,11 @@ const Page = () => {
               );
               const standardObject = currentTenantObj?.[standardId];
               const directStandardValue = standardObject?.Value;
+              const tenantTemplateId = standardObject?.TemplateId;
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+              const overridingTemplateName = isOverridden
+                ? getTemplateDisplayName(tenantTemplateId)
+                : null;
               let isCompliant = false;
 
               // For GroupTemplate, the value is true if compliant
@@ -486,16 +635,38 @@ const Page = () => {
                     ? {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
+                        TemplateId: tenantTemplateId,
                       }
                     : currentTenantStandard?.value,
                 standardValue: templateSettings,
-                complianceStatus: isCompliant ? "Compliant" : "Non-Compliant",
+                complianceStatus: isOverridden
+                  ? "Overridden"
+                  : isCompliant
+                  ? "Compliant"
+                  : "Non-Compliant",
                 complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
                 standardDescription: standardInfo?.helpText || "",
                 standardImpact: standardInfo?.impact || "Medium Impact",
                 standardImpactColour: standardInfo?.impactColour || "warning",
                 templateName: selectedTemplate?.templateName || "Standard Template",
-                templateActions: actions,
+                templateActions: (() => {
+                  const hasRemediate = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Remediate" || label === "remediate";
+                  });
+                  const hasReport = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Report" || label === "report";
+                  });
+                  if (hasRemediate && !hasReport) {
+                    return [...actions, "Report"];
+                  }
+                  return actions;
+                })(),
+                autoRemediate: standardConfig.autoRemediate || false,
+                isOverridden,
+                overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                overridingTemplateName,
               });
             } else {
               // Regular handling for other standards
@@ -557,6 +728,13 @@ const Page = () => {
                 ? "Compliant"
                 : "Non-Compliant";
 
+              // Check if this standard is overridden by another template
+              const tenantTemplateId = standardObject?.TemplateId;
+              const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+              const overridingTemplateName = isOverridden
+                ? getTemplateDisplayName(tenantTemplateId)
+                : null;
+
               // Use the direct standard value from the tenant object if it exists
               allStandards.push({
                 standardId,
@@ -566,17 +744,36 @@ const Page = () => {
                     ? {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
+                        TemplateId: tenantTemplateId,
                       }
                     : currentTenantStandard?.value,
                 standardValue: standardSettings,
-                complianceStatus,
+                complianceStatus: isOverridden ? "Overridden" : complianceStatus,
                 reportingDisabled,
+                isOverridden,
+                overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                overridingTemplateName,
                 complianceDetails: standardInfo?.docsDescription || standardInfo?.helpText || "",
                 standardDescription: standardInfo?.helpText || "",
                 standardImpact: standardInfo?.impact || "Medium Impact",
                 standardImpactColour: standardInfo?.impactColour || "warning",
                 templateName: selectedTemplate.templateName || "Standard Template",
-                templateActions: standardConfig.action || [],
+                templateActions: (() => {
+                  const actions = standardConfig.action || [];
+                  const hasRemediate = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Remediate" || label === "remediate";
+                  });
+                  const hasReport = actions.some((a) => {
+                    const label = typeof a === "object" ? a?.label || a?.value : a;
+                    return label === "Report" || label === "report";
+                  });
+                  if (hasRemediate && !hasReport) {
+                    return [...actions, "Report"];
+                  }
+                  return actions;
+                })(),
+                autoRemediate: standardConfig.autoRemediate || false,
               });
             }
           });
@@ -649,6 +846,7 @@ const Page = () => {
           filter === "all" ||
           (filter === "compliant" && standard.complianceStatus === "Compliant") ||
           (filter === "nonCompliant" && standard.complianceStatus === "Non-Compliant") ||
+          (filter === "overridden" && standard.complianceStatus === "Overridden") ||
           (filter === "nonCompliantWithLicense" &&
             standard.complianceStatus === "Non-Compliant" &&
             !hasLicenseMissing) ||
@@ -681,6 +879,8 @@ const Page = () => {
   const reportingDisabledCount =
     comparisonData?.filter((standard) => standard.complianceStatus === "Reporting Disabled")
       .length || 0;
+  const overriddenCount =
+    comparisonData?.filter((standard) => standard.complianceStatus === "Overridden").length || 0;
 
   // Calculate license-related metrics
   const missingLicenseCount =
@@ -710,12 +910,16 @@ const Page = () => {
 
   const compliancePercentage =
     allCount > 0
-      ? Math.round((compliantCount / (allCount - reportingDisabledCount || 1)) * 100)
+      ? Math.round(
+          (compliantCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100
+        )
       : 0;
 
   const missingLicensePercentage =
     allCount > 0
-      ? Math.round((missingLicenseCount / (allCount - reportingDisabledCount || 1)) * 100)
+      ? Math.round(
+          (missingLicenseCount / (allCount - reportingDisabledCount - overriddenCount || 1)) * 100
+        )
       : 0;
 
   // Combined score: compliance percentage + missing license percentage
@@ -801,86 +1005,14 @@ const Page = () => {
         </Stack>
       ),
     },
-    // Add compliance badges when template data is available (show even if no comparison data yet)
-    ...(selectedTemplate
-      ? [
-          {
-            component: (
-              <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-                <Chip
-                  icon={
-                    <SvgIcon fontSize="small">
-                      <FactCheck />
-                    </SvgIcon>
-                  }
-                  label={`${compliancePercentage}% Compliant`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    compliancePercentage === 100
-                      ? "success"
-                      : compliancePercentage >= 50
-                      ? "warning"
-                      : "error"
-                  }
-                />
-                <Chip
-                  label={`${missingLicensePercentage}% Missing Required License`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    missingLicensePercentage === 0
-                      ? "success"
-                      : missingLicensePercentage <= 25
-                      ? "warning"
-                      : "error"
-                  }
-                />
-                <Chip
-                  label={`${combinedScore}% Combined Score`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
-                  }
-                />
-              </Stack>
-            ),
-          },
-        ]
-      : []),
-    // Add description if available
-    ...(selectedTemplate?.description
-      ? [
-          {
-            component: (
-              <Box
-                sx={{
-                  "& a": {
-                    color: (theme) => theme.palette.primary.main,
-                    textDecoration: "underline",
-                  },
-                  color: "text.secondary",
-                  fontSize: "0.875rem",
-                  "& p": {
-                    my: 0,
-                  },
-                  mt: 1,
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(selectedTemplate.description),
-                }}
-              />
-            ),
-          },
-        ]
-      : []),
   ];
 
   // Actions for the header
   const actions = [
     ...createDriftManagementActions({
       templateId,
+      templateType: selectedTemplate?.type || "classic",
+      showEditTemplate: true,
       onRefresh: () => {
         comparisonApi.refetch();
         templateDetails.refetch();
@@ -900,7 +1032,7 @@ const Page = () => {
       isFetching={comparisonApi.isFetching || templateDetails.isFetching}
     >
       <CippHead title={title} />
-      <Box sx={{ py: 2, mr: 2 }}>
+      <Box sx={{ height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {comparisonApi.isFetching && (
           <>
             {[1, 2, 3].map((item) => (
@@ -983,12 +1115,14 @@ const Page = () => {
               direction={{ xs: "column", sm: "row" }}
               spacing={2}
               sx={{
-                mt: 2,
                 alignItems: { xs: "flex-start", sm: "center" },
+                justifyContent: "space-between",
                 displayPrint: "none", // Hide filters in print view
+                flexShrink: 0,
+                mt: 2,
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1 }}>
+              <Stack direction="row" alignItems="center" spacing={1}>
                 <TextField
                   size="small"
                   variant="filled"
@@ -1021,597 +1155,776 @@ const Page = () => {
                   }}
                 />
               </Stack>
-              <ButtonGroup variant="outlined" color="primary" size="small">
+              <ButtonGroup variant="outlined" color="primary">
                 <Button disabled={true} color="primary">
                   <SvgIcon fontSize="small">
                     <FilterAlt />
                   </SvgIcon>
                 </Button>
                 <Button
-                  variant={filter === "all" ? "contained" : "outlined"}
-                  onClick={() => setFilter("all")}
+                  onClick={(e) => setFilterMenuAnchor(e.currentTarget)}
+                  endIcon={<ArrowDropDown />}
                 >
-                  All ({allCount})
-                </Button>
-                <Button
-                  variant={filter === "compliant" ? "contained" : "outlined"}
-                  onClick={() => setFilter("compliant")}
-                >
-                  Compliant ({compliantCount})
-                </Button>
-                <Button
-                  variant={filter === "nonCompliant" ? "contained" : "outlined"}
-                  onClick={() => setFilter("nonCompliant")}
-                >
-                  Non-Compliant ({nonCompliantCount})
-                </Button>
-                <Button
-                  variant={filter === "nonCompliantWithLicense" ? "contained" : "outlined"}
-                  onClick={() => setFilter("nonCompliantWithLicense")}
-                >
-                  Non-Compliant (License available) ({nonCompliantWithLicenseCount})
-                </Button>
-                <Button
-                  variant={filter === "nonCompliantWithoutLicense" ? "contained" : "outlined"}
-                  onClick={() => setFilter("nonCompliantWithoutLicense")}
-                >
-                  Non-Compliant (License not available) ({nonCompliantWithoutLicenseCount})
+                  {filter === "all" && `All Standards (${allCount})`}
+                  {filter === "compliant" && `Compliant (${compliantCount})`}
+                  {filter === "nonCompliant" && `Non-Compliant (${nonCompliantCount})`}
+                  {filter === "overridden" && `Overridden (${overriddenCount})`}
+                  {filter === "nonCompliantWithLicense" &&
+                    `Non-Compliant (License available) (${nonCompliantWithLicenseCount})`}
+                  {filter === "nonCompliantWithoutLicense" &&
+                    `Non-Compliant (License not available) (${nonCompliantWithoutLicenseCount})`}
                 </Button>
               </ButtonGroup>
             </Stack>
-            {comparisonApi.isError && (
-              <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
-                <Alert severity="error" sx={{ mb: 2 }}>
-                  Error fetching comparison data
-                </Alert>
-                <Typography variant="body2">
-                  There was an error retrieving the comparison data. Please try running the report
-                  again by clicking the "Run Report Once" button above.
-                </Typography>
-                {comparisonApi.error && (
-                  <Box
-                    sx={{
-                      mt: 2,
-                      p: 2,
-                      bgcolor: "background.default",
-                      borderRadius: 1,
-                      border: "1px solid",
-                      borderColor: "divider",
-                    }}
-                  >
-                    <Typography variant="caption" component="pre" sx={{ whiteSpace: "pre-wrap" }}>
-                      {comparisonApi.error.message || JSON.stringify(comparisonApi.error, null, 2)}
-                    </Typography>
-                  </Box>
+            {selectedTemplate && (
+              <Stack direction="row" spacing={1} sx={{ mt: 2, displayPrint: "none" }}>
+                {selectedTemplate?.runManually && (
+                  <Chip
+                    label="Run Manually"
+                    size="small"
+                    color="warning"
+                    variant="outlined"
+                    icon={
+                      <SvgIcon fontSize="small">
+                        <Schedule />
+                      </SvgIcon>
+                    }
+                  />
                 )}
-              </Card>
+                <Chip
+                  icon={
+                    <SvgIcon fontSize="small">
+                      <FactCheck />
+                    </SvgIcon>
+                  }
+                  label={`${compliancePercentage}% Compliant`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    compliancePercentage === 100
+                      ? "success"
+                      : compliancePercentage >= 50
+                      ? "warning"
+                      : "error"
+                  }
+                />
+                <Chip
+                  label={`${missingLicensePercentage}% Missing License`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    missingLicensePercentage === 0
+                      ? "success"
+                      : missingLicensePercentage <= 25
+                      ? "warning"
+                      : "error"
+                  }
+                />
+                <Chip
+                  label={`${combinedScore}% Combined`}
+                  variant="outlined"
+                  size="small"
+                  color={
+                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
+                  }
+                />
+              </Stack>
             )}
+            <Menu
+              anchorEl={filterMenuAnchor}
+              open={Boolean(filterMenuAnchor)}
+              onClose={() => setFilterMenuAnchor(null)}
+            >
+              <MenuItem
+                selected={filter === "all"}
+                onClick={() => {
+                  setFilter("all");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                All ({allCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "compliant"}
+                onClick={() => {
+                  setFilter("compliant");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Compliant ({compliantCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "nonCompliant"}
+                onClick={() => {
+                  setFilter("nonCompliant");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Non-Compliant ({nonCompliantCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "overridden"}
+                onClick={() => {
+                  setFilter("overridden");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Overridden ({overriddenCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "nonCompliantWithLicense"}
+                onClick={() => {
+                  setFilter("nonCompliantWithLicense");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Non-Compliant (License available) ({nonCompliantWithLicenseCount})
+              </MenuItem>
+              <MenuItem
+                selected={filter === "nonCompliantWithoutLicense"}
+                onClick={() => {
+                  setFilter("nonCompliantWithoutLicense");
+                  setFilterMenuAnchor(null);
+                }}
+              >
+                Non-Compliant (License not available) ({nonCompliantWithoutLicenseCount})
+              </MenuItem>
+            </Menu>
+            <Box
+              sx={{
+                flex: 1,
+                overflowY: "auto",
+                mt: 2,
+                minHeight: 0,
+              }}
+            >
+              {comparisonApi.isError && (
+                <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+                  <Alert severity="error" sx={{ mb: 2 }}>
+                    Error fetching comparison data
+                  </Alert>
+                  <Typography variant="body2">
+                    There was an error retrieving the comparison data. Please try running the report
+                    again by clicking the "Run Report Once" button above.
+                  </Typography>
+                  {comparisonApi.error && (
+                    <Box
+                      sx={{
+                        mt: 2,
+                        p: 2,
+                        bgcolor: "background.default",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <Typography variant="caption" component="pre" sx={{ whiteSpace: "pre-wrap" }}>
+                        {comparisonApi.error.message ||
+                          JSON.stringify(comparisonApi.error, null, 2)}
+                      </Typography>
+                    </Box>
+                  )}
+                </Card>
+              )}
 
-            {comparisonApi.isSuccess &&
-              (!comparisonApi.data || comparisonApi.data.length === 0) && (
+              {comparisonApi.isSuccess &&
+                (!comparisonApi.data || comparisonApi.data.length === 0) && (
+                  <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
+                    <Alert severity="info" sx={{ mb: 2 }}>
+                      No comparison data is available. This might be because:
+                    </Alert>
+                    <Box sx={{ pl: 2 }}>
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        • The tenant has not been scanned yet
+                      </Typography>
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        • The template has no standards configured
+                      </Typography>
+                      <Typography variant="body2" sx={{ mb: 2 }}>
+                        • There was an issue with the comparison
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2">
+                      Try running the report by clicking the "Run Report Once" button above.
+                    </Typography>
+                  </Card>
+                )}
+
+              {filteredGroupedStandards && Object.keys(filteredGroupedStandards).length === 0 && (
                 <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
                   <Alert severity="info" sx={{ mb: 2 }}>
-                    No comparison data is available. This might be because:
+                    No standards match the selected filter criteria or search query.
                   </Alert>
-                  <Box sx={{ pl: 2 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      • The tenant has not been scanned yet
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      • The template has no standards configured
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
-                      • There was an issue with the comparison
-                    </Typography>
-                  </Box>
                   <Typography variant="body2">
-                    Try running the report by clicking the "Run Report Once" button above.
+                    Try selecting a different filter or modifying the search query.
                   </Typography>
                 </Card>
               )}
 
-            {filteredGroupedStandards && Object.keys(filteredGroupedStandards).length === 0 && (
-              <Card sx={{ mb: 4, p: 3, borderRadius: 2, boxShadow: 2 }}>
-                <Alert severity="info" sx={{ mb: 2 }}>
-                  No standards match the selected filter criteria or search query.
-                </Alert>
-                <Typography variant="body2">
-                  Try selecting a different filter or modifying the search query.
-                </Typography>
-              </Card>
-            )}
+              {Object.keys(filteredGroupedStandards).map((category) => (
+                <React.Fragment key={category}>
+                  <Typography variant="h6" sx={{ mb: 2, mt: 3 }}>
+                    {category}
+                  </Typography>
 
-            {Object.keys(filteredGroupedStandards).map((category) => (
-              <React.Fragment key={category}>
-                <Typography variant="h6" sx={{ mb: 2, mt: 3 }}>
-                  {category}
-                </Typography>
-
-                {filteredGroupedStandards[category].map((standard, index) => (
-                  <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          sx={{ p: 3 }}
-                        >
+                  {filteredGroupedStandards[category].map((standard, index) => (
+                    <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                           <Stack
                             direction="row"
                             justifyContent="space-between"
                             alignItems="center"
-                            sx={{ width: "100%" }}
+                            sx={{ p: 3 }}
                           >
-                            <Stack direction="row" alignItems="center" spacing={3}>
-                              <Box
-                                sx={{
-                                  width: 40,
-                                  height: 40,
-                                  minWidth: 40,
-                                  minHeight: 40,
-                                  borderRadius: "50%",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  flexShrink: 0,
-                                  bgcolor:
-                                    standard.complianceStatus === "Compliant"
-                                      ? "success.main"
-                                      : standard.complianceStatus === "Reporting Disabled"
-                                      ? "grey.500"
-                                      : "error.main",
-                                }}
-                              >
-                                {standard.complianceStatus === "Compliant" ? (
-                                  <CheckCircle sx={{ color: "white" }} />
-                                ) : standard.complianceStatus === "Reporting Disabled" ? (
-                                  <Info sx={{ color: "white" }} />
-                                ) : (
-                                  <Cancel sx={{ color: "white" }} />
-                                )}
-                              </Box>
-                              <Stack sx={{ minWidth: 0, flex: 1 }}>
-                                <Typography
-                                  variant="h6"
-                                  sx={{
-                                    wordBreak: "break-word",
-                                    overflowWrap: "break-word",
-                                    hyphens: "auto",
-                                  }}
-                                >
-                                  {standard?.standardName}
-                                </Typography>
-                                <Box>
-                                  <Chip
-                                    label="Standard"
-                                    size="small"
-                                    color="info"
-                                    variant="outlined"
-                                    sx={{ mt: 1, px: 2 }}
-                                  />
-                                </Box>
-                              </Stack>
-                            </Stack>
-                          </Stack>
-                        </Stack>
-                        <Divider />
-                        <Box sx={{ p: 3 }}>
-                          {!standard.standardValue ? (
-                            <Alert severity="info" sx={{ mb: 2 }}>
-                              This data has not yet been collected. Collect the data by pressing the
-                              report button on the top of the page.
-                            </Alert>
-                          ) : (
-                            <Box>
-                              <Box>
+                            <Stack
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="center"
+                              sx={{ width: "100%" }}
+                            >
+                              <Stack direction="row" alignItems="center" spacing={3}>
                                 <Box
                                   sx={{
-                                    p: 2,
-                                    bgcolor: "background.default",
-                                    borderRadius: 1,
-                                    border: "1px solid",
-                                    borderColor: "divider",
-                                  }}
-                                >
-                                  {standard.standardValue &&
-                                  typeof standard.standardValue === "object" &&
-                                  Object.keys(standard.standardValue).length > 0 ? (
-                                    Object.entries(standard.standardValue).map(([key, value]) => (
-                                      <Box key={key} sx={{ mb: 0.5 }}>
-                                        <Typography
-                                          variant="body2"
-                                          sx={{ fontWeight: "medium", mr: 1 }}
-                                        >
-                                          {key}:
-                                        </Typography>
-                                        <Typography
-                                          variant="body2"
-                                          component="div"
-                                          sx={{ whiteSpace: "pre-line", mt: 0.5 }}
-                                        >
-                                          {typeof value === "object" && value !== null
-                                            ? value?.label || JSON.stringify(value)
-                                            : value === true
-                                            ? "Enabled"
-                                            : value === false
-                                            ? "Disabled"
-                                            : String(value)}
-                                        </Typography>
-                                      </Box>
-                                    ))
-                                  ) : (
-                                    <Typography variant="body2">
-                                      {standard.standardValue === true ? (
-                                        <Alert severity="success" sx={{ mt: 1 }}>
-                                          This setting is configured correctly
-                                        </Alert>
-                                      ) : standard.standardValue === false ? (
-                                        <Alert severity="warning" sx={{ mt: 1 }}>
-                                          This setting is not configured correctly
-                                        </Alert>
-                                      ) : standard.standardValue !== undefined ? (
-                                        typeof standard.standardValue === "object" ? (
-                                          "No settings configured"
-                                        ) : (
-                                          String(standard.standardValue)
-                                        )
-                                      ) : (
-                                        <Alert severity="info" sx={{ mt: 1 }}>
-                                          This setting is not configured, or data has not been
-                                          collected. If you are getting this after data collection,
-                                          the tenant might not be licensed for this feature
-                                        </Alert>
-                                      )}
-                                    </Typography>
-                                  )}
-                                </Box>
-                              </Box>
-                            </Box>
-                          )}
-
-                          <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
-                            <Chip
-                              label={standard.standardImpact || "Medium Impact"}
-                              size="small"
-                              color={
-                                standard.standardImpactColour === "info"
-                                  ? "info"
-                                  : standard.standardImpactColour === "warning"
-                                  ? "warning"
-                                  : "error"
-                              }
-                              sx={{ mr: 1 }}
-                            />
-                          </Box>
-                        </Box>
-                      </Card>
-                    </Grid>
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          sx={{ p: 3 }}
-                        >
-                          <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            sx={{ width: "100%" }}
-                          >
-                            <Stack direction="row" alignItems="center" spacing={3}>
-                              <Box
-                                sx={{
-                                  width: 40,
-                                  height: 40,
-                                  borderRadius: "50%",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  bgcolor: "primary.main",
-                                }}
-                              >
-                                <Microsoft sx={{ color: "white" }} />
-                              </Box>
-                              <Stack>
-                                <Typography variant="h6">{currentTenant}</Typography>
-                                <Box>
-                                  <Chip
-                                    label="Current Tenant"
-                                    size="small"
-                                    color="primary"
-                                    variant="outlined"
-                                    sx={{ mt: 1, px: 2 }}
-                                  />
-                                </Box>
-                              </Stack>
-                            </Stack>
-                            <Stack spacing={1}>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "flex-end",
-                                  width: "100%",
-                                }}
-                              >
-                                <Box
-                                  sx={{
-                                    backgroundColor:
+                                    width: 40,
+                                    height: 40,
+                                    minWidth: 40,
+                                    minHeight: 40,
+                                    borderRadius: "50%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexShrink: 0,
+                                    bgcolor:
                                       standard.complianceStatus === "Compliant"
                                         ? "success.main"
+                                        : standard.complianceStatus === "Overridden"
+                                        ? "warning.main"
                                         : standard.complianceStatus === "Reporting Disabled"
                                         ? "grey.500"
                                         : "error.main",
-                                    borderRadius: "50%",
-                                    width: 8,
-                                    height: 8,
-                                    mr: 1,
                                   }}
-                                />
-                                <Typography variant="body2" sx={{ mr: 1 }}>
-                                  {standard.complianceStatus}
-                                </Typography>
-                              </Box>
-                              {standard.currentTenantValue?.LastRefresh && (
-                                <Chip
-                                  icon={
-                                    <SvgIcon fontSize="small">
-                                      <ClockIcon />
-                                    </SvgIcon>
-                                  }
-                                  size="small"
-                                  label={`${new Date(
-                                    standard.currentTenantValue.LastRefresh
-                                  ).toLocaleString()}`}
-                                  variant="outlined"
-                                />
-                              )}
+                                >
+                                  {standard.complianceStatus === "Compliant" ? (
+                                    <CheckCircle sx={{ color: "white" }} />
+                                  ) : standard.complianceStatus === "Overridden" ? (
+                                    <Info sx={{ color: "white" }} />
+                                  ) : standard.complianceStatus === "Reporting Disabled" ? (
+                                    <Info sx={{ color: "white" }} />
+                                  ) : (
+                                    <Cancel sx={{ color: "white" }} />
+                                  )}
+                                </Box>
+                                <Stack sx={{ minWidth: 0, flex: 1 }}>
+                                  <Typography
+                                    variant="h6"
+                                    sx={{
+                                      wordBreak: "break-word",
+                                      overflowWrap: "break-word",
+                                      hyphens: "auto",
+                                    }}
+                                  >
+                                    {standard?.standardName}
+                                  </Typography>
+                                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
+                                    {standard?.templateActions &&
+                                    standard.templateActions.length > 0 ? (
+                                      <>
+                                        {standard.templateActions.map((action, idx) => {
+                                          const actionLabel =
+                                            typeof action === "object"
+                                              ? action?.label || action?.value || "Unknown"
+                                              : action;
+                                          const actionValue =
+                                            typeof action === "object" ? action?.value : action;
+                                          const isRemediate =
+                                            actionLabel === "Remediate" ||
+                                            actionLabel === "remediate";
+
+                                          return (
+                                            <Chip
+                                              key={idx}
+                                              label={actionLabel}
+                                              size="small"
+                                              color={isRemediate ? "success" : "primary"}
+                                              variant="outlined"
+                                              icon={
+                                                <SvgIcon>
+                                                  {actionValue === "Report" && <Assignment />}
+                                                  {actionValue === "warn" && (
+                                                    <NotificationImportant />
+                                                  )}
+                                                  {actionValue === "Remediate" && <Construction />}
+                                                </SvgIcon>
+                                              }
+                                            />
+                                          );
+                                        })}
+                                        {standard?.autoRemediate && (
+                                          <Chip
+                                            label="Auto-Remediate"
+                                            size="small"
+                                            color="success"
+                                            variant="outlined"
+                                            sx={{ px: 1 }}
+                                            icon={<Construction />}
+                                          />
+                                        )}
+                                      </>
+                                    ) : (
+                                      <Chip
+                                        label="Standard"
+                                        size="small"
+                                        color="info"
+                                        variant="outlined"
+                                        sx={{ px: 2 }}
+                                      />
+                                    )}
+                                  </Box>
+                                </Stack>
+                              </Stack>
                             </Stack>
                           </Stack>
-                        </Stack>
-                        <Divider />
-                        <Box sx={{ p: 3 }}>
-                          {/* Existing tenant comparison content */}
-                          {typeof standard.currentTenantValue?.Value === "object" &&
-                          standard.currentTenantValue?.Value !== null ? (
-                            <Box
-                              sx={{
-                                p: 2,
-                                bgcolor: "background.default",
-                                borderRadius: 1,
-                                border: "1px solid",
-                                borderColor: "divider",
-                              }}
-                            >
-                              {standard.complianceStatus === "Reporting Disabled" ? (
-                                <Alert severity="info" sx={{ mt: 1 }}>
-                                  Reporting is disabled for this standard in the template
-                                  configuration.
-                                </Alert>
-                              ) : (
-                                <>
-                                  {standard.complianceStatus === "Compliant" ? (
-                                    <Alert severity="success" sx={{ mb: 2 }}>
-                                      This setting is configured correctly
-                                    </Alert>
-                                  ) : standard.currentTenantValue?.Value === false ? (
-                                    <Alert severity="warning" sx={{ mb: 2 }}>
-                                      This setting is not configured correctly
-                                    </Alert>
-                                  ) : null}
-
-                                  {/* Only show values if they're not simple true/false that's already covered by the alerts above */}
-                                  {!(
-                                    standard.complianceStatus === "Compliant" &&
-                                    (standard.currentTenantValue?.Value === true ||
-                                      standard.currentTenantValue?.Value === false)
-                                  ) &&
-                                    Object.entries(standard.currentTenantValue)
-                                      .filter(
-                                        ([key]) =>
-                                          key !== "LastRefresh" &&
-                                          // Skip showing the Value field separately if it's just true/false
-                                          !(
-                                            key === "Value" &&
-                                            (standard.currentTenantValue?.Value === true ||
-                                              standard.currentTenantValue?.Value === false)
-                                          )
-                                      )
-                                      .map(([key, value]) => {
-                                        const actualValue = key === "Value" ? value : value;
-
-                                        const standardValueForKey =
-                                          standard.standardValue &&
-                                          typeof standard.standardValue === "object"
-                                            ? standard.standardValue[key]
-                                            : undefined;
-
-                                        const isDifferent =
-                                          standardValueForKey !== undefined &&
-                                          JSON.stringify(actualValue) !==
-                                            JSON.stringify(standardValueForKey);
-
-                                        // Format the display value
-                                        let displayValue;
-                                        if (typeof value === "object" && value !== null) {
-                                          displayValue =
-                                            value?.label || JSON.stringify(value, null, 2);
-                                        } else if (value === true) {
-                                          displayValue = "Enabled";
-                                        } else if (value === false) {
-                                          displayValue = "Disabled";
-                                        } else {
-                                          displayValue = String(value);
-                                        }
-
-                                        return (
-                                          <Box
-                                            key={key}
-                                            sx={{ display: "flex", mb: 0.5, flexWrap: "wrap" }}
+                          <Divider />
+                          <Box sx={{ p: 3 }}>
+                            {!standard.standardValue ? (
+                              <Alert severity="info" sx={{ mb: 2 }}>
+                                This data has not yet been collected. Collect the data by pressing
+                                the report button on the top of the page.
+                              </Alert>
+                            ) : (
+                              <Box>
+                                <Box>
+                                  <Box
+                                    sx={{
+                                      p: 2,
+                                      bgcolor: "background.default",
+                                      borderRadius: 1,
+                                      border: "1px solid",
+                                      borderColor: "divider",
+                                    }}
+                                  >
+                                    {standard.standardValue &&
+                                    typeof standard.standardValue === "object" &&
+                                    Object.keys(standard.standardValue).length > 0 ? (
+                                      Object.entries(standard.standardValue).map(([key, value]) => (
+                                        <Box key={key} sx={{ mb: 0.5 }}>
+                                          <Typography
+                                            variant="body2"
+                                            sx={{ fontWeight: "medium", mr: 1 }}
                                           >
-                                            <Typography
-                                              variant="body2"
-                                              sx={{ fontWeight: "medium", mr: 1, flexShrink: 0 }}
-                                            >
-                                              {key}:
-                                            </Typography>
-                                            <Typography
-                                              variant="body2"
-                                              component="pre"
-                                              sx={{
-                                                color:
-                                                  standard.complianceStatus === "Compliant"
-                                                    ? "success.main"
-                                                    : isDifferent
-                                                    ? "error.main"
-                                                    : "inherit",
-                                                fontWeight:
-                                                  standard.complianceStatus === "Non-Compliant" &&
-                                                  isDifferent
-                                                    ? "medium"
-                                                    : "inherit",
-                                                wordBreak: "break-word",
-                                                overflowWrap: "break-word",
-                                                whiteSpace: "pre-wrap",
-                                                flex: 1,
-                                                minWidth: 0,
-                                                fontFamily:
-                                                  typeof value === "object" &&
-                                                  value !== null &&
-                                                  !value?.label
-                                                    ? "monospace"
-                                                    : "inherit",
-                                                fontSize:
-                                                  typeof value === "object" &&
-                                                  value !== null &&
-                                                  !value?.label
-                                                    ? "0.75rem"
-                                                    : "inherit",
-                                                m: 0,
-                                              }}
-                                            >
-                                              {displayValue}
-                                            </Typography>
-                                          </Box>
-                                        );
-                                      })}
-                                </>
-                              )}
-                            </Box>
-                          ) : (
-                            <Typography
-                              variant="body1"
-                              sx={{
-                                whiteSpace: "pre-wrap",
-                                color:
-                                  standard.complianceStatus === "Compliant"
-                                    ? "success.main"
-                                    : standard.complianceStatus === "Reporting Disabled"
-                                    ? "text.secondary"
-                                    : "error.main",
-                                fontWeight:
-                                  standard.complianceStatus === "Non-Compliant"
-                                    ? "medium"
-                                    : "inherit",
-                              }}
-                            >
-                              {standard.complianceStatus === "Reporting Disabled" ? (
-                                <Alert severity="info" sx={{ mt: 1 }}>
-                                  Reporting is disabled for this standard in the template
-                                  configuration.
-                                </Alert>
-                              ) : standard.complianceStatus === "Compliant" ? (
-                                <Alert severity="success" sx={{ mt: 1 }}>
-                                  This setting is configured correctly
-                                </Alert>
-                              ) : standard.currentTenantValue?.Value === false ||
-                                standard.currentTenantValue === false ? (
-                                <Alert severity="warning" sx={{ mt: 1 }}>
-                                  This setting is not configured correctly
-                                </Alert>
-                              ) : standard.currentTenantValue !== undefined ? (
-                                String(
-                                  standard.currentTenantValue?.Value !== undefined
-                                    ? standard.currentTenantValue?.Value
-                                    : standard.currentTenantValue
-                                )
-                              ) : (
-                                <Alert severity="info" sx={{ mt: 1 }}>
-                                  This setting is not configured, or data has not been collected. If
-                                  you are getting this after data collection, the tenant might not
-                                  be licensed for this feature
-                                </Alert>
-                              )}
-                            </Typography>
-                          )}
-                        </Box>
-                      </Card>
-                    </Grid>
+                                            {key}:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            component="div"
+                                            sx={{ whiteSpace: "pre-line", mt: 0.5 }}
+                                          >
+                                            {typeof value === "object" && value !== null
+                                              ? value?.label || JSON.stringify(value)
+                                              : value === true
+                                              ? "Enabled"
+                                              : value === false
+                                              ? "Disabled"
+                                              : String(value)}
+                                          </Typography>
+                                        </Box>
+                                      ))
+                                    ) : (
+                                      <Typography variant="body2">
+                                        {standard.standardValue === true ? (
+                                          <Alert severity="success" sx={{ mt: 1 }}>
+                                            This setting is configured correctly
+                                          </Alert>
+                                        ) : standard.standardValue === false ? (
+                                          <Alert severity="warning" sx={{ mt: 1 }}>
+                                            This setting is not configured correctly
+                                          </Alert>
+                                        ) : standard.standardValue !== undefined ? (
+                                          typeof standard.standardValue === "object" ? (
+                                            "No settings configured"
+                                          ) : (
+                                            String(standard.standardValue)
+                                          )
+                                        ) : (
+                                          <Alert severity="info" sx={{ mt: 1 }}>
+                                            This setting is not configured, or data has not been
+                                            collected. If you are getting this after data
+                                            collection, the tenant might not be licensed for this
+                                            feature
+                                          </Alert>
+                                        )}
+                                      </Typography>
+                                    )}
+                                  </Box>
+                                </Box>
+                              </Box>
+                            )}
 
-                    {standard.complianceDetails && (
-                      <Grid size={12}>
-                        <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
-                          <Stack direction="row" alignItems="flex-start" spacing={2} sx={{ p: 3 }}>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: "info.main",
-                              }}
-                            >
-                              <Info />
+                            <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
+                              <Chip
+                                label={standard.standardImpact || "Medium Impact"}
+                                size="small"
+                                color={
+                                  standard.standardImpactColour === "info"
+                                    ? "info"
+                                    : standard.standardImpactColour === "warning"
+                                    ? "warning"
+                                    : "error"
+                                }
+                                sx={{ mr: 1 }}
+                              />
                             </Box>
-                            <Box
-                              sx={{
-                                // Style markdown links to match CIPP theme
-                                "& a": {
-                                  color: (theme) => theme.palette.primary.main,
-                                  textDecoration: "underline",
-                                  "&:hover": {
-                                    textDecoration: "none",
-                                  },
-                                },
-                                fontSize: "0.875rem",
-                                lineHeight: 1.43,
-                                "& p": {
-                                  my: 0,
-                                },
-                                flex: 1,
-                              }}
-                            >
-                              <ReactMarkdown
-                                components={{
-                                  // Make links open in new tab with security attributes
-                                  a: ({ href, children, ...props }) => (
-                                    <a
-                                      href={href}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      {...props}
-                                    >
-                                      {children}
-                                    </a>
-                                  ),
-                                  // Convert paragraphs to spans to avoid unwanted spacing
-                                  p: ({ children }) => <span>{children}</span>,
-                                }}
-                              >
-                                {standard.complianceDetails}
-                              </ReactMarkdown>
-                            </Box>
-                          </Stack>
+                          </Box>
                         </Card>
                       </Grid>
-                    )}
-                  </Grid>
-                ))}
-              </React.Fragment>
-            ))}
+
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            sx={{ p: 3 }}
+                          >
+                            <Stack
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="center"
+                              sx={{ width: "100%" }}
+                            >
+                              <Stack direction="row" alignItems="center" spacing={3}>
+                                <Box
+                                  sx={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: "50%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    bgcolor: "primary.main",
+                                  }}
+                                >
+                                  <Microsoft sx={{ color: "white" }} />
+                                </Box>
+                                <Stack>
+                                  <Typography variant="h6">{currentTenant}</Typography>
+                                  <Box>
+                                    <Chip
+                                      label="Current Tenant"
+                                      size="small"
+                                      color="primary"
+                                      variant="outlined"
+                                      sx={{ mt: 1, px: 2 }}
+                                    />
+                                  </Box>
+                                </Stack>
+                              </Stack>
+                              <Stack spacing={1}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "flex-end",
+                                    width: "100%",
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      backgroundColor:
+                                        standard.complianceStatus === "Compliant"
+                                          ? "success.main"
+                                          : standard.complianceStatus === "Overridden"
+                                          ? "warning.main"
+                                          : standard.complianceStatus === "Reporting Disabled"
+                                          ? "grey.500"
+                                          : "error.main",
+                                      borderRadius: "50%",
+                                      width: 8,
+                                      height: 8,
+                                      mr: 1,
+                                    }}
+                                  />
+                                  <Typography variant="body2" sx={{ mr: 1 }}>
+                                    {standard.complianceStatus}
+                                  </Typography>
+                                </Box>
+                                {standard.currentTenantValue?.LastRefresh && (
+                                  <Chip
+                                    icon={
+                                      <SvgIcon fontSize="small">
+                                        <ClockIcon />
+                                      </SvgIcon>
+                                    }
+                                    size="small"
+                                    label={`${new Date(
+                                      standard.currentTenantValue.LastRefresh
+                                    ).toLocaleString()}`}
+                                    variant="outlined"
+                                  />
+                                )}
+                              </Stack>
+                            </Stack>
+                          </Stack>
+                          <Divider />
+                          <Box sx={{ p: 3 }}>
+                            {/* Existing tenant comparison content */}
+                            {typeof standard.currentTenantValue?.Value === "object" &&
+                            standard.currentTenantValue?.Value !== null ? (
+                              <Box
+                                sx={{
+                                  p: 2,
+                                  bgcolor: "background.default",
+                                  borderRadius: 1,
+                                  border: "1px solid",
+                                  borderColor: "divider",
+                                }}
+                              >
+                                {standard.complianceStatus === "Reporting Disabled" ? (
+                                  <Alert severity="info" sx={{ mt: 1 }}>
+                                    Reporting is disabled for this standard in the template
+                                    configuration.
+                                  </Alert>
+                                ) : (
+                                  <>
+                                    {standard.complianceStatus === "Overridden" ? (
+                                      <Alert severity="warning" sx={{ mb: 2 }}>
+                                        This setting is configured by template:{" "}
+                                        {standard.overridingTemplateName ||
+                                          standard.overridingTemplateId}
+                                      </Alert>
+                                    ) : standard.complianceStatus === "Compliant" ? (
+                                      <Alert severity="success" sx={{ mb: 2 }}>
+                                        This setting is configured correctly
+                                      </Alert>
+                                    ) : standard.currentTenantValue?.Value === false ? (
+                                      <Alert severity="warning" sx={{ mb: 2 }}>
+                                        This setting is not configured correctly
+                                      </Alert>
+                                    ) : null}
+
+                                    {/* Only show values if they're not simple true/false that's already covered by the alerts above */}
+                                    {!(
+                                      standard.complianceStatus === "Compliant" &&
+                                      (standard.currentTenantValue?.Value === true ||
+                                        standard.currentTenantValue?.Value === false)
+                                    ) &&
+                                      Object.entries(standard.currentTenantValue)
+                                        .filter(
+                                          ([key]) =>
+                                            key !== "LastRefresh" &&
+                                            // Skip showing the Value field separately if it's just true/false
+                                            !(
+                                              key === "Value" &&
+                                              (standard.currentTenantValue?.Value === true ||
+                                                standard.currentTenantValue?.Value === false)
+                                            )
+                                        )
+                                        .map(([key, value]) => {
+                                          const actualValue = key === "Value" ? value : value;
+
+                                          const standardValueForKey =
+                                            standard.standardValue &&
+                                            typeof standard.standardValue === "object"
+                                              ? standard.standardValue[key]
+                                              : undefined;
+
+                                          const isDifferent =
+                                            standardValueForKey !== undefined &&
+                                            JSON.stringify(actualValue) !==
+                                              JSON.stringify(standardValueForKey);
+
+                                          // Format the display value
+                                          let displayValue;
+                                          if (typeof value === "object" && value !== null) {
+                                            displayValue =
+                                              value?.label || JSON.stringify(value, null, 2);
+                                          } else if (value === true) {
+                                            displayValue = "Enabled";
+                                          } else if (value === false) {
+                                            displayValue = "Disabled";
+                                          } else {
+                                            displayValue = String(value);
+                                          }
+
+                                          return (
+                                            <Box
+                                              key={key}
+                                              sx={{ display: "flex", mb: 0.5, flexWrap: "wrap" }}
+                                            >
+                                              <Typography
+                                                variant="body2"
+                                                sx={{ fontWeight: "medium", mr: 1, flexShrink: 0 }}
+                                              >
+                                                {key}:
+                                              </Typography>
+                                              <Typography
+                                                variant="body2"
+                                                component="pre"
+                                                sx={{
+                                                  color:
+                                                    standard.complianceStatus === "Compliant"
+                                                      ? "success.main"
+                                                      : isDifferent
+                                                      ? "error.main"
+                                                      : "inherit",
+                                                  fontWeight:
+                                                    standard.complianceStatus === "Non-Compliant" &&
+                                                    isDifferent
+                                                      ? "medium"
+                                                      : "inherit",
+                                                  wordBreak: "break-word",
+                                                  overflowWrap: "break-word",
+                                                  whiteSpace: "pre-wrap",
+                                                  flex: 1,
+                                                  minWidth: 0,
+                                                  fontFamily:
+                                                    typeof value === "object" &&
+                                                    value !== null &&
+                                                    !value?.label
+                                                      ? "monospace"
+                                                      : "inherit",
+                                                  fontSize:
+                                                    typeof value === "object" &&
+                                                    value !== null &&
+                                                    !value?.label
+                                                      ? "0.75rem"
+                                                      : "inherit",
+                                                  m: 0,
+                                                }}
+                                              >
+                                                {displayValue}
+                                              </Typography>
+                                            </Box>
+                                          );
+                                        })}
+                                  </>
+                                )}
+                              </Box>
+                            ) : (
+                              <Typography
+                                variant="body1"
+                                sx={{
+                                  whiteSpace: "pre-wrap",
+                                  color:
+                                    standard.complianceStatus === "Compliant"
+                                      ? "success.main"
+                                      : standard.complianceStatus === "Overridden"
+                                      ? "warning.main"
+                                      : standard.complianceStatus === "Reporting Disabled"
+                                      ? "text.secondary"
+                                      : "error.main",
+                                  fontWeight:
+                                    standard.complianceStatus === "Non-Compliant"
+                                      ? "medium"
+                                      : "inherit",
+                                }}
+                              >
+                                {standard.complianceStatus === "Reporting Disabled" ? (
+                                  <Alert severity="info" sx={{ mt: 1 }}>
+                                    Reporting is disabled for this standard in the template
+                                    configuration.
+                                  </Alert>
+                                ) : standard.complianceStatus === "Overridden" ? (
+                                  <Alert severity="warning" sx={{ mt: 1 }}>
+                                    This setting is configured by template:{" "}
+                                    {standard.overridingTemplateName ||
+                                      standard.overridingTemplateId}
+                                  </Alert>
+                                ) : standard.complianceStatus === "Compliant" ? (
+                                  <Alert severity="success" sx={{ mt: 1 }}>
+                                    This setting is configured correctly
+                                  </Alert>
+                                ) : standard.currentTenantValue?.Value === false ||
+                                  standard.currentTenantValue === false ? (
+                                  <Alert severity="warning" sx={{ mt: 1 }}>
+                                    This setting is not configured correctly
+                                  </Alert>
+                                ) : standard.currentTenantValue !== undefined ? (
+                                  String(
+                                    standard.currentTenantValue?.Value !== undefined
+                                      ? standard.currentTenantValue?.Value
+                                      : standard.currentTenantValue
+                                  )
+                                ) : (
+                                  <Alert severity="info" sx={{ mt: 1 }}>
+                                    This setting is not configured, or data has not been collected.
+                                    If you are getting this after data collection, the tenant might
+                                    not be licensed for this feature
+                                  </Alert>
+                                )}
+                              </Typography>
+                            )}
+                          </Box>
+                        </Card>
+                      </Grid>
+
+                      {standard.complianceDetails && (
+                        <Grid size={12}>
+                          <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
+                            <Stack
+                              direction="row"
+                              alignItems="flex-start"
+                              spacing={2}
+                              sx={{ p: 3 }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  color: "info.main",
+                                }}
+                              >
+                                <Info />
+                              </Box>
+                              <Box
+                                sx={{
+                                  // Style markdown links to match CIPP theme
+                                  "& a": {
+                                    color: (theme) => theme.palette.primary.main,
+                                    textDecoration: "underline",
+                                    "&:hover": {
+                                      textDecoration: "none",
+                                    },
+                                  },
+                                  fontSize: "0.875rem",
+                                  lineHeight: 1.43,
+                                  "& p": {
+                                    my: 0,
+                                  },
+                                  flex: 1,
+                                }}
+                              >
+                                <ReactMarkdown
+                                  components={{
+                                    // Make links open in new tab with security attributes
+                                    a: ({ href, children, ...props }) => (
+                                      <a
+                                        href={href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        {...props}
+                                      >
+                                        {children}
+                                      </a>
+                                    ),
+                                    // Convert paragraphs to spans to avoid unwanted spacing
+                                    p: ({ children }) => <span>{children}</span>,
+                                  }}
+                                >
+                                  {standard.complianceDetails}
+                                </ReactMarkdown>
+                              </Box>
+                            </Stack>
+                          </Card>
+                        </Grid>
+                      )}
+                    </Grid>
+                  ))}
+                </React.Fragment>
+              ))}
+            </Box>
           </>
         )}
 
