@@ -81,14 +81,18 @@ export const HeaderedTabbedLayout = (props) => {
                 ) : (
                   subtitle && (
                     <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-                      {subtitle.map((item, index) => (
-                        <Stack key={index} alignItems="center" direction="row" spacing={1}>
-                          <SvgIcon fontSize="small">{item.icon}</SvgIcon>
-                          <Typography color="text.secondary" variant="body2">
-                            {item.text}
-                          </Typography>
-                        </Stack>
-                      ))}
+                      {subtitle.map((item, index) =>
+                        item.component ? (
+                          <Box key={index}>{item.component}</Box>
+                        ) : (
+                          <Stack key={index} alignItems="center" direction="row" spacing={1}>
+                            <SvgIcon fontSize="small">{item.icon}</SvgIcon>
+                            <Typography color="text.secondary" variant="body2">
+                              {item.text}
+                            </Typography>
+                          </Stack>
+                        )
+                      )}
                     </Stack>
                   )
                 )}
