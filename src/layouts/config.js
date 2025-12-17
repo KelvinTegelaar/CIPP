@@ -173,6 +173,11 @@ export const nativeMenuItems = [
             path: "/tenant/administration/partner-relationships",
             permissions: ["Tenant.Relationship.*"],
           },
+          {
+            title: "Domains",
+            path: "/tenant/administration/domains",
+            permissions: ["Tenant.Administration.*"],
+          },
         ],
       },
       {
