@@ -8,7 +8,7 @@ The "Vacation Mode" feature enables administrators to schedule tasks that tempor
 
 #### Add Vacation Schedule
 
-This flyout allows you to schedule a task to add and remove a user or multiple users from CA exclusions for the specified period of time. Select the user(s), the conditional access policies to exclude the user(s) from during vacation, and the start and end dates. You can also optionally exclude this user from any location-based audit log alerts during the scheduled vacation. Click `Submit` once you have completed and reviewed all fields.
+This flyout allows you to schedule a task to add and remove a user or multiple users from CA exclusions for the specified period of time. Select the user(s), the conditional access policies to exclude the user(s) from during vacation, and the start and end dates. You can also optionally exclude this user from any location-based audit log alerts during the scheduled vacation. Be sure to include a note in the reference field for ease of identification later and this will be used in the notification title, if enabled. Click `Submit` once you have completed and reviewed all fields.
 
 ### **Table Details**
 
