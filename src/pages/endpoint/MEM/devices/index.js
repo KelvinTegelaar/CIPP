@@ -170,6 +170,38 @@ const Page = () => {
       confirmText: "Are you sure you want to retrieve the FileVault key for [deviceName]?",
     },
     {
+      label: "Reset Passcode",
+      type: "POST",
+      icon: <PasswordOutlined />,
+      url: "/api/ExecDevicePasscodeAction",
+      data: {
+        GUID: "id",
+        Action: "resetPasscode",
+      },
+      condition: (row) =>
+        row.operatingSystem === "iOS" ||
+        row.operatingSystem === "macOS" ||
+        row.operatingSystem === "Android",
+      confirmText:
+        "Are you sure you want to reset the passcode for [deviceName]? A new passcode will be generated and displayed.",
+    },
+    {
+      label: "Remove Passcode",
+      type: "POST",
+      icon: <Password />,
+      url: "/api/ExecDevicePasscodeAction",
+      data: {
+        GUID: "id",
+        Action: "removeDevicePasscode",
+      },
+      condition: (row) =>
+        row.operatingSystem === "iOS" ||
+        row.operatingSystem === "macOS" ||
+        row.operatingSystem === "Android",
+      confirmText:
+        "Are you sure you want to remove the passcode from [deviceName]? This will remove the device passcode requirement.",
+    },
+    {
       label: "Windows Defender Full Scan",
       type: "POST",
       icon: <Security />,
