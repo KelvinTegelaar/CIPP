@@ -42,16 +42,18 @@ const Page = () => {
   const { templateId } = router.query;
   const settings = useSettings();
   const removeDialog = useDialog();
+  // Prioritize URL query parameter, then fall back to settings
+  const currentTenant = router.query.tenantFilter || settings.currentTenant;
 
   // API call to get backup files
   const backupList = ApiGetCall({
     url: "/api/ExecListBackup",
     data: {
-      tenantFilter: settings.currentTenant,
+      tenantFilter: currentTenant,
       Type: "Scheduled",
       NameOnly: true,
     },
-    queryKey: `BackupList-${settings.currentTenant}`,
+    queryKey: `BackupList-${currentTenant}`,
   });
 
   // API call to get existing backup configuration/schedule
@@ -61,7 +63,7 @@ const Page = () => {
       showHidden: true,
       Type: "New-CIPPBackup",
     },
-    queryKey: `BackupTasks-${settings.currentTenant}`,
+    queryKey: `BackupTasks-${currentTenant}`,
   });
 
   // Use the actual backup files as the backup data
