@@ -116,7 +116,7 @@ export const CippBannerListCard = (props) => {
                       </Box>
 
                       {/* Main Text and Subtext */}
-                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Box sx={{ flex: 1, minWidth: 0, pr: 2 }}>
                         <Typography
                           color="text.primary"
                           variant="h6"

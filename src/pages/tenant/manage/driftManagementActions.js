@@ -1,5 +1,5 @@
 import React from "react";
-import { Sync, PlayArrow, PictureAsPdf } from "@mui/icons-material";
+import { Edit, Sync, PlayArrow, PictureAsPdf } from "@mui/icons-material";
 
 /**
  * Creates the standard drift management actions array
@@ -9,7 +9,14 @@ import { Sync, PlayArrow, PictureAsPdf } from "@mui/icons-material";
  * @param {Function} options.onGenerateReport - Function to call when generate report is triggered (optional)
  * @returns {Array} Array of action objects
  */
-export const createDriftManagementActions = ({ templateId, onRefresh, onGenerateReport, currentTenant }) => {
+export const createDriftManagementActions = ({
+  templateId,
+  templateType = "classic",
+  showEditTemplate = false,
+  onRefresh,
+  onGenerateReport,
+  currentTenant,
+}) => {
   const actions = [
     {
       label: "Refresh Data",
@@ -31,6 +38,27 @@ export const createDriftManagementActions = ({ templateId, onRefresh, onGenerate
 
   // Add template-specific actions if templateId is available
   if (templateId) {
+    // Conditionally add Edit Template action
+    if (showEditTemplate) {
+      actions.push({
+        label: "Edit Template",
+        icon: <Edit />,
+        color: "info",
+        noConfirm: true,
+        customFunction: () => {
+          // Use Next.js router for internal navigation
+          import("next/router")
+            .then(({ default: router }) => {
+              router.push(`/tenant/standards/template?id=${templateId}&type=${templateType}`);
+            })
+            .catch(() => {
+              // Fallback to window.location if router is not available
+              window.location.href = `/tenant/standards/template?id=${templateId}&type=${templateType}`;
+            });
+        },
+      });
+    }
+
     actions.push(
       {
         label: `Run Standard Now (${currentTenant || "Currently Selected Tenant"})`,
