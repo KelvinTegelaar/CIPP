@@ -382,7 +382,10 @@ const Page = () => {
           confirmText:
             "Are you sure you want to remove this backup schedule? This will stop automatic backups but won't delete existing backup files.",
         }}
-        relatedQueryKeys={[`BackupTasks-${settings.currentTenant}`, `BackupList-${settings.currentTenant}`]}
+        relatedQueryKeys={[
+          `BackupTasks-${settings.currentTenant}`,
+          `BackupList-${settings.currentTenant}`,
+        ]}
         onSuccess={() => {
           // Refresh both queries when a backup schedule is removed
           setTimeout(() => {
