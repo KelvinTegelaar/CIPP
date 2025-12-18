@@ -35,6 +35,19 @@ Clearing this cache can severely impact performance of your CIPP instance and wi
 
 <details>
 
+<summary>Branding Settings</summary>
+
+Customize your organization's branding for reports and documents. Changes will be applied to all generated reports.
+
+Set your preferred:
+
+* **Logo:** Recommended format is PNG. Max file size is 2MB. Optimal size is 200x100px.
+* **Brand Color:** This color will be used for accents and highlights in reports
+
+</details>
+
+<details>
+
 <summary>Password Style</summary>
 
 Choose the default password style you would like to use for new user creation and password resets.
@@ -62,14 +75,9 @@ You can switch providers to either Google, Cloudflare or Quad9 for your domain a
 
 <details>
 
-<summary>Branding Settings</summary>
+<summary>Backup Retention</summary>
 
-Customize your organization's branding for reports and documents. Changes will be applied to all generated reports.
-
-Set your preferred:
-
-* **Logo:** Recommended format is PNG. Max file size is 2MB. Optimal size is 200x100px.
-* **Brand Color:** This color will be used for accents and highlights in reports
+Configure how long to keep backup files. Both CIPP system backups and tenant backups will be automatically deleted after this period. Minimum retention is 7 days; default is 30 days. Cleanup runs daily at 2:00 AM.
 
 </details>
 

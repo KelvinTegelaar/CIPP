@@ -2,13 +2,13 @@
 
 {% stepper %}
 {% step %}
-### Select a tenant
+### Select a Tenant
 
 Use the tenant drop down to select the tenant you wish to run this job against.
 {% endstep %}
 
 {% step %}
-### Set task name
+### Set Task Name
 
 Enter the name of the task
 {% endstep %}
@@ -16,7 +16,7 @@ Enter the name of the task
 {% step %}
 ### Configure Post Execution Actions
 
-Select how you would like to be notified once the task has completed, if any
+Select how you would like to be notified once the task has completed, if any. You can also optionally add a reference note here that will e added to the notification title.
 {% endstep %}
 
 {% step %}

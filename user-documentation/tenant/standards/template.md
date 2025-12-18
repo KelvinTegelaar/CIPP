@@ -113,6 +113,8 @@ If you select "AllTenants", you will be shown an additional dropdown for "Exclud
 ### Optionally Set Notification Settings
 
 You will be able to set a custom webhook and/or email address to receive notifications on drift. If nothing is set, this will use the default webhook and/or email address from [notifications.md](../../cipp/settings/notifications.md "mention").
+
+You can also disable all notifications for the drift standard if you do not wish to have notifications and prefer to manually check for drift.
 {% endstep %}
 
 {% step %}
@@ -146,7 +148,7 @@ Once all other steps are completed and all tenants show configured, click the "S
 
 #### See It In Action
 
-{% embed url="https://app.storylane.io/share/gykd6vk1y7kr" %}
+{% @storylane/embed subdomain="app" linkValue="gykd6vk1y7kr" url="https://app.storylane.io/share/gykd6vk1y7kr" %}
 
 ### Standards Filtering
 

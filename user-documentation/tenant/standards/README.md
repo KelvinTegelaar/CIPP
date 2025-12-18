@@ -84,8 +84,7 @@ Each standard is labeled based on the level of change it introduces and its impa
 * **Companion Policies:** Some standards rely on additional policies in tools like **Microsoft Intune** to be fully effective. Ensure all required companion policies are configured to achieve the desired results.
 * **Deselecting Standards:** Deselecting a standard prevents it from being enforced in future cycles, but it does not undo its current configuration.
   * **Example:** If you deselect `"Enable FIDO2 capabilities`," the standard will stop enforcing this policy. However, if FIDO2 was already enabled, it will remain enabled.
-* **Precedence of Standards:** Standards that are updated via multiple templates for a tenant will only apply the settings from the most recently created template.
-* **Application Cadence:** Standards reapply **every three hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle.
+* **Application Cadence:** Classic Standards reapply **every three hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Standards are evaluated every 12 hours.
 {% endhint %}
 
 {% hint style="info" %}

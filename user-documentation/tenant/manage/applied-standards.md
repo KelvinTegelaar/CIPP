@@ -23,6 +23,7 @@ Click this button next to the template dropdown to open a flyout to show you the
 |                                            |                                                                                                                            |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | Refresh Data                               | Refreshes the reported data for the selected standard                                                                      |
+| Edit Template                              | Opens the selected template in [edit.md](../conditional/list-template/edit.md "mention")                                   |
 | Run Standard Now (Selected Tenant)         | This will run the standard template against the selected tenant if the tenant is included in the template's configuration. |
 | Run Standard Now (All Tenants in Template) | This will run the standard template against all tenants included in the template's configuration.                          |
 

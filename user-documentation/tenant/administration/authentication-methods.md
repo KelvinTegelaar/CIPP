@@ -8,7 +8,7 @@ The properties returned are for the Graph resource type `authenticationMethodsPo
 
 ### Table Actions
 
-<table><thead><tr><th></th><th></th><th data-type="checkbox"></th></tr></thead><tbody><tr><td>Enable Policy</td><td>Enables the sign-in method policy</td><td>true</td></tr><tr><td>Disable Policy</td><td>Disables the sign-in method policy</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th></th><th></th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>Enable Policy</td><td>Enables the sign-in method policy</td><td>true</td></tr><tr><td>Disable Policy</td><td>Disables the sign-in method policy</td><td>true</td></tr><tr><td>More Info</td><td>Opens Extended Info flyout</td><td>false</td></tr></tbody></table>
 
 ***
 
