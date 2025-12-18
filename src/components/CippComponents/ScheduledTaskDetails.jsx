@@ -272,6 +272,7 @@ const ScheduledTaskDetails = ({ data, showActions = true }) => {
                               noCard
                               data={result.Results}
                               disablePagination={result.Results.length <= 10}
+                              refreshFunction={() => taskDetailResults.refetch()}
                             />
                           ) : typeof result.Results === "object" ? (
                             <CippPropertyListCard

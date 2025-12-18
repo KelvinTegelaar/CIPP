@@ -353,6 +353,8 @@ const PoliciesDeployedPage = () => {
 
   const actions = createDriftManagementActions({
     templateId,
+    templateType: currentTemplate?.type || "classic",
+    showEditTemplate: true,
     onRefresh: () => {
       standardsApi.refetch();
       comparisonApi.refetch();

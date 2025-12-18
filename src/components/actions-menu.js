@@ -92,6 +92,7 @@ export const ActionsMenu = (props) => {
           api={actionData.action}
           row={actionData.data}
           relatedQueryKeys={queryKeys}
+          {...actionData.action}
         />
       )}
     </>

@@ -1269,6 +1269,7 @@ export const CIPPTableToptoolbar = ({
           api={actionData.action}
           row={actionData.data}
           relatedQueryKeys={queryKeys}
+          {...actionData.action}
         />
       )}
 

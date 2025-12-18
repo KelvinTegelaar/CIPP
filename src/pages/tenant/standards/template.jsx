@@ -19,6 +19,7 @@ import _ from "lodash";
 import { createDriftManagementActions } from "../manage/driftManagementActions";
 import { ActionsMenu } from "/src/components/actions-menu";
 import { useSettings } from "/src/hooks/use-settings";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const router = useRouter();
@@ -311,6 +312,17 @@ const Page = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <CippHead
+        title={
+          editMode
+            ? isDriftMode
+              ? "Edit Drift Template"
+              : "Edit Standards Template"
+            : isDriftMode
+            ? "Add Drift Template"
+            : "Add Standards Template"
+        }
+      />
       <Container maxWidth={"xl"}>
         <Stack spacing={2}>
           <Stack

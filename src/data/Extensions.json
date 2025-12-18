@@ -866,6 +866,16 @@
           "compareValue": true,
           "action": "disable"
         }
+      },
+      {
+        "type": "switch",
+        "name": "CFZTNA.WebhookEnabled",
+        "label": "Use CloudFlare Service Account credentials with webhooks.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "mappingRequired": false

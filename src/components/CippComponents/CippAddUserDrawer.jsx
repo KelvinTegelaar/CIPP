@@ -3,7 +3,6 @@ import { Button, Box } from "@mui/material";
 import { useForm, useWatch, useFormState } from "react-hook-form";
 import { PersonAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
-import { CippFormUserSelector } from "./CippFormUserSelector";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";

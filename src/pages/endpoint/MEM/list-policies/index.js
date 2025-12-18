@@ -4,10 +4,22 @@ import { Book, LaptopChromebook } from "@mui/icons-material";
 import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { PermissionButton } from "/src/utils/permissions.js";
 import { CippPolicyDeployDrawer } from "/src/components/CippComponents/CippPolicyDeployDrawer.jsx";
+import { useSettings } from "/src/hooks/use-settings.js";
+
+const assignmentModeOptions = [
+  { label: "Replace existing assignments", value: "replace" },
+  { label: "Append to existing assignments", value: "append" },
+];
+
+const assignmentFilterTypeOptions = [
+  { label: "Include - Apply policy to devices matching filter", value: "include" },
+  { label: "Exclude - Apply policy to devices NOT matching filter", value: "exclude" },
+];
 
 const Page = () => {
   const pageTitle = "Configuration Policies";
   const cardButtonPermissions = ["Endpoint.MEM.ReadWrite"];
+  const tenant = useSettings().currentTenant;
 
   const actions = [
     {
@@ -31,7 +43,18 @@ const Page = () => {
         ID: "id",
         type: "URLName",
       },
-      confirmText: "Are you sure you want to assign this policy to all users?",
+      fields: [
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       icon: <UserIcon />,
       color: "info",
     },
@@ -44,7 +67,18 @@ const Page = () => {
         ID: "id",
         type: "URLName",
       },
-      confirmText: "Are you sure you want to assign this policy to all devices?",
+      fields: [
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       icon: <LaptopChromebook />,
       color: "info",
     },
@@ -57,7 +91,18 @@ const Page = () => {
         ID: "id",
         type: "URLName",
       },
-      confirmText: "Are you sure you want to assign this policy to all users and devices?",
+      fields: [
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       icon: <GlobeAltIcon />,
       color: "info",
     },
@@ -65,21 +110,85 @@ const Page = () => {
       label: "Assign to Custom Group",
       type: "POST",
       url: "/api/ExecAssignPolicy",
-      data: {
-        ID: "id",
-        type: "URLName",
-      },
-      confirmText: "Enter the name of the group to assign this policy to. Wildcards (*) are allowed.",
       icon: <UserGroupIcon />,
       color: "info",
+      confirmText: 'Select the target groups for "[displayName]".',
       fields: [
         {
-          type: "textField",
-          name: "AssignTo",
-          label: "Group Name(s), optionally comma-separated",
-          placeholder: "IT-*, Sales Team",
+          type: "autoComplete",
+          name: "groupTargets",
+          label: "Group(s)",
+          multiple: true,
+          creatable: false,
+          allowResubmit: true,
+          validators: { required: "Please select at least one group" },
+          api: {
+            url: "/api/ListGraphRequest",
+            dataKey: "Results",
+            queryKey: `ListPolicyAssignmentGroups-${tenant}`,
+            labelField: (group) =>
+              group.id ? `${group.displayName} (${group.id})` : group.displayName,
+            valueField: "id",
+            addedField: {
+              description: "description",
+            },
+            data: {
+              Endpoint: "groups",
+              manualPagination: true,
+              $select: "id,displayName,description",
+              $orderby: "displayName",
+              $top: 999,
+              $count: true,
+            },
+          },
+        },
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups.",
+        },
+        {
+          type: "autoComplete",
+          name: "assignmentFilter",
+          label: "Assignment Filter (Optional)",
+          multiple: false,
+          creatable: false,
+          api: {
+            url: "/api/ListAssignmentFilters",
+            queryKey: `ListAssignmentFilters-${tenant}`,
+            labelField: (filter) => filter.displayName,
+            valueField: "displayName",
+          },
+        },
+        {
+          type: "radio",
+          name: "assignmentFilterType",
+          label: "Assignment Filter Mode",
+          options: assignmentFilterTypeOptions,
+          defaultValue: "include",
+          helperText: "Choose whether to include or exclude devices matching the filter.",
         },
       ],
+      customDataformatter: (row, action, formData) => {
+        const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
+        const tenantFilterValue = tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant;
+        return {
+          tenantFilter: tenantFilterValue,
+          ID: row?.id,
+          type: row?.URLName,
+          GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
+          GroupNames: selectedGroups.map((group) => group.label).filter(Boolean),
+          assignmentMode: formData?.assignmentMode || "replace",
+          AssignmentFilterName: formData?.assignmentFilter?.value || null,
+          AssignmentFilterType: formData?.assignmentFilter?.value
+            ? formData?.assignmentFilterType || "include"
+            : null,
+        };
+      },
     },
     {
       label: "Delete Policy",

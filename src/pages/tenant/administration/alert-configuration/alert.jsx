@@ -31,6 +31,7 @@ import { CippApiResults } from "../../../../components/CippComponents/CippApiRes
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
+import { CippHead } from "../../../../components/CippComponents/CippHead";
 
 const AlertWizard = () => {
   const apiRequest = ApiPostCall({
@@ -55,6 +56,8 @@ const AlertWizard = () => {
     { value: "4h", label: "Every 4 hours" },
     { value: "1d", label: "Every 1 day" },
     { value: "7d", label: "Every 7 days" },
+    { value: "14d", label: "Every 14 days" },
+    { value: "21d", label: "Every 21 days" },
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ]);
@@ -190,7 +193,17 @@ const AlertWizard = () => {
                 ? JSON.parse(alert.RawAlert.Parameters)
                 : alert.RawAlert.Parameters;
             if (params.InputValue) {
-              resetObject[usedCommand.inputName] = params.InputValue;
+              if (usedCommand.multipleInput) {
+                // Load multiple input values from InputValue object
+                usedCommand.inputs.forEach((input) => {
+                  if (params.InputValue[input.inputName] !== undefined) {
+                    resetObject[input.inputName] = params.InputValue[input.inputName];
+                  }
+                });
+              } else {
+                // Backward compatibility: single input value
+                resetObject[usedCommand.inputName] = params.InputValue;
+              }
             }
           } catch (error) {
             console.error("Error parsing parameters:", error);
@@ -442,9 +455,20 @@ const AlertWizard = () => {
   const handleScriptSubmit = (values) => {
     const getInputParams = () => {
       if (values.command.value.requiresInput) {
-        return {
-          InputValue: values[values.command.value.inputName],
-        };
+        if (values.command.value.multipleInput) {
+          // Collect all input values into InputValue object
+          const inputValue = {};
+          values.command.value.inputs.forEach((input) => {
+            if (values[input.inputName] !== undefined && values[input.inputName] !== null) {
+              inputValue[input.inputName] = values[input.inputName];
+            }
+          });
+          return { InputValue: inputValue };
+        } else {
+          return {
+            InputValue: values[values.command.value.inputName],
+          };
+        }
       }
       return {};
     };
@@ -491,22 +515,10 @@ const AlertWizard = () => {
 
   const { isValid } = useFormState({ control: formControl.control });
   return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
+    <Box sx={{ flexGrow: 1, pb: 4 }}>
+      <CippHead title={editAlert ? "Edit Alert" : "Add Alert"} />
       <Container maxWidth={"xl"}>
         <Stack spacing={4}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Button
-              color="inherit"
-              onClick={() => router.back()}
-              startIcon={
-                <SvgIcon fontSize="small">
-                  <ArrowLeftIcon />
-                </SvgIcon>
-              }
-            >
-              Back to Alerts
-            </Button>
-          </Stack>
           {existingAlert.isLoading && <Skeleton />}
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Typography variant="h4">{editAlert ? "Edit" : "Add"} Alert</Typography>
@@ -939,14 +951,33 @@ const AlertWizard = () => {
                               />
                             </Grid>
                             <Grid size={12}>
-                              {commandValue?.value?.requiresInput && (
-                                <CippFormComponent
-                                  type={commandValue.value?.inputType}
-                                  name={commandValue.value?.inputName}
-                                  formControl={formControl}
-                                  label={commandValue.value?.inputLabel}
-                                />
-                              )}
+                              {commandValue?.value?.requiresInput &&
+                                !commandValue.value?.multipleInput && (
+                                  <CippFormComponent
+                                    type={commandValue.value?.inputType}
+                                    name={commandValue.value?.inputName}
+                                    formControl={formControl}
+                                    label={commandValue.value?.inputLabel}
+                                  />
+                                )}
+                              {commandValue?.value?.multipleInput &&
+                                commandValue.value?.inputs?.map((input, index) => (
+                                  <Grid
+                                    container
+                                    spacing={2}
+                                    key={index}
+                                    sx={{ mt: index > 0 ? 2 : 0 }}
+                                  >
+                                    <Grid size={12}>
+                                      <CippFormComponent
+                                        type={input.inputType}
+                                        name={input.inputName}
+                                        formControl={formControl}
+                                        label={input.inputLabel}
+                                      />
+                                    </Grid>
+                                  </Grid>
+                                ))}
                             </Grid>
                             <Grid size={12}>
                               <CippFormComponent
@@ -970,7 +1001,7 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 multiline={true}
                                 rows={3}
-                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
+                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
                               />
                             </Grid>
                             <Grid size={12}>

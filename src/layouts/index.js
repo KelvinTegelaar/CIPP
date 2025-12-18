@@ -316,7 +316,7 @@ export const Layout = (props) => {
             </Box>
           )}
           {(currentTenant === "AllTenants" || !currentTenant) && !allTenantsSupport ? (
-            <Box sx={{ flexGrow: 1 }}>
+            <Box sx={{ flexGrow: 1, py: 3 }}>
               <Container maxWidth={false}>
                 <CippBreadcrumbNav mode="hierarchical" />
                 <Grid container spacing={3}>

@@ -253,10 +253,11 @@ const CippApiClientManagement = () => {
           showDivider={false}
           isFetching={azureConfig.isFetching}
         />
-        {azureConfig.isSuccess && (
+        {azureConfig.isSuccess && apiClients.isSuccess && (
           <>
             {!isEqual(
-              apiClients.data?.pages?.[0]?.Results?.filter((c) => c.Enabled)
+              (apiClients.data?.pages?.[0]?.Results || [])
+                .filter((c) => c.Enabled)
                 .map((c) => c.ClientId)
                 .sort(),
               (azureConfig.data?.Results?.ClientIDs || []).sort()
@@ -264,7 +265,8 @@ const CippApiClientManagement = () => {
               <Box sx={{ px: 3 }}>
                 <Alert severity="warning">
                   You have unsaved changes. Click Actions &gt; Save Azure Configuration to update
-                  the allowed API Clients.
+                  the allowed API Clients. If you've just saved your API clients, try refreshing the
+                  configuration first.
                 </Alert>
               </Box>
             )}
