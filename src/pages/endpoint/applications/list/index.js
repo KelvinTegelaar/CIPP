@@ -235,11 +235,11 @@ const Page = () => {
 
   const simpleColumns = [
     "displayName",
+    "AppAssignment",
+    "AppExclude",
     "publishingState",
-    "isAssigned",
     "lastModifiedDateTime",
     "createdDateTime",
-    "applicableDeviceType",
   ];
 
   return (
