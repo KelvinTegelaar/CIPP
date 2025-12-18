@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
@@ -144,6 +144,11 @@ const CippIntegrationSettings = ({ children }) => {
 
   const extension = extensions.find((extension) => extension.id === router.query.id);
 
+  // Memoize the removeOptions array to ensure it updates when tableData changes
+  const removedTenantIds = useMemo(() => {
+    return Array.isArray(tableData) ? tableData.map((item) => item.TenantId) : [];
+  }, [tableData]);
+
   useEffect(() => {
     if (mappings.isSuccess) {
       setTableData(mappings.data.Mappings ?? []);
@@ -173,7 +178,7 @@ const CippIntegrationSettings = ({ children }) => {
                     multiple={false}
                     required={false}
                     disableClearable={false}
-                    removeOptions={tableData.map((item) => item.TenantId)}
+                    removeOptions={removedTenantIds}
                     valueField="customerId"
                   />
                 </Box>

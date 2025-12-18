@@ -26,29 +26,31 @@ const MemoTextField = React.memo(function MemoTextField({
   const { InputProps, ...otherParams } = params;
 
   return (
-    <TextField
-      {...otherParams}
-      label={label}
-      placeholder={placeholder}
-      {...otherProps}
-      slotProps={{
-        inputLabel: {
-          shrink: true,
-          sx: { transition: "none" },
-          required: otherProps.required,
-        },
-        input: {
-          ...InputProps,
-          notched: true,
-          sx: {
-            transition: "none",
-            "& .MuiOutlinedInput-notchedOutline": {
+    <Tooltip title={label || ""} placement="top" arrow>
+      <TextField
+        {...otherParams}
+        label={label}
+        placeholder={placeholder}
+        {...otherProps}
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+            sx: { transition: "none" },
+            required: otherProps.required,
+          },
+          input: {
+            ...InputProps,
+            notched: true,
+            sx: {
               transition: "none",
+              "& .MuiOutlinedInput-notchedOutline": {
+                transition: "none",
+              },
             },
           },
-        },
-      }}
-    />
+        }}
+      />
+    </Tooltip>
   );
 });
 

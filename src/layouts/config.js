@@ -173,6 +173,11 @@ export const nativeMenuItems = [
             path: "/tenant/administration/partner-relationships",
             permissions: ["Tenant.Relationship.*"],
           },
+          {
+            title: "Domains",
+            path: "/tenant/administration/domains",
+            permissions: ["Tenant.Administration.*"],
+          },
         ],
       },
       {
@@ -428,7 +433,7 @@ export const nativeMenuItems = [
             permissions: ["Endpoint.MEM.*"],
           },
           {
-            title: "Protection Policies",
+            title: "App Policies",
             path: "/endpoint/MEM/list-appprotection-policies",
             permissions: ["Endpoint.MEM.*"],
           },
@@ -456,7 +461,7 @@ export const nativeMenuItems = [
       },
       {
         title: "Reports",
-        permissions: ["Endpoint.Device.*", "Endpoint.Autopilot.*"],
+        permissions: ["Endpoint.Device.*", "Endpoint.Autopilot.*", "Endpoint.MEM.*"],
         items: [
           {
             title: "Analytics Device Score",
@@ -472,6 +477,11 @@ export const nativeMenuItems = [
             title: "Autopilot Deployments",
             path: "/endpoint/reports/autopilot-deployment",
             permissions: ["Endpoint.Autopilot.*"],
+          },
+          {
+            title: "Discovered Apps",
+            path: "/endpoint/reports/detected-apps",
+            permissions: ["Endpoint.MEM.*"],
           },
         ],
       },
@@ -905,6 +915,12 @@ export const nativeMenuItems = [
           {
             title: "Table Maintenance",
             path: "/cipp/advanced/table-maintenance",
+            roles: ["superadmin"],
+            permissions: ["CIPP.SuperAdmin.*"],
+          },
+          {
+            title: "Diagnostics",
+            path: "/cipp/advanced/diagnostics",
             roles: ["superadmin"],
             permissions: ["CIPP.SuperAdmin.*"],
           },

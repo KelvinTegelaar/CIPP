@@ -15,7 +15,7 @@
     "recommendedRunInterval": "1d"
   },
   {
-    "name": "AlertSmtpAuthSuccess",
+    "name": "SmtpAuthSuccess",
     "label": "Alert on SMTP AUTH usage with success, helps to phase out SMTP AUTH (Entra P1 Required)",
     "recommendedRunInterval": "1d"
   },
@@ -76,8 +76,22 @@
   },
   {
     "name": "ExpiringLicenses",
-    "label": "Alert on licenses expiring in 30 days",
-    "recommendedRunInterval": "7d"
+    "label": "Alert on licenses expiring in X days",
+    "recommendedRunInterval": "7d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days until expiration (default: 30)",
+        "inputName": "ExpiringLicensesDays"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert only on unassigned licenses",
+        "inputName": "ExpiringLicensesUnassignedOnly"
+      }
+    ]
   },
   {
     "name": "NewAppApproval",
@@ -226,6 +240,26 @@
     "description": "Monitors Global Admin accounts and alerts when they don't have an alternate email address set, which is important for password recovery of key accounts."
   },
   {
+    "name": "GlobalAdminAllowList",
+    "label": "Alert on Global Admins outside approved list",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "textField",
+        "inputLabel": "Approved Global Admin UPN prefixes (comma separated)",
+        "inputName": "ApprovedGlobalAdmins"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert per non-compliant admin? (off = single aggregated alert)",
+        "inputName": "AlertEachAdmin"
+      }
+    ],
+    "description": "Alerts when Global Administrator accounts are present whose UPN prefix (before @domain) is not in your approved comma-separated allow list. Toggle per-admin alerts to get one alert per user or a single aggregated alert."
+  },
+  {
     "name": "NewRiskyUsers",
     "label": "Alert on new risky users (P2 License Required)",
     "recommendedRunInterval": "30m",
@@ -251,5 +285,11 @@
     "name": "ReportOnlyCA",
     "label": "Alert on tenants with Conditional Access policies in report-only mode",
     "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "QuarantineReleaseRequests",
+    "label": "Alert on quarantine release requests",
+    "recommendedRunInterval": "30m",
+    "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
   }
 ]

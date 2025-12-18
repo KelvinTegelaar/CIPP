@@ -383,6 +383,17 @@ export const CippWizardOffboarding = (props) => {
                   formControl={formControl}
                 />
               </Grid>
+
+              <Grid size={{ sm: 12, xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  fullWidth
+                  label="Reference"
+                  name="reference"
+                  placeholder="Enter a reference that will be added to the notification title and scheduled task"
+                  formControl={formControl}
+                />
+              </Grid>
             </CippFormCondition>
           </Grid>
         </CardContent>

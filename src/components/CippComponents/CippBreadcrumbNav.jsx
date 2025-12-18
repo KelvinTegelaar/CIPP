@@ -457,9 +457,43 @@ export const CippBreadcrumbNav = () => {
 
   // Render based on mode
   if (mode === "hierarchical") {
-    const breadcrumbs = buildHierarchicalBreadcrumbs();
+    let breadcrumbs = buildHierarchicalBreadcrumbs();
 
-    // Don't show if no breadcrumbs found
+    // Fallback: If no breadcrumbs found in navigation config, generate from URL path
+    if (breadcrumbs.length === 0) {
+      const pathSegments = router.pathname.split("/").filter((segment) => segment);
+
+      if (pathSegments.length > 0) {
+        breadcrumbs = pathSegments.map((segment, index) => {
+          // Build the path up to this segment
+          const path = "/" + pathSegments.slice(0, index + 1).join("/");
+
+          // Format segment as title (replace hyphens with spaces, capitalize words)
+          const title = segment
+            .split("-")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+
+          return {
+            title,
+            path,
+            type: "fallback",
+            query: index === pathSegments.length - 1 ? { ...router.query } : {},
+          };
+        });
+
+        // If we have a current page title from document.title, use it for the last breadcrumb
+        if (
+          currentPageTitle &&
+          currentPageTitle !== "CIPP" &&
+          !currentPageTitle.toLowerCase().includes("loading")
+        ) {
+          breadcrumbs[breadcrumbs.length - 1].title = currentPageTitle;
+        }
+      }
+    }
+
+    // Don't show if still no breadcrumbs found
     if (breadcrumbs.length === 0) {
       return null;
     }

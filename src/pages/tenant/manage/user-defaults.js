@@ -61,7 +61,7 @@ const Page = () => {
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl={`/api/ListNewUserDefaults`}
+        apiUrl={`/api/ListNewUserDefaults?includeAllTenants=false`}
         queryKey={`ListNewUserDefaults-${userSettings.currentTenant}`}
         actions={actions}
         offCanvas={offCanvas}

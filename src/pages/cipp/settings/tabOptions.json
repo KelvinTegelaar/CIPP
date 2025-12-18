@@ -20,7 +20,7 @@
     "path": "/cipp/settings/notifications"
   },
   {
-    "label": "Partner Webhooks",
+    "label": "Automated Onboarding",
     "path": "/cipp/settings/partner-webhooks"
   },
   {

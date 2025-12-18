@@ -8,6 +8,10 @@
     "path": "/cipp/super-admin/function-offloading"
   },
   {
+    "label": "Time Settings",
+    "path": "/cipp/super-admin/time-settings"
+  },
+  {
     "label": "CIPP Roles",
     "path": "/cipp/super-admin/cipp-roles"
   },

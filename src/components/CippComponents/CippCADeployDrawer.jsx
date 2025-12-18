@@ -199,6 +199,13 @@ export const CippCADeployDrawer = ({
             label="Disable Security Defaults if enabled when creating policy"
             formControl={formControl}
           />
+
+          <CippFormComponent
+            type="switch"
+            name="CreateGroups"
+            label="Create groups if they do not exist"
+            formControl={formControl}
+          />
         </Stack>
       </CippOffCanvas>
     </>

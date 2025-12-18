@@ -22,7 +22,6 @@ import { EyeIcon } from "@heroicons/react/24/outline";
 const simpleColumns = [
   "DateTime",
   "Tenant",
-  "TenantID",
   "User",
   "Message",
   "API",

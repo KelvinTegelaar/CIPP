@@ -80,23 +80,9 @@ const Page = () => {
       : [];
 
   return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
+    <Box sx={{ flexGrow: 1 }}>
       <Container maxWidth={false}>
         <Stack spacing={2}>
-          {/* Back button */}
-          <Button
-            color="inherit"
-            onClick={handleBackClick}
-            startIcon={
-              <SvgIcon fontSize="small">
-                <ArrowLeftIcon />
-              </SvgIcon>
-            }
-            sx={{ alignSelf: "flex-start" }}
-          >
-            Back to Logs
-          </Button>
-
           {logRequest.isLoading && <CippFormSkeleton layout={[1, 1, 1]} />}
 
           {logRequest.isError && (

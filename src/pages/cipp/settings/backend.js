@@ -106,7 +106,11 @@ const Page = () => {
       <Grid container spacing={2}>
         {backendInfo.map((item) => (
           <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }} key={item.id}>
-            <CippBackendCard backendComponents={backendComponents} item={item} />
+            <CippBackendCard
+              backendComponents={backendComponents}
+              item={item}
+              hosted={backendComponents?.data?.Results?.Hosted}
+            />
           </Grid>
         ))}
       </Grid>

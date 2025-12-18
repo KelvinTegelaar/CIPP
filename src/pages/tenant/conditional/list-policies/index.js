@@ -12,12 +12,16 @@ import {
 import { Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer";
+import { CippApiLogsDrawer } from "../../../../components/CippComponents/CippApiLogsDrawer";
+import { PermissionButton } from "../../../../utils/permissions";
+import { useSettings } from "/src/hooks/use-settings.js";
 
 // Page Component
 const Page = () => {
   const pageTitle = "Conditional Access";
   const apiUrl = "/api/ListConditionalAccessPolicies";
   const cardButtonPermissions = ["Tenant.ConditionalAccess.ReadWrite"];
+  const tenant = useSettings().currentTenant;
 
   // Actions configuration
   const actions = [
@@ -159,9 +163,16 @@ const Page = () => {
   return (
     <CippTablePage
       cardButton={
-        <>
+        <Box sx={{ display: "flex", gap: 1 }}>
           <CippCADeployDrawer requiredPermissions={cardButtonPermissions} />
-        </>
+          <CippApiLogsDrawer
+            apiFilter="Conditional|CA Policy|CATemplate|CAPolicy"
+            buttonText="View Logs"
+            title="Conditional Access Logs"
+            PermissionButton={PermissionButton}
+            tenantFilter={tenant}
+          />
+        </Box>
       }
       title={pageTitle}
       apiUrl={apiUrl}

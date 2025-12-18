@@ -31,10 +31,10 @@ import {
   Info as InfoIcon,
   CheckCircle as SuccessIcon,
   ExpandMore,
+  Sync,
 } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../hooks/use-settings";
-import { createDriftManagementActions } from "./driftManagementActions";
 
 const Page = () => {
   const router = useRouter();
@@ -124,14 +124,17 @@ const Page = () => {
     setDaysToLoad((prev) => prev + 7);
   };
 
-  // Actions for the ActionsMenu
-  const actions = createDriftManagementActions({
-    templateId,
-    onRefresh: () => {
-      logsData.refetch();
+  // Actions for the ActionsMenu - just refresh for history page
+  const actions = [
+    {
+      label: "Refresh Data",
+      icon: <Sync />,
+      noConfirm: true,
+      customFunction: () => {
+        logsData.refetch();
+      },
     },
-    currentTenant: tenant,
-  });
+  ];
 
   const title = "View History";
   // Sort logs by date (newest first)
