@@ -262,7 +262,7 @@ No, CIPP can work with any M365 license in your partner tenant. For specific fea
 
 <summary>My usernames or sites are GUIDs or blank?</summary>
 
-Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" in [classic-standards](../../user-documentation/tenant/standards/list-standards/classic-standards/ "mention").
+Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" in [templates](../../user-documentation/tenant/standards/alignment/templates/ "mention").
 
 </details>
 
