@@ -49,11 +49,13 @@ export const createDriftManagementActions = ({
           // Use Next.js router for internal navigation
           import("next/router")
             .then(({ default: router }) => {
-              router.push(`/tenant/standards/template?id=${templateId}&type=${templateType}`);
+              router.push(
+                `/tenant/standards/templates/template?id=${templateId}&type=${templateType}`
+              );
             })
             .catch(() => {
               // Fallback to window.location if router is not available
-              window.location.href = `/tenant/standards/template?id=${templateId}&type=${templateType}`;
+              window.location.href = `/tenant/standards/templates/template?id=${templateId}&type=${templateType}`;
             });
         },
       });

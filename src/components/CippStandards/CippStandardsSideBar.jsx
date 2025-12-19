@@ -556,7 +556,7 @@ const CippStandardsSideBar = ({
         title="Add Standard"
         api={{
           confirmText: isDriftMode
-            ? "This template will automatically every hour to detect drift. Are you sure you want to apply this Drift Template?"
+            ? "This template will automatically every 12 hours to detect drift. Are you sure you want to apply this Drift Template?"
             : watchForm.runManually
             ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
             : "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",

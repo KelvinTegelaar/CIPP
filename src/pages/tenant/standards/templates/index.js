@@ -4,13 +4,13 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import Link from "next/link";
 import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub, ContentCopy } from "@mui/icons-material";
-import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { Grid } from "@mui/system";
-import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "../tabOptions.json";
 import { useSettings } from "/src/hooks/use-settings.js";
-import { CippPolicyImportDrawer } from "../../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
+import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
 import { PermissionButton } from "/src/utils/permissions.js";
 
 const Page = () => {
@@ -36,14 +36,14 @@ const Page = () => {
     {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
-      link: "/tenant/standards/template?id=[GUID]&type=[type]",
+      link: "/tenant/standards/templates/template?id=[GUID]&type=[type]",
       icon: <Edit />,
       color: "success",
       target: "_self",
     },
     {
       label: "Clone & Edit Template",
-      link: "/tenant/standards/template?id=[GUID]&clone=true&type=[type]",
+      link: "/tenant/standards/templates/template?id=[GUID]&clone=true&type=[type]",
       icon: <CopyAll />,
       color: "success",
       target: "_self",
@@ -183,12 +183,17 @@ const Page = () => {
       tenantInTitle={false}
       cardButton={
         <>
-          <Button component={Link} href="../template" startIcon={<AddBox />} sx={{ mr: 1 }}>
+          <Button
+            component={Link}
+            href="/tenant/standards/templates/template"
+            startIcon={<AddBox />}
+            sx={{ mr: 1 }}
+          >
             Add Template
           </Button>
           <Button
             component={Link}
-            href="../template?type=drift"
+            href="/tenant/standards/templates/template?type=drift"
             startIcon={<AddBox />}
             sx={{ mr: 1 }}
           >

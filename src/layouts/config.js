@@ -195,7 +195,7 @@ export const nativeMenuItems = [
         items: [
           {
             title: "Standards Management",
-            path: "/tenant/standards/list-standards",
+            path: "/tenant/standards/alignment",
             permissions: ["Tenant.Standards.*"],
           },
           {
