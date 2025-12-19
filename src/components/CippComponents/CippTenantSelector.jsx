@@ -184,7 +184,7 @@ export const CippTenantSelector = (props) => {
         // Cancel all in-flight queries before changing tenant
         queryClient.cancelQueries();
 
-        // Update router and settings
+        // Update router only - let the URL watcher handle settings
         query.tenantFilter = currentTenant.value;
         router.replace(
           {
@@ -194,53 +194,52 @@ export const CippTenantSelector = (props) => {
           undefined,
           { shallow: true }
         );
-
-        settings.handleUpdate({
-          currentTenant: currentTenant.value,
-        });
       }
-      //if we have a tenantfilter, we add the tenantfilter to the title of the tab/page so its "Tenant - original title".
     }
   }, [currentTenant?.value]);
 
-  // This effect handles when the URL parameter changes externally
+  // This effect handles when the URL parameter changes (from deep link or user selection)
+  // This is the single source of truth for tenant changes
   useEffect(() => {
-    if (!router.isReady || !tenantList.isSuccess || !settings.isInitialized) return;
+    if (!router.isReady || !tenantList.isSuccess) return;
 
-    // Get the current tenant from URL or settings
-    const urlTenant = router.query.tenantFilter || settings.currentTenant;
+    const urlTenant = router.query.tenantFilter;
 
-    // Only update if there's a URL tenant and it's different from our current state
-    if (urlTenant && (!currentTenant || urlTenant !== currentTenant.value)) {
+    // Only process if we have a URL tenant
+    if (urlTenant) {
       // Find the tenant in our list
       const matchingTenant = tenantList.data.find(
         ({ defaultDomainName }) => defaultDomainName === urlTenant
       );
 
       if (matchingTenant) {
-        setSelectedTenant({
-          value: urlTenant,
-          label: `${matchingTenant.displayName} (${urlTenant})`,
-          addedFields: {
-            defaultDomainName: matchingTenant.defaultDomainName,
-            displayName: matchingTenant.displayName,
-            customerId: matchingTenant.customerId,
-            initialDomainName: matchingTenant.initialDomainName,
-          },
-        });
+        // Update local state if different
+        if (!currentTenant || urlTenant !== currentTenant.value) {
+          setSelectedTenant({
+            value: urlTenant,
+            label: `${matchingTenant.displayName} (${urlTenant})`,
+            addedFields: {
+              defaultDomainName: matchingTenant.defaultDomainName,
+              displayName: matchingTenant.displayName,
+              customerId: matchingTenant.customerId,
+              initialDomainName: matchingTenant.initialDomainName,
+            },
+          });
+        }
+
+        // Update settings if different (null filter in settings-context prevents saving null)
+        if (settings.currentTenant !== urlTenant) {
+          settings.handleUpdate({
+            currentTenant: urlTenant,
+          });
+        }
       }
     }
-  }, [
-    router.isReady,
-    router.query.tenantFilter,
-    tenantList.isSuccess,
-    settings.currentTenant,
-    settings.isInitialized,
-  ]);
+  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess]);
 
   // This effect ensures the tenant filter parameter is included in the URL when missing
   useEffect(() => {
-    if (!router.isReady || !settings.isInitialized || !settings.currentTenant) return;
+    if (!router.isReady || !settings.currentTenant) return;
 
     // If the tenant parameter is missing from the URL but we have it in settings
     if (!router.query.tenantFilter && settings.currentTenant) {
@@ -254,7 +253,7 @@ export const CippTenantSelector = (props) => {
         { shallow: true }
       );
     }
-  }, [router.isReady, router.query, settings.currentTenant, settings.isInitialized]);
+  }, [router.isReady, router.query.tenantFilter, settings.currentTenant]);
 
   useEffect(() => {
     if (tenant && currentTenant?.value && currentTenant?.value !== "AllTenants") {
