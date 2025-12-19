@@ -382,15 +382,13 @@ const App = (props) => {
                       <ThemeProvider theme={theme}>
                         <RTL direction={settings.direction}>
                           <CssBaseline />
-                          {settings.isInitialized ? (
-                            <ErrorBoundary FallbackComponent={Error500}>
-                              <PrivateRoute>
-                                <ReleaseNotesProvider>
-                                  {getLayout(<Component {...pageProps} />)}
-                                </ReleaseNotesProvider>
-                              </PrivateRoute>
-                            </ErrorBoundary>
-                          ) : null}
+                          <ErrorBoundary FallbackComponent={Error500}>
+                            <PrivateRoute>
+                              <ReleaseNotesProvider>
+                                {getLayout(<Component {...pageProps} />)}
+                              </ReleaseNotesProvider>
+                            </PrivateRoute>
+                          </ErrorBoundary>
                           <Toaster position="top-center" />
                           <CippSpeedDial
                             actions={speedDialActions}
