@@ -62,6 +62,27 @@ export const CippBreadcrumbNav = () => {
   const titleCheckCountRef = useRef(0);
   const titleCheckIntervalRef = useRef(null);
 
+  // Helper function to filter out unnecessary query parameters
+  const getCleanQueryParams = (query) => {
+    const cleaned = { ...query };
+    // Remove tenantFilter if it's "AllTenants" or not explicitly needed
+    if (cleaned.tenantFilter === "AllTenants" || cleaned.tenantFilter === undefined) {
+      delete cleaned.tenantFilter;
+    }
+    return cleaned;
+  };
+
+  // Helper function to clean page titles
+  const cleanPageTitle = (title) => {
+    if (!title) return title;
+    // Remove AllTenants and any surrounding separators
+    return title
+      .replace(/\s*-\s*AllTenants\s*/, "")
+      .replace(/AllTenants\s*-\s*/, "")
+      .replace(/AllTenants/, "")
+      .trim();
+  };
+
   // Load tab options on mount
   useEffect(() => {
     loadTabOptions().then(setTabOptions);
@@ -109,6 +130,9 @@ export const CippBreadcrumbNav = () => {
         pageTitle = parts.slice(0, -1).join(" - ").trim();
       }
 
+      // Clean AllTenants from title
+      pageTitle = cleanPageTitle(pageTitle);
+
       // Skip if title is empty, generic, or error page
       if (
         !pageTitle ||
@@ -155,7 +179,10 @@ export const CippBreadcrumbNav = () => {
           if (samePath && !sameTitle) {
             // Same URL but title changed - update the entry
             const updated = [...prevHistory];
-            updated[prevHistory.length - 1] = currentPage;
+            updated[prevHistory.length - 1] = {
+              ...currentPage,
+              query: getCleanQueryParams(currentPage.query),
+            };
             if (titleCheckIntervalRef.current) {
               clearInterval(titleCheckIntervalRef.current);
               titleCheckIntervalRef.current = null;
@@ -173,7 +200,11 @@ export const CippBreadcrumbNav = () => {
 
         // URL not in history (except possibly as last entry which we handled) - add as new entry
         if (existingIndex === -1) {
-          const newHistory = [...prevHistory, currentPage];
+          const cleanedCurrentPage = {
+            ...currentPage,
+            query: getCleanQueryParams(currentPage.query),
+          };
+          const newHistory = [...prevHistory, cleanedCurrentPage];
 
           // Keep only the last MAX_HISTORY_STORAGE pages
           const trimmedHistory =
@@ -192,7 +223,10 @@ export const CippBreadcrumbNav = () => {
           titleCheckIntervalRef.current = null;
         }
         const updated = prevHistory.slice(0, existingIndex + 1);
-        updated[existingIndex] = currentPage;
+        updated[existingIndex] = {
+          ...currentPage,
+          query: getCleanQueryParams(currentPage.query),
+        };
         return updated;
       });
     };
@@ -211,9 +245,10 @@ export const CippBreadcrumbNav = () => {
   const handleBreadcrumbClick = (index) => {
     const page = history[index];
     if (page) {
+      const cleanedQuery = getCleanQueryParams(page.query);
       router.push({
         pathname: page.path,
-        query: page.query,
+        query: cleanedQuery,
       });
     }
   };
@@ -247,15 +282,18 @@ export const CippBreadcrumbNav = () => {
           return;
         }
 
-        const pageTitle = document.title.replace(" - CIPP", "").trim();
+        let pageTitle = document.title.replace(" - CIPP", "").trim();
         const parts = pageTitle.split(" - ");
         const cleanTitle =
           parts.length > 1 && parts[parts.length - 1].includes(".")
             ? parts.slice(0, -1).join(" - ").trim()
             : pageTitle;
 
-        if (cleanTitle && cleanTitle !== "CIPP" && !cleanTitle.toLowerCase().includes("loading")) {
-          setCurrentPageTitle(cleanTitle);
+        // Clean AllTenants from title
+        const finalTitle = cleanPageTitle(cleanTitle);
+
+        if (finalTitle && finalTitle !== "CIPP" && !finalTitle.toLowerCase().includes("loading")) {
+          setCurrentPageTitle(finalTitle);
           // Stop checking once we have a valid title
           if (hierarchicalTitleCheckRef.current) {
             clearInterval(hierarchicalTitleCheckRef.current);
@@ -316,11 +354,11 @@ export const CippBreadcrumbNav = () => {
 
         // Check if this item matches the current path
         if (item.path && pathsMatch(item.path, currentPath)) {
-          // If this is the current page, include current query params
+          // If this is the current page, include current query params (cleaned)
           if (item.path === currentPath) {
             const lastItem = currentBreadcrumb[currentBreadcrumb.length - 1];
             if (lastItem) {
-              lastItem.query = { ...router.query };
+              lastItem.query = getCleanQueryParams(router.query);
             }
           }
           return currentBreadcrumb;
@@ -338,6 +376,32 @@ export const CippBreadcrumbNav = () => {
     };
 
     let result = findPathInMenu(nativeMenuItems);
+
+    // If we found a menu item, check if the current path matches any tab
+    // If so, tabOptions wins and we use its label
+    if (result.length > 0 && tabOptions.length > 0) {
+      const normalizedCurrentPath = currentPath.replace(/\/$/, "");
+
+      // Check if current path matches any tab (exact match)
+      const matchingTab = tabOptions.find((tab) => {
+        const normalizedTabPath = tab.path.replace(/\/$/, "");
+        return normalizedTabPath === normalizedCurrentPath;
+      });
+
+      if (matchingTab) {
+        // Tab matches the current path - use tab's label instead of config's
+        result = result.map((item, idx) => {
+          if (idx === result.length - 1) {
+            return {
+              ...item,
+              title: matchingTab.title,
+              type: "tab",
+            };
+          }
+          return item;
+        });
+      }
+    }
 
     // If not found in main menu, check if it's a tab page
     if (result.length === 0 && tabOptions.length > 0) {
@@ -395,12 +459,12 @@ export const CippBreadcrumbNav = () => {
         if (basePagePath.length > 0) {
           result = basePagePath;
 
-          // Add the tab as the final breadcrumb with current query params
+          // Add the tab as the final breadcrumb with current query params (cleaned)
           result.push({
             title: matchingTab.title,
             path: matchingTab.path,
             type: "tab",
-            query: { ...router.query }, // Include current query params for tab page
+            query: getCleanQueryParams(router.query), // Include current query params for tab page
           });
         }
       }
@@ -411,7 +475,10 @@ export const CippBreadcrumbNav = () => {
       const lastItem = result[result.length - 1];
       if (lastItem.path && lastItem.path !== currentPath && currentPath.startsWith(lastItem.path)) {
         // Use the tracked page title if available, otherwise fall back to document.title
-        const tabTitle = currentPageTitle || document.title.replace(" - CIPP", "").trim();
+        let tabTitle = currentPageTitle || document.title.replace(" - CIPP", "").trim();
+
+        // Clean AllTenants from title
+        tabTitle = cleanPageTitle(tabTitle);
 
         // Add tab as an additional breadcrumb item
         if (
@@ -423,7 +490,7 @@ export const CippBreadcrumbNav = () => {
             title: tabTitle,
             path: currentPath,
             type: "tab",
-            query: { ...router.query }, // Include current query params
+            query: getCleanQueryParams(router.query), // Include current query params (cleaned)
           });
         }
       }
@@ -435,10 +502,11 @@ export const CippBreadcrumbNav = () => {
   // Handle click for hierarchical breadcrumbs
   const handleHierarchicalClick = (path, query) => {
     if (path) {
-      if (query && Object.keys(query).length > 0) {
+      const cleanedQuery = getCleanQueryParams(query);
+      if (cleanedQuery && Object.keys(cleanedQuery).length > 0) {
         router.push({
           pathname: path,
-          query: query,
+          query: cleanedQuery,
         });
       } else {
         router.push(path);
@@ -478,7 +546,7 @@ export const CippBreadcrumbNav = () => {
             title,
             path,
             type: "fallback",
-            query: index === pathSegments.length - 1 ? { ...router.query } : {},
+            query: index === pathSegments.length - 1 ? getCleanQueryParams(router.query) : {},
           };
         });
 
@@ -488,7 +556,7 @@ export const CippBreadcrumbNav = () => {
           currentPageTitle !== "CIPP" &&
           !currentPageTitle.toLowerCase().includes("loading")
         ) {
-          breadcrumbs[breadcrumbs.length - 1].title = currentPageTitle;
+          breadcrumbs[breadcrumbs.length - 1].title = cleanPageTitle(currentPageTitle);
         }
       }
     }
