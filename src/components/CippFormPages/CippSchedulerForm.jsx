@@ -12,7 +12,7 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { Grid } from "@mui/system";
+import { Grid, Stack } from "@mui/system";
 import { useWatch } from "react-hook-form";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
@@ -27,7 +27,7 @@ import { useEffect, useState } from "react";
 import CippFormInputArray from "../CippComponents/CippFormInputArray";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
-import { ExpandMoreOutlined, Delete, Add } from "@mui/icons-material";
+import { ExpandMoreOutlined, Delete, Add, Sync } from "@mui/icons-material";
 
 const CippSchedulerForm = (props) => {
   const { formControl, fullWidth = false, taskId = null, cloneMode = false } = props;
@@ -67,6 +67,22 @@ const CippSchedulerForm = (props) => {
 
   const handleSubmit = () => {
     const values = formControl.getValues();
+
+    // Extract values from string array parameters
+    if (values.parameters && selectedCommand?.addedFields?.Parameters) {
+      selectedCommand.addedFields.Parameters.forEach((param) => {
+        if (param.Type === "System.String[]" && values.parameters[param.Name]) {
+          const paramValue = values.parameters[param.Name];
+          if (Array.isArray(paramValue)) {
+            // Extract just the values from objects with {label, value} structure
+            values.parameters[param.Name] = paramValue.map((item) =>
+              typeof item === "object" && item.value !== undefined ? item.value : item
+            );
+          }
+        }
+      });
+    }
+
     //remove all empty values or blanks
     Object.keys(values).forEach((key) => {
       if (values[key] === "" || values[key] === null) {
@@ -84,6 +100,8 @@ const CippSchedulerForm = (props) => {
     { value: "0", label: "Once" },
     { value: "1d", label: "Every 1 day" },
     { value: "7d", label: "Every 7 days" },
+    { value: "14d", label: "Every 14 days" },
+    { value: "21d", label: "Every 21 days" },
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ];
@@ -358,7 +376,14 @@ const CippSchedulerForm = (props) => {
           // Check if any parameter values are complex objects that can't be represented as simple form fields
           const hasComplexObjects =
             task.Parameters && typeof task.Parameters === "object"
-              ? Object.values(task.Parameters).some((value) => {
+              ? Object.entries(task.Parameters).some(([key, value]) => {
+                  // Exclude TenantFilter and Headers parameters
+                  if (key === "TenantFilter" || key === "Headers") return false;
+
+                  // Check if this parameter is a System.String[] type
+                  const paramDef = commandForForm?.Parameters?.find((p) => p.Name === key);
+                  if (paramDef?.Type === "System.String[]") return false;
+
                   // Check for arrays
                   if (Array.isArray(value)) return true;
                   // Check for objects (but not null)
@@ -542,6 +567,16 @@ const CippSchedulerForm = (props) => {
               { label: "Email", value: "Email" },
               { label: "PSA", value: "PSA" },
             ]}
+          />
+        </Grid>
+
+        <Grid size={{ md: 12, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            name="reference"
+            label="Reference"
+            formControl={formControl}
+            placeholder="Optional note to identify this task, this is also added to notification titles"
           />
         </Grid>
 
@@ -918,56 +953,63 @@ const CippSchedulerForm = (props) => {
               <Grid container spacing={2}>
                 {/* Command selection for both scheduled and triggered tasks */}
                 <Grid size={{ md: gridSize, xs: 12 }}>
-                  <CippFormComponent
-                    name="command"
-                    type="autoComplete"
-                    label="Select Command"
-                    multiple={false}
-                    creatable={false}
-                    required={true}
-                    formControl={formControl}
-                    isFetching={commands.isFetching}
-                    options={(() => {
-                      const baseOptions =
-                        commands.data?.map((command) => {
-                          return {
-                            label: command.Function,
-                            value: command.Function,
-                            addedFields: command,
-                          };
-                        }) || [];
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <CippFormComponent
+                        name="command"
+                        type="autoComplete"
+                        label="Select Command"
+                        multiple={false}
+                        creatable={false}
+                        required={true}
+                        formControl={formControl}
+                        isFetching={commands.isFetching}
+                        options={(() => {
+                          const baseOptions =
+                            commands.data?.map((command) => {
+                              return {
+                                label: command.Function,
+                                value: command.Function,
+                                addedFields: command,
+                              };
+                            }) || [];
 
-                      // If we're editing a task and the command isn't in the base options, add it
-                      if ((taskId || router.query.id) && scheduledTaskList.isSuccess) {
-                        const task = scheduledTaskList.data.find(
-                          (task) => task.RowKey === (taskId || router.query.id)
-                        );
-                        if (
-                          task?.Command &&
-                          !baseOptions.find((opt) => opt.value === task.Command)
-                        ) {
-                          baseOptions.unshift({
-                            label: task.Command,
-                            value: task.Command,
-                            addedFields: {
-                              Function: task.Command,
-                              Parameters: [],
-                            },
-                          });
-                        }
-                      }
+                          // If we're editing a task and the command isn't in the base options, add it
+                          if ((taskId || router.query.id) && scheduledTaskList.isSuccess) {
+                            const task = scheduledTaskList.data.find(
+                              (task) => task.RowKey === (taskId || router.query.id)
+                            );
+                            if (
+                              task?.Command &&
+                              !baseOptions.find((opt) => opt.value === task.Command)
+                            ) {
+                              baseOptions.unshift({
+                                label: task.Command,
+                                value: task.Command,
+                                addedFields: {
+                                  Function: task.Command,
+                                  Parameters: [],
+                                },
+                              });
+                            }
+                          }
 
-                      return baseOptions;
-                    })()}
-                    validators={{
-                      validate: (value) => {
-                        if (!value) {
-                          return "Please select a Command";
-                        }
-                        return true;
-                      },
-                    }}
-                  />
+                          return baseOptions;
+                        })()}
+                        validators={{
+                          validate: (value) => {
+                            if (!value) {
+                              return "Please select a Command";
+                            }
+                            return true;
+                          },
+                        }}
+                      />
+                    </Box>
+                    <IconButton onClick={() => commands.refetch()}>
+                      <Sync />
+                    </IconButton>
+                  </Stack>
                 </Grid>
 
                 {selectedCommand?.addedFields?.Synopsis && (
@@ -1011,6 +1053,21 @@ const CippSchedulerForm = (props) => {
                           label={`${param.Name}`}
                           helperText={param.Description}
                           key={idx}
+                        />
+                      ) : param.Type === "System.String[]" ? (
+                        <CippFormComponent
+                          type="autoComplete"
+                          name={`parameters.${param.Name}`}
+                          label={param.Name}
+                          formControl={formControl}
+                          placeholder={`Enter values for ${param.Name}`}
+                          helperText={param.Description}
+                          validators={fieldRequired(param)}
+                          required={param.Required}
+                          multiple={true}
+                          freeSolo={true}
+                          creatable={true}
+                          options={[]}
                         />
                       ) : param.Type?.startsWith("System.String") ? (
                         <CippFormComponent

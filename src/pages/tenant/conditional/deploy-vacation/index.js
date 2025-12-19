@@ -1,10 +1,8 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippTablePage from "/src/components/CippComponents/CippTablePage";
-import { Button } from "@mui/material";
-import { EventAvailable } from "@mui/icons-material";
-import Link from "next/link";
 import { Delete } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
+import { CippAddVacationModeDrawer } from "/src/components/CippComponents/CippAddVacationModeDrawer";
 
 const Page = () => {
   const actions = [
@@ -25,38 +23,58 @@ const Page = () => {
     },
   ];
 
+  const filterList = [
+    {
+      filterName: "Running",
+      value: [{ id: "TaskState", value: "Running" }],
+      type: "column",
+    },
+    {
+      filterName: "Planned",
+      value: [{ id: "TaskState", value: "Planned" }],
+      type: "column",
+    },
+    {
+      filterName: "Failed",
+      value: [{ id: "TaskState", value: "Failed" }],
+      type: "column",
+    },
+    {
+      filterName: "Completed",
+      value: [{ id: "TaskState", value: "Completed" }],
+      type: "column",
+    },
+  ];
+
   return (
     <CippTablePage
       cardButton={
         <>
-          <Button component={Link} href="deploy-vacation/add" startIcon={<EventAvailable />}>
-            Add Vacation Schedule
-          </Button>
+          <CippAddVacationModeDrawer />
         </>
       }
       title="Vacation Mode"
-      apiUrl="/api/ListScheduledItems?Type=Set-CIPPCAExclusion"
+      apiUrl="/api/ListScheduledItems?SearchTitle=*CA Exclusion Vacation*"
       queryKey="VacationMode"
       tenantInTitle={false}
       actions={actions}
       simpleColumns={[
         "Tenant",
-        "Parameters.Users.addedFields.userPrincipalName",
         "Name",
+        "Parameters.Member",
+        "Reference",
         "TaskState",
         "ScheduledTime",
         "ExecutedTime",
-        "Parameters.ExclusionType",
-        "Parameters.Users",
-        "Parameters.UserName",
       ]}
+      filters={filterList}
       offCanvas={{
         extendedInfoFields: [
           "Name",
           "TaskState",
           "ScheduledTime",
-          "Parameters.Users",
-          "Parameters.UserName",
+          "Parameters.Member",
+          "Reference",
           "Parameters.PolicyId",
           "Tenant",
           "ExecutedTime",

@@ -38,11 +38,13 @@ export const CippFormDomainSelector = ({
       },
       dataFilter: (domains) => {
         // Always sort domains so that the default domain appears first
-        return domains.sort((a, b) => {
-          if (a.addedFields?.isDefault === true) return -1;
-          if (b.addedFields?.isDefault === true) return 1;
-          return 0;
-        });
+        return domains
+          .filter((domain) => domain?.addedFields?.isVerified === true)
+          .sort((a, b) => {
+            if (a.addedFields?.isDefault === true) return -1;
+            if (b.addedFields?.isDefault === true) return 1;
+            return 0;
+          });
       },
     }),
     [currentTenant, selectedTenant, preselectDefaultDomain, multiple]

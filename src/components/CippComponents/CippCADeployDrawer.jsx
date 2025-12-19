@@ -100,22 +100,25 @@ export const CippCADeployDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <Stack direction="row" justifyContent="flex-start" spacing={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={deployPolicy.isLoading}
-            >
-              {deployPolicy.isLoading
-                ? "Deploying..."
-                : deployPolicy.isSuccess
-                ? "Redeploy Policy"
-                : "Deploy Policy"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={deployPolicy} />
+            <Stack direction="row" justifyContent="flex-start" spacing={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={deployPolicy.isLoading}
+              >
+                {deployPolicy.isLoading
+                  ? "Deploying..."
+                  : deployPolicy.isSuccess
+                  ? "Redeploy Policy"
+                  : "Deploy Policy"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </Stack>
           </Stack>
         }
       >
@@ -197,7 +200,12 @@ export const CippCADeployDrawer = ({
             formControl={formControl}
           />
 
-          <CippApiResults apiObject={deployPolicy} />
+          <CippFormComponent
+            type="switch"
+            name="CreateGroups"
+            label="Create groups if they do not exist"
+            formControl={formControl}
+          />
         </Stack>
       </CippOffCanvas>
     </>

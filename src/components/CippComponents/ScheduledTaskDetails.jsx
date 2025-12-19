@@ -22,6 +22,7 @@ import { CippDataTable } from "../CippTable/CippDataTable";
 import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
 import { ActionsMenu } from "/src/components/actions-menu";
 import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
+import { CippApiLogsDrawer } from "./CippApiLogsDrawer";
 
 const ScheduledTaskDetails = ({ data, showActions = true }) => {
   const [taskDetails, setTaskDetails] = useState(null);
@@ -81,12 +82,18 @@ const ScheduledTaskDetails = ({ data, showActions = true }) => {
   return (
     <>
       <Stack spacing={2}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
           <Typography variant="h5">
             {taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name}
           </Typography>
           {showActions && (
-            <Box>
+            <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
+              <CippApiLogsDrawer
+                scheduledTaskFilter={data?.RowKey}
+                buttonText="View Logs"
+                title="Scheduled Task Logs"
+                variant="outlined"
+              />
               <ActionsMenu
                 actions={CippScheduledTaskActions()}
                 data={taskDetails?.Task}
@@ -265,6 +272,7 @@ const ScheduledTaskDetails = ({ data, showActions = true }) => {
                               noCard
                               data={result.Results}
                               disablePagination={result.Results.length <= 10}
+                              refreshFunction={() => taskDetailResults.refetch()}
                             />
                           ) : typeof result.Results === "object" ? (
                             <CippPropertyListCard
