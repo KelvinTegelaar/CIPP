@@ -367,6 +367,7 @@ const App = (props) => {
               <SettingsConsumer>
                 {(settings) => {
                   if (!settings.isInitialized) {
+                    return null; // Don't render until settings are loaded
                   }
                   const theme = createTheme({
                     colorPreset: "orange",

@@ -42,16 +42,18 @@ const Page = () => {
   const { templateId } = router.query;
   const settings = useSettings();
   const removeDialog = useDialog();
+  // Prioritize URL query parameter, then fall back to settings
+  const currentTenant = router.query.tenantFilter || settings.currentTenant;
 
   // API call to get backup files
   const backupList = ApiGetCall({
     url: "/api/ExecListBackup",
     data: {
-      tenantFilter: settings.currentTenant,
+      tenantFilter: currentTenant,
       Type: "Scheduled",
       NameOnly: true,
     },
-    queryKey: `BackupList-${settings.currentTenant}`,
+    queryKey: `BackupList-${currentTenant}`,
   });
 
   // API call to get existing backup configuration/schedule
@@ -61,7 +63,7 @@ const Page = () => {
       showHidden: true,
       Type: "New-CIPPBackup",
     },
-    queryKey: `BackupTasks-${settings.currentTenant}`,
+    queryKey: `BackupTasks-${currentTenant}`,
   });
 
   // Use the actual backup files as the backup data
@@ -380,7 +382,10 @@ const Page = () => {
           confirmText:
             "Are you sure you want to remove this backup schedule? This will stop automatic backups but won't delete existing backup files.",
         }}
-        relatedQueryKeys={[`BackupTasks-${settings.currentTenant}`, `BackupList-${settings.currentTenant}`]}
+        relatedQueryKeys={[
+          `BackupTasks-${settings.currentTenant}`,
+          `BackupList-${settings.currentTenant}`,
+        ]}
         onSuccess={() => {
           // Refresh both queries when a backup schedule is removed
           setTimeout(() => {
