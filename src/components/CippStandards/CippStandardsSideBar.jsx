@@ -144,33 +144,11 @@ const CippStandardsSideBar = ({
       }
 
       // Filter out current template if editing
-      console.log("Duplicate detection debug:", {
-        edit,
-        currentGUID: watchForm.GUID,
-        allTemplates: driftValidationApi.data?.map((t) => ({
-          GUID: t.GUID,
-          standardId: t.standardId,
-          standardName: t.standardName,
-        })),
-      });
-
       const existingTemplates = driftValidationApi.data.filter((template) => {
         const shouldInclude =
           edit && watchForm.GUID ? template.standardId !== watchForm.GUID : true;
-        console.log(
-          `Template ${template.standardId} (${template.standardName}): shouldInclude=${shouldInclude}, currentGUID=${watchForm.GUID}`
-        );
         return shouldInclude;
       });
-
-      console.log(
-        "Filtered templates:",
-        existingTemplates?.map((t) => ({
-          GUID: t.GUID,
-          standardId: t.standardId,
-          standardName: t.standardName,
-        }))
-      );
 
       // Get tenant groups data
       const groups = tenantGroupsApi.data?.Results || [];
@@ -198,44 +176,26 @@ const CippStandardsSideBar = ({
       });
 
       // Check for conflicts with unique templates
-      console.log("Checking conflicts with unique templates:", uniqueTemplates);
-      console.log("Selected tenant list:", selectedTenantList);
-
       for (const templateId in uniqueTemplates) {
         const template = uniqueTemplates[templateId];
         const templateTenants = template.tenants;
-
-        console.log(
-          `Checking template ${templateId} (${template.standardName}) with tenants:`,
-          templateTenants
-        );
 
         const hasConflict = selectedTenantList.some((selectedTenant) => {
           // Check if any template tenant matches the selected tenant
           const conflict = templateTenants.some((templateTenant) => {
             if (selectedTenant === "AllTenants" || templateTenant === "AllTenants") {
-              console.log(
-                `Conflict found: ${selectedTenant} vs ${templateTenant} (AllTenants match)`
-              );
               return true;
             }
             const match = selectedTenant === templateTenant;
-            if (match) {
-              console.log(`Conflict found: ${selectedTenant} vs ${templateTenant} (exact match)`);
-            }
             return match;
           });
           return conflict;
         });
 
-        console.log(`Template ${templateId} has conflict: ${hasConflict}`);
-
         if (hasConflict) {
           conflicts.push(template.standardName || "Unknown Template");
         }
       }
-
-      console.log("Final conflicts:", conflicts);
 
       if (conflicts.length > 0) {
         setDriftError(
@@ -556,7 +516,7 @@ const CippStandardsSideBar = ({
         title="Add Standard"
         api={{
           confirmText: isDriftMode
-            ? "This template will automatically every hour to detect drift. Are you sure you want to apply this Drift Template?"
+            ? "This template will automatically every 12 hours to detect drift. Are you sure you want to apply this Drift Template?"
             : watchForm.runManually
             ? "Are you sure you want to apply this standard? This template has been set to never run on a schedule. After saving the template you will have to run it manually."
             : "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
