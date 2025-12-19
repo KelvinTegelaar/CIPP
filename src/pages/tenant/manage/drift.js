@@ -34,7 +34,8 @@ const ManageDriftPage = () => {
   const router = useRouter();
   const { templateId } = router.query;
   const userSettingsDefaults = useSettings();
-  const tenantFilter = userSettingsDefaults.currentTenant || "";
+  // Prioritize URL query parameter, then fall back to settings
+  const tenantFilter = router.query.tenantFilter || userSettingsDefaults.currentTenant || "";
   const [anchorEl, setAnchorEl] = useState({});
   const [bulkActionsAnchorEl, setBulkActionsAnchorEl] = useState(null);
   const createDialog = useDialog();
