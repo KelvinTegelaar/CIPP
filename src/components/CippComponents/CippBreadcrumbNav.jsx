@@ -476,7 +476,7 @@ export const CippBreadcrumbNav = () => {
       if (lastItem.path && lastItem.path !== currentPath && currentPath.startsWith(lastItem.path)) {
         // Use the tracked page title if available, otherwise fall back to document.title
         let tabTitle = currentPageTitle || document.title.replace(" - CIPP", "").trim();
-        
+
         // Clean AllTenants from title
         tabTitle = cleanPageTitle(tabTitle);
 
