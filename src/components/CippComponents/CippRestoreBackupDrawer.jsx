@@ -202,7 +202,12 @@ export const CippRestoreBackupDrawer = ({
                   queryKey: `BackupList-${tenantFilter}-autocomplete`,
                   labelField: (option) => {
                     const match = option.BackupName.match(/.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/);
-                    return match ? `${match[1]} @ ${match[2]}:${match[3]}` : option.BackupName;
+                    const dateTime = match
+                      ? `${match[1]} @ ${match[2]}:${match[3]}`
+                      : option.BackupName;
+                    const tenantDisplay =
+                      option.TenantFilter === "AllTenants" ? ` (${option.TenantFilter})` : "";
+                    return `${dateTime}${tenantDisplay}`;
                   },
                   valueField: "BackupName",
                   data: {
