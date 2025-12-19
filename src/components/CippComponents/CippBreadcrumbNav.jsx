@@ -377,10 +377,6 @@ export const CippBreadcrumbNav = () => {
 
     let result = findPathInMenu(nativeMenuItems);
 
-    console.log("🍞 Breadcrumb Debug - currentPath:", currentPath);
-    console.log("🍞 Breadcrumb Debug - result from menu:", result);
-    console.log("🍞 Breadcrumb Debug - tabOptions available:", tabOptions.length);
-
     // If we found a menu item, check if the current path matches any tab
     // If so, tabOptions wins and we use its label
     if (result.length > 0 && tabOptions.length > 0) {
@@ -389,17 +385,13 @@ export const CippBreadcrumbNav = () => {
       // Check if current path matches any tab (exact match)
       const matchingTab = tabOptions.find((tab) => {
         const normalizedTabPath = tab.path.replace(/\/$/, "");
-        console.log("🍞 Comparing tab path:", normalizedTabPath, "with currentPath:", normalizedCurrentPath, "match:", normalizedTabPath === normalizedCurrentPath);
         return normalizedTabPath === normalizedCurrentPath;
       });
-
-      console.log("🍞 Matching tab found:", matchingTab);
 
       if (matchingTab) {
         // Tab matches the current path - use tab's label instead of config's
         result = result.map((item, idx) => {
           if (idx === result.length - 1) {
-            console.log("🍞 Updating last breadcrumb from:", item.title, "to:", matchingTab.title);
             return {
               ...item,
               title: matchingTab.title,
@@ -410,8 +402,6 @@ export const CippBreadcrumbNav = () => {
         });
       }
     }
-
-    console.log("🍞 Final result after tab matching:", result);
 
     // If not found in main menu, check if it's a tab page
     if (result.length === 0 && tabOptions.length > 0) {
@@ -536,8 +526,6 @@ export const CippBreadcrumbNav = () => {
   // Render based on mode
   if (mode === "hierarchical") {
     let breadcrumbs = buildHierarchicalBreadcrumbs();
-
-    console.log("🍞 Hierarchical breadcrumbs:", breadcrumbs);
 
     // Fallback: If no breadcrumbs found in navigation config, generate from URL path
     if (breadcrumbs.length === 0) {
