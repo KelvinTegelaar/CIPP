@@ -366,15 +366,13 @@ const App = (props) => {
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dateLocale}>
               <SettingsConsumer>
                 {(settings) => {
-                  if (!settings.isInitialized) {
-                    return null; // Don't render until settings are loaded
-                  }
+                  // Create theme even while initializing to avoid blank screen
                   const theme = createTheme({
                     colorPreset: "orange",
-                    direction: settings.direction,
+                    direction: settings.direction || "ltr",
                     paletteMode:
                       settings.currentTheme?.value !== "browser"
-                        ? settings.currentTheme?.value
+                        ? settings.currentTheme?.value || "light"
                         : preferredTheme,
                     contrast: "high",
                   });

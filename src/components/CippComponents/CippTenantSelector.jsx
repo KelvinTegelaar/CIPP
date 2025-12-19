@@ -230,7 +230,13 @@ export const CippTenantSelector = (props) => {
         });
       }
     }
-  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess, settings.currentTenant, settings.isInitialized]);
+  }, [
+    router.isReady,
+    router.query.tenantFilter,
+    tenantList.isSuccess,
+    settings.currentTenant,
+    settings.isInitialized,
+  ]);
 
   // This effect ensures the tenant filter parameter is included in the URL when missing
   useEffect(() => {
