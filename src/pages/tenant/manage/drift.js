@@ -34,7 +34,8 @@ const ManageDriftPage = () => {
   const router = useRouter();
   const { templateId } = router.query;
   const userSettingsDefaults = useSettings();
-  const tenantFilter = userSettingsDefaults.currentTenant || "";
+  // Prioritize URL query parameter, then fall back to settings
+  const tenantFilter = router.query.tenantFilter || userSettingsDefaults.currentTenant || "";
   const [anchorEl, setAnchorEl] = useState({});
   const [bulkActionsAnchorEl, setBulkActionsAnchorEl] = useState(null);
   const createDialog = useDialog();
@@ -233,6 +234,30 @@ const ManageDriftPage = () => {
     return null;
   };
 
+  // Helper function to format policy objects for display
+  const formatPolicyValue = (value) => {
+    if (!value) return "N/A";
+
+    // If it's already a string, return it
+    if (typeof value === "string") {
+      // Check if it's a JSON string and try to parse it
+      try {
+        const parsed = JSON.parse(value);
+        return formatPolicyValue(parsed);
+      } catch {
+        return value;
+      }
+    }
+
+    // If it's an object (policy object from API)
+    if (typeof value === "object" && value !== null) {
+      // Pretty-print the object as JSON
+      return JSON.stringify(value, null, 2);
+    }
+
+    return String(value);
+  };
+
   // Helper function to create deviation items
   const createDeviationItems = (deviations, statusOverride = null) => {
     return (deviations || []).map((deviation, index) => {
@@ -269,7 +294,7 @@ const ManageDriftPage = () => {
           { label: "Standard Name", value: prettyName },
           { label: "Description", value: description },
           { label: "Expected Value", value: deviation.expectedValue || "N/A" },
-          { label: "Current Value", value: deviation.receivedValue || "N/A" },
+          { label: "Current Value", value: formatPolicyValue(deviation.receivedValue) },
           {
             label: "Status",
             value: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
