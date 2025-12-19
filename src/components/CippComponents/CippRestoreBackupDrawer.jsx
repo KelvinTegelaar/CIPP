@@ -206,7 +206,7 @@ export const CippRestoreBackupDrawer = ({
                       ? `${match[1]} @ ${match[2]}:${match[3]}`
                       : option.BackupName;
                     const tenantDisplay =
-                      option.TenantFilter === "AllTenants" ? ` (${option.TenantFilter})` : "";
+                      tenantFilter === "AllTenants" ? ` (${option.TenantFilter})` : "";
                     return `${dateTime}${tenantDisplay}`;
                   },
                   valueField: "BackupName",
