@@ -29,7 +29,6 @@ export async function getCippVersion() {
 // Build headers including X-CIPP-Version. Accept extra headers to merge.
 export async function buildVersionedHeaders(extra = {}) {
   const version = await getCippVersion();
-  console.log("CIPP Version:", version);
   return {
     "Content-Type": "application/json",
     "X-CIPP-Version": version,
