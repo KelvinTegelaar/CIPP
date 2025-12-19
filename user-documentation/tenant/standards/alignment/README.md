@@ -1,4 +1,4 @@
-# Standards Management
+# Standards & Drift Alignment
 
 {% hint style="warning" %}
 **Understanding Standards**
@@ -6,7 +6,7 @@
 This page is a reference to the features of the Standards Templates page in CIPP. To better understand standards, please see the main page for [..](../ "mention").
 {% endhint %}
 
-This page will allow you to get a snapshot overview of your tenants and their alignment with your various Classic & Drift [classic-standards](classic-standards/ "mention").
+This page will allow you to get a snapshot overview of your tenants and their alignment with your various Classic & Drift [templates](templates/ "mention").
 
 ### Table Details
 

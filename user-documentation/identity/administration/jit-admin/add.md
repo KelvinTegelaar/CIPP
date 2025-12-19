@@ -18,7 +18,7 @@ This page allows you to create a new JIT admin
 
 {% hint style="warning" %}
 To use Temporary Access Passes (TAP), you must enable the authentication method in the customer tenant. \
-This can be done easily via the CIPP Entra [classic-standards](../../../tenant/standards/list-standards/classic-standards/ "mention"): "Enable Temporary Access Passwords"
+This can be done easily via the CIPP Entra [templates](../../../tenant/standards/alignment/templates/ "mention"): "Enable Temporary Access Passwords"
 {% endhint %}
 
 ***
