@@ -40,7 +40,9 @@ const Page = () => {
   const router = useRouter();
   const { templateId } = router.query;
   const [daysToLoad, setDaysToLoad] = useState(5);
-  const tenant = useSettings().currentTenant;
+  const userSettings = useSettings();
+  // Prioritize URL query parameter, then fall back to settings
+  const tenant = router.query.tenantFilter || userSettings.currentTenant;
   const [expandedMessages, setExpandedMessages] = useState(new Set());
 
   // Toggle message expansion
