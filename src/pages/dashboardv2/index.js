@@ -8,8 +8,17 @@ import {
   Avatar,
   Divider,
   Tooltip,
+  Autocomplete,
+  TextField,
+  Button,
 } from "@mui/material";
+import { useState, useEffect } from "react";
 import { Grid } from "@mui/system";
+import { useSettings } from "/src/hooks/use-settings";
+import { ApiGetCall } from "/src/api/ApiCall.jsx";
+import Portals from "/src/data/portals";
+import { BulkActionsMenu } from "/src/components/bulk-actions-menu.js";
+import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton.js";
 import {
   BarChart,
   Bar,
@@ -34,6 +43,8 @@ import { CaDeviceSankey } from "/src/components/CippComponents/CaDeviceSankey";
 import { AuthMethodSankey } from "/src/components/CippComponents/AuthMethodSankey";
 import { DesktopDevicesSankey } from "/src/components/CippComponents/DesktopDevicesSankey";
 import { MobileSankey } from "/src/components/CippComponents/MobileSankey";
+import { CippUniversalSearch } from "/src/components/CippCards/CippUniversalSearch.jsx";
+import { CippCopyToClipBoard } from "/src/components/CippComponents/CippCopyToClipboard.jsx";
 import {
   People as UsersIcon,
   Person as UserIcon,
@@ -51,6 +62,72 @@ import {
 
 const Page = () => {
   const reportData = dashboardDemoData;
+  const settings = useSettings();
+  const { currentTenant } = settings;
+  const [portalMenuItems, setPortalMenuItems] = useState([]);
+  const [selectedReport, setSelectedReport] = useState(null);
+
+  const reportOptions = [
+    "Select a report",
+    "Executive Summary Report",
+    "Security Assessment Report",
+    "Compliance Report",
+    "Device Inventory Report",
+  ];
+
+  const organization = ApiGetCall({
+    url: "/api/ListOrg",
+    queryKey: `${currentTenant}-ListOrg`,
+    data: { tenantFilter: currentTenant },
+  });
+
+  const dashboard = ApiGetCall({
+    url: "/api/ListuserCounts",
+    data: { tenantFilter: currentTenant },
+    queryKey: `${currentTenant}-ListuserCounts`,
+  });
+
+  const driftApi = ApiGetCall({
+    url: "/api/listTenantDrift",
+    data: {
+      TenantFilter: currentTenant,
+    },
+    queryKey: `TenantDrift-${currentTenant}`,
+  });
+
+  const currentTenantInfo = ApiGetCall({
+    url: "/api/ListTenants",
+    queryKey: `ListTenants`,
+  });
+
+  useEffect(() => {
+    if (currentTenantInfo.isSuccess) {
+      const menuItems = Portals.map((portal) => ({
+        label: portal.label,
+        link: portal.url
+          .replace(
+            "%%tenantid%%",
+            currentTenantInfo.data
+              ?.find((tenant) => tenant.defaultDomainName === currentTenant)
+              ?.customerId?.toLowerCase()
+          )
+          .replace(
+            "%%customername%%",
+            currentTenantInfo.data?.find((tenant) => tenant.defaultDomainName === currentTenant)
+              ?.displayName
+          ),
+        external: portal.external,
+        target: settings.UserSpecificSettings?.portalLinks || portal.target,
+        icon: portal.icon,
+      }));
+      setPortalMenuItems(menuItems);
+    }
+  }, [
+    currentTenantInfo.isSuccess,
+    currentTenant,
+    settings.portalLinks,
+    settings.UserSpecificSettings,
+  ]);
 
   const formatNumber = (num) => {
     if (!num && num !== 0) return "0";
@@ -72,6 +149,72 @@ const Page = () => {
   return (
     <Container maxWidth={false} sx={{ mt: 12, mb: 6 }}>
       <Box sx={{ width: "100%", mx: "auto" }}>
+        {/* Dashboard Bar with Portals, Executive Report, and Universal Search */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
+                <BulkActionsMenu
+                  buttonName="Portals"
+                  actions={portalMenuItems}
+                  disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
+                />
+                <ExecutiveReportButton
+                  tenantName={organization.data?.displayName}
+                  tenantId={organization.data?.id}
+                  userStats={{
+                    licensedUsers: dashboard.data?.LicUsers || 0,
+                    unlicensedUsers:
+                      dashboard.data?.Users && dashboard.data?.LicUsers
+                        ? dashboard.data?.Users - dashboard.data?.LicUsers
+                        : 0,
+                    guests: dashboard.data?.Guests || 0,
+                    globalAdmins: dashboard.data?.Gas || 0,
+                  }}
+                  standardsData={driftApi.data}
+                  organizationData={organization.data}
+                  disabled={organization.isFetching || dashboard.isFetching}
+                />
+                <Box sx={{ flex: 1 }}>
+                  <CippUniversalSearch />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent sx={{ display: "flex", gap: 1.5, alignItems: "center", p: 2 }}>
+                <Autocomplete
+                  size="small"
+                  options={reportOptions}
+                  value={selectedReport}
+                  onChange={(event, newValue) => setSelectedReport(newValue)}
+                  sx={{ flex: 1 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select a report" placeholder="Choose a report" />
+                  )}
+                />
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ whiteSpace: "nowrap", minHeight: 40 }}
+                >
+                  Create custom report
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                  sx={{ minHeight: 40 }}
+                  disabled={!selectedReport || selectedReport === "Select a report"}
+                >
+                  Delete
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
         {/* Tenant Overview Section - 3 Column Layout */}
         <Grid container spacing={3} sx={{ mb: 6 }}>
           {/* Column 1: Tenant Information */}
@@ -93,24 +236,53 @@ const Page = () => {
                       Name
                     </Typography>
                     <Typography variant="body1" fontWeight={500}>
-                      {reportData.TenantName || "Not Available"}
+                      {organization.isFetching
+                        ? "Loading..."
+                        : organization.data?.displayName || "Not Available"}
                     </Typography>
                   </Box>
                   <Box>
                     <Typography variant="caption" color="text.secondary">
                       Tenant ID
                     </Typography>
-                    <Typography variant="body2" fontFamily="monospace" fontSize="0.75rem">
-                      {reportData.TenantId || "Not Available"}
-                    </Typography>
+                    <Box sx={{ mt: 0.5 }}>
+                      {organization.isFetching ? (
+                        <Typography variant="body2" fontSize="0.75rem">
+                          Loading...
+                        </Typography>
+                      ) : organization.data?.id ? (
+                        <CippCopyToClipBoard text={organization.data.id} type="chip" />
+                      ) : (
+                        <Typography variant="body2" fontSize="0.75rem">
+                          Not Available
+                        </Typography>
+                      )}
+                    </Box>
                   </Box>
                   <Box>
                     <Typography variant="caption" color="text.secondary">
                       Primary Domain
                     </Typography>
-                    <Typography variant="body1" fontWeight={500}>
-                      {reportData.Domain || "Not Available"}
-                    </Typography>
+                    <Box sx={{ mt: 0.5 }}>
+                      {organization.isFetching ? (
+                        <Typography variant="body2" fontSize="0.75rem">
+                          Loading...
+                        </Typography>
+                      ) : organization.data?.verifiedDomains?.find((d) => d.isDefault)?.name ||
+                        currentTenant ? (
+                        <CippCopyToClipBoard
+                          text={
+                            organization.data?.verifiedDomains?.find((d) => d.isDefault)?.name ||
+                            currentTenant
+                          }
+                          type="chip"
+                        />
+                      ) : (
+                        <Typography variant="body2" fontSize="0.75rem">
+                          Not Available
+                        </Typography>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
               </CardContent>
@@ -133,8 +305,15 @@ const Page = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <Avatar sx={{ bgcolor: "primary.main", width: 34, height: 34 }}>
-                      <UserIcon sx={{ fontSize: 24 }} />
+                    <Avatar
+                      sx={{
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
+                        width: 34,
+                        height: 34,
+                      }}
+                    >
+                      <UserIcon sx={{ fontSize: 24, color: "inherit" }} />
                     </Avatar>
                     <Box>
                       <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
@@ -160,8 +339,15 @@ const Page = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <Avatar sx={{ bgcolor: "info.main", width: 34, height: 34 }}>
-                      <GuestIcon sx={{ fontSize: 24 }} />
+                    <Avatar
+                      sx={{
+                        bgcolor: "info.main",
+                        color: "info.contrastText",
+                        width: 34,
+                        height: 34,
+                      }}
+                    >
+                      <GuestIcon sx={{ fontSize: 24, color: "inherit" }} />
                     </Avatar>
                     <Box>
                       <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
@@ -187,8 +373,15 @@ const Page = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <Avatar sx={{ bgcolor: "secondary.main", width: 34, height: 34 }}>
-                      <GroupIcon sx={{ fontSize: 24 }} />
+                    <Avatar
+                      sx={{
+                        bgcolor: "secondary.main",
+                        color: "secondary.contrastText",
+                        width: 34,
+                        height: 34,
+                      }}
+                    >
+                      <GroupIcon sx={{ fontSize: 24, color: "inherit" }} />
                     </Avatar>
                     <Box>
                       <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
@@ -214,8 +407,15 @@ const Page = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <Avatar sx={{ bgcolor: "error.main", width: 34, height: 34 }}>
-                      <AppsIcon sx={{ fontSize: 24 }} />
+                    <Avatar
+                      sx={{
+                        bgcolor: "error.main",
+                        color: "error.contrastText",
+                        width: 34,
+                        height: 34,
+                      }}
+                    >
+                      <AppsIcon sx={{ fontSize: 24, color: "inherit" }} />
                     </Avatar>
                     <Box>
                       <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
@@ -241,8 +441,15 @@ const Page = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <Avatar sx={{ bgcolor: "warning.main", width: 34, height: 34 }}>
-                      <DevicesIcon sx={{ fontSize: 24 }} />
+                    <Avatar
+                      sx={{
+                        bgcolor: "warning.main",
+                        color: "warning.contrastText",
+                        width: 34,
+                        height: 34,
+                      }}
+                    >
+                      <DevicesIcon sx={{ fontSize: 24, color: "inherit" }} />
                     </Avatar>
                     <Box>
                       <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
@@ -268,8 +475,15 @@ const Page = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <Avatar sx={{ bgcolor: "success.main", width: 34, height: 34 }}>
-                      <ManagedIcon sx={{ fontSize: 24 }} />
+                    <Avatar
+                      sx={{
+                        bgcolor: "success.main",
+                        color: "success.contrastText",
+                        width: 34,
+                        height: 34,
+                      }}
+                    >
+                      <ManagedIcon sx={{ fontSize: 24, color: "inherit" }} />
                     </Avatar>
                     <Box>
                       <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
@@ -317,7 +531,7 @@ const Page = () => {
                         </Typography>
                       </Typography>
                     </Box>
-                    <Box>
+                    <Box sx={{ mb: 2 }}>
                       <Typography variant="caption" color="text.secondary">
                         Devices
                       </Typography>
@@ -332,6 +546,24 @@ const Page = () => {
                         >
                           tests
                         </Typography>
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Last Data Collection
+                      </Typography>
+                      <Typography variant="body2" fontSize="0.75rem">
+                        {currentTenantInfo.isFetching
+                          ? "Loading..."
+                          : currentTenantInfo.data?.find(
+                              (t) => t.defaultDomainName === currentTenant
+                            )?.LastRefresh
+                          ? new Date(
+                              currentTenantInfo.data?.find(
+                                (t) => t.defaultDomainName === currentTenant
+                              )?.LastRefresh
+                            ).toLocaleString()
+                          : "Not Available"}
                       </Typography>
                     </Box>
                   </Box>
