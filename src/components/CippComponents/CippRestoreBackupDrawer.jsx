@@ -13,6 +13,7 @@ import { ApiPostCall } from "../../api/ApiCall";
 export const CippRestoreBackupDrawer = ({
   buttonText = "Restore Backup",
   backupName = null,
+  backupData = null,
   requiredPermissions = [],
   PermissionButton = Button,
   ...props
@@ -85,7 +86,12 @@ export const CippRestoreBackupDrawer = ({
     const values = formControl.getValues();
     const startDate = new Date();
     const unixTime = Math.floor(startDate.getTime() / 1000) - 45;
-    const tenantFilterValue = tenantFilter;
+
+    // If in AllTenants context, use the tenant from the backup data
+    let tenantFilterValue = tenantFilter;
+    if (tenantFilter === "AllTenants" && backupData?.tenantSource) {
+      tenantFilterValue = backupData.tenantSource;
+    }
 
     const shippedValues = {
       TenantFilter: tenantFilterValue,
