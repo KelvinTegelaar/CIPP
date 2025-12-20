@@ -1027,7 +1027,7 @@ const Page = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
-      backUrl="/tenant/standards/list-standards"
+      backUrl="/tenant/standards"
       actions={actions}
       actionsData={{}}
       isFetching={comparisonApi.isFetching || templateDetails.isFetching}

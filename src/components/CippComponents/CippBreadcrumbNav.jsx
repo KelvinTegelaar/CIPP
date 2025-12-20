@@ -16,7 +16,7 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/super-admin",
-    "/tenant/standards/list-standards",
+    "/tenant/standards",
     "/tenant/manage",
     "/tenant/administration/applications",
     "/tenant/administration/tenants",
@@ -499,6 +499,46 @@ export const CippBreadcrumbNav = () => {
     return result;
   };
 
+  // Check if a path is valid and return its title from navigation or tabs
+  const getPathInfo = (path) => {
+    if (!path) return { isValid: false, title: null };
+
+    const normalizedPath = path.replace(/\/$/, "");
+
+    // Helper function to recursively search menu items
+    const findInMenu = (items) => {
+      for (const item of items) {
+        if (item.path) {
+          const normalizedItemPath = item.path.replace(/\/$/, "");
+          if (normalizedItemPath === normalizedPath) {
+            return { isValid: true, title: item.title };
+          }
+        }
+        if (item.items && item.items.length > 0) {
+          const found = findInMenu(item.items);
+          if (found.isValid) {
+            return found;
+          }
+        }
+      }
+      return { isValid: false, title: null };
+    };
+
+    // Check if path exists in navigation
+    const menuResult = findInMenu(nativeMenuItems);
+    if (menuResult.isValid) {
+      return menuResult;
+    }
+
+    // Check if path exists in tab options
+    const matchingTab = tabOptions.find((tab) => tab.path.replace(/\/$/, "") === normalizedPath);
+    if (matchingTab) {
+      return { isValid: true, title: matchingTab.title };
+    }
+
+    return { isValid: false, title: null };
+  };
+
   // Handle click for hierarchical breadcrumbs
   const handleHierarchicalClick = (path, query) => {
     if (path) {
@@ -580,6 +620,9 @@ export const CippBreadcrumbNav = () => {
         >
           {breadcrumbs.map((crumb, index) => {
             const isLast = index === breadcrumbs.length - 1;
+            const pathInfo = getPathInfo(crumb.path);
+            // Use title from nav/tabs if available, otherwise use the crumb's title
+            const displayTitle = pathInfo.title || crumb.title;
 
             // Items without paths (headers/groups) - show as text
             if (!crumb.path) {
@@ -590,31 +633,46 @@ export const CippBreadcrumbNav = () => {
                   variant="subtitle2"
                   sx={{ fontWeight: isLast ? 500 : 400 }}
                 >
-                  {crumb.title}
+                  {displayTitle}
                 </Typography>
               );
             }
 
-            // All items with paths are clickable, including the last one
-            return (
-              <Link
-                key={index}
-                component="button"
-                variant="subtitle2"
-                onClick={() => handleHierarchicalClick(crumb.path, crumb.query)}
-                sx={{
-                  textDecoration: "none",
-                  color: isLast ? "text.primary" : "text.secondary",
-                  fontWeight: isLast ? 500 : 400,
-                  "&:hover": {
-                    textDecoration: "underline",
-                    color: "primary.main",
-                  },
-                }}
-              >
-                {crumb.title}
-              </Link>
-            );
+            // Items with valid paths are clickable
+            // Items with invalid paths (fallback) are shown as plain text
+            if (pathInfo.isValid) {
+              return (
+                <Link
+                  key={index}
+                  component="button"
+                  variant="subtitle2"
+                  onClick={() => handleHierarchicalClick(crumb.path, crumb.query)}
+                  sx={{
+                    textDecoration: "none",
+                    color: isLast ? "text.primary" : "text.secondary",
+                    fontWeight: isLast ? 500 : 400,
+                    "&:hover": {
+                      textDecoration: "underline",
+                      color: "primary.main",
+                    },
+                  }}
+                >
+                  {displayTitle}
+                </Link>
+              );
+            } else {
+              // Invalid path - show as text only
+              return (
+                <Typography
+                  key={index}
+                  color={isLast ? "text.primary" : "text.secondary"}
+                  variant="subtitle2"
+                  sx={{ fontWeight: isLast ? 500 : 400 }}
+                >
+                  {displayTitle}
+                </Typography>
+              );
+            }
           })}
         </Breadcrumbs>
       </Box>
