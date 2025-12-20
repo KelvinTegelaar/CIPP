@@ -115,7 +115,7 @@ export const HeaderedTabbedLayout = (props) => {
               !mdDown && {
                 flexGrow: 1,
                 overflow: "auto",
-                height: "calc(100vh - 30px)",
+                height: "calc(100vh - 350px)",
               }
             }
           >
