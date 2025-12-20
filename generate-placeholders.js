@@ -43,7 +43,7 @@ const pages = [
   { title: "BPA Report Builder", path: "/tenant/tools/bpa-report-builder" },
   { title: "Standards", path: "/tenant/standards" },
   { title: "Edit Standards", path: "/tenant/standards/list-applied-standards" },
-  { title: "List Standards", path: "/tenant/standards/list-standards" },
+  { title: "List Standards", path: "/tenant/standards" },
   { title: "Best Practice Analyser", path: "/tenant/standards/bpa-report" },
   { title: "Domains Analyser", path: "/tenant/standards/domains-analyser" },
   { title: "Conditional Access", path: "/tenant/administration" },
