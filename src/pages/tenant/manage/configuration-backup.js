@@ -203,7 +203,7 @@ const Page = () => {
       isFetching={backupList.isFetching || existingBackupConfig.isFetching}
     >
       <CippHead title="Configuration Backup" />
-      <Box sx={{ p: 1, pb: 0 }}>
+      <Box sx={{ p: 1 }}>
         <Grid container spacing={3}>
           {/* Two Side-by-Side Displays */}
           <Grid size={{ md: 6, xs: 12 }}>
@@ -341,7 +341,7 @@ const Page = () => {
                       <Skeleton variant="rectangular" width="100%" height={200} />
                     </Stack>
                   ) : (
-                    <Box sx={{ maxHeight: "calc(100vh - 500px)", overflowY: "auto" }}>
+                    <Box sx={{ maxHeight: "calc(100vh - 525px)", overflowY: "auto" }}>
                       <Stack spacing={2}>
                         {backupDisplayItems.map((backup) => (
                           <Card key={backup.id} variant="outlined">
