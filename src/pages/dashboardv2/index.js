@@ -11,6 +11,7 @@ import {
   Autocomplete,
   TextField,
   Button,
+  Skeleton,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Grid } from "@mui/system";
@@ -45,6 +46,7 @@ import { DesktopDevicesSankey } from "/src/components/CippComponents/DesktopDevi
 import { MobileSankey } from "/src/components/CippComponents/MobileSankey";
 import { CippUniversalSearch } from "/src/components/CippCards/CippUniversalSearch.jsx";
 import { CippCopyToClipBoard } from "/src/components/CippComponents/CippCopyToClipboard.jsx";
+import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo.jsx";
 import {
   People as UsersIcon,
   Person as UserIcon,
@@ -61,7 +63,6 @@ import {
 } from "@mui/icons-material";
 
 const Page = () => {
-  const reportData = dashboardDemoData;
   const settings = useSettings();
   const { currentTenant } = settings;
   const [portalMenuItems, setPortalMenuItems] = useState([]);
@@ -81,10 +82,10 @@ const Page = () => {
     data: { tenantFilter: currentTenant },
   });
 
-  const dashboard = ApiGetCall({
-    url: "/api/ListuserCounts",
+  const testsApi = ApiGetCall({
+    url: "/api/ListTests",
     data: { tenantFilter: currentTenant },
-    queryKey: `${currentTenant}-ListuserCounts`,
+    queryKey: `${currentTenant}-ListTests`,
   });
 
   const driftApi = ApiGetCall({
@@ -99,6 +100,39 @@ const Page = () => {
     url: "/api/ListTenants",
     queryKey: `ListTenants`,
   });
+
+  const reportData =
+    testsApi.isSuccess && testsApi.data?.TenantCounts
+      ? {
+          ExecutedAt: testsApi.data.LatestReportTimeStamp || new Date().toISOString(),
+          TenantName: organization.data?.displayName || "",
+          Domain: currentTenant || "",
+          TestResultSummary: {
+            IdentityPassed: testsApi.data.TestCounts?.Successful || 0,
+            IdentityTotal: testsApi.data.TestCounts?.Total || 0,
+            DevicesPassed: testsApi.data.TestCounts?.Successful || 0,
+            DevicesTotal: testsApi.data.TestCounts?.Total || 0,
+            DataPassed: 0,
+            DataTotal: 0,
+          },
+          TenantInfo: {
+            TenantOverview: {
+              UserCount: testsApi.data.TenantCounts.Users || 0,
+              GuestCount: testsApi.data.TenantCounts.Guests || 0,
+              GroupCount: testsApi.data.TenantCounts.Groups || 0,
+              ApplicationCount: testsApi.data.TenantCounts.ServicePrincipals || 0,
+              DeviceCount: testsApi.data.TenantCounts.Devices || 0,
+              ManagedDeviceCount: testsApi.data.TenantCounts.ManagedDevices || 0,
+            },
+            OverviewCaMfaAllUsers: dashboardDemoData.TenantInfo.OverviewCaMfaAllUsers,
+            OverviewCaDevicesAllUsers: dashboardDemoData.TenantInfo.OverviewCaDevicesAllUsers,
+            OverviewAuthMethodsPrivilegedUsers:
+              dashboardDemoData.TenantInfo.OverviewAuthMethodsPrivilegedUsers,
+            OverviewAuthMethodsAllUsers: dashboardDemoData.TenantInfo.OverviewAuthMethodsAllUsers,
+            DeviceOverview: dashboardDemoData.TenantInfo.DeviceOverview,
+          },
+        }
+      : dashboardDemoData;
 
   useEffect(() => {
     if (currentTenantInfo.isSuccess) {
@@ -141,7 +175,7 @@ const Page = () => {
     users: "Total number of users in your tenant",
     guests: "External users with guest access",
     groups: "Microsoft 365 and security groups",
-    apps: "Registered applications",
+    apps: "Service principals in your tenant",
     devices: "All devices accessing tenant resources",
     managed: "Devices enrolled in Intune",
   };
@@ -163,17 +197,14 @@ const Page = () => {
                   tenantName={organization.data?.displayName}
                   tenantId={organization.data?.id}
                   userStats={{
-                    licensedUsers: dashboard.data?.LicUsers || 0,
-                    unlicensedUsers:
-                      dashboard.data?.Users && dashboard.data?.LicUsers
-                        ? dashboard.data?.Users - dashboard.data?.LicUsers
-                        : 0,
-                    guests: dashboard.data?.Guests || 0,
-                    globalAdmins: dashboard.data?.Gas || 0,
+                    licensedUsers: 0,
+                    unlicensedUsers: 0,
+                    guests: testsApi.data?.TenantCounts?.Guests || 0,
+                    globalAdmins: 0,
                   }}
                   standardsData={driftApi.data}
                   organizationData={organization.data}
-                  disabled={organization.isFetching || dashboard.isFetching}
+                  disabled={organization.isFetching || testsApi.isFetching}
                 />
                 <Box sx={{ flex: 1 }}>
                   <CippUniversalSearch />
@@ -293,7 +324,10 @@ const Page = () => {
           <Grid size={{ xs: 12, lg: 4 }}>
             <Grid container spacing={2}>
               <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.users} arrow>
+                <Tooltip
+                  title={`${reportData.TenantInfo.TenantOverview.UserCount.toLocaleString()} users`}
+                  arrow
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -320,14 +354,21 @@ const Page = () => {
                         Users
                       </Typography>
                       <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.UserCount)}
+                        {testsApi.isFetching ? (
+                          <Skeleton width={50} />
+                        ) : (
+                          formatNumber(reportData.TenantInfo.TenantOverview.UserCount)
+                        )}
                       </Typography>
                     </Box>
                   </Box>
                 </Tooltip>
               </Grid>
               <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.guests} arrow>
+                <Tooltip
+                  title={`${reportData.TenantInfo.TenantOverview.GuestCount.toLocaleString()} guests`}
+                  arrow
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -354,14 +395,21 @@ const Page = () => {
                         Guests
                       </Typography>
                       <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.GuestCount)}
+                        {testsApi.isFetching ? (
+                          <Skeleton width={50} />
+                        ) : (
+                          formatNumber(reportData.TenantInfo.TenantOverview.GuestCount)
+                        )}
                       </Typography>
                     </Box>
                   </Box>
                 </Tooltip>
               </Grid>
               <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.groups} arrow>
+                <Tooltip
+                  title={`${reportData.TenantInfo.TenantOverview.GroupCount.toLocaleString()} groups`}
+                  arrow
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -388,14 +436,21 @@ const Page = () => {
                         Groups
                       </Typography>
                       <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.GroupCount)}
+                        {testsApi.isFetching ? (
+                          <Skeleton width={50} />
+                        ) : (
+                          formatNumber(reportData.TenantInfo.TenantOverview.GroupCount)
+                        )}
                       </Typography>
                     </Box>
                   </Box>
                 </Tooltip>
               </Grid>
               <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.apps} arrow>
+                <Tooltip
+                  title={`${reportData.TenantInfo.TenantOverview.ApplicationCount.toLocaleString()} service principals`}
+                  arrow
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -419,17 +474,24 @@ const Page = () => {
                     </Avatar>
                     <Box>
                       <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-                        Apps
+                        Service Principals
                       </Typography>
                       <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.ApplicationCount)}
+                        {testsApi.isFetching ? (
+                          <Skeleton width={50} />
+                        ) : (
+                          formatNumber(reportData.TenantInfo.TenantOverview.ApplicationCount)
+                        )}
                       </Typography>
                     </Box>
                   </Box>
                 </Tooltip>
               </Grid>
               <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.devices} arrow>
+                <Tooltip
+                  title={`${reportData.TenantInfo.TenantOverview.DeviceCount.toLocaleString()} devices`}
+                  arrow
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -456,14 +518,21 @@ const Page = () => {
                         Devices
                       </Typography>
                       <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.DeviceCount)}
+                        {testsApi.isFetching ? (
+                          <Skeleton width={50} />
+                        ) : (
+                          formatNumber(reportData.TenantInfo.TenantOverview.DeviceCount)
+                        )}
                       </Typography>
                     </Box>
                   </Box>
                 </Tooltip>
               </Grid>
               <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.managed} arrow>
+                <Tooltip
+                  title={`${reportData.TenantInfo.TenantOverview.ManagedDeviceCount.toLocaleString()} managed devices`}
+                  arrow
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -490,7 +559,11 @@ const Page = () => {
                         Managed
                       </Typography>
                       <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.ManagedDeviceCount)}
+                        {testsApi.isFetching ? (
+                          <Skeleton width={50} />
+                        ) : (
+                          formatNumber(reportData.TenantInfo.TenantOverview.ManagedDeviceCount)
+                        )}
                       </Typography>
                     </Box>
                   </Box>
@@ -519,16 +592,22 @@ const Page = () => {
                         Identity
                       </Typography>
                       <Typography variant="h5" fontWeight="bold">
-                        {reportData.TestResultSummary.IdentityPassed}/
-                        {reportData.TestResultSummary.IdentityTotal}
-                        <Typography
-                          component="span"
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ ml: 1 }}
-                        >
-                          tests
-                        </Typography>
+                        {testsApi.isFetching ? (
+                          <Skeleton width={80} />
+                        ) : (
+                          <>
+                            {reportData.TestResultSummary.IdentityPassed}/
+                            {reportData.TestResultSummary.IdentityTotal}
+                            <Typography
+                              component="span"
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ ml: 1 }}
+                            >
+                              tests
+                            </Typography>
+                          </>
+                        )}
                       </Typography>
                     </Box>
                     <Box sx={{ mb: 2 }}>
@@ -536,16 +615,22 @@ const Page = () => {
                         Devices
                       </Typography>
                       <Typography variant="h5" fontWeight="bold">
-                        {reportData.TestResultSummary.DevicesPassed}/
-                        {reportData.TestResultSummary.DevicesTotal}
-                        <Typography
-                          component="span"
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ ml: 1 }}
-                        >
-                          tests
-                        </Typography>
+                        {testsApi.isFetching ? (
+                          <Skeleton width={80} />
+                        ) : (
+                          <>
+                            {reportData.TestResultSummary.DevicesPassed}/
+                            {reportData.TestResultSummary.DevicesTotal}
+                            <Typography
+                              component="span"
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ ml: 1 }}
+                            >
+                              tests
+                            </Typography>
+                          </>
+                        )}
                       </Typography>
                     </Box>
                     <Box>
@@ -553,17 +638,13 @@ const Page = () => {
                         Last Data Collection
                       </Typography>
                       <Typography variant="body2" fontSize="0.75rem">
-                        {currentTenantInfo.isFetching
-                          ? "Loading..."
-                          : currentTenantInfo.data?.find(
-                              (t) => t.defaultDomainName === currentTenant
-                            )?.LastRefresh
-                          ? new Date(
-                              currentTenantInfo.data?.find(
-                                (t) => t.defaultDomainName === currentTenant
-                              )?.LastRefresh
-                            ).toLocaleString()
-                          : "Not Available"}
+                        {testsApi.isFetching ? (
+                          <Skeleton width={100} />
+                        ) : testsApi.data?.LatestReportTimeStamp ? (
+                          <CippTimeAgo data={testsApi.data.LatestReportTimeStamp} />
+                        ) : (
+                          "Not Available"
+                        )}
                       </Typography>
                     </Box>
                   </Box>
