@@ -97,6 +97,7 @@ export const CippDataTable = (props) => {
     simple = false,
     cardButton,
     offCanvas = false,
+    offCanvasOnRowClick = false,
     noCard = false,
     hideTitle = false,
     refreshFunction,
@@ -286,6 +287,21 @@ export const CippDataTable = (props) => {
         top: table.getState().isFullScreen ? 64 : undefined,
       },
     }),
+    muiTableBodyRowProps:
+      offCanvasOnRowClick && offCanvas
+        ? ({ row }) => ({
+            onClick: () => {
+              setOffCanvasData(row.original);
+              setOffcanvasVisible(true);
+            },
+            sx: {
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "action.hover",
+              },
+            },
+          })
+        : undefined,
     // Add global styles to target the specific filter components
     enableColumnFilterModes: true,
     muiTableHeadCellProps: {

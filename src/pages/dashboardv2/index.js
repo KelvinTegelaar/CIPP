@@ -25,7 +25,6 @@ import {
   Bar,
   PieChart,
   Pie,
-  Cell,
   RadialBarChart,
   RadialBar,
   PolarAngleAxis,
