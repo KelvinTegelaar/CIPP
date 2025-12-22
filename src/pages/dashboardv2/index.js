@@ -84,8 +84,8 @@ const Page = () => {
 
   const testsApi = ApiGetCall({
     url: "/api/ListTests",
-    data: { tenantFilter: currentTenant },
-    queryKey: `${currentTenant}-ListTests`,
+    data: { tenantFilter: currentTenant, reportId: "d5d1e123-bce0-482d-971f-be6ed820dd92" },
+    queryKey: `${currentTenant}-ListTests-d5d1e123-bce0-482d-971f-be6ed820dd92`,
   });
 
   const driftApi = ApiGetCall({
