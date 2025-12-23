@@ -1,42 +1,53 @@
+
 name: Azure Static Web Apps CI/CD
 
 on:
   push:
     branches:
       - main
-      - master
+      - master   # remove if you don't use 'master'
 
 jobs:
   build_and_deploy_job:
+    # Build & deploy on push, and on PR events except 'closed'
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: true
+          lfs: false
+
+      # OPTIONAL: Add a build step if your project requires it
+      # - name: Install & Build
+      #   run: |
+      #     npm ci
+      #     npm run build
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_TREE_0B9B75110 }} # change this to your repository secret name
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_TREE_0B9B75110 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}  # Enables PR comments/status
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "/out" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
+          ###### Repository/Build Configurations ######
+          # See: https://aka.ms/swaworkflowconfig
+          app_location: "/"         # Path to your app source
+          api_location: ""          # Path to API (Azure Functions), leave empty if none
+          output_location: "/out"   # Change to your real build output or remove if not applicable
+          ###### End of Configurations ######
 
   close_pull_request_job:
+    # Clean up SWA preview environment once the PR is closed
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     name: Close Pull Request Job
     steps:
       - name: Close Pull Request
         id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
+        uses: Azure/static_web_apps_deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_TREE_0B9B75110 }} # change this to your repository secret name
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_TREE_0B9B75110 }}
           action: "close"
