@@ -132,7 +132,7 @@ azurite
 cd X:\Development\CIPP-Project\CIPP-API
 func start
 cd X:\Development\CIPP-Project\CIPP
-yarn run start swa
+yarn run start-swa
 cd X:\Development\CIPP-Project\CIPP
 yarn run dev
 ```
@@ -140,6 +140,13 @@ yarn run dev
 If you need the APIs to connect to Microsoft 365 and / or to test the Secure Application Model functionality itself you have to make a `local.settings.json` file in the `CIPP-API` folder. This file isn't detected by git (because of the `.gitignore` file) so it's not pushed with any changes/contributions you make. This file stores the Secure Application Model tokens, and a Azure Storage connection string for the durable function queues.
 
 The contents of your `local.settings.json` file differs depending on whether you are using the Azurite storage emulator or Azure Storage itself.
+
+{% tabs %}
+{% tab title="Azurite (Local Emulator)" %}
+
+Use this configuration when running locally with the Azurite storage emulator.
+
+Wondering where the application secrets are? They are stored in the `DevSecrets` table.
 
 ```json
 {
@@ -169,6 +176,12 @@ The contents of your `local.settings.json` file differs depending on whether you
   }
 }
 ```
+
+{% endtab %}
+
+{% tab title="Azure Storage (Real Account)" %}
+
+Use this configuration when connecting directly to Azure Storage.
 
 ```json
 {
@@ -203,6 +216,9 @@ The contents of your `local.settings.json` file differs depending on whether you
   }
 }
 ```
+{% endtab %}
+{% endtabs %}
+
 
 Optional Values:
 
