@@ -24,7 +24,7 @@ The following variables will be automatically replaced by CIPP:
 The following variables are reserved and will not be used:
 
 * `%cippurl%`
-*  `%cippuserschema%`
+* `%cippuserschema%`
 * `%defaultdomain%`
 * `%partnertenantid%`
 * `%programdata%`
@@ -38,7 +38,7 @@ The following variables are reserved and will not be used:
 * `%userdomain%`
 * `%username%`
 * `%userprofile%`
-*  `%windir%`
+* `%windir%`
 
 ***
 
