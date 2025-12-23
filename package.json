@@ -106,7 +106,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "3.1.0",
     "rehype-raw": "^7.0.0",
-    "remark-gfm": "^3.0.1",
+    "remark-gfm": "^4.0.0",
     "simplebar": "6.3.2",
     "simplebar-react": "3.3.2",
     "stylis-plugin-rtl": "2.1.1",

@@ -16,6 +16,7 @@ import { ApiGetCall } from "/src/api/ApiCall.jsx";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
 import { ArrowRight, Info, KeyboardArrowRight } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
 import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
 
@@ -207,6 +208,7 @@ const Page = () => {
                   }}
                 >
                   <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
                     components={{
                       a: ({ href, children, ...props }) => (
                         <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
