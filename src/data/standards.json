@@ -5149,6 +5149,12 @@
           "valueField": "GUID",
           "queryKey": "ListTransportRulesTemplates"
         }
+      },
+      {
+        "type": "switch",
+        "label": "Overwrite existing transport rules",
+        "name": "overwrite",
+        "defaultValue": true
       }
     ]
   },
