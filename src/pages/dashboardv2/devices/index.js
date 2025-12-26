@@ -15,6 +15,7 @@ import tabOptions from "../tabOptions";
 import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall.jsx";
 import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { KeyboardArrowRight } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
@@ -74,7 +75,6 @@ const Page = () => {
   };
 
   const offCanvas = {
-    extendedInfoFields: ["Name", "Risk", "Status", "Category"],
     size: "lg",
     children: (row) => {
       return (
@@ -93,12 +93,12 @@ const Page = () => {
                   }),
                 }}
               >
-                <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
+                <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
                   <Box>
                     <Typography color="text.secondary" variant="overline">
                       Risk Level
                     </Typography>
-                    <Box sx={{ mt: 0.5 }}>
+                    <Box>
                       <Chip label={row.Risk || "N/A"} color={getRiskColor(row.Risk)} size="small" />
                     </Box>
                   </Box>
@@ -116,7 +116,7 @@ const Page = () => {
                   }),
                 }}
               >
-                <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
+                <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
                   <Box>
                     <Typography color="text.secondary" variant="overline">
                       User Impact
@@ -137,7 +137,7 @@ const Page = () => {
                   borderBottom: "none",
                 }}
               >
-                <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 3 }}>
+                <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
                   <Box>
                     <Typography color="text.secondary" variant="overline">
                       Implementation Effort
@@ -159,7 +159,7 @@ const Page = () => {
             <Card variant="outlined">
               <CardContent>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Typography variant="h6">{row.Name}</Typography>
+                  <Typography variant="h6">{row.Name}</Typography> <KeyboardArrowRight />
                   <Chip
                     label={row.Status || "Unknown"}
                     color={getStatusColor(row.Status)}
