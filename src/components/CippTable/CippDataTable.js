@@ -763,7 +763,9 @@ export const CippDataTable = (props) => {
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
         title={offCanvasData?.Name || offCanvas?.title || "Extended Info"}
-        children={offCanvas?.children ? (row) => offCanvas.children(row, offCanvasRowIndex) : undefined}
+        children={
+          offCanvas?.children ? (row) => offCanvas.children(row, offCanvasRowIndex) : undefined
+        }
         customComponent={offCanvas?.customComponent}
         onNavigateUp={() => {
           const newIndex = offCanvasRowIndex - 1;

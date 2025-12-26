@@ -93,16 +93,16 @@ export const CippOffCanvas = (props) => {
           <Box sx={{ display: "flex", gap: 0.5 }}>
             {(canNavigateUp || canNavigateDown) && (
               <>
-                <IconButton 
-                  onClick={onNavigateUp} 
+                <IconButton
+                  onClick={onNavigateUp}
                   disabled={!canNavigateUp}
                   size="small"
                   title="Previous row"
                 >
                   <KeyboardArrowUpIcon />
                 </IconButton>
-                <IconButton 
-                  onClick={onNavigateDown} 
+                <IconButton
+                  onClick={onNavigateDown}
                   disabled={!canNavigateDown}
                   size="small"
                   title="Next row"
