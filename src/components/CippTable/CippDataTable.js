@@ -115,6 +115,7 @@ export const CippDataTable = (props) => {
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
+  const [offCanvasRowIndex, setOffCanvasRowIndex] = useState(0);
   const [customComponentData, setCustomComponentData] = useState({});
   const [customComponentVisible, setCustomComponentVisible] = useState(false);
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
@@ -292,6 +293,7 @@ export const CippDataTable = (props) => {
         ? ({ row }) => ({
             onClick: () => {
               setOffCanvasData(row.original);
+              setOffCanvasRowIndex(row.index);
               setOffcanvasVisible(true);
             },
             sx: {
@@ -453,6 +455,7 @@ export const CippDataTable = (props) => {
               onClick={() => {
                 closeMenu();
                 setOffCanvasData(row.original);
+                setOffCanvasRowIndex(row.index);
                 setOffcanvasVisible(true);
               }}
             >
@@ -468,6 +471,7 @@ export const CippDataTable = (props) => {
             onClick={() => {
               closeMenu();
               setOffCanvasData(row.original);
+              setOffCanvasRowIndex(row.index);
               setOffcanvasVisible(true);
             }}
           >
@@ -758,8 +762,25 @@ export const CippDataTable = (props) => {
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
-        children={offCanvas?.children}
+        title={offCanvasData?.Name || offCanvas?.title || "Extended Info"}
+        children={offCanvas?.children ? (row) => offCanvas.children(row, offCanvasRowIndex) : undefined}
         customComponent={offCanvas?.customComponent}
+        onNavigateUp={() => {
+          const newIndex = offCanvasRowIndex - 1;
+          if (newIndex >= 0 && memoizedData && memoizedData[newIndex]) {
+            setOffCanvasRowIndex(newIndex);
+            setOffCanvasData(memoizedData[newIndex]);
+          }
+        }}
+        onNavigateDown={() => {
+          const newIndex = offCanvasRowIndex + 1;
+          if (memoizedData && newIndex < memoizedData.length) {
+            setOffCanvasRowIndex(newIndex);
+            setOffCanvasData(memoizedData[newIndex]);
+          }
+        }}
+        canNavigateUp={offCanvasRowIndex > 0}
+        canNavigateDown={memoizedData && offCanvasRowIndex < memoizedData.length - 1}
         {...offCanvas}
       />
       {/* Render custom component */}
