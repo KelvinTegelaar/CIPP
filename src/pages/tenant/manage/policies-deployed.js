@@ -405,7 +405,7 @@ const PoliciesDeployedPage = () => {
       subtitle={subtitle}
       actions={actions}
       actionsData={{}}
-      backUrl="/tenant/standards/list-standards"
+      backUrl="/tenant/standards"
     >
       <CippHead title="Policies and Settings Deployed" />
       <Box sx={{ py: 2 }}>

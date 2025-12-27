@@ -132,14 +132,22 @@ export const SettingsProvider = (props) => {
 
   const handleUpdate = useCallback((settings) => {
     setState((prevState) => {
+      // Filter out null and undefined values to prevent resetting settings
+      const filteredSettings = Object.entries(settings).reduce((acc, [key, value]) => {
+        if (value !== null && value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
+
       storeSettings({
         ...prevState,
-        ...settings,
+        ...filteredSettings,
       });
 
       return {
         ...prevState,
-        ...settings,
+        ...filteredSettings,
       };
     });
   }, []);

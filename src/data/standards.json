@@ -5056,10 +5056,7 @@
           "queryKey": "ListIntuneTemplates-tag-autcomplete",
           "url": "/api/ListIntuneTemplates?mode=Tag",
           "labelField": "label",
-          "valueField": "value",
-          "addedField": {
-            "templates": "templates"
-          }
+          "valueField": "value"
         }
       },
       {

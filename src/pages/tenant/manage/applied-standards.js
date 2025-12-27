@@ -58,7 +58,8 @@ const Page = () => {
   const { templateId } = router.query;
   const [comparisonData, setComparisonData] = useState(null);
   const settings = useSettings();
-  const currentTenant = settings?.currentTenant;
+  // Prioritize URL query parameter, then fall back to settings
+  const currentTenant = router.query.tenantFilter || settings?.currentTenant;
   const formControl = useForm({
     mode: "onBlur",
     defaultValues: {
@@ -1026,7 +1027,7 @@ const Page = () => {
       tabOptions={tabOptions}
       title={title}
       subtitle={subtitle}
-      backUrl="/tenant/standards/list-standards"
+      backUrl="/tenant/standards"
       actions={actions}
       actionsData={{}}
       isFetching={comparisonApi.isFetching || templateDetails.isFetching}

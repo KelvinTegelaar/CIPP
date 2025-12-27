@@ -19,18 +19,22 @@ import {
   ServerIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { useSettings } from "../../hooks/use-settings";
 import { getCippError } from "../../utils/get-cipp-error";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const CippTenantSelector = (props) => {
   const { width, allTenants = false, multiple = false, refreshButton, tenantButton } = props;
   //get the current tenant from SearchParams called 'tenantFilter'
   const router = useRouter();
   const settings = useSettings();
+  const queryClient = useQueryClient();
   const tenant = router.query.tenantFilter ? router.query.tenantFilter : settings.currentTenant;
+  const routerUpdateTimeoutRef = useRef(null);
+
   // Fetch tenant list
   const tenantList = ApiGetCall({
     url: "/api/listTenants",
@@ -172,6 +176,15 @@ export const CippTenantSelector = (props) => {
     if (currentTenant?.value) {
       const query = { ...router.query };
       if (query.tenantFilter !== currentTenant.value) {
+        // Clear any pending timeout
+        if (routerUpdateTimeoutRef.current) {
+          clearTimeout(routerUpdateTimeoutRef.current);
+        }
+
+        // Cancel all in-flight queries before changing tenant
+        queryClient.cancelQueries();
+
+        // Update router only - let the URL watcher handle settings
         query.tenantFilter = currentTenant.value;
         router.replace(
           {
@@ -182,41 +195,47 @@ export const CippTenantSelector = (props) => {
           { shallow: true }
         );
       }
-      settings.handleUpdate({
-        currentTenant: currentTenant.value,
-      });
-      //if we have a tenantfilter, we add the tenantfilter to the title of the tab/page so its "Tenant - original title".
     }
   }, [currentTenant?.value]);
 
-  // This effect handles when the URL parameter changes externally
+  // This effect handles when the URL parameter changes (from deep link or user selection)
+  // This is the single source of truth for tenant changes
   useEffect(() => {
     if (!router.isReady || !tenantList.isSuccess) return;
 
-    // Get the current tenant from URL or settings
-    const urlTenant = router.query.tenantFilter || settings.currentTenant;
+    const urlTenant = router.query.tenantFilter;
 
-    // Only update if there's a URL tenant and it's different from our current state
-    if (urlTenant && (!currentTenant || urlTenant !== currentTenant.value)) {
+    // Only process if we have a URL tenant
+    if (urlTenant) {
       // Find the tenant in our list
       const matchingTenant = tenantList.data.find(
         ({ defaultDomainName }) => defaultDomainName === urlTenant
       );
 
       if (matchingTenant) {
-        setSelectedTenant({
-          value: urlTenant,
-          label: `${matchingTenant.displayName} (${urlTenant})`,
-          addedFields: {
-            defaultDomainName: matchingTenant.defaultDomainName,
-            displayName: matchingTenant.displayName,
-            customerId: matchingTenant.customerId,
-            initialDomainName: matchingTenant.initialDomainName,
-          },
-        });
+        // Update local state if different
+        if (!currentTenant || urlTenant !== currentTenant.value) {
+          setSelectedTenant({
+            value: urlTenant,
+            label: `${matchingTenant.displayName} (${urlTenant})`,
+            addedFields: {
+              defaultDomainName: matchingTenant.defaultDomainName,
+              displayName: matchingTenant.displayName,
+              customerId: matchingTenant.customerId,
+              initialDomainName: matchingTenant.initialDomainName,
+            },
+          });
+        }
+
+        // Update settings if different (null filter in settings-context prevents saving null)
+        if (settings.currentTenant !== urlTenant) {
+          settings.handleUpdate({
+            currentTenant: urlTenant,
+          });
+        }
       }
     }
-  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess, settings.currentTenant]);
+  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess]);
 
   // This effect ensures the tenant filter parameter is included in the URL when missing
   useEffect(() => {
@@ -234,7 +253,7 @@ export const CippTenantSelector = (props) => {
         { shallow: true }
       );
     }
-  }, [router.isReady, router.query, settings.currentTenant]);
+  }, [router.isReady, router.query.tenantFilter, settings.currentTenant]);
 
   useEffect(() => {
     if (tenant && currentTenant?.value && currentTenant?.value !== "AllTenants") {
@@ -267,6 +286,15 @@ export const CippTenantSelector = (props) => {
       );
     }
   }, [tenant, tenantList.isSuccess, currentTenant]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (routerUpdateTimeoutRef.current) {
+        clearTimeout(routerUpdateTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
