@@ -8,12 +8,13 @@ import {
   Avatar,
   Divider,
   Tooltip,
-  Autocomplete,
-  TextField,
   Button,
   Skeleton,
+  Stack,
 } from "@mui/material";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useForm, useWatch } from "react-hook-form";
 import { Grid } from "@mui/system";
 import { useSettings } from "/src/hooks/use-settings";
 import { ApiGetCall } from "/src/api/ApiCall.jsx";
@@ -47,8 +48,11 @@ import { AuthMethodSankey } from "/src/components/CippComponents/AuthMethodSanke
 import { DesktopDevicesSankey } from "/src/components/CippComponents/DesktopDevicesSankey";
 import { MobileSankey } from "/src/components/CippComponents/MobileSankey";
 import { CippUniversalSearch } from "/src/components/CippCards/CippUniversalSearch.jsx";
+import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
+import { CippAddTestReportDrawer } from "/src/components/CippComponents/CippAddTestReportDrawer";
 import { CippCopyToClipBoard } from "/src/components/CippComponents/CippCopyToClipboard.jsx";
 import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo.jsx";
+import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import {
   People as UsersIcon,
   Person as UserIcon,
@@ -271,17 +275,45 @@ const processAuthMethodsData = (mfaState) => {
 
 const Page = () => {
   const settings = useSettings();
+  const router = useRouter();
   const { currentTenant } = settings;
   const [portalMenuItems, setPortalMenuItems] = useState([]);
-  const [selectedReport, setSelectedReport] = useState(null);
+  const [deleteDialog, setDeleteDialog] = useState({ open: false });
 
-  const reportOptions = [
-    "Select a report",
-    "Executive Summary Report",
-    "Security Assessment Report",
-    "Compliance Report",
-    "Device Inventory Report",
-  ];
+  // Get reportId from query params or default to "ztna"
+  const selectedReport = router.query.reportId || "ztna";
+
+  const formControl = useForm({
+    mode: "onChange",
+    defaultValues: {
+      reportId: selectedReport,
+    },
+  });
+
+  const reportIdValue = useWatch({ control: formControl.control });
+
+  // Update URL when form value changes (e.g., user selects different report from dropdown)
+  useEffect(() => {
+    console.log("reportIdValue changed:", reportIdValue);
+    if (reportIdValue && reportIdValue.reportId?.value !== selectedReport) {
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, reportId: reportIdValue.reportId?.value },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [reportIdValue]);
+
+  // Fetch available reports
+  const reportsApi = ApiGetCall({
+    url: "/api/ListTestReports",
+    queryKey: "ListTestReports",
+  });
+
+  const reports = reportsApi.data || [];
 
   const organization = ApiGetCall({
     url: "/api/ListOrg",
@@ -291,8 +323,9 @@ const Page = () => {
 
   const testsApi = ApiGetCall({
     url: "/api/ListTests",
-    data: { tenantFilter: currentTenant, reportId: "d5d1e123-bce0-482d-971f-be6ed820dd92" },
-    queryKey: `${currentTenant}-ListTests-d5d1e123-bce0-482d-971f-be6ed820dd92`,
+    data: { tenantFilter: currentTenant, reportId: selectedReport },
+    queryKey: `${currentTenant}-ListTests-${selectedReport}`,
+    waiting: !!currentTenant && !!selectedReport,
   });
 
   const driftApi = ApiGetCall({
@@ -423,29 +456,41 @@ const Page = () => {
           <Grid size={{ xs: 12, md: 6 }}>
             <Card sx={{ height: "100%" }}>
               <CardContent sx={{ display: "flex", gap: 1.5, alignItems: "center", p: 2 }}>
-                <Autocomplete
-                  size="small"
-                  options={reportOptions}
-                  value={selectedReport}
-                  onChange={(event, newValue) => setSelectedReport(newValue)}
-                  sx={{ flex: 1 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Select a report" placeholder="Choose a report" />
-                  )}
-                />
-                <Button
-                  variant="contained"
-                  size="small"
-                  sx={{ whiteSpace: "nowrap", minHeight: 40 }}
-                >
-                  Create custom report
-                </Button>
+                <Box sx={{ flex: 1 }}>
+                  <CippFormComponent
+                    name="reportId"
+                    label="Select a report"
+                    type="autoComplete"
+                    multiple={false}
+                    formControl={formControl}
+                    options={reports.map((r) => ({
+                      label: r.name,
+                      value: r.id,
+                      description: r.description,
+                    }))}
+                    placeholder="Choose a report"
+                  />
+                </Box>
+                <CippAddTestReportDrawer />
                 <Button
                   variant="outlined"
                   color="error"
                   size="small"
                   sx={{ minHeight: 40 }}
-                  disabled={!selectedReport || selectedReport === "Select a report"}
+                  disabled={
+                    !selectedReport ||
+                    reports.find((r) => r.id === selectedReport)?.source === "file"
+                  }
+                  onClick={() => {
+                    const report = reports.find((r) => r.id === selectedReport);
+                    if (report && report.source !== "file") {
+                      setDeleteDialog({
+                        open: true,
+                        handleClose: () => setDeleteDialog({ open: false }),
+                        row: { ReportId: selectedReport, name: report.name },
+                      });
+                    }
+                  }}
                 >
                   Delete
                 </Button>
@@ -1800,6 +1845,23 @@ const Page = () => {
           </Grid>
         </Box>
       </Box>
+
+      {/* Delete Report Dialog */}
+      <CippApiDialog
+        createDialog={deleteDialog}
+        title="Delete Custom Report"
+        fields={[]}
+        row={reportIdValue}
+        api={{
+          url: "/api/DeleteTestReport",
+          type: "POST",
+          data: {
+            ReportId: reportIdValue.reportId?.value,
+          },
+          confirmText: "Are you sure you want to delete this report? This action cannot be undone.",
+          relatedQueryKeys: ["ListTestReports"],
+        }}
+      />
     </Container>
   );
 };

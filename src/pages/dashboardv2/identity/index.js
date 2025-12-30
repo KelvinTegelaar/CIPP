@@ -20,15 +20,19 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
 import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
 
 const Page = () => {
   const settings = useSettings();
   const { currentTenant } = settings;
+  const router = useRouter();
+  const selectedReport = router.query.reportId || "ztna";
 
   const testsApi = ApiGetCall({
     url: "/api/ListTests",
-    data: { tenantFilter: currentTenant, reportId: "d5d1e123-bce0-482d-971f-be6ed820dd92" },
-    queryKey: `${currentTenant}-ListTests-d5d1e123-bce0-482d-971f-be6ed820dd92`,
+    data: { tenantFilter: currentTenant, reportId: selectedReport },
+    queryKey: `${currentTenant}-ListTests-${selectedReport}`,
+    waiting: !!currentTenant && !!selectedReport,
   });
 
   const identityTests =
