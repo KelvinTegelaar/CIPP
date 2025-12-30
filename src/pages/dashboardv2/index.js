@@ -28,6 +28,9 @@ import {
   RadialBarChart,
   RadialBar,
   PolarAngleAxis,
+  LineChart,
+  Line,
+  CartesianGrid,
   XAxis,
   YAxis,
   ResponsiveContainer,
@@ -114,6 +117,7 @@ const Page = () => {
             DataPassed: 0,
             DataTotal: 0,
           },
+          SecureScore: testsApi.data.SecureScore || [],
           TenantInfo: {
             TenantOverview: {
               UserCount: testsApi.data.TenantCounts.Users || 0,
@@ -688,29 +692,129 @@ const Page = () => {
             {/* Left Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 3, height: "100%" }}>
-                {/* Privileged users auth methods */}
+                {/* Secure Score */}
                 <Card sx={{ flex: 1 }}>
                   <CardHeader
                     title={
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <SecurityIcon sx={{ fontSize: 24 }} />
-                        <Typography variant="h6">Privileged users auth methods</Typography>
+                        <Typography variant="h6">Secure Score</Typography>
                       </Box>
                     }
                     sx={{ pb: 1 }}
                   />
                   <CardContent>
-                    <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewAuthMethodsPrivilegedUsers?.nodes && (
-                        <AuthMethodSankey
-                          data={reportData.TenantInfo.OverviewAuthMethodsPrivilegedUsers.nodes}
-                        />
+                    <Box sx={{ height: 250 }}>
+                      {reportData.SecureScore && reportData.SecureScore.length > 0 ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart
+                            data={reportData.SecureScore.sort(
+                              (a, b) => new Date(a.createdDateTime) - new Date(b.createdDateTime)
+                            ).map((score) => ({
+                              date: new Date(score.createdDateTime).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              }),
+                              score: score.currentScore,
+                              percentage: Math.round((score.currentScore / score.maxScore) * 100),
+                            }))}
+                            margin={{ left: 12, right: 12, top: 10, bottom: 10 }}
+                          >
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                            <XAxis dataKey="date" tick={{ fontSize: 12 }} tickMargin={8} />
+                            <YAxis
+                              tick={{ fontSize: 12 }}
+                              tickMargin={8}
+                              domain={[0, "dataMax + 20"]}
+                            />
+                            <RechartsTooltip
+                              contentStyle={{
+                                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                              }}
+                              formatter={(value, name) => {
+                                if (name === "score") return [value.toFixed(2), "Score"];
+                                if (name === "percentage") return [value + "%", "Percentage"];
+                                return value;
+                              }}
+                            />
+                            <Line
+                              type="monotone"
+                              dataKey="score"
+                              stroke="#22c55e"
+                              strokeWidth={2}
+                              dot={{ fill: "#22c55e", r: 4 }}
+                              activeDot={{ r: 6 }}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <Typography variant="body2" color="text.secondary">
+                            No secure score data available
+                          </Typography>
+                        </Box>
                       )}
                     </Box>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                      {reportData.TenantInfo.OverviewAuthMethodsPrivilegedUsers?.description ||
-                        "No description available"}
+                      The Secure Score measures your security posture across your tenant.
                     </Typography>
+                  </CardContent>
+                  <Divider />
+                  <CardContent sx={{ pt: 2 }}>
+                    {reportData.SecureScore && reportData.SecureScore.length > 0 ? (
+                      <Box sx={{ display: "flex", gap: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Latest %
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold">
+                            {Math.round(
+                              (reportData.SecureScore[reportData.SecureScore.length - 1]
+                                .currentScore /
+                                reportData.SecureScore[reportData.SecureScore.length - 1]
+                                  .maxScore) *
+                                100
+                            )}
+                            %
+                          </Typography>
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Current Score
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold">
+                            {reportData.SecureScore[
+                              reportData.SecureScore.length - 1
+                            ].currentScore.toFixed(2)}
+                          </Typography>
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Max Score
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold">
+                            {reportData.SecureScore[
+                              reportData.SecureScore.length - 1
+                            ].maxScore.toFixed(2)}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        Enable secure score monitoring in your tenant
+                      </Typography>
+                    )}
                   </CardContent>
                 </Card>
 
