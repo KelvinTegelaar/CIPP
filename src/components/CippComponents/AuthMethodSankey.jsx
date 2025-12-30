@@ -14,16 +14,20 @@ export const AuthMethodSankey = ({ data }) => {
             nodeColor: "hsl(0, 100%, 50%)",
           },
           {
+            id: "Multi factor",
+            nodeColor: "hsl(200, 70%, 50%)",
+          },
+          {
             id: "Phishable",
-            nodeColor: "hsl(12, 76%, 61%)",
+            nodeColor: "hsl(39, 100%, 50%)",
           },
           {
             id: "Phone",
-            nodeColor: "hsl(12, 76%, 61%)",
+            nodeColor: "hsl(39, 100%, 45%)",
           },
           {
             id: "Authenticator",
-            nodeColor: "hsl(12, 76%, 61%)",
+            nodeColor: "hsl(39, 100%, 55%)",
           },
           {
             id: "Phish resistant",
@@ -31,11 +35,11 @@ export const AuthMethodSankey = ({ data }) => {
           },
           {
             id: "Passkey",
-            nodeColor: "hsl(99, 70%, 50%)",
+            nodeColor: "hsl(140, 70%, 50%)",
           },
           {
             id: "WHfB",
-            nodeColor: "hsl(99, 70%, 50%)",
+            nodeColor: "hsl(160, 70%, 50%)",
           },
         ],
         links: data,

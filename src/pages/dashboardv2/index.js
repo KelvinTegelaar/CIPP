@@ -64,6 +64,211 @@ import {
   Work as BriefcaseIcon,
 } from "@mui/icons-material";
 
+// Helper function to process MFAState data into Sankey chart format
+const processMFAStateData = (mfaState) => {
+  if (!mfaState || !Array.isArray(mfaState) || mfaState.length === 0) {
+    return null;
+  }
+
+  // Count enabled users only
+  const enabledUsers = mfaState.filter((user) => user.AccountEnabled === true);
+
+  if (enabledUsers.length === 0) {
+    return null;
+  }
+
+  // Split by MFA registration status
+  let registeredUsers = 0;
+  let notRegisteredUsers = 0;
+
+  // For registered users, split by protection method
+  let registeredCA = 0;
+  let registeredSD = 0;
+  let registeredPerUser = 0;
+  let registeredNone = 0;
+
+  // For not registered users, split by protection method
+  let notRegisteredCA = 0;
+  let notRegisteredSD = 0;
+  let notRegisteredPerUser = 0;
+  let notRegisteredNone = 0;
+
+  enabledUsers.forEach((user) => {
+    const hasRegistered = user.MFARegistration === true;
+    const coveredByCA = user.CoveredByCA?.startsWith("Enforced") || false;
+    const coveredBySD = user.CoveredBySD === true;
+    const perUserEnabled = user.PerUser === "enforced" || user.PerUser === "enabled";
+
+    // Consider PerUser as MFA enabled/registered
+    if (hasRegistered || perUserEnabled) {
+      registeredUsers++;
+      // Per-User gets its own separate terminal path
+      if (perUserEnabled) {
+        registeredPerUser++;
+      } else if (coveredByCA) {
+        registeredCA++;
+      } else if (coveredBySD) {
+        registeredSD++;
+      } else {
+        registeredNone++;
+      }
+    } else {
+      notRegisteredUsers++;
+      if (coveredByCA) {
+        notRegisteredCA++;
+      } else if (coveredBySD) {
+        notRegisteredSD++;
+      } else {
+        notRegisteredNone++;
+      }
+    }
+  });
+
+  const registeredPercentage = ((registeredUsers / enabledUsers.length) * 100).toFixed(1);
+  const protectedPercentage = (
+    ((registeredCA + registeredSD + registeredPerUser) / enabledUsers.length) *
+    100
+  ).toFixed(1);
+
+  const nodes = [
+    { source: "Enabled users", target: "MFA registered", value: registeredUsers },
+    { source: "Enabled users", target: "Not registered", value: notRegisteredUsers },
+  ];
+
+  // Add protection methods for registered users
+  if (registeredCA > 0)
+    nodes.push({ source: "MFA registered", target: "CA policy", value: registeredCA });
+  if (registeredSD > 0)
+    nodes.push({ source: "MFA registered", target: "Security defaults", value: registeredSD });
+  if (registeredPerUser > 0)
+    nodes.push({ source: "MFA registered", target: "Per-user MFA", value: registeredPerUser });
+  if (registeredNone > 0)
+    nodes.push({ source: "MFA registered", target: "No enforcement", value: registeredNone });
+
+  // Add protection methods for not registered users
+  if (notRegisteredCA > 0)
+    nodes.push({ source: "Not registered", target: "CA policy", value: notRegisteredCA });
+  if (notRegisteredSD > 0)
+    nodes.push({ source: "Not registered", target: "Security defaults", value: notRegisteredSD });
+  if (notRegisteredPerUser > 0)
+    nodes.push({ source: "Not registered", target: "Per-user MFA", value: notRegisteredPerUser });
+  if (notRegisteredNone > 0)
+    nodes.push({ source: "Not registered", target: "No enforcement", value: notRegisteredNone });
+
+  return {
+    description: `${registeredPercentage}% of enabled users have registered MFA methods. ${protectedPercentage}% are protected by policies requiring MFA.`,
+    nodes: nodes,
+  };
+};
+
+// Helper function to process MFAState data into Auth Methods Sankey chart format
+const processAuthMethodsData = (mfaState) => {
+  if (!mfaState || !Array.isArray(mfaState) || mfaState.length === 0) {
+    return null;
+  }
+
+  // Count enabled users only
+  const enabledUsers = mfaState.filter((user) => user.AccountEnabled === true);
+
+  if (enabledUsers.length === 0) {
+    return null;
+  }
+
+  // Categorize MFA methods as phishable or phish-resistant
+  const phishableMethods = ["mobilePhone", "email", "microsoftAuthenticatorPush"];
+  const phishResistantMethods = ["fido2", "windowsHelloForBusiness", "x509Certificate"];
+
+  let singleFactor = 0;
+  let phishableCount = 0;
+  let phishResistantCount = 0;
+  let perUserMFA = 0;
+
+  // Breakdown of phishable methods
+  let phoneCount = 0;
+  let authenticatorCount = 0;
+
+  // Breakdown of phish-resistant methods
+  let passkeyCount = 0;
+  let whfbCount = 0;
+
+  enabledUsers.forEach((user) => {
+    const methods = user.MFAMethods || [];
+    const perUser = user.PerUser === "enforced" || user.PerUser === "enabled";
+    const hasRegistered = user.MFARegistration === true;
+
+    // If user has per-user MFA enforced but no specific methods, count as generic MFA
+    if (perUser && !hasRegistered && methods.length === 0) {
+      perUserMFA++;
+      return;
+    }
+
+    // Check if user has any MFA methods
+    if (!hasRegistered || methods.length === 0) {
+      singleFactor++;
+      return;
+    }
+
+    // Categorize by method type
+    const hasPhishResistant = methods.some((m) => phishResistantMethods.includes(m));
+    const hasPhishable = methods.some((m) => phishableMethods.includes(m));
+
+    if (hasPhishResistant) {
+      phishResistantCount++;
+      // Count specific phish-resistant methods
+      if (methods.includes("fido2") || methods.includes("x509Certificate")) {
+        passkeyCount++;
+      }
+      if (methods.includes("windowsHelloForBusiness")) {
+        whfbCount++;
+      }
+    } else if (hasPhishable) {
+      phishableCount++;
+      // Count specific phishable methods
+      if (methods.includes("mobilePhone") || methods.includes("email")) {
+        phoneCount++;
+      }
+      if (
+        methods.includes("microsoftAuthenticatorPush") ||
+        methods.includes("softwareOneTimePasscode")
+      ) {
+        authenticatorCount++;
+      }
+    } else {
+      // Has MFA methods but not in our categorized lists
+      phishableCount++;
+      authenticatorCount++;
+    }
+  });
+
+  const mfaPercentage = (
+    ((phishableCount + phishResistantCount + perUserMFA) / enabledUsers.length) *
+    100
+  ).toFixed(1);
+  const phishResistantPercentage = ((phishResistantCount / enabledUsers.length) * 100).toFixed(1);
+
+  const nodes = [
+    { source: "Users", target: "Single factor", value: singleFactor },
+    { source: "Users", target: "Multi factor", value: perUserMFA },
+    { source: "Users", target: "Phishable", value: phishableCount },
+    { source: "Users", target: "Phish resistant", value: phishResistantCount },
+  ];
+
+  // Add phishable method breakdowns
+  if (phoneCount > 0) nodes.push({ source: "Phishable", target: "Phone", value: phoneCount });
+  if (authenticatorCount > 0)
+    nodes.push({ source: "Phishable", target: "Authenticator", value: authenticatorCount });
+
+  // Add phish-resistant method breakdowns
+  if (passkeyCount > 0)
+    nodes.push({ source: "Phish resistant", target: "Passkey", value: passkeyCount });
+  if (whfbCount > 0) nodes.push({ source: "Phish resistant", target: "WHfB", value: whfbCount });
+
+  return {
+    description: `${mfaPercentage}% of enabled users have MFA configured. ${phishResistantPercentage}% use phish-resistant authentication methods.`,
+    nodes: nodes,
+  };
+};
+
 const Page = () => {
   const settings = useSettings();
   const { currentTenant } = settings;
@@ -127,11 +332,11 @@ const Page = () => {
               DeviceCount: testsApi.data.TenantCounts.Devices || 0,
               ManagedDeviceCount: testsApi.data.TenantCounts.ManagedDevices || 0,
             },
-            OverviewCaMfaAllUsers: dashboardDemoData.TenantInfo.OverviewCaMfaAllUsers,
+            OverviewCaMfaAllUsers: processMFAStateData(testsApi.data.MFAState),
             OverviewCaDevicesAllUsers: dashboardDemoData.TenantInfo.OverviewCaDevicesAllUsers,
             OverviewAuthMethodsPrivilegedUsers:
               dashboardDemoData.TenantInfo.OverviewAuthMethodsPrivilegedUsers,
-            OverviewAuthMethodsAllUsers: dashboardDemoData.TenantInfo.OverviewAuthMethodsAllUsers,
+            OverviewAuthMethodsAllUsers: processAuthMethodsData(testsApi.data.MFAState),
             DeviceOverview: dashboardDemoData.TenantInfo.DeviceOverview,
           },
         }
@@ -269,11 +474,13 @@ const Page = () => {
                     <Typography variant="caption" color="text.secondary">
                       Name
                     </Typography>
-                    <Typography variant="body1" fontWeight={500}>
-                      {organization.isFetching
-                        ? "Loading..."
-                        : organization.data?.displayName || "Not Available"}
-                    </Typography>
+                    {organization.isFetching ? (
+                      <Skeleton width={150} height={24} />
+                    ) : (
+                      <Typography variant="body1" fontWeight={500}>
+                        {organization.data?.displayName || "Not Available"}
+                      </Typography>
+                    )}
                   </Box>
                   <Box>
                     <Typography variant="caption" color="text.secondary">
@@ -281,9 +488,7 @@ const Page = () => {
                     </Typography>
                     <Box sx={{ mt: 0.5 }}>
                       {organization.isFetching ? (
-                        <Typography variant="body2" fontSize="0.75rem">
-                          Loading...
-                        </Typography>
+                        <Skeleton width={200} height={24} />
                       ) : organization.data?.id ? (
                         <CippCopyToClipBoard text={organization.data.id} type="chip" />
                       ) : (
@@ -299,9 +504,7 @@ const Page = () => {
                     </Typography>
                     <Box sx={{ mt: 0.5 }}>
                       {organization.isFetching ? (
-                        <Typography variant="body2" fontSize="0.75rem">
-                          Loading...
-                        </Typography>
+                        <Skeleton width={180} height={24} />
                       ) : organization.data?.verifiedDomains?.find((d) => d.isDefault)?.name ||
                         currentTenant ? (
                         <CippCopyToClipBoard
@@ -705,7 +908,11 @@ const Page = () => {
                   />
                   <CardContent>
                     <Box sx={{ height: 250 }}>
-                      {reportData.SecureScore && reportData.SecureScore.length > 0 ? (
+                      {testsApi.isFetching ? (
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2 }}>
+                          <Skeleton variant="rectangular" width="100%" height={200} />
+                        </Box>
+                      ) : reportData.SecureScore && reportData.SecureScore.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart
                             data={reportData.SecureScore.sort(
@@ -770,7 +977,21 @@ const Page = () => {
                   </CardContent>
                   <Divider />
                   <CardContent sx={{ pt: 2 }}>
-                    {reportData.SecureScore && reportData.SecureScore.length > 0 ? (
+                    {testsApi.isFetching ? (
+                      <Box sx={{ display: "flex", gap: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Skeleton width={80} height={60} />
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Skeleton width={80} height={60} />
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Skeleton width={80} height={60} />
+                        </Box>
+                      </Box>
+                    ) : reportData.SecureScore && reportData.SecureScore.length > 0 ? (
                       <Box sx={{ display: "flex", gap: 2 }}>
                         <Box sx={{ flex: 1 }}>
                           <Typography variant="caption" color="text.secondary">
@@ -831,10 +1052,25 @@ const Page = () => {
                   />
                   <CardContent>
                     <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewAuthMethodsAllUsers?.nodes && (
+                      {testsApi.isFetching ? (
+                        <Skeleton variant="rectangular" width="100%" height={300} />
+                      ) : reportData.TenantInfo.OverviewAuthMethodsAllUsers?.nodes ? (
                         <AuthMethodSankey
                           data={reportData.TenantInfo.OverviewAuthMethodsAllUsers.nodes}
                         />
+                      ) : (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <Typography variant="body2" color="text.secondary">
+                            No authentication method data available
+                          </Typography>
+                        </Box>
                       )}
                     </Box>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
@@ -862,8 +1098,23 @@ const Page = () => {
                   />
                   <CardContent>
                     <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewCaMfaAllUsers?.nodes && (
+                      {testsApi.isFetching ? (
+                        <Skeleton variant="rectangular" width="100%" height={300} />
+                      ) : reportData.TenantInfo.OverviewCaMfaAllUsers?.nodes ? (
                         <CaSankey data={reportData.TenantInfo.OverviewCaMfaAllUsers.nodes} />
+                      ) : (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <Typography variant="body2" color="text.secondary">
+                            No MFA data available
+                          </Typography>
+                        </Box>
                       )}
                     </Box>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
@@ -886,10 +1137,25 @@ const Page = () => {
                   />
                   <CardContent>
                     <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewCaDevicesAllUsers?.nodes && (
+                      {testsApi.isFetching ? (
+                        <Skeleton variant="rectangular" width="100%" height={300} />
+                      ) : reportData.TenantInfo.OverviewCaDevicesAllUsers?.nodes ? (
                         <CaDeviceSankey
                           data={reportData.TenantInfo.OverviewCaDevicesAllUsers.nodes}
                         />
+                      ) : (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                          }}
+                        >
+                          <Typography variant="body2" color="text.secondary">
+                            No device sign-in data available
+                          </Typography>
+                        </Box>
                       )}
                     </Box>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
@@ -919,96 +1185,116 @@ const Page = () => {
                   sx={{ pb: 1 }}
                 />
                 <CardContent sx={{ height: 250, pb: 2 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      layout="vertical"
-                      data={[
-                        {
-                          name: "Windows",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.windowsCount,
-                          fill: "#3b82f6",
-                        },
-                        {
-                          name: "macOS",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.macOSCount,
-                          fill: "#22c55e",
-                        },
-                        {
-                          name: "iOS",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.iosCount,
-                          fill: "#f59e0b",
-                        },
-                        {
-                          name: "Android",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.androidCount,
-                          fill: "#8b5cf6",
-                        },
-                        {
-                          name: "Linux",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.linuxCount,
-                          fill: "#ef4444",
-                        },
-                      ]}
-                      margin={{ left: 12, right: 0, top: 0, bottom: 10 }}
-                      barSize={32}
-                      barGap={2}
-                    >
-                      <XAxis type="number" hide />
-                      <YAxis type="category" dataKey="name" width={80} tickMargin={4} />
-                      <RechartsTooltip />
-                      <Bar dataKey="value" radius={5}>
-                        <LabelList
-                          position="insideLeft"
-                          dataKey="value"
-                          fill="white"
-                          offset={8}
-                          fontSize={12}
-                        />
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+                  {testsApi.isFetching ? (
+                    <Skeleton variant="rectangular" width="100%" height={250} />
+                  ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        layout="vertical"
+                        data={[
+                          {
+                            name: "Windows",
+                            value:
+                              reportData.TenantInfo.DeviceOverview?.ManagedDevices
+                                ?.deviceOperatingSystemSummary?.windowsCount || 0,
+                            fill: "#3b82f6",
+                          },
+                          {
+                            name: "macOS",
+                            value:
+                              reportData.TenantInfo.DeviceOverview?.ManagedDevices
+                                ?.deviceOperatingSystemSummary?.macOSCount || 0,
+                            fill: "#22c55e",
+                          },
+                          {
+                            name: "iOS",
+                            value:
+                              reportData.TenantInfo.DeviceOverview?.ManagedDevices
+                                ?.deviceOperatingSystemSummary?.iosCount || 0,
+                            fill: "#f59e0b",
+                          },
+                          {
+                            name: "Android",
+                            value:
+                              reportData.TenantInfo.DeviceOverview?.ManagedDevices
+                                ?.deviceOperatingSystemSummary?.androidCount || 0,
+                            fill: "#8b5cf6",
+                          },
+                          {
+                            name: "Linux",
+                            value:
+                              reportData.TenantInfo.DeviceOverview?.ManagedDevices
+                                ?.deviceOperatingSystemSummary?.linuxCount || 0,
+                            fill: "#ef4444",
+                          },
+                        ]}
+                        margin={{ left: 12, right: 0, top: 0, bottom: 10 }}
+                        barSize={32}
+                        barGap={2}
+                      >
+                        <XAxis type="number" hide />
+                        <YAxis type="category" dataKey="name" width={80} tickMargin={4} />
+                        <RechartsTooltip />
+                        <Bar dataKey="value" radius={5}>
+                          <LabelList
+                            position="insideLeft"
+                            dataKey="value"
+                            fill="white"
+                            offset={8}
+                            fontSize={12}
+                          />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
                 <Divider />
                 <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Desktops
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          ((reportData.TenantInfo.DeviceOverview.ManagedDevices.desktopCount || 0) /
-                            (reportData.TenantInfo.DeviceOverview.ManagedDevices.totalCount || 1)) *
-                            100
-                        )}
-                        %
-                      </Typography>
+                  {testsApi.isFetching ? (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
                     </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Mobiles
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          ((reportData.TenantInfo.DeviceOverview.ManagedDevices.mobileCount || 0) /
-                            (reportData.TenantInfo.DeviceOverview.ManagedDevices.totalCount || 1)) *
-                            100
-                        )}
-                        %
-                      </Typography>
+                  ) : (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Desktops
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {Math.round(
+                            ((reportData.TenantInfo.DeviceOverview?.ManagedDevices?.desktopCount ||
+                              0) /
+                              (reportData.TenantInfo.DeviceOverview?.ManagedDevices?.totalCount ||
+                                1)) *
+                              100
+                          )}
+                          %
+                        </Typography>
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Mobiles
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {Math.round(
+                            ((reportData.TenantInfo.DeviceOverview?.ManagedDevices?.mobileCount ||
+                              0) /
+                              (reportData.TenantInfo.DeviceOverview?.ManagedDevices?.totalCount ||
+                                1)) *
+                              100
+                          )}
+                          %
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
@@ -1026,86 +1312,104 @@ const Page = () => {
                   sx={{ pb: 1 }}
                 />
                 <CardContent sx={{ height: 250, pb: 2 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          {
-                            name: "Compliant",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .compliantDeviceCount,
-                            fill: "hsl(142, 76%, 36%)",
-                          },
-                          {
-                            name: "Non-compliant",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .nonCompliantDeviceCount,
-                            fill: "hsl(0, 84%, 60%)",
-                          },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={100}
-                        paddingAngle={2}
-                        dataKey="value"
-                        cornerRadius={5}
-                      />
-                      <RechartsTooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {testsApi.isFetching ? (
+                    <Skeleton variant="rectangular" width="100%" height={250} />
+                  ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            {
+                              name: "Compliant",
+                              value:
+                                reportData.TenantInfo.DeviceOverview?.DeviceCompliance
+                                  ?.compliantDeviceCount || 0,
+                              fill: "hsl(142, 76%, 36%)",
+                            },
+                            {
+                              name: "Non-compliant",
+                              value:
+                                reportData.TenantInfo.DeviceOverview?.DeviceCompliance
+                                  ?.nonCompliantDeviceCount || 0,
+                              fill: "hsl(0, 84%, 60%)",
+                            },
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={100}
+                          paddingAngle={2}
+                          dataKey="value"
+                          cornerRadius={5}
+                        />
+                        <RechartsTooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
                 <Divider />
                 <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#22C55E" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Compliant
+                  {testsApi.isFetching ? (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
+                          <Box
+                            sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#22C55E" }}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            Compliant
+                          </Typography>
+                        </Box>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const compliant =
+                              reportData.TenantInfo.DeviceOverview?.DeviceCompliance
+                                ?.compliantDeviceCount || 0;
+                            const nonCompliant =
+                              reportData.TenantInfo.DeviceOverview?.DeviceCompliance
+                                ?.nonCompliantDeviceCount || 0;
+                            const total = compliant + nonCompliant;
+                            return total > 0 ? Math.round((compliant / total) * 100) : 0;
+                          })()}
+                          %
                         </Typography>
                       </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                            .compliantDeviceCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                              .compliantDeviceCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .nonCompliantDeviceCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#EF4444" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Non-compliant
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
+                          <Box
+                            sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#EF4444" }}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            Non-compliant
+                          </Typography>
+                        </Box>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const compliant =
+                              reportData.TenantInfo.DeviceOverview?.DeviceCompliance
+                                ?.compliantDeviceCount || 0;
+                            const nonCompliant =
+                              reportData.TenantInfo.DeviceOverview?.DeviceCompliance
+                                ?.nonCompliantDeviceCount || 0;
+                            const total = compliant + nonCompliant;
+                            return total > 0 ? Math.round((nonCompliant / total) * 100) : 0;
+                          })()}
+                          %
                         </Typography>
                       </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                            .nonCompliantDeviceCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                              .compliantDeviceCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .nonCompliantDeviceCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
                     </Box>
-                  </Box>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
@@ -1123,78 +1427,104 @@ const Page = () => {
                   sx={{ pb: 1 }}
                 />
                 <CardContent sx={{ height: 250, pb: 2 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          {
-                            name: "Corporate",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount,
-                            fill: "hsl(217, 91%, 60%)",
-                          },
-                          {
-                            name: "Personal",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount,
-                            fill: "hsl(280, 85%, 60%)",
-                          },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={100}
-                        paddingAngle={2}
-                        dataKey="value"
-                        cornerRadius={5}
-                      />
-                      <RechartsTooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {testsApi.isFetching ? (
+                    <Skeleton variant="rectangular" width="100%" height={250} />
+                  ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            {
+                              name: "Corporate",
+                              value:
+                                reportData.TenantInfo.DeviceOverview?.DeviceOwnership
+                                  ?.corporateCount || 0,
+                              fill: "hsl(217, 91%, 60%)",
+                            },
+                            {
+                              name: "Personal",
+                              value:
+                                reportData.TenantInfo.DeviceOverview?.DeviceOwnership
+                                  ?.personalCount || 0,
+                              fill: "hsl(280, 85%, 60%)",
+                            },
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={100}
+                          paddingAngle={2}
+                          dataKey="value"
+                          cornerRadius={5}
+                        />
+                        <RechartsTooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
                 <Divider />
                 <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#3B82F6" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Corporate
+                  {testsApi.isFetching ? (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
+                          <Box
+                            sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#3B82F6" }}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            Corporate
+                          </Typography>
+                        </Box>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const corporate =
+                              reportData.TenantInfo.DeviceOverview?.DeviceOwnership
+                                ?.corporateCount || 0;
+                            const personal =
+                              reportData.TenantInfo.DeviceOverview?.DeviceOwnership
+                                ?.personalCount || 0;
+                            const total = corporate + personal;
+                            return total > 0 ? Math.round((corporate / total) * 100) : 0;
+                          })()}
+                          %
                         </Typography>
                       </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#A855F7" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Personal
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
+                          <Box
+                            sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#A855F7" }}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            Personal
+                          </Typography>
+                        </Box>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const corporate =
+                              reportData.TenantInfo.DeviceOverview?.DeviceOwnership
+                                ?.corporateCount || 0;
+                            const personal =
+                              reportData.TenantInfo.DeviceOverview?.DeviceOwnership
+                                ?.personalCount || 0;
+                            const total = corporate + personal;
+                            return total > 0 ? Math.round((personal / total) * 100) : 0;
+                          })()}
+                          %
                         </Typography>
                       </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
                     </Box>
-                  </Box>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
@@ -1213,10 +1543,25 @@ const Page = () => {
                 />
                 <CardContent>
                   <Box sx={{ height: 350 }}>
-                    {reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes && (
+                    {testsApi.isFetching ? (
+                      <Skeleton variant="rectangular" width="100%" height={350} />
+                    ) : reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ? (
                       <DesktopDevicesSankey
                         data={reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary.nodes}
                       />
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "100%",
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          No desktop device data available
+                        </Typography>
+                      </Box>
                     )}
                   </Box>
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
@@ -1226,82 +1571,101 @@ const Page = () => {
                 </CardContent>
                 <Divider />
                 <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Entra joined
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes || [];
-                          const entraJoined =
-                            nodes.find((n) => n.target === "Entra joined")?.value || 0;
-                          const windowsDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "Windows"
-                            )?.value || 0;
-                          const macOSDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "macOS"
-                            )?.value || 0;
-                          const total = windowsDevices + macOSDevices;
-                          return Math.round((entraJoined / (total || 1)) * 100);
-                        })()}
-                        %
-                      </Typography>
+                  {testsApi.isFetching ? (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
                     </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Entra hybrid joined
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes || [];
-                          const entraHybrid =
-                            nodes.find((n) => n.target === "Entra hybrid joined")?.value || 0;
-                          const windowsDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "Windows"
-                            )?.value || 0;
-                          const macOSDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "macOS"
-                            )?.value || 0;
-                          const total = windowsDevices + macOSDevices;
-                          return Math.round((entraHybrid / (total || 1)) * 100);
-                        })()}
-                        %
-                      </Typography>
+                  ) : (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Entra joined
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const nodes =
+                              reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ||
+                              [];
+                            const entraJoined =
+                              nodes.find((n) => n.target === "Entra joined")?.value || 0;
+                            const windowsDevices =
+                              nodes.find(
+                                (n) => n.source === "Desktop devices" && n.target === "Windows"
+                              )?.value || 0;
+                            const macOSDevices =
+                              nodes.find(
+                                (n) => n.source === "Desktop devices" && n.target === "macOS"
+                              )?.value || 0;
+                            const total = windowsDevices + macOSDevices;
+                            return Math.round((entraJoined / (total || 1)) * 100);
+                          })()}
+                          %
+                        </Typography>
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Entra hybrid joined
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const nodes =
+                              reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ||
+                              [];
+                            const entraHybrid =
+                              nodes.find((n) => n.target === "Entra hybrid joined")?.value || 0;
+                            const windowsDevices =
+                              nodes.find(
+                                (n) => n.source === "Desktop devices" && n.target === "Windows"
+                              )?.value || 0;
+                            const macOSDevices =
+                              nodes.find(
+                                (n) => n.source === "Desktop devices" && n.target === "macOS"
+                              )?.value || 0;
+                            const total = windowsDevices + macOSDevices;
+                            return Math.round((entraHybrid / (total || 1)) * 100);
+                          })()}
+                          %
+                        </Typography>
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Entra registered
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const nodes =
+                              reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ||
+                              [];
+                            const entraRegistered =
+                              nodes.find((n) => n.target === "Entra registered")?.value || 0;
+                            const windowsDevices =
+                              nodes.find(
+                                (n) => n.source === "Desktop devices" && n.target === "Windows"
+                              )?.value || 0;
+                            const macOSDevices =
+                              nodes.find(
+                                (n) => n.source === "Desktop devices" && n.target === "macOS"
+                              )?.value || 0;
+                            const total = windowsDevices + macOSDevices;
+                            return Math.round((entraRegistered / (total || 1)) * 100);
+                          })()}
+                          %
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Entra registered
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes || [];
-                          const entraRegistered =
-                            nodes.find((n) => n.target === "Entra registered")?.value || 0;
-                          const windowsDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "Windows"
-                            )?.value || 0;
-                          const macOSDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "macOS"
-                            )?.value || 0;
-                          const total = windowsDevices + macOSDevices;
-                          return Math.round((entraRegistered / (total || 1)) * 100);
-                        })()}
-                        %
-                      </Typography>
-                    </Box>
-                  </Box>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
@@ -1320,10 +1684,25 @@ const Page = () => {
                 />
                 <CardContent>
                   <Box sx={{ height: 350 }}>
-                    {reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes && (
+                    {testsApi.isFetching ? (
+                      <Skeleton variant="rectangular" width="100%" height={350} />
+                    ) : reportData.TenantInfo.DeviceOverview?.MobileSummary?.nodes ? (
                       <MobileSankey
                         data={reportData.TenantInfo.DeviceOverview.MobileSummary.nodes}
                       />
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "100%",
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          No mobile device data available
+                        </Typography>
+                      </Box>
                     )}
                   </Box>
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
@@ -1333,72 +1712,88 @@ const Page = () => {
                 </CardContent>
                 <Divider />
                 <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Android compliant
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes || [];
-                          const androidCompliant = nodes
-                            .filter(
-                              (n) => n.source?.includes("Android") && n.target === "Compliant"
-                            )
-                            .reduce((sum, n) => sum + (n.value || 0), 0);
-                          const androidTotal =
-                            nodes.find(
-                              (n) => n.source === "Mobile devices" && n.target === "Android"
-                            )?.value || 0;
-                          return androidTotal > 0
-                            ? Math.round((androidCompliant / androidTotal) * 100)
-                            : 0;
-                        })()}
-                        %
-                      </Typography>
+                  {testsApi.isFetching ? (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton width={60} height={50} />
+                      </Box>
                     </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        iOS compliant
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes || [];
-                          const iosCompliant = nodes
-                            .filter((n) => n.source?.includes("iOS") && n.target === "Compliant")
-                            .reduce((sum, n) => sum + (n.value || 0), 0);
-                          const iosTotal =
-                            nodes.find((n) => n.source === "Mobile devices" && n.target === "iOS")
-                              ?.value || 0;
-                          return iosTotal > 0 ? Math.round((iosCompliant / iosTotal) * 100) : 0;
-                        })()}
-                        %
-                      </Typography>
+                  ) : (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Android compliant
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const nodes =
+                              reportData.TenantInfo.DeviceOverview?.MobileSummary?.nodes || [];
+                            const androidCompliant = nodes
+                              .filter(
+                                (n) => n.source?.includes("Android") && n.target === "Compliant"
+                              )
+                              .reduce((sum, n) => sum + (n.value || 0), 0);
+                            const androidTotal =
+                              nodes.find(
+                                (n) => n.source === "Mobile devices" && n.target === "Android"
+                              )?.value || 0;
+                            return androidTotal > 0
+                              ? Math.round((androidCompliant / androidTotal) * 100)
+                              : 0;
+                          })()}
+                          %
+                        </Typography>
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          iOS compliant
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const nodes =
+                              reportData.TenantInfo.DeviceOverview?.MobileSummary?.nodes || [];
+                            const iosCompliant = nodes
+                              .filter((n) => n.source?.includes("iOS") && n.target === "Compliant")
+                              .reduce((sum, n) => sum + (n.value || 0), 0);
+                            const iosTotal =
+                              nodes.find((n) => n.source === "Mobile devices" && n.target === "iOS")
+                                ?.value || 0;
+                            return iosTotal > 0 ? Math.round((iosCompliant / iosTotal) * 100) : 0;
+                          })()}
+                          %
+                        </Typography>
+                      </Box>
+                      <Divider orientation="vertical" flexItem />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Total devices
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
+                          {(() => {
+                            const nodes =
+                              reportData.TenantInfo.DeviceOverview?.MobileSummary?.nodes || [];
+                            const androidTotal =
+                              nodes.find(
+                                (n) => n.source === "Mobile devices" && n.target === "Android"
+                              )?.value || 0;
+                            const iosTotal =
+                              nodes.find((n) => n.source === "Mobile devices" && n.target === "iOS")
+                                ?.value || 0;
+                            return androidTotal + iosTotal;
+                          })()}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Total devices
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes || [];
-                          const androidTotal =
-                            nodes.find(
-                              (n) => n.source === "Mobile devices" && n.target === "Android"
-                            )?.value || 0;
-                          const iosTotal =
-                            nodes.find((n) => n.source === "Mobile devices" && n.target === "iOS")
-                              ?.value || 0;
-                          return androidTotal + iosTotal;
-                        })()}
-                      </Typography>
-                    </Box>
-                  </Box>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
