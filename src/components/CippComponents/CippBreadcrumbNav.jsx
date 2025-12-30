@@ -16,7 +16,7 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/super-admin",
-    "/tenant/standards",
+    "/tenant/standards/list-standards",
     "/tenant/manage",
     "/tenant/administration/applications",
     "/tenant/administration/tenants",
@@ -61,27 +61,6 @@ export const CippBreadcrumbNav = () => {
   const lastRouteRef = useRef(null);
   const titleCheckCountRef = useRef(0);
   const titleCheckIntervalRef = useRef(null);
-
-  // Helper function to filter out unnecessary query parameters
-  const getCleanQueryParams = (query) => {
-    const cleaned = { ...query };
-    // Remove tenantFilter if it's "AllTenants" or not explicitly needed
-    if (cleaned.tenantFilter === "AllTenants" || cleaned.tenantFilter === undefined) {
-      delete cleaned.tenantFilter;
-    }
-    return cleaned;
-  };
-
-  // Helper function to clean page titles
-  const cleanPageTitle = (title) => {
-    if (!title) return title;
-    // Remove AllTenants and any surrounding separators
-    return title
-      .replace(/\s*-\s*AllTenants\s*/, "")
-      .replace(/AllTenants\s*-\s*/, "")
-      .replace(/AllTenants/, "")
-      .trim();
-  };
 
   // Load tab options on mount
   useEffect(() => {
@@ -130,9 +109,6 @@ export const CippBreadcrumbNav = () => {
         pageTitle = parts.slice(0, -1).join(" - ").trim();
       }
 
-      // Clean AllTenants from title
-      pageTitle = cleanPageTitle(pageTitle);
-
       // Skip if title is empty, generic, or error page
       if (
         !pageTitle ||
@@ -179,10 +155,7 @@ export const CippBreadcrumbNav = () => {
           if (samePath && !sameTitle) {
             // Same URL but title changed - update the entry
             const updated = [...prevHistory];
-            updated[prevHistory.length - 1] = {
-              ...currentPage,
-              query: getCleanQueryParams(currentPage.query),
-            };
+            updated[prevHistory.length - 1] = currentPage;
             if (titleCheckIntervalRef.current) {
               clearInterval(titleCheckIntervalRef.current);
               titleCheckIntervalRef.current = null;
@@ -200,11 +173,7 @@ export const CippBreadcrumbNav = () => {
 
         // URL not in history (except possibly as last entry which we handled) - add as new entry
         if (existingIndex === -1) {
-          const cleanedCurrentPage = {
-            ...currentPage,
-            query: getCleanQueryParams(currentPage.query),
-          };
-          const newHistory = [...prevHistory, cleanedCurrentPage];
+          const newHistory = [...prevHistory, currentPage];
 
           // Keep only the last MAX_HISTORY_STORAGE pages
           const trimmedHistory =
@@ -223,10 +192,7 @@ export const CippBreadcrumbNav = () => {
           titleCheckIntervalRef.current = null;
         }
         const updated = prevHistory.slice(0, existingIndex + 1);
-        updated[existingIndex] = {
-          ...currentPage,
-          query: getCleanQueryParams(currentPage.query),
-        };
+        updated[existingIndex] = currentPage;
         return updated;
       });
     };
@@ -245,10 +211,9 @@ export const CippBreadcrumbNav = () => {
   const handleBreadcrumbClick = (index) => {
     const page = history[index];
     if (page) {
-      const cleanedQuery = getCleanQueryParams(page.query);
       router.push({
         pathname: page.path,
-        query: cleanedQuery,
+        query: page.query,
       });
     }
   };
@@ -282,18 +247,15 @@ export const CippBreadcrumbNav = () => {
           return;
         }
 
-        let pageTitle = document.title.replace(" - CIPP", "").trim();
+        const pageTitle = document.title.replace(" - CIPP", "").trim();
         const parts = pageTitle.split(" - ");
         const cleanTitle =
           parts.length > 1 && parts[parts.length - 1].includes(".")
             ? parts.slice(0, -1).join(" - ").trim()
             : pageTitle;
 
-        // Clean AllTenants from title
-        const finalTitle = cleanPageTitle(cleanTitle);
-
-        if (finalTitle && finalTitle !== "CIPP" && !finalTitle.toLowerCase().includes("loading")) {
-          setCurrentPageTitle(finalTitle);
+        if (cleanTitle && cleanTitle !== "CIPP" && !cleanTitle.toLowerCase().includes("loading")) {
+          setCurrentPageTitle(cleanTitle);
           // Stop checking once we have a valid title
           if (hierarchicalTitleCheckRef.current) {
             clearInterval(hierarchicalTitleCheckRef.current);
@@ -354,11 +316,11 @@ export const CippBreadcrumbNav = () => {
 
         // Check if this item matches the current path
         if (item.path && pathsMatch(item.path, currentPath)) {
-          // If this is the current page, include current query params (cleaned)
+          // If this is the current page, include current query params
           if (item.path === currentPath) {
             const lastItem = currentBreadcrumb[currentBreadcrumb.length - 1];
             if (lastItem) {
-              lastItem.query = getCleanQueryParams(router.query);
+              lastItem.query = { ...router.query };
             }
           }
           return currentBreadcrumb;
@@ -376,32 +338,6 @@ export const CippBreadcrumbNav = () => {
     };
 
     let result = findPathInMenu(nativeMenuItems);
-
-    // If we found a menu item, check if the current path matches any tab
-    // If so, tabOptions wins and we use its label
-    if (result.length > 0 && tabOptions.length > 0) {
-      const normalizedCurrentPath = currentPath.replace(/\/$/, "");
-
-      // Check if current path matches any tab (exact match)
-      const matchingTab = tabOptions.find((tab) => {
-        const normalizedTabPath = tab.path.replace(/\/$/, "");
-        return normalizedTabPath === normalizedCurrentPath;
-      });
-
-      if (matchingTab) {
-        // Tab matches the current path - use tab's label instead of config's
-        result = result.map((item, idx) => {
-          if (idx === result.length - 1) {
-            return {
-              ...item,
-              title: matchingTab.title,
-              type: "tab",
-            };
-          }
-          return item;
-        });
-      }
-    }
 
     // If not found in main menu, check if it's a tab page
     if (result.length === 0 && tabOptions.length > 0) {
@@ -459,12 +395,12 @@ export const CippBreadcrumbNav = () => {
         if (basePagePath.length > 0) {
           result = basePagePath;
 
-          // Add the tab as the final breadcrumb with current query params (cleaned)
+          // Add the tab as the final breadcrumb with current query params
           result.push({
             title: matchingTab.title,
             path: matchingTab.path,
             type: "tab",
-            query: getCleanQueryParams(router.query), // Include current query params for tab page
+            query: { ...router.query }, // Include current query params for tab page
           });
         }
       }
@@ -475,10 +411,7 @@ export const CippBreadcrumbNav = () => {
       const lastItem = result[result.length - 1];
       if (lastItem.path && lastItem.path !== currentPath && currentPath.startsWith(lastItem.path)) {
         // Use the tracked page title if available, otherwise fall back to document.title
-        let tabTitle = currentPageTitle || document.title.replace(" - CIPP", "").trim();
-
-        // Clean AllTenants from title
-        tabTitle = cleanPageTitle(tabTitle);
+        const tabTitle = currentPageTitle || document.title.replace(" - CIPP", "").trim();
 
         // Add tab as an additional breadcrumb item
         if (
@@ -490,7 +423,7 @@ export const CippBreadcrumbNav = () => {
             title: tabTitle,
             path: currentPath,
             type: "tab",
-            query: getCleanQueryParams(router.query), // Include current query params (cleaned)
+            query: { ...router.query }, // Include current query params
           });
         }
       }
@@ -499,54 +432,13 @@ export const CippBreadcrumbNav = () => {
     return result;
   };
 
-  // Check if a path is valid and return its title from navigation or tabs
-  const getPathInfo = (path) => {
-    if (!path) return { isValid: false, title: null };
-
-    const normalizedPath = path.replace(/\/$/, "");
-
-    // Helper function to recursively search menu items
-    const findInMenu = (items) => {
-      for (const item of items) {
-        if (item.path) {
-          const normalizedItemPath = item.path.replace(/\/$/, "");
-          if (normalizedItemPath === normalizedPath) {
-            return { isValid: true, title: item.title };
-          }
-        }
-        if (item.items && item.items.length > 0) {
-          const found = findInMenu(item.items);
-          if (found.isValid) {
-            return found;
-          }
-        }
-      }
-      return { isValid: false, title: null };
-    };
-
-    // Check if path exists in navigation
-    const menuResult = findInMenu(nativeMenuItems);
-    if (menuResult.isValid) {
-      return menuResult;
-    }
-
-    // Check if path exists in tab options
-    const matchingTab = tabOptions.find((tab) => tab.path.replace(/\/$/, "") === normalizedPath);
-    if (matchingTab) {
-      return { isValid: true, title: matchingTab.title };
-    }
-
-    return { isValid: false, title: null };
-  };
-
   // Handle click for hierarchical breadcrumbs
   const handleHierarchicalClick = (path, query) => {
     if (path) {
-      const cleanedQuery = getCleanQueryParams(query);
-      if (cleanedQuery && Object.keys(cleanedQuery).length > 0) {
+      if (query && Object.keys(query).length > 0) {
         router.push({
           pathname: path,
-          query: cleanedQuery,
+          query: query,
         });
       } else {
         router.push(path);
@@ -586,7 +478,7 @@ export const CippBreadcrumbNav = () => {
             title,
             path,
             type: "fallback",
-            query: index === pathSegments.length - 1 ? getCleanQueryParams(router.query) : {},
+            query: index === pathSegments.length - 1 ? { ...router.query } : {},
           };
         });
 
@@ -596,7 +488,7 @@ export const CippBreadcrumbNav = () => {
           currentPageTitle !== "CIPP" &&
           !currentPageTitle.toLowerCase().includes("loading")
         ) {
-          breadcrumbs[breadcrumbs.length - 1].title = cleanPageTitle(currentPageTitle);
+          breadcrumbs[breadcrumbs.length - 1].title = currentPageTitle;
         }
       }
     }
@@ -620,9 +512,6 @@ export const CippBreadcrumbNav = () => {
         >
           {breadcrumbs.map((crumb, index) => {
             const isLast = index === breadcrumbs.length - 1;
-            const pathInfo = getPathInfo(crumb.path);
-            // Use title from nav/tabs if available, otherwise use the crumb's title
-            const displayTitle = pathInfo.title || crumb.title;
 
             // Items without paths (headers/groups) - show as text
             if (!crumb.path) {
@@ -633,46 +522,31 @@ export const CippBreadcrumbNav = () => {
                   variant="subtitle2"
                   sx={{ fontWeight: isLast ? 500 : 400 }}
                 >
-                  {displayTitle}
+                  {crumb.title}
                 </Typography>
               );
             }
 
-            // Items with valid paths are clickable
-            // Items with invalid paths (fallback) are shown as plain text
-            if (pathInfo.isValid) {
-              return (
-                <Link
-                  key={index}
-                  component="button"
-                  variant="subtitle2"
-                  onClick={() => handleHierarchicalClick(crumb.path, crumb.query)}
-                  sx={{
-                    textDecoration: "none",
-                    color: isLast ? "text.primary" : "text.secondary",
-                    fontWeight: isLast ? 500 : 400,
-                    "&:hover": {
-                      textDecoration: "underline",
-                      color: "primary.main",
-                    },
-                  }}
-                >
-                  {displayTitle}
-                </Link>
-              );
-            } else {
-              // Invalid path - show as text only
-              return (
-                <Typography
-                  key={index}
-                  color={isLast ? "text.primary" : "text.secondary"}
-                  variant="subtitle2"
-                  sx={{ fontWeight: isLast ? 500 : 400 }}
-                >
-                  {displayTitle}
-                </Typography>
-              );
-            }
+            // All items with paths are clickable, including the last one
+            return (
+              <Link
+                key={index}
+                component="button"
+                variant="subtitle2"
+                onClick={() => handleHierarchicalClick(crumb.path, crumb.query)}
+                sx={{
+                  textDecoration: "none",
+                  color: isLast ? "text.primary" : "text.secondary",
+                  fontWeight: isLast ? 500 : 400,
+                  "&:hover": {
+                    textDecoration: "underline",
+                    color: "primary.main",
+                  },
+                }}
+              >
+                {crumb.title}
+              </Link>
+            );
           })}
         </Breadcrumbs>
       </Box>

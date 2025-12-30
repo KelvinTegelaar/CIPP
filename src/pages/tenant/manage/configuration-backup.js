@@ -1,7 +1,5 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
-import { useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
 import {
   Button,
   Box,
@@ -33,7 +31,6 @@ import { CippBackupScheduleDrawer } from "/src/components/CippComponents/CippBac
 import { CippRestoreBackupDrawer } from "/src/components/CippComponents/CippRestoreBackupDrawer";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
 import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
 import { useDialog } from "/src/hooks/use-dialog";
 import ReactTimeAgo from "react-time-ago";
 import tabOptions from "./tabOptions.json";
@@ -45,8 +42,6 @@ const Page = () => {
   const { templateId } = router.query;
   const settings = useSettings();
   const removeDialog = useDialog();
-  const tenantFilterForm = useForm({ defaultValues: { tenantFilter: null } });
-  const backupTenantFilter = useWatch({ control: tenantFilterForm.control, name: "tenantFilter" });
   // Prioritize URL query parameter, then fall back to settings
   const currentTenant = router.query.tenantFilter || settings.currentTenant;
 
@@ -84,28 +79,19 @@ const Page = () => {
     return ["Configuration"];
   };
 
-  // Filter backup data by selected tenant if in AllTenants view
-  const tenantFilteredBackupData =
-    settings.currentTenant === "AllTenants" &&
-    backupTenantFilter &&
-    backupTenantFilter !== "AllTenants"
-      ? filteredBackupData.filter((backup) => backup.TenantFilter === backupTenantFilter)
-      : filteredBackupData;
-
-  const backupDisplayItems = tenantFilteredBackupData.map((backup, index) => ({
+  const backupDisplayItems = filteredBackupData.map((backup, index) => ({
     id: backup.RowKey || index,
     name: backup.BackupName || "Unnamed Backup",
     timestamp: backup.Timestamp,
-    tenantSource: backup.TenantFilter || settings.currentTenant,
+    tenantSource: backup.BackupName?.includes("AllTenants")
+      ? "All Tenants"
+      : backup.BackupName?.replace("CIPP Backup - ", "") || settings.currentTenant,
     tags: generateBackupTags(backup),
   }));
 
   // Process existing backup configuration, find tenantFilter. by comparing settings.currentTenant with Tenant.value
   const currentConfig = Array.isArray(existingBackupConfig.data)
-    ? existingBackupConfig.data.find(
-        (tenant) =>
-          tenant.Tenant.value === settings.currentTenant || tenant.Tenant.value === "AllTenants"
-      )
+    ? existingBackupConfig.data.find((tenant) => tenant.Tenant.value === settings.currentTenant)
     : null;
   const hasExistingConfig = currentConfig && currentConfig.Parameters?.ScheduledBackupValues;
 
@@ -295,33 +281,13 @@ const Page = () => {
 
           <Grid size={{ md: 6, xs: 12 }}>
             {/* Backup History */}
-            <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-              <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                <Stack
-                  spacing={3}
-                  sx={{ height: "100%", display: "flex", flexDirection: "column" }}
-                >
-                  <Box
-                    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                  >
-                    <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <History color="primary" />
-                      Backup History
-                    </Typography>
-                    {settings.currentTenant === "AllTenants" && (
-                      <Box sx={{ minWidth: 250 }}>
-                        <CippFormTenantSelector
-                          formControl={tenantFilterForm}
-                          componentType="select"
-                          name="tenantFilter"
-                          type="single"
-                          required={false}
-                          disableClearable={false}
-                          allTenants={true}
-                        />
-                      </Box>
-                    )}
-                  </Box>
+            <Card sx={{ height: "100%" }}>
+              <CardContent>
+                <Stack spacing={3}>
+                  <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <History color="primary" />
+                    Backup History
+                  </Typography>
 
                   <Typography variant="body2" color="text.secondary">
                     {settings.currentTenant === "AllTenants"
@@ -341,7 +307,7 @@ const Page = () => {
                       <Skeleton variant="rectangular" width="100%" height={200} />
                     </Stack>
                   ) : (
-                    <Box sx={{ maxHeight: "calc(100vh - 525px)", overflowY: "auto" }}>
+                    <Box sx={{ maxHeight: "400px", overflowY: "auto" }}>
                       <Stack spacing={2}>
                         {backupDisplayItems.map((backup) => (
                           <Card key={backup.id} variant="outlined">
@@ -368,14 +334,6 @@ const Page = () => {
                                     <Typography variant="body2" color="text.secondary">
                                       <ReactTimeAgo date={backup.timestamp} />
                                     </Typography>
-                                    {settings.currentTenant === "AllTenants" && (
-                                      <Chip
-                                        label={`Tenant: ${backup.tenantSource}`}
-                                        size="small"
-                                        sx={{ mt: 1 }}
-                                        variant="outlined"
-                                      />
-                                    )}
                                   </Box>
                                   <Stack direction="row" spacing={1} sx={{ flexShrink: 0 }}>
                                     <CippRestoreBackupDrawer

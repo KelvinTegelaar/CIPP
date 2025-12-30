@@ -18,7 +18,7 @@ export const CippFormCondition = (props) => {
 
   if (
     field === undefined ||
-    (compareValue === undefined && compareType !== "hasValue") ||
+    compareValue === undefined ||
     children === undefined ||
     formControl === undefined
   ) {
@@ -148,18 +148,10 @@ export const CippFormCondition = (props) => {
           watcher.length >= compareValue
         );
       case "hasValue":
-        // Check watchedValue (the extracted value based on propertyName)
-        // For simple values (strings, numbers)
-        if (watchedValue === undefined || watchedValue === null || watchedValue === "") {
-          return false;
-        }
-        // If it's an array, check if it has elements
-        if (Array.isArray(watchedValue)) {
-          return watchedValue.length > 0;
-        }
-        console.log("watched value:", watchedValue);
-        // For any other truthy value (objects, numbers, strings), consider it as having a value
-        return true;
+        return (
+          (watcher !== undefined && watcher !== null && watcher !== "") ||
+          (watcher?.value !== undefined && watcher?.value !== null && watcher?.value !== "")
+        );
       case "labelEq":
         return Array.isArray(watcher) && watcher.some((item) => item?.label === compareValue);
       case "labelContains":

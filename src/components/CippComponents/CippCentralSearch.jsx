@@ -46,7 +46,7 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/super-admin",
-    "/tenant/standards",
+    "/tenant/standards/list-standards",
     "/tenant/manage",
     "/tenant/administration/applications",
     "/tenant/administration/tenants",

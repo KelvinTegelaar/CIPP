@@ -148,7 +148,7 @@ const Page = () => {
         dynamicRules: formattedDynamicRules,
       });
     }
-  }, [groupDetails.isSuccess, groupDetails.data, id]);
+  }, [groupDetails.isSuccess, groupDetails.data]);
 
   const customDataFormatter = (values) => {
     const formattedData = {

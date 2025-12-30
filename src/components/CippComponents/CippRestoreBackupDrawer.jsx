@@ -13,7 +13,6 @@ import { ApiPostCall } from "../../api/ApiCall";
 export const CippRestoreBackupDrawer = ({
   buttonText = "Restore Backup",
   backupName = null,
-  backupData = null,
   requiredPermissions = [],
   PermissionButton = Button,
   ...props
@@ -86,12 +85,7 @@ export const CippRestoreBackupDrawer = ({
     const values = formControl.getValues();
     const startDate = new Date();
     const unixTime = Math.floor(startDate.getTime() / 1000) - 45;
-
-    // If in AllTenants context, use the tenant from the backup data
-    let tenantFilterValue = tenantFilter;
-    if (tenantFilter === "AllTenants" && backupData?.tenantSource) {
-      tenantFilterValue = backupData.tenantSource;
-    }
+    const tenantFilterValue = tenantFilter;
 
     const shippedValues = {
       TenantFilter: tenantFilterValue,
@@ -208,12 +202,7 @@ export const CippRestoreBackupDrawer = ({
                   queryKey: `BackupList-${tenantFilter}-autocomplete`,
                   labelField: (option) => {
                     const match = option.BackupName.match(/.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/);
-                    const dateTime = match
-                      ? `${match[1]} @ ${match[2]}:${match[3]}`
-                      : option.BackupName;
-                    const tenantDisplay =
-                      tenantFilter === "AllTenants" ? ` (${option.TenantFilter})` : "";
-                    return `${dateTime}${tenantDisplay}`;
+                    return match ? `${match[1]} @ ${match[2]}:${match[3]}` : option.BackupName;
                   },
                   valueField: "BackupName",
                   data: {

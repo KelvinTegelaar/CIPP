@@ -178,7 +178,10 @@ const Page = () => {
         GUID: "id",
         Action: "resetPasscode",
       },
-      condition: (row) => row.operatingSystem === "Android",
+      condition: (row) =>
+        row.operatingSystem === "iOS" ||
+        row.operatingSystem === "macOS" ||
+        row.operatingSystem === "Android",
       confirmText:
         "Are you sure you want to reset the passcode for [deviceName]? A new passcode will be generated and displayed.",
     },
@@ -191,7 +194,10 @@ const Page = () => {
         GUID: "id",
         Action: "removeDevicePasscode",
       },
-      condition: (row) => row.operatingSystem === "iOS",
+      condition: (row) =>
+        row.operatingSystem === "iOS" ||
+        row.operatingSystem === "macOS" ||
+        row.operatingSystem === "Android",
       confirmText:
         "Are you sure you want to remove the passcode from [deviceName]? This will remove the device passcode requirement.",
     },
