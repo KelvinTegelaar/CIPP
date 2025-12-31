@@ -46,6 +46,7 @@ import { CaSankey } from "/src/components/CippComponents/CaSankey";
 import { CaDeviceSankey } from "/src/components/CippComponents/CaDeviceSankey";
 import { AuthMethodSankey } from "/src/components/CippComponents/AuthMethodSankey";
 import { DesktopDevicesSankey } from "/src/components/CippComponents/DesktopDevicesSankey";
+import { LicenseSankey } from "/src/components/CippComponents/LicenseSankey";
 import { MobileSankey } from "/src/components/CippComponents/MobileSankey";
 import { CippUniversalSearch } from "/src/components/CippCards/CippUniversalSearch.jsx";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
@@ -66,6 +67,7 @@ import {
   CheckCircle as CheckCircleIcon,
   Laptop as MonitorIcon,
   Work as BriefcaseIcon,
+  CardMembership as CardMembershipIcon,
 } from "@mui/icons-material";
 
 // Helper function to process MFAState data into Sankey chart format
@@ -464,7 +466,7 @@ const Page = () => {
                     multiple={false}
                     formControl={formControl}
                     options={reports.map((r) => ({
-                      label: r.name,
+                      label: r.description ? `${r.name} - ${r.description}` : r.name,
                       value: r.id,
                       description: r.description,
                     }))}
@@ -477,10 +479,6 @@ const Page = () => {
                   color="error"
                   size="small"
                   sx={{ minHeight: 40 }}
-                  disabled={
-                    !selectedReport ||
-                    reports.find((r) => r.id === selectedReport)?.source === "file"
-                  }
                   onClick={() => {
                     const report = reports.find((r) => r.id === selectedReport);
                     if (report && report.source !== "file") {
@@ -1169,13 +1167,13 @@ const Page = () => {
                   </CardContent>
                 </Card>
 
-                {/* Device Sign-ins */}
+                {/* License Overview */}
                 <Card sx={{ flex: 1 }}>
                   <CardHeader
                     title={
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <DevicesIcon sx={{ fontSize: 24 }} />
-                        <Typography variant="h6">Device sign-ins</Typography>
+                        <CardMembershipIcon sx={{ fontSize: 24 }} />
+                        <Typography variant="h6">License Overview</Typography>
                       </Box>
                     }
                     sx={{ pb: 1 }}
@@ -1184,10 +1182,8 @@ const Page = () => {
                     <Box sx={{ height: 300 }}>
                       {testsApi.isFetching ? (
                         <Skeleton variant="rectangular" width="100%" height={300} />
-                      ) : reportData.TenantInfo.OverviewCaDevicesAllUsers?.nodes ? (
-                        <CaDeviceSankey
-                          data={reportData.TenantInfo.OverviewCaDevicesAllUsers.nodes}
-                        />
+                      ) : testsApi.data?.LicenseData && Array.isArray(testsApi.data.LicenseData) ? (
+                        <LicenseSankey data={testsApi.data.LicenseData} />
                       ) : (
                         <Box
                           sx={{
@@ -1198,15 +1194,83 @@ const Page = () => {
                           }}
                         >
                           <Typography variant="body2" color="text.secondary">
-                            No device sign-in data available
+                            No license data available
                           </Typography>
                         </Box>
                       )}
                     </Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                      {reportData.TenantInfo.OverviewCaDevicesAllUsers?.description ||
-                        "No description available"}
-                    </Typography>
+                  </CardContent>
+                  <Divider />
+                  <CardContent sx={{ pt: 2 }}>
+                    {testsApi.isFetching ? (
+                      <Box sx={{ display: "flex", gap: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Skeleton width={80} height={20} sx={{ mb: 1 }} />
+                          <Skeleton width={60} height={32} />
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Skeleton width={80} height={20} sx={{ mb: 1 }} />
+                          <Skeleton width={60} height={32} />
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Skeleton width={80} height={20} sx={{ mb: 1 }} />
+                          <Skeleton width={60} height={32} />
+                        </Box>
+                      </Box>
+                    ) : testsApi.data?.LicenseData && Array.isArray(testsApi.data.LicenseData) ? (
+                      <Box sx={{ display: "flex", gap: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Total Licenses
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold">
+                            {testsApi.data.LicenseData.reduce(
+                              (sum, lic) => sum + (parseInt(lic?.TotalLicenses || 0) || 0),
+                              0
+                            ).toLocaleString()}
+                          </Typography>
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Assigned
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold">
+                            {testsApi.data.LicenseData.reduce(
+                              (sum, lic) => sum + (parseInt(lic?.CountUsed || 0) || 0),
+                              0
+                            ).toLocaleString()}
+                          </Typography>
+                        </Box>
+                        <Divider orientation="vertical" flexItem />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Available
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold">
+                            {testsApi.data.LicenseData.reduce(
+                              (sum, lic) => sum + (parseInt(lic?.CountAvailable || 0) || 0),
+                              0
+                            ).toLocaleString()}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          py: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          No license statistics available
+                        </Typography>
+                      </Box>
+                    )}
                   </CardContent>
                 </Card>
               </Box>
@@ -1581,7 +1645,7 @@ const Page = () => {
                   title={
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <MonitorIcon sx={{ fontSize: 24 }} />
-                      <Typography variant="h6">Desktop devices</Typography>
+                      <Typography variant="h6">License Overview</Typography>
                     </Box>
                   }
                   sx={{ pb: 1 }}
@@ -1590,10 +1654,8 @@ const Page = () => {
                   <Box sx={{ height: 350 }}>
                     {testsApi.isFetching ? (
                       <Skeleton variant="rectangular" width="100%" height={350} />
-                    ) : reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ? (
-                      <DesktopDevicesSankey
-                        data={reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary.nodes}
-                      />
+                    ) : testsApi.data?.LicenseData ? (
+                      <LicenseSankey data={testsApi.data.LicenseData} />
                     ) : (
                       <Box
                         sx={{
@@ -1604,14 +1666,13 @@ const Page = () => {
                         }}
                       >
                         <Typography variant="body2" color="text.secondary">
-                          No desktop device data available
+                          No license data available
                         </Typography>
                       </Box>
                     )}
                   </Box>
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                    {reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.description ||
-                      "No description available"}
+                    Overview of license assignments and availability
                   </Typography>
                 </CardContent>
                 <Divider />
@@ -1619,96 +1680,70 @@ const Page = () => {
                   {testsApi.isFetching ? (
                     <Box sx={{ display: "flex", gap: 2 }}>
                       <Box sx={{ flex: 1 }}>
-                        <Skeleton width={60} height={50} />
+                        <Skeleton width={80} height={20} sx={{ mb: 1 }} />
+                        <Skeleton width={60} height={32} />
                       </Box>
                       <Divider orientation="vertical" flexItem />
                       <Box sx={{ flex: 1 }}>
-                        <Skeleton width={60} height={50} />
+                        <Skeleton width={80} height={20} sx={{ mb: 1 }} />
+                        <Skeleton width={60} height={32} />
                       </Box>
                       <Divider orientation="vertical" flexItem />
                       <Box sx={{ flex: 1 }}>
-                        <Skeleton width={60} height={50} />
+                        <Skeleton width={80} height={20} sx={{ mb: 1 }} />
+                        <Skeleton width={60} height={32} />
                       </Box>
                     </Box>
-                  ) : (
+                  ) : testsApi.data?.LicenseData && Array.isArray(testsApi.data.LicenseData) ? (
                     <Box sx={{ display: "flex", gap: 2 }}>
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="caption" color="text.secondary">
-                          Entra joined
+                          Total Licenses
                         </Typography>
                         <Typography variant="h6" fontWeight="bold">
-                          {(() => {
-                            const nodes =
-                              reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ||
-                              [];
-                            const entraJoined =
-                              nodes.find((n) => n.target === "Entra joined")?.value || 0;
-                            const windowsDevices =
-                              nodes.find(
-                                (n) => n.source === "Desktop devices" && n.target === "Windows"
-                              )?.value || 0;
-                            const macOSDevices =
-                              nodes.find(
-                                (n) => n.source === "Desktop devices" && n.target === "macOS"
-                              )?.value || 0;
-                            const total = windowsDevices + macOSDevices;
-                            return Math.round((entraJoined / (total || 1)) * 100);
-                          })()}
-                          %
+                          {testsApi.data.LicenseData.reduce(
+                            (sum, lic) => sum + (parseInt(lic?.TotalLicenses || 0) || 0),
+                            0
+                          ).toLocaleString()}
                         </Typography>
                       </Box>
                       <Divider orientation="vertical" flexItem />
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="caption" color="text.secondary">
-                          Entra hybrid joined
+                          Assigned
                         </Typography>
                         <Typography variant="h6" fontWeight="bold">
-                          {(() => {
-                            const nodes =
-                              reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ||
-                              [];
-                            const entraHybrid =
-                              nodes.find((n) => n.target === "Entra hybrid joined")?.value || 0;
-                            const windowsDevices =
-                              nodes.find(
-                                (n) => n.source === "Desktop devices" && n.target === "Windows"
-                              )?.value || 0;
-                            const macOSDevices =
-                              nodes.find(
-                                (n) => n.source === "Desktop devices" && n.target === "macOS"
-                              )?.value || 0;
-                            const total = windowsDevices + macOSDevices;
-                            return Math.round((entraHybrid / (total || 1)) * 100);
-                          })()}
-                          %
+                          {testsApi.data.LicenseData.reduce(
+                            (sum, lic) => sum + (parseInt(lic?.CountUsed || 0) || 0),
+                            0
+                          ).toLocaleString()}
                         </Typography>
                       </Box>
                       <Divider orientation="vertical" flexItem />
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="caption" color="text.secondary">
-                          Entra registered
+                          Available
                         </Typography>
                         <Typography variant="h6" fontWeight="bold">
-                          {(() => {
-                            const nodes =
-                              reportData.TenantInfo.DeviceOverview?.DesktopDevicesSummary?.nodes ||
-                              [];
-                            const entraRegistered =
-                              nodes.find((n) => n.target === "Entra registered")?.value || 0;
-                            const windowsDevices =
-                              nodes.find(
-                                (n) => n.source === "Desktop devices" && n.target === "Windows"
-                              )?.value || 0;
-                            const macOSDevices =
-                              nodes.find(
-                                (n) => n.source === "Desktop devices" && n.target === "macOS"
-                              )?.value || 0;
-                            const total = windowsDevices + macOSDevices;
-                            return Math.round((entraRegistered / (total || 1)) * 100);
-                          })()}
-                          %
+                          {testsApi.data.LicenseData.reduce(
+                            (sum, lic) => sum + (parseInt(lic?.CountAvailable || 0) || 0),
+                            0
+                          ).toLocaleString()}
                         </Typography>
                       </Box>
+                    </Box>
+                  ) : (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        py: 2,
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        No license statistics available
+                      </Typography>
                     </Box>
                   )}
                 </CardContent>
