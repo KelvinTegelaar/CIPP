@@ -6,49 +6,19 @@ export const LicenseSankey = ({ data }) => {
     return null;
   }
 
-  // Calculate aggregated license data with null safety
-  let totalLicenses = 0;
-  let totalAssigned = 0;
-  let totalAvailable = 0;
+  // Get top 5 licenses by total count with null safety
+  const topLicenses = data
+    .filter((license) => license && parseInt(license?.TotalLicenses || 0) > 0)
+    .sort((a, b) => parseInt(b?.TotalLicenses || 0) - parseInt(a?.TotalLicenses || 0))
+    .slice(0, 5);
 
-  data.forEach((license) => {
-    if (license) {
-      totalLicenses += parseInt(license?.TotalLicenses || 0) || 0;
-      totalAssigned += parseInt(license?.CountUsed || 0) || 0;
-      totalAvailable += parseInt(license?.CountAvailable || 0) || 0;
-    }
-  });
-
-  // If no valid data, return null
-  if (totalLicenses === 0 && totalAssigned === 0 && totalAvailable === 0) {
+  if (topLicenses.length === 0) {
     return null;
   }
 
-  // Create Sankey flow: Total -> Assigned/Available -> Top 5 licenses
-  const nodes = [
-    { id: "Total Licenses", nodeColor: "hsl(210, 100%, 56%)" },
-    { id: "Assigned", nodeColor: "hsl(99, 70%, 50%)" },
-    { id: "Available", nodeColor: "hsl(28, 100%, 53%)" },
-  ];
-
-  const links = [
-    {
-      source: "Total Licenses",
-      target: "Assigned",
-      value: totalAssigned > 0 ? totalAssigned : 0,
-    },
-    {
-      source: "Total Licenses",
-      target: "Available",
-      value: totalAvailable > 0 ? totalAvailable : 0,
-    },
-  ];
-
-  // Add top 5 most used licenses with null safety
-  const topLicenses = data
-    .filter((license) => license && parseInt(license?.CountUsed || 0) > 0)
-    .sort((a, b) => parseInt(b?.CountUsed || 0) - parseInt(a?.CountUsed || 0))
-    .slice(0, 5);
+  // Create Sankey flow: Top 5 Licenses -> Assigned/Available for each
+  const nodes = [];
+  const links = [];
 
   topLicenses.forEach((license, index) => {
     if (license) {
@@ -57,22 +27,49 @@ export const LicenseSankey = ({ data }) => {
       const shortName =
         licenseName.length > 30 ? licenseName.substring(0, 27) + "..." : licenseName;
 
+      const assigned = parseInt(license?.CountUsed || 0) || 0;
+      const available = parseInt(license?.CountAvailable || 0) || 0;
+
+      // Add license node
       nodes.push({
         id: shortName,
-        nodeColor: `hsl(${120 + index * 30}, 70%, 50%)`,
+        nodeColor: `hsl(${210 + index * 30}, 70%, 50%)`,
       });
 
-      links.push({
-        source: "Assigned",
-        target: shortName,
-        value: parseInt(license?.CountUsed || 0) || 0,
-      });
+      // Add Assigned and Available nodes for this license
+      const assignedId = `${shortName} - Assigned`;
+      const availableId = `${shortName} - Available`;
+
+      if (assigned > 0) {
+        nodes.push({
+          id: assignedId,
+          nodeColor: "hsl(99, 70%, 50%)",
+        });
+
+        links.push({
+          source: shortName,
+          target: assignedId,
+          value: assigned,
+        });
+      }
+
+      if (available > 0) {
+        nodes.push({
+          id: availableId,
+          nodeColor: "hsl(28, 100%, 53%)",
+        });
+
+        links.push({
+          source: shortName,
+          target: availableId,
+          value: available,
+        });
+      }
     }
   });
 
   // Only render if we have valid data
-  if (nodes.length === 3 && links.length === 2) {
-    // No licenses to show besides the base nodes
+  if (nodes.length === 0 || links.length === 0) {
     return null;
   }
 
