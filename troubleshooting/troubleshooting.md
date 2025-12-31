@@ -10,7 +10,7 @@ Below are error codes that can occur in CIPP. Use this page to troubleshoot your
 
 ### Request not applicable to target tenant.
 
-The required license for this feature is not available for this tenant. Check the tenant's license information to ensure that it has the necessary license for the requested operation. Most seen around security tasks that require M365 Business Premium or Entra ID P1.
+The required license for this feature is not available for this tenant. Check the tenant's license information to ensure that it has the necessary license for the requested operation. Most seen around security tasks that require additional licensing like Entra ID P1 or Entra ID P2, for example.
 
 ### Neither tenant is B2C or tenant doesn't have premium license
 
@@ -123,13 +123,9 @@ This occurs when the app has existed for more than 2 years and requires a new ce
 <summary>Frontend</summary>
 
 * Find your repository secret by going to your CIPP Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
-
-- Note down the name of your repository secret (Should be similar to "AZURE\_STATIC\_WEB\_APPS\_API\_TOKEN\_RANDOM\_WORD\_047D97703"
-
+* Note down the name of your repository secret (Should be similar to "AZURE\_STATIC\_WEB\_APPS\_API\_TOKEN\_RANDOM\_WORD\_047D97703"
 * Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
-
-- Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) into the new file you created
-
+* Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) into the new file you created
 * Edit lines 25 and 44 to your repository secret name noted down in step 2 above
 
 </details>
@@ -139,16 +135,11 @@ This occurs when the app has existed for more than 2 years and requires a new ce
 <summary>Backend</summary>
 
 * Find your repository secret by going to your CIPP-API Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
-
-- Note down the name of your repository secret (Should be similar to "AZUREAPPSERVICE\_PUBLISHPROFILE\_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-
+* Note down the name of your repository secret (Should be similar to "AZUREAPPSERVICE\_PUBLISHPROFILE\_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 * Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
-
-- Copy the contents of this [file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167)[ into](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) the new file you created
-
+* Copy the contents of this [file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167)[ into](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) the new file you created
 * Edit lines 4 and 26 so they have your function name in
-
-- Edit Line 29 to your repository secret name noted down in step 2 above
+* Edit Line 29 to your repository secret name noted down in step 2 above
 
 </details>
 
