@@ -796,6 +796,38 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       />
     );
   }
+  if (cellName === "Status" || cellName === "Risk" || cellName === "UserImpact") {
+    let color = "default";
+    let label = data;
+
+    switch (data.toLowerCase()) {
+      case "success":
+        color = "success";
+        break;
+      case "passed":
+        color = "success";
+        break;
+      case "failed":
+      case "high":
+        color = "error";
+        break;
+      case "in progress":
+        color = "info";
+        break;
+      case "not started":
+        color = "default";
+        break;
+      case "investigate":
+      case "medium":
+      case "warning":
+      case "skipped":
+        color = "warning";
+        break;
+      default:
+        color = "default";
+    }
+    return isText ? label : <Chip label={label} size="small" color={color} />;
+  }
 
   // ISO 8601 Duration Formatting
   // Add property names here to automatically format ISO 8601 duration strings (e.g., "PT1H23M30S")
