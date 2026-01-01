@@ -5,9 +5,7 @@ import {
   CardHeader,
   Container,
   Typography,
-  Avatar,
   Divider,
-  Tooltip,
   Button,
   Skeleton,
 } from "@mui/material";
@@ -25,9 +23,6 @@ import {
   Bar,
   PieChart,
   Pie,
-  RadialBarChart,
-  RadialBar,
-  PolarAngleAxis,
   XAxis,
   YAxis,
   ResponsiveContainer,
@@ -48,11 +43,9 @@ import { AssessmentCard } from "/src/components/CippComponents/AssessmentCard";
 import { CippUniversalSearch } from "/src/components/CippCards/CippUniversalSearch.jsx";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
 import { CippAddTestReportDrawer } from "/src/components/CippComponents/CippAddTestReportDrawer";
-import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo.jsx";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import {
   Devices as DevicesIcon,
-  Security as SecurityIcon,
   CheckCircle as CheckCircleIcon,
   Work as BriefcaseIcon,
 } from "@mui/icons-material";
