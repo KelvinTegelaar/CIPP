@@ -121,7 +121,7 @@ const Page = () => {
   const reportData =
     testsApi.isSuccess && testsApi.data?.TenantCounts
       ? {
-          ExecutedAt: testsApi.data.LatestReportTimeStamp || new Date().toISOString(),
+          ExecutedAt: testsApi.data?.LatestReportTimeStamp || null,
           TenantName: organization.data?.displayName || "",
           Domain: currentTenant || "",
           TestResultSummary: {

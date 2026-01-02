@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardHeader, CardContent, Box, Typography, Skeleton } from "@mui/material";
 import { Security as SecurityIcon } from "@mui/icons-material";
 import { ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
