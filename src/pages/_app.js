@@ -43,7 +43,6 @@ import {
 } from "date-fns/locale";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
-import CippSpeedDial from "../components/CippComponents/CippSpeedDial";
 import {
   Help as HelpIcon,
   BugReport as BugReportIcon,
@@ -390,15 +389,6 @@ const App = (props) => {
                             </PrivateRoute>
                           </ErrorBoundary>
                           <Toaster position="top-center" />
-                          <CippSpeedDial
-                            actions={speedDialActions}
-                            icon={<HelpIcon />}
-                            position={{
-                              bottom: 12,
-                              right:
-                                settings.isInitialized && settings?.showDevtools === true ? 60 : 12,
-                            }}
-                          />
                         </RTL>
                       </ThemeProvider>
                       {settings.isInitialized && settings?.showDevtools === true ? (
