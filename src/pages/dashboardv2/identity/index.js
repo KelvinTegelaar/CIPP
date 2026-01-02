@@ -1,14 +1,4 @@
-import React from "react";
-import {
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  CardHeader,
-  Box,
-  Stack,
-  Chip,
-} from "@mui/material";
+import { Container } from "@mui/material";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "../tabOptions";
@@ -33,47 +23,6 @@ const Page = () => {
 
   const identityTests =
     testsApi.data?.TestResults?.filter((test) => test.TestType === "Identity") || [];
-
-  const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case "passed":
-        return "success";
-      case "failed":
-        return "error";
-      case "investigate":
-        return "warning";
-      case "skipped":
-        return "default";
-      default:
-        return "default";
-    }
-  };
-
-  const getRiskColor = (risk) => {
-    switch (risk?.toLowerCase()) {
-      case "high":
-        return "error";
-      case "medium":
-        return "warning";
-      case "low":
-        return "info";
-      default:
-        return "default";
-    }
-  };
-
-  const getImpactColor = (impact) => {
-    switch (impact?.toLowerCase()) {
-      case "high":
-        return "error";
-      case "medium":
-        return "warning";
-      case "low":
-        return "info";
-      default:
-        return "default";
-    }
-  };
 
   const offCanvas = {
     size: "lg",
