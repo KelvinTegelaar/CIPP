@@ -40,7 +40,6 @@ import { LicenseCard } from "/src/components/CippComponents/LicenseCard";
 import { TenantInfoCard } from "/src/components/CippComponents/TenantInfoCard";
 import { TenantMetricsGrid } from "/src/components/CippComponents/TenantMetricsGrid";
 import { AssessmentCard } from "/src/components/CippComponents/AssessmentCard";
-import { CippUniversalSearch } from "/src/components/CippCards/CippUniversalSearch.jsx";
 import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
 import { CippAddTestReportDrawer } from "/src/components/CippComponents/CippAddTestReportDrawer";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
@@ -48,6 +47,7 @@ import {
   Devices as DevicesIcon,
   CheckCircle as CheckCircleIcon,
   Work as BriefcaseIcon,
+  Assessment as AssessmentIcon,
 } from "@mui/icons-material";
 
 const Page = () => {
@@ -192,7 +192,7 @@ const Page = () => {
     <Container maxWidth={false} sx={{ mt: 12, mb: 6 }}>
       <Box sx={{ width: "100%", mx: "auto" }}>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Card sx={{ height: "100%" }}>
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
                 <BulkActionsMenu
@@ -213,13 +213,23 @@ const Page = () => {
                   organizationData={organization.data}
                   disabled={organization.isFetching || testsApi.isFetching}
                 />
-                <Box sx={{ flex: 1 }}>
-                  <CippUniversalSearch />
-                </Box>
+                <Button
+                  variant="contained"
+                  startIcon={<AssessmentIcon />}
+                  sx={{
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: 2,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    transition: "all 0.2s ease-in-out",
+                  }}
+                >
+                  Custom Report
+                </Button>
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 7 }}>
             <Card sx={{ height: "100%" }}>
               <CardContent sx={{ display: "flex", gap: 1.5, alignItems: "center", p: 2 }}>
                 <Box sx={{ flex: 1 }}>
@@ -239,10 +249,15 @@ const Page = () => {
                 </Box>
                 <CippAddTestReportDrawer />
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="error"
-                  size="small"
-                  sx={{ minHeight: 40 }}
+                  sx={{
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: 2,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    transition: "all 0.2s ease-in-out",
+                  }}
                   onClick={() => {
                     const report = reports.find((r) => r.id === selectedReport);
                     if (report && report.source !== "file") {
