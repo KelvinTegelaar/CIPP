@@ -39,8 +39,10 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
   });
 
   const { isValid } = useFormState({ control: formControl.control });
-  const selectedIdentityTests = useWatch({ control: formControl.control, name: "IdentityTests" }) || [];
-  const selectedDeviceTests = useWatch({ control: formControl.control, name: "DevicesTests" }) || [];
+  const selectedIdentityTests =
+    useWatch({ control: formControl.control, name: "IdentityTests" }) || [];
+  const selectedDeviceTests =
+    useWatch({ control: formControl.control, name: "DevicesTests" }) || [];
 
   const createReport = ApiPostCall({
     urlFromData: true,
@@ -101,7 +103,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
   const toggleTest = (testId, testType) => {
     const fieldName = testType === "Identity" ? "IdentityTests" : "DevicesTests";
     const currentTests = formControl.getValues(fieldName) || [];
-    
+
     if (currentTests.includes(testId)) {
       formControl.setValue(
         fieldName,
@@ -259,11 +261,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <span>Device Tests</span>
                         {selectedDeviceTests.length > 0 && (
-                          <Chip
-                            size="small"
-                            label={selectedDeviceTests.length}
-                            color="secondary"
-                          />
+                          <Chip size="small" label={selectedDeviceTests.length} color="secondary" />
                         )}
                       </Box>
                     }
