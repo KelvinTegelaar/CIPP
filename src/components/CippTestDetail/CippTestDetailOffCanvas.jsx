@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  Box,
-  Stack,
-  Chip,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Box, Stack, Chip, Typography } from "@mui/material";
 import { KeyboardArrowRight } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
