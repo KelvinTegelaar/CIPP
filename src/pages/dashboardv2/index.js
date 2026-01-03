@@ -48,6 +48,7 @@ import {
   CheckCircle as CheckCircleIcon,
   Work as BriefcaseIcon,
   Assessment as AssessmentIcon,
+  Refresh as RefreshIcon,
 } from "@mui/icons-material";
 
 const Page = () => {
@@ -56,6 +57,7 @@ const Page = () => {
   const { currentTenant } = settings;
   const [portalMenuItems, setPortalMenuItems] = useState([]);
   const [deleteDialog, setDeleteDialog] = useState({ open: false });
+  const [refreshDialog, setRefreshDialog] = useState({ open: false });
 
   // Get reportId from query params or default to "ztna"
   const selectedReport = router.query.reportId || "ztna";
@@ -108,7 +110,7 @@ const Page = () => {
   const driftApi = ApiGetCall({
     url: "/api/listTenantDrift",
     data: {
-      TenantFilter: currentTenant,
+      tenantFilter: currentTenant,
     },
     queryKey: `TenantDrift-${currentTenant}`,
   });
@@ -248,6 +250,35 @@ const Page = () => {
                   />
                 </Box>
                 <CippAddTestReportDrawer />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    minWidth: "auto",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: 2,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    transition: "all 0.2s ease-in-out",
+                    px: 2,
+                  }}
+                  onClick={() => {
+                    setRefreshDialog({
+                      open: true,
+                      title: "Refresh Test Data",
+                      message: `Are you sure you want to refresh the test data for ${currentTenant}? This will start a new data collection job.`,
+                      api: {
+                        url: "/api/ExecTestRun",
+                        data: { tenantFilter: currentTenant },
+                        method: "POST",
+                      },
+                      handleClose: () => setRefreshDialog({ open: false }),
+                    });
+                  }}
+                  startIcon={<RefreshIcon />}
+                >
+                  Update Report
+                </Button>
                 <Button
                   variant="contained"
                   color="error"
@@ -698,6 +729,20 @@ const Page = () => {
           },
           confirmText: "Are you sure you want to delete this report? This action cannot be undone.",
           relatedQueryKeys: ["ListTestReports"],
+        }}
+      />
+
+      {/* Refresh Data Dialog */}
+      <CippApiDialog
+        createDialog={refreshDialog}
+        title={refreshDialog.title}
+        fields={[]}
+        api={{
+          url: refreshDialog.api?.url,
+          type: "POST",
+          data: refreshDialog.api?.data,
+          confirmText: refreshDialog.message,
+          relatedQueryKeys: [`${currentTenant}-ListTests-${selectedReport}`],
         }}
       />
     </Container>
