@@ -4,6 +4,7 @@ import { KeyboardArrowRight } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
+import standardsData from "/src/data/standards.json";
 
 const getStatusColor = (status) => {
   switch (status?.toLowerCase()) {
@@ -44,6 +45,23 @@ const getImpactColor = (impact) => {
     default:
       return "default";
   }
+};
+
+const checkCIPPStandardAvailable = (testName) => {
+  if (!testName) return "No";
+
+  // Check if any standard's tag array contains a reference to this test
+  const hasStandard = standardsData.some((standard) => {
+    if (!standard.tag || !Array.isArray(standard.tag)) return false;
+    // Check if any tag matches the test name or contains it
+    return standard.tag.some((tag) => {
+      const tagLower = tag.toLowerCase();
+      const testLower = testName.toLowerCase();
+      return tagLower.includes(testLower) || testLower.includes(tagLower);
+    });
+  });
+
+  return hasStandard ? "Yes" : "No";
 };
 
 // Shared markdown styling for consistent rendering
@@ -109,7 +127,7 @@ export const CippTestDetailOffCanvas = ({ row }) => {
       <Card>
         <Grid container>
           <Grid
-            size={{ xs: 12, md: 4 }}
+            size={{ xs: 12, md: 3 }}
             sx={{
               borderBottom: (theme) => ({
                 xs: `1px solid ${theme.palette.divider}`,
@@ -123,7 +141,7 @@ export const CippTestDetailOffCanvas = ({ row }) => {
             <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
               <Box>
                 <Typography color="text.secondary" variant="overline">
-                  Risk Level
+                  Risk
                 </Typography>
                 <Box>
                   <Chip label={row.Risk || "N/A"} color={getRiskColor(row.Risk)} size="small" />
@@ -132,7 +150,7 @@ export const CippTestDetailOffCanvas = ({ row }) => {
             </Stack>
           </Grid>
           <Grid
-            size={{ xs: 12, md: 4 }}
+            size={{ xs: 12, md: 3 }}
             sx={{
               borderBottom: (theme) => ({
                 xs: `1px solid ${theme.palette.divider}`,
@@ -159,7 +177,34 @@ export const CippTestDetailOffCanvas = ({ row }) => {
             </Stack>
           </Grid>
           <Grid
-            size={{ xs: 12, md: 4 }}
+            size={{ xs: 12, md: 3 }}
+            sx={{
+              borderBottom: (theme) => ({
+                xs: `1px solid ${theme.palette.divider}`,
+                md: "none",
+              }),
+              borderRight: (theme) => ({
+                md: `1px solid ${theme.palette.divider}`,
+              }),
+            }}
+          >
+            <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
+              <Box>
+                <Typography color="text.secondary" variant="overline">
+                  Effort
+                </Typography>
+                <Box sx={{ mt: 0.5 }}>
+                  <Chip
+                    label={row.ImplementationEffort || "N/A"}
+                    color={getImpactColor(row.ImplementationEffort)}
+                    size="small"
+                  />
+                </Box>
+              </Box>
+            </Stack>
+          </Grid>
+          <Grid
+            size={{ xs: 12, md: 3 }}
             sx={{
               borderBottom: "none",
             }}
@@ -167,12 +212,12 @@ export const CippTestDetailOffCanvas = ({ row }) => {
             <Stack alignItems="center" direction="row" spacing={1} sx={{ p: 1 }}>
               <Box>
                 <Typography color="text.secondary" variant="overline">
-                  Implementation Effort
+                  Standard Available
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
                   <Chip
-                    label={row.ImplementationEffort || "N/A"}
-                    color={getImpactColor(row.ImplementationEffort)}
+                    label={checkCIPPStandardAvailable(row.Name)}
+                    color={checkCIPPStandardAvailable(row.Name) === "Yes" ? "success" : "default"}
                     size="small"
                   />
                 </Box>
