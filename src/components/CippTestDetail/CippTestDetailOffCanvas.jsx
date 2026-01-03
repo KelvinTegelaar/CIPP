@@ -49,7 +49,7 @@ const getImpactColor = (impact) => {
 
 const checkCIPPStandardAvailable = (testName) => {
   if (!testName) return "No";
-
+  console.log(testName);
   // Check if any standard's tag array contains a reference to this test
   const hasStandard = standardsData.some((standard) => {
     if (!standard.tag || !Array.isArray(standard.tag)) return false;
@@ -216,8 +216,8 @@ export const CippTestDetailOffCanvas = ({ row }) => {
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
                   <Chip
-                    label={checkCIPPStandardAvailable(row.Name)}
-                    color={checkCIPPStandardAvailable(row.Name) === "Yes" ? "success" : "default"}
+                    label={checkCIPPStandardAvailable(row.RowKey)}
+                    color={checkCIPPStandardAvailable(row.RowKey) === "Yes" ? "success" : "default"}
                     size="small"
                   />
                 </Box>

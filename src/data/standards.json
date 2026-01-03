@@ -1029,7 +1029,8 @@
       "EIDSCA.AP08",
       "EIDSCA.AP09",
       "Essential 8 (1175)",
-      "NIST CSF 2.0 (PR.AA-05)"
+      "NIST CSF 2.0 (PR.AA-05)",
+      "ZTNA21807"
     ],
     "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
     "docsDescription": "Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.",
