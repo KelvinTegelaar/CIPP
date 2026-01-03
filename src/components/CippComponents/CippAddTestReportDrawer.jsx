@@ -3,21 +3,18 @@ import {
   Button,
   Card,
   CardContent,
-  Checkbox,
-  FormControlLabel,
   TextField,
   Typography,
   Box,
   Chip,
   Tab,
   Tabs,
-  InputAdornment,
   Paper,
   Stack,
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
-import { Add, Search, CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
@@ -277,13 +274,6 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                   placeholder={`Search ${currentTestType} tests...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search />
-                      </InputAdornment>
-                    ),
-                  }}
                 />
               </Box>
 
@@ -326,13 +316,7 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
                             onClick={() => toggleTest(test.id, currentTestType)}
                           >
                             <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                                <Checkbox
-                                  checked={isSelected}
-                                  icon={<CheckBoxOutlineBlank />}
-                                  checkedIcon={<CheckBox />}
-                                  sx={{ p: 0, mt: -0.5 }}
-                                />
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                                 <Box sx={{ flex: 1, minWidth: 0 }}>
                                   <Box
                                     sx={{
