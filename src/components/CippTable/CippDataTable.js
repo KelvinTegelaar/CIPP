@@ -116,6 +116,7 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [offCanvasRowIndex, setOffCanvasRowIndex] = useState(0);
+  const [filteredRows, setFilteredRows] = useState([]);
   const [customComponentData, setCustomComponentData] = useState({});
   const [customComponentVisible, setCustomComponentVisible] = useState(false);
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
@@ -293,7 +294,12 @@ export const CippDataTable = (props) => {
         ? ({ row }) => ({
             onClick: () => {
               setOffCanvasData(row.original);
-              setOffCanvasRowIndex(row.index);
+              // Find the index of this row in the filtered rows
+              const filteredRowsArray = table.getFilteredRowModel().rows;
+              const indexInFiltered = filteredRowsArray.findIndex(
+                (r) => r.original === row.original
+              );
+              setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
               setOffcanvasVisible(true);
             },
             sx: {
@@ -455,7 +461,12 @@ export const CippDataTable = (props) => {
               onClick={() => {
                 closeMenu();
                 setOffCanvasData(row.original);
-                setOffCanvasRowIndex(row.index);
+                // Find the index of this row in the filtered rows
+                const filteredRowsArray = table.getFilteredRowModel().rows;
+                const indexInFiltered = filteredRowsArray.findIndex(
+                  (r) => r.original === row.original
+                );
+                setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
                 setOffcanvasVisible(true);
               }}
             >
@@ -471,7 +482,12 @@ export const CippDataTable = (props) => {
             onClick={() => {
               closeMenu();
               setOffCanvasData(row.original);
-              setOffCanvasRowIndex(row.index);
+              // Find the index of this row in the filtered rows
+              const filteredRowsArray = table.getFilteredRowModel().rows;
+              const indexInFiltered = filteredRowsArray.findIndex(
+                (r) => r.original === row.original
+              );
+              setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
               setOffcanvasVisible(true);
             }}
           >
@@ -689,6 +705,19 @@ export const CippDataTable = (props) => {
   }, [table.getSelectedRowModel().rows]);
 
   useEffect(() => {
+    // Update filtered rows whenever table filtering/sorting changes
+    if (table && table.getFilteredRowModel) {
+      const rows = table.getFilteredRowModel().rows;
+      setFilteredRows(rows.map((row) => row.original));
+    }
+  }, [
+    table,
+    table.getState().columnFilters,
+    table.getState().globalFilter,
+    table.getState().sorting,
+  ]);
+
+  useEffect(() => {
     //check if the simplecolumns are an array,
     if (Array.isArray(simpleColumns) && simpleColumns.length > 0) {
       setConfiguredSimpleColumns(simpleColumns);
@@ -769,20 +798,20 @@ export const CippDataTable = (props) => {
         customComponent={offCanvas?.customComponent}
         onNavigateUp={() => {
           const newIndex = offCanvasRowIndex - 1;
-          if (newIndex >= 0 && memoizedData && memoizedData[newIndex]) {
+          if (newIndex >= 0 && filteredRows && filteredRows[newIndex]) {
             setOffCanvasRowIndex(newIndex);
-            setOffCanvasData(memoizedData[newIndex]);
+            setOffCanvasData(filteredRows[newIndex]);
           }
         }}
         onNavigateDown={() => {
           const newIndex = offCanvasRowIndex + 1;
-          if (memoizedData && newIndex < memoizedData.length) {
+          if (filteredRows && newIndex < filteredRows.length) {
             setOffCanvasRowIndex(newIndex);
-            setOffCanvasData(memoizedData[newIndex]);
+            setOffCanvasData(filteredRows[newIndex]);
           }
         }}
         canNavigateUp={offCanvasRowIndex > 0}
-        canNavigateDown={memoizedData && offCanvasRowIndex < memoizedData.length - 1}
+        canNavigateDown={filteredRows && offCanvasRowIndex < filteredRows.length - 1}
         {...offCanvas}
       />
       {/* Render custom component */}
