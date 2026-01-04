@@ -369,30 +369,79 @@ const ManageDriftPage = () => {
         receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
         expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
         originalDeviation: deviation, // Store the complete original deviation object for reference
-        propertyItems: [
-          { label: "Standard Name", value: prettyName },
-          { label: "Description", value: description },
-          { label: "Expected Value", value: deviation.expectedValue || "N/A" },
-          { label: "Current Value", value: formatPolicyValue(deviation.receivedValue) },
-          {
-            label: "Status",
-            value: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
-          },
-          {
-            label: "Reason",
-            value: deviation.Reason || "N/A",
-          },
-          {
-            label: "User",
-            value: deviation.lastChangedByUser || "N/A",
-          },
-          {
-            label: "Last Updated",
-            value: processedDriftData.latestDataCollection
-              ? new Date(processedDriftData.latestDataCollection).toLocaleString()
-              : "N/A",
-          },
-        ].filter((item) => item.value !== "N/A" && item.value !== "No description available"), // Filter out N/A values and empty descriptions
+        children: (
+          <Stack spacing={2} sx={{ p: 2 }}>
+            {description && description !== "No description available" && (
+              <Typography variant="body2" color="text.secondary">
+                {description}
+              </Typography>
+            )}
+
+            {(deviation.expectedValue && deviation.expectedValue !== "Compliant with template") || deviation.receivedValue ? (
+              <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
+                {deviation.expectedValue && deviation.expectedValue !== "Compliant with template" && (
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                      Expected
+                    </Typography>
+                    <Box sx={{ mt: 0.5, p: 1.5, bgcolor: "action.hover", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
+                      <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "0.8125rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                        {deviation.expectedValue}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+
+                {deviation.receivedValue && (
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                      Current
+                    </Typography>
+                    <Box sx={{ mt: 0.5, p: 1.5, bgcolor: "action.hover", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
+                      <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "0.8125rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                        {formatPolicyValue(deviation.receivedValue)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+            ) : null}
+
+            {(deviation.Reason || deviation.lastChangedByUser || processedDriftData.latestDataCollection) && (
+              <>
+                <Divider />
+                <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                  {deviation.Reason && (
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
+                        Reason
+                      </Typography>
+                      <Typography variant="body2">{deviation.Reason}</Typography>
+                    </Box>
+                  )}
+                  {deviation.lastChangedByUser && (
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
+                        Changed By
+                      </Typography>
+                      <Typography variant="body2">{deviation.lastChangedByUser}</Typography>
+                    </Box>
+                  )}
+                  {processedDriftData.latestDataCollection && (
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
+                        Last Updated
+                      </Typography>
+                      <Typography variant="body2">
+                        {new Date(processedDriftData.latestDataCollection).toLocaleString()}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              </>
+            )}
+          </Stack>
+        ),
       };
     });
   };
@@ -1186,6 +1235,7 @@ const ManageDriftPage = () => {
                         { label: "Accepted", value: "accepted" },
                         { label: "Customer Specific", value: "customerspecific" },
                         { label: "Denied", value: "denied" },
+                        { label: "Compliant", value: "compliant" },
                       ]}
                       multiple={true}
                     />
@@ -1328,20 +1378,23 @@ const ManageDriftPage = () => {
                     </Box>
                   )}
 
-                {/* Compliant Standards Section - Always shown, not affected by status filter */}
-                {filteredAlignedItems.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Compliant Standards
-                    </Typography>
-                    <CippBannerListCard
-                      items={filteredAlignedItems}
-                      isCollapsible={true}
-                      layout={"single"}
-                      isFetching={driftApi.isFetching}
-                    />
-                  </Box>
-                )}
+                {/* Compliant Standards Section - Only shown when filtered by All or Compliant */}
+                {(!filterStatus ||
+                  filterStatus.length === 0 ||
+                  filterStatus.some((f) => f.value === "all" || f.value === "compliant")) &&
+                  filteredAlignedItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Compliant Standards
+                      </Typography>
+                      <CippBannerListCard
+                        items={filteredAlignedItems}
+                        isCollapsible={true}
+                        layout={"single"}
+                        isFetching={driftApi.isFetching}
+                      />
+                    </Box>
+                  )}
               </Stack>
             </Grid>
           </Grid>
