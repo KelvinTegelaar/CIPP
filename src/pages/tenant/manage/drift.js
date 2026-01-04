@@ -12,12 +12,29 @@ import {
   Error,
   Info,
   FactCheck,
+  Search,
 } from "@mui/icons-material";
-import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  Button,
+  Menu,
+  MenuItem,
+  Chip,
+  SvgIcon,
+  TextField,
+  InputAdornment,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+} from "@mui/material";
 import { Grid } from "@mui/system";
 import { useState, useEffect, useRef } from "react";
-import { CippChartCard } from "/src/components/CippCards/CippChartCard";
+import { useForm } from "react-hook-form";
 import { CippBannerListCard } from "/src/components/CippCards/CippBannerListCard";
+import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { CippHead } from "/src/components/CippComponents/CippHead";
 import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
 import { ApiGetCall } from "/src/api/ApiCall";
@@ -29,6 +46,7 @@ import standardsData from "/src/data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
 import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton";
 import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
+import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 
 const ManageDriftPage = () => {
   const router = useRouter();
@@ -42,6 +60,19 @@ const ManageDriftPage = () => {
   const [actionData, setActionData] = useState({ data: {}, ready: false });
   const [triggerReport, setTriggerReport] = useState(false);
   const reportButtonRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("name");
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const filterForm = useForm({
+    defaultValues: {
+      statusFilter: [{ label: "All Deviations", value: "all" }],
+    },
+  });
+
+  const filterStatus = filterForm.watch("statusFilter") || [
+    { label: "All Deviations", value: "all" },
+  ];
 
   // API calls for drift data
   const driftApi = ApiGetCall({
@@ -748,6 +779,33 @@ const ManageDriftPage = () => {
   const missingLicensePercentage = 0; // This would need to be calculated from actual license data
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
+  // Apply search and sort filters
+  const applyFilters = (items) => {
+    let filtered = [...items];
+
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (item) =>
+          item.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.subtext?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.standardName?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (sortBy === "name") {
+      filtered.sort((a, b) => (a.text || "").localeCompare(b.text || ""));
+    } else if (sortBy === "status") {
+      filtered.sort((a, b) => (a.statusText || "").localeCompare(b.statusText || ""));
+    }
+
+    return filtered;
+  };
+
+  const filteredDeviationItems = applyFilters(deviationItemsWithActions);
+  const filteredAcceptedItems = applyFilters(acceptedDeviationItemsWithActions);
+  const filteredCustomerSpecificItems = applyFilters(customerSpecificDeviationItemsWithActions);
+  const filteredDeniedItems = applyFilters(deniedDeviationItemsWithActions);
+
   // Simple filter for drift templates
   const driftTemplateOptions = standardsApi.data
     ? standardsApi.data
@@ -878,129 +936,242 @@ const ManageDriftPage = () => {
           </Box>
         ) : (
           <Grid container spacing={3}>
-            {/* Left side - Chart */}
+            {/* Left side - Alignment Score & Filters */}
             <Grid size={{ xs: 12, md: 4 }}>
-              <CippChartCard
-                title="Drift Overview"
-                chartType="donut"
-                chartSeries={chartSeries}
-                labels={chartLabels}
-                isFetching={driftApi.isFetching}
-              />
+              <Stack spacing={2}>
+                {/* Stats Card */}
+                <CippButtonCard title="Breakdown">
+                  <Stack spacing={1.5}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Aligned
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.alignedCount}
+                        size="small"
+                        color="success"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Current
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.currentDeviationsCount}
+                        size="small"
+                        color="warning"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Accepted
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.acceptedDeviationsCount}
+                        size="small"
+                        color="info"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Customer Specific
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.customerSpecificDeviations}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Divider />
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" fontWeight={600}>
+                        Total
+                      </Typography>
+                      <Chip label={totalPolicies} size="small" variant="filled" />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Alignment Score
+                      </Typography>
+                      <Chip
+                        label={`${compliancePercentage}%`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                    </Box>
+                  </Stack>
+                </CippButtonCard>
+
+                {/* Filters Card */}
+                <CippButtonCard title="Filters">
+                  <Stack spacing={2}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      placeholder="Search deviations..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="statusFilter"
+                      label="Status"
+                      formControl={filterForm}
+                      options={[
+                        { label: "All Deviations", value: "all" },
+                        { label: "Current Deviations", value: "current" },
+                        { label: "Accepted", value: "accepted" },
+                        { label: "Customer Specific", value: "customerspecific" },
+                        { label: "Denied", value: "denied" },
+                      ]}
+                      multiple={true}
+                    />
+
+                    <CippAutoComplete
+                      options={[
+                        { label: "Name", value: "name" },
+                        { label: "Status", value: "status" },
+                      ]}
+                      label="Sort by"
+                      value={
+                        sortBy
+                          ? { label: sortBy === "name" ? "Name" : "Status", value: sortBy }
+                          : null
+                      }
+                      onChange={(newValue) => setSortBy(newValue?.value || "name")}
+                      multiple={false}
+                    />
+                  </Stack>
+                </CippButtonCard>
+              </Stack>
             </Grid>
 
             {/* Right side - Deviation Management */}
             <Grid size={{ xs: 12, md: 8 }}>
               <Stack spacing={3}>
                 {/* Current Deviations Section */}
-                <Box>
-                  {/* Header with bulk actions */}
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 2 }}
-                  >
-                    <Typography variant="h6">Current Deviations</Typography>
-                    <Box display="flex" gap={1}>
-                      {/* Bulk Actions Dropdown */}
-                      <Button
-                        variant="outlined"
-                        endIcon={<ExpandMore />}
-                        onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
-                        size="small"
-                      >
-                        Bulk Actions
-                      </Button>
-                      <Menu
-                        anchorEl={bulkActionsAnchorEl}
-                        open={Boolean(bulkActionsAnchorEl)}
-                        onClose={() => setBulkActionsAnchorEl(null)}
-                      >
-                        <MenuItem onClick={() => handleBulkAction("accept-all-customer-specific")}>
-                          <CheckBox sx={{ mr: 1, color: "success.main" }} />
-                          Accept All Deviations - Customer Specific
-                        </MenuItem>
-                        <MenuItem onClick={() => handleBulkAction("accept-all")}>
-                          <Check sx={{ mr: 1, color: "info.main" }} />
-                          Accept All Deviations
-                        </MenuItem>
-                        {/* Only show delete option if there are template deviations that support deletion */}
-                        {processedDriftData.currentDeviations.some(
-                          (deviation) =>
-                            (deviation.standardName?.includes("ConditionalAccessTemplate") ||
-                              deviation.standardName?.includes("IntuneTemplate")) &&
-                            deviation.expectedValue ===
-                              "This policy only exists in the tenant, not in the template."
-                        ) && (
-                          <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
-                            <Block sx={{ mr: 1, color: "error.main" }} />
-                            Deny All Deviations - Delete
-                          </MenuItem>
-                        )}
-                        <MenuItem onClick={() => handleBulkAction("deny-all-remediate")}>
-                          <Cancel sx={{ mr: 1, color: "error.main" }} />
-                          Deny All Deviations - Remediate to align with template
-                        </MenuItem>
-                        <MenuItem onClick={handleRemoveDriftCustomization}>
-                          <Block sx={{ mr: 1, color: "warning.main" }} />
-                          Remove Drift Customization
-                        </MenuItem>
-                      </Menu>
+                {filterStatus.some((f) => f.value === "all" || f.value === "current") && (
+                  <Box>
+                    {/* Header with bulk actions */}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{ mb: 2 }}
+                    >
+                      <Typography variant="h6">Current Deviations</Typography>
+                      {selectedItems.length > 0 && (
+                        <Box display="flex" gap={1}>
+                          {/* Bulk Actions Dropdown */}
+                          <Button
+                            variant="outlined"
+                            endIcon={<ExpandMore />}
+                            onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
+                            size="small"
+                          >
+                            Bulk Actions ({selectedItems.length})
+                          </Button>
+                          <Menu
+                            anchorEl={bulkActionsAnchorEl}
+                            open={Boolean(bulkActionsAnchorEl)}
+                            onClose={() => setBulkActionsAnchorEl(null)}
+                          >
+                            <MenuItem
+                              onClick={() => handleBulkAction("accept-all-customer-specific")}
+                            >
+                              <CheckBox sx={{ mr: 1, color: "success.main" }} />
+                              Accept All Deviations - Customer Specific
+                            </MenuItem>
+                            <MenuItem onClick={() => handleBulkAction("accept-all")}>
+                              <Check sx={{ mr: 1, color: "info.main" }} />
+                              Accept All Deviations
+                            </MenuItem>
+                            {/* Only show delete option if there are template deviations that support deletion */}
+                            {processedDriftData.currentDeviations.some(
+                              (deviation) =>
+                                (deviation.standardName?.includes("ConditionalAccessTemplate") ||
+                                  deviation.standardName?.includes("IntuneTemplate")) &&
+                                deviation.expectedValue ===
+                                  "This policy only exists in the tenant, not in the template."
+                            ) && (
+                              <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
+                                <Block sx={{ mr: 1, color: "error.main" }} />
+                                Deny All Deviations - Delete
+                              </MenuItem>
+                            )}
+                            <MenuItem onClick={() => handleBulkAction("deny-all-remediate")}>
+                              <Cancel sx={{ mr: 1, color: "error.main" }} />
+                              Deny All Deviations - Remediate to align with template
+                            </MenuItem>
+                            <MenuItem onClick={handleRemoveDriftCustomization}>
+                              <Block sx={{ mr: 1, color: "warning.main" }} />
+                              Remove Drift Customization
+                            </MenuItem>
+                          </Menu>
+                        </Box>
+                      )}
                     </Box>
+                    <CippBannerListCard
+                      items={filteredDeviationItems}
+                      isCollapsible={true}
+                      layout={"single"}
+                      isFetching={driftApi.isFetching}
+                    />
                   </Box>
-                  <CippBannerListCard
-                    items={deviationItemsWithActions}
-                    isCollapsible={true}
-                    layout={"single"}
-                    isFetching={driftApi.isFetching}
-                  />
-                </Box>
+                )}
 
                 {/* Accepted Deviations Section */}
-                {acceptedDeviationItemsWithActions.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Accepted Deviations
-                    </Typography>
-                    <CippBannerListCard
-                      items={acceptedDeviationItemsWithActions}
-                      isCollapsible={true}
-                      layout={"single"}
-                      isFetching={driftApi.isFetching}
-                    />
-                  </Box>
-                )}
+                {filterStatus.some((f) => f.value === "all" || f.value === "accepted") &&
+                  filteredAcceptedItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Accepted Deviations
+                      </Typography>
+                      <CippBannerListCard
+                        items={filteredAcceptedItems}
+                        isCollapsible={true}
+                        layout={"single"}
+                        isFetching={driftApi.isFetching}
+                      />
+                    </Box>
+                  )}
 
                 {/* Customer Specific Deviations Section */}
-                {customerSpecificDeviationItemsWithActions.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Accepted Deviations - Customer Specific
-                    </Typography>
-                    <CippBannerListCard
-                      items={customerSpecificDeviationItemsWithActions}
-                      isCollapsible={true}
-                      layout={"single"}
-                      isFetching={driftApi.isFetching}
-                    />
-                  </Box>
-                )}
+                {filterStatus.some((f) => f.value === "all" || f.value === "customerspecific") &&
+                  filteredCustomerSpecificItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Accepted Deviations - Customer Specific
+                      </Typography>
+                      <CippBannerListCard
+                        items={filteredCustomerSpecificItems}
+                        isCollapsible={true}
+                        layout={"single"}
+                        isFetching={driftApi.isFetching}
+                      />
+                    </Box>
+                  )}
 
                 {/* Denied Deviations Section */}
-                {deniedDeviationItemsWithActions.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Denied Deviations
-                    </Typography>
-                    <CippBannerListCard
-                      items={deniedDeviationItemsWithActions}
-                      isCollapsible={true}
-                      layout={"single"}
-                      isFetching={driftApi.isFetching}
-                    />
-                  </Box>
-                )}
+                {filterStatus.some((f) => f.value === "all" || f.value === "denied") &&
+                  filteredDeniedItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Denied Deviations
+                      </Typography>
+                      <CippBannerListCard
+                        items={filteredDeniedItems}
+                        isCollapsible={true}
+                        layout={"single"}
+                        isFetching={driftApi.isFetching}
+                      />
+                    </Box>
+                  )}
               </Stack>
             </Grid>
           </Grid>
