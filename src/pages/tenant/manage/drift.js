@@ -313,6 +313,42 @@ const ManageDriftPage = () => {
     return null;
   };
 
+  // Helper function to compare JSON objects and find differences
+  const compareJsonObjects = (expected, current) => {
+    if (!expected || !current) return null;
+
+    try {
+      const expectedObj = typeof expected === "string" ? JSON.parse(expected) : expected;
+      const currentObj = typeof current === "string" ? JSON.parse(current) : current;
+
+      // Deep comparison - if they're equal, return null (no diff)
+      if (JSON.stringify(expectedObj) === JSON.stringify(currentObj)) {
+        return null; // No differences
+      }
+
+      // Find differences
+      const differences = {};
+      const allKeys = new Set([...Object.keys(expectedObj), ...Object.keys(currentObj)]);
+
+      allKeys.forEach((key) => {
+        const expectedVal = expectedObj[key];
+        const currentVal = currentObj[key];
+
+        if (JSON.stringify(expectedVal) !== JSON.stringify(currentVal)) {
+          differences[key] = {
+            expected: expectedVal,
+            current: currentVal,
+          };
+        }
+      });
+
+      return Object.keys(differences).length > 0 ? differences : null;
+    } catch (e) {
+      console.error("Error comparing JSON objects:", e);
+      return null;
+    }
+  };
+
   // Helper function to format policy objects for display
   const formatPolicyValue = (value) => {
     if (!value) return "N/A";
@@ -340,6 +376,21 @@ const ManageDriftPage = () => {
   // Helper function to create deviation items
   const createDeviationItems = (deviations, statusOverride = null) => {
     return (deviations || []).map((deviation, index) => {
+      // Check if this should be skipped due to missing license
+      const isLicenseSkipped = deviation.LicenseAvailable === false;
+
+      // Check if we have both ExpectedValue and CurrentValue for comparison
+      let isActuallyCompliant = false;
+      let jsonDifferences = null;
+
+      if (deviation.ExpectedValue && deviation.CurrentValue) {
+        jsonDifferences = compareJsonObjects(deviation.ExpectedValue, deviation.CurrentValue);
+        // If there are no differences, this is actually compliant
+        if (jsonDifferences === null) {
+          isActuallyCompliant = true;
+        }
+      }
+
       // Prioritize standardDisplayName from drift data (which has user-friendly names for templates)
       // then fallback to standards.json lookup, then raw name
       const prettyName =
@@ -354,21 +405,46 @@ const ManageDriftPage = () => {
         deviation.standardDescription ||
         "No description available";
 
+      // Determine the actual status
+      // If actually compliant (values match), mark as aligned regardless of input status
+      // If license is skipped, mark as skipped
+      // Otherwise use the provided status
+      const actualStatus = isActuallyCompliant
+        ? "aligned"
+        : isLicenseSkipped
+        ? "skipped"
+        : statusOverride || deviation.Status || deviation.state;
+      const actualStatusText = isActuallyCompliant
+        ? "Compliant"
+        : isLicenseSkipped
+        ? "Skipped - No License Available"
+        : getDeviationStatusText(actualStatus);
+
+      // For skipped items, show different expected/received values
+      let displayExpectedValue = deviation.ExpectedValue || deviation.expectedValue;
+      let displayReceivedValue = deviation.CurrentValue || deviation.receivedValue;
+
+      // If we have JSON differences, show only the differences
+      if (jsonDifferences && !isLicenseSkipped && !isActuallyCompliant) {
+        displayExpectedValue = JSON.stringify(jsonDifferences, null, 2);
+        displayReceivedValue = "See differences in Expected column";
+      }
+
       return {
         id: statusOverride ? `${statusOverride}-${index + 1}` : `current-${index + 1}`,
         cardLabelBox: {
-          cardLabelBoxHeader: getDeviationIcon(
-            statusOverride || deviation.Status || deviation.state
-          ),
+          cardLabelBoxHeader: getDeviationIcon(actualStatus),
         },
         text: prettyName,
         subtext: description,
-        statusColor: getDeviationColor(statusOverride || deviation.Status || deviation.state),
-        statusText: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
+        statusColor: isLicenseSkipped ? "text.secondary" : getDeviationColor(actualStatus),
+        statusText: actualStatusText,
         standardName: deviation.standardName, // Store the original standardName for action handlers
         receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
         expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
         originalDeviation: deviation, // Store the complete original deviation object for reference
+        isLicenseSkipped: isLicenseSkipped, // Flag for filtering and disabling actions
+        isActuallyCompliant: isActuallyCompliant, // Flag to move to compliant section
         children: (
           <Stack spacing={2} sx={{ p: 2 }}>
             {description && description !== "No description available" && (
@@ -377,49 +453,65 @@ const ManageDriftPage = () => {
               </Typography>
             )}
 
-            {(deviation.expectedValue && deviation.expectedValue !== "Compliant with template") ||
-            deviation.receivedValue ? (
-              <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
-                {deviation.expectedValue &&
-                  deviation.expectedValue !== "Compliant with template" && (
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontWeight: 600,
-                          color: "text.secondary",
-                          textTransform: "uppercase",
-                          letterSpacing: 0.5,
-                        }}
-                      >
-                        Expected
-                      </Typography>
-                      <Box
-                        sx={{
-                          mt: 0.5,
-                          p: 1.5,
-                          bgcolor: "action.hover",
-                          borderRadius: 1,
-                          border: "1px solid",
-                          borderColor: "divider",
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontFamily: "monospace",
-                            fontSize: "0.8125rem",
-                            whiteSpace: "pre-wrap",
-                            wordBreak: "break-word",
-                          }}
-                        >
-                          {deviation.expectedValue}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  )}
+            {isLicenseSkipped && (
+              <Box
+                sx={{
+                  p: 1.5,
+                  bgcolor: "warning.lighter",
+                  borderRadius: 1,
+                  border: "1px solid",
+                  borderColor: "warning.main",
+                }}
+              >
+                <Typography variant="body2" color="warning.dark" sx={{ fontWeight: 600 }}>
+                  ⚠️ This standard was skipped because the required license is not available for
+                  this tenant.
+                </Typography>
+              </Box>
+            )}
 
-                {deviation.receivedValue && (
+            {(displayExpectedValue && displayExpectedValue !== "Compliant with template") ||
+            displayReceivedValue ? (
+              <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
+                {displayExpectedValue && displayExpectedValue !== "Compliant with template" && (
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: 600,
+                        color: "text.secondary",
+                        textTransform: "uppercase",
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      {jsonDifferences ? "Differences" : "Expected"}
+                    </Typography>
+                    <Box
+                      sx={{
+                        mt: 0.5,
+                        p: 1.5,
+                        bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: isActuallyCompliant ? "success.main" : "divider",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontFamily: "monospace",
+                          fontSize: "0.8125rem",
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {displayExpectedValue}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+
+                {displayReceivedValue && !jsonDifferences && (
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Typography
                       variant="caption"
@@ -436,10 +528,10 @@ const ManageDriftPage = () => {
                       sx={{
                         mt: 0.5,
                         p: 1.5,
-                        bgcolor: "action.hover",
+                        bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
                         borderRadius: 1,
                         border: "1px solid",
-                        borderColor: "divider",
+                        borderColor: isActuallyCompliant ? "success.main" : "divider",
                       }}
                     >
                       <Typography
@@ -451,7 +543,7 @@ const ManageDriftPage = () => {
                           wordBreak: "break-word",
                         }}
                       >
-                        {formatPolicyValue(deviation.receivedValue)}
+                        {displayReceivedValue}
                       </Typography>
                     </Box>
                   </Box>
@@ -523,6 +615,16 @@ const ManageDriftPage = () => {
     "denied"
   );
   const alignedStandardItems = createDeviationItems(processedDriftData.alignedStandards, "aligned");
+
+  // Separate items by their actual status
+  const licenseSkippedItems = deviationItems.filter((item) => item.isLicenseSkipped);
+  const compliantFromDeviations = deviationItems.filter((item) => item.isActuallyCompliant);
+  const actualDeviationItems = deviationItems.filter(
+    (item) => !item.isLicenseSkipped && !item.isActuallyCompliant
+  );
+
+  // Combine compliant items from both sources
+  const allAlignedItems = [...alignedStandardItems, ...compliantFromDeviations];
 
   const handleMenuClick = (event, itemId) => {
     setAnchorEl((prev) => ({ ...prev, [itemId]: event.currentTarget }));
@@ -776,7 +878,7 @@ const ManageDriftPage = () => {
   }, [templateId]);
 
   // Add action buttons to each deviation item
-  const deviationItemsWithActions = deviationItems.map((item) => {
+  const deviationItemsWithActions = actualDeviationItems.map((item) => {
     // Check if this is a template that supports delete action
     const supportsDelete =
       (item.standardName?.includes("ConditionalAccessTemplate") ||
@@ -1011,7 +1113,8 @@ const ManageDriftPage = () => {
   const filteredAcceptedItems = applyFilters(acceptedDeviationItemsWithActions);
   const filteredCustomerSpecificItems = applyFilters(customerSpecificDeviationItemsWithActions);
   const filteredDeniedItems = applyFilters(deniedDeviationItemsWithActions);
-  const filteredAlignedItems = applyFilters(alignedStandardItems);
+  const filteredAlignedItems = applyFilters(allAlignedItems);
+  const filteredLicenseSkippedItems = applyFilters(licenseSkippedItems);
 
   // Helper function to render items grouped by category when category sort is active
   const renderItemsByCategory = (items) => {
@@ -1255,6 +1358,12 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Skipped (No License)
+                      </Typography>
+                      <Chip label={licenseSkippedItems.length} size="small" variant="outlined" />
+                    </Box>
                     <Divider />
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Typography variant="body2" fontWeight={600}>
@@ -1458,6 +1567,25 @@ const ManageDriftPage = () => {
                       />
                     </Box>
                   )}
+
+                {/* License Skipped Section - Always at the end */}
+                {filteredLicenseSkippedItems.length > 0 && (
+                  <Box>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                      Skipped - No License Available
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      These standards were skipped because the required licenses are not available
+                      for this tenant.
+                    </Typography>
+                    <CippBannerListCard
+                      items={filteredLicenseSkippedItems}
+                      isCollapsible={true}
+                      layout={"single"}
+                      isFetching={driftApi.isFetching}
+                    />
+                  </Box>
+                )}
               </Stack>
             </Grid>
           </Grid>
