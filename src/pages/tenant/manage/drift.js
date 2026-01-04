@@ -853,13 +853,13 @@ const ManageDriftPage = () => {
     if (!standardName) return "Other Standards";
     if (standardName.includes("ConditionalAccessTemplate")) return "Conditional Access Policies";
     if (standardName.includes("IntuneTemplate")) return "Intune Policies";
-    
+
     // For other standards, look up category in standards.json
     const standard = standardsData.find((s) => s.name === standardName);
     if (standard && standard.cat) {
       return standard.cat;
     }
-    
+
     return "Other Standards";
   };
 
