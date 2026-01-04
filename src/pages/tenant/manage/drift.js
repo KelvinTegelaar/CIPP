@@ -377,28 +377,80 @@ const ManageDriftPage = () => {
               </Typography>
             )}
 
-            {(deviation.expectedValue && deviation.expectedValue !== "Compliant with template") || deviation.receivedValue ? (
+            {(deviation.expectedValue && deviation.expectedValue !== "Compliant with template") ||
+            deviation.receivedValue ? (
               <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
-                {deviation.expectedValue && deviation.expectedValue !== "Compliant with template" && (
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary", textTransform: "uppercase", letterSpacing: 0.5 }}>
-                      Expected
-                    </Typography>
-                    <Box sx={{ mt: 0.5, p: 1.5, bgcolor: "action.hover", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
-                      <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "0.8125rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                        {deviation.expectedValue}
+                {deviation.expectedValue &&
+                  deviation.expectedValue !== "Compliant with template" && (
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 600,
+                          color: "text.secondary",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                        }}
+                      >
+                        Expected
                       </Typography>
+                      <Box
+                        sx={{
+                          mt: 0.5,
+                          p: 1.5,
+                          bgcolor: "action.hover",
+                          borderRadius: 1,
+                          border: "1px solid",
+                          borderColor: "divider",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontFamily: "monospace",
+                            fontSize: "0.8125rem",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {deviation.expectedValue}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                )}
+                  )}
 
                 {deviation.receivedValue && (
                   <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: 600,
+                        color: "text.secondary",
+                        textTransform: "uppercase",
+                        letterSpacing: 0.5,
+                      }}
+                    >
                       Current
                     </Typography>
-                    <Box sx={{ mt: 0.5, p: 1.5, bgcolor: "action.hover", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
-                      <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "0.8125rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                    <Box
+                      sx={{
+                        mt: 0.5,
+                        p: 1.5,
+                        bgcolor: "action.hover",
+                        borderRadius: 1,
+                        border: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontFamily: "monospace",
+                          fontSize: "0.8125rem",
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                        }}
+                      >
                         {formatPolicyValue(deviation.receivedValue)}
                       </Typography>
                     </Box>
@@ -407,13 +459,18 @@ const ManageDriftPage = () => {
               </Box>
             ) : null}
 
-            {(deviation.Reason || deviation.lastChangedByUser || processedDriftData.latestDataCollection) && (
+            {(deviation.Reason ||
+              deviation.lastChangedByUser ||
+              processedDriftData.latestDataCollection) && (
               <>
                 <Divider />
                 <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                   {deviation.Reason && (
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: 600, color: "text.secondary" }}
+                      >
                         Reason
                       </Typography>
                       <Typography variant="body2">{deviation.Reason}</Typography>
@@ -421,7 +478,10 @@ const ManageDriftPage = () => {
                   )}
                   {deviation.lastChangedByUser && (
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: 600, color: "text.secondary" }}
+                      >
                         Changed By
                       </Typography>
                       <Typography variant="body2">{deviation.lastChangedByUser}</Typography>
@@ -429,7 +489,10 @@ const ManageDriftPage = () => {
                   )}
                   {processedDriftData.latestDataCollection && (
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: 600, color: "text.secondary" }}
+                      >
                         Last Updated
                       </Typography>
                       <Typography variant="body2">
