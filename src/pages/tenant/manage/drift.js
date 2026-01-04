@@ -834,17 +834,34 @@ const ManageDriftPage = () => {
   }));
 
   // Calculate compliance metrics for badges
+  // Denied deviations are included in total but not in compliant count (they haven't been fixed yet)
   const totalPolicies =
     processedDriftData.alignedCount +
     processedDriftData.currentDeviationsCount +
     processedDriftData.acceptedDeviationsCount +
-    processedDriftData.customerSpecificDeviations;
+    processedDriftData.customerSpecificDeviations +
+    processedDriftData.deniedDeviationsCount;
 
   const compliancePercentage =
     totalPolicies > 0 ? Math.round((processedDriftData.alignedCount / totalPolicies) * 100) : 0;
 
   const missingLicensePercentage = 0; // This would need to be calculated from actual license data
   const combinedScore = compliancePercentage + missingLicensePercentage;
+
+  // Helper function to get category from standardName
+  const getCategory = (standardName) => {
+    if (!standardName) return "Other Standards";
+    if (standardName.includes("ConditionalAccessTemplate")) return "Conditional Access Policies";
+    if (standardName.includes("IntuneTemplate")) return "Intune Policies";
+    
+    // For other standards, look up category in standards.json
+    const standard = standardsData.find((s) => s.name === standardName);
+    if (standard && standard.cat) {
+      return standard.cat;
+    }
+    
+    return "Other Standards";
+  };
 
   // Apply search and sort filters
   const applyFilters = (items) => {
@@ -863,6 +880,16 @@ const ManageDriftPage = () => {
       filtered.sort((a, b) => (a.text || "").localeCompare(b.text || ""));
     } else if (sortBy === "status") {
       filtered.sort((a, b) => (a.statusText || "").localeCompare(b.statusText || ""));
+    } else if (sortBy === "category") {
+      // Sort by category, then by name within each category
+      filtered.sort((a, b) => {
+        const catA = getCategory(a.standardName);
+        const catB = getCategory(b.standardName);
+        if (catA !== catB) {
+          return catA.localeCompare(catB);
+        }
+        return (a.text || "").localeCompare(b.text || "");
+      });
     }
 
     return filtered;
@@ -873,6 +900,58 @@ const ManageDriftPage = () => {
   const filteredCustomerSpecificItems = applyFilters(customerSpecificDeviationItemsWithActions);
   const filteredDeniedItems = applyFilters(deniedDeviationItemsWithActions);
   const filteredAlignedItems = applyFilters(alignedStandardItems);
+
+  // Helper function to render items grouped by category when category sort is active
+  const renderItemsByCategory = (items) => {
+    if (sortBy !== "category" || items.length === 0) {
+      return (
+        <CippBannerListCard
+          items={items}
+          isCollapsible={true}
+          layout={"single"}
+          isFetching={driftApi.isFetching}
+          onSelectionChange={setSelectedItems}
+          selectedItems={selectedItems}
+        />
+      );
+    }
+
+    // Group items by category and collect unique categories
+    const groupedItems = {};
+    items.forEach((item) => {
+      const category = getCategory(item.standardName);
+      if (!groupedItems[category]) {
+        groupedItems[category] = [];
+      }
+      groupedItems[category].push(item);
+    });
+
+    // Sort categories alphabetically
+    const categories = Object.keys(groupedItems).sort();
+
+    return (
+      <Stack spacing={3}>
+        {categories.map((category) => {
+          if (groupedItems[category].length === 0) return null;
+          return (
+            <Box key={category}>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1.5 }}>
+                {category}
+              </Typography>
+              <CippBannerListCard
+                items={groupedItems[category]}
+                isCollapsible={true}
+                layout={"single"}
+                isFetching={driftApi.isFetching}
+                onSelectionChange={setSelectedItems}
+                selectedItems={selectedItems}
+              />
+            </Box>
+          );
+        })}
+      </Stack>
+    );
+  };
 
   // Simple filter for drift templates
   const driftTemplateOptions = standardsApi.data
@@ -1053,6 +1132,17 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Denied
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.deniedDeviationsCount}
+                        size="small"
+                        color="error"
+                        variant="outlined"
+                      />
+                    </Box>
                     <Divider />
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Typography variant="body2" fontWeight={600}>
@@ -1104,11 +1194,20 @@ const ManageDriftPage = () => {
                       options={[
                         { label: "Name", value: "name" },
                         { label: "Status", value: "status" },
+                        { label: "Category", value: "category" },
                       ]}
                       label="Sort by"
                       value={
                         sortBy
-                          ? { label: sortBy === "name" ? "Name" : "Status", value: sortBy }
+                          ? {
+                              label:
+                                sortBy === "name"
+                                  ? "Name"
+                                  : sortBy === "status"
+                                  ? "Status"
+                                  : "Category",
+                              value: sortBy,
+                            }
                           : null
                       }
                       onChange={(newValue) => setSortBy(newValue?.value || "name")}
@@ -1186,14 +1285,7 @@ const ManageDriftPage = () => {
                         </Box>
                       )}
                     </Box>
-                    <CippBannerListCard
-                      items={filteredDeviationItems}
-                      isCollapsible={true}
-                      layout={"single"}
-                      isFetching={driftApi.isFetching}
-                      onSelectionChange={setSelectedItems}
-                      selectedItems={selectedItems}
-                    />
+                    {renderItemsByCategory(filteredDeviationItems)}
                   </Box>
                 )}
 
@@ -1206,14 +1298,7 @@ const ManageDriftPage = () => {
                       <Typography variant="h6" sx={{ mb: 2 }}>
                         Accepted Deviations
                       </Typography>
-                      <CippBannerListCard
-                        items={filteredAcceptedItems}
-                        isCollapsible={true}
-                        layout={"single"}
-                        isFetching={driftApi.isFetching}
-                        onSelectionChange={setSelectedItems}
-                        selectedItems={selectedItems}
-                      />
+                      {renderItemsByCategory(filteredAcceptedItems)}
                     </Box>
                   )}
 
@@ -1226,14 +1311,7 @@ const ManageDriftPage = () => {
                       <Typography variant="h6" sx={{ mb: 2 }}>
                         Accepted Deviations - Customer Specific
                       </Typography>
-                      <CippBannerListCard
-                        items={filteredCustomerSpecificItems}
-                        isCollapsible={true}
-                        layout={"single"}
-                        isFetching={driftApi.isFetching}
-                        onSelectionChange={setSelectedItems}
-                        selectedItems={selectedItems}
-                      />
+                      {renderItemsByCategory(filteredCustomerSpecificItems)}
                     </Box>
                   )}
 
@@ -1246,14 +1324,7 @@ const ManageDriftPage = () => {
                       <Typography variant="h6" sx={{ mb: 2 }}>
                         Denied Deviations
                       </Typography>
-                      <CippBannerListCard
-                        items={filteredDeniedItems}
-                        isCollapsible={true}
-                        layout={"single"}
-                        isFetching={driftApi.isFetching}
-                        onSelectionChange={setSelectedItems}
-                        selectedItems={selectedItems}
-                      />
+                      {renderItemsByCategory(filteredDeniedItems)}
                     </Box>
                   )}
 
