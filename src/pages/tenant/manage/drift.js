@@ -307,7 +307,7 @@ const ManageDriftPage = () => {
         "No description available";
 
       return {
-        id: index + 1,
+        id: statusOverride ? `${statusOverride}-${index + 1}` : `current-${index + 1}`,
         cardLabelBox: {
           cardLabelBoxHeader: getDeviationIcon(
             statusOverride || deviation.Status || deviation.state
@@ -1121,6 +1121,8 @@ const ManageDriftPage = () => {
                       isCollapsible={true}
                       layout={"single"}
                       isFetching={driftApi.isFetching}
+                      onSelectionChange={setSelectedItems}
+                      selectedItems={selectedItems}
                     />
                   </Box>
                 )}
@@ -1137,6 +1139,8 @@ const ManageDriftPage = () => {
                         isCollapsible={true}
                         layout={"single"}
                         isFetching={driftApi.isFetching}
+                        onSelectionChange={setSelectedItems}
+                        selectedItems={selectedItems}
                       />
                     </Box>
                   )}
@@ -1153,6 +1157,8 @@ const ManageDriftPage = () => {
                         isCollapsible={true}
                         layout={"single"}
                         isFetching={driftApi.isFetching}
+                        onSelectionChange={setSelectedItems}
+                        selectedItems={selectedItems}
                       />
                     </Box>
                   )}
@@ -1169,6 +1175,8 @@ const ManageDriftPage = () => {
                         isCollapsible={true}
                         layout={"single"}
                         isFetching={driftApi.isFetching}
+                        onSelectionChange={setSelectedItems}
+                        selectedItems={selectedItems}
                       />
                     </Box>
                   )}
