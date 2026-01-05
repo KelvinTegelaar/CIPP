@@ -181,6 +181,8 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     "NotBefore",
     "NotAfter",
     "latestDataCollection",
+    "requestDate", // App Consent Requests
+    "reviewedDate", // App Consent Requests
   ];
 
   const matchDateTime = /([dD]ate[tT]ime|[Ee]xpiration)/;
