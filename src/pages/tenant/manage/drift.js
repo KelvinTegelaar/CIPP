@@ -1605,9 +1605,7 @@ const ManageDriftPage = () => {
           api={{
             url: "/api/ExecUpdateDriftDeviation",
             type: "POST",
-            data: {
-              deviations: "deviations",
-            },
+            postEntireRow: true,
             confirmText: `Are you sure you'd like to ${actionData.action?.text || "update"} ${
               actionData.action?.type === "single"
                 ? "this deviation"
