@@ -196,7 +196,7 @@ export const CippTenantSelector = (props) => {
         );
       }
     }
-  }, [currentTenant?.value]);
+  }, [currentTenant?.value, router, queryClient]);
 
   // This effect handles when the URL parameter changes (from deep link or user selection)
   // This is the single source of truth for tenant changes
@@ -235,7 +235,7 @@ export const CippTenantSelector = (props) => {
         }
       }
     }
-  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess]);
+  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess, tenantList.data, currentTenant, settings]);
 
   // This effect ensures the tenant filter parameter is included in the URL when missing
   useEffect(() => {
@@ -253,39 +253,13 @@ export const CippTenantSelector = (props) => {
         { shallow: true }
       );
     }
-  }, [router.isReady, router.query.tenantFilter, settings.currentTenant]);
+  }, [router.isReady, router.query.tenantFilter, settings.currentTenant, router]);
 
   useEffect(() => {
-    if (tenant && currentTenant?.value && currentTenant?.value !== "AllTenants") {
+    if (offcanvasVisible && currentTenant?.value && currentTenant?.value !== "AllTenants") {
       tenantDetails.refetch();
     }
-  }, [tenant, offcanvasVisible]);
-
-  // We can simplify this effect since we now have the new effect above to handle URL changes
-  useEffect(() => {
-    if (tenant && tenantList.isSuccess && !currentTenant) {
-      const matchingTenant = tenantList.data.find(
-        ({ defaultDomainName }) => defaultDomainName === tenant
-      );
-      setSelectedTenant(
-        matchingTenant
-          ? {
-              value: tenant,
-              label: `${matchingTenant.displayName} (${tenant})`,
-              addedFields: {
-                defaultDomainName: matchingTenant.defaultDomainName,
-                displayName: matchingTenant.displayName,
-                customerId: matchingTenant.customerId,
-                initialDomainName: matchingTenant.initialDomainName,
-              },
-            }
-          : {
-              value: null,
-              label: "Invalid Tenant",
-            }
-      );
-    }
-  }, [tenant, tenantList.isSuccess, currentTenant]);
+  }, [offcanvasVisible, currentTenant?.value]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -342,13 +316,14 @@ export const CippTenantSelector = (props) => {
           onChange={(nv) => setSelectedTenant(nv)}
           options={
             tenantList.isSuccess && tenantList.data && tenantList.data.length > 0
-              ? tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
+              ? tenantList.data.map(({ customerId, displayName, defaultDomainName, initialDomainName }) => ({
                   value: defaultDomainName,
                   label: `${displayName} (${defaultDomainName})`,
-                  addedField: {
-                    defaultDomainName: "defaultDomainName",
-                    displayName: "displayName",
-                    customerId: "customerId",
+                  addedFields: {
+                    defaultDomainName: defaultDomainName,
+                    displayName: displayName,
+                    customerId: customerId,
+                    initialDomainName: initialDomainName,
                   },
                 }))
               : []
