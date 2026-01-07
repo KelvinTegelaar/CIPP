@@ -68,6 +68,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   const setDefaults = useWatch({ control: formControl.control, name: "Defaults" });
   const selectedPermissions = useWatch({ control: formControl.control, name: "Permissions" });
   const selectedEntraGroup = useWatch({ control: formControl.control, name: "EntraGroup" });
+  const ipRanges = useWatch({ control: formControl.control, name: "IPRange" });
 
   const {
     data: apiPermissions = [],
@@ -240,6 +241,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           value: endpoint,
         })) || [];
 
+      // Process IP ranges
+      const processedIPRanges =
+        currentPermissions?.IPRange?.map((ip) => ({
+          label: ip,
+          value: ip,
+        })) || [];
+
       formControl.reset({
         Permissions:
           basePermissions && Object.keys(basePermissions).length > 0
@@ -249,6 +257,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         allowedTenants: newAllowedTenants,
         blockedTenants: newBlockedTenants,
         BlockedEndpoints: processedBlockedEndpoints,
+        IPRange: processedIPRanges,
         EntraGroup: currentPermissions?.EntraGroup,
       });
     }
@@ -340,6 +349,11 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         return endpoint.value || endpoint;
       }) || [];
 
+    const processedIPRanges =
+      ipRanges?.map((ip) => {
+        return ip?.value || ip;
+      }) || [];
+
     updatePermissions.mutate({
       url: "/api/ExecCustomRole?Action=AddUpdate",
       data: {
@@ -349,6 +363,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         AllowedTenants: processedAllowedTenants,
         BlockedTenants: processedBlockedTenants,
         BlockedEndpoints: processedBlockedEndpoints,
+        IPRange: processedIPRanges,
       },
     });
   };
@@ -612,6 +627,26 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               </Box>
             </>
           )}
+          <Box sx={{ mb: 3 }}>
+            <CippFormComponent
+              type="autoComplete"
+              name="IPRange"
+              label="Allowed IP Range (Single hosts or CIDR notation)"
+              formControl={formControl}
+              multiple={true}
+              freeSolo={true}
+              creatable={true}
+              options={[]}
+              placeholder="Type in the IP addresses and hit enter"
+              helperText={
+                selectedRole === "superadmin"
+                  ? "IP restrictions are disabled for superadmin role to prevent lockout issues"
+                  : "Leave empty to allow all IP addresses. Supports IPv4/IPv6 in CIDR notation (e.g., 192.168.1.0/24, 2001:db8::/32)"
+              }
+              fullWidth={true}
+              disabled={selectedRole === "superadmin"}
+            />
+          </Box>
           {apiPermissionFetching && (
             <>
               <Typography variant="h5">
@@ -817,6 +852,16 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   >
                     {endpoint?.label || endpoint?.value || endpoint}
                   </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {ipRanges?.length > 0 && (
+            <>
+              <h5>Allowed IP Ranges</h5>
+              <ul>
+                {ipRanges.map((ip, idx) => (
+                  <li key={`ip-range-${idx}`}>{ip?.value || ip?.label || ip}</li>
                 ))}
               </ul>
             </>
