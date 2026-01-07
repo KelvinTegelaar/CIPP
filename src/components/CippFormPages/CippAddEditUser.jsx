@@ -606,7 +606,7 @@ const CippAddEditUser = (props) => {
               label: tenantGroup.displayName,
               value: tenantGroup.id,
               addedFields: {
-                calculatedGroupType: tenantGroup.calculatedGroupType,
+                groupType: tenantGroup.groupType,
               },
             }))}
             formControl={formControl}
@@ -624,7 +624,7 @@ const CippAddEditUser = (props) => {
               label: userGroups.DisplayName,
               value: userGroups.id,
               addedFields: {
-                calculatedGroupType: userGroups.calculatedGroupType,
+                groupType: userGroups.groupType,
               },
             }))}
             formControl={formControl}
