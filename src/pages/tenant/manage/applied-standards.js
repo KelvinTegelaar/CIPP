@@ -145,6 +145,7 @@ const Page = () => {
           Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
             if (standardKey === "IntuneTemplate" && Array.isArray(standardConfig)) {
               standardConfig.forEach((templateItem, index) => {
+                if (!templateItem) return; // Skip null items
                 console.log("Processing IntuneTemplate item:", templateItem);
                 if (
                   templateItem["TemplateList-Tags"]?.value &&
@@ -214,7 +215,7 @@ const Page = () => {
                         standardId,
                         standardName: `Intune Template: ${
                           expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
-                        } (via ${templateItem["TemplateList-Tags"].value})`,
+                        } (via ${templateItem["TemplateList-Tags"]?.value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
@@ -367,6 +368,7 @@ const Page = () => {
             ) {
               // Process each ConditionalAccessTemplate item separately
               standardConfig.forEach((templateItem, index) => {
+                if (!templateItem) return; // Skip null items
                 // Check if this item has TemplateList-Tags and expand them
                 if (
                   templateItem["TemplateList-Tags"]?.value &&
@@ -423,7 +425,7 @@ const Page = () => {
                         standardId,
                         standardName: `Conditional Access Template: ${
                           expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
-                        } (via ${templateItem["TemplateList-Tags"].value})`,
+                        } (via ${templateItem["TemplateList-Tags"]?.value})`,
                         currentTenantValue:
                           standardObject !== undefined
                             ? {
