@@ -609,6 +609,7 @@ const CippAddEditUser = (props) => {
                 groupType: tenantGroup.groupType,
               },
             }))}
+            creatable={false}
             formControl={formControl}
           />
         </Grid>
@@ -627,6 +628,7 @@ const CippAddEditUser = (props) => {
                 groupType: userGroups.groupType,
               },
             }))}
+            creatable={false}
             formControl={formControl}
           />
         </Grid>
