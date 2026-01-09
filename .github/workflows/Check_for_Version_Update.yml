@@ -1,8 +1,8 @@
 ---
 name: Check for Version Update
 on:
-  pull_request:
-    branches: [master, main]
+#  pull_request:
+ #   branches: [master, main]
   workflow_dispatch:
 jobs:
   build:
