@@ -67,7 +67,7 @@ const Page = () => {
         IP: ip,
         State: "Trusted",
         tenantFilter: currentTenant,
-      }
+      },
     });
   };
 
@@ -78,7 +78,7 @@ const Page = () => {
         IP: ip,
         State: "NotTrusted",
         tenantFilter: currentTenant,
-      }
+      },
     });
   };
 
@@ -86,7 +86,6 @@ const Page = () => {
     <Box
       sx={{
         flexGrow: 1,
-        py: 4,
       }}
     >
       <Container maxWidth={false}>

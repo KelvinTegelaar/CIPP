@@ -15,7 +15,7 @@ import { Scrollbar } from "../scrollbar";
 import { useEffect, useMemo, useState } from "react";
 import { ApiGetCallWithPagination } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
-import { utilColumnsFromAPI } from "./util-columnsFromAPI";
+import { utilColumnsFromAPI, resolveSimpleColumnVariables } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
 import { Info, More, MoreHoriz } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
@@ -25,6 +25,55 @@ import { getCippError } from "../../utils/get-cipp-error";
 import { Box } from "@mui/system";
 import { useSettings } from "../../hooks/use-settings";
 import { isEqual } from "lodash"; // Import lodash for deep comparison
+
+// Resolve dot-delimited property paths against arbitrary data objects.
+const getNestedValue = (source, path) => {
+  if (!source) {
+    return undefined;
+  }
+  if (!path) {
+    return source;
+  }
+
+  return path.split(".").reduce((acc, key) => {
+    if (acc === undefined || acc === null) {
+      return undefined;
+    }
+    if (typeof acc !== "object") {
+      return undefined;
+    }
+    return acc[key];
+  }, source);
+};
+
+// Resolve dot-delimited column ids against the original row data so nested fields can sort/filter properly.
+const getRowValueByColumnId = (row, columnId) => {
+  if (!row?.original || !columnId) {
+    return undefined;
+  }
+
+  if (columnId.includes("@odata")) {
+    return row.original[columnId];
+  }
+
+  return getNestedValue(row.original, columnId);
+};
+
+const compareNullable = (aVal, bVal) => {
+  if (aVal === null && bVal === null) {
+    return 0;
+  }
+  if (aVal === null) {
+    return 1;
+  }
+  if (bVal === null) {
+    return -1;
+  }
+  if (aVal === bVal) {
+    return 0;
+  }
+  return aVal > bVal ? 1 : -1;
+};
 
 export const CippDataTable = (props) => {
   const {
@@ -56,6 +105,8 @@ export const CippDataTable = (props) => {
     filters,
     maxHeightOffset = "380px",
     defaultSorting = [],
+    isInDialog = false,
+    showBulkExportAction = true,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
@@ -63,6 +114,8 @@ export const CippDataTable = (props) => {
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
+  const [customComponentData, setCustomComponentData] = useState({});
+  const [customComponentVisible, setCustomComponentVisible] = useState(false);
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [graphFilterData, setGraphFilterData] = useState({});
   const [sorting, setSorting] = useState([]);
@@ -106,22 +159,6 @@ export const CippDataTable = (props) => {
   useEffect(() => {
     if (getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages;
-      const getNestedValue = (obj, path) => {
-        if (!path) {
-          return obj;
-        }
-
-        const keys = path.split(".");
-        let result = obj;
-        for (const key of keys) {
-          if (result && typeof result === "object" && key in result) {
-            result = result[key];
-          } else {
-            return undefined;
-          }
-        }
-        return result;
-      };
 
       const combinedResults = allPages.flatMap((page) => {
         const nestedData = getNestedValue(page, api.dataKey);
@@ -150,15 +187,31 @@ export const CippDataTable = (props) => {
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
+    // Check if we're in AllTenants mode and data has Tenant property
+    const isAllTenants = settings?.currentTenant === "AllTenants";
+    const hasTenantProperty = usedData.some(
+      (row) => row && typeof row === "object" && "Tenant" in row
+    );
+    const shouldShowTenant = isAllTenants && hasTenantProperty;
+
     if (columns.length === 0 && configuredSimpleColumns.length === 0) {
       finalColumns = apiColumns;
       apiColumns.forEach((col) => {
         newVisibility[col.id] = true;
       });
     } else if (configuredSimpleColumns.length > 0) {
-      finalColumns = apiColumns.map((col) => {
-        newVisibility[col.id] = configuredSimpleColumns.includes(col.id);
-        return col;
+      // Resolve any variables in the simple columns before checking visibility
+      const resolvedSimpleColumns = resolveSimpleColumnVariables(configuredSimpleColumns, usedData);
+
+      // Add Tenant to resolved columns if in AllTenants mode and not already included
+      let finalResolvedColumns = [...resolvedSimpleColumns];
+      if (shouldShowTenant && !resolvedSimpleColumns.includes("Tenant")) {
+        finalResolvedColumns = [...resolvedSimpleColumns, "Tenant"];
+      }
+
+      finalColumns = apiColumns;
+      finalColumns.forEach((col) => {
+        newVisibility[col.id] = finalResolvedColumns.includes(col.id);
       });
     } else {
       const providedColumnKeys = new Set(columns.map((col) => col.id || col.header));
@@ -166,13 +219,22 @@ export const CippDataTable = (props) => {
       finalColumns.forEach((col) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
+
+      // Handle Tenant column for custom columns case
+      if (shouldShowTenant) {
+        const tenantColumn = finalColumns.find((col) => col.id === "Tenant");
+        if (tenantColumn) {
+          // Make tenant visible
+          newVisibility["Tenant"] = true;
+        }
+      }
     }
     if (defaultSorting?.length > 0) {
       setSorting(defaultSorting);
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData, queryKey]);
+  }, [columns.length, usedData, queryKey, settings?.currentTenant]);
 
   const createDialog = useDialog();
 
@@ -337,19 +399,29 @@ export const CippDataTable = (props) => {
                     currentTenant: row.original.Tenant,
                   });
                 }
+
+                if (action.noConfirm && action.customFunction) {
+                  action.customFunction(row.original, action, {});
+                  closeMenu();
+                  return;
+                }
+
+                // Handle custom component differently
+                if (typeof action.customComponent === "function") {
+                  setCustomComponentData({ data: row.original, action: action });
+                  setCustomComponentVisible(true);
+                  closeMenu();
+                  return;
+                }
+
+                // Standard dialog flow
                 setActionData({
                   data: row.original,
                   action: action,
                   ready: true,
                 });
-                if (action.noConfirm && action.customFunction) {
-                  action.customFunction(row.original, action, {});
-                  closeMenu();
-                  return;
-                } else {
-                  createDialog.handleOpen();
-                  closeMenu();
-                }
+                createDialog.handleOpen();
+                closeMenu();
               }}
               disabled={handleActionDisabled(row.original, action)}
             >
@@ -413,6 +485,9 @@ export const CippDataTable = (props) => {
               graphFilterData={graphFilterData}
               setGraphFilterData={setGraphFilterData}
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
+              queueMetadata={getRequestData.data?.pages?.[0]?.Metadata}
+              isInDialog={isInDialog}
+              showBulkExportAction={showBulkExportAction}
             />
           )}
         </>
@@ -420,18 +495,56 @@ export const CippDataTable = (props) => {
     },
     sortingFns: {
       dateTimeNullsLast: (a, b, id) => {
-        const aVal = a?.original?.[id] ?? null;
-        const bVal = b?.original?.[id] ?? null;
-        if (aVal === null && bVal === null) {
-          return 0;
-        }
-        if (aVal === null) {
-          return 1;
-        }
-        if (bVal === null) {
-          return -1;
-        }
-        return aVal > bVal ? 1 : -1;
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const aDate = aRaw ? new Date(aRaw) : null;
+        const bDate = bRaw ? new Date(bRaw) : null;
+        const aTime = aDate && !Number.isNaN(aDate.getTime()) ? aDate.getTime() : null;
+        const bTime = bDate && !Number.isNaN(bDate.getTime()) ? bDate.getTime() : null;
+
+        return compareNullable(aTime, bTime);
+      },
+      number: (a, b, id) => {
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const aNum = typeof aRaw === "number" ? aRaw : Number(aRaw);
+        const bNum = typeof bRaw === "number" ? bRaw : Number(bRaw);
+        const aVal = Number.isNaN(aNum) ? null : aNum;
+        const bVal = Number.isNaN(bNum) ? null : bNum;
+
+        return compareNullable(aVal, bVal);
+      },
+      boolean: (a, b, id) => {
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const toBool = (value) => {
+          if (value === null || value === undefined) {
+            return null;
+          }
+          if (typeof value === "boolean") {
+            return value;
+          }
+          if (typeof value === "string") {
+            const lower = value.toLowerCase();
+            if (lower === "true" || lower === "yes") {
+              return true;
+            }
+            if (lower === "false" || lower === "no") {
+              return false;
+            }
+          }
+          if (typeof value === "number") {
+            return value !== 0;
+          }
+          return null;
+        };
+
+        const aBool = toBool(aRaw);
+        const bBool = toBool(bRaw);
+        const aNumeric = aBool === null ? null : aBool ? 1 : 0;
+        const bNumeric = bBool === null ? null : bBool ? 1 : 0;
+
+        return compareNullable(aNumeric, bNumeric);
       },
     },
     filterFns: {
@@ -587,7 +700,11 @@ export const CippDataTable = (props) => {
         <Card style={{ width: "100%" }} {...props.cardProps}>
           {cardButton || !hideTitle ? (
             <>
-              <CardHeader action={cardButton} title={hideTitle ? "" : title} />
+              <CardHeader
+                action={cardButton}
+                title={hideTitle ? "" : title}
+                {...props.cardHeaderProps}
+              />
               <Divider />
             </>
           ) : null}
@@ -629,8 +746,23 @@ export const CippDataTable = (props) => {
         customComponent={offCanvas?.customComponent}
         {...offCanvas}
       />
+      {/* Render custom component */}
+      {customComponentVisible &&
+        customComponentData?.action &&
+        typeof customComponentData.action.customComponent === "function" &&
+        customComponentData.action.customComponent(customComponentData.data, {
+          drawerVisible: customComponentVisible,
+          setDrawerVisible: setCustomComponentVisible,
+          fromRowAction: true,
+        })}
+
+      {/* Render standard dialog */}
       {useMemo(() => {
-        if (!actionData.ready) return null;
+        if (
+          !actionData.ready ||
+          (actionData.action && typeof actionData.action.customComponent === "function")
+        )
+          return null;
         return (
           <CippApiDialog
             createDialog={createDialog}

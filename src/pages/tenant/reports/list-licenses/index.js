@@ -2,7 +2,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 
 const Page = () => {
-  const pageTitle = "Licenses Report";
+  const pageTitle = "Licences Report";
   const apiUrl = "/api/ListLicenses";
 
   const simpleColumns = [
@@ -11,6 +11,8 @@ const Page = () => {
     "CountUsed",
     "CountAvailable",
     "TotalLicenses",
+    "AssignedUsers",
+    "AssignedGroups",
     "TermInfo", // TODO TermInfo is not showing as a clickable json object in the table, like CApolicies does in the mfa report. IDK how to fix it. -Bobby
   ];
 

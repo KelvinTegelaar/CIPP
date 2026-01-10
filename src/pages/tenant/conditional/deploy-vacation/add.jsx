@@ -51,7 +51,7 @@ const Page = () => {
                 label="Select Tenant"
                 formControl={formControl}
                 type="single"
-                allTenants={true}
+                allTenants={false}
                 required={true}
                 preselectedEnabled={true}
               />
@@ -74,6 +74,7 @@ const Page = () => {
                 validators={{ required: "Picking a user is required" }}
                 required={true}
                 disabled={!tenantDomain}
+                showRefresh={true}
               />
             </Grid>
 
@@ -93,8 +94,10 @@ const Page = () => {
                         queryKey: `ListConditionalAccessPolicies-${tenantDomain}`,
                         url: "/api/ListConditionalAccessPolicies",
                         data: { tenantFilter: tenantDomain },
+                        dataKey: "Results",
                         labelField: (option) => `${option.displayName}`,
                         valueField: "id",
+                        showRefresh: true,
                       }
                     : null
                 }

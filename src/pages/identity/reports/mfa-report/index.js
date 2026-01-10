@@ -15,6 +15,7 @@ const Page = () => {
     "CoveredByCA",
     "MFAMethods",
     "CAPolicies",
+    "IsAdmin",
   ];
   const filters = [
     {
@@ -44,6 +45,11 @@ const Page = () => {
       value: [{ id: "MFARegistration", value: "Yes" }],
       type: "column",
     },
+    {
+      filterName: "Admin Users",
+      value: [{ id: "IsAdmin", value: "Yes" }],
+      type: "column"
+    }
   ];
 
   const actions = [
@@ -52,7 +58,7 @@ const Page = () => {
       type: "POST",
       icon: <LockPerson />,
       url: "/api/ExecPerUserMFA",
-      data: { userId: "UPN" },
+      data: { userId: "ID", userPrincipalName: "UPN" },
       fields: [
         {
           type: "autoComplete",

@@ -29,8 +29,8 @@
     "mappingRequired": true,
     "links": [
       {
-        "name": "Sherweb Cloud Services for MSPs",
-        "url": "https://info.sherweb.com/sherweb-cloud-services-for-msps"
+        "name": "Sherweb CIPP Integration",
+        "url": "https://info.sherweb.com/sherweb-cipp-integration"
       }
     ],
     "SettingOptions": [
@@ -624,6 +624,18 @@
           "compareType": "is",
           "compareValue": true
         }
+      },
+      {
+        "type": "datePicker",
+        "name": "Hudu.NextSync",
+        "label": "Reschedule next sync date",
+        "helperText": "Set a future date to delay the next scheduled sync. Leave blank to sync during the next scheduled sync.",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
       }
     ],
     "mappingRequired": true,
@@ -853,6 +865,16 @@
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "CFZTNA.WebhookEnabled",
+        "label": "Use CloudFlare Service Account credentials with webhooks.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
         }
       }
     ],

@@ -341,6 +341,7 @@ const CippTemplateFieldRenderer = ({
                         name={`${fieldPath}.settings.${index}.settingInstance.simpleSettingValue.value`}
                         formControl={formControl}
                         helperText={`Definition ID: ${settingInstance.settingDefinitionId}`}
+                        includeSystemVariables={true}
                       />
                     </Grid>
                   );
@@ -416,6 +417,7 @@ const CippTemplateFieldRenderer = ({
                         label="Value"
                         name={`${fieldPath}.omaSettings.${index}.value`}
                         formControl={formControl}
+                        includeSystemVariables={true}
                       />
                     </Grid>
                   </Grid>
@@ -510,6 +512,7 @@ const CippTemplateFieldRenderer = ({
                             label={`${getCippTranslation(key)} ${index + 1}`}
                             name={`${fieldPath}.${index}`}
                             formControl={formControl}
+                            includeSystemVariables={true}
                           />
                         </Grid>
                       )}
@@ -623,6 +626,7 @@ const CippTemplateFieldRenderer = ({
             label={getCippTranslation(key)}
             name={fieldPath}
             formControl={formControl}
+            includeSystemVariables={true}
           />
         </Grid>
       );
@@ -668,6 +672,7 @@ const CippTemplateFieldRenderer = ({
           label={getCippTranslation(key)}
           name={fieldPath}
           formControl={formControl}
+          includeSystemVariables={true}
         />
       </Grid>
     );

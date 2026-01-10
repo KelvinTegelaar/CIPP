@@ -57,6 +57,7 @@ const Page = () => {
             newRoleMappings.push(role);
           });
           const shippedValues = {
+            originalTemplateId: templateId, // Pass the original template ID
             templateId: values.templateId,
             roleMappings: newRoleMappings,
           };

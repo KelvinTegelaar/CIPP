@@ -24,6 +24,6 @@ const Page = () => {
 // No actions were specified in the original code, so no actions are added here.
 // No off-canvas configuration was provided or specified in the original code.
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

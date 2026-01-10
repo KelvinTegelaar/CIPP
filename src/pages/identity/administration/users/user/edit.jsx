@@ -5,7 +5,7 @@ import { useSettings } from "/src/hooks/use-settings";
 import CippAddEditUser from "/src/components/CippFormPages/CippAddEditUser";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
 import { getCippLicenseTranslation } from "/src/utils/get-cipp-license-translation";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
@@ -20,11 +20,23 @@ const Page = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { userId } = router.query;
+  const [waiting, setWaiting] = useState(false);
 
   const userRequest = ApiGetCall({
     url: `/api/ListUsers?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `ListUsers-${userId}`,
+    waiting: waiting,
   });
+
+  // add useEffect to refetch user data when userId changes - also set waiting to false if userId is undefined
+  useEffect(() => {
+    if (userId !== undefined) {
+      setWaiting(true);
+      userRequest.refetch();
+    } else {
+      setWaiting(false);
+    }
+  }, [userId, waiting]);
 
   const formControl = useForm({
     mode: "onBlur",
@@ -43,8 +55,13 @@ const Page = () => {
           defaultAttributes[attribute.label] = { Value: user?.[attribute.label] };
         });
       }
+
+      // Use fallback for usageLocation if user's usageLocation is null/undefined
+      const usageLocation = user?.usageLocation || userSettingsDefaults?.usageLocation || null;
+
       formControl.reset({
         ...user,
+        usageLocation: usageLocation,
         defaultAttributes: defaultAttributes,
         tenantFilter: userSettingsDefaults.currentTenant,
         licenses: user.assignedLicenses.map((license) => ({
@@ -104,7 +121,8 @@ const Page = () => {
     >
       {userRequest.isSuccess && userRequest.data?.[0]?.onPremisesSyncEnabled && (
         <Alert severity="error" sx={{ mb: 1 }}>
-          This user is synced from on-premises Active Directory. Changes should be made in the on-premises environment instead.
+          This user is synced from on-premises Active Directory. Changes should be made in the
+          on-premises environment instead.
         </Alert>
       )}
       <CippFormPage
@@ -116,8 +134,8 @@ const Page = () => {
         formPageType="Edit"
         postUrl="/api/EditUser"
       >
-        {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 3]} />}
-        {userRequest.isSuccess && (
+        {userRequest.isFetching && <CippFormSkeleton layout={[2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 3]} />}
+        {!userRequest.isFetching && userRequest.isSuccess && (
           <Box sx={{ my: 2 }}>
             <CippAddEditUser
               formControl={formControl}

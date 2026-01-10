@@ -4,9 +4,21 @@ import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent.jsx";
 import { CertificateCredentialRemovalForm } from "/src/components/CippComponents/CertificateCredentialRemovalForm.jsx";
-import { Launch, Delete, Edit, Key, Security, Block, CheckCircle } from "@mui/icons-material";
+import {
+  Launch,
+  Delete,
+  Edit,
+  Key,
+  Security,
+  Block,
+  CheckCircle,
+  ContentCopy,
+  RocketLaunch,
+} from "@mui/icons-material";
 import { usePermissions } from "/src/hooks/use-permissions.js";
 import tabOptions from "./tabOptions";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Enterprise Applications";
@@ -24,6 +36,22 @@ const Page = () => {
       target: "_blank",
       multiPost: false,
       external: true,
+    },
+    {
+      icon: <ContentCopy />,
+      label: "Create Template from App",
+      type: "POST",
+      color: "info",
+      multiPost: false,
+      url: "/api/ExecCreateAppTemplate",
+      data: {
+        AppId: "appId",
+        DisplayName: "displayName",
+        Type: "servicePrincipal",
+      },
+      confirmText:
+        "Create a deployment template from '[displayName]'? This will copy all permissions and create a reusable template.",
+      condition: (row) => canWriteApplication && row?.signInAudience === "AzureADMultipleOrgs",
     },
     {
       icon: <Key />,
@@ -178,6 +206,13 @@ const Page = () => {
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
+      cardButton={
+        <>
+          <Button component={Link} href="/tenant/tools/appapproval" startIcon={<RocketLaunch />}>
+            Deploy Template
+          </Button>
+        </>
+      }
     />
   );
 };

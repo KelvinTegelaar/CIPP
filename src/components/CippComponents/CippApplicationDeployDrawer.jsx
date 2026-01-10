@@ -241,7 +241,7 @@ export const CippApplicationDeployDrawer = ({
               <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
-                  label="Server URL (e.g., https://pinotage.centrastage.net)"
+                  label="Server URL (e.g., https://pinotage.rmm.datto.com)"
                   name="params.dattoUrl"
                   formControl={formControl}
                   validators={{ required: "Server URL is required" }}
@@ -599,6 +599,14 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="textField"
+                label="Custom Chocolatey Arguments (include full syntax with flags, supports variables). e.g., --params '/quiet' or --install-arguments '/S /KEY=%customlicensekey%'"
+                name="customArguments"
+                formControl={formControl}
+              />
+            </Grid>
 
             {/* Install Options */}
             <Grid size={{ xs: 12 }}>
@@ -751,6 +759,40 @@ export const CippApplicationDeployDrawer = ({
                 defaultValue={true}
               />
             </Grid>
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="switch"
+                label="Use Custom XML Configuration"
+                name="useCustomXml"
+                formControl={formControl}
+              />
+            </Grid>
+            <CippFormCondition
+              formControl={formControl}
+              field="useCustomXml"
+              compareType="is"
+              compareValue={true}
+            >
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  type="textField"
+                  label="Custom Office Configuration XML"
+                  name="customXml"
+                  formControl={formControl}
+                  multiline
+                  rows={10}
+                  validators={{ required: "Please provide custom XML configuration" }}
+                />
+                <Alert severity="info" sx={{ mt: 1 }}>
+                  Provide a custom Office Configuration XML. When using custom XML, all other Office
+                  configuration options above will be ignored. See{" "}
+                  <a href="https://config.office.com/" target="_blank" rel="noopener noreferrer">
+                    Office Customization Tool
+                  </a>{" "}
+                  to generate XML.
+                </Alert>
+              </Grid>
+            </CippFormCondition>
 
             {/* Assign To Options */}
             <Grid size={{ xs: 12 }}>

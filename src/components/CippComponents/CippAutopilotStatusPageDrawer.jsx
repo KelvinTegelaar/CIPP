@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Divider, Button } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { PostAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
@@ -20,15 +20,18 @@ export const CippAutopilotStatusPageDrawer = ({
     defaultValues: {
       TimeOutInMinutes: "",
       ErrorMessage: "",
-      ShowProgress: false,
-      EnableLog: false,
+      ShowProgress: true,
+      EnableLog: true,
       OBEEOnly: false,
-      blockDevice: false,
-      Allowretry: false,
-      AllowReset: false,
+      blockDevice: true,
+      AllowReset: true,
       AllowFail: false,
+      InstallWindowsUpdates: true,
     },
   });
+
+  // Get form state for validation
+  const { isValid } = useFormState({ control: formControl.control });
 
   const createStatusPage = ApiPostCall({
     urlFromData: true,
@@ -69,7 +72,7 @@ export const CippAutopilotStatusPageDrawer = ({
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={createStatusPage.isLoading}
+              disabled={!isValid || createStatusPage.isLoading}
             >
               {createStatusPage.isLoading
                 ? "Creating..."
@@ -145,14 +148,14 @@ export const CippAutopilotStatusPageDrawer = ({
             />
             <CippFormComponent
               type="switch"
-              label="Block device usage during setup"
-              name="blockDevice"
+              label="Install Windows Updates during setup"
+              name="InstallWindowsUpdates"
               formControl={formControl}
             />
             <CippFormComponent
               type="switch"
-              label="Allow retry"
-              name="Allowretry"
+              label="Block device usage during setup"
+              name="blockDevice"
               formControl={formControl}
             />
             <CippFormComponent

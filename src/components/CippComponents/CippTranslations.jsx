@@ -36,6 +36,8 @@ export const CippTranslations = {
   portal_security: "Security Portal",
   portal_compliance: "Compliance Portal",
   portal_sharepoint: "SharePoint Portal",
+  portal_platform: "Power Platform Portal",
+  portal_bi: "Power BI Portal",
   "@odata.type": "Type",
   roleDefinitionId: "GDAP Role",
   FromIP: "From IP",
@@ -49,4 +51,5 @@ export const CippTranslations = {
   sendtoIntegration: "Send Notifications to Integration",
   includeTenantId: "Include Tenant ID in Notifications",
   logsToInclude: "Logs to Include in notifications",
+  assignmentFilterManagementType: "Filter Type",
 };

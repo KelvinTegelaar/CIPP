@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Button,
   Tooltip,
@@ -13,16 +13,14 @@ import {
   Grid,
   Paper,
   IconButton,
-  Divider,
 } from "@mui/material";
-import { PictureAsPdf, Visibility, Download, Close, Settings } from "@mui/icons-material";
+import { PictureAsPdf, Download, Close, Settings } from "@mui/icons-material";
 import {
   Document,
   Page,
   Text,
   View,
   StyleSheet,
-  PDFDownloadLink,
   PDFViewer,
   Image,
   Svg,
@@ -45,9 +43,11 @@ const ExecutiveReportDocument = ({
   deviceData,
   conditionalAccessData,
   standardsCompareData,
+  driftComplianceData,
   sectionConfig = {
     executiveSummary: true,
     securityStandards: true,
+    driftCompliance: false,
     secureScore: true,
     licenseManagement: true,
     deviceManagement: true,
@@ -418,7 +418,7 @@ const ExecutiveReportDocument = ({
     },
 
     headerName: {
-      width: 100,
+      flex: 2,
     },
 
     headerDesc: {
@@ -442,7 +442,7 @@ const ExecutiveReportDocument = ({
     },
 
     cellName: {
-      width: 100,
+      flex: 1,
       fontSize: 8,
       fontWeight: "bold",
       color: "#2D3748",
@@ -746,7 +746,133 @@ const ExecutiveReportDocument = ({
     return processedStandards;
   };
 
+  // PROCESS DRIFT COMPLIANCE DATA
+  const processDriftComplianceData = (driftData, standardsCompareData) => {
+    if (!driftData || !Array.isArray(driftData) || driftData.length === 0) {
+      return {
+        acceptedDeviationsCount: 0,
+        currentDeviationsCount: 0,
+        deniedDeviationsCount: 0,
+        customerSpecificDeviationsCount: 0,
+        alignedCount: 0,
+        acceptedDeviations: [],
+        currentDeviations: [],
+        deniedDeviations: [],
+        customerSpecificDeviations: [],
+        appliedStandards: [],
+      };
+    }
+
+    // Get standards data for pretty names
+    let standardsData = null;
+    try {
+      standardsData = require("../data/standards.json");
+    } catch (error) {}
+
+    // Helper function to get pretty name from standards.json (same as manage-drift)
+    const getStandardPrettyName = (standardName) => {
+      if (!standardName) return "Unknown Standard";
+      const standard = standardsData?.find((s) => s.name === standardName);
+      if (standard && standard.label) {
+        return standard.label;
+      }
+      return null;
+    };
+
+    // Helper function to process deviations with pretty names
+    const processDeviations = (deviations) => {
+      return (deviations || []).map((deviation) => ({
+        ...deviation,
+        prettyName:
+          deviation.standardDisplayName ||
+          getStandardPrettyName(deviation.standardName) ||
+          deviation.standardName ||
+          "Unknown Standard",
+      }));
+    };
+
+    // Aggregate data across all standards for this tenant
+    const aggregatedData = driftData.reduce(
+      (acc, item) => {
+        acc.acceptedDeviationsCount += item.acceptedDeviationsCount || 0;
+        acc.currentDeviationsCount += item.currentDeviationsCount || 0;
+        acc.alignedCount += item.alignedCount || 0;
+        acc.customerSpecificDeviationsCount += item.customerSpecificDeviationsCount || 0;
+        acc.deniedDeviationsCount += item.deniedDeviationsCount || 0;
+
+        // Collect deviations with pretty names
+        if (item.currentDeviations && Array.isArray(item.currentDeviations)) {
+          acc.currentDeviations.push(
+            ...processDeviations(item.currentDeviations.filter((dev) => dev !== null))
+          );
+        }
+        if (item.acceptedDeviations && Array.isArray(item.acceptedDeviations)) {
+          acc.acceptedDeviations.push(
+            ...processDeviations(item.acceptedDeviations.filter((dev) => dev !== null))
+          );
+        }
+        if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
+          acc.customerSpecificDeviations.push(
+            ...processDeviations(item.customerSpecificDeviations.filter((dev) => dev !== null))
+          );
+        }
+        if (item.deniedDeviations && Array.isArray(item.deniedDeviations)) {
+          acc.deniedDeviations.push(
+            ...processDeviations(item.deniedDeviations.filter((dev) => dev !== null))
+          );
+        }
+
+        return acc;
+      },
+      {
+        acceptedDeviationsCount: 0,
+        currentDeviationsCount: 0,
+        alignedCount: 0,
+        customerSpecificDeviationsCount: 0,
+        deniedDeviationsCount: 0,
+        currentDeviations: [],
+        acceptedDeviations: [],
+        customerSpecificDeviations: [],
+        deniedDeviations: [],
+        appliedStandards: [],
+      }
+    );
+
+    // Get complete list of applied standards from standards comparison data (like policies-deployed)
+    if (
+      standardsData &&
+      standardsCompareData &&
+      Array.isArray(standardsCompareData) &&
+      standardsCompareData.length > 0
+    ) {
+      const tenantData = standardsCompareData[0];
+      const appliedStandards = [];
+
+      // Process each standard from the API response
+      Object.keys(tenantData).forEach((key) => {
+        if (key.startsWith("standards.") && key !== "tenantFilter") {
+          const standardKey = key;
+          const standardDef = standardsData.find((std) => std.name === standardKey);
+
+          if (standardDef) {
+            appliedStandards.push({
+              name: standardDef.label || standardKey,
+              executiveDescription:
+                standardDef.executiveText || standardDef.helpText || "No description available",
+              category: standardDef.cat || "General",
+            });
+          }
+        }
+      });
+
+      aggregatedData.appliedStandards = appliedStandards;
+    }
+
+    return aggregatedData;
+  };
+
   let securityControls = processStandardsData(standardsCompareData);
+  let driftComplianceInfo = processDriftComplianceData(driftComplianceData, standardsCompareData);
 
   const getBadgeStyle = (status) => {
     switch (status) {
@@ -882,8 +1008,9 @@ const ExecutiveReportDocument = ({
         </Page>
       )}
 
-      {/* SECURITY CONTROLS - Only show if standards data is available and enabled */}
+      {/* SECURITY CONTROLS - Only show if standards data is available and enabled and drift compliance is disabled */}
       {sectionConfig.securityStandards &&
+        !sectionConfig.driftCompliance &&
         (() => {
           return securityControls && securityControls.length > 0;
         })() && (
@@ -925,25 +1052,17 @@ const ExecutiveReportDocument = ({
                 </View>
 
                 {securityControls.map((control, index) => (
-                  <View key={index} style={styles.tableRow}>
+                  <View key={index + 1} style={styles.tableRow}>
                     <Text style={[styles.cellName, { width: 80, marginLeft: 0 }]}>
-                      {control.name}
+                      {control.name.length > 100
+                        ? control.name.substring(0, 100) + "..."
+                        : control.name}
                     </Text>
                     <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
                       {control.description}
                     </Text>
-                    <Text style={[styles.cellDesc, { width: 80, marginLeft: 8, fontSize: 6 }]}>
-                      {(() => {
-                        if (typeof control.tags === "object") {
-                          console.log(
-                            "DEBUG: control.tags is an object:",
-                            control.tags,
-                            "for control:",
-                            control.name
-                          );
-                        }
-                        return control.tags;
-                      })()}
+                    <Text style={[styles.cellDesc, { width: 80, marginLeft: 8 }]}>
+                      {control.tags.length > 0 ? control.tags : "No tags"}
                     </Text>
                     <View style={[styles.cellStatus, { width: 60, marginLeft: 8 }]}>
                       <Text style={getBadgeStyle(control.status)}>{control.status}</Text>
@@ -995,6 +1114,542 @@ const ExecutiveReportDocument = ({
               />
             </View>
           </Page>
+        )}
+
+      {/* DRIFT COMPLIANCE - Only show if drift compliance is enabled and security standards is disabled */}
+      {sectionConfig.driftCompliance &&
+        !sectionConfig.securityStandards &&
+        driftComplianceInfo &&
+        (driftComplianceInfo.currentDeviationsCount > 0 ||
+          driftComplianceInfo.acceptedDeviationsCount > 0 ||
+          driftComplianceInfo.deniedDeviationsCount > 0 ||
+          driftComplianceInfo.customerSpecificDeviationsCount > 0 ||
+          driftComplianceInfo.appliedStandards.length > 0) && (
+          <>
+            <Page size="A4" style={styles.page}>
+              <View style={styles.pageHeader}>
+                <View style={styles.pageHeaderContent}>
+                  <Text style={styles.pageTitle}>Drift Compliance Assessment</Text>
+                  <Text style={styles.pageSubtitle}>
+                    Detailed evaluation of policy drift and compliance deviations
+                  </Text>
+                </View>
+                {brandingSettings?.logo && (
+                  <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+                )}
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.bodyText}>
+                  Your drift compliance assessment shows how your current security policies compare
+                  to your organization's approved standards. This analysis helps identify where
+                  configurations have drifted from intended baselines and provides insights into
+                  policy compliance across your Microsoft 365 environment.
+                </Text>
+              </View>
+
+              {/* Drift Overview Chart */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Drift Compliance Overview</Text>
+
+                <View style={styles.chartContainer}>
+                  <Text style={styles.chartTitle}>Policy Deviation Distribution</Text>
+                  <View style={styles.svgChartContainer}>
+                    <Svg style={styles.svgChart} viewBox="0 0 400 200">
+                      {(() => {
+                        const chartData = [
+                          driftComplianceInfo.alignedCount,
+                          driftComplianceInfo.acceptedDeviationsCount,
+                          driftComplianceInfo.customerSpecificDeviationsCount,
+                          driftComplianceInfo.currentDeviationsCount,
+                          driftComplianceInfo.deniedDeviationsCount,
+                        ];
+                        const chartLabels = [
+                          "Aligned Policies",
+                          "Accepted Deviations",
+                          "Client Specific Deviations",
+                          "Current Deviations",
+                          "Denied Deviations",
+                        ];
+                        const chartColors = ["#10B981", "#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444"];
+
+                        const total = chartData.reduce((sum, value) => sum + value, 0);
+                        if (total === 0) return null;
+
+                        const centerX = 200;
+                        const centerY = 100;
+                        const outerRadius = 60;
+                        const innerRadius = 25; // For donut effect
+
+                        let currentAngle = 0;
+
+                        return (
+                          <>
+                            {/* Donut Chart */}
+                            {chartData.map((value, index) => {
+                              if (value === 0) return null;
+
+                              const angle = (value / total) * 360;
+                              const startAngle = currentAngle;
+                              const endAngle = currentAngle + angle;
+
+                              // Outer arc points
+                              const outerStartX =
+                                centerX + outerRadius * Math.cos((startAngle * Math.PI) / 180);
+                              const outerStartY =
+                                centerY + outerRadius * Math.sin((startAngle * Math.PI) / 180);
+                              const outerEndX =
+                                centerX + outerRadius * Math.cos((endAngle * Math.PI) / 180);
+                              const outerEndY =
+                                centerY + outerRadius * Math.sin((endAngle * Math.PI) / 180);
+
+                              // Inner arc points
+                              const innerStartX =
+                                centerX + innerRadius * Math.cos((startAngle * Math.PI) / 180);
+                              const innerStartY =
+                                centerY + innerRadius * Math.sin((startAngle * Math.PI) / 180);
+                              const innerEndX =
+                                centerX + innerRadius * Math.cos((endAngle * Math.PI) / 180);
+                              const innerEndY =
+                                centerY + innerRadius * Math.sin((endAngle * Math.PI) / 180);
+
+                              const largeArcFlag = angle > 180 ? 1 : 0;
+
+                              // Create donut path
+                              const pathData = [
+                                `M ${outerStartX} ${outerStartY}`,
+                                `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${outerEndX} ${outerEndY}`,
+                                `L ${innerEndX} ${innerEndY}`,
+                                `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}`,
+                                "Z",
+                              ].join(" ");
+
+                              currentAngle += angle;
+
+                              return (
+                                <Path
+                                  key={index}
+                                  d={pathData}
+                                  fill={chartColors[index]}
+                                  stroke="#FFFFFF"
+                                  strokeWidth="1"
+                                />
+                              );
+                            })}
+
+                            {/* Center text */}
+                            <Text
+                              x={centerX}
+                              y={centerY - 5}
+                              textAnchor="middle"
+                              fontSize="12"
+                              fill="#2D3748"
+                              fontWeight="bold"
+                            >
+                              {total}
+                            </Text>
+                            <Text
+                              x={centerX}
+                              y={centerY + 8}
+                              textAnchor="middle"
+                              fontSize="8"
+                              fill="#4A5568"
+                            >
+                              Total Policies
+                            </Text>
+
+                            {/* Clean Horizontal Legend at Bottom */}
+                            {(() => {
+                              const visibleItems = chartData
+                                .map((value, index) => ({
+                                  value,
+                                  index,
+                                  label: chartLabels[index]
+                                    .replace(" Deviations", "")
+                                    .replace(" Policies", ""),
+                                  color: chartColors[index],
+                                }))
+                                .filter((item) => item.value > 0);
+
+                              return visibleItems.map((item, displayIndex) => {
+                                const legendX = 30 + displayIndex * 90;
+                                const legendY = 175;
+
+                                return (
+                                  <g key={`legend-${item.index}`}>
+                                    <Rect
+                                      x={legendX}
+                                      y={legendY - 6}
+                                      width="10"
+                                      height="10"
+                                      fill={item.color}
+                                      rx="1"
+                                    />
+                                    <Text
+                                      x={legendX + 15}
+                                      y={legendY + 2}
+                                      fontSize="8"
+                                      fill="#2D3748"
+                                    >
+                                      {item.label} ({item.value})
+                                    </Text>
+                                  </g>
+                                );
+                              });
+                            })()}
+                          </>
+                        );
+                      })()}
+                    </Svg>
+                  </View>
+                </View>
+              </View>
+
+              {/* Deviation Statistics */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Deviation Statistics</Text>
+
+                <View style={styles.statsGrid}>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {driftComplianceInfo.acceptedDeviationsCount}
+                    </Text>
+                    <Text style={styles.statLabel}>Accepted Deviations</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {driftComplianceInfo.customerSpecificDeviationsCount}
+                    </Text>
+                    <Text style={styles.statLabel}>Client Specific</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {driftComplianceInfo.deniedDeviationsCount}
+                    </Text>
+                    <Text style={styles.statLabel}>Denied Deviations</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statNumber}>
+                      {driftComplianceInfo.currentDeviationsCount}
+                    </Text>
+                    <Text style={styles.statLabel}>Current Deviations</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Chart Legend Explanations */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Deviation Types Explained</Text>
+
+                <View style={styles.recommendationsList}>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Aligned:</Text> Policies that match
+                      the approved template exactly with no deviations
+                    </Text>
+                  </View>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Accepted Deviations:</Text> Policy
+                      differences that have been reviewed and approved by administrators
+                    </Text>
+                  </View>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Client Specific Deviations:</Text>{" "}
+                      Policy configurations approved as customer-specific business requirements
+                    </Text>
+                  </View>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Current Deviations:</Text> Policy
+                      differences that require review and administrative action
+                    </Text>
+                  </View>
+                  <View style={styles.recommendationItem}>
+                    <Text style={styles.recommendationBullet}>•</Text>
+                    <Text style={styles.recommendationText}>
+                      <Text style={styles.recommendationLabel}>Denied Deviations:</Text> Policy
+                      differences that have been rejected and require remediation
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.footer}>
+                <Text
+                  style={styles.pageNumber}
+                  render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+                />
+              </View>
+            </Page>
+
+            {/* Deviations Detail Page */}
+            {(driftComplianceInfo.currentDeviations.length > 0 ||
+              driftComplianceInfo.acceptedDeviations.length > 0 ||
+              driftComplianceInfo.deniedDeviations.length > 0 ||
+              driftComplianceInfo.customerSpecificDeviations.length > 0) && (
+              <Page size="A4" style={styles.page}>
+                <View style={styles.pageHeader}>
+                  <View style={styles.pageHeaderContent}>
+                    <Text style={styles.pageTitle}>Policy Deviations Detail</Text>
+                    <Text style={styles.pageSubtitle}>
+                      Comprehensive list of all policy deviations and their status
+                    </Text>
+                  </View>
+                  {brandingSettings?.logo && (
+                    <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+                  )}
+                </View>
+
+                <View style={styles.section}>
+                  <Text style={styles.bodyText}>
+                    The following table shows all identified policy deviations, their current
+                    status, and executive descriptions of what each deviation means for your
+                    organization's security posture and compliance requirements.
+                  </Text>
+                </View>
+
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Policy Deviations</Text>
+
+                  <View style={styles.controlsTable}>
+                    <View style={styles.tableHeader}>
+                      <Text style={[styles.headerCell, { width: 120 }]}>Policy</Text>
+                      <Text style={[styles.headerCell, { flex: 1, marginLeft: 8 }]}>
+                        Description
+                      </Text>
+                      <Text style={[styles.headerCell, { width: 80, marginLeft: 8 }]}>Status</Text>
+                    </View>
+
+                    {/* Current Deviations */}
+                    {driftComplianceInfo.currentDeviations.slice(0, 5).map((deviation, index) => {
+                      let standardsData = null;
+                      try {
+                        standardsData = require("../data/standards.json");
+                      } catch (error) {}
+
+                      const standardDef = standardsData?.find(
+                        (std) => std.name === deviation.standardName
+                      );
+                      const description =
+                        standardDef?.executiveText ||
+                        standardDef?.helpText ||
+                        "Policy deviation detected";
+
+                      return (
+                        <View key={`current-${index}`} style={styles.tableRow}>
+                          <Text
+                            style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}
+                          >
+                            {deviation.prettyName || "Unknown Policy"}
+                          </Text>
+                          <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
+                            {description}
+                          </Text>
+                          <View style={[styles.cellStatus, { width: 80, marginLeft: 8 }]}>
+                            <Text style={[styles.statusText, styles.statusReview]}>Current</Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+
+                    {/* Accepted Deviations */}
+                    {driftComplianceInfo.acceptedDeviations.slice(0, 3).map((deviation, index) => {
+                      let standardsData = null;
+                      try {
+                        standardsData = require("../data/standards.json");
+                      } catch (error) {}
+
+                      const standardDef = standardsData?.find(
+                        (std) => std.name === deviation.standardName
+                      );
+                      const description =
+                        standardDef?.executiveText ||
+                        standardDef?.helpText ||
+                        "Accepted policy deviation";
+
+                      return (
+                        <View key={`accepted-${index}`} style={styles.tableRow}>
+                          <Text
+                            style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}
+                          >
+                            {deviation.prettyName || "Unknown Policy"}
+                          </Text>
+                          <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
+                            {description}
+                          </Text>
+                          <View style={[styles.cellStatus, { width: 80, marginLeft: 8 }]}>
+                            <Text style={[styles.statusText, styles.statusCompliant]}>
+                              Accepted
+                            </Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+
+                    {/* Customer Specific Deviations */}
+                    {driftComplianceInfo.customerSpecificDeviations
+                      .slice(0, 3)
+                      .map((deviation, index) => {
+                        let standardsData = null;
+                        try {
+                          standardsData = require("../data/standards.json");
+                        } catch (error) {}
+
+                        const standardDef = standardsData?.find(
+                          (std) => std.name === deviation.standardName
+                        );
+                        const description =
+                          standardDef?.executiveText ||
+                          standardDef?.helpText ||
+                          "Customer-specific policy configuration";
+
+                        return (
+                          <View key={`customer-${index}`} style={styles.tableRow}>
+                            <Text
+                              style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}
+                            >
+                              {deviation.prettyName || "Unknown Policy"}
+                            </Text>
+                            <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
+                              {description}
+                            </Text>
+                            <View style={[styles.cellStatus, { width: 80, marginLeft: 8 }]}>
+                              <Text style={[styles.statusText, styles.statusPartial]}>
+                                Client Specific
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      })}
+
+                    {/* Denied Deviations */}
+                    {driftComplianceInfo.deniedDeviations.slice(0, 2).map((deviation, index) => {
+                      let standardsData = null;
+                      try {
+                        standardsData = require("../data/standards.json");
+                      } catch (error) {}
+
+                      const standardDef = standardsData?.find(
+                        (std) => std.name === deviation.standardName
+                      );
+                      const description =
+                        standardDef?.executiveText ||
+                        standardDef?.helpText ||
+                        "Denied policy deviation";
+
+                      return (
+                        <View key={`denied-${index}`} style={styles.tableRow}>
+                          <Text
+                            style={[styles.cellName, { width: 120, fontSize: 7, marginLeft: 0 }]}
+                          >
+                            {deviation.prettyName || "Unknown Policy"}
+                          </Text>
+                          <Text style={[styles.cellDesc, { flex: 1, marginLeft: 8 }]}>
+                            {description}
+                          </Text>
+                          <View style={[styles.cellStatus, { width: 80, marginLeft: 8 }]}>
+                            <Text style={[styles.statusText, styles.statusReview]}>Denied</Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+
+                <View style={styles.footer}>
+                  <Text
+                    style={styles.pageNumber}
+                    render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+                  />
+                </View>
+              </Page>
+            )}
+
+            {/* Applied Standards Page */}
+            {driftComplianceInfo.appliedStandards.length > 0 && (
+              <Page size="A4" style={styles.page}>
+                <View style={styles.pageHeader}>
+                  <View style={styles.pageHeaderContent}>
+                    <Text style={styles.pageTitle}>Applied Standards</Text>
+                    <Text style={styles.pageSubtitle}>
+                      Security standards currently implemented in your environment
+                    </Text>
+                  </View>
+                  {brandingSettings?.logo && (
+                    <Image style={styles.headerLogo} src={brandingSettings.logo} cache={false} />
+                  )}
+                </View>
+
+                <View style={styles.section}>
+                  <Text style={styles.bodyText}>
+                    These are the security standards that have been applied to your Microsoft 365
+                    environment. Each standard represents a specific security control or policy
+                    designed to protect your organization's data and systems.
+                  </Text>
+                </View>
+
+                {/* Group standards by category */}
+                {(() => {
+                  const groupedStandards = driftComplianceInfo.appliedStandards.reduce(
+                    (acc, standard) => {
+                      const category = standard.category || "General";
+                      if (!acc[category]) acc[category] = [];
+                      acc[category].push(standard);
+                      return acc;
+                    },
+                    {}
+                  );
+
+                  return Object.entries(groupedStandards).map(([category, standards]) => (
+                    <View key={category} style={styles.section}>
+                      <Text style={styles.sectionTitle}>{category}</Text>
+                      <View style={styles.recommendationsList}>
+                        {standards.map((standard, index) => (
+                          <View key={index} style={styles.recommendationItem}>
+                            <Text style={styles.recommendationBullet}>•</Text>
+                            <Text style={styles.recommendationText}>
+                              <Text style={styles.recommendationLabel}>{standard.name}:</Text>{" "}
+                              {standard.executiveDescription}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ));
+                })()}
+
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Compliance Summary</Text>
+
+                  <View style={styles.infoBox}>
+                    <Text style={styles.infoTitle}>Overall Compliance Status</Text>
+                    <Text style={styles.infoText}>
+                      Your organization has {driftComplianceInfo.appliedStandards.length} security
+                      standards implemented with {driftComplianceInfo.alignedCount} policies fully
+                      aligned,{" "}
+                      {driftComplianceInfo.acceptedDeviationsCount +
+                        driftComplianceInfo.customerSpecificDeviationsCount}{" "}
+                      approved deviations, and {driftComplianceInfo.currentDeviationsCount}{" "}
+                      deviations requiring attention.
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.footer}>
+                  <Text
+                    style={styles.pageNumber}
+                    render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+                  />
+                </View>
+              </Page>
+            )}
+          </>
         )}
 
       {/* STATISTIC PAGE 2 - CHAPTER SPLITTER - Only show if secure score data is available and enabled */}
@@ -1326,12 +1981,6 @@ const ExecutiveReportDocument = ({
                         {(() => {
                           const licenseValue = license.License || license.license || "N/A";
                           if (typeof licenseValue === "object") {
-                            console.log(
-                              "DEBUG: license name is an object:",
-                              licenseValue,
-                              "full license:",
-                              license
-                            );
                           }
                           return licenseValue;
                         })()}
@@ -1362,12 +2011,6 @@ const ExecutiveReportDocument = ({
                           const countAvailable =
                             license.CountAvailable || license.countAvailable || "0";
                           if (typeof countAvailable === "object") {
-                            console.log(
-                              "DEBUG: license.CountAvailable is an object:",
-                              countAvailable,
-                              "full license:",
-                              license
-                            );
                           }
                           return countAvailable;
                         })()}
@@ -1382,12 +2025,6 @@ const ExecutiveReportDocument = ({
                           const totalLicenses =
                             license.TotalLicenses || license.totalLicenses || "0";
                           if (typeof totalLicenses === "object") {
-                            console.log(
-                              "DEBUG: license.TotalLicenses is an object:",
-                              totalLicenses,
-                              "full license:",
-                              license
-                            );
                           }
                           return totalLicenses;
                         })()}
@@ -1559,12 +2196,6 @@ const ExecutiveReportDocument = ({
                           {(() => {
                             const deviceName = device.deviceName || "N/A";
                             if (typeof deviceName === "object") {
-                              console.log(
-                                "DEBUG: device.deviceName is an object:",
-                                deviceName,
-                                "full device:",
-                                device
-                              );
                             }
                             return deviceName;
                           })()}
@@ -1573,12 +2204,6 @@ const ExecutiveReportDocument = ({
                           {(() => {
                             const operatingSystem = device.operatingSystem || "N/A";
                             if (typeof operatingSystem === "object") {
-                              console.log(
-                                "DEBUG: device.operatingSystem is an object:",
-                                operatingSystem,
-                                "full device:",
-                                device
-                              );
                             }
                             return operatingSystem;
                           })()}
@@ -1595,12 +2220,6 @@ const ExecutiveReportDocument = ({
                             {(() => {
                               const complianceState = device.complianceState || "Unknown";
                               if (typeof complianceState === "object") {
-                                console.log(
-                                  "DEBUG: device.complianceState is an object:",
-                                  complianceState,
-                                  "full device:",
-                                  device
-                                );
                               }
                               return complianceState;
                             })()}
@@ -1777,12 +2396,6 @@ const ExecutiveReportDocument = ({
                           {(() => {
                             const displayName = policy.displayName || "N/A";
                             if (typeof displayName === "object") {
-                              console.log(
-                                "DEBUG: policy.displayName is an object:",
-                                displayName,
-                                "full policy:",
-                                policy
-                              );
                             }
                             return displayName;
                           })()}
@@ -1796,12 +2409,6 @@ const ExecutiveReportDocument = ({
                           {(() => {
                             const includeApplications = policy.includeApplications || "All";
                             if (typeof includeApplications === "object") {
-                              console.log(
-                                "DEBUG: policy.includeApplications is an object:",
-                                includeApplications,
-                                "full policy:",
-                                policy
-                              );
                             }
                             return includeApplications;
                           })()}
@@ -1927,7 +2534,6 @@ const ExecutiveReportDocument = ({
 
 export const ExecutiveReportButton = (props) => {
   const { tenantName, tenantId, userStats, standardsData, organizationData, ...other } = props;
-  console.log(props);
   const settings = useSettings();
   const brandingSettings = settings.customBranding;
 
@@ -1936,6 +2542,7 @@ export const ExecutiveReportButton = (props) => {
   const [sectionConfig, setSectionConfig] = useState({
     executiveSummary: true,
     securityStandards: true,
+    driftCompliance: false,
     secureScore: true,
     licenseManagement: true,
     deviceManagement: true,
@@ -1955,7 +2562,7 @@ export const ExecutiveReportButton = (props) => {
     queryKey: `licenses-report-${settings.currentTenant}`,
     waiting: previewOpen,
   });
-  
+
   // Get real device data - only when preview is open
   const deviceData = ApiGetCall({
     url: "/api/ListDevices",
@@ -1986,22 +2593,34 @@ export const ExecutiveReportButton = (props) => {
     waiting: previewOpen,
   });
 
-  // Check if all data is loaded (either successful or failed) - only relevant when preview is open
-  const isDataLoading = previewOpen && (
-    secureScore.isFetching ||
-    licenseData.isFetching ||
-    deviceData.isFetching ||
-    conditionalAccessData.isFetching ||
-    standardsCompareData.isFetching
-  );
+  // Get drift compliance data - only when preview is open
+  const driftComplianceData = ApiGetCall({
+    url: "/api/listTenantDrift",
+    data: {
+      TenantFilter: settings.currentTenant,
+    },
+    queryKey: `drift-compliance-report-${settings.currentTenant}`,
+    waiting: previewOpen,
+  });
 
-  const hasAllDataFinished = !previewOpen || (
-    (secureScore.isSuccess || secureScore.isError) &&
-    (licenseData.isSuccess || licenseData.isError) &&
-    (deviceData.isSuccess || deviceData.isError) &&
-    (conditionalAccessData.isSuccess || conditionalAccessData.isError) &&
-    (standardsCompareData.isSuccess || standardsCompareData.isError)
-  );
+  // Check if all data is loaded (either successful or failed) - only relevant when preview is open
+  const isDataLoading =
+    previewOpen &&
+    (secureScore.isFetching ||
+      licenseData.isFetching ||
+      deviceData.isFetching ||
+      conditionalAccessData.isFetching ||
+      standardsCompareData.isFetching ||
+      driftComplianceData.isFetching);
+
+  const hasAllDataFinished =
+    !previewOpen ||
+    ((secureScore.isSuccess || secureScore.isError) &&
+      (licenseData.isSuccess || licenseData.isError) &&
+      (deviceData.isSuccess || deviceData.isError) &&
+      (conditionalAccessData.isSuccess || conditionalAccessData.isError) &&
+      (standardsCompareData.isSuccess || standardsCompareData.isError) &&
+      (driftComplianceData.isSuccess || driftComplianceData.isError));
 
   // Button is always available now since we don't need to wait for data
   const shouldShowButton = true;
@@ -2030,21 +2649,6 @@ export const ExecutiveReportButton = (props) => {
       );
     }
 
-    console.log("Creating report document with:", {
-      tenantName,
-      tenantId,
-      userStats,
-      standardsData,
-      organizationData,
-      brandingSettings,
-      secureScore: secureScore.isSuccess ? secureScore : null,
-      licensingData: licenseData.isSuccess ? licenseData?.data : null,
-      deviceData: deviceData.isSuccess ? deviceData?.data : null,
-      conditionalAccessData: conditionalAccessData.isSuccess ? conditionalAccessData?.data : null,
-      standardsCompareData: standardsCompareData.isSuccess ? standardsCompareData?.data : null,
-      sectionConfig,
-    });
-
     try {
       return (
         <ExecutiveReportDocument
@@ -2058,9 +2662,10 @@ export const ExecutiveReportButton = (props) => {
           licensingData={licenseData.isSuccess ? licenseData?.data : null}
           deviceData={deviceData.isSuccess ? deviceData?.data : null}
           conditionalAccessData={
-            conditionalAccessData.isSuccess ? conditionalAccessData?.data : null
+            conditionalAccessData.isSuccess ? conditionalAccessData?.data?.Results : null
           }
           standardsCompareData={standardsCompareData.isSuccess ? standardsCompareData?.data : null}
+          driftComplianceData={driftComplianceData.isSuccess ? driftComplianceData?.data : null}
           sectionConfig={sectionConfig}
         />
       );
@@ -2090,10 +2695,11 @@ export const ExecutiveReportButton = (props) => {
     deviceData?.isSuccess,
     conditionalAccessData?.isSuccess,
     standardsCompareData?.isSuccess,
+    driftComplianceData?.isSuccess,
     JSON.stringify(sectionConfig), // Stringify to prevent reference issues
   ]);
 
-  // Handle section toggle
+  // Handle section toggle with mutual exclusion logic
   const handleSectionToggle = (sectionKey) => {
     setSectionConfig((prev) => {
       // Count currently enabled sections
@@ -2102,6 +2708,25 @@ export const ExecutiveReportButton = (props) => {
       // If trying to disable the last remaining section, prevent it
       if (prev[sectionKey] && enabledSections === 1) {
         return prev; // Don't change state
+      }
+
+      // Mutual exclusion logic for Security Standards and Drift Compliance
+      if (sectionKey === "securityStandards" && !prev[sectionKey]) {
+        // Enabling Security Standards, disable Drift Compliance
+        return {
+          ...prev,
+          securityStandards: true,
+          driftCompliance: false,
+        };
+      }
+
+      if (sectionKey === "driftCompliance" && !prev[sectionKey]) {
+        // Enabling Drift Compliance, disable Security Standards
+        return {
+          ...prev,
+          driftCompliance: true,
+          securityStandards: false,
+        };
       }
 
       return {
@@ -2127,6 +2752,11 @@ export const ExecutiveReportButton = (props) => {
       key: "securityStandards",
       label: "Security Standards",
       description: "Compliance assessment and standards evaluation",
+    },
+    {
+      key: "driftCompliance",
+      label: "Drift Compliance",
+      description: "Policy drift analysis and deviation management",
     },
     {
       key: "secureScore",
@@ -2330,6 +2960,7 @@ export const ExecutiveReportButton = (props) => {
               </Box>
             ) : reportDocument ? (
               <PDFViewer
+                key={`pdf-viewer-${Date.now()}`} // Fix for react-pdf "Eo is not a function" error
                 style={{
                   width: "100%",
                   height: "100%",
@@ -2383,10 +3014,13 @@ export const ExecutiveReportButton = (props) => {
                   licensingData={licenseData.isSuccess ? licenseData?.data : null}
                   deviceData={deviceData.isSuccess ? deviceData?.data : null}
                   conditionalAccessData={
-                    conditionalAccessData.isSuccess ? conditionalAccessData?.data : null
+                    conditionalAccessData.isSuccess ? conditionalAccessData?.data?.Results : null
                   }
                   standardsCompareData={
                     standardsCompareData.isSuccess ? standardsCompareData?.data : null
+                  }
+                  driftComplianceData={
+                    driftComplianceData.isSuccess ? driftComplianceData?.data : null
                   }
                   sectionConfig={sectionConfig}
                 />

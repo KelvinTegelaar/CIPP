@@ -103,7 +103,7 @@ const Page = () => {
         <Box
           sx={{
             flexGrow: 1,
-            py: 4,
+            py: 1,
           }}
         >
           <Grid container spacing={2}>

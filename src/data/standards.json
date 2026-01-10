@@ -336,8 +336,8 @@
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
     "tag": ["CIS M365 5.0 (6.5.4)", "NIST CSF 2.0 (PR.IR-01)"],
-    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants.",
-    "docsDescription": "Disables SMTP basic authentication for the tenant and all users with it explicitly enabled.",
+    "helpText": "Disables SMTP AUTH organization-wide, impacting POP and IMAP clients that rely on SMTP for sending emails. Default for new tenants. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission)",
+    "docsDescription": "Disables tenant-wide SMTP basic authentication, including for all explicitly enabled users, impacting POP and IMAP clients that rely on SMTP for sending emails. For more information, see the [Microsoft documentation](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/authenticated-client-smtp-submission).",
     "executiveText": "Disables outdated email authentication methods that are vulnerable to security attacks, forcing applications and devices to use modern, more secure authentication protocols. This reduces the risk of email-based security breaches and credential theft.",
     "addedComponent": [],
     "label": "Disable SMTP Basic Authentication",
@@ -866,7 +866,11 @@
         "type": "number",
         "name": "standards.NudgeMFA.snoozeDurationInDays",
         "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)",
-        "defaultValue": 1
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 14, "message": "Maximum value is 14" }
+        }
       }
     ],
     "label": "Sets the state for the request to setup Authenticator",
@@ -911,6 +915,39 @@
     "addedDate": "2024-03-20",
     "powershellEquivalent": "Update-MgPolicyAuthorizationPolicy",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.BitLockerKeysForOwnedDevice",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "helpText": "Controls whether standard users can recover BitLocker keys for devices they own.",
+    "docsDescription": "Updates the Microsoft Entra authorization policy that controls whether standard users can read BitLocker recovery keys for devices they own. Choose to restrict access for tighter security or allow self-service recovery when operational needs require it.",
+    "executiveText": "Gives administrators centralized control over BitLocker recovery secrets—restrict access to ensure IT-assisted recovery flows, or allow self-service when rapid device unlocks are a priority.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select state",
+        "name": "standards.BitLockerKeysForOwnedDevice.state",
+        "options": [
+          {
+            "label": "Restrict",
+            "value": "restrict"
+          },
+          {
+            "label": "Allow",
+            "value": "allow"
+          }
+        ]
+      }
+    ],
+    "label": "Control BitLocker key recovery for owned devices",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-10-12",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthorizationPolicy",
+    "recommendedBy": []
   },
   {
     "name": "standards.DisableSecurityGroupUsers",
@@ -965,10 +1002,18 @@
     "name": "standards.DisableGuests",
     "cat": "Entra (AAD) Standards",
     "tag": [],
-    "helpText": "Blocks login for guest users that have not logged in for 90 days",
-    "executiveText": "Automatically disables external guest accounts that haven't been used for 90 days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
-    "addedComponent": [],
-    "label": "Disable Guest accounts that have not logged on for 90 days",
+    "helpText": "Blocks login for guest users that have not logged in for a number of days",
+    "executiveText": "Automatically disables external guest accounts that haven't been used for a number of days, reducing security risks from dormant accounts while maintaining access for active external collaborators. This helps maintain a clean user directory and reduces potential attack vectors.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.DisableGuests.days",
+        "required": true,
+        "defaultValue": 90,
+        "label": "Days of inactivity"
+      }
+    ],
+    "label": "Disable Guest accounts that have not logged on for a number of days",
     "impact": "Medium Impact",
     "impactColour": "warning",
     "addedDate": "2022-10-20",
@@ -1063,20 +1108,23 @@
     "name": "standards.StaleEntraDevices",
     "cat": "Entra (AAD) Standards",
     "tag": ["Essential 8 (1501)", "NIST CSF 2.0 (ID.AM-08)", "NIST CSF 2.0 (PR.PS-03)"],
-    "helpText": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
+    "helpText": "**Remediate is currently not available**. Cleans up Entra devices that have not connected/signed in for the specified number of days.",
     "docsDescription": "Remediate is currently not available. Cleans up Entra devices that have not connected/signed in for the specified number of days. First disables and later deletes the devices. More info can be found in the [Microsoft documentation](https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices)",
     "executiveText": "Automatically identifies and removes inactive devices that haven't connected to company systems for a specified period, reducing security risks from abandoned or lost devices. This maintains a clean device inventory and prevents potential unauthorized access through dormant device registrations.",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.StaleEntraDevices.deviceAgeThreshold",
-        "label": "Days before stale(Do not set below 30)"
+        "label": "Days before stale(Do not set below 30)",
+        "validators": {
+          "min": { "value": 30, "message": "Minimum value is 30" }
+        }
       }
     ],
     "disabledFeatures": {
       "report": false,
       "warn": false,
-      "remediate": false
+      "remediate": true
     },
     "label": "Cleanup stale Entra devices",
     "impact": "High Impact",
@@ -1662,6 +1710,32 @@
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
+    "name": "standards.AutoArchive",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Configures the auto-archiving threshold percentage for the tenant. When a mailbox exceeds this threshold, the oldest items are automatically moved to the archive mailbox. Archive must be enabled manually or via the CIPP standard 'Enable Online Archive for all users'. More information can be found in [Microsoft's documentation.](https://learn.microsoft.com/en-us/exchange/security-and-compliance/messaging-records-management/auto-archiving)",
+    "docsDescription": "Configures the auto-archiving threshold at the organization level. Auto-archiving automatically moves the oldest items from a user's primary mailbox to their archive mailbox when mailbox usage exceeds the configured threshold percentage. This prevents mail flow disruptions caused by full mailboxes. Valid range is 80-100, where 100 disables auto-archiving for the tenant. More information can be found in [Microsoft's documentation.](https://learn.microsoft.com/en-us/exchange/security-and-compliance/messaging-records-management/auto-archiving)",
+    "executiveText": "Configures automatic archiving of mailbox items when storage approaches capacity, preventing email delivery failures due to full mailboxes. This proactive storage management ensures business continuity and reduces helpdesk tickets related to mailbox quota issues.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.AutoArchive.AutoArchivingThresholdPercentage",
+        "label": "Auto-Archiving Threshold Percentage (80-100, default 96, 100 disables)",
+        "defaultValue": 96,
+        "validators": {
+          "min": { "value": 80, "message": "Minimum value is 80" },
+          "max": { "value": 100, "message": "Maximum value is 100" }
+        }
+      }
+    ],
+    "label": "Configure Auto-Archiving Threshold",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-12-11",
+    "powershellEquivalent": "Set-OrganizationConfig -AutoArchivingThresholdPercentage 80-100",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SendReceiveLimitTenant",
     "cat": "Exchange Standards",
     "tag": [],
@@ -1672,13 +1746,21 @@
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.SendLimit",
         "label": "Send limit in MB (Default is 35)",
-        "defaultValue": 35
+        "defaultValue": 35,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 150, "message": "Maximum value is 150" }
+        }
       },
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.ReceiveLimit",
         "label": "Receive Limit in MB (Default is 36)",
-        "defaultValue": 36
+        "defaultValue": 36,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 150, "message": "Maximum value is 150" }
+        }
       }
     ],
     "label": "Set send/receive size limits",
@@ -1773,19 +1855,31 @@
         "type": "number",
         "name": "standards.EXOOutboundSpamLimits.RecipientLimitExternalPerHour",
         "label": "External Recipient Limit Per Hour",
-        "defaultValue": 400
+        "defaultValue": 400,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 10000, "message": "Maximum value is 10000" }
+        }
       },
       {
         "type": "number",
         "name": "standards.EXOOutboundSpamLimits.RecipientLimitInternalPerHour",
         "label": "Internal Recipient Limit Per Hour",
-        "defaultValue": 800
+        "defaultValue": 800,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 10000, "message": "Maximum value is 10000" }
+        }
       },
       {
         "type": "number",
         "name": "standards.EXOOutboundSpamLimits.RecipientLimitPerDay",
         "label": "Daily Recipient Limit",
-        "defaultValue": 800
+        "defaultValue": 800,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 10000, "message": "Maximum value is 10000" }
+        }
       },
       {
         "type": "autoComplete",
@@ -1918,13 +2012,21 @@
         "type": "number",
         "name": "standards.ShortenMeetings.DefaultMinutesToReduceShortEventsBy",
         "label": "Minutes to reduce short calendar events by (Default is 5)",
-        "defaultValue": 5
+        "defaultValue": 5,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 29, "message": "Maximum value is 29" }
+        }
       },
       {
         "type": "number",
         "name": "standards.ShortenMeetings.DefaultMinutesToReduceLongEventsBy",
         "label": "Minutes to reduce long calendar events by (Default is 10)",
-        "defaultValue": 10
+        "defaultValue": 10,
+        "validators": {
+          "min": { "value": 0, "message": "Minimum value is 0" },
+          "max": { "value": 29, "message": "Maximum value is 29" }
+        }
       }
     ],
     "label": "Set shorten meetings state",
@@ -2284,6 +2386,13 @@
     "helpText": "This creates a Safe Links policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.SafeLinksPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default SafeLinks Policy"
+      },
+      {
         "type": "switch",
         "label": "AllowClickThrough",
         "name": "standards.SafeLinksPolicy.AllowClickThrough"
@@ -2331,10 +2440,21 @@
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mail tips.",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.AntiPhishPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Anti-Phishing Policy"
+      },
+      {
         "type": "number",
         "label": "Phishing email threshold. (Default 1)",
         "name": "standards.AntiPhishPolicy.PhishThresholdLevel",
-        "defaultValue": 1
+        "defaultValue": 1,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 4, "message": "Maximum value is 4" }
+        }
       },
       {
         "type": "switch",
@@ -2541,6 +2661,13 @@
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.SafeAttachmentPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Safe Attachment Policy"
+      },
+      {
         "type": "select",
         "multiple": false,
         "label": "Safe Attachment Action",
@@ -2685,6 +2812,13 @@
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.MalwareFilterPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Malware Policy"
+      },
+      {
         "type": "select",
         "multiple": false,
         "label": "FileTypeAction",
@@ -2806,10 +2940,21 @@
     "docsDescription": "This standard creates a Spam filter policy similar to the default strict policy, the following settings are configured to on by default: IncreaseScoreWithNumericIps, IncreaseScoreWithRedirectToOtherPort, MarkAsSpamEmptyMessages, MarkAsSpamJavaScriptInHtml, MarkAsSpamSpfRecordHardFail, MarkAsSpamFromAddressAuthFail, MarkAsSpamNdrBackscatter, MarkAsSpamBulkMail, InlineSafetyTipsEnabled, PhishZapEnabled, SpamZapEnabled",
     "addedComponent": [
       {
+        "type": "textField",
+        "name": "standards.SpamFilterPolicy.name",
+        "label": "Policy Name",
+        "required": true,
+        "defaultValue": "CIPP Default Spam Filter Policy"
+      },
+      {
         "type": "number",
         "label": "Bulk email threshold (Default 7)",
         "name": "standards.SpamFilterPolicy.BulkThreshold",
-        "defaultValue": 7
+        "defaultValue": 7,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 9, "message": "Maximum value is 9" }
+        }
       },
       {
         "type": "autoComplete",
@@ -3304,7 +3449,12 @@
       {
         "type": "number",
         "name": "standards.IntuneComplianceSettings.deviceComplianceCheckinThresholdDays",
-        "label": "Compliance status validity period (days)"
+        "label": "Compliance status validity period (days)",
+        "defaultValue": 130,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 120, "message": "Maximum value is 120" }
+        }
       }
     ],
     "label": "Set Intune Compliance Settings",
@@ -3431,6 +3581,192 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.MDMEnrollmentDuringRegistration",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Controls the \"Allow my organization to manage my device\" prompt when adding a work or school account on Windows. This setting determines whether automatic MDM enrollment occurs during account registration.",
+    "docsDescription": "Controls whether Windows shows the \"Allow my organization to manage my device\" prompt when users add a work or school account. When set to disabled, this setting prevents automatic MDM enrollment during the account registration flow, separating account registration from device enrollment. This is useful for environments where you want to allow users to add work accounts without triggering MDM enrollment.",
+    "executiveText": "Controls automatic device management enrollment during work account setup. When disabled, users can add work accounts to their Windows devices without the prompt asking to allow organizational device management, preventing unintended MDM enrollments on personal or BYOD devices.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.MDMEnrollmentDuringRegistration.disableEnrollment",
+        "label": "Disable MDM enrollment during registration"
+      }
+    ],
+    "label": "Configure MDM enrollment when adding work or school account",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-12-15",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Sets the Windows Hello for Business configuration during device enrollment.",
+    "executiveText": "Enables or disables Windows Hello for Business during device enrollment, enhancing security through biometric or PIN-based authentication methods. This ensures that devices meet corporate security standards while providing a user-friendly sign-in experience.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.state",
+        "label": "Configure Windows Hello for Business",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not configured",
+            "value": "notConfigured"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.securityDeviceRequired",
+        "label": "Use a Trusted Platform Module (TPM)",
+        "default": true
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinMinimumLength",
+        "label": "Minimum PIN length (4-127)",
+        "default": 4,
+        "validators": {
+          "min": { "value": 4, "message": "Minimum value is 4" },
+          "max": { "value": 127, "message": "Maximum value is 127" }
+        }
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinMaximumLength",
+        "label": "Maximum PIN length (4-127)",
+        "default": 127,
+        "validators": {
+          "min": { "value": 4, "message": "Minimum value is 4" },
+          "max": { "value": 127, "message": "Maximum value is 127" }
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinLowercaseCharactersUsage",
+        "label": "Lowercase letters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinUppercaseCharactersUsage",
+        "label": "Uppercase letters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinSpecialCharactersUsage",
+        "label": "Special characters in PIN",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not allowed",
+            "value": "disallowed"
+          },
+          {
+            "label": "Allowed",
+            "value": "allowed"
+          },
+          {
+            "label": "Required",
+            "value": "required"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinExpirationInDays",
+        "label": "PIN expiration (days) - 0 to disable",
+        "default": 0
+      },
+      {
+        "type": "number",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.pinPreviousBlockCount",
+        "label": "PIN history - 0 to disable",
+        "default": 0
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.unlockWithBiometricsEnabled",
+        "label": "Allow biometric authentication",
+        "default": true
+      },
+      {
+        "type": "autoComplete",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.enhancedBiometricsState",
+        "label": "Use enhanced anti-spoofing when available",
+        "multiple": false,
+        "options": [
+          {
+            "label": "Not configured",
+            "value": "notConfigured"
+          },
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "switch",
+        "name": "standards.EnrollmentWindowsHelloForBusinessConfiguration.remotePassportEnabled",
+        "label": "Allow phone sign-in",
+        "default": true
+      }
+    ],
+    "label": "Windows Hello for Business enrollment configuration",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-09-25",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": ["CISA (MS.AAD.17.1v1)"],
@@ -3553,7 +3889,11 @@
         "type": "number",
         "name": "standards.SPFileRequests.expirationDays",
         "label": "Link Expiration 1-730 Days (Optional)",
-        "required": false
+        "required": false,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 730, "message": "Maximum value is 730" }
+        }
       }
     ],
     "label": "Set SharePoint and OneDrive File Requests",
@@ -3649,7 +3989,12 @@
       {
         "type": "number",
         "name": "standards.SPExternalUserExpiration.Days",
-        "label": "Days until expiration (Default 60)"
+        "label": "Days until expiration (Default 60)",
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 730, "message": "Maximum value is 730" }
+        }
       }
     ],
     "label": "Set guest access to expire automatically",
@@ -3669,7 +4014,12 @@
       {
         "type": "number",
         "name": "standards.SPEmailAttestation.Days",
-        "label": "Require re-authentication every X Days (Default 15)"
+        "label": "Require re-authentication every X Days (Default 15)",
+        "defaultValue": 15,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 365, "message": "Maximum value is 365" }
+        }
       }
     ],
     "label": "Require re-authentication with verification code",
@@ -3999,19 +4349,19 @@
         "label": "Default value of the `Who can present?`",
         "options": [
           {
-            "label": "EveryoneUserOverride",
+            "label": "Everyone",
             "value": "EveryoneUserOverride"
           },
           {
-            "label": "EveryoneInCompanyUserOverride",
+            "label": "People in my organization",
             "value": "EveryoneInCompanyUserOverride"
           },
           {
-            "label": "EveryoneInSameAndFederatedCompanyUserOverride",
+            "label": "People in my organization and trusted organizations",
             "value": "EveryoneInSameAndFederatedCompanyUserOverride"
           },
           {
-            "label": "OrganizerOnlyUserOverride",
+            "label": "Only organizer",
             "value": "OrganizerOnlyUserOverride"
           }
         ]
@@ -4020,6 +4370,29 @@
         "type": "switch",
         "name": "standards.TeamsGlobalMeetingPolicy.AllowAnonymousUsersToJoinMeeting",
         "label": "Allow anonymous users to join meeting"
+      },
+      {
+        "type": "autoComplete",
+        "required": false,
+        "multiple": false,
+        "creatable": false,
+        "name": "standards.TeamsGlobalMeetingPolicy.AutoAdmittedUsers",
+        "label": "Who can bypass the lobby?",
+        "helperText": "If left blank, the current value will not be changed.",
+        "options": [
+          {
+            "label": "Only organizers and co-organizers",
+            "value": "OrganizerOnly"
+          },
+          {
+            "label": "People in organization excluding guests",
+            "value": "EveryoneInCompanyExcludingGuests"
+          },
+          {
+            "label": "People who were invited",
+            "value": "InvitedUsers"
+          }
+        ]
       },
       {
         "type": "autoComplete",
@@ -4053,8 +4426,68 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "addedDate": "2024-11-12",
-    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers $AutoAdmittedUsers -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.TeamsChatProtection",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Configures Teams chat protection settings including weaponizable file protection and malicious URL protection.",
+    "docsDescription": "Configures Teams messaging safety features to protect users from weaponizable files and malicious URLs in chats and channels. Weaponizable File Protection automatically blocks messages containing potentially dangerous file types (like .exe, .dll, .bat, etc.). Malicious URL Protection scans URLs in messages and displays warnings when potentially harmful links are detected. These protections work across internal and external collaboration scenarios.",
+    "executiveText": "Enables automated security protections in Microsoft Teams to block dangerous files and warn users about malicious links in chat messages. This helps protect employees from file-based attacks and phishing attempts. These safeguards work seamlessly in the background, providing essential protection without disrupting normal business communication.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.TeamsChatProtection.FileTypeCheck",
+        "label": "Enable Weaponizable File Protection",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.TeamsChatProtection.UrlReputationCheck",
+        "label": "Enable Malicious URL Protection",
+        "defaultValue": true
+      }
+    ],
+    "label": "Set Teams Chat Protection Settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-10-02",
+    "powershellEquivalent": "Set-CsTeamsMessagingConfiguration -FileTypeCheck 'Enabled' -UrlReputationCheck 'Enabled' -ReportIncorrectSecurityDetections 'Enabled'",
+    "recommendedBy": ["CIPP"]
+  },
+  {
+    "name": "standards.TeamsExternalChatWithAnyone",
+    "cat": "Teams Standards",
+    "tag": [],
+    "helpText": "Controls whether users can start Teams chats with any email address, inviting external recipients as guests via email.",
+    "docsDescription": "Manages the Teams messaging policy setting UseB2BInvitesToAddExternalUsers. When enabled, users can start chats with any email address and recipients receive an invitation to join the chat as guests. Disabling the setting prevents these external email chats from being created, keeping conversations limited to internal users and approved guests.",
+    "executiveText": "Allows organizations to decide if employees can launch Microsoft Teams chats with anyone on the internet using just an email address. Disabling the feature keeps conversations inside trusted boundaries and helps prevent accidental data exposure through unexpected external invitations.",
+    "addedComponent": [
+      {
+        "type": "radio",
+        "name": "standards.TeamsExternalChatWithAnyone.UseB2BInvitesToAddExternalUsers",
+        "label": "Allow chatting with anyone via email",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ],
+        "defaultValue": "Disabled"
+      }
+    ],
+    "label": "Set Teams chat with anyone setting",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-11-03",
+    "powershellEquivalent": "Set-CsTeamsMessagingPolicy -Identity Global -UseB2BInvitesToAddExternalUsers $false/$true",
+    "recommendedBy": ["CIPP"]
   },
   {
     "name": "standards.TeamsEmailIntegration",
@@ -4296,7 +4729,12 @@
         "type": "number",
         "name": "standards.TeamsMeetingRecordingExpiration.ExpirationDays",
         "label": "Recording Expiration Days (e.g., 365)",
-        "required": true
+        "required": true,
+        "defaultValue": 120,
+        "validators": {
+          "min": { "value": -1, "message": "Minimum value is -1" },
+          "max": { "value": 99999, "message": "Maximum value is 99999" }
+        }
       }
     ],
     "label": "Set Teams Meeting Recording Expiration",
@@ -4409,7 +4847,11 @@
         "type": "number",
         "name": "standards.AutopilotStatusPage.TimeOutInMinutes",
         "label": "Timeout in minutes",
-        "defaultValue": 60
+        "defaultValue": 60,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 1440, "message": "Maximum value is 1440" }
+        }
       },
       {
         "type": "textField",
@@ -4437,14 +4879,14 @@
       },
       {
         "type": "switch",
-        "name": "standards.AutopilotStatusPage.BlockDevice",
-        "label": "Block device usage during setup",
+        "name": "standards.AutopilotStatusPage.InstallWindowsUpdates",
+        "label": "Install Windows Updates during setup",
         "defaultValue": true
       },
       {
         "type": "switch",
-        "name": "standards.AutopilotStatusPage.AllowRetry",
-        "label": "Allow retry",
+        "name": "standards.AutopilotStatusPage.BlockDevice",
+        "label": "Block device usage during setup",
         "defaultValue": true
       },
       {
@@ -4587,13 +5029,34 @@
         "type": "autoComplete",
         "multiple": false,
         "creatable": false,
+        "required": false,
         "name": "TemplateList",
         "label": "Select Intune Template",
         "api": {
+          "queryKey": "ListIntuneTemplates-autcomplete",
           "url": "/api/ListIntuneTemplates",
           "labelField": "Displayname",
           "valueField": "GUID",
-          "queryKey": "languages"
+          "showRefresh": true,
+          "templateView": {
+            "title": "Intune Template",
+            "property": "RAWJson",
+            "type": "intune"
+          }
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "required": false,
+        "creatable": false,
+        "name": "TemplateList-Tags",
+        "label": "Or select a package of Intune Templates",
+        "api": {
+          "queryKey": "ListIntuneTemplates-tag-autcomplete",
+          "url": "/api/ListIntuneTemplates?mode=Tag",
+          "labelField": "label",
+          "valueField": "value"
         }
       },
       {
@@ -4634,7 +5097,31 @@
         "label": "Exclude Groups",
         "type": "textField",
         "required": false,
-        "helpText": "Enter the group name to exclude from the assignment. Wildcards are allowed."
+        "helpText": "Enter the group name(s) to exclude from the assignment. Wildcards are allowed. Multiple group names are comma-seperated."
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "assignmentFilter",
+        "label": "Assignment Filter Name (Optional)",
+        "helpText": "Enter the assignment filter name to apply to this policy assignment. Wildcards are allowed."
+      },
+      {
+        "name": "assignmentFilterType",
+        "label": "Assignment Filter Mode (Optional)",
+        "type": "radio",
+        "required": false,
+        "helpText": "Choose whether to include or exclude devices matching the filter. Only applies if you specified a filter name above. Defaults to Include if not specified.",
+        "options": [
+          {
+            "label": "Include - Assign to devices matching the filter",
+            "value": "include"
+          },
+          {
+            "label": "Exclude - Assign to devices NOT matching the filter",
+            "value": "exclude"
+          }
+        ]
       }
     ]
   },
@@ -4689,7 +5176,11 @@
           "url": "/api/ListCATemplates",
           "labelField": "displayName",
           "valueField": "GUID",
-          "queryKey": "ListCATemplates"
+          "queryKey": "ListCATemplates",
+          "showRefresh": true,
+          "templateView": {
+            "title": "Conditional Access Policy"
+          }
         }
       },
       {
@@ -4719,6 +5210,11 @@
         "type": "switch",
         "name": "DisableSD",
         "label": "Disable Security Defaults when deploying policy"
+      },
+      {
+        "type": "switch",
+        "name": "CreateGroups",
+        "label": "Create groups if they do not exist"
       }
     ]
   },
@@ -4779,6 +5275,35 @@
     ]
   },
   {
+    "name": "standards.AssignmentFilterTemplate",
+    "label": "Assignment Filter Template",
+    "multi": true,
+    "cat": "Templates",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "impact": "Medium Impact",
+    "addedDate": "2025-10-04",
+    "helpText": "Deploy and manage assignment filter templates.",
+    "executiveText": "Creates standardized assignment filters with predefined settings. These templates ensure consistent assignment filter configurations across the organization, streamlining assignment management.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "assignmentFilterTemplate",
+        "label": "Select Assignment Filter Template",
+        "api": {
+          "url": "/api/ListAssignmentFilterTemplates",
+          "labelField": "Displayname",
+          "altLabelField": "displayName",
+          "valueField": "GUID",
+          "queryKey": "ListAssignmentFilterTemplates"
+        }
+      }
+    ]
+  },
+  {
     "name": "standards.MailboxRecipientLimits",
     "cat": "Exchange Standards",
     "tag": [],
@@ -4790,7 +5315,11 @@
         "type": "number",
         "name": "standards.MailboxRecipientLimits.RecipientLimit",
         "label": "Recipient Limit",
-        "defaultValue": 500
+        "defaultValue": 500,
+        "validators": {
+          "min": { "value": 1, "message": "Minimum value is 1" },
+          "max": { "value": 1000, "message": "Maximum value is 1000" }
+        }
       }
     ],
     "label": "Set Mailbox Recipient Limits",
@@ -4813,5 +5342,230 @@
     "addedDate": "2025-06-19",
     "powershellEquivalent": "Set-User -Identity $user -RemotePowerShellEnabled $false",
     "recommendedBy": ["CIS", "CIPP"]
+  },
+  {
+    "name": "standards.OWAAttachmentRestrictions",
+    "cat": "Exchange Standards",
+    "tag": ["CIS M365 5.0 (6.1.2)", "Security", "NIST CSF 2.0 (PR.AA-05)"],
+    "helpText": "Restricts how users on unmanaged devices can interact with email attachments in Outlook on the web and new Outlook for Windows. Prevents downloading attachments or blocks viewing them entirely.",
+    "docsDescription": "This standard configures the OWA mailbox policy to restrict access to email attachments on unmanaged devices. Users can be prevented from downloading attachments (but can view/edit via Office Online) or blocked from seeing attachments entirely. This helps prevent data exfiltration through email attachments on devices not managed by the organization.",
+    "executiveText": "Restricts access to email attachments on personal or unmanaged devices while allowing full functionality on corporate-managed devices. This security measure prevents data theft through email attachments while maintaining productivity for employees using approved company devices.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "name": "standards.OWAAttachmentRestrictions.ConditionalAccessPolicy",
+        "label": "Attachment Restriction Policy",
+        "options": [
+          {
+            "label": "Read Only (View/Edit via Office Online, no download)",
+            "value": "ReadOnly"
+          },
+          {
+            "label": "Read Only Plus Attachments Blocked (Cannot see attachments)",
+            "value": "ReadOnlyPlusAttachmentsBlocked"
+          }
+        ],
+        "defaultValue": "ReadOnlyPlusAttachmentsBlocked"
+      }
+    ],
+    "label": "Restrict Email Attachments on Unmanaged Devices",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "addedDate": "2025-08-22",
+    "powershellEquivalent": "Set-OwaMailboxPolicy -Identity \"OwaMailboxPolicy-Default\" -ConditionalAccessPolicy ReadOnlyPlusAttachmentsBlocked",
+    "recommendedBy": ["Microsoft Zero Trust", "CIPP"]
+  },
+  {
+    "name": "standards.DeployCheckChromeExtension",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "Deploys the Check Chrome extension via Intune OMA-URI custom policies for both Chrome and Edge browsers with configurable settings. Chrome ID: benimdeioplgkhanklclahllklceahbe, Edge ID: knepjpocdagponkonnbggpcnhnaikajg",
+    "docsDescription": "Creates Intune OMA-URI custom policies that automatically install and configure the Check Chrome extension on managed devices for both Google Chrome and Microsoft Edge browsers. This ensures the extension is deployed consistently across all corporate devices with customizable settings.",
+    "executiveText": "Automatically deploys the Check browser extension across all company devices with configurable security and branding settings, ensuring consistent security monitoring and compliance capabilities. This extension provides enhanced security features and monitoring tools that help protect against threats while maintaining user productivity.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableValidPageBadge",
+        "label": "Enable valid page badge",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enablePageBlocking",
+        "label": "Enable page blocking",
+        "defaultValue": true
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableCippReporting",
+        "label": "Enable CIPP reporting",
+        "defaultValue": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.cippServerUrl",
+        "label": "CIPP Server URL",
+        "placeholder": "https://YOUR-CIPP-SERVER-URL",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.customRulesUrl",
+        "label": "Custom Rules URL",
+        "placeholder": "https://YOUR-CIPP-SERVER-URL/rules.json",
+        "required": false
+      },
+      {
+        "type": "number",
+        "name": "standards.DeployCheckChromeExtension.updateInterval",
+        "label": "Update interval (hours)",
+        "defaultValue": 12
+      },
+      {
+        "type": "switch",
+        "name": "standards.DeployCheckChromeExtension.enableDebugLogging",
+        "label": "Enable debug logging",
+        "defaultValue": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.companyName",
+        "label": "Company Name",
+        "placeholder": "YOUR-COMPANY",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.productName",
+        "label": "Product Name",
+        "placeholder": "YOUR-PRODUCT-NAME",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.supportEmail",
+        "label": "Support Email",
+        "placeholder": "support@yourcompany.com",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.primaryColor",
+        "label": "Primary Color",
+        "placeholder": "#0044CC",
+        "required": false
+      },
+      {
+        "type": "textField",
+        "name": "standards.DeployCheckChromeExtension.logoUrl",
+        "label": "Logo URL",
+        "placeholder": "https://yourcompany.com/logo.png",
+        "required": false
+      },
+      {
+        "name": "AssignTo",
+        "label": "Who should this policy be assigned to?",
+        "type": "radio",
+        "options": [
+          {
+            "label": "Do not assign",
+            "value": "On"
+          },
+          {
+            "label": "Assign to all users",
+            "value": "allLicensedUsers"
+          },
+          {
+            "label": "Assign to all devices",
+            "value": "AllDevices"
+          },
+          {
+            "label": "Assign to all users and devices",
+            "value": "AllDevicesAndUsers"
+          },
+          {
+            "label": "Assign to Custom Group",
+            "value": "customGroup"
+          }
+        ]
+      },
+      {
+        "type": "textField",
+        "required": false,
+        "name": "customGroup",
+        "label": "Enter the custom group name if you selected 'Assign to Custom Group'. Wildcards are allowed."
+      }
+    ],
+    "label": "Deploy Check Chrome Extension",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-09-18",
+    "powershellEquivalent": "New-GraphPostRequest -uri 'https://graph.microsoft.com/beta/deviceManagement/configurationPolicies'",
+    "recommendedBy": ["CIPP"]
+  },
+  {
+    "name": "standards.SecureScoreRemediation",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Allows bulk updating of Secure Score control profiles across tenants. Select controls and assign them to different states: Default, Ignored, Third-Party, or Reviewed.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SecureScoreRemediation.Default",
+        "label": "Controls to set to Default",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SecureScoreRemediation.Ignored",
+        "label": "Controls to set to Ignored",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "name": "standards.SecureScoreRemediation.ThirdParty",
+        "label": "Controls to set to Third-Party",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "required": false,
+        "creatable": true,
+        "name": "standards.SecureScoreRemediation.Reviewed",
+        "label": "Controls to set to Reviewed",
+        "api": {
+          "url": "/secureScore.json",
+          "labelField": "title",
+          "valueField": "id"
+        }
+      }
+    ],
+    "label": "Update Secure Score Control Profiles",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2025-11-19",
+    "powershellEquivalent": "New-GraphPostRequest to /beta/security/secureScoreControlProfiles/{id}"
   }
 ]

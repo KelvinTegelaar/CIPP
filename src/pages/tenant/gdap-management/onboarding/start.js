@@ -134,13 +134,17 @@ const Page = () => {
           setInvalidRelationship(true);
         }
       }
-      const invite = currentInvites?.data?.pages?.[0]?.find(
-        (invite) => invite?.RowKey === formValue?.value
-      );
+      const invite =
+        currentInvites?.data?.pages?.[0] && Array.isArray(currentInvites.data.pages[0])
+          ? currentInvites.data.pages[0].find((invite) => invite?.RowKey === formValue?.value)
+          : null;
 
-      const onboarding = onboardingList.data?.pages?.[0]?.find(
-        (onboarding) => onboarding?.RowKey === formValue?.value
-      );
+      const onboarding =
+        onboardingList.data?.pages?.[0] && Array.isArray(onboardingList.data.pages[0])
+          ? onboardingList.data.pages[0].find(
+              (onboarding) => onboarding?.RowKey === formValue?.value
+            )
+          : null;
       if (onboarding) {
         setCurrentOnboarding(onboarding);
         var stepCount = 0;
@@ -247,6 +251,11 @@ const Page = () => {
     if (formControl.getValues("ignoreMissingRoles")) {
       data.ignoreMissingRoles = Boolean(formControl.getValues("ignoreMissingRoles"));
     }
+    if (formControl.getValues("standardsExcludeAllTenants")) {
+      data.standardsExcludeAllTenants = Boolean(
+        formControl.getValues("standardsExcludeAllTenants")
+      );
+    }
 
     startOnboarding.mutate({
       url: "/api/ExecOnboardTenant",
@@ -270,6 +279,11 @@ const Page = () => {
     }
     if (formControl.getValues("ignoreMissingRoles")) {
       data.IgnoreMissingRoles = Boolean(formControl.getValues("ignoreMissingRoles"));
+    }
+    if (formControl.getValues("standardsExcludeAllTenants")) {
+      data.standardsExcludeAllTenants = Boolean(
+        formControl.getValues("standardsExcludeAllTenants")
+      );
     }
 
     startOnboarding.mutate({
@@ -398,6 +412,13 @@ const Page = () => {
                     />
                   </>
                 )}
+                <CippFormComponent
+                  formControl={formControl}
+                  name="standardsExcludeAllTenants"
+                  label="Exclude onboarded tenant from top-level standards"
+                  type="switch"
+                  value={false}
+                />
                 {currentRelationship?.value && (
                   <>
                     {currentRelationship?.addedFields?.accessDetails?.unifiedRoles.some(

@@ -44,6 +44,7 @@ const EditGroup = () => {
       RemoveOwner: [],
       AddContact: [],
       RemoveContact: [],
+      visibility: "Public",
     },
   });
 
@@ -74,6 +75,7 @@ const EditGroup = () => {
           allowExternal: groupInfo?.data?.allowExternal,
           sendCopies: groupInfo?.data?.sendCopies,
           hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
+          visibility: group?.visibility ?? "Public",
           displayName: group.displayName,
           description: group.description || "",
           membershipRules: group.membershipRule || "",
@@ -114,6 +116,7 @@ const EditGroup = () => {
           sendCopies: groupInfo?.data?.sendCopies,
           hideFromOutlookClients: groupInfo?.data?.hideFromOutlookClients,
           securityEnabled: group.securityEnabled,
+          visibility: group.visibility ?? "Public",
         });
 
         // Reset the form with all values
@@ -132,6 +135,7 @@ const EditGroup = () => {
       "sendCopies",
       "hideFromOutlookClients",
       "securityEnabled",
+      "visibility",
     ];
 
     changeDetectionProperties.forEach((property) => {
@@ -148,7 +152,7 @@ const EditGroup = () => {
       <CippFormPage
         formControl={formControl}
         queryKey={[`ListGroups-${groupId}`]}
-        title={`Group: ${groupInfo.data?.groupInfo?.displayName || ""}`}
+        title={`Group - ${groupInfo.data?.groupInfo?.displayName || ""}`}
         formPageType="Edit"
         backButtonTitle="Group Overview"
         postUrl="/api/EditGroup"
@@ -377,6 +381,24 @@ const EditGroup = () => {
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6">Group Settings</Typography>
               </Grid>
+
+              {groupType === "Microsoft 365" && (
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="radio"
+                    label="Group visibility"
+                    name="visibility"
+                    formControl={formControl}
+                    isFetching={groupInfo.isFetching}
+                    disabled={groupInfo.isFetching}
+                    options={[
+                      { label: "Public", value: "Public" },
+                      { label: "Private", value: "Private" },
+                    ]}
+                  />
+                </Grid>
+              )}
+
               {(groupType === "Microsoft 365" || groupType === "Distribution List") && (
                 <Grid size={{ xs: 12 }}>
                   <CippFormComponent

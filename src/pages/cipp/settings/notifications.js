@@ -17,18 +17,16 @@ const Page = () => {
   return (
     <CippFormPage
       title={pageTitle}
+      hideTitle={true}
       hideBackButton={true}
       hidePageType={true}
       formControl={formControl}
       resetForm={false}
       postUrl="/api/ExecNotificationConfig"
-      relatedQueryKeys={["ListNotificationConfig"]}
+      queryKey={"ListNotificationConfig"}
     >
       {/* Use the reusable notification form component */}
-      <CippNotificationForm
-        formControl={formControl}
-        showTestButton={true}
-      />
+      <CippNotificationForm formControl={formControl} showTestButton={true} />
     </CippFormPage>
   );
 };
