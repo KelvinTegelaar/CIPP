@@ -60,7 +60,9 @@ const Page = () => {
   const [refreshDialog, setRefreshDialog] = useState({ open: false });
 
   // Get reportId from query params or default to "ztna"
-  const selectedReport = router.query.reportId || "ztna";
+  // Only use default if router is ready and reportId is still not present
+  const selectedReport =
+    router.isReady && !router.query.reportId ? "ztna" : router.query.reportId || "ztna";
 
   const formControl = useForm({
     mode: "onChange",

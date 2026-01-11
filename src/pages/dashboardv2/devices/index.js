@@ -22,7 +22,9 @@ const Page = () => {
   const settings = useSettings();
   const { currentTenant } = settings;
   const router = useRouter();
-  const selectedReport = router.query.reportId || "ztna";
+  // Only use default if router is ready and reportId is still not present
+  const selectedReport =
+    router.isReady && !router.query.reportId ? "ztna" : router.query.reportId || "ztna";
 
   const testsApi = ApiGetCall({
     url: "/api/ListTests",
