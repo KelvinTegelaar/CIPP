@@ -241,7 +241,7 @@ export const CippApplicationDeployDrawer = ({
               <Grid size={{ md: 6, xs: 12 }}>
                 <CippFormComponent
                   type="textField"
-                  label="Server URL (e.g., https://pinotage.centrastage.net)"
+                  label="Server URL (e.g., https://pinotage.rmm.datto.com)"
                   name="params.dattoUrl"
                   formControl={formControl}
                   validators={{ required: "Server URL is required" }}
@@ -784,13 +784,9 @@ export const CippApplicationDeployDrawer = ({
                   validators={{ required: "Please provide custom XML configuration" }}
                 />
                 <Alert severity="info" sx={{ mt: 1 }}>
-                  Provide a custom Office Configuration XML. When using custom XML, all other
-                  Office configuration options above will be ignored. See{" "}
-                  <a
-                    href="https://config.office.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  Provide a custom Office Configuration XML. When using custom XML, all other Office
+                  configuration options above will be ignored. See{" "}
+                  <a href="https://config.office.com/" target="_blank" rel="noopener noreferrer">
                     Office Customization Tool
                   </a>{" "}
                   to generate XML.

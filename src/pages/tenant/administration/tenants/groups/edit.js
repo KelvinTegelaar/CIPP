@@ -44,7 +44,18 @@ const Page = () => {
           formattedDynamicRules = rules.map((rule) => {
             // Handle value - it's always an array of objects from the backend
             let valueForForm;
-            if (Array.isArray(rule.value)) {
+
+            // Special handling for custom variables (nested structure with variableName and value)
+            if (
+              rule.property === "customVariable" &&
+              typeof rule.value === "object" &&
+              rule.value?.variableName
+            ) {
+              valueForForm = {
+                variableName: rule.value.variableName,
+                value: rule.value.value,
+              };
+            } else if (Array.isArray(rule.value)) {
               // If it's an array of objects, extract all values
               valueForForm = rule.value.map((item) => ({
                 label: item.label || item.value || item,
@@ -77,6 +88,10 @@ const Page = () => {
                     ? "Available Service Plan"
                     : rule.property === "delegatedAccessStatus"
                     ? "Delegated Access Status"
+                    : rule.property === "tenantGroupMember"
+                    ? "Member of Tenant Group"
+                    : rule.property === "customVariable"
+                    ? "Custom Variable"
                     : rule.property,
                 value: rule.property,
                 type:
@@ -86,6 +101,10 @@ const Page = () => {
                     ? "servicePlan"
                     : rule.property === "delegatedAccessStatus"
                     ? "delegatedAccess"
+                    : rule.property === "tenantGroupMember"
+                    ? "tenantGroup"
+                    : rule.property === "customVariable"
+                    ? "customVariable"
                     : "unknown",
               },
               operator: {
@@ -98,6 +117,10 @@ const Page = () => {
                     ? "In"
                     : rule.operator === "notIn"
                     ? "Not In"
+                    : rule.operator === "like"
+                    ? "Contains"
+                    : rule.operator === "notlike"
+                    ? "Does Not Contain"
                     : rule.operator,
                 value: rule.operator,
               },
@@ -125,7 +148,7 @@ const Page = () => {
         dynamicRules: formattedDynamicRules,
       });
     }
-  }, [groupDetails.isSuccess, groupDetails.data]);
+  }, [groupDetails.isSuccess, groupDetails.data, id]);
 
   const customDataFormatter = (values) => {
     const formattedData = {
@@ -148,11 +171,11 @@ const Page = () => {
 
   return (
     <CippFormPage
-      title={
-        groupDetails.isSuccess
-          ? `Tenant Group - ${groupDetails?.data?.Results?.[0]?.Name}`
-          : "Loading..."
-      }
+      title={`Tenant Group${
+        groupDetails.isSuccess && groupDetails?.data?.Results?.[0]?.Name
+          ? ` - ${groupDetails.data.Results[0].Name}`
+          : ""
+      }`}
       backButtonTitle="Tenant Groups"
       formControl={formControl}
       postUrl="/api/ExecTenantGroup"
@@ -163,7 +186,7 @@ const Page = () => {
       <Box sx={{ width: "100%" }}>
         <CippAddEditTenantGroups
           formControl={formControl}
-          title="Edit Tenant Group"
+          title="Tenant Group"
           backButtonTitle="Tenant Groups"
           hideSubmitButton={true}
         />

@@ -3,7 +3,6 @@ import { Button, Box } from "@mui/material";
 import { useForm, useWatch, useFormState } from "react-hook-form";
 import { PersonAdd } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
-import { CippFormUserSelector } from "./CippFormUserSelector";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
@@ -128,37 +127,6 @@ export const CippAddUserDrawer = ({
           </Stack>
         }
       >
-        <Box sx={{ my: 2 }}>
-          <CippFormUserSelector
-            formControl={formControl}
-            name="userProperties"
-            label="Copy properties from another user"
-            multiple={false}
-            select={
-              "id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,streetAddress,city,state,postalCode,companyName,mobilePhone,businessPhones,usageLocation,office"
-            }
-            addedField={{
-              groupType: "calculatedGroupType",
-              displayName: "displayName",
-              userPrincipalName: "userPrincipalName",
-              id: "id",
-              givenName: "givenName",
-              surname: "surname",
-              mailNickname: "mailNickname",
-              jobTitle: "jobTitle",
-              department: "department",
-              streetAddress: "streetAddress",
-              city: "city",
-              state: "state",
-              postalCode: "postalCode",
-              companyName: "companyName",
-              mobilePhone: "mobilePhone",
-              businessPhones: "businessPhones",
-              usageLocation: "usageLocation",
-              office: "office",
-            }}
-          />
-        </Box>
         <Box sx={{ my: 2 }}>
           <CippAddEditUser
             formControl={formControl}
