@@ -66,27 +66,9 @@ const Page = () => {
 
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: {
-      reportId: selectedReport,
-    },
   });
 
   const reportIdValue = useWatch({ control: formControl.control });
-
-  // Update URL when form value changes (e.g., user selects different report from dropdown)
-  useEffect(() => {
-    console.log("reportIdValue changed:", reportIdValue);
-    if (reportIdValue && reportIdValue.reportId?.value !== selectedReport) {
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, reportId: reportIdValue.reportId?.value },
-        },
-        undefined,
-        { shallow: true }
-      );
-    }
-  }, [reportIdValue]);
 
   // Fetch available reports
   const reportsApi = ApiGetCall({
@@ -95,6 +77,36 @@ const Page = () => {
   });
 
   const reports = reportsApi.data || [];
+
+  // Update form when selectedReport changes (from URL)
+  useEffect(() => {
+    if (selectedReport && router.isReady && reports.length > 0) {
+      const matchingReport = reports.find((r) => r.id === selectedReport);
+      if (matchingReport) {
+        formControl.setValue("reportId", {
+          value: matchingReport.id,
+          label: matchingReport.description
+            ? `${matchingReport.name} - ${matchingReport.description}`
+            : matchingReport.name,
+        });
+      }
+    }
+  }, [selectedReport, router.isReady, reports]);
+
+  // Update URL when form value changes (e.g., user selects different report from dropdown)
+  useEffect(() => {
+    console.log("reportIdValue changed:", reportIdValue);
+    if (reportIdValue?.reportId?.value && reportIdValue.reportId.value !== selectedReport) {
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, reportId: reportIdValue.reportId.value },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [reportIdValue]);
 
   const organization = ApiGetCall({
     url: "/api/ListOrg",

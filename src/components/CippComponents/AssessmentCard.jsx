@@ -8,10 +8,14 @@ export const AssessmentCard = ({ data, isLoading }) => {
   const identityPassed = data?.TestResultSummary?.IdentityPassed || 0;
   const identityTotal = data?.TestResultSummary?.IdentityTotal || 1;
   const devicesPassed = data?.TestResultSummary?.DevicesPassed || 0;
-  const devicesTotal = data?.TestResultSummary?.DevicesTotal || 1;
+  const devicesTotal = data?.TestResultSummary?.DevicesTotal || 0;
+
+  // Determine if we should show devices section
+  const hasDeviceTests = devicesTotal > 0;
 
   // Calculate percentages for the radial chart
-  const devicesPercentage = (devicesPassed / devicesTotal) * 100;
+  // If no device tests, set devices to 100% (complete)
+  const devicesPercentage = hasDeviceTests ? (devicesPassed / devicesTotal) * 100 : 100;
   const identityPercentage = (identityPassed / identityTotal) * 100;
 
   const chartData = [
@@ -61,28 +65,30 @@ export const AssessmentCard = ({ data, isLoading }) => {
                 )}
               </Typography>
             </Box>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary">
-                Devices
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {isLoading ? (
-                  <Skeleton width={80} />
-                ) : (
-                  <>
-                    {devicesPassed}/{devicesTotal}
-                    <Typography
-                      component="span"
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ ml: 1 }}
-                    >
-                      tests
-                    </Typography>
-                  </>
-                )}
-              </Typography>
-            </Box>
+            {hasDeviceTests && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Devices
+                </Typography>
+                <Typography variant="h5" fontWeight="bold">
+                  {isLoading ? (
+                    <Skeleton width={80} />
+                  ) : (
+                    <>
+                      {devicesPassed}/{devicesTotal}
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ ml: 1 }}
+                      >
+                        tests
+                      </Typography>
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            )}
             <Box>
               <Typography variant="caption" color="text.secondary">
                 Last Data Collection
