@@ -256,7 +256,7 @@ const Page = () => {
                     multiple={false}
                     formControl={formControl}
                     options={reports.map((r) => ({
-                      label: r.description ? `${r.name} - ${r.description}` : r.name,
+                      label: r.name,
                       value: r.id,
                       description: r.description,
                     }))}
