@@ -138,8 +138,15 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
     <>
       <Button
         variant="contained"
-        size="small"
-        sx={{ whiteSpace: "nowrap", minHeight: 40 }}
+        sx={{
+          whiteSpace: "nowrap",
+          fontWeight: "bold",
+          textTransform: "none",
+          borderRadius: 2,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          transition: "all 0.2s ease-in-out",
+          px: 2,
+        }}
         onClick={() => setDrawerVisible(true)}
         startIcon={<Add />}
       >
