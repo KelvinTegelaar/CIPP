@@ -283,10 +283,22 @@ export const CippDataTable = (props) => {
       baseBackgroundColor: theme.palette.background.paper,
     }),
     muiTablePaperProps: ({ table }) => ({
-      //not sx
-      style: {
-        zIndex: table.getState().isFullScreen ? 1000 : undefined,
-        top: table.getState().isFullScreen ? 64 : undefined,
+      sx: {
+        ...(table.getState().isFullScreen && {
+          position: 'fixed !important',
+          top: '64px !important',
+          bottom: '0 !important',
+          left: { xs: '0 !important', lg: settings?.sidebarCollapse ? '73px !important' : '270px !important' },
+          right: '0 !important',
+          zIndex: '1300 !important',
+          m: '0 !important',
+          p: '16px !important',
+          overflow: 'auto',
+          bgcolor: 'background.paper',
+          maxWidth: 'none !important',
+          width: 'auto !important',
+          height: 'auto !important',
+        }),
       },
     }),
     muiTableBodyRowProps:
