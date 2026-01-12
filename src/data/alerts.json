@@ -104,6 +104,12 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "SecDefaultsDisabled",
+    "label": "Alert when Security Defaults is disabled with no Conditional Access policies",
+    "recommendedRunInterval": "1d",
+    "description": "Monitors for tenants where Security Defaults is disabled and no Conditional Access policies are configured, leaving the tenant without baseline security protection."
+  },
+  {
     "name": "DefenderStatus",
     "label": "Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)",
     "recommendedRunInterval": "4h"
