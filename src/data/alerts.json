@@ -106,8 +106,7 @@
   {
     "name": "SecDefaultsDisabled",
     "label": "Alert when Security Defaults is disabled with no Conditional Access policies",
-    "recommendedRunInterval": "1d",
-    "description": "Monitors for tenants where Security Defaults is disabled and no Conditional Access policies are configured, leaving the tenant without baseline security protection."
+    "recommendedRunInterval": "1d"
   },
   {
     "name": "DefenderStatus",
