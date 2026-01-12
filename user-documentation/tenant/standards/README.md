@@ -7,15 +7,15 @@ description: Standards ensure consistent configuration across your Microsoft 365
 {% hint style="warning" %}
 ### Page Purpose
 
-This page serves as an overview of CIPP Standards.  For the tecnical components of each page and details on the actions you can take, please see the respective docs page under this menu item to the left.
+This page serves as an overview of CIPP Standards.  For the technical components of each page and details on the actions you can take, please see the respective docs page under this menu item to the left.
 {% endhint %}
 
 ## **Standards Overview**
 
-Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **three hours** or evaluating drift **every hour**. This automatic enforcement and drift detection prevents unauthorized changes and helps maintain security. There are two kinds of standards:
+Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **four hours** or evaluating drift **every twelve hours**. This automatic enforcement and drift detection prevents unauthorized changes and helps maintain security. There are two kinds of standards:
 
-* Classic: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every three hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
-* Drift: New in v 8.3, drift standards allow for you to manage client environments with a much finer touch. These standards evaluate every hour and allow for granular handling of anything that is out of alignment with the template. As such, drift standards are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with drift standards, see [drift.md](../manage/drift.md "mention").
+* Classic: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every four hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
+* Drift: New in v 8.3, drift standards allow for you to manage client environments with a much finer touch. These standards evaluate every twelve hours and allow for granular handling of anything that is out of alignment with the template. As such, drift standards are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with drift standards, see [drift.md](../manage/drift.md "mention").
 
 ### Actions
 
