@@ -85,9 +85,7 @@ const Page = () => {
       if (matchingReport) {
         formControl.setValue("reportId", {
           value: matchingReport.id,
-          label: matchingReport.description
-            ? `${matchingReport.name} - ${matchingReport.description}`
-            : matchingReport.name,
+          label: matchingReport.name,
         });
       }
     }
