@@ -284,7 +284,9 @@ const Page = () => {
                     actions={PortalMenuItems}
                     disabled={!currentTenantInfo.isSuccess || PortalMenuItems.length === 0}
                   />
-                  <ExecutiveReportButton disabled={organization.isFetching || dashboard.isFetching} />
+                  <ExecutiveReportButton
+                    disabled={organization.isFetching || dashboard.isFetching}
+                  />
                   <Box sx={{ flex: 1 }}>
                     {/* TODO: Remove Card from inside CippUniversalSearch to avoid double border */}
                     <CippUniversalSearch />
