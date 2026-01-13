@@ -48,7 +48,7 @@ const CippJitAdminSettings = () => {
   return (
     <CippButtonCard
       title="JIT Admin Settings"
-      cardSx={{ display: "flex", flexDirection: "column" }}
+      cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
       CardButton={
         <Button
           variant="contained"
