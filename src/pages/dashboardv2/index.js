@@ -253,18 +253,6 @@ const Page = () => {
                     </Button>
                   </span>
                 </Tooltip>
-                <Button
-                  variant="outlined"
-                  onClick={() => router.push("/dashboardv1")}
-                  sx={{
-                    fontWeight: "bold",
-                    textTransform: "none",
-                    borderRadius: 2,
-                    transition: "all 0.2s ease-in-out",
-                  }}
-                >
-                  Return to old Dashboard
-                </Button>
               </CardContent>
             </Card>
           </Grid>
