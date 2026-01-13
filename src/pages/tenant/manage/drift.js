@@ -138,51 +138,61 @@ const ManageDriftPage = () => {
       ) {
         const compliantStandards = item.driftSettings.ComparisonDetails.filter(
           (detail) => detail.Compliant === true
-        ).map((detail) => {
-          // Strip "standards." prefix if present
-          let standardName = detail.StandardName;
-          if (standardName.startsWith("standards.")) {
-            standardName = standardName.substring("standards.".length);
-          }
-
-          let displayName = null;
-
-          // For template types, extract the display name from standardSettings
-          if (standardName.startsWith("IntuneTemplate.")) {
-            const guid = standardName.substring("IntuneTemplate.".length);
-            const intuneTemplates = item.driftSettings?.standardSettings?.IntuneTemplate;
-            if (Array.isArray(intuneTemplates)) {
-              const template = intuneTemplates.find((t) => t.TemplateList?.value === guid);
-              if (template?.TemplateList?.label) {
-                displayName = template.TemplateList.label;
-              }
+        )
+          .map((detail) => {
+            // Strip "standards." prefix if present
+            let standardName = detail.StandardName;
+            if (standardName.startsWith("standards.")) {
+              standardName = standardName.substring("standards.".length);
             }
-          } else if (standardName.startsWith("ConditionalAccessTemplate.")) {
-            const guid = standardName.substring("ConditionalAccessTemplate.".length);
-            const caTemplates = item.driftSettings?.standardSettings?.ConditionalAccessTemplate;
-            if (Array.isArray(caTemplates)) {
-              const template = caTemplates.find((t) => t.TemplateList?.value === guid);
-              if (template?.TemplateList?.label) {
-                displayName = template.TemplateList.label;
-              }
-            }
-          } else {
-            // For non-template standards, keep the "standards." prefix for lookup
-            standardName = detail.StandardName;
-          }
 
-          return {
-            standardName: standardName,
-            standardDisplayName: displayName, // Set display name if found from templates
-            state: "aligned",
-            Status: "Aligned",
-            ComplianceStatus: detail.ComplianceStatus,
-            StandardValue: detail.StandardValue,
-            ReportingDisabled: detail.ReportingDisabled,
-            expectedValue: "Compliant with template",
-            receivedValue: detail.StandardValue,
-          };
-        });
+            let displayName = null;
+
+            // For template types, extract the display name from standardSettings
+            if (standardName.startsWith("IntuneTemplate.")) {
+              const guid = standardName.substring("IntuneTemplate.".length);
+              const intuneTemplates = item.driftSettings?.standardSettings?.IntuneTemplate;
+              if (Array.isArray(intuneTemplates)) {
+                const template = intuneTemplates.find((t) => t.TemplateList?.value === guid);
+                if (template?.TemplateList?.label) {
+                  displayName = template.TemplateList.label;
+                }
+              }
+              // If template not found, return null to filter it out later
+              if (!displayName) {
+                return null;
+              }
+            } else if (standardName.startsWith("ConditionalAccessTemplate.")) {
+              const guid = standardName.substring("ConditionalAccessTemplate.".length);
+              const caTemplates = item.driftSettings?.standardSettings?.ConditionalAccessTemplate;
+              if (Array.isArray(caTemplates)) {
+                const template = caTemplates.find((t) => t.TemplateList?.value === guid);
+                if (template?.TemplateList?.label) {
+                  displayName = template.TemplateList.label;
+                }
+              }
+              // If template not found, return null to filter it out later
+              if (!displayName) {
+                return null;
+              }
+            } else {
+              // For non-template standards, keep the "standards." prefix for lookup
+              standardName = detail.StandardName;
+            }
+
+            return {
+              standardName: standardName,
+              standardDisplayName: displayName, // Set display name if found from templates
+              state: "aligned",
+              Status: "Aligned",
+              ComplianceStatus: detail.ComplianceStatus,
+              StandardValue: detail.StandardValue,
+              ReportingDisabled: detail.ReportingDisabled,
+              expectedValue: "Compliant with template",
+              receivedValue: detail.StandardValue,
+            };
+          })
+          .filter((item) => item !== null); // Filter out null items where templates weren't found
         acc.alignedStandards.push(...compliantStandards);
       }
 
@@ -375,7 +385,22 @@ const ManageDriftPage = () => {
 
   // Helper function to create deviation items
   const createDeviationItems = (deviations, statusOverride = null) => {
-    return (deviations || []).map((deviation, index) => {
+    return (deviations || [])
+      .filter((deviation) => {
+        // Filter out template deviations where the template cannot be found
+        // (these will have null/undefined standardDisplayName)
+        if (
+          deviation.standardName &&
+          (deviation.standardName.startsWith("IntuneTemplate.") ||
+            deviation.standardName.startsWith("ConditionalAccessTemplate."))
+        ) {
+          // For templates, we must have a standardDisplayName
+          return !!deviation.standardDisplayName;
+        }
+        // For non-template standards, always include
+        return true;
+      })
+      .map((deviation, index) => {
       // Check if this should be skipped due to missing license
       const isLicenseSkipped = deviation.LicenseAvailable === false;
 
