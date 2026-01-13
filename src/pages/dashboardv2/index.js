@@ -8,6 +8,7 @@ import {
   Divider,
   Button,
   Skeleton,
+  Tooltip,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -234,19 +235,24 @@ const Page = () => {
                   disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
                 />
                 <ExecutiveReportButton disabled={organization.isFetching} />
-                <Button
-                  variant="contained"
-                  startIcon={<AssessmentIcon />}
-                  sx={{
-                    fontWeight: "bold",
-                    textTransform: "none",
-                    borderRadius: 2,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                    transition: "all 0.2s ease-in-out",
-                  }}
-                >
-                  Report Builder
-                </Button>
+                <Tooltip title="Coming soon!" arrow>
+                  <span>
+                    <Button
+                      variant="contained"
+                      startIcon={<AssessmentIcon />}
+                      disabled
+                      sx={{
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        borderRadius: 2,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                        transition: "all 0.2s ease-in-out",
+                      }}
+                    >
+                      Report Builder
+                    </Button>
+                  </span>
+                </Tooltip>
                 <Button
                   variant="outlined"
                   onClick={() => router.push("/dashboardv1")}
