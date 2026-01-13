@@ -5576,13 +5576,6 @@
       },
       {
         "type": "textField",
-        "name": "standards.DeployCheckChromeExtension.cippServerUrl",
-        "label": "CIPP Server URL",
-        "placeholder": "https://YOUR-CIPP-SERVER-URL",
-        "required": false
-      },
-      {
-        "type": "textField",
         "name": "standards.DeployCheckChromeExtension.customRulesUrl",
         "label": "Custom Rules URL",
         "placeholder": "https://YOUR-CIPP-SERVER-URL/rules.json",
