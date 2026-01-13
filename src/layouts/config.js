@@ -74,6 +74,11 @@ export const nativeMenuItems = [
             permissions: ["Identity.Role.*"],
           },
           {
+            title: "JIT Admin Templates",
+            path: "/identity/administration/jit-admin-templates",
+            permissions: ["Identity.Role.*"],
+          },
+          {
             title: "Offboarding Wizard",
             path: "/identity/administration/offboarding-wizard",
             permissions: ["Identity.User.*"],
