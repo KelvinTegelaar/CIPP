@@ -19,17 +19,6 @@ import { ApiGetCall } from "/src/api/ApiCall.jsx";
 import Portals from "/src/data/portals";
 import { BulkActionsMenu } from "/src/components/bulk-actions-menu.js";
 import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton.js";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
-  LabelList,
-} from "recharts";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
