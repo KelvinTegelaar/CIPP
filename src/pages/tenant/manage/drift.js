@@ -157,7 +157,7 @@ const ManageDriftPage = () => {
             // For template types, extract the display name from standardSettings
             if (standardName.startsWith("IntuneTemplate.")) {
               const guid = standardName.substring("IntuneTemplate.".length);
-              
+
               // First try to find in standardSettings
               const intuneTemplates = item.driftSettings?.standardSettings?.IntuneTemplate;
               if (Array.isArray(intuneTemplates)) {
@@ -166,7 +166,7 @@ const ManageDriftPage = () => {
                   displayName = template.TemplateList.label;
                 }
               }
-              
+
               // If not found in standardSettings, look up in all Intune templates (for tag templates)
               if (!displayName && intuneTemplatesApi.data) {
                 const template = intuneTemplatesApi.data.find((t) => t.GUID === guid);
@@ -174,7 +174,7 @@ const ManageDriftPage = () => {
                   displayName = template.Displayname;
                 }
               }
-              
+
               // If template not found, return null to filter it out later
               if (!displayName) {
                 return null;
@@ -418,229 +418,229 @@ const ManageDriftPage = () => {
         return true;
       })
       .map((deviation, index) => {
-      // Check if this should be skipped due to missing license
-      const isLicenseSkipped = deviation.LicenseAvailable === false;
+        // Check if this should be skipped due to missing license
+        const isLicenseSkipped = deviation.LicenseAvailable === false;
 
-      // Check if we have both ExpectedValue and CurrentValue for comparison
-      let isActuallyCompliant = false;
-      let jsonDifferences = null;
+        // Check if we have both ExpectedValue and CurrentValue for comparison
+        let isActuallyCompliant = false;
+        let jsonDifferences = null;
 
-      if (deviation.ExpectedValue && deviation.CurrentValue) {
-        jsonDifferences = compareJsonObjects(deviation.ExpectedValue, deviation.CurrentValue);
-        // If there are no differences, this is actually compliant
-        if (jsonDifferences === null) {
-          isActuallyCompliant = true;
+        if (deviation.ExpectedValue && deviation.CurrentValue) {
+          jsonDifferences = compareJsonObjects(deviation.ExpectedValue, deviation.CurrentValue);
+          // If there are no differences, this is actually compliant
+          if (jsonDifferences === null) {
+            isActuallyCompliant = true;
+          }
         }
-      }
 
-      // Prioritize standardDisplayName from drift data (which has user-friendly names for templates)
-      // then fallback to standards.json lookup, then raw name
-      const prettyName =
-        deviation.standardDisplayName ||
-        getStandardPrettyName(deviation.standardName) ||
-        deviation.standardName ||
-        "Unknown Standard";
+        // Prioritize standardDisplayName from drift data (which has user-friendly names for templates)
+        // then fallback to standards.json lookup, then raw name
+        const prettyName =
+          deviation.standardDisplayName ||
+          getStandardPrettyName(deviation.standardName) ||
+          deviation.standardName ||
+          "Unknown Standard";
 
-      // Get description from standards.json first, then fallback to standardDescription from deviation
-      const description =
-        getStandardDescription(deviation.standardName) ||
-        deviation.standardDescription ||
-        "No description available";
+        // Get description from standards.json first, then fallback to standardDescription from deviation
+        const description =
+          getStandardDescription(deviation.standardName) ||
+          deviation.standardDescription ||
+          "No description available";
 
-      // Determine the actual status
-      // If actually compliant (values match), mark as aligned regardless of input status
-      // If license is skipped, mark as skipped
-      // Otherwise use the provided status
-      const actualStatus = isActuallyCompliant
-        ? "aligned"
-        : isLicenseSkipped
-        ? "skipped"
-        : statusOverride || deviation.Status || deviation.state;
-      const actualStatusText = isActuallyCompliant
-        ? "Compliant"
-        : isLicenseSkipped
-        ? "Skipped - No License Available"
-        : getDeviationStatusText(actualStatus);
+        // Determine the actual status
+        // If actually compliant (values match), mark as aligned regardless of input status
+        // If license is skipped, mark as skipped
+        // Otherwise use the provided status
+        const actualStatus = isActuallyCompliant
+          ? "aligned"
+          : isLicenseSkipped
+          ? "skipped"
+          : statusOverride || deviation.Status || deviation.state;
+        const actualStatusText = isActuallyCompliant
+          ? "Compliant"
+          : isLicenseSkipped
+          ? "Skipped - No License Available"
+          : getDeviationStatusText(actualStatus);
 
-      // For skipped items, show different expected/received values
-      let displayExpectedValue = deviation.ExpectedValue || deviation.expectedValue;
-      let displayReceivedValue = deviation.CurrentValue || deviation.receivedValue;
+        // For skipped items, show different expected/received values
+        let displayExpectedValue = deviation.ExpectedValue || deviation.expectedValue;
+        let displayReceivedValue = deviation.CurrentValue || deviation.receivedValue;
 
-      // If we have JSON differences, show only the differences
-      if (jsonDifferences && !isLicenseSkipped && !isActuallyCompliant) {
-        displayExpectedValue = JSON.stringify(jsonDifferences, null, 2);
-        displayReceivedValue = "See differences in Expected column";
-      }
+        // If we have JSON differences, show only the differences
+        if (jsonDifferences && !isLicenseSkipped && !isActuallyCompliant) {
+          displayExpectedValue = JSON.stringify(jsonDifferences, null, 2);
+          displayReceivedValue = "See differences in Expected column";
+        }
 
-      return {
-        id: statusOverride ? `${statusOverride}-${index + 1}` : `current-${index + 1}`,
-        cardLabelBox: {
-          cardLabelBoxHeader: getDeviationIcon(actualStatus),
-        },
-        text: prettyName,
-        subtext: description,
-        statusColor: isLicenseSkipped ? "text.secondary" : getDeviationColor(actualStatus),
-        statusText: actualStatusText,
-        standardName: deviation.standardName, // Store the original standardName for action handlers
-        receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
-        expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
-        originalDeviation: deviation, // Store the complete original deviation object for reference
-        isLicenseSkipped: isLicenseSkipped, // Flag for filtering and disabling actions
-        isActuallyCompliant: isActuallyCompliant, // Flag to move to compliant section
-        children: (
-          <Stack spacing={2} sx={{ p: 2 }}>
-            {description && description !== "No description available" && (
-              <Typography variant="body2" color="text.secondary">
-                {description}
-              </Typography>
-            )}
-
-            {isLicenseSkipped && (
-              <Box
-                sx={{
-                  p: 1.5,
-                  bgcolor: "warning.lighter",
-                  borderRadius: 1,
-                  border: "1px solid",
-                  borderColor: "warning.main",
-                }}
-              >
-                <Typography variant="body2" color="warning.dark" sx={{ fontWeight: 600 }}>
-                  ⚠️ This standard was skipped because the required license is not available for
-                  this tenant.
+        return {
+          id: statusOverride ? `${statusOverride}-${index + 1}` : `current-${index + 1}`,
+          cardLabelBox: {
+            cardLabelBoxHeader: getDeviationIcon(actualStatus),
+          },
+          text: prettyName,
+          subtext: description,
+          statusColor: isLicenseSkipped ? "text.secondary" : getDeviationColor(actualStatus),
+          statusText: actualStatusText,
+          standardName: deviation.standardName, // Store the original standardName for action handlers
+          receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
+          expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
+          originalDeviation: deviation, // Store the complete original deviation object for reference
+          isLicenseSkipped: isLicenseSkipped, // Flag for filtering and disabling actions
+          isActuallyCompliant: isActuallyCompliant, // Flag to move to compliant section
+          children: (
+            <Stack spacing={2} sx={{ p: 2 }}>
+              {description && description !== "No description available" && (
+                <Typography variant="body2" color="text.secondary">
+                  {description}
                 </Typography>
-              </Box>
-            )}
+              )}
 
-            {(displayExpectedValue && displayExpectedValue !== "Compliant with template") ||
-            displayReceivedValue ? (
-              <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
-                {displayExpectedValue && displayExpectedValue !== "Compliant with template" && (
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 600,
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: 0.5,
-                      }}
-                    >
-                      {jsonDifferences ? "Differences" : "Expected"}
-                    </Typography>
-                    <Box
-                      sx={{
-                        mt: 0.5,
-                        p: 1.5,
-                        bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: isActuallyCompliant ? "success.main" : "divider",
-                      }}
-                    >
+              {isLicenseSkipped && (
+                <Box
+                  sx={{
+                    p: 1.5,
+                    bgcolor: "warning.lighter",
+                    borderRadius: 1,
+                    border: "1px solid",
+                    borderColor: "warning.main",
+                  }}
+                >
+                  <Typography variant="body2" color="warning.dark" sx={{ fontWeight: 600 }}>
+                    ⚠️ This standard was skipped because the required license is not available for
+                    this tenant.
+                  </Typography>
+                </Box>
+              )}
+
+              {(displayExpectedValue && displayExpectedValue !== "Compliant with template") ||
+              displayReceivedValue ? (
+                <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
+                  {displayExpectedValue && displayExpectedValue !== "Compliant with template" && (
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography
-                        variant="body2"
+                        variant="caption"
                         sx={{
-                          fontFamily: "monospace",
-                          fontSize: "0.8125rem",
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
+                          fontWeight: 600,
+                          color: "text.secondary",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
                         }}
                       >
-                        {displayExpectedValue}
+                        {jsonDifferences ? "Differences" : "Expected"}
                       </Typography>
-                    </Box>
-                  </Box>
-                )}
-
-                {displayReceivedValue && !jsonDifferences && (
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 600,
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: 0.5,
-                      }}
-                    >
-                      Current
-                    </Typography>
-                    <Box
-                      sx={{
-                        mt: 0.5,
-                        p: 1.5,
-                        bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
-                        borderRadius: 1,
-                        border: "1px solid",
-                        borderColor: isActuallyCompliant ? "success.main" : "divider",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
+                      <Box
                         sx={{
-                          fontFamily: "monospace",
-                          fontSize: "0.8125rem",
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
+                          mt: 0.5,
+                          p: 1.5,
+                          bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
+                          borderRadius: 1,
+                          border: "1px solid",
+                          borderColor: isActuallyCompliant ? "success.main" : "divider",
                         }}
                       >
-                        {displayReceivedValue}
-                      </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontFamily: "monospace",
+                            fontSize: "0.8125rem",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {displayExpectedValue}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                )}
-              </Box>
-            ) : null}
+                  )}
 
-            {(deviation.Reason ||
-              deviation.lastChangedByUser ||
-              processedDriftData.latestDataCollection) && (
-              <>
-                <Divider />
-                <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-                  {deviation.Reason && (
-                    <Box sx={{ minWidth: 0 }}>
+                  {displayReceivedValue && !jsonDifferences && (
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography
                         variant="caption"
-                        sx={{ fontWeight: 600, color: "text.secondary" }}
+                        sx={{
+                          fontWeight: 600,
+                          color: "text.secondary",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                        }}
                       >
-                        Reason
+                        Current
                       </Typography>
-                      <Typography variant="body2">{deviation.Reason}</Typography>
-                    </Box>
-                  )}
-                  {deviation.lastChangedByUser && (
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography
-                        variant="caption"
-                        sx={{ fontWeight: 600, color: "text.secondary" }}
+                      <Box
+                        sx={{
+                          mt: 0.5,
+                          p: 1.5,
+                          bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
+                          borderRadius: 1,
+                          border: "1px solid",
+                          borderColor: isActuallyCompliant ? "success.main" : "divider",
+                        }}
                       >
-                        Changed By
-                      </Typography>
-                      <Typography variant="body2">{deviation.lastChangedByUser}</Typography>
-                    </Box>
-                  )}
-                  {processedDriftData.latestDataCollection && (
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography
-                        variant="caption"
-                        sx={{ fontWeight: 600, color: "text.secondary" }}
-                      >
-                        Last Updated
-                      </Typography>
-                      <Typography variant="body2">
-                        {new Date(processedDriftData.latestDataCollection).toLocaleString()}
-                      </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontFamily: "monospace",
+                            fontSize: "0.8125rem",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {displayReceivedValue}
+                        </Typography>
+                      </Box>
                     </Box>
                   )}
                 </Box>
-              </>
-            )}
-          </Stack>
-        ),
-      };
-    });
+              ) : null}
+
+              {(deviation.Reason ||
+                deviation.lastChangedByUser ||
+                processedDriftData.latestDataCollection) && (
+                <>
+                  <Divider />
+                  <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                    {deviation.Reason && (
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: 600, color: "text.secondary" }}
+                        >
+                          Reason
+                        </Typography>
+                        <Typography variant="body2">{deviation.Reason}</Typography>
+                      </Box>
+                    )}
+                    {deviation.lastChangedByUser && (
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: 600, color: "text.secondary" }}
+                        >
+                          Changed By
+                        </Typography>
+                        <Typography variant="body2">{deviation.lastChangedByUser}</Typography>
+                      </Box>
+                    )}
+                    {processedDriftData.latestDataCollection && (
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: 600, color: "text.secondary" }}
+                        >
+                          Last Updated
+                        </Typography>
+                        <Typography variant="body2">
+                          {new Date(processedDriftData.latestDataCollection).toLocaleString()}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </>
+              )}
+            </Stack>
+          ),
+        };
+      });
   };
 
   const deviationItems = createDeviationItems(processedDriftData.currentDeviations);
