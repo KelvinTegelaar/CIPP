@@ -16,13 +16,15 @@ const Page = () => {
   const formControl = useForm({ mode: "onChange" });
   const selectedTenant = useWatch({ control: formControl.control, name: "tenantFilter" });
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-  
+
   const jitAdminTemplates = ApiGetCall({
-    url: selectedTenant ? `/api/ListJITAdminTemplates?TenantFilter=${selectedTenant.value}` : undefined,
-    queryKey: selectedTenant ? `JITAdminTemplates-${selectedTenant.value}` : undefined,
+    url: selectedTenant
+      ? `/api/ListJITAdminTemplates?TenantFilter=${selectedTenant.value}`
+      : undefined,
+    queryKey: selectedTenant ? `JITAdminTemplates-${selectedTenant.value}` : "JITAdminTemplates",
     refetchOnMount: false,
     refetchOnReconnect: false,
-    enabled: !!selectedTenant,
+    waiting: !!selectedTenant,
   });
 
   const watcher = useWatch({ control: formControl.control });
@@ -30,7 +32,9 @@ const Page = () => {
   // Simple duration parser for basic ISO 8601 durations
   const parseDuration = (duration) => {
     if (!duration) return null;
-    const matches = duration.match(/P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/);
+    const matches = duration.match(
+      /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
+    );
     if (!matches) return null;
     return {
       years: parseInt(matches[1] || 0),
@@ -47,7 +51,7 @@ const Page = () => {
     if (!date || !duration) return null;
     const parsed = parseDuration(duration);
     if (!parsed) return null;
-    
+
     const result = new Date(date);
     result.setFullYear(result.getFullYear() + parsed.years);
     result.setMonth(result.getMonth() + parsed.months);
@@ -64,24 +68,22 @@ const Page = () => {
   useEffect(() => {
     if (jitAdminTemplates.isSuccess && !watcher.jitAdminTemplate) {
       const templates = jitAdminTemplates.data || [];
-      
+
       // First, try to find a tenant-specific default template
       let defaultTemplate = templates.find(
-        (template) => 
-          template.defaultForTenant === true && 
+        (template) =>
+          template.defaultForTenant === true &&
           template.tenantFilter !== "AllTenants" &&
           template.tenantFilter === selectedTenant?.value
       );
-      
+
       // If not found, fall back to AllTenants default template
       if (!defaultTemplate) {
         defaultTemplate = templates.find(
-          (template) => 
-            template.defaultForTenant === true && 
-            template.tenantFilter === "AllTenants"
+          (template) => template.defaultForTenant === true && template.tenantFilter === "AllTenants"
         );
       }
-      
+
       if (defaultTemplate) {
         formControl.setValue("jitAdminTemplate", {
           label: defaultTemplate.templateName,
@@ -124,8 +126,12 @@ const Page = () => {
 
     // Set all template-driven fields
     formControl.setValue("adminRoles", template.defaultRoles || [], { shouldDirty: true });
-    formControl.setValue("expireAction", template.defaultExpireAction || null, { shouldDirty: true });
-    formControl.setValue("postExecution", template.defaultNotificationActions || [], { shouldDirty: true });
+    formControl.setValue("expireAction", template.defaultExpireAction || null, {
+      shouldDirty: true,
+    });
+    formControl.setValue("postExecution", template.defaultNotificationActions || [], {
+      shouldDirty: true,
+    });
     formControl.setValue("UseTAP", template.generateTAPByDefault ?? false, { shouldDirty: true });
     formControl.setValue("reason", template.reasonTemplate || "", { shouldDirty: true });
 
@@ -151,9 +157,10 @@ const Page = () => {
 
     // Dates
     if (template.defaultDuration) {
-      const duration = typeof template.defaultDuration === "object" && template.defaultDuration !== null
-        ? template.defaultDuration.value
-        : template.defaultDuration;
+      const duration =
+        typeof template.defaultDuration === "object" && template.defaultDuration !== null
+          ? template.defaultDuration.value
+          : template.defaultDuration;
       const start = roundDown15(new Date());
       const unixStart = Math.floor(start.getTime() / 1000);
       formControl.setValue("startDate", unixStart, { shouldDirty: true });
@@ -166,9 +173,11 @@ const Page = () => {
   // Recalculate end date when start date changes and template has default duration
   useEffect(() => {
     if (watcher.startDate && selectedTemplate?.defaultDuration) {
-      const durationValue = typeof selectedTemplate.defaultDuration === 'object' && selectedTemplate.defaultDuration !== null
-        ? selectedTemplate.defaultDuration.value
-        : selectedTemplate.defaultDuration;
+      const durationValue =
+        typeof selectedTemplate.defaultDuration === "object" &&
+        selectedTemplate.defaultDuration !== null
+          ? selectedTemplate.defaultDuration.value
+          : selectedTemplate.defaultDuration;
       const startDateDate = new Date(watcher.startDate * 1000);
       const endDateObj = addDurationToDate(startDateDate, durationValue);
       if (endDateObj) {
@@ -207,7 +216,7 @@ const Page = () => {
                 multiple={false}
                 creatable={false}
                 options={
-                  jitAdminTemplates.isSuccess
+                  jitAdminTemplates.isSuccess && Array.isArray(jitAdminTemplates.data)
                     ? jitAdminTemplates.data?.map((template) => ({
                         label: template.templateName,
                         value: template.GUID,
