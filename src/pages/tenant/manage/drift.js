@@ -88,6 +88,12 @@ const ManageDriftPage = () => {
     queryKey: "ListDriftTemplates",
   });
 
+  // API call to get all Intune templates for displayName lookup
+  const intuneTemplatesApi = ApiGetCall({
+    url: "/api/ListIntuneTemplates",
+    queryKey: "ListIntuneTemplates",
+  });
+
   // API call for standards comparison (when templateId is available)
   const comparisonApi = ApiGetCall({
     url: "/api/ListStandardsCompare",
@@ -151,6 +157,8 @@ const ManageDriftPage = () => {
             // For template types, extract the display name from standardSettings
             if (standardName.startsWith("IntuneTemplate.")) {
               const guid = standardName.substring("IntuneTemplate.".length);
+              
+              // First try to find in standardSettings
               const intuneTemplates = item.driftSettings?.standardSettings?.IntuneTemplate;
               if (Array.isArray(intuneTemplates)) {
                 const template = intuneTemplates.find((t) => t.TemplateList?.value === guid);
@@ -158,6 +166,15 @@ const ManageDriftPage = () => {
                   displayName = template.TemplateList.label;
                 }
               }
+              
+              // If not found in standardSettings, look up in all Intune templates (for tag templates)
+              if (!displayName && intuneTemplatesApi.data) {
+                const template = intuneTemplatesApi.data.find((t) => t.GUID === guid);
+                if (template?.Displayname) {
+                  displayName = template.Displayname;
+                }
+              }
+              
               // If template not found, return null to filter it out later
               if (!displayName) {
                 return null;
