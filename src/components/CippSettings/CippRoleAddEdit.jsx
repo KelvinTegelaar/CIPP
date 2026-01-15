@@ -88,7 +88,11 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
     queryKey: "customRoleList",
   });
 
-  const { data: { pages = [] } = {}, isSuccess: tenantsSuccess } = ApiGetCallWithPagination({
+  const {
+    data: { pages = [] } = {},
+    isSuccess: tenantsSuccess,
+    isFetching: tenantsFetching,
+  } = ApiGetCallWithPagination({
     url: "/api/ListTenants?AllTenantSelector=true",
     queryKey: "ListTenants-All",
   });
@@ -524,6 +528,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                 dataKey: "Results",
                 labelField: "displayName",
                 valueField: "id",
+                showRefresh: true,
               }}
               formControl={formControl}
               fullWidth={true}
@@ -894,7 +899,13 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           className="me-2"
           type="submit"
           variant="contained"
-          disabled={updatePermissions.isPending || customRoleListFetching || !formState.isValid}
+          disabled={
+            updatePermissions.isPending ||
+            customRoleListFetching ||
+            apiPermissionFetching ||
+            tenantsFetching ||
+            !formState.isValid
+          }
           startIcon={
             <SvgIcon fontSize="small">
               <Save />
