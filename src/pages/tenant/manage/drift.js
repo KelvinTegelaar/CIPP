@@ -1584,21 +1584,41 @@ const ManageDriftPage = () => {
             open={Boolean(anchorEl[item.id])}
             onClose={() => handleMenuClose(item.id)}
           >
-            <MenuItem onClick={() => { handleDeviationAction("accept-customer-specific", item); handleMenuClose(item.id); }}>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept-customer-specific", item);
+                handleMenuClose(item.id);
+              }}
+            >
               <CheckCircle sx={{ mr: 1, color: "success.main" }} />
               Accept Deviation - Customer Specific
             </MenuItem>
-            <MenuItem onClick={() => { handleDeviationAction("accept", item); handleMenuClose(item.id); }}>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept", item);
+                handleMenuClose(item.id);
+              }}
+            >
               <Check sx={{ mr: 1, color: "info.main" }} />
               Accept Deviation
             </MenuItem>
             {supportsDelete && (
-              <MenuItem onClick={() => { handleDeviationAction("deny-delete", item); handleMenuClose(item.id); }}>
+              <MenuItem
+                onClick={() => {
+                  handleDeviationAction("deny-delete", item);
+                  handleMenuClose(item.id);
+                }}
+              >
                 <Block sx={{ mr: 1, color: "error.main" }} />
                 Deny Deviation - Delete Policy
               </MenuItem>
             )}
-            <MenuItem onClick={() => { handleDeviationAction("deny-remediate", item); handleMenuClose(item.id); }}>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("deny-remediate", item);
+                handleMenuClose(item.id);
+              }}
+            >
               <Cancel sx={{ mr: 1, color: "error.main" }} />
               Deny Deviation - Remediate to align with template
             </MenuItem>
@@ -1619,16 +1639,31 @@ const ManageDriftPage = () => {
             onClose={() => handleMenuClose(`accepted-${item.id}`)}
           >
             {supportsDelete && (
-              <MenuItem onClick={() => { handleDeviationAction("deny-delete", item); handleMenuClose(`accepted-${item.id}`); }}>
+              <MenuItem
+                onClick={() => {
+                  handleDeviationAction("deny-delete", item);
+                  handleMenuClose(`accepted-${item.id}`);
+                }}
+              >
                 <Block sx={{ mr: 1, color: "error.main" }} />
                 Deny - Delete Policy
               </MenuItem>
             )}
-            <MenuItem onClick={() => { handleDeviationAction("deny-remediate", item); handleMenuClose(`accepted-${item.id}`); }}>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("deny-remediate", item);
+                handleMenuClose(`accepted-${item.id}`);
+              }}
+            >
               <Cancel sx={{ mr: 1, color: "error.main" }} />
               Deny - Remediate to align with template
             </MenuItem>
-            <MenuItem onClick={() => { handleDeviationAction("accept-customer-specific", item); handleMenuClose(`accepted-${item.id}`); }}>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept-customer-specific", item);
+                handleMenuClose(`accepted-${item.id}`);
+              }}
+            >
               <CheckCircle sx={{ mr: 1, color: "info.main" }} />
               Accept - Customer Specific
             </MenuItem>
@@ -1649,16 +1684,31 @@ const ManageDriftPage = () => {
             onClose={() => handleMenuClose(`customer-${item.id}`)}
           >
             {supportsDelete && (
-              <MenuItem onClick={() => { handleDeviationAction("deny-delete", item); handleMenuClose(`customer-${item.id}`); }}>
+              <MenuItem
+                onClick={() => {
+                  handleDeviationAction("deny-delete", item);
+                  handleMenuClose(`customer-${item.id}`);
+                }}
+              >
                 <Block sx={{ mr: 1, color: "error.main" }} />
                 Deny - Delete
               </MenuItem>
             )}
-            <MenuItem onClick={() => { handleDeviationAction("deny-remediate", item); handleMenuClose(`customer-${item.id}`); }}>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("deny-remediate", item);
+                handleMenuClose(`customer-${item.id}`);
+              }}
+            >
               <Cancel sx={{ mr: 1, color: "error.main" }} />
               Deny - Remediate to align with template
             </MenuItem>
-            <MenuItem onClick={() => { handleDeviationAction("accept", item); handleMenuClose(`customer-${item.id}`); }}>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept", item);
+                handleMenuClose(`customer-${item.id}`);
+              }}
+            >
               <Check sx={{ mr: 1, color: "success.main" }} />
               Accept
             </MenuItem>
@@ -1673,11 +1723,21 @@ const ManageDriftPage = () => {
           open={Boolean(anchorEl[`denied-${item.id}`])}
           onClose={() => handleMenuClose(`denied-${item.id}`)}
         >
-          <MenuItem onClick={() => { handleDeviationAction("accept", item); handleMenuClose(`denied-${item.id}`); }}>
+          <MenuItem
+            onClick={() => {
+              handleDeviationAction("accept", item);
+              handleMenuClose(`denied-${item.id}`);
+            }}
+          >
             <Check sx={{ mr: 1, color: "success.main" }} />
             Accept
           </MenuItem>
-          <MenuItem onClick={() => { handleDeviationAction("accept-customer-specific", item); handleMenuClose(`denied-${item.id}`); }}>
+          <MenuItem
+            onClick={() => {
+              handleDeviationAction("accept-customer-specific", item);
+              handleMenuClose(`denied-${item.id}`);
+            }}
+          >
             <CheckCircle sx={{ mr: 1, color: "info.main" }} />
             Accept - Customer Specific
           </MenuItem>
