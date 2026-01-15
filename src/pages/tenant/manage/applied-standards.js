@@ -146,22 +146,17 @@ const Page = () => {
             if (standardKey === "IntuneTemplate" && Array.isArray(standardConfig)) {
               standardConfig.forEach((templateItem, index) => {
                 if (!templateItem) return; // Skip null items
-                console.log("Processing IntuneTemplate item:", templateItem);
+                
+                // Check for both addedFields.templates AND rawData.templates
+                const tagTemplates = templateItem["TemplateList-Tags"]?.addedFields?.templates ||
+                                    templateItem["TemplateList-Tags"]?.rawData?.templates;
+                
                 if (
                   templateItem["TemplateList-Tags"]?.value &&
-                  templateItem["TemplateList-Tags"]?.addedFields?.templates
+                  tagTemplates
                 ) {
-                  console.log(
-                    "Found TemplateList-Tags for IntuneTemplate:",
-                    templateItem["TemplateList-Tags"]
-                  );
-                  console.log(
-                    "Templates to expand:",
-                    templateItem["TemplateList-Tags"].addedFields.templates
-                  );
-                  templateItem["TemplateList-Tags"].addedFields.templates.forEach(
+                  tagTemplates.forEach(
                     (expandedTemplate) => {
-                      console.log("Expanding IntuneTemplate:", expandedTemplate);
                       const itemTemplateId = expandedTemplate.GUID;
                       const standardId = `standards.IntuneTemplate.${itemTemplateId}`;
                       const standardInfo = standards.find(
@@ -222,6 +217,8 @@ const Page = () => {
                                 Value: directStandardValue,
                                 LastRefresh: standardObject?.LastRefresh,
                                 TemplateId: tenantTemplateId,
+                                CurrentValue: standardObject?.CurrentValue,
+                                ExpectedValue: standardObject?.ExpectedValue,
                               }
                             : currentTenantStandard?.value,
                         standardValue: templateSettings,
@@ -321,6 +318,8 @@ const Page = () => {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
                               TemplateId: tenantTemplateId,
+                              CurrentValue: standardObject?.CurrentValue,
+                              ExpectedValue: standardObject?.ExpectedValue,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
@@ -369,23 +368,18 @@ const Page = () => {
               // Process each ConditionalAccessTemplate item separately
               standardConfig.forEach((templateItem, index) => {
                 if (!templateItem) return; // Skip null items
+                
+                // Check for both addedFields.templates AND rawData.templates
+                const tagTemplates = templateItem["TemplateList-Tags"]?.addedFields?.templates ||
+                                    templateItem["TemplateList-Tags"]?.rawData?.templates;
+                
                 // Check if this item has TemplateList-Tags and expand them
                 if (
                   templateItem["TemplateList-Tags"]?.value &&
-                  templateItem["TemplateList-Tags"]?.addedFields?.templates
+                  tagTemplates
                 ) {
-                  console.log(
-                    "Found TemplateList-Tags for ConditionalAccessTemplate:",
-                    templateItem["TemplateList-Tags"]
-                  );
-                  console.log(
-                    "Templates to expand:",
-                    templateItem["TemplateList-Tags"].addedFields.templates
-                  );
-                  // Expand TemplateList-Tags into multiple template items
-                  templateItem["TemplateList-Tags"].addedFields.templates.forEach(
+                  tagTemplates.forEach(
                     (expandedTemplate) => {
-                      console.log("Expanding ConditionalAccessTemplate:", expandedTemplate);
                       const itemTemplateId = expandedTemplate.GUID;
                       const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`;
                       const standardInfo = standards.find(
@@ -432,6 +426,8 @@ const Page = () => {
                                 Value: directStandardValue,
                                 LastRefresh: standardObject?.LastRefresh,
                                 TemplateId: tenantTemplateId,
+                                CurrentValue: standardObject?.CurrentValue,
+                                ExpectedValue: standardObject?.ExpectedValue,
                               }
                             : currentTenantStandard?.value,
                         standardValue: templateSettings,
@@ -517,6 +513,8 @@ const Page = () => {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
                               TemplateId: tenantTemplateId,
+                              CurrentValue: standardObject?.CurrentValue,
+                              ExpectedValue: standardObject?.ExpectedValue,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
@@ -639,6 +637,8 @@ const Page = () => {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
                         TemplateId: tenantTemplateId,
+                        CurrentValue: standardObject?.CurrentValue,
+                        ExpectedValue: standardObject?.ExpectedValue,
                       }
                     : currentTenantStandard?.value,
                 standardValue: templateSettings,
@@ -694,10 +694,6 @@ const Page = () => {
                 (s) => s.standardId === standardId
               );
 
-              // Determine compliance status
-              let isCompliant = false;
-              let reportingDisabled = !reportingEnabled;
-
               // Check if the standard is directly in the tenant object (like "standards.AuditLog": {...})
               const standardIdWithoutPrefix = standardId.replace("standards.", "");
               const standardObject = currentTenantObj?.[standardId];
@@ -705,10 +701,19 @@ const Page = () => {
               // Extract the actual value from the standard object (new data structure includes .Value property)
               const directStandardValue = standardObject?.Value;
 
-              // Special case for boolean standards that are true in the tenant
+              // Determine compliance - use backend's logic: Value === true OR CurrentValue === ExpectedValue
+              let isCompliant = false;
+              let reportingDisabled = !reportingEnabled;
+              
               if (directStandardValue === true) {
-                // If the standard is directly in the tenant and is true, it's compliant
+                // Boolean true means compliant
                 isCompliant = true;
+              } else if (standardObject?.CurrentValue && standardObject?.ExpectedValue) {
+                // Compare CurrentValue and ExpectedValue (backend's comparison logic)
+                isCompliant = JSON.stringify(standardObject.CurrentValue) === JSON.stringify(standardObject.ExpectedValue);
+              } else if (standardObject?.CurrentValue && standardObject?.ExpectedValue) {
+                // Compare CurrentValue and ExpectedValue (backend's comparison logic)
+                isCompliant = JSON.stringify(standardObject.CurrentValue) === JSON.stringify(standardObject.ExpectedValue);
               } else if (directStandardValue !== undefined) {
                 // For non-boolean values, use strict equality
                 isCompliant =
@@ -748,6 +753,8 @@ const Page = () => {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
                         TemplateId: tenantTemplateId,
+                        CurrentValue: standardObject?.CurrentValue,
+                        ExpectedValue: standardObject?.ExpectedValue,
                       }
                     : currentTenantStandard?.value,
                 standardValue: standardSettings,
@@ -1697,13 +1704,109 @@ const Page = () => {
                                           standard.overridingTemplateId}
                                       </Alert>
                                     ) : standard.complianceStatus === "Compliant" ? (
-                                      <Alert severity="success" sx={{ mb: 2 }}>
-                                        This setting is configured correctly
-                                      </Alert>
+                                      <>
+                                        <Alert severity="success" sx={{ mb: 2 }}>
+                                          This setting is configured correctly
+                                        </Alert>
+                                      </>
                                     ) : standard.currentTenantValue?.Value === false ? (
-                                      <Alert severity="warning" sx={{ mb: 2 }}>
-                                        This setting is not configured correctly
-                                      </Alert>
+                                      <>
+                                        <Alert severity="warning" sx={{ mb: 2 }}>
+                                          This setting is not configured correctly
+                                        </Alert>
+                                        {/* Show Current/Expected values for non-compliant standards */}
+                                        {standard.currentTenantValue?.CurrentValue &&
+                                          standard.currentTenantValue?.ExpectedValue && (
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                gap: 2,
+                                                flexDirection: { xs: "column", md: "row" },
+                                                mt: 2,
+                                                mb: 2,
+                                              }}
+                                            >
+                                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography
+                                                  variant="caption"
+                                                  sx={{
+                                                    fontWeight: 600,
+                                                    color: "text.secondary",
+                                                    textTransform: "uppercase",
+                                                    letterSpacing: 0.5,
+                                                  }}
+                                                >
+                                                  Expected
+                                                </Typography>
+                                                <Box
+                                                  sx={{
+                                                    mt: 0.5,
+                                                    p: 1.5,
+                                                    bgcolor: "action.hover",
+                                                    borderRadius: 1,
+                                                    border: "1px solid",
+                                                    borderColor: "divider",
+                                                  }}
+                                                >
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                      fontFamily: "monospace",
+                                                      fontSize: "0.8125rem",
+                                                      whiteSpace: "pre-wrap",
+                                                      wordBreak: "break-word",
+                                                    }}
+                                                  >
+                                                    {JSON.stringify(
+                                                      standard.currentTenantValue.ExpectedValue,
+                                                      null,
+                                                      2
+                                                    )}
+                                                  </Typography>
+                                                </Box>
+                                              </Box>
+                                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography
+                                                  variant="caption"
+                                                  sx={{
+                                                    fontWeight: 600,
+                                                    color: "text.secondary",
+                                                    textTransform: "uppercase",
+                                                    letterSpacing: 0.5,
+                                                  }}
+                                                >
+                                                  Current
+                                                </Typography>
+                                                <Box
+                                                  sx={{
+                                                    mt: 0.5,
+                                                    p: 1.5,
+                                                    bgcolor: "action.hover",
+                                                    borderRadius: 1,
+                                                    border: "1px solid",
+                                                    borderColor: "divider",
+                                                  }}
+                                                >
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                      fontFamily: "monospace",
+                                                      fontSize: "0.8125rem",
+                                                      whiteSpace: "pre-wrap",
+                                                      wordBreak: "break-word",
+                                                    }}
+                                                  >
+                                                    {JSON.stringify(
+                                                      standard.currentTenantValue.CurrentValue,
+                                                      null,
+                                                      2
+                                                    )}
+                                                  </Typography>
+                                                </Box>
+                                              </Box>
+                                            </Box>
+                                          )}
+                                      </>
                                     ) : null}
 
                                     {/* Only show values if they're not simple true/false that's already covered by the alerts above */}
@@ -1716,6 +1819,8 @@ const Page = () => {
                                         .filter(
                                           ([key]) =>
                                             key !== "LastRefresh" &&
+                                            key !== "CurrentValue" &&
+                                            key !== "ExpectedValue" &&
                                             // Skip showing the Value field separately if it's just true/false
                                             !(
                                               key === "Value" &&
