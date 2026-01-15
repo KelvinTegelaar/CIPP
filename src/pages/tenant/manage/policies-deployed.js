@@ -470,40 +470,7 @@ const PoliciesDeployedPage = () => {
     currentTenant,
   });
   const title = "View Deployed Policies";
-  const subtitle = [
-    {
-      icon: <Policy />,
-      text: (
-        <CippAutoComplete
-          options={templateOptions}
-          label="Select Template"
-          multiple={false}
-          creatable={false}
-          isFetching={standardsApi.isFetching}
-          defaultValue={selectedTemplateOption}
-          value={selectedTemplateOption}
-          onChange={(selectedTemplate) => {
-            const query = { ...router.query };
-            if (selectedTemplate && selectedTemplate.value) {
-              query.templateId = selectedTemplate.value;
-            } else {
-              delete query.templateId;
-            }
-            router.replace(
-              {
-                pathname: router.pathname,
-                query: query,
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-          sx={{ minWidth: 300 }}
-          placeholder="Select a template..."
-        />
-      ),
-    },
-  ];
+  const subtitle = [];
 
   return (
     <HeaderedTabbedLayout
@@ -516,6 +483,37 @@ const PoliciesDeployedPage = () => {
     >
       <CippHead title="Policies and Settings Deployed" />
       <Box sx={{ py: 2 }}>
+        {/* Filters Section */}
+        <Stack direction="row" spacing={1} sx={{ mb: 2, alignItems: "center" }}>
+          <CippAutoComplete
+            options={templateOptions}
+            label="Template"
+            multiple={false}
+            creatable={false}
+            isFetching={standardsApi.isFetching}
+            defaultValue={selectedTemplateOption}
+            value={selectedTemplateOption}
+            onChange={(selectedTemplate) => {
+              const query = { ...router.query };
+              if (selectedTemplate && selectedTemplate.value) {
+                query.templateId = selectedTemplate.value;
+              } else {
+                delete query.templateId;
+              }
+              router.replace(
+                {
+                  pathname: router.pathname,
+                  query: query,
+                },
+                undefined,
+                { shallow: true }
+              );
+            }}
+            sx={{ width: 300 }}
+            placeholder="Select template..."
+          />
+        </Stack>
+
         <Stack spacing={3} sx={{ pr: 2 }}>
           {/* Standards Section */}
           <Accordion defaultExpanded>

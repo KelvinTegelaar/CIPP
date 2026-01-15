@@ -1012,10 +1012,15 @@ const ManageDriftPage = () => {
     processedDriftData.acceptedDeviationsCount +
     processedDriftData.customerSpecificDeviations;
 
+  // Alignment Score: Only actual compliance (excluding license-missing items)
   const compliancePercentage =
     totalPolicies > 0 ? Math.round((compliantCount / totalPolicies) * 100) : 0;
 
-  const missingLicensePercentage = 0; // This would need to be calculated from actual license data
+  // Calculate missing license percentage
+  const missingLicensePercentage =
+    totalPolicies > 0 ? Math.round((licenseSkippedItems.length / totalPolicies) * 100) : 0;
+
+  // Total Score: Alignment + License Missing (represents addressable compliance)
   const combinedScore = compliancePercentage + missingLicensePercentage;
 
   // Helper function to get category from standardName
