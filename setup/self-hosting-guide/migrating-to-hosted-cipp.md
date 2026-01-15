@@ -63,7 +63,7 @@ Click **Go to Keyvault**. Keep this tab open.
 {% endstep %}
 
 {% step %}
-In your **hosted** instance, open the **SAM Setup Wizard**.
+In your **hosted** instance, open the CIPP **Setup Wizard**.
 {% endstep %}
 
 {% step %}
