@@ -998,6 +998,7 @@ const ManageDriftPage = () => {
   }));
 
   // Calculate compliance metrics for badges
+  // Accepted and Customer Specific deviations count as compliant since they are user-approved
   // Denied deviations are included in total but not in compliant count (they haven't been fixed yet)
   const totalPolicies =
     processedDriftData.alignedCount +
@@ -1006,8 +1007,13 @@ const ManageDriftPage = () => {
     processedDriftData.customerSpecificDeviations +
     processedDriftData.deniedDeviationsCount;
 
+  const compliantCount =
+    processedDriftData.alignedCount +
+    processedDriftData.acceptedDeviationsCount +
+    processedDriftData.customerSpecificDeviations;
+
   const compliancePercentage =
-    totalPolicies > 0 ? Math.round((processedDriftData.alignedCount / totalPolicies) * 100) : 0;
+    totalPolicies > 0 ? Math.round((compliantCount / totalPolicies) * 100) : 0;
 
   const missingLicensePercentage = 0; // This would need to be calculated from actual license data
   const combinedScore = compliancePercentage + missingLicensePercentage;
@@ -1392,7 +1398,7 @@ const ManageDriftPage = () => {
 
             {/* Right side - Deviation Management */}
             <Grid size={{ xs: 12, md: 8 }}>
-              <Stack spacing={3}>
+              <Stack spacing={3} sx={{ pr: 2 }}>
                 {/* Current Deviations Section */}
                 {(!filterStatus ||
                   filterStatus.length === 0 ||
