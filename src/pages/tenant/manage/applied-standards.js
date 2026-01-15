@@ -1370,7 +1370,7 @@ const Page = () => {
                   </Typography>
 
                   {filteredGroupedStandards[category].map((standard, index) => (
-                    <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
+                    <Grid container spacing={3} key={index} sx={{ mb: 4, pr: 2 }}>
                       <Grid size={{ xs: 12, md: 6 }}>
                         <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                           <Stack
