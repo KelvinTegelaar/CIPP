@@ -1144,76 +1144,7 @@ const ManageDriftPage = () => {
       ? driftTemplateOptions.find((option) => option.value === templateId) || null
       : null;
   const title = "Manage Drift";
-  const subtitle = [
-    {
-      icon: <Policy />,
-      text: (
-        <CippAutoComplete
-          options={driftTemplateOptions}
-          label="Select Drift Template"
-          multiple={false}
-          creatable={false}
-          isFetching={standardsApi.isFetching}
-          defaultValue={selectedTemplateOption}
-          value={selectedTemplateOption}
-          onChange={(selectedTemplate) => {
-            const query = { ...router.query };
-            if (selectedTemplate && selectedTemplate.value) {
-              query.templateId = selectedTemplate.value;
-            } else {
-              delete query.templateId;
-            }
-            router.replace(
-              {
-                pathname: router.pathname,
-                query: query,
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-          sx={{ minWidth: 300 }}
-          placeholder="Select a drift template..."
-        />
-      ),
-    },
-    // Add compliance badges when data is available
-    ...(totalPolicies > 0
-      ? [
-          {
-            component: (
-              <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-                <Chip
-                  icon={
-                    <SvgIcon fontSize="small">
-                      <FactCheck />
-                    </SvgIcon>
-                  }
-                  label={`${compliancePercentage}% Compliant`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    compliancePercentage === 100
-                      ? "success"
-                      : compliancePercentage >= 50
-                      ? "warning"
-                      : "error"
-                  }
-                />
-                <Chip
-                  label={`${combinedScore}% Combined Score`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
-                  }
-                />
-              </Stack>
-            ),
-          },
-        ]
-      : []),
-  ];
+  const subtitle = [];
 
   return (
     <HeaderedTabbedLayout
@@ -1338,12 +1269,58 @@ const ManageDriftPage = () => {
                         variant="outlined"
                       />
                     </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" fontWeight={600}>
+                        Total Score
+                      </Typography>
+                      <Chip
+                        label={`${combinedScore}%`}
+                        size="small"
+                        color={
+                          combinedScore === 100
+                            ? "success"
+                            : combinedScore >= 80
+                            ? "warning"
+                            : combinedScore >= 30
+                            ? "warning"
+                            : "error"
+                        }
+                        variant="outlined"
+                      />
+                    </Box>
                   </Stack>
                 </CippButtonCard>
 
                 {/* Filters Card */}
                 <CippButtonCard title="Filters">
                   <Stack spacing={2}>
+                    <CippAutoComplete
+                      options={driftTemplateOptions}
+                      label="Select Drift Template"
+                      multiple={false}
+                      creatable={false}
+                      isFetching={standardsApi.isFetching}
+                      defaultValue={selectedTemplateOption}
+                      value={selectedTemplateOption}
+                      onChange={(selectedTemplate) => {
+                        const query = { ...router.query };
+                        if (selectedTemplate && selectedTemplate.value) {
+                          query.templateId = selectedTemplate.value;
+                        } else {
+                          delete query.templateId;
+                        }
+                        router.replace(
+                          {
+                            pathname: router.pathname,
+                            query: query,
+                          },
+                          undefined,
+                          { shallow: true }
+                        );
+                      }}
+                      placeholder="Select a drift template..."
+                    />
+
                     <TextField
                       fullWidth
                       size="small"
