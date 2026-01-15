@@ -963,51 +963,7 @@ const Page = () => {
   // Prepare title and subtitle for HeaderedTabbedLayout
   const title = selectedTemplate?.templateName || selectedTemplate?.displayName || "Tenant Report";
 
-  const subtitle = [
-    {
-      icon: <Policy />,
-      text: (
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <CippAutoComplete
-            options={templateOptions}
-            label="Select Template"
-            multiple={false}
-            creatable={false}
-            isFetching={templateDetails.isFetching}
-            defaultValue={selectedTemplateOption}
-            value={selectedTemplateOption}
-            onChange={(selectedTemplate) => {
-              const query = { ...router.query };
-              if (selectedTemplate && selectedTemplate.value) {
-                query.templateId = selectedTemplate.value;
-              } else {
-                delete query.templateId;
-              }
-              router.replace(
-                {
-                  pathname: router.pathname,
-                  query: query,
-                },
-                undefined,
-                { shallow: true }
-              );
-            }}
-            sx={{ minWidth: 300 }}
-            placeholder="Select a template..."
-          />
-          {templateId && (
-            <CippApiLogsDrawer
-              standardFilter={templateId}
-              buttonText="Logs"
-              title="Standard Logs"
-              variant="outlined"
-              tenantFilter={currentTenant}
-            />
-          )}
-        </Stack>
-      ),
-    },
-  ];
+  const subtitle = [];
 
   // Actions for the header
   const actions = [
@@ -1124,7 +1080,34 @@ const Page = () => {
                 mt: 2,
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1}>
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ flexWrap: "wrap" }}>
+                <CippAutoComplete
+                  options={templateOptions}
+                  label="Template"
+                  multiple={false}
+                  creatable={false}
+                  isFetching={templateDetails.isFetching}
+                  defaultValue={selectedTemplateOption}
+                  value={selectedTemplateOption}
+                  onChange={(selectedTemplate) => {
+                    const query = { ...router.query };
+                    if (selectedTemplate && selectedTemplate.value) {
+                      query.templateId = selectedTemplate.value;
+                    } else {
+                      delete query.templateId;
+                    }
+                    router.replace(
+                      {
+                        pathname: router.pathname,
+                        query: query,
+                      },
+                      undefined,
+                      { shallow: true }
+                    );
+                  }}
+                  sx={{ width: 300 }}
+                  placeholder="Select template..."
+                />
                 <TextField
                   size="small"
                   variant="filled"
@@ -1156,6 +1139,15 @@ const Page = () => {
                     },
                   }}
                 />
+                {templateId && (
+                  <CippApiLogsDrawer
+                    standardFilter={templateId}
+                    buttonText="Logs"
+                    title="Standard Logs"
+                    variant="outlined"
+                    tenantFilter={currentTenant}
+                  />
+                )}
               </Stack>
               <ButtonGroup variant="outlined" color="primary">
                 <Button disabled={true} color="primary">
