@@ -57,6 +57,12 @@ const PoliciesDeployedPage = () => {
     enabled: !!templateId && !!tenantFilter,
   });
 
+  // API call to get all Intune templates for displayName lookup
+  const intuneTemplatesApi = ApiGetCall({
+    url: "/api/ListIntuneTemplates",
+    queryKey: "ListIntuneTemplates",
+  });
+
   // Find the current template from standards data
   const currentTemplate = (standardsApi.data || []).find(
     (template) => template.GUID === templateId
@@ -67,42 +73,67 @@ const PoliciesDeployedPage = () => {
   // Helper function to get status from comparison data with deviation status
   const getStatus = (standardKey, templateValue = null, templateType = null) => {
     const comparisonKey = `standards.${standardKey}`;
-    const value = comparisonData[comparisonKey]?.Value;
+    const comparisonItem = comparisonData[comparisonKey];
+    const value = comparisonItem?.Value;
 
+    // If value is true, it's deployed and compliant
     if (value === true) {
       return "Deployed";
-    } else {
-      // Check if there's drift data for this standard to get the deviation status
-      const driftData = Array.isArray(driftApi.data) ? driftApi.data : [];
+    }
 
-      // For templates, we need to match against the full template path
-      let searchKeys = [standardKey, `standards.${standardKey}`];
-
-      // Add template-specific search keys
-      if (templateValue && templateType) {
-        searchKeys.push(
-          `standards.${templateType}.${templateValue}`,
-          `${templateType}.${templateValue}`,
-          templateValue
-        );
+    // Check if ExpectedValue and CurrentValue match (like drift.js does)
+    if (comparisonItem?.ExpectedValue && comparisonItem?.CurrentValue) {
+      try {
+        const expectedStr = JSON.stringify(comparisonItem.ExpectedValue);
+        const currentStr = JSON.stringify(comparisonItem.CurrentValue);
+        if (expectedStr === currentStr) {
+          return "Deployed";
+        }
+      } catch (e) {
+        console.error("Error comparing values:", e);
       }
+    }
 
-      const deviation = driftData.find((item) =>
-        searchKeys.some(
-          (key) =>
-            item.standardName === key ||
-            item.policyName === key ||
-            item.standardName?.includes(key) ||
-            item.policyName?.includes(key)
-        )
+    // If value is explicitly false, it means not deployed (not a deviation)
+    if (value === false) {
+      return "Not Deployed";
+    }
+
+    // If value is null/undefined, check drift data for deviation status
+    const driftData = Array.isArray(driftApi.data) ? driftApi.data : [];
+
+    // For templates, we need to match against the full template path
+    let searchKeys = [standardKey, `standards.${standardKey}`];
+
+    // Add template-specific search keys
+    if (templateValue && templateType) {
+      searchKeys.push(
+        `standards.${templateType}.${templateValue}`,
+        `${templateType}.${templateValue}`,
+        templateValue
       );
+    }
 
-      if (deviation && deviation.Status) {
-        return `Deviation - ${deviation.Status}`;
-      }
+    const deviation = driftData.find((item) =>
+      searchKeys.some(
+        (key) =>
+          item.standardName === key ||
+          item.policyName === key ||
+          item.standardName?.includes(key) ||
+          item.policyName?.includes(key)
+      )
+    );
 
+    if (deviation && deviation.Status) {
+      return `Deviation - ${deviation.Status}`;
+    }
+
+    // Only return "Deviation - New" if we have comparison data but value is null
+    if (comparisonItem) {
       return "Deviation - New";
     }
+
+    return "Not Configured";
   };
 
   // Helper function to get display name from drift data
@@ -131,7 +162,20 @@ const PoliciesDeployedPage = () => {
       )
     );
 
-    return deviation?.standardDisplayName || null;
+    // If found in drift data, return the display name
+    if (deviation?.standardDisplayName) {
+      return deviation.standardDisplayName;
+    }
+
+    // If not found in drift data and this is an Intune template, look it up in the Intune templates API
+    if (templateType === "IntuneTemplate" && templateValue && intuneTemplatesApi.data) {
+      const template = intuneTemplatesApi.data.find((t) => t.GUID === templateValue);
+      if (template?.Displayname) {
+        return template.Displayname;
+      }
+    }
+
+    return null;
   };
 
   // Helper function to get last refresh date
@@ -195,63 +239,102 @@ const PoliciesDeployedPage = () => {
   (templateStandards.IntuneTemplate || []).forEach((template, index) => {
     console.log("Processing IntuneTemplate in policies-deployed:", template);
 
+    // Check if this template has TemplateList-Tags (try both property formats)
+    const templateListTags = template["TemplateList-Tags"] || template.TemplateListTags;
+
     // Check if this template has TemplateList-Tags and expand them
-    if (
-      template["TemplateList-Tags"]?.value &&
-      template["TemplateList-Tags"]?.addedFields?.templates
-    ) {
+    if (templateListTags?.value && templateListTags?.addedFields?.templates) {
       console.log(
         "Found TemplateList-Tags for IntuneTemplate in policies-deployed:",
-        template["TemplateList-Tags"]
+        templateListTags
       );
-      console.log("Templates to expand:", template["TemplateList-Tags"].addedFields.templates);
+      console.log("Templates to expand:", templateListTags.addedFields.templates);
 
       // Expand TemplateList-Tags into multiple template items
-      template["TemplateList-Tags"].addedFields.templates.forEach(
-        (expandedTemplate, expandedIndex) => {
-          console.log("Expanding IntuneTemplate in policies-deployed:", expandedTemplate);
-          const standardKey = `IntuneTemplate.${expandedTemplate.GUID}`;
-          const driftDisplayName = getDisplayNameFromDrift(
-            standardKey,
-            expandedTemplate.GUID,
-            "IntuneTemplate"
-          );
-          const packageTagName = template["TemplateList-Tags"].value;
-          const templateName =
-            expandedTemplate.displayName || expandedTemplate.name || "Unknown Template";
+      templateListTags.addedFields.templates.forEach((expandedTemplate, expandedIndex) => {
+        console.log("Expanding IntuneTemplate in policies-deployed:", expandedTemplate);
+        const standardKey = `IntuneTemplate.${expandedTemplate.GUID}`;
+        const driftDisplayName = getDisplayNameFromDrift(
+          standardKey,
+          expandedTemplate.GUID,
+          "IntuneTemplate"
+        );
+        const packageTagName = templateListTags.value;
+        const templateName =
+          expandedTemplate.displayName || expandedTemplate.name || "Unknown Template";
 
-          intunePolices.push({
-            id: intunePolices.length + 1,
-            name: `${driftDisplayName || templateName} (via ${packageTagName})`,
-            category: "Intune Template",
-            platform: "Multi-Platform",
-            status: getStatus(standardKey, expandedTemplate.GUID, "IntuneTemplate"),
-            lastModified: getLastRefresh(standardKey),
-            assignedGroups: template.AssignTo || "N/A",
-            templateValue: expandedTemplate.GUID,
-          });
-        }
-      );
+        intunePolices.push({
+          id: intunePolices.length + 1,
+          name: `${driftDisplayName || templateName} (via ${packageTagName})`,
+          category: "Intune Template",
+          platform: "Multi-Platform",
+          status: getStatus(standardKey, expandedTemplate.GUID, "IntuneTemplate"),
+          lastModified: getLastRefresh(standardKey),
+          assignedGroups: template.AssignTo || "N/A",
+          templateValue: expandedTemplate.GUID,
+        });
+      });
     } else {
       // Regular TemplateList processing
-      const standardKey = `IntuneTemplate.${template.TemplateList?.value}`;
-      const driftDisplayName = getDisplayNameFromDrift(
-        standardKey,
-        template.TemplateList?.value,
-        "IntuneTemplate"
-      );
-      const templateLabel = getTemplateLabel(template.TemplateList?.value, "IntuneTemplate");
+      const templateGuid = template.TemplateList?.value;
+      const standardKey = `IntuneTemplate.${templateGuid}`;
+      const driftDisplayName = getDisplayNameFromDrift(standardKey, templateGuid, "IntuneTemplate");
+
+      // Try multiple fallbacks for the name
+      let templateName = driftDisplayName;
+      if (!templateName) {
+        const templateLabel = getTemplateLabel(templateGuid, "IntuneTemplate");
+        if (templateLabel !== "Unknown Template") {
+          templateName = `Intune - ${templateLabel}`;
+        }
+      }
+      // If still no name, try looking up directly in intuneTemplatesApi by GUID
+      if (!templateName && templateGuid && intuneTemplatesApi.data) {
+        const intuneTemplate = intuneTemplatesApi.data.find((t) => t.GUID === templateGuid);
+        if (intuneTemplate?.Displayname) {
+          templateName = intuneTemplate.Displayname;
+        }
+      }
+      // Final fallback
+      if (!templateName) {
+        templateName = `Intune - ${templateGuid || "Unknown Template"}`;
+      }
 
       intunePolices.push({
         id: intunePolices.length + 1,
-        name: driftDisplayName || `Intune - ${templateLabel}`,
+        name: templateName,
         category: "Intune Template",
         platform: "Multi-Platform",
-        status: getStatus(standardKey, template.TemplateList?.value, "IntuneTemplate"),
+        status: getStatus(standardKey, templateGuid, "IntuneTemplate"),
         lastModified: getLastRefresh(standardKey),
         assignedGroups: template.AssignTo || "N/A",
-        templateValue: template.TemplateList?.value,
+        templateValue: templateGuid,
       });
+    }
+  });
+
+  // Add any templates from comparison data that weren't in template standards (e.g., from tags)
+  // Check for IntuneTemplate entries in comparison data
+  Object.keys(comparisonData).forEach((key) => {
+    if (key.startsWith("standards.IntuneTemplate.")) {
+      const guid = key.replace("standards.IntuneTemplate.", "");
+      // Check if this GUID is already in our list
+      const alreadyExists = intunePolices.some((p) => p.templateValue === guid);
+      if (!alreadyExists && comparisonData[key]?.Value === true) {
+        const standardKey = `IntuneTemplate.${guid}`;
+        const driftDisplayName = getDisplayNameFromDrift(standardKey, guid, "IntuneTemplate");
+
+        intunePolices.push({
+          id: intunePolices.length + 1,
+          name: driftDisplayName || `Intune - ${guid}`,
+          category: "Intune Template",
+          platform: "Multi-Platform",
+          status: getStatus(standardKey, guid, "IntuneTemplate"),
+          lastModified: getLastRefresh(standardKey),
+          assignedGroups: "N/A",
+          templateValue: guid,
+        });
+      }
     }
   });
 
@@ -260,46 +343,41 @@ const PoliciesDeployedPage = () => {
   (templateStandards.ConditionalAccessTemplate || []).forEach((template, index) => {
     console.log("Processing ConditionalAccessTemplate in policies-deployed:", template);
 
+    // Check if this template has TemplateList-Tags (try both property formats)
+    const templateListTags = template["TemplateList-Tags"] || template.TemplateListTags;
+
     // Check if this template has TemplateList-Tags and expand them
-    if (
-      template["TemplateList-Tags"]?.value &&
-      template["TemplateList-Tags"]?.addedFields?.templates
-    ) {
+    if (templateListTags?.value && templateListTags?.addedFields?.templates) {
       console.log(
         "Found TemplateList-Tags for ConditionalAccessTemplate in policies-deployed:",
-        template["TemplateList-Tags"]
+        templateListTags
       );
-      console.log("Templates to expand:", template["TemplateList-Tags"].addedFields.templates);
+      console.log("Templates to expand:", templateListTags.addedFields.templates);
 
       // Expand TemplateList-Tags into multiple template items
-      template["TemplateList-Tags"].addedFields.templates.forEach(
-        (expandedTemplate, expandedIndex) => {
-          console.log(
-            "Expanding ConditionalAccessTemplate in policies-deployed:",
-            expandedTemplate
-          );
-          const standardKey = `ConditionalAccessTemplate.${expandedTemplate.GUID}`;
-          const driftDisplayName = getDisplayNameFromDrift(
-            standardKey,
-            expandedTemplate.GUID,
-            "ConditionalAccessTemplate"
-          );
-          const packageTagName = template["TemplateList-Tags"].value;
-          const templateName =
-            expandedTemplate.displayName || expandedTemplate.name || "Unknown Template";
+      templateListTags.addedFields.templates.forEach((expandedTemplate, expandedIndex) => {
+        console.log("Expanding ConditionalAccessTemplate in policies-deployed:", expandedTemplate);
+        const standardKey = `ConditionalAccessTemplate.${expandedTemplate.GUID}`;
+        const driftDisplayName = getDisplayNameFromDrift(
+          standardKey,
+          expandedTemplate.GUID,
+          "ConditionalAccessTemplate"
+        );
+        const packageTagName = templateListTags.value;
+        const templateName =
+          expandedTemplate.displayName || expandedTemplate.name || "Unknown Template";
 
-          conditionalAccessPolicies.push({
-            id: conditionalAccessPolicies.length + 1,
-            name: `${driftDisplayName || templateName} (via ${packageTagName})`,
-            state: template.state || "Unknown",
-            conditions: "Conditional Access Policy",
-            controls: "Access Control",
-            lastModified: getLastRefresh(standardKey),
-            status: getStatus(standardKey, expandedTemplate.GUID, "ConditionalAccessTemplate"),
-            templateValue: expandedTemplate.GUID,
-          });
-        }
-      );
+        conditionalAccessPolicies.push({
+          id: conditionalAccessPolicies.length + 1,
+          name: `${driftDisplayName || templateName} (via ${packageTagName})`,
+          state: template.state || "Unknown",
+          conditions: "Conditional Access Policy",
+          controls: "Access Control",
+          lastModified: getLastRefresh(standardKey),
+          status: getStatus(standardKey, expandedTemplate.GUID, "ConditionalAccessTemplate"),
+          templateValue: expandedTemplate.GUID,
+        });
+      });
     } else {
       // Regular TemplateList processing
       const standardKey = `ConditionalAccessTemplate.${template.TemplateList?.value}`;
@@ -325,6 +403,35 @@ const PoliciesDeployedPage = () => {
       });
     }
   });
+
+  // Add any CA templates from comparison data that weren't in template standards
+  Object.keys(comparisonData).forEach((key) => {
+    if (key.startsWith("standards.ConditionalAccessTemplate.")) {
+      const guid = key.replace("standards.ConditionalAccessTemplate.", "");
+      // Check if this GUID is already in our list
+      const alreadyExists = conditionalAccessPolicies.some((p) => p.templateValue === guid);
+      if (!alreadyExists && comparisonData[key]?.Value === true) {
+        const standardKey = `ConditionalAccessTemplate.${guid}`;
+        const driftDisplayName = getDisplayNameFromDrift(
+          standardKey,
+          guid,
+          "ConditionalAccessTemplate"
+        );
+
+        conditionalAccessPolicies.push({
+          id: conditionalAccessPolicies.length + 1,
+          name: driftDisplayName || `Conditional Access - ${guid}`,
+          state: "Unknown",
+          conditions: "Conditional Access Policy",
+          controls: "Access Control",
+          lastModified: getLastRefresh(standardKey),
+          status: getStatus(standardKey, guid, "ConditionalAccessTemplate"),
+          templateValue: guid,
+        });
+      }
+    }
+  });
+
   // Simple filter for all templates (no type filtering)
   const templateOptions = standardsApi.data
     ? standardsApi.data.map((template) => ({
@@ -363,40 +470,7 @@ const PoliciesDeployedPage = () => {
     currentTenant,
   });
   const title = "View Deployed Policies";
-  const subtitle = [
-    {
-      icon: <Policy />,
-      text: (
-        <CippAutoComplete
-          options={templateOptions}
-          label="Select Template"
-          multiple={false}
-          creatable={false}
-          isFetching={standardsApi.isFetching}
-          defaultValue={selectedTemplateOption}
-          value={selectedTemplateOption}
-          onChange={(selectedTemplate) => {
-            const query = { ...router.query };
-            if (selectedTemplate && selectedTemplate.value) {
-              query.templateId = selectedTemplate.value;
-            } else {
-              delete query.templateId;
-            }
-            router.replace(
-              {
-                pathname: router.pathname,
-                query: query,
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-          sx={{ minWidth: 300 }}
-          placeholder="Select a template..."
-        />
-      ),
-    },
-  ];
+  const subtitle = [];
 
   return (
     <HeaderedTabbedLayout
@@ -409,7 +483,38 @@ const PoliciesDeployedPage = () => {
     >
       <CippHead title="Policies and Settings Deployed" />
       <Box sx={{ py: 2 }}>
-        <Stack spacing={3}>
+        {/* Filters Section */}
+        <Stack direction="row" spacing={1} sx={{ mb: 2, alignItems: "center" }}>
+          <CippAutoComplete
+            options={templateOptions}
+            label="Template"
+            multiple={false}
+            creatable={false}
+            isFetching={standardsApi.isFetching}
+            defaultValue={selectedTemplateOption}
+            value={selectedTemplateOption}
+            onChange={(selectedTemplate) => {
+              const query = { ...router.query };
+              if (selectedTemplate && selectedTemplate.value) {
+                query.templateId = selectedTemplate.value;
+              } else {
+                delete query.templateId;
+              }
+              router.replace(
+                {
+                  pathname: router.pathname,
+                  query: query,
+                },
+                undefined,
+                { shallow: true }
+              );
+            }}
+            sx={{ width: 300 }}
+            placeholder="Select template..."
+          />
+        </Stack>
+
+        <Stack spacing={3} sx={{ pr: 2 }}>
           {/* Standards Section */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>

@@ -1,56 +1,196 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  Typography,
-  Avatar,
-  Divider,
-  Tooltip,
-} from "@mui/material";
+import { Box, Card, CardContent, Container, Button, Tooltip } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useForm, useWatch } from "react-hook-form";
 import { Grid } from "@mui/system";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  RadialBarChart,
-  RadialBar,
-  PolarAngleAxis,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
-  LabelList,
-} from "recharts";
+import { useSettings } from "/src/hooks/use-settings";
+import { ApiGetCall } from "/src/api/ApiCall.jsx";
+import Portals from "/src/data/portals";
+import { BulkActionsMenu } from "/src/components/bulk-actions-menu.js";
+import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 import { dashboardDemoData } from "/src/data/dashboardv2-demo-data";
-import { CaSankey } from "/src/components/CippComponents/CaSankey";
-import { CaDeviceSankey } from "/src/components/CippComponents/CaDeviceSankey";
-import { AuthMethodSankey } from "/src/components/CippComponents/AuthMethodSankey";
-import { DesktopDevicesSankey } from "/src/components/CippComponents/DesktopDevicesSankey";
-import { MobileSankey } from "/src/components/CippComponents/MobileSankey";
+import { SecureScoreCard } from "/src/components/CippComponents/SecureScoreCard";
+import { MFACard } from "/src/components/CippComponents/MFACard";
+import { AuthMethodCard } from "/src/components/CippComponents/AuthMethodCard";
+import { LicenseCard } from "/src/components/CippComponents/LicenseCard";
+import { TenantInfoCard } from "/src/components/CippComponents/TenantInfoCard";
+import { TenantMetricsGrid } from "/src/components/CippComponents/TenantMetricsGrid";
+import { AssessmentCard } from "/src/components/CippComponents/AssessmentCard";
+import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
+import { CippAddTestReportDrawer } from "/src/components/CippComponents/CippAddTestReportDrawer";
+import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import {
-  People as UsersIcon,
-  Person as UserIcon,
-  PersonOutline as GuestIcon,
-  Group as GroupIcon,
-  Apps as AppsIcon,
   Devices as DevicesIcon,
-  PhoneAndroid as ManagedIcon,
-  Security as SecurityIcon,
-  Business as BuildingIcon,
   CheckCircle as CheckCircleIcon,
-  Laptop as MonitorIcon,
   Work as BriefcaseIcon,
+  Assessment as AssessmentIcon,
+  Refresh as RefreshIcon,
 } from "@mui/icons-material";
 
 const Page = () => {
-  const reportData = dashboardDemoData;
+  const settings = useSettings();
+  const router = useRouter();
+  const { currentTenant } = settings;
+  const [portalMenuItems, setPortalMenuItems] = useState([]);
+  const [deleteDialog, setDeleteDialog] = useState({ open: false });
+  const [refreshDialog, setRefreshDialog] = useState({ open: false });
+
+  // Get reportId from query params or default to "ztna"
+  // Only use default if router is ready and reportId is still not present
+  const selectedReport =
+    router.isReady && !router.query.reportId ? "ztna" : router.query.reportId || "ztna";
+
+  const formControl = useForm({
+    mode: "onChange",
+  });
+
+  const reportIdValue = useWatch({ control: formControl.control });
+
+  // Fetch available reports
+  const reportsApi = ApiGetCall({
+    url: "/api/ListTestReports",
+    queryKey: "ListTestReports",
+  });
+
+  const reports = reportsApi.data || [];
+
+  // Update form when selectedReport changes (from URL)
+  useEffect(() => {
+    if (selectedReport && router.isReady && reports.length > 0) {
+      const matchingReport = reports.find((r) => r.id === selectedReport);
+      if (matchingReport) {
+        formControl.setValue("reportId", {
+          value: matchingReport.id,
+          label: matchingReport.name,
+        });
+      }
+    }
+  }, [selectedReport, router.isReady, reports]);
+
+  // Update URL when form value changes (e.g., user selects different report from dropdown)
+  useEffect(() => {
+    console.log("reportIdValue changed:", reportIdValue);
+    if (reportIdValue?.reportId?.value && reportIdValue.reportId.value !== selectedReport) {
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, reportId: reportIdValue.reportId.value },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [reportIdValue]);
+
+  const organization = ApiGetCall({
+    url: "/api/ListOrg",
+    queryKey: `${currentTenant}-ListOrg`,
+    data: { tenantFilter: currentTenant },
+  });
+
+  const testsApi = ApiGetCall({
+    url: "/api/ListTests",
+    data: { tenantFilter: currentTenant, reportId: selectedReport },
+    queryKey: `${currentTenant}-ListTests-${selectedReport}`,
+    waiting: !!currentTenant && !!selectedReport,
+  });
+
+  const currentTenantInfo = ApiGetCall({
+    url: "/api/ListTenants",
+    queryKey: `ListTenants`,
+  });
+
+  const reportData =
+    testsApi.isSuccess && testsApi.data?.TenantCounts
+      ? {
+          ExecutedAt: testsApi.data?.LatestReportTimeStamp || null,
+          TenantName: organization.data?.displayName || "",
+          Domain: currentTenant || "",
+          TestResultSummary: {
+            IdentityPassed: testsApi.data.TestCounts?.Identity?.Passed || 0,
+            IdentityTotal: testsApi.data.TestCounts?.Identity?.Total || 0,
+            DevicesPassed: testsApi.data.TestCounts?.Devices?.Passed || 0,
+            DevicesTotal: testsApi.data.TestCounts?.Devices?.Total || 0,
+            DataPassed: 0,
+            DataTotal: 0,
+          },
+          SecureScore: testsApi.data.SecureScore || [],
+          TenantInfo: {
+            TenantOverview: {
+              UserCount: testsApi.data.TenantCounts.Users || 0,
+              GuestCount: testsApi.data.TenantCounts.Guests || 0,
+              GroupCount: testsApi.data.TenantCounts.Groups || 0,
+              ApplicationCount: testsApi.data.TenantCounts.ServicePrincipals || 0,
+              DeviceCount: testsApi.data.TenantCounts.Devices || 0,
+              ManagedDeviceCount: testsApi.data.TenantCounts.ManagedDevices || 0,
+            },
+            MFAState: testsApi.data.MFAState,
+            OverviewCaDevicesAllUsers: dashboardDemoData.TenantInfo.OverviewCaDevicesAllUsers,
+            OverviewAuthMethodsPrivilegedUsers:
+              dashboardDemoData.TenantInfo.OverviewAuthMethodsPrivilegedUsers,
+            DeviceOverview: dashboardDemoData.TenantInfo.DeviceOverview,
+          },
+        }
+      : dashboardDemoData;
+
+  // Function to filter portals based on user preferences
+  const getFilteredPortals = () => {
+    const defaultLinks = {
+      M365_Portal: true,
+      Exchange_Portal: true,
+      Entra_Portal: true,
+      Teams_Portal: true,
+      Azure_Portal: true,
+      Intune_Portal: true,
+      SharePoint_Admin: true,
+      Security_Portal: true,
+      Compliance_Portal: true,
+      Power_Platform_Portal: true,
+      Power_BI_Portal: true,
+    };
+
+    let portalLinks;
+    if (settings.UserSpecificSettings?.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.UserSpecificSettings.portalLinks };
+    } else if (settings.portalLinks) {
+      portalLinks = { ...defaultLinks, ...settings.portalLinks };
+    } else {
+      portalLinks = defaultLinks;
+    }
+
+    // Filter the portals based on user settings
+    return Portals.filter((portal) => {
+      const settingKey = portal.name;
+      return settingKey ? portalLinks[settingKey] === true : true;
+    });
+  };
+
+  useEffect(() => {
+    if (currentTenantInfo.isSuccess) {
+      const tenantLookup = currentTenantInfo.data?.find(
+        (tenant) => tenant.defaultDomainName === currentTenant
+      );
+
+      // Get filtered portals based on user preferences
+      const filteredPortals = getFilteredPortals();
+
+      const menuItems = filteredPortals.map((portal) => ({
+        label: portal.label,
+        target: "_blank",
+        link: portal.url.replace(portal.variable, tenantLookup?.[portal.variable]),
+        icon: portal.icon,
+      }));
+      setPortalMenuItems(menuItems);
+    }
+  }, [
+    currentTenantInfo.isSuccess,
+    currentTenant,
+    settings.portalLinks,
+    settings.UserSpecificSettings,
+  ]);
 
   const formatNumber = (num) => {
     if (!num && num !== 0) return "0";
@@ -60,313 +200,134 @@ const Page = () => {
     return num.toLocaleString();
   };
 
-  const metricDescriptions = {
-    users: "Total number of users in your tenant",
-    guests: "External users with guest access",
-    groups: "Microsoft 365 and security groups",
-    apps: "Registered applications",
-    devices: "All devices accessing tenant resources",
-    managed: "Devices enrolled in Intune",
-  };
-
   return (
     <Container maxWidth={false} sx={{ mt: 12, mb: 6 }}>
       <Box sx={{ width: "100%", mx: "auto" }}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid size={{ xs: 12, md: 5 }}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
+                <BulkActionsMenu
+                  buttonName="Portals"
+                  actions={portalMenuItems}
+                  disabled={!currentTenantInfo.isSuccess || portalMenuItems.length === 0}
+                />
+                <ExecutiveReportButton disabled={organization.isFetching} />
+                <Tooltip title="Coming soon!" arrow>
+                  <span>
+                    <Button
+                      variant="contained"
+                      startIcon={<AssessmentIcon />}
+                      disabled
+                      sx={{
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        borderRadius: 2,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                        transition: "all 0.2s ease-in-out",
+                      }}
+                    >
+                      Report Builder
+                    </Button>
+                  </span>
+                </Tooltip>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, md: 7 }}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent sx={{ display: "flex", gap: 1.5, alignItems: "center", p: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <CippFormComponent
+                    name="reportId"
+                    label="Select a report"
+                    type="autoComplete"
+                    multiple={false}
+                    formControl={formControl}
+                    options={reports.map((r) => ({
+                      label: r.name,
+                      value: r.id,
+                      description: r.description,
+                    }))}
+                    placeholder="Choose a report"
+                  />
+                </Box>
+                <CippAddTestReportDrawer />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    minWidth: "auto",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: 2,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    transition: "all 0.2s ease-in-out",
+                    px: 2,
+                  }}
+                  onClick={() => {
+                    setRefreshDialog({
+                      open: true,
+                      title: "Refresh Test Data",
+                      message: `Are you sure you want to refresh the test data for ${currentTenant}? This might take up to 2 hours to update.`,
+                      api: {
+                        url: "/api/ExecTestRun",
+                        data: { tenantFilter: currentTenant },
+                        method: "POST",
+                      },
+                      handleClose: () => setRefreshDialog({ open: false }),
+                    });
+                  }}
+                  startIcon={<RefreshIcon />}
+                >
+                  Update Report
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: 2,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    transition: "all 0.2s ease-in-out",
+                  }}
+                  onClick={() => {
+                    const report = reports.find((r) => r.id === selectedReport);
+                    if (report && report.source !== "file") {
+                      setDeleteDialog({
+                        open: true,
+                        handleClose: () => setDeleteDialog({ open: false }),
+                        row: { ReportId: selectedReport, name: report.name },
+                      });
+                    }
+                  }}
+                >
+                  Delete
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
         {/* Tenant Overview Section - 3 Column Layout */}
         <Grid container spacing={3} sx={{ mb: 6 }}>
           {/* Column 1: Tenant Information */}
           <Grid size={{ xs: 12, lg: 4 }}>
-            <Card sx={{ height: "100%" }}>
-              <CardHeader
-                title={
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <BuildingIcon sx={{ fontSize: 20 }} />
-                    <Typography variant="subtitle1">Tenant</Typography>
-                  </Box>
-                }
-                sx={{ pb: 1.5 }}
-              />
-              <CardContent>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary">
-                      Name
-                    </Typography>
-                    <Typography variant="body1" fontWeight={500}>
-                      {reportData.TenantName || "Not Available"}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary">
-                      Tenant ID
-                    </Typography>
-                    <Typography variant="body2" fontFamily="monospace" fontSize="0.75rem">
-                      {reportData.TenantId || "Not Available"}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary">
-                      Primary Domain
-                    </Typography>
-                    <Typography variant="body1" fontWeight={500}>
-                      {reportData.Domain || "Not Available"}
-                    </Typography>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
+            <TenantInfoCard data={organization.data} isLoading={organization.isFetching} />
           </Grid>
 
           {/* Column 2: Tenant Metrics - 2x3 Grid */}
           <Grid size={{ xs: 12, lg: 4 }}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.users} arrow>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: "primary.main", width: 34, height: 34 }}>
-                      <UserIcon sx={{ fontSize: 24 }} />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-                        Users
-                      </Typography>
-                      <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.UserCount)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Tooltip>
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.guests} arrow>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: "info.main", width: 34, height: 34 }}>
-                      <GuestIcon sx={{ fontSize: 24 }} />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-                        Guests
-                      </Typography>
-                      <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.GuestCount)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Tooltip>
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.groups} arrow>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: "secondary.main", width: 34, height: 34 }}>
-                      <GroupIcon sx={{ fontSize: 24 }} />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-                        Groups
-                      </Typography>
-                      <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.GroupCount)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Tooltip>
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.apps} arrow>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: "error.main", width: 34, height: 34 }}>
-                      <AppsIcon sx={{ fontSize: 24 }} />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-                        Apps
-                      </Typography>
-                      <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.ApplicationCount)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Tooltip>
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.devices} arrow>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: "warning.main", width: 34, height: 34 }}>
-                      <DevicesIcon sx={{ fontSize: 24 }} />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-                        Devices
-                      </Typography>
-                      <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.DeviceCount)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Tooltip>
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <Tooltip title={metricDescriptions.managed} arrow>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      p: 2,
-                      border: 1,
-                      borderColor: "divider",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: "success.main", width: 34, height: 34 }}>
-                      <ManagedIcon sx={{ fontSize: 24 }} />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-                        Managed
-                      </Typography>
-                      <Typography variant="h6" fontSize="1.125rem">
-                        {formatNumber(reportData.TenantInfo.TenantOverview.ManagedDeviceCount)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Tooltip>
-              </Grid>
-            </Grid>
+            <TenantMetricsGrid
+              data={reportData.TenantInfo.TenantOverview}
+              isLoading={testsApi.isFetching}
+            />
           </Grid>
 
           {/* Column 3: Assessment Results */}
           <Grid size={{ xs: 12, lg: 4 }}>
-            <Card sx={{ height: "100%" }}>
-              <CardHeader
-                title={
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <SecurityIcon sx={{ fontSize: 20 }} />
-                    <Typography variant="subtitle1">Assessment</Typography>
-                  </Box>
-                }
-                sx={{ pb: 1.5 }}
-              />
-              <CardContent>
-                <Box sx={{ display: "flex", gap: 3 }}>
-                  <Box sx={{ flex: 1 }}>
-                    <Box sx={{ mb: 2 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Identity
-                      </Typography>
-                      <Typography variant="h5" fontWeight="bold">
-                        {reportData.TestResultSummary.IdentityPassed}/
-                        {reportData.TestResultSummary.IdentityTotal}
-                        <Typography
-                          component="span"
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ ml: 1 }}
-                        >
-                          tests
-                        </Typography>
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary">
-                        Devices
-                      </Typography>
-                      <Typography variant="h5" fontWeight="bold">
-                        {reportData.TestResultSummary.DevicesPassed}/
-                        {reportData.TestResultSummary.DevicesTotal}
-                        <Typography
-                          component="span"
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ ml: 1 }}
-                        >
-                          tests
-                        </Typography>
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box sx={{ width: "40%", maxWidth: 120, aspectRatio: 1 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadialBarChart
-                        innerRadius="20%"
-                        outerRadius="100%"
-                        data={[
-                          {
-                            value:
-                              (reportData.TestResultSummary.DevicesPassed /
-                                reportData.TestResultSummary.DevicesTotal) *
-                              100,
-                            fill: "#22c55e",
-                          },
-                          {
-                            value:
-                              (reportData.TestResultSummary.IdentityPassed /
-                                reportData.TestResultSummary.IdentityTotal) *
-                              100,
-                            fill: "#3b82f6",
-                          },
-                        ]}
-                        startAngle={90}
-                        endAngle={450}
-                      >
-                        <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-                        <RadialBar dataKey="value" background cornerRadius={5} />
-                      </RadialBarChart>
-                    </ResponsiveContainer>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
+            <AssessmentCard data={reportData} isLoading={testsApi.isFetching} />
           </Grid>
         </Grid>
 
@@ -376,625 +337,61 @@ const Page = () => {
             {/* Left Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 3, height: "100%" }}>
-                {/* Privileged users auth methods */}
-                <Card sx={{ flex: 1 }}>
-                  <CardHeader
-                    title={
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <SecurityIcon sx={{ fontSize: 24 }} />
-                        <Typography variant="h6">Privileged users auth methods</Typography>
-                      </Box>
-                    }
-                    sx={{ pb: 1 }}
-                  />
-                  <CardContent>
-                    <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewAuthMethodsPrivilegedUsers?.nodes && (
-                        <AuthMethodSankey
-                          data={reportData.TenantInfo.OverviewAuthMethodsPrivilegedUsers.nodes}
-                        />
-                      )}
-                    </Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                      {reportData.TenantInfo.OverviewAuthMethodsPrivilegedUsers?.description ||
-                        "No description available"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-
-                {/* All Users Auth Methods */}
-                <Card sx={{ flex: 1 }}>
-                  <CardHeader
-                    title={
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <UsersIcon sx={{ fontSize: 24 }} />
-                        <Typography variant="h6">All users auth methods</Typography>
-                      </Box>
-                    }
-                    sx={{ pb: 1 }}
-                  />
-                  <CardContent>
-                    <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewAuthMethodsAllUsers?.nodes && (
-                        <AuthMethodSankey
-                          data={reportData.TenantInfo.OverviewAuthMethodsAllUsers.nodes}
-                        />
-                      )}
-                    </Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                      {reportData.TenantInfo.OverviewAuthMethodsAllUsers?.description ||
-                        "No description available"}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <SecureScoreCard
+                  data={testsApi.data?.SecureScore}
+                  isLoading={testsApi.isFetching}
+                />
+                <AuthMethodCard data={testsApi.data?.MFAState} isLoading={testsApi.isFetching} />
               </Box>
             </Grid>
 
             {/* Right Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 3, height: "100%" }}>
-                {/* User Authentication */}
-                <Card sx={{ flex: 1 }}>
-                  <CardHeader
-                    title={
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <UserIcon sx={{ fontSize: 24 }} />
-                        <Typography variant="h6">User authentication</Typography>
-                      </Box>
-                    }
-                    sx={{ pb: 1 }}
-                  />
-                  <CardContent>
-                    <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewCaMfaAllUsers?.nodes && (
-                        <CaSankey data={reportData.TenantInfo.OverviewCaMfaAllUsers.nodes} />
-                      )}
-                    </Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                      {reportData.TenantInfo.OverviewCaMfaAllUsers?.description ||
-                        "No description available"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-
-                {/* Device Sign-ins */}
-                <Card sx={{ flex: 1 }}>
-                  <CardHeader
-                    title={
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <DevicesIcon sx={{ fontSize: 24 }} />
-                        <Typography variant="h6">Device sign-ins</Typography>
-                      </Box>
-                    }
-                    sx={{ pb: 1 }}
-                  />
-                  <CardContent>
-                    <Box sx={{ height: 300 }}>
-                      {reportData.TenantInfo.OverviewCaDevicesAllUsers?.nodes && (
-                        <CaDeviceSankey
-                          data={reportData.TenantInfo.OverviewCaDevicesAllUsers.nodes}
-                        />
-                      )}
-                    </Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                      {reportData.TenantInfo.OverviewCaDevicesAllUsers?.description ||
-                        "No description available"}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <MFACard data={testsApi.data?.MFAState} isLoading={testsApi.isFetching} />
+                <LicenseCard data={testsApi.data?.LicenseData} isLoading={testsApi.isFetching} />
               </Box>
             </Grid>
           </Grid>
         </Box>
-
-        {/* Devices Section */}
-        <Box sx={{ mt: 6, mb: 3 }}>
-          <Grid container spacing={3}>
-            {/* Device Summary Chart */}
-            <Grid size={{ xs: 12, lg: 4 }}>
-              <Card sx={{ height: "100%" }}>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <DevicesIcon sx={{ fontSize: 24 }} />
-                      <Typography variant="h6">Device summary</Typography>
-                    </Box>
-                  }
-                  sx={{ pb: 1 }}
-                />
-                <CardContent sx={{ height: 250, pb: 2 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      layout="vertical"
-                      data={[
-                        {
-                          name: "Windows",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.windowsCount,
-                          fill: "#3b82f6",
-                        },
-                        {
-                          name: "macOS",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.macOSCount,
-                          fill: "#22c55e",
-                        },
-                        {
-                          name: "iOS",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.iosCount,
-                          fill: "#f59e0b",
-                        },
-                        {
-                          name: "Android",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.androidCount,
-                          fill: "#8b5cf6",
-                        },
-                        {
-                          name: "Linux",
-                          value:
-                            reportData.TenantInfo.DeviceOverview.ManagedDevices
-                              .deviceOperatingSystemSummary.linuxCount,
-                          fill: "#ef4444",
-                        },
-                      ]}
-                      margin={{ left: 12, right: 0, top: 0, bottom: 10 }}
-                      barSize={32}
-                      barGap={2}
-                    >
-                      <XAxis type="number" hide />
-                      <YAxis type="category" dataKey="name" width={80} tickMargin={4} />
-                      <RechartsTooltip />
-                      <Bar dataKey="value" radius={5}>
-                        <LabelList
-                          position="insideLeft"
-                          dataKey="value"
-                          fill="white"
-                          offset={8}
-                          fontSize={12}
-                        />
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-                <Divider />
-                <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Desktops
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          ((reportData.TenantInfo.DeviceOverview.ManagedDevices.desktopCount || 0) /
-                            (reportData.TenantInfo.DeviceOverview.ManagedDevices.totalCount || 1)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Mobiles
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          ((reportData.TenantInfo.DeviceOverview.ManagedDevices.mobileCount || 0) /
-                            (reportData.TenantInfo.DeviceOverview.ManagedDevices.totalCount || 1)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Device Compliance */}
-            <Grid size={{ xs: 12, lg: 4 }}>
-              <Card sx={{ height: "100%" }}>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <CheckCircleIcon sx={{ fontSize: 24 }} />
-                      <Typography variant="h6">Device compliance</Typography>
-                    </Box>
-                  }
-                  sx={{ pb: 1 }}
-                />
-                <CardContent sx={{ height: 250, pb: 2 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          {
-                            name: "Compliant",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .compliantDeviceCount,
-                            fill: "hsl(142, 76%, 36%)",
-                          },
-                          {
-                            name: "Non-compliant",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .nonCompliantDeviceCount,
-                            fill: "hsl(0, 84%, 60%)",
-                          },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={100}
-                        paddingAngle={2}
-                        dataKey="value"
-                        cornerRadius={5}
-                      />
-                      <RechartsTooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-                <Divider />
-                <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#22C55E" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Compliant
-                        </Typography>
-                      </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                            .compliantDeviceCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                              .compliantDeviceCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .nonCompliantDeviceCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#EF4444" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Non-compliant
-                        </Typography>
-                      </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                            .nonCompliantDeviceCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                              .compliantDeviceCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceCompliance
-                                .nonCompliantDeviceCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Device Ownership */}
-            <Grid size={{ xs: 12, lg: 4 }}>
-              <Card sx={{ height: "100%" }}>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <BriefcaseIcon sx={{ fontSize: 24 }} />
-                      <Typography variant="h6">Device ownership</Typography>
-                    </Box>
-                  }
-                  sx={{ pb: 1 }}
-                />
-                <CardContent sx={{ height: 250, pb: 2 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          {
-                            name: "Corporate",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount,
-                            fill: "hsl(217, 91%, 60%)",
-                          },
-                          {
-                            name: "Personal",
-                            value:
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount,
-                            fill: "hsl(280, 85%, 60%)",
-                          },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={100}
-                        paddingAngle={2}
-                        dataKey="value"
-                        cornerRadius={5}
-                      />
-                      <RechartsTooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-                <Divider />
-                <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#3B82F6" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Corporate
-                        </Typography>
-                      </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
-                        <Box
-                          sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: "#A855F7" }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          Personal
-                        </Typography>
-                      </Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {Math.round(
-                          (reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount /
-                            (reportData.TenantInfo.DeviceOverview.DeviceOwnership.corporateCount +
-                              reportData.TenantInfo.DeviceOverview.DeviceOwnership.personalCount)) *
-                            100
-                        )}
-                        %
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Desktop Devices - Full Width */}
-            <Grid size={{ xs: 12 }}>
-              <Card>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <MonitorIcon sx={{ fontSize: 24 }} />
-                      <Typography variant="h6">Desktop devices</Typography>
-                    </Box>
-                  }
-                  sx={{ pb: 1 }}
-                />
-                <CardContent>
-                  <Box sx={{ height: 350 }}>
-                    {reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes && (
-                      <DesktopDevicesSankey
-                        data={reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary.nodes}
-                      />
-                    )}
-                  </Box>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                    {reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.description ||
-                      "No description available"}
-                  </Typography>
-                </CardContent>
-                <Divider />
-                <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Entra joined
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes || [];
-                          const entraJoined =
-                            nodes.find((n) => n.target === "Entra joined")?.value || 0;
-                          const windowsDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "Windows"
-                            )?.value || 0;
-                          const macOSDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "macOS"
-                            )?.value || 0;
-                          const total = windowsDevices + macOSDevices;
-                          return Math.round((entraJoined / (total || 1)) * 100);
-                        })()}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Entra hybrid joined
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes || [];
-                          const entraHybrid =
-                            nodes.find((n) => n.target === "Entra hybrid joined")?.value || 0;
-                          const windowsDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "Windows"
-                            )?.value || 0;
-                          const macOSDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "macOS"
-                            )?.value || 0;
-                          const total = windowsDevices + macOSDevices;
-                          return Math.round((entraHybrid / (total || 1)) * 100);
-                        })()}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Entra registered
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.DesktopDevicesSummary?.nodes || [];
-                          const entraRegistered =
-                            nodes.find((n) => n.target === "Entra registered")?.value || 0;
-                          const windowsDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "Windows"
-                            )?.value || 0;
-                          const macOSDevices =
-                            nodes.find(
-                              (n) => n.source === "Desktop devices" && n.target === "macOS"
-                            )?.value || 0;
-                          const total = windowsDevices + macOSDevices;
-                          return Math.round((entraRegistered / (total || 1)) * 100);
-                        })()}
-                        %
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Mobile Devices - Full Width */}
-            <Grid size={{ xs: 12 }}>
-              <Card>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <ManagedIcon sx={{ fontSize: 24 }} />
-                      <Typography variant="h6">Mobile devices</Typography>
-                    </Box>
-                  }
-                  sx={{ pb: 1 }}
-                />
-                <CardContent>
-                  <Box sx={{ height: 350 }}>
-                    {reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes && (
-                      <MobileSankey
-                        data={reportData.TenantInfo.DeviceOverview.MobileSummary.nodes}
-                      />
-                    )}
-                  </Box>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                    {reportData.TenantInfo.DeviceOverview.MobileSummary?.description ||
-                      "No description available"}
-                  </Typography>
-                </CardContent>
-                <Divider />
-                <CardContent sx={{ pt: 2 }}>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Android compliant
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes || [];
-                          const androidCompliant = nodes
-                            .filter(
-                              (n) => n.source?.includes("Android") && n.target === "Compliant"
-                            )
-                            .reduce((sum, n) => sum + (n.value || 0), 0);
-                          const androidTotal =
-                            nodes.find(
-                              (n) => n.source === "Mobile devices" && n.target === "Android"
-                            )?.value || 0;
-                          return androidTotal > 0
-                            ? Math.round((androidCompliant / androidTotal) * 100)
-                            : 0;
-                        })()}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        iOS compliant
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes || [];
-                          const iosCompliant = nodes
-                            .filter((n) => n.source?.includes("iOS") && n.target === "Compliant")
-                            .reduce((sum, n) => sum + (n.value || 0), 0);
-                          const iosTotal =
-                            nodes.find((n) => n.source === "Mobile devices" && n.target === "iOS")
-                              ?.value || 0;
-                          return iosTotal > 0 ? Math.round((iosCompliant / iosTotal) * 100) : 0;
-                        })()}
-                        %
-                      </Typography>
-                    </Box>
-                    <Divider orientation="vertical" flexItem />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Total devices
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold">
-                        {(() => {
-                          const nodes =
-                            reportData.TenantInfo.DeviceOverview.MobileSummary?.nodes || [];
-                          const androidTotal =
-                            nodes.find(
-                              (n) => n.source === "Mobile devices" && n.target === "Android"
-                            )?.value || 0;
-                          const iosTotal =
-                            nodes.find((n) => n.source === "Mobile devices" && n.target === "iOS")
-                              ?.value || 0;
-                          return androidTotal + iosTotal;
-                        })()}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Box>
       </Box>
+
+      {/* Delete Report Dialog */}
+      <CippApiDialog
+        createDialog={deleteDialog}
+        title="Delete Custom Report"
+        fields={[]}
+        row={reportIdValue}
+        api={{
+          url: "/api/DeleteTestReport",
+          type: "POST",
+          data: {
+            ReportId: reportIdValue.reportId?.value,
+          },
+          confirmText: "Are you sure you want to delete this report? This action cannot be undone.",
+          relatedQueryKeys: ["ListTestReports"],
+        }}
+      />
+
+      {/* Refresh Data Dialog */}
+      <CippApiDialog
+        createDialog={refreshDialog}
+        title={refreshDialog.title}
+        fields={[]}
+        api={{
+          url: refreshDialog.api?.url,
+          type: "POST",
+          data: refreshDialog.api?.data,
+          confirmText: refreshDialog.message,
+          relatedQueryKeys: [`${currentTenant}-ListTests-${selectedReport}`],
+        }}
+      />
     </Container>
   );
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout allTenantsSupport={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

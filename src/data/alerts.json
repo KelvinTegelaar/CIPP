@@ -104,6 +104,11 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "SecDefaultsDisabled",
+    "label": "Alert when Security Defaults is disabled with no Conditional Access policies",
+    "recommendedRunInterval": "1d"
+  },
+  {
     "name": "DefenderStatus",
     "label": "Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)",
     "recommendedRunInterval": "4h"
@@ -186,6 +191,41 @@
     "name": "DeviceCompliance",
     "label": "Alert on device compliance issues",
     "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "IntunePolicyConflicts",
+    "label": "Alert on Intune policy or app conflicts/errors",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert per issue (off = aggregated)",
+        "inputName": "AlertEachIssue"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include policy status issues",
+        "inputName": "IncludePolicies"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Include app install issues",
+        "inputName": "IncludeApplications"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert on conflicts",
+        "inputName": "AlertConflicts"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Alert on errors/failures",
+        "inputName": "AlertErrors"
+      }
+    ],
+    "description": "Monitors Intune policy assignment states and app install statuses for conflicts or errors. Defaults to aggregated alerts with all mechanisms enabled and both conflicts and errors included."
   },
   {
     "name": "BreachAlert",
