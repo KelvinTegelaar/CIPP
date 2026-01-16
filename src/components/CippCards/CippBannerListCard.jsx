@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import {
   Box,
   Card,
+  Checkbox,
   Collapse,
   Divider,
   IconButton,
@@ -16,12 +17,33 @@ import { CippPropertyListCard } from "./CippPropertyListCard";
 import { CippDataTable } from "../CippTable/CippDataTable";
 
 export const CippBannerListCard = (props) => {
-  const { items = [], isCollapsible = false, isFetching = false, children, ...other } = props;
+  const {
+    items = [],
+    isCollapsible = false,
+    isFetching = false,
+    children,
+    onSelectionChange,
+    selectedItems = [],
+    ...other
+  } = props;
   const [expanded, setExpanded] = useState(null);
 
   const handleExpand = useCallback((itemId) => {
     setExpanded((prevState) => (prevState === itemId ? null : itemId));
   }, []);
+
+  const handleCheckboxChange = useCallback(
+    (itemId, checked) => {
+      if (onSelectionChange) {
+        if (checked) {
+          onSelectionChange([...selectedItems, itemId]);
+        } else {
+          onSelectionChange(selectedItems.filter((id) => id !== itemId));
+        }
+      }
+    },
+    [onSelectionChange, selectedItems]
+  );
 
   const hasItems = items.length > 0;
 
@@ -91,6 +113,16 @@ export const CippBannerListCard = (props) => {
                       alignItems="center"
                       sx={{ flex: 1, minWidth: 0 }}
                     >
+                      {onSelectionChange && (
+                        <Checkbox
+                          checked={selectedItems.includes(item.id)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleCheckboxChange(item.id, e.target.checked);
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      )}
                       <Box
                         sx={{
                           alignItems: "center",
@@ -224,4 +256,6 @@ CippBannerListCard.propTypes = {
   ).isRequired,
   isCollapsible: PropTypes.bool,
   isFetching: PropTypes.bool,
+  onSelectionChange: PropTypes.func,
+  selectedItems: PropTypes.array,
 };
