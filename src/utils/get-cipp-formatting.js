@@ -185,7 +185,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     "reviewedDate", // App Consent Requests
   ];
 
-  const matchDateTime = /([dD]ate[tT]ime|[Ee]xpiration)/;
+  const matchDateTime = /([dD]ate[tT]ime|[Ee]xpiration|[Tt]imestamp)/;
   if (timeAgoArray.includes(cellName) || matchDateTime.test(cellName)) {
     return isText && canReceive === false ? (
       new Date(data).toLocaleString() // This runs if canReceive is false and isText is true

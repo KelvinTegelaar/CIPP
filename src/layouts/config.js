@@ -717,6 +717,11 @@ export const nativeMenuItems = [
             permissions: ["Exchange.Mailbox.*"],
           },
           {
+            title: "Mailbox Permissions",
+            path: "/email/reports/mailbox-permissions",
+            permissions: ["Exchange.Mailbox.Read"],
+          },
+          {
             title: "Anti-Phishing Filters",
             path: "/email/reports/antiphishing-filters",
             permissions: ["Exchange.SpamFilter.*"],
