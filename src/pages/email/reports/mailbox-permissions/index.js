@@ -13,8 +13,11 @@ const Page = () => {
   const currentTenant = useSettings().currentTenant;
   const syncDialog = useDialog();
 
+  const isAllTenants = currentTenant === "AllTenants";
+
   const columns = byUser
     ? [
+        ...(isAllTenants ? ["Tenant"] : []),
         "User",
         "UserMailboxType",
         "MailboxCount",
@@ -23,6 +26,7 @@ const Page = () => {
         "PermissionCacheTimestamp",
       ]
     : [
+        ...(isAllTenants ? ["Tenant"] : []),
         "MailboxUPN",
         "MailboxDisplayName",
         "MailboxType",
@@ -48,6 +52,7 @@ const Page = () => {
         }
         size="xs"
         onClick={syncDialog.handleOpen}
+        disabled={isAllTenants}
       >
         Sync
       </Button>
@@ -64,7 +69,7 @@ const Page = () => {
 
   return (
     <>
-      {currentTenant ? (
+      {currentTenant && currentTenant !== "" ? (
         <CippTablePage
           key={`mailbox-permissions-${byUser}`}
           title="Mailbox Permissions Report"
@@ -100,9 +105,6 @@ const Page = () => {
             Command: {
               value: "Set-CIPPDBCacheMailboxes",
               label: "Set-CIPPDBCacheMailboxes",
-            },
-            Parameters: {
-              TenantFilter: currentTenant,
             },
             ScheduledTime: "0",
             PostExecution: {
