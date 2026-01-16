@@ -145,121 +145,113 @@ const Page = () => {
           Object.entries(selectedTemplate.standards).forEach(([standardKey, standardConfig]) => {
             if (standardKey === "IntuneTemplate" && Array.isArray(standardConfig)) {
               standardConfig.forEach((templateItem, index) => {
-                console.log("Processing IntuneTemplate item:", templateItem);
-                if (
-                  templateItem["TemplateList-Tags"]?.value &&
-                  templateItem["TemplateList-Tags"]?.addedFields?.templates
-                ) {
-                  console.log(
-                    "Found TemplateList-Tags for IntuneTemplate:",
-                    templateItem["TemplateList-Tags"]
-                  );
-                  console.log(
-                    "Templates to expand:",
-                    templateItem["TemplateList-Tags"].addedFields.templates
-                  );
-                  templateItem["TemplateList-Tags"].addedFields.templates.forEach(
-                    (expandedTemplate) => {
-                      console.log("Expanding IntuneTemplate:", expandedTemplate);
-                      const itemTemplateId = expandedTemplate.GUID;
-                      const standardId = `standards.IntuneTemplate.${itemTemplateId}`;
-                      const standardInfo = standards.find(
-                        (s) => s.name === `standards.IntuneTemplate`
-                      );
+                if (!templateItem) return; // Skip null items
 
-                      // Find the tenant's value for this specific template
-                      const currentTenantStandard = currentTenantData.find(
-                        (s) => s.standardId === standardId
-                      );
+                // Check for both addedFields.templates AND rawData.templates
+                const tagTemplates =
+                  templateItem["TemplateList-Tags"]?.addedFields?.templates ||
+                  templateItem["TemplateList-Tags"]?.rawData?.templates;
 
-                      // Get the standard object and its value from the tenant object
-                      const standardObject = currentTenantObj?.[standardId];
-                      const directStandardValue = standardObject?.Value;
+                if (templateItem["TemplateList-Tags"]?.value && tagTemplates) {
+                  tagTemplates.forEach((expandedTemplate) => {
+                    const itemTemplateId = expandedTemplate.GUID;
+                    const standardId = `standards.IntuneTemplate.${itemTemplateId}`;
+                    const standardInfo = standards.find(
+                      (s) => s.name === `standards.IntuneTemplate`
+                    );
 
-                      // Determine compliance status
-                      let isCompliant = false;
+                    // Find the tenant's value for this specific template
+                    const currentTenantStandard = currentTenantData.find(
+                      (s) => s.standardId === standardId
+                    );
 
-                      // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                      if (directStandardValue === true) {
-                        isCompliant = true;
-                      } else if (
-                        directStandardValue !== undefined &&
-                        typeof directStandardValue !== "object"
-                      ) {
-                        isCompliant = true;
-                      } else if (currentTenantStandard) {
-                        isCompliant = currentTenantStandard.value === true;
-                      }
+                    // Get the standard object and its value from the tenant object
+                    const standardObject = currentTenantObj?.[standardId];
+                    const directStandardValue = standardObject?.Value;
 
-                      // Create a standardValue object that contains the template settings
-                      const templateSettings = {
-                        templateId,
-                        Template:
-                          expandedTemplate.displayName ||
-                          expandedTemplate.name ||
-                          "Unknown Template",
-                        "Assign to": templateItem.AssignTo || "On",
-                        "Excluded Group": templateItem.excludeGroup || "",
-                        "Included Group": templateItem.customGroup || "",
-                      };
+                    // Determine compliance status
+                    let isCompliant = false;
 
-                      // Check if this standard is overridden by another template
-                      const tenantTemplateId = standardObject?.TemplateId;
-                      const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
-                      const overridingTemplateName = isOverridden
-                        ? getTemplateDisplayName(tenantTemplateId)
-                        : null;
-
-                      allStandards.push({
-                        standardId,
-                        standardName: `Intune Template: ${
-                          expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
-                        } (via ${templateItem["TemplateList-Tags"].value})`,
-                        currentTenantValue:
-                          standardObject !== undefined
-                            ? {
-                                Value: directStandardValue,
-                                LastRefresh: standardObject?.LastRefresh,
-                                TemplateId: tenantTemplateId,
-                              }
-                            : currentTenantStandard?.value,
-                        standardValue: templateSettings,
-                        complianceStatus: isOverridden
-                          ? "Overridden"
-                          : isCompliant
-                          ? "Compliant"
-                          : "Non-Compliant",
-                        isOverridden,
-                        overridingTemplateId: isOverridden ? tenantTemplateId : null,
-                        overridingTemplateName,
-                        complianceDetails:
-                          standardInfo?.docsDescription || standardInfo?.helpText || "",
-                        standardDescription: standardInfo?.helpText || "",
-                        standardImpact: standardInfo?.impact || "Medium Impact",
-                        standardImpactColour: standardInfo?.impactColour || "warning",
-                        templateName: selectedTemplate?.templateName || "Standard Template",
-                        templateActions: (() => {
-                          const actions = templateItem.action || [];
-                          const hasRemediate = actions.some((a) => {
-                            const label = typeof a === "object" ? a?.label || a?.value : a;
-                            return label === "Remediate" || label === "remediate";
-                          });
-                          const hasReport = actions.some((a) => {
-                            const label = typeof a === "object" ? a?.label || a?.value : a;
-                            return label === "Report" || label === "report";
-                          });
-                          if (hasRemediate && !hasReport) {
-                            return [...actions, "Report"];
-                          }
-                          return actions;
-                        })(),
-                        autoRemediate:
-                          templateItem.autoRemediate ||
-                          templateItem.TemplateList?.autoRemediate ||
-                          false,
-                      });
+                    // For IntuneTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                    if (directStandardValue === true) {
+                      isCompliant = true;
+                    } else if (
+                      directStandardValue !== undefined &&
+                      typeof directStandardValue !== "object"
+                    ) {
+                      isCompliant = true;
+                    } else if (currentTenantStandard) {
+                      isCompliant = currentTenantStandard.value === true;
                     }
-                  );
+
+                    // Create a standardValue object that contains the template settings
+                    const templateSettings = {
+                      templateId,
+                      Template:
+                        expandedTemplate.displayName || expandedTemplate.name || "Unknown Template",
+                      "Assign to": templateItem.AssignTo || "On",
+                      "Excluded Group": templateItem.excludeGroup || "",
+                      "Included Group": templateItem.customGroup || "",
+                    };
+
+                    // Check if this standard is overridden by another template
+                    const tenantTemplateId = standardObject?.TemplateId;
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                    const overridingTemplateName = isOverridden
+                      ? getTemplateDisplayName(tenantTemplateId)
+                      : null;
+
+                    allStandards.push({
+                      standardId,
+                      standardName: `Intune Template: ${
+                        expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
+                      } (via ${templateItem["TemplateList-Tags"]?.value})`,
+                      currentTenantValue:
+                        standardObject !== undefined
+                          ? {
+                              Value: directStandardValue,
+                              LastRefresh: standardObject?.LastRefresh,
+                              TemplateId: tenantTemplateId,
+                              CurrentValue: standardObject?.CurrentValue,
+                              ExpectedValue: standardObject?.ExpectedValue,
+                            }
+                          : currentTenantStandard?.value,
+                      standardValue: templateSettings,
+                      complianceStatus: isOverridden
+                        ? "Overridden"
+                        : isCompliant
+                        ? "Compliant"
+                        : "Non-Compliant",
+                      isOverridden,
+                      overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                      overridingTemplateName,
+                      complianceDetails:
+                        standardInfo?.docsDescription || standardInfo?.helpText || "",
+                      standardDescription: standardInfo?.helpText || "",
+                      standardImpact: standardInfo?.impact || "Medium Impact",
+                      standardImpactColour: standardInfo?.impactColour || "warning",
+                      templateName: selectedTemplate?.templateName || "Standard Template",
+                      templateActions: (() => {
+                        const actions = templateItem.action || [];
+                        const hasRemediate = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Remediate" || label === "remediate";
+                        });
+                        const hasReport = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Report" || label === "report";
+                        });
+                        if (hasRemediate && !hasReport) {
+                          return [...actions, "Report"];
+                        }
+                        return actions;
+                      })(),
+                      autoRemediate:
+                        templateItem.autoRemediate ||
+                        templateItem.TemplateList?.autoRemediate ||
+                        false,
+                    });
+                  });
                 } else {
                   // Regular TemplateList processing
                   const itemTemplateId = templateItem.TemplateList?.value;
@@ -320,6 +312,8 @@ const Page = () => {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
                               TemplateId: tenantTemplateId,
+                              CurrentValue: standardObject?.CurrentValue,
+                              ExpectedValue: standardObject?.ExpectedValue,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
@@ -367,108 +361,100 @@ const Page = () => {
             ) {
               // Process each ConditionalAccessTemplate item separately
               standardConfig.forEach((templateItem, index) => {
+                if (!templateItem) return; // Skip null items
+
+                // Check for both addedFields.templates AND rawData.templates
+                const tagTemplates =
+                  templateItem["TemplateList-Tags"]?.addedFields?.templates ||
+                  templateItem["TemplateList-Tags"]?.rawData?.templates;
+
                 // Check if this item has TemplateList-Tags and expand them
-                if (
-                  templateItem["TemplateList-Tags"]?.value &&
-                  templateItem["TemplateList-Tags"]?.addedFields?.templates
-                ) {
-                  console.log(
-                    "Found TemplateList-Tags for ConditionalAccessTemplate:",
-                    templateItem["TemplateList-Tags"]
-                  );
-                  console.log(
-                    "Templates to expand:",
-                    templateItem["TemplateList-Tags"].addedFields.templates
-                  );
-                  // Expand TemplateList-Tags into multiple template items
-                  templateItem["TemplateList-Tags"].addedFields.templates.forEach(
-                    (expandedTemplate) => {
-                      console.log("Expanding ConditionalAccessTemplate:", expandedTemplate);
-                      const itemTemplateId = expandedTemplate.GUID;
-                      const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`;
-                      const standardInfo = standards.find(
-                        (s) => s.name === `standards.ConditionalAccessTemplate`
-                      );
+                if (templateItem["TemplateList-Tags"]?.value && tagTemplates) {
+                  tagTemplates.forEach((expandedTemplate) => {
+                    const itemTemplateId = expandedTemplate.GUID;
+                    const standardId = `standards.ConditionalAccessTemplate.${itemTemplateId}`;
+                    const standardInfo = standards.find(
+                      (s) => s.name === `standards.ConditionalAccessTemplate`
+                    );
 
-                      // Find the tenant's value for this specific template
-                      const currentTenantStandard = currentTenantData.find(
-                        (s) => s.standardId === standardId
-                      );
-                      const standardObject = currentTenantObj?.[standardId];
-                      const directStandardValue = standardObject?.Value;
-                      const tenantTemplateId = standardObject?.TemplateId;
-                      const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
-                      const overridingTemplateName = isOverridden
-                        ? getTemplateDisplayName(tenantTemplateId)
-                        : null;
-                      let isCompliant = false;
+                    // Find the tenant's value for this specific template
+                    const currentTenantStandard = currentTenantData.find(
+                      (s) => s.standardId === standardId
+                    );
+                    const standardObject = currentTenantObj?.[standardId];
+                    const directStandardValue = standardObject?.Value;
+                    const tenantTemplateId = standardObject?.TemplateId;
+                    const isOverridden = tenantTemplateId && tenantTemplateId !== templateId;
+                    const overridingTemplateName = isOverridden
+                      ? getTemplateDisplayName(tenantTemplateId)
+                      : null;
+                    let isCompliant = false;
 
-                      // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
-                      if (directStandardValue === true) {
-                        isCompliant = true;
-                      } else {
-                        isCompliant = false;
-                      }
-
-                      // Create a standardValue object that contains the template settings
-                      const templateSettings = {
-                        templateId: itemTemplateId,
-                        Template:
-                          expandedTemplate.displayName ||
-                          expandedTemplate.name ||
-                          "Unknown Template",
-                      };
-
-                      allStandards.push({
-                        standardId,
-                        standardName: `Conditional Access Template: ${
-                          expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
-                        } (via ${templateItem["TemplateList-Tags"].value})`,
-                        currentTenantValue:
-                          standardObject !== undefined
-                            ? {
-                                Value: directStandardValue,
-                                LastRefresh: standardObject?.LastRefresh,
-                                TemplateId: tenantTemplateId,
-                              }
-                            : currentTenantStandard?.value,
-                        standardValue: templateSettings,
-                        complianceStatus: isOverridden
-                          ? "Overridden"
-                          : isCompliant
-                          ? "Compliant"
-                          : "Non-Compliant",
-                        complianceDetails:
-                          standardInfo?.docsDescription || standardInfo?.helpText || "",
-                        standardDescription: standardInfo?.helpText || "",
-                        standardImpact: standardInfo?.impact || "Medium Impact",
-                        standardImpactColour: standardInfo?.impactColour || "warning",
-                        templateName: selectedTemplate?.templateName || "Standard Template",
-                        templateActions: (() => {
-                          const actions = templateItem.action || [];
-                          const hasRemediate = actions.some((a) => {
-                            const label = typeof a === "object" ? a?.label || a?.value : a;
-                            return label === "Remediate" || label === "remediate";
-                          });
-                          const hasReport = actions.some((a) => {
-                            const label = typeof a === "object" ? a?.label || a?.value : a;
-                            return label === "Report" || label === "report";
-                          });
-                          if (hasRemediate && !hasReport) {
-                            return [...actions, "Report"];
-                          }
-                          return actions;
-                        })(),
-                        autoRemediate:
-                          templateItem.autoRemediate ||
-                          templateItem.TemplateList?.autoRemediate ||
-                          false,
-                        isOverridden,
-                        overridingTemplateId: isOverridden ? tenantTemplateId : null,
-                        overridingTemplateName,
-                      });
+                    // For ConditionalAccessTemplate, the value is true if compliant, or an object with comparison data if not compliant
+                    if (directStandardValue === true) {
+                      isCompliant = true;
+                    } else {
+                      isCompliant = false;
                     }
-                  );
+
+                    // Create a standardValue object that contains the template settings
+                    const templateSettings = {
+                      templateId: itemTemplateId,
+                      Template:
+                        expandedTemplate.displayName || expandedTemplate.name || "Unknown Template",
+                    };
+
+                    allStandards.push({
+                      standardId,
+                      standardName: `Conditional Access Template: ${
+                        expandedTemplate.displayName || expandedTemplate.name || itemTemplateId
+                      } (via ${templateItem["TemplateList-Tags"]?.value})`,
+                      currentTenantValue:
+                        standardObject !== undefined
+                          ? {
+                              Value: directStandardValue,
+                              LastRefresh: standardObject?.LastRefresh,
+                              TemplateId: tenantTemplateId,
+                              CurrentValue: standardObject?.CurrentValue,
+                              ExpectedValue: standardObject?.ExpectedValue,
+                            }
+                          : currentTenantStandard?.value,
+                      standardValue: templateSettings,
+                      complianceStatus: isOverridden
+                        ? "Overridden"
+                        : isCompliant
+                        ? "Compliant"
+                        : "Non-Compliant",
+                      complianceDetails:
+                        standardInfo?.docsDescription || standardInfo?.helpText || "",
+                      standardDescription: standardInfo?.helpText || "",
+                      standardImpact: standardInfo?.impact || "Medium Impact",
+                      standardImpactColour: standardInfo?.impactColour || "warning",
+                      templateName: selectedTemplate?.templateName || "Standard Template",
+                      templateActions: (() => {
+                        const actions = templateItem.action || [];
+                        const hasRemediate = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Remediate" || label === "remediate";
+                        });
+                        const hasReport = actions.some((a) => {
+                          const label = typeof a === "object" ? a?.label || a?.value : a;
+                          return label === "Report" || label === "report";
+                        });
+                        if (hasRemediate && !hasReport) {
+                          return [...actions, "Report"];
+                        }
+                        return actions;
+                      })(),
+                      autoRemediate:
+                        templateItem.autoRemediate ||
+                        templateItem.TemplateList?.autoRemediate ||
+                        false,
+                      isOverridden,
+                      overridingTemplateId: isOverridden ? tenantTemplateId : null,
+                      overridingTemplateName,
+                    });
+                  });
                 } else {
                   // Regular TemplateList processing
                   const itemTemplateId = templateItem.TemplateList?.value;
@@ -515,6 +501,8 @@ const Page = () => {
                               Value: directStandardValue,
                               LastRefresh: standardObject?.LastRefresh,
                               TemplateId: tenantTemplateId,
+                              CurrentValue: standardObject?.CurrentValue,
+                              ExpectedValue: standardObject?.ExpectedValue,
                             }
                           : currentTenantStandard?.value,
                       standardValue: templateSettings, // Use the template settings object instead of true
@@ -637,6 +625,8 @@ const Page = () => {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
                         TemplateId: tenantTemplateId,
+                        CurrentValue: standardObject?.CurrentValue,
+                        ExpectedValue: standardObject?.ExpectedValue,
                       }
                     : currentTenantStandard?.value,
                 standardValue: templateSettings,
@@ -692,10 +682,6 @@ const Page = () => {
                 (s) => s.standardId === standardId
               );
 
-              // Determine compliance status
-              let isCompliant = false;
-              let reportingDisabled = !reportingEnabled;
-
               // Check if the standard is directly in the tenant object (like "standards.AuditLog": {...})
               const standardIdWithoutPrefix = standardId.replace("standards.", "");
               const standardObject = currentTenantObj?.[standardId];
@@ -703,10 +689,23 @@ const Page = () => {
               // Extract the actual value from the standard object (new data structure includes .Value property)
               const directStandardValue = standardObject?.Value;
 
-              // Special case for boolean standards that are true in the tenant
+              // Determine compliance - use backend's logic: Value === true OR CurrentValue === ExpectedValue
+              let isCompliant = false;
+              let reportingDisabled = !reportingEnabled;
+
               if (directStandardValue === true) {
-                // If the standard is directly in the tenant and is true, it's compliant
+                // Boolean true means compliant
                 isCompliant = true;
+              } else if (standardObject?.CurrentValue && standardObject?.ExpectedValue) {
+                // Compare CurrentValue and ExpectedValue (backend's comparison logic)
+                isCompliant =
+                  JSON.stringify(standardObject.CurrentValue) ===
+                  JSON.stringify(standardObject.ExpectedValue);
+              } else if (standardObject?.CurrentValue && standardObject?.ExpectedValue) {
+                // Compare CurrentValue and ExpectedValue (backend's comparison logic)
+                isCompliant =
+                  JSON.stringify(standardObject.CurrentValue) ===
+                  JSON.stringify(standardObject.ExpectedValue);
               } else if (directStandardValue !== undefined) {
                 // For non-boolean values, use strict equality
                 isCompliant =
@@ -746,6 +745,8 @@ const Page = () => {
                         Value: directStandardValue,
                         LastRefresh: standardObject?.LastRefresh,
                         TemplateId: tenantTemplateId,
+                        CurrentValue: standardObject?.CurrentValue,
+                        ExpectedValue: standardObject?.ExpectedValue,
                       }
                     : currentTenantStandard?.value,
                 standardValue: standardSettings,
@@ -962,51 +963,7 @@ const Page = () => {
   // Prepare title and subtitle for HeaderedTabbedLayout
   const title = selectedTemplate?.templateName || selectedTemplate?.displayName || "Tenant Report";
 
-  const subtitle = [
-    {
-      icon: <Policy />,
-      text: (
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <CippAutoComplete
-            options={templateOptions}
-            label="Select Template"
-            multiple={false}
-            creatable={false}
-            isFetching={templateDetails.isFetching}
-            defaultValue={selectedTemplateOption}
-            value={selectedTemplateOption}
-            onChange={(selectedTemplate) => {
-              const query = { ...router.query };
-              if (selectedTemplate && selectedTemplate.value) {
-                query.templateId = selectedTemplate.value;
-              } else {
-                delete query.templateId;
-              }
-              router.replace(
-                {
-                  pathname: router.pathname,
-                  query: query,
-                },
-                undefined,
-                { shallow: true }
-              );
-            }}
-            sx={{ minWidth: 300 }}
-            placeholder="Select a template..."
-          />
-          {templateId && (
-            <CippApiLogsDrawer
-              standardFilter={templateId}
-              buttonText="Logs"
-              title="Standard Logs"
-              variant="outlined"
-              tenantFilter={currentTenant}
-            />
-          )}
-        </Stack>
-      ),
-    },
-  ];
+  const subtitle = [];
 
   // Actions for the header
   const actions = [
@@ -1123,7 +1080,34 @@ const Page = () => {
                 mt: 2,
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1}>
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ flexWrap: "wrap" }}>
+                <CippAutoComplete
+                  options={templateOptions}
+                  label="Template"
+                  multiple={false}
+                  creatable={false}
+                  isFetching={templateDetails.isFetching}
+                  defaultValue={selectedTemplateOption}
+                  value={selectedTemplateOption}
+                  onChange={(selectedTemplate) => {
+                    const query = { ...router.query };
+                    if (selectedTemplate && selectedTemplate.value) {
+                      query.templateId = selectedTemplate.value;
+                    } else {
+                      delete query.templateId;
+                    }
+                    router.replace(
+                      {
+                        pathname: router.pathname,
+                        query: query,
+                      },
+                      undefined,
+                      { shallow: true }
+                    );
+                  }}
+                  sx={{ width: 300 }}
+                  placeholder="Select template..."
+                />
                 <TextField
                   size="small"
                   variant="filled"
@@ -1155,6 +1139,15 @@ const Page = () => {
                     },
                   }}
                 />
+                {templateId && (
+                  <CippApiLogsDrawer
+                    standardFilter={templateId}
+                    buttonText="Logs"
+                    title="Standard Logs"
+                    variant="outlined"
+                    tenantFilter={currentTenant}
+                  />
+                )}
               </Stack>
               <ButtonGroup variant="outlined" color="primary">
                 <Button disabled={true} color="primary">
@@ -1369,7 +1362,7 @@ const Page = () => {
                   </Typography>
 
                   {filteredGroupedStandards[category].map((standard, index) => (
-                    <Grid container spacing={3} key={index} sx={{ mb: 4 }}>
+                    <Grid container spacing={3} key={index} sx={{ mb: 4, pr: 2 }}>
                       <Grid size={{ xs: 12, md: 6 }}>
                         <Card sx={{ height: "100%", borderRadius: 2, boxShadow: 2 }}>
                           <Stack
@@ -1695,13 +1688,109 @@ const Page = () => {
                                           standard.overridingTemplateId}
                                       </Alert>
                                     ) : standard.complianceStatus === "Compliant" ? (
-                                      <Alert severity="success" sx={{ mb: 2 }}>
-                                        This setting is configured correctly
-                                      </Alert>
+                                      <>
+                                        <Alert severity="success" sx={{ mb: 2 }}>
+                                          This setting is configured correctly
+                                        </Alert>
+                                      </>
                                     ) : standard.currentTenantValue?.Value === false ? (
-                                      <Alert severity="warning" sx={{ mb: 2 }}>
-                                        This setting is not configured correctly
-                                      </Alert>
+                                      <>
+                                        <Alert severity="warning" sx={{ mb: 2 }}>
+                                          This setting is not configured correctly
+                                        </Alert>
+                                        {/* Show Current/Expected values for non-compliant standards */}
+                                        {standard.currentTenantValue?.CurrentValue &&
+                                          standard.currentTenantValue?.ExpectedValue && (
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                gap: 2,
+                                                flexDirection: { xs: "column", md: "row" },
+                                                mt: 2,
+                                                mb: 2,
+                                              }}
+                                            >
+                                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography
+                                                  variant="caption"
+                                                  sx={{
+                                                    fontWeight: 600,
+                                                    color: "text.secondary",
+                                                    textTransform: "uppercase",
+                                                    letterSpacing: 0.5,
+                                                  }}
+                                                >
+                                                  Expected
+                                                </Typography>
+                                                <Box
+                                                  sx={{
+                                                    mt: 0.5,
+                                                    p: 1.5,
+                                                    bgcolor: "action.hover",
+                                                    borderRadius: 1,
+                                                    border: "1px solid",
+                                                    borderColor: "divider",
+                                                  }}
+                                                >
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                      fontFamily: "monospace",
+                                                      fontSize: "0.8125rem",
+                                                      whiteSpace: "pre-wrap",
+                                                      wordBreak: "break-word",
+                                                    }}
+                                                  >
+                                                    {JSON.stringify(
+                                                      standard.currentTenantValue.ExpectedValue,
+                                                      null,
+                                                      2
+                                                    )}
+                                                  </Typography>
+                                                </Box>
+                                              </Box>
+                                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography
+                                                  variant="caption"
+                                                  sx={{
+                                                    fontWeight: 600,
+                                                    color: "text.secondary",
+                                                    textTransform: "uppercase",
+                                                    letterSpacing: 0.5,
+                                                  }}
+                                                >
+                                                  Current
+                                                </Typography>
+                                                <Box
+                                                  sx={{
+                                                    mt: 0.5,
+                                                    p: 1.5,
+                                                    bgcolor: "action.hover",
+                                                    borderRadius: 1,
+                                                    border: "1px solid",
+                                                    borderColor: "divider",
+                                                  }}
+                                                >
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                      fontFamily: "monospace",
+                                                      fontSize: "0.8125rem",
+                                                      whiteSpace: "pre-wrap",
+                                                      wordBreak: "break-word",
+                                                    }}
+                                                  >
+                                                    {JSON.stringify(
+                                                      standard.currentTenantValue.CurrentValue,
+                                                      null,
+                                                      2
+                                                    )}
+                                                  </Typography>
+                                                </Box>
+                                              </Box>
+                                            </Box>
+                                          )}
+                                      </>
                                     ) : null}
 
                                     {/* Only show values if they're not simple true/false that's already covered by the alerts above */}
@@ -1714,6 +1803,8 @@ const Page = () => {
                                         .filter(
                                           ([key]) =>
                                             key !== "LastRefresh" &&
+                                            key !== "CurrentValue" &&
+                                            key !== "ExpectedValue" &&
                                             // Skip showing the Value field separately if it's just true/false
                                             !(
                                               key === "Value" &&
