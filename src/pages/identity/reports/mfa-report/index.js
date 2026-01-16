@@ -1,22 +1,51 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { LockPerson } from "@mui/icons-material";
+import { LockPerson, Sync, Info } from "@mui/icons-material";
+import { Button, Alert, SvgIcon, IconButton, Tooltip } from "@mui/material";
+import { useSettings } from "../../../../hooks/use-settings";
+import { Stack } from "@mui/system";
+import { useDialog } from "../../../../hooks/use-dialog";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 
 const Page = () => {
   const pageTitle = "MFA Report";
   const apiUrl = "/api/ListMFAUsers";
-  const simpleColumns = [
-    "UPN",
-    "AccountEnabled",
-    "isLicensed",
-    "MFARegistration",
-    "PerUser",
-    "CoveredBySD",
-    "CoveredByCA",
-    "MFAMethods",
-    "CAPolicies",
-    "IsAdmin",
-  ];
+  const currentTenant = useSettings().currentTenant;
+  const syncDialog = useDialog();
+
+  const isAllTenants = currentTenant === "AllTenants";
+
+  const apiData = {
+    UseReportDB: true,
+  };
+  const simpleColumns = isAllTenants
+    ? [
+        "Tenant",
+        "UPN",
+        "AccountEnabled",
+        "isLicensed",
+        "MFARegistration",
+        "PerUser",
+        "CoveredBySD",
+        "CoveredByCA",
+        "MFAMethods",
+        "CAPolicies",
+        "IsAdmin",
+        "CacheTimestamp",
+      ]
+    : [
+        "UPN",
+        "AccountEnabled",
+        "isLicensed",
+        "MFARegistration",
+        "PerUser",
+        "CoveredBySD",
+        "CoveredByCA",
+        "MFAMethods",
+        "CAPolicies",
+        "IsAdmin",
+        "CacheTimestamp",
+      ];
   const filters = [
     {
       filterName: "Enabled, licensed users",
@@ -48,8 +77,8 @@ const Page = () => {
     {
       filterName: "Admin Users",
       value: [{ id: "IsAdmin", value: "Yes" }],
-      type: "column"
-    }
+      type: "column",
+    },
   ];
 
   const actions = [
@@ -78,14 +107,53 @@ const Page = () => {
     },
   ];
 
+  const pageActions = [
+    <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
+      <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.">
+        <IconButton size="small">
+          <Info fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Button
+        startIcon={
+          <SvgIcon fontSize="small">
+            <Sync />
+          </SvgIcon>
+        }
+        size="xs"
+        onClick={syncDialog.handleOpen}
+      >
+        Sync
+      </Button>
+    </Stack>,
+  ];
+
   return (
-    <CippTablePage
-      title={pageTitle}
-      apiUrl={apiUrl}
-      simpleColumns={simpleColumns}
-      filters={filters}
-      actions={actions}
-    />
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl={apiUrl}
+        apiData={apiData}
+        simpleColumns={simpleColumns}
+        filters={filters}
+        actions={actions}
+        cardButton={pageActions}
+      />
+      <CippApiDialog
+        createDialog={syncDialog}
+        title="Sync MFA Report"
+        fields={[]}
+        api={{
+          type: "GET",
+          url: "/api/ExecCIPPDBCache",
+          confirmText: `Run MFA state cache sync for ${currentTenant}? This will update MFA data immediately.`,
+          relatedQueryKeys: ["ListMFAUsers"],
+          data: {
+            Name: "MFAState",
+          },
+        }}
+      />
+    </>
   );
 };
 
