@@ -12,12 +12,25 @@ import {
   Error,
   Info,
   FactCheck,
+  Search,
 } from "@mui/icons-material";
-import { Box, Stack, Typography, Button, Menu, MenuItem, Chip, SvgIcon } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  Button,
+  Menu,
+  MenuItem,
+  Chip,
+  SvgIcon,
+  TextField,
+  Divider,
+} from "@mui/material";
 import { Grid } from "@mui/system";
 import { useState, useEffect, useRef } from "react";
-import { CippChartCard } from "/src/components/CippCards/CippChartCard";
+import { useForm } from "react-hook-form";
 import { CippBannerListCard } from "/src/components/CippCards/CippBannerListCard";
+import CippButtonCard from "/src/components/CippCards/CippButtonCard";
 import { CippHead } from "/src/components/CippComponents/CippHead";
 import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
 import { ApiGetCall } from "/src/api/ApiCall";
@@ -29,6 +42,7 @@ import standardsData from "/src/data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
 import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton";
 import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
+import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 
 const ManageDriftPage = () => {
   const router = useRouter();
@@ -42,6 +56,19 @@ const ManageDriftPage = () => {
   const [actionData, setActionData] = useState({ data: {}, ready: false });
   const [triggerReport, setTriggerReport] = useState(false);
   const reportButtonRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("name");
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const filterForm = useForm({
+    defaultValues: {
+      statusFilter: [{ label: "All Deviations", value: "all" }],
+    },
+  });
+
+  const filterStatus = filterForm.watch("statusFilter") || [
+    { label: "All Deviations", value: "all" },
+  ];
 
   // API calls for drift data
   const driftApi = ApiGetCall({
@@ -59,6 +86,12 @@ const ManageDriftPage = () => {
       type: "drift",
     },
     queryKey: "ListDriftTemplates",
+  });
+
+  // API call to get all Intune templates for displayName lookup
+  const intuneTemplatesApi = ApiGetCall({
+    url: "/api/ListIntuneTemplates",
+    queryKey: "ListIntuneTemplates",
   });
 
   // API call for standards comparison (when templateId is available)
@@ -104,6 +137,82 @@ const ManageDriftPage = () => {
         acc.deniedDeviationsList.push(...item.deniedDeviations.filter((dev) => dev !== null));
       }
 
+      // Extract compliant standards from ComparisonDetails in driftSettings
+      if (
+        item.driftSettings?.ComparisonDetails &&
+        Array.isArray(item.driftSettings.ComparisonDetails)
+      ) {
+        const compliantStandards = item.driftSettings.ComparisonDetails.filter(
+          (detail) => detail.Compliant === true
+        )
+          .map((detail) => {
+            // Strip "standards." prefix if present
+            let standardName = detail.StandardName;
+            if (standardName.startsWith("standards.")) {
+              standardName = standardName.substring("standards.".length);
+            }
+
+            let displayName = null;
+
+            // For template types, extract the display name from standardSettings
+            if (standardName.startsWith("IntuneTemplate.")) {
+              const guid = standardName.substring("IntuneTemplate.".length);
+
+              // First try to find in standardSettings
+              const intuneTemplates = item.driftSettings?.standardSettings?.IntuneTemplate;
+              if (Array.isArray(intuneTemplates)) {
+                const template = intuneTemplates.find((t) => t.TemplateList?.value === guid);
+                if (template?.TemplateList?.label) {
+                  displayName = template.TemplateList.label;
+                }
+              }
+
+              // If not found in standardSettings, look up in all Intune templates (for tag templates)
+              if (!displayName && intuneTemplatesApi.data) {
+                const template = intuneTemplatesApi.data.find((t) => t.GUID === guid);
+                if (template?.Displayname) {
+                  displayName = template.Displayname;
+                }
+              }
+
+              // If template not found, return null to filter it out later
+              if (!displayName) {
+                return null;
+              }
+            } else if (standardName.startsWith("ConditionalAccessTemplate.")) {
+              const guid = standardName.substring("ConditionalAccessTemplate.".length);
+              const caTemplates = item.driftSettings?.standardSettings?.ConditionalAccessTemplate;
+              if (Array.isArray(caTemplates)) {
+                const template = caTemplates.find((t) => t.TemplateList?.value === guid);
+                if (template?.TemplateList?.label) {
+                  displayName = template.TemplateList.label;
+                }
+              }
+              // If template not found, return null to filter it out later
+              if (!displayName) {
+                return null;
+              }
+            } else {
+              // For non-template standards, keep the "standards." prefix for lookup
+              standardName = detail.StandardName;
+            }
+
+            return {
+              standardName: standardName,
+              standardDisplayName: displayName, // Set display name if found from templates
+              state: "aligned",
+              Status: "Aligned",
+              ComplianceStatus: detail.ComplianceStatus,
+              StandardValue: detail.StandardValue,
+              ReportingDisabled: detail.ReportingDisabled,
+              expectedValue: "Compliant with template",
+              receivedValue: detail.StandardValue,
+            };
+          })
+          .filter((item) => item !== null); // Filter out null items where templates weren't found
+        acc.alignedStandards.push(...compliantStandards);
+      }
+
       // Use the latest data collection timestamp
       if (
         item.latestDataCollection &&
@@ -125,22 +234,10 @@ const ManageDriftPage = () => {
       acceptedDeviations: [],
       customerSpecificDeviationsList: [],
       deniedDeviationsList: [],
+      alignedStandards: [],
       latestDataCollection: null,
     }
   );
-
-  const chartLabels = [
-    "Aligned Policies",
-    "Accepted Deviations",
-    "Current Deviations",
-    "Customer Specific Deviations",
-  ];
-  const chartSeries = [
-    processedDriftData.alignedCount || 0,
-    processedDriftData.acceptedDeviationsCount || 0,
-    processedDriftData.currentDeviationsCount || 0,
-    processedDriftData.customerSpecificDeviations || 0,
-  ];
 
   // Transform currentDeviations into deviation items for display
   const getDeviationIcon = (state) => {
@@ -159,6 +256,9 @@ const ManageDriftPage = () => {
         return <CheckCircle color="success" />;
       case "customerspecific":
         return <Info color="info" />;
+      case "aligned":
+      case "compliant":
+        return <CheckCircle color="success" />;
       default:
         return <Warning color="warning" />;
     }
@@ -180,6 +280,9 @@ const ManageDriftPage = () => {
         return "success.main";
       case "customerspecific":
         return "info.main";
+      case "aligned":
+      case "compliant":
+        return "success.main";
       default:
         return "warning.main";
     }
@@ -201,6 +304,9 @@ const ManageDriftPage = () => {
         return "Accepted Deviation";
       case "customerspecific":
         return "Customer Specific";
+      case "aligned":
+      case "compliant":
+        return "Compliant";
       default:
         return "Deviation";
     }
@@ -234,6 +340,42 @@ const ManageDriftPage = () => {
     return null;
   };
 
+  // Helper function to compare JSON objects and find differences
+  const compareJsonObjects = (expected, current) => {
+    if (!expected || !current) return null;
+
+    try {
+      const expectedObj = typeof expected === "string" ? JSON.parse(expected) : expected;
+      const currentObj = typeof current === "string" ? JSON.parse(current) : current;
+
+      // Deep comparison - if they're equal, return null (no diff)
+      if (JSON.stringify(expectedObj) === JSON.stringify(currentObj)) {
+        return null; // No differences
+      }
+
+      // Find differences
+      const differences = {};
+      const allKeys = new Set([...Object.keys(expectedObj), ...Object.keys(currentObj)]);
+
+      allKeys.forEach((key) => {
+        const expectedVal = expectedObj[key];
+        const currentVal = currentObj[key];
+
+        if (JSON.stringify(expectedVal) !== JSON.stringify(currentVal)) {
+          differences[key] = {
+            expected: expectedVal,
+            current: currentVal,
+          };
+        }
+      });
+
+      return Object.keys(differences).length > 0 ? differences : null;
+    } catch (e) {
+      console.error("Error comparing JSON objects:", e);
+      return null;
+    }
+  };
+
   // Helper function to format policy objects for display
   const formatPolicyValue = (value) => {
     if (!value) return "N/A";
@@ -260,62 +402,245 @@ const ManageDriftPage = () => {
 
   // Helper function to create deviation items
   const createDeviationItems = (deviations, statusOverride = null) => {
-    return (deviations || []).map((deviation, index) => {
-      // Prioritize standardDisplayName from drift data (which has user-friendly names for templates)
-      // then fallback to standards.json lookup, then raw name
-      const prettyName =
-        deviation.standardDisplayName ||
-        getStandardPrettyName(deviation.standardName) ||
-        deviation.standardName ||
-        "Unknown Standard";
+    return (deviations || [])
+      .filter((deviation) => {
+        // Filter out template deviations where the template cannot be found
+        // (these will have null/undefined standardDisplayName)
+        if (
+          deviation.standardName &&
+          (deviation.standardName.startsWith("IntuneTemplate.") ||
+            deviation.standardName.startsWith("ConditionalAccessTemplate."))
+        ) {
+          // For templates, we must have a standardDisplayName
+          return !!deviation.standardDisplayName;
+        }
+        // For non-template standards, always include
+        return true;
+      })
+      .map((deviation, index) => {
+        // Check if this should be skipped due to missing license
+        const isLicenseSkipped = deviation.LicenseAvailable === false;
 
-      // Get description from standards.json first, then fallback to standardDescription from deviation
-      const description =
-        getStandardDescription(deviation.standardName) ||
-        deviation.standardDescription ||
-        "No description available";
+        // Check if we have both ExpectedValue and CurrentValue for comparison
+        let isActuallyCompliant = false;
+        let jsonDifferences = null;
 
-      return {
-        id: index + 1,
-        cardLabelBox: {
-          cardLabelBoxHeader: getDeviationIcon(
-            statusOverride || deviation.Status || deviation.state
+        if (deviation.ExpectedValue && deviation.CurrentValue) {
+          jsonDifferences = compareJsonObjects(deviation.ExpectedValue, deviation.CurrentValue);
+          // If there are no differences, this is actually compliant
+          if (jsonDifferences === null) {
+            isActuallyCompliant = true;
+          }
+        }
+
+        // Prioritize standardDisplayName from drift data (which has user-friendly names for templates)
+        // then fallback to standards.json lookup, then raw name
+        const prettyName =
+          deviation.standardDisplayName ||
+          getStandardPrettyName(deviation.standardName) ||
+          deviation.standardName ||
+          "Unknown Standard";
+
+        // Get description from standards.json first, then fallback to standardDescription from deviation
+        const description =
+          getStandardDescription(deviation.standardName) ||
+          deviation.standardDescription ||
+          "No description available";
+
+        // Determine the actual status
+        // If actually compliant (values match), mark as aligned regardless of input status
+        // If license is skipped, mark as skipped
+        // Otherwise use the provided status
+        const actualStatus = isActuallyCompliant
+          ? "aligned"
+          : isLicenseSkipped
+          ? "skipped"
+          : statusOverride || deviation.Status || deviation.state;
+        const actualStatusText = isActuallyCompliant
+          ? "Compliant"
+          : isLicenseSkipped
+          ? "Skipped - No License Available"
+          : getDeviationStatusText(actualStatus);
+
+        // For skipped items, show different expected/received values
+        let displayExpectedValue = deviation.ExpectedValue || deviation.expectedValue;
+        let displayReceivedValue = deviation.CurrentValue || deviation.receivedValue;
+
+        // If we have JSON differences, show only the differences
+        if (jsonDifferences && !isLicenseSkipped && !isActuallyCompliant) {
+          displayExpectedValue = JSON.stringify(jsonDifferences, null, 2);
+          displayReceivedValue = "See differences in Expected column";
+        }
+
+        return {
+          id: statusOverride ? `${statusOverride}-${index + 1}` : `current-${index + 1}`,
+          cardLabelBox: {
+            cardLabelBoxHeader: getDeviationIcon(actualStatus),
+          },
+          text: prettyName,
+          subtext: description,
+          statusColor: isLicenseSkipped ? "text.secondary" : getDeviationColor(actualStatus),
+          statusText: actualStatusText,
+          standardName: deviation.standardName, // Store the original standardName for action handlers
+          receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
+          expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
+          originalDeviation: deviation, // Store the complete original deviation object for reference
+          isLicenseSkipped: isLicenseSkipped, // Flag for filtering and disabling actions
+          isActuallyCompliant: isActuallyCompliant, // Flag to move to compliant section
+          children: (
+            <Stack spacing={2} sx={{ p: 2 }}>
+              {description && description !== "No description available" && (
+                <Typography variant="body2" color="text.secondary">
+                  {description}
+                </Typography>
+              )}
+
+              {isLicenseSkipped && (
+                <Box
+                  sx={{
+                    p: 1.5,
+                    bgcolor: "warning.lighter",
+                    borderRadius: 1,
+                    border: "1px solid",
+                    borderColor: "warning.main",
+                  }}
+                >
+                  <Typography variant="body2" color="warning.dark" sx={{ fontWeight: 600 }}>
+                    ⚠️ This standard was skipped because the required license is not available for
+                    this tenant.
+                  </Typography>
+                </Box>
+              )}
+
+              {(displayExpectedValue && displayExpectedValue !== "Compliant with template") ||
+              displayReceivedValue ? (
+                <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
+                  {displayExpectedValue && displayExpectedValue !== "Compliant with template" && (
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 600,
+                          color: "text.secondary",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                        }}
+                      >
+                        {jsonDifferences ? "Differences" : "Expected"}
+                      </Typography>
+                      <Box
+                        sx={{
+                          mt: 0.5,
+                          p: 1.5,
+                          bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
+                          borderRadius: 1,
+                          border: "1px solid",
+                          borderColor: isActuallyCompliant ? "success.main" : "divider",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontFamily: "monospace",
+                            fontSize: "0.8125rem",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {displayExpectedValue}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  )}
+
+                  {displayReceivedValue && !jsonDifferences && (
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 600,
+                          color: "text.secondary",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                        }}
+                      >
+                        Current
+                      </Typography>
+                      <Box
+                        sx={{
+                          mt: 0.5,
+                          p: 1.5,
+                          bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
+                          borderRadius: 1,
+                          border: "1px solid",
+                          borderColor: isActuallyCompliant ? "success.main" : "divider",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontFamily: "monospace",
+                            fontSize: "0.8125rem",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {displayReceivedValue}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              ) : null}
+
+              {(deviation.Reason ||
+                deviation.lastChangedByUser ||
+                processedDriftData.latestDataCollection) && (
+                <>
+                  <Divider />
+                  <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                    {deviation.Reason && (
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: 600, color: "text.secondary" }}
+                        >
+                          Reason
+                        </Typography>
+                        <Typography variant="body2">{deviation.Reason}</Typography>
+                      </Box>
+                    )}
+                    {deviation.lastChangedByUser && (
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: 600, color: "text.secondary" }}
+                        >
+                          Changed By
+                        </Typography>
+                        <Typography variant="body2">{deviation.lastChangedByUser}</Typography>
+                      </Box>
+                    )}
+                    {processedDriftData.latestDataCollection && (
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: 600, color: "text.secondary" }}
+                        >
+                          Last Updated
+                        </Typography>
+                        <Typography variant="body2">
+                          {new Date(processedDriftData.latestDataCollection).toLocaleString()}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </>
+              )}
+            </Stack>
           ),
-        },
-        text: prettyName,
-        subtext: description,
-        statusColor: getDeviationColor(statusOverride || deviation.Status || deviation.state),
-        statusText: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
-        standardName: deviation.standardName, // Store the original standardName for action handlers
-        receivedValue: deviation.receivedValue, // Store the original receivedValue for action handlers
-        expectedValue: deviation.expectedValue, // Store the original expectedValue for action handlers
-        originalDeviation: deviation, // Store the complete original deviation object for reference
-        propertyItems: [
-          { label: "Standard Name", value: prettyName },
-          { label: "Description", value: description },
-          { label: "Expected Value", value: deviation.expectedValue || "N/A" },
-          { label: "Current Value", value: formatPolicyValue(deviation.receivedValue) },
-          {
-            label: "Status",
-            value: getDeviationStatusText(statusOverride || deviation.Status || deviation.state),
-          },
-          {
-            label: "Reason",
-            value: deviation.Reason || "N/A",
-          },
-          {
-            label: "User",
-            value: deviation.lastChangedByUser || "N/A",
-          },
-          {
-            label: "Last Updated",
-            value: processedDriftData.latestDataCollection
-              ? new Date(processedDriftData.latestDataCollection).toLocaleString()
-              : "N/A",
-          },
-        ].filter((item) => item.value !== "N/A" && item.value !== "No description available"), // Filter out N/A values and empty descriptions
-      };
-    });
+        };
+      });
   };
 
   const deviationItems = createDeviationItems(processedDriftData.currentDeviations);
@@ -331,6 +656,17 @@ const ManageDriftPage = () => {
     processedDriftData.deniedDeviationsList,
     "denied"
   );
+  const alignedStandardItems = createDeviationItems(processedDriftData.alignedStandards, "aligned");
+
+  // Separate items by their actual status
+  const licenseSkippedItems = deviationItems.filter((item) => item.isLicenseSkipped);
+  const compliantFromDeviations = deviationItems.filter((item) => item.isActuallyCompliant);
+  const actualDeviationItems = deviationItems.filter(
+    (item) => !item.isLicenseSkipped && !item.isActuallyCompliant
+  );
+
+  // Combine compliant items from both sources
+  const allAlignedItems = [...alignedStandardItems, ...compliantFromDeviations];
 
   const handleMenuClick = (event, itemId) => {
     setAnchorEl((prev) => ({ ...prev, [itemId]: event.currentTarget }));
@@ -443,10 +779,7 @@ const ManageDriftPage = () => {
   };
 
   const handleBulkAction = (action) => {
-    if (
-      !processedDriftData.currentDeviations ||
-      processedDriftData.currentDeviations.length === 0
-    ) {
+    if (!selectedItems || selectedItems.length === 0) {
       setBulkActionsAnchorEl(null);
       return;
     }
@@ -456,30 +789,51 @@ const ManageDriftPage = () => {
     switch (action) {
       case "accept-all-customer-specific":
         status = "CustomerSpecific";
-        actionText = "accept all deviations as customer specific";
+        actionText = "accept selected deviations as customer specific";
         break;
       case "accept-all":
         status = "Accepted";
-        actionText = "accept all deviations";
+        actionText = "accept selected deviations";
         break;
       case "deny-all":
         status = "Denied";
-        actionText = "deny all deviations";
+        actionText = "deny selected deviations";
         break;
       case "deny-all-delete":
         status = "DeniedDelete";
-        actionText = "deny all deviations and delete";
+        actionText = "deny selected deviations and delete";
         break;
       case "deny-all-remediate":
         status = "DeniedRemediate";
-        actionText = "deny all deviations and remediate to align with template";
+        actionText = "deny selected deviations and remediate to align with template";
         break;
       default:
         setBulkActionsAnchorEl(null);
         return;
     }
 
-    const deviations = processedDriftData.currentDeviations.map((deviation) => ({
+    // Map selected item IDs back to their deviation data
+    // IDs are in format: "current-1", "accepted-2", etc.
+    const allDeviations = [
+      ...deviationItemsWithActions,
+      ...acceptedDeviationItemsWithActions,
+      ...customerSpecificDeviationItemsWithActions,
+      ...deniedDeviationItemsWithActions,
+    ];
+
+    const selectedDeviations = selectedItems
+      .map((itemId) => {
+        const item = allDeviations.find((d) => d.id === itemId);
+        return item ? item.originalDeviation : null;
+      })
+      .filter(Boolean);
+
+    if (selectedDeviations.length === 0) {
+      setBulkActionsAnchorEl(null);
+      return;
+    }
+
+    const deviations = selectedDeviations.map((deviation) => ({
       standardName: deviation.standardName,
       status: status,
       receivedValue: deviation.receivedValue,
@@ -566,140 +920,61 @@ const ManageDriftPage = () => {
   }, [templateId]);
 
   // Add action buttons to each deviation item
-  const deviationItemsWithActions = deviationItems.map((item) => {
-    // Check if this is a template that supports delete action
-    const supportsDelete =
-      (item.standardName?.includes("ConditionalAccessTemplate") ||
-        item.standardName?.includes("IntuneTemplate")) &&
-      item.expectedValue === "This policy only exists in the tenant, not in the template.";
-
+  const deviationItemsWithActions = actualDeviationItems.map((item) => {
     return {
       ...item,
-      actionButton: (
-        <>
-          <Button
-            variant="outlined"
-            endIcon={<ExpandMore />}
-            onClick={(e) => handleMenuClick(e, item.id)}
-            size="small"
-          >
-            Actions
-          </Button>
-          <Menu
-            anchorEl={anchorEl[item.id]}
-            open={Boolean(anchorEl[item.id])}
-            onClose={() => handleMenuClose(item.id)}
-          >
-            <MenuItem onClick={() => handleAction("accept-customer-specific", item.id)}>
-              <CheckCircle sx={{ mr: 1, color: "success.main" }} />
-              Accept Deviation - Customer Specific
-            </MenuItem>
-            <MenuItem onClick={() => handleAction("accept", item.id)}>
-              <Check sx={{ mr: 1, color: "info.main" }} />
-              Accept Deviation
-            </MenuItem>
-            {supportsDelete && (
-              <MenuItem onClick={() => handleAction("deny-delete", item.id)}>
-                <Block sx={{ mr: 1, color: "error.main" }} />
-                Deny Deviation - Delete Policy
-              </MenuItem>
-            )}
-            <MenuItem onClick={() => handleAction("deny-remediate", item.id)}>
-              <Cancel sx={{ mr: 1, color: "error.main" }} />
-              Deny Deviation - Remediate to align with template
-            </MenuItem>
-          </Menu>
-        </>
+      cardLabelBoxActions: (
+        <Button
+          variant="outlined"
+          endIcon={<ExpandMore />}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleMenuClick(e, item.id);
+          }}
+          size="small"
+        >
+          Actions
+        </Button>
       ),
     };
   });
 
   // Add action buttons to accepted deviation items
   const acceptedDeviationItemsWithActions = acceptedDeviationItems.map((item) => {
-    // Check if this is a template that supports delete action
-    const supportsDelete =
-      (item.standardName?.includes("ConditionalAccessTemplate") ||
-        item.standardName?.includes("IntuneTemplate")) &&
-      item.expectedValue === "This policy only exists in the tenant, not in the template.";
-
     return {
       ...item,
-      actionButton: (
-        <>
-          <Button
-            variant="outlined"
-            endIcon={<ExpandMore />}
-            onClick={(e) => handleMenuClick(e, `accepted-${item.id}`)}
-            size="small"
-          >
-            Actions
-          </Button>
-          <Menu
-            anchorEl={anchorEl[`accepted-${item.id}`]}
-            open={Boolean(anchorEl[`accepted-${item.id}`])}
-            onClose={() => handleMenuClose(`accepted-${item.id}`)}
-          >
-            {supportsDelete && (
-              <MenuItem onClick={() => handleDeviationAction("deny-delete", item)}>
-                <Block sx={{ mr: 1, color: "error.main" }} />
-                Deny - Delete Policy
-              </MenuItem>
-            )}
-            <MenuItem onClick={() => handleDeviationAction("deny-remediate", item)}>
-              <Cancel sx={{ mr: 1, color: "error.main" }} />
-              Deny - Remediate to align with template
-            </MenuItem>
-            <MenuItem onClick={() => handleDeviationAction("accept-customer-specific", item)}>
-              <CheckCircle sx={{ mr: 1, color: "info.main" }} />
-              Accept - Customer Specific
-            </MenuItem>
-          </Menu>
-        </>
+      cardLabelBoxActions: (
+        <Button
+          variant="outlined"
+          endIcon={<ExpandMore />}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleMenuClick(e, `accepted-${item.id}`);
+          }}
+          size="small"
+        >
+          Actions
+        </Button>
       ),
     };
   });
 
   // Add action buttons to customer specific deviation items
   const customerSpecificDeviationItemsWithActions = customerSpecificDeviationItems.map((item) => {
-    // Check if this is a template that supports delete action
-    const supportsDelete =
-      (item.standardName?.includes("ConditionalAccessTemplate") ||
-        item.standardName?.includes("IntuneTemplate")) &&
-      item.expectedValue === "This policy only exists in the tenant, not in the template.";
-
     return {
       ...item,
-      actionButton: (
-        <>
-          <Button
-            variant="outlined"
-            endIcon={<ExpandMore />}
-            onClick={(e) => handleMenuClick(e, `customer-${item.id}`)}
-            size="small"
-          >
-            Actions
-          </Button>
-          <Menu
-            anchorEl={anchorEl[`customer-${item.id}`]}
-            open={Boolean(anchorEl[`customer-${item.id}`])}
-            onClose={() => handleMenuClose(`customer-${item.id}`)}
-          >
-            {supportsDelete && (
-              <MenuItem onClick={() => handleDeviationAction("deny-delete", item)}>
-                <Block sx={{ mr: 1, color: "error.main" }} />
-                Deny - Delete
-              </MenuItem>
-            )}
-            <MenuItem onClick={() => handleDeviationAction("deny-remediate", item)}>
-              <Cancel sx={{ mr: 1, color: "error.main" }} />
-              Deny - Remediate to align with template
-            </MenuItem>
-            <MenuItem onClick={() => handleDeviationAction("accept", item)}>
-              <Check sx={{ mr: 1, color: "success.main" }} />
-              Accept
-            </MenuItem>
-          </Menu>
-        </>
+      cardLabelBoxActions: (
+        <Button
+          variant="outlined"
+          endIcon={<ExpandMore />}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleMenuClick(e, `customer-${item.id}`);
+          }}
+          size="small"
+        >
+          Actions
+        </Button>
       ),
     };
   });
@@ -707,46 +982,152 @@ const ManageDriftPage = () => {
   // Add action buttons to denied deviation items
   const deniedDeviationItemsWithActions = deniedDeviationItems.map((item) => ({
     ...item,
-    actionButton: (
-      <>
-        <Button
-          variant="outlined"
-          endIcon={<ExpandMore />}
-          onClick={(e) => handleMenuClick(e, `denied-${item.id}`)}
-          size="small"
-        >
-          Actions
-        </Button>
-        <Menu
-          anchorEl={anchorEl[`denied-${item.id}`]}
-          open={Boolean(anchorEl[`denied-${item.id}`])}
-          onClose={() => handleMenuClose(`denied-${item.id}`)}
-        >
-          <MenuItem onClick={() => handleDeviationAction("accept", item)}>
-            <Check sx={{ mr: 1, color: "success.main" }} />
-            Accept
-          </MenuItem>
-          <MenuItem onClick={() => handleDeviationAction("accept-customer-specific", item)}>
-            <CheckCircle sx={{ mr: 1, color: "info.main" }} />
-            Accept - Customer Specific
-          </MenuItem>
-        </Menu>
-      </>
+    cardLabelBoxActions: (
+      <Button
+        variant="outlined"
+        endIcon={<ExpandMore />}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleMenuClick(e, `denied-${item.id}`);
+        }}
+        size="small"
+      >
+        Actions
+      </Button>
     ),
   }));
 
   // Calculate compliance metrics for badges
+  // Accepted and Customer Specific deviations count as compliant since they are user-approved
+  // Denied deviations are included in total but not in compliant count (they haven't been fixed yet)
   const totalPolicies =
     processedDriftData.alignedCount +
     processedDriftData.currentDeviationsCount +
     processedDriftData.acceptedDeviationsCount +
+    processedDriftData.customerSpecificDeviations +
+    processedDriftData.deniedDeviationsCount;
+
+  const compliantCount =
+    processedDriftData.alignedCount +
+    processedDriftData.acceptedDeviationsCount +
     processedDriftData.customerSpecificDeviations;
 
+  // Alignment Score: Only actual compliance (excluding license-missing items)
   const compliancePercentage =
-    totalPolicies > 0 ? Math.round((processedDriftData.alignedCount / totalPolicies) * 100) : 0;
+    totalPolicies > 0 ? Math.round((compliantCount / totalPolicies) * 100) : 0;
 
-  const missingLicensePercentage = 0; // This would need to be calculated from actual license data
+  // Calculate missing license percentage
+  const missingLicensePercentage =
+    totalPolicies > 0 ? Math.round((licenseSkippedItems.length / totalPolicies) * 100) : 0;
+
+  // Total Score: Alignment + License Missing (represents addressable compliance)
   const combinedScore = compliancePercentage + missingLicensePercentage;
+
+  // Helper function to get category from standardName
+  const getCategory = (standardName) => {
+    if (!standardName) return "Other Standards";
+    if (standardName.includes("ConditionalAccessTemplate")) return "Conditional Access Policies";
+    if (standardName.includes("IntuneTemplate")) return "Intune Policies";
+
+    // For other standards, look up category in standards.json
+    const standard = standardsData.find((s) => s.name === standardName);
+    if (standard && standard.cat) {
+      return standard.cat;
+    }
+
+    return "Other Standards";
+  };
+
+  // Apply search and sort filters
+  const applyFilters = (items) => {
+    let filtered = [...items];
+
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (item) =>
+          item.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.subtext?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.standardName?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (sortBy === "name") {
+      filtered.sort((a, b) => (a.text || "").localeCompare(b.text || ""));
+    } else if (sortBy === "status") {
+      filtered.sort((a, b) => (a.statusText || "").localeCompare(b.statusText || ""));
+    } else if (sortBy === "category") {
+      // Sort by category, then by name within each category
+      filtered.sort((a, b) => {
+        const catA = getCategory(a.standardName);
+        const catB = getCategory(b.standardName);
+        if (catA !== catB) {
+          return catA.localeCompare(catB);
+        }
+        return (a.text || "").localeCompare(b.text || "");
+      });
+    }
+
+    return filtered;
+  };
+
+  const filteredDeviationItems = applyFilters(deviationItemsWithActions);
+  const filteredAcceptedItems = applyFilters(acceptedDeviationItemsWithActions);
+  const filteredCustomerSpecificItems = applyFilters(customerSpecificDeviationItemsWithActions);
+  const filteredDeniedItems = applyFilters(deniedDeviationItemsWithActions);
+  const filteredAlignedItems = applyFilters(allAlignedItems);
+  const filteredLicenseSkippedItems = applyFilters(licenseSkippedItems);
+
+  // Helper function to render items grouped by category when category sort is active
+  const renderItemsByCategory = (items) => {
+    if (sortBy !== "category" || items.length === 0) {
+      return (
+        <CippBannerListCard
+          items={items}
+          isCollapsible={true}
+          layout={"single"}
+          isFetching={driftApi.isFetching}
+          onSelectionChange={setSelectedItems}
+          selectedItems={selectedItems}
+        />
+      );
+    }
+
+    // Group items by category and collect unique categories
+    const groupedItems = {};
+    items.forEach((item) => {
+      const category = getCategory(item.standardName);
+      if (!groupedItems[category]) {
+        groupedItems[category] = [];
+      }
+      groupedItems[category].push(item);
+    });
+
+    // Sort categories alphabetically
+    const categories = Object.keys(groupedItems).sort();
+
+    return (
+      <Stack spacing={3}>
+        {categories.map((category) => {
+          if (groupedItems[category].length === 0) return null;
+          return (
+            <Box key={category}>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1.5 }}>
+                {category}
+              </Typography>
+              <CippBannerListCard
+                items={groupedItems[category]}
+                isCollapsible={true}
+                layout={"single"}
+                isFetching={driftApi.isFetching}
+                onSelectionChange={setSelectedItems}
+                selectedItems={selectedItems}
+              />
+            </Box>
+          );
+        })}
+      </Stack>
+    );
+  };
 
   // Simple filter for drift templates
   const driftTemplateOptions = standardsApi.data
@@ -768,76 +1149,7 @@ const ManageDriftPage = () => {
       ? driftTemplateOptions.find((option) => option.value === templateId) || null
       : null;
   const title = "Manage Drift";
-  const subtitle = [
-    {
-      icon: <Policy />,
-      text: (
-        <CippAutoComplete
-          options={driftTemplateOptions}
-          label="Select Drift Template"
-          multiple={false}
-          creatable={false}
-          isFetching={standardsApi.isFetching}
-          defaultValue={selectedTemplateOption}
-          value={selectedTemplateOption}
-          onChange={(selectedTemplate) => {
-            const query = { ...router.query };
-            if (selectedTemplate && selectedTemplate.value) {
-              query.templateId = selectedTemplate.value;
-            } else {
-              delete query.templateId;
-            }
-            router.replace(
-              {
-                pathname: router.pathname,
-                query: query,
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-          sx={{ minWidth: 300 }}
-          placeholder="Select a drift template..."
-        />
-      ),
-    },
-    // Add compliance badges when data is available
-    ...(totalPolicies > 0
-      ? [
-          {
-            component: (
-              <Stack alignItems="center" flexWrap="wrap" direction="row" spacing={2}>
-                <Chip
-                  icon={
-                    <SvgIcon fontSize="small">
-                      <FactCheck />
-                    </SvgIcon>
-                  }
-                  label={`${compliancePercentage}% Compliant`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    compliancePercentage === 100
-                      ? "success"
-                      : compliancePercentage >= 50
-                      ? "warning"
-                      : "error"
-                  }
-                />
-                <Chip
-                  label={`${combinedScore}% Combined Score`}
-                  variant="outlined"
-                  size="small"
-                  color={
-                    combinedScore >= 80 ? "success" : combinedScore >= 60 ? "warning" : "error"
-                  }
-                />
-              </Stack>
-            ),
-          },
-        ]
-      : []),
-  ];
+  const subtitle = [];
 
   return (
     <HeaderedTabbedLayout
@@ -878,123 +1190,334 @@ const ManageDriftPage = () => {
           </Box>
         ) : (
           <Grid container spacing={3}>
-            {/* Left side - Chart */}
+            {/* Left side - Alignment Score & Filters */}
             <Grid size={{ xs: 12, md: 4 }}>
-              <CippChartCard
-                title="Drift Overview"
-                chartType="donut"
-                chartSeries={chartSeries}
-                labels={chartLabels}
-                isFetching={driftApi.isFetching}
-              />
+              <Stack spacing={2}>
+                {/* Stats Card */}
+                <CippButtonCard title="Breakdown">
+                  <Stack spacing={1.5}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Aligned
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.alignedCount}
+                        size="small"
+                        color="success"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Current
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.currentDeviationsCount}
+                        size="small"
+                        color="warning"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Accepted
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.acceptedDeviationsCount}
+                        size="small"
+                        color="info"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Customer Specific
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.customerSpecificDeviations}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Denied
+                      </Typography>
+                      <Chip
+                        label={processedDriftData.deniedDeviationsCount}
+                        size="small"
+                        color="error"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Skipped (No License)
+                      </Typography>
+                      <Chip label={licenseSkippedItems.length} size="small" variant="outlined" />
+                    </Box>
+                    <Divider />
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" fontWeight={600}>
+                        Total
+                      </Typography>
+                      <Chip label={totalPolicies} size="small" variant="filled" />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Alignment Score
+                      </Typography>
+                      <Chip
+                        label={`${compliancePercentage}%`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="body2" fontWeight={600}>
+                        Total Score
+                      </Typography>
+                      <Chip
+                        label={`${combinedScore}%`}
+                        size="small"
+                        color={
+                          combinedScore === 100
+                            ? "success"
+                            : combinedScore >= 80
+                            ? "warning"
+                            : combinedScore >= 30
+                            ? "warning"
+                            : "error"
+                        }
+                        variant="outlined"
+                      />
+                    </Box>
+                  </Stack>
+                </CippButtonCard>
+
+                {/* Filters Card */}
+                <CippButtonCard title="Filters">
+                  <Stack spacing={2}>
+                    <CippAutoComplete
+                      options={driftTemplateOptions}
+                      label="Select Drift Template"
+                      multiple={false}
+                      creatable={false}
+                      isFetching={standardsApi.isFetching}
+                      defaultValue={selectedTemplateOption}
+                      value={selectedTemplateOption}
+                      onChange={(selectedTemplate) => {
+                        const query = { ...router.query };
+                        if (selectedTemplate && selectedTemplate.value) {
+                          query.templateId = selectedTemplate.value;
+                        } else {
+                          delete query.templateId;
+                        }
+                        router.replace(
+                          {
+                            pathname: router.pathname,
+                            query: query,
+                          },
+                          undefined,
+                          { shallow: true }
+                        );
+                      }}
+                      placeholder="Select a drift template..."
+                    />
+
+                    <TextField
+                      fullWidth
+                      size="small"
+                      placeholder="Search deviations..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+
+                    <CippFormComponent
+                      type="autoComplete"
+                      name="statusFilter"
+                      label="Status"
+                      formControl={filterForm}
+                      options={[
+                        { label: "All Deviations", value: "all" },
+                        { label: "Current Deviations", value: "current" },
+                        { label: "Accepted", value: "accepted" },
+                        { label: "Customer Specific", value: "customerspecific" },
+                        { label: "Denied", value: "denied" },
+                        { label: "Compliant", value: "compliant" },
+                      ]}
+                      multiple={true}
+                    />
+
+                    <CippAutoComplete
+                      options={[
+                        { label: "Name", value: "name" },
+                        { label: "Status", value: "status" },
+                        { label: "Category", value: "category" },
+                      ]}
+                      label="Sort by"
+                      value={
+                        sortBy
+                          ? {
+                              label:
+                                sortBy === "name"
+                                  ? "Name"
+                                  : sortBy === "status"
+                                  ? "Status"
+                                  : "Category",
+                              value: sortBy,
+                            }
+                          : null
+                      }
+                      onChange={(newValue) => setSortBy(newValue?.value || "name")}
+                      multiple={false}
+                    />
+                  </Stack>
+                </CippButtonCard>
+              </Stack>
             </Grid>
 
             {/* Right side - Deviation Management */}
             <Grid size={{ xs: 12, md: 8 }}>
-              <Stack spacing={3}>
+              <Stack spacing={3} sx={{ pr: 2 }}>
                 {/* Current Deviations Section */}
-                <Box>
-                  {/* Header with bulk actions */}
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 2 }}
-                  >
-                    <Typography variant="h6">Current Deviations</Typography>
-                    <Box display="flex" gap={1}>
-                      {/* Bulk Actions Dropdown */}
-                      <Button
-                        variant="outlined"
-                        endIcon={<ExpandMore />}
-                        onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
-                        size="small"
-                      >
-                        Bulk Actions
-                      </Button>
-                      <Menu
-                        anchorEl={bulkActionsAnchorEl}
-                        open={Boolean(bulkActionsAnchorEl)}
-                        onClose={() => setBulkActionsAnchorEl(null)}
-                      >
-                        <MenuItem onClick={() => handleBulkAction("accept-all-customer-specific")}>
-                          <CheckBox sx={{ mr: 1, color: "success.main" }} />
-                          Accept All Deviations - Customer Specific
-                        </MenuItem>
-                        <MenuItem onClick={() => handleBulkAction("accept-all")}>
-                          <Check sx={{ mr: 1, color: "info.main" }} />
-                          Accept All Deviations
-                        </MenuItem>
-                        {/* Only show delete option if there are template deviations that support deletion */}
-                        {processedDriftData.currentDeviations.some(
-                          (deviation) =>
-                            (deviation.standardName?.includes("ConditionalAccessTemplate") ||
-                              deviation.standardName?.includes("IntuneTemplate")) &&
-                            deviation.expectedValue ===
-                              "This policy only exists in the tenant, not in the template."
-                        ) && (
-                          <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
-                            <Block sx={{ mr: 1, color: "error.main" }} />
-                            Deny All Deviations - Delete
-                          </MenuItem>
-                        )}
-                        <MenuItem onClick={() => handleBulkAction("deny-all-remediate")}>
-                          <Cancel sx={{ mr: 1, color: "error.main" }} />
-                          Deny All Deviations - Remediate to align with template
-                        </MenuItem>
-                        <MenuItem onClick={handleRemoveDriftCustomization}>
-                          <Block sx={{ mr: 1, color: "warning.main" }} />
-                          Remove Drift Customization
-                        </MenuItem>
-                      </Menu>
+                {(!filterStatus ||
+                  filterStatus.length === 0 ||
+                  filterStatus.some((f) => f.value === "all" || f.value === "current")) && (
+                  <Box>
+                    {/* Header with bulk actions */}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{ mb: 2 }}
+                    >
+                      <Typography variant="h6">New Deviations</Typography>
+                      {selectedItems.length > 0 && (
+                        <Box display="flex" gap={1}>
+                          {/* Bulk Actions Dropdown */}
+                          <Button
+                            variant="outlined"
+                            endIcon={<ExpandMore />}
+                            onClick={(e) => setBulkActionsAnchorEl(e.currentTarget)}
+                            size="small"
+                          >
+                            Bulk Actions ({selectedItems.length})
+                          </Button>
+                          <Menu
+                            anchorEl={bulkActionsAnchorEl}
+                            open={Boolean(bulkActionsAnchorEl)}
+                            onClose={() => setBulkActionsAnchorEl(null)}
+                          >
+                            <MenuItem
+                              onClick={() => handleBulkAction("accept-all-customer-specific")}
+                            >
+                              <CheckBox sx={{ mr: 1, color: "success.main" }} />
+                              Accept All Deviations - Customer Specific
+                            </MenuItem>
+                            <MenuItem onClick={() => handleBulkAction("accept-all")}>
+                              <Check sx={{ mr: 1, color: "info.main" }} />
+                              Accept All Deviations
+                            </MenuItem>
+                            {/* Only show delete option if there are template deviations that support deletion */}
+                            {processedDriftData.currentDeviations.some(
+                              (deviation) =>
+                                (deviation.standardName?.includes("ConditionalAccessTemplate") ||
+                                  deviation.standardName?.includes("IntuneTemplate")) &&
+                                deviation.expectedValue ===
+                                  "This policy only exists in the tenant, not in the template."
+                            ) && (
+                              <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
+                                <Block sx={{ mr: 1, color: "error.main" }} />
+                                Deny All Deviations - Delete
+                              </MenuItem>
+                            )}
+                            <MenuItem onClick={() => handleBulkAction("deny-all-remediate")}>
+                              <Cancel sx={{ mr: 1, color: "error.main" }} />
+                              Deny All Deviations - Remediate to align with template
+                            </MenuItem>
+                            <MenuItem onClick={handleRemoveDriftCustomization}>
+                              <Block sx={{ mr: 1, color: "warning.main" }} />
+                              Remove Drift Customization
+                            </MenuItem>
+                          </Menu>
+                        </Box>
+                      )}
                     </Box>
+                    {renderItemsByCategory(filteredDeviationItems)}
                   </Box>
-                  <CippBannerListCard
-                    items={deviationItemsWithActions}
-                    isCollapsible={true}
-                    layout={"single"}
-                    isFetching={driftApi.isFetching}
-                  />
-                </Box>
+                )}
 
                 {/* Accepted Deviations Section */}
-                {acceptedDeviationItemsWithActions.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Accepted Deviations
-                    </Typography>
-                    <CippBannerListCard
-                      items={acceptedDeviationItemsWithActions}
-                      isCollapsible={true}
-                      layout={"single"}
-                      isFetching={driftApi.isFetching}
-                    />
-                  </Box>
-                )}
+                {(!filterStatus ||
+                  filterStatus.length === 0 ||
+                  filterStatus.some((f) => f.value === "all" || f.value === "accepted")) &&
+                  filteredAcceptedItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Accepted Deviations
+                      </Typography>
+                      {renderItemsByCategory(filteredAcceptedItems)}
+                    </Box>
+                  )}
 
                 {/* Customer Specific Deviations Section */}
-                {customerSpecificDeviationItemsWithActions.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Accepted Deviations - Customer Specific
-                    </Typography>
-                    <CippBannerListCard
-                      items={customerSpecificDeviationItemsWithActions}
-                      isCollapsible={true}
-                      layout={"single"}
-                      isFetching={driftApi.isFetching}
-                    />
-                  </Box>
-                )}
+                {(!filterStatus ||
+                  filterStatus.length === 0 ||
+                  filterStatus.some((f) => f.value === "all" || f.value === "customerspecific")) &&
+                  filteredCustomerSpecificItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Accepted Deviations - Customer Specific
+                      </Typography>
+                      {renderItemsByCategory(filteredCustomerSpecificItems)}
+                    </Box>
+                  )}
 
                 {/* Denied Deviations Section */}
-                {deniedDeviationItemsWithActions.length > 0 && (
+                {(!filterStatus ||
+                  filterStatus.length === 0 ||
+                  filterStatus.some((f) => f.value === "all" || f.value === "denied")) &&
+                  filteredDeniedItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Denied Deviations
+                      </Typography>
+                      {renderItemsByCategory(filteredDeniedItems)}
+                    </Box>
+                  )}
+
+                {/* Compliant Standards Section - Only shown when filtered by All or Compliant */}
+                {(!filterStatus ||
+                  filterStatus.length === 0 ||
+                  filterStatus.some((f) => f.value === "all" || f.value === "compliant")) &&
+                  filteredAlignedItems.length > 0 && (
+                    <Box>
+                      <Typography variant="h6" sx={{ mb: 2 }}>
+                        Compliant Standards
+                      </Typography>
+                      <CippBannerListCard
+                        items={filteredAlignedItems}
+                        isCollapsible={true}
+                        layout={"single"}
+                        isFetching={driftApi.isFetching}
+                      />
+                    </Box>
+                  )}
+
+                {/* License Skipped Section - Always at the end */}
+                {filteredLicenseSkippedItems.length > 0 && (
                   <Box>
                     <Typography variant="h6" sx={{ mb: 2 }}>
-                      Denied Deviations
+                      Skipped - No License Available
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      These standards were skipped because the required licenses are not available
+                      for this tenant.
                     </Typography>
                     <CippBannerListCard
-                      items={deniedDeviationItemsWithActions}
+                      items={filteredLicenseSkippedItems}
                       isCollapsible={true}
                       layout={"single"}
                       isFetching={driftApi.isFetching}
@@ -1020,9 +1543,7 @@ const ManageDriftPage = () => {
           api={{
             url: "/api/ExecUpdateDriftDeviation",
             type: "POST",
-            data: {
-              deviations: "deviations",
-            },
+            postEntireRow: true,
             confirmText: `Are you sure you'd like to ${actionData.action?.text || "update"} ${
               actionData.action?.type === "single"
                 ? "this deviation"
@@ -1037,6 +1558,179 @@ const ManageDriftPage = () => {
           relatedQueryKeys={[`TenantDrift-${tenantFilter}`]}
         />
       )}
+
+      {/* Render all Menu components outside of card structure */}
+      {deviationItemsWithActions.map((item) => {
+        const supportsDelete =
+          (item.standardName?.includes("ConditionalAccessTemplate") ||
+            item.standardName?.includes("IntuneTemplate")) &&
+          item.expectedValue === "This policy only exists in the tenant, not in the template.";
+        return (
+          <Menu
+            key={`menu-${item.id}`}
+            anchorEl={anchorEl[item.id]}
+            open={Boolean(anchorEl[item.id])}
+            onClose={() => handleMenuClose(item.id)}
+          >
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept-customer-specific", item);
+                handleMenuClose(item.id);
+              }}
+            >
+              <CheckCircle sx={{ mr: 1, color: "success.main" }} />
+              Accept Deviation - Customer Specific
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept", item);
+                handleMenuClose(item.id);
+              }}
+            >
+              <Check sx={{ mr: 1, color: "info.main" }} />
+              Accept Deviation
+            </MenuItem>
+            {supportsDelete && (
+              <MenuItem
+                onClick={() => {
+                  handleDeviationAction("deny-delete", item);
+                  handleMenuClose(item.id);
+                }}
+              >
+                <Block sx={{ mr: 1, color: "error.main" }} />
+                Deny Deviation - Delete Policy
+              </MenuItem>
+            )}
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("deny-remediate", item);
+                handleMenuClose(item.id);
+              }}
+            >
+              <Cancel sx={{ mr: 1, color: "error.main" }} />
+              Deny Deviation - Remediate to align with template
+            </MenuItem>
+          </Menu>
+        );
+      })}
+
+      {acceptedDeviationItemsWithActions.map((item) => {
+        const supportsDelete =
+          (item.standardName?.includes("ConditionalAccessTemplate") ||
+            item.standardName?.includes("IntuneTemplate")) &&
+          item.expectedValue === "This policy only exists in the tenant, not in the template.";
+        return (
+          <Menu
+            key={`menu-accepted-${item.id}`}
+            anchorEl={anchorEl[`accepted-${item.id}`]}
+            open={Boolean(anchorEl[`accepted-${item.id}`])}
+            onClose={() => handleMenuClose(`accepted-${item.id}`)}
+          >
+            {supportsDelete && (
+              <MenuItem
+                onClick={() => {
+                  handleDeviationAction("deny-delete", item);
+                  handleMenuClose(`accepted-${item.id}`);
+                }}
+              >
+                <Block sx={{ mr: 1, color: "error.main" }} />
+                Deny - Delete Policy
+              </MenuItem>
+            )}
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("deny-remediate", item);
+                handleMenuClose(`accepted-${item.id}`);
+              }}
+            >
+              <Cancel sx={{ mr: 1, color: "error.main" }} />
+              Deny - Remediate to align with template
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept-customer-specific", item);
+                handleMenuClose(`accepted-${item.id}`);
+              }}
+            >
+              <CheckCircle sx={{ mr: 1, color: "info.main" }} />
+              Accept - Customer Specific
+            </MenuItem>
+          </Menu>
+        );
+      })}
+
+      {customerSpecificDeviationItemsWithActions.map((item) => {
+        const supportsDelete =
+          (item.standardName?.includes("ConditionalAccessTemplate") ||
+            item.standardName?.includes("IntuneTemplate")) &&
+          item.expectedValue === "This policy only exists in the tenant, not in the template.";
+        return (
+          <Menu
+            key={`menu-customer-${item.id}`}
+            anchorEl={anchorEl[`customer-${item.id}`]}
+            open={Boolean(anchorEl[`customer-${item.id}`])}
+            onClose={() => handleMenuClose(`customer-${item.id}`)}
+          >
+            {supportsDelete && (
+              <MenuItem
+                onClick={() => {
+                  handleDeviationAction("deny-delete", item);
+                  handleMenuClose(`customer-${item.id}`);
+                }}
+              >
+                <Block sx={{ mr: 1, color: "error.main" }} />
+                Deny - Delete
+              </MenuItem>
+            )}
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("deny-remediate", item);
+                handleMenuClose(`customer-${item.id}`);
+              }}
+            >
+              <Cancel sx={{ mr: 1, color: "error.main" }} />
+              Deny - Remediate to align with template
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleDeviationAction("accept", item);
+                handleMenuClose(`customer-${item.id}`);
+              }}
+            >
+              <Check sx={{ mr: 1, color: "success.main" }} />
+              Accept
+            </MenuItem>
+          </Menu>
+        );
+      })}
+
+      {deniedDeviationItemsWithActions.map((item) => (
+        <Menu
+          key={`menu-denied-${item.id}`}
+          anchorEl={anchorEl[`denied-${item.id}`]}
+          open={Boolean(anchorEl[`denied-${item.id}`])}
+          onClose={() => handleMenuClose(`denied-${item.id}`)}
+        >
+          <MenuItem
+            onClick={() => {
+              handleDeviationAction("accept", item);
+              handleMenuClose(`denied-${item.id}`);
+            }}
+          >
+            <Check sx={{ mr: 1, color: "success.main" }} />
+            Accept
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleDeviationAction("accept-customer-specific", item);
+              handleMenuClose(`denied-${item.id}`);
+            }}
+          >
+            <CheckCircle sx={{ mr: 1, color: "info.main" }} />
+            Accept - Customer Specific
+          </MenuItem>
+        </Menu>
+      ))}
 
       {/* Hidden ExecutiveReportButton that gets triggered programmatically */}
       <Box sx={{ position: "absolute", top: -9999, left: -9999 }}>

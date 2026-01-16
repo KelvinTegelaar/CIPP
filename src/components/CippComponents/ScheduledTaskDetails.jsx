@@ -24,7 +24,7 @@ import { ActionsMenu } from "/src/components/actions-menu";
 import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
 import { CippApiLogsDrawer } from "./CippApiLogsDrawer";
 
-const ScheduledTaskDetails = ({ data, showActions = true }) => {
+const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) => {
   const [taskDetails, setTaskDetails] = useState(null);
   const [expanded, setExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -84,7 +84,7 @@ const ScheduledTaskDetails = ({ data, showActions = true }) => {
       <Stack spacing={2}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
           <Typography variant="h5">
-            {taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name}
+            {showTitle && (taskDetailResults.isLoading ? <Skeleton width="250px" /> : taskDetails?.Task?.Name)}
           </Typography>
           {showActions && (
             <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
