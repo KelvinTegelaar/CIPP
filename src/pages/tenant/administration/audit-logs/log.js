@@ -88,7 +88,12 @@ const Page = () => {
       { label: "Tenant", value: data.Tenant },
       {
         label: "User",
-        value: data?.Data?.RawData?.UserKey ?? data?.Data?.RawData?.AuditRecord?.userId ?? "N/A",
+        value:
+          data?.Data?.RawData?.CIPPUserKey ??
+          data?.Data?.RawData?.AuditRecord?.CIPPuserId ??
+          data?.Data?.RawData?.AuditRecord?.UserKey ??
+          data?.Data?.RawData?.userId ??
+          "N/A",
       },
       { label: "IP Address", value: data?.Data?.IP },
       {

@@ -8,14 +8,27 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 const CippMap = dynamic(() => import("./CippMap"), { ssr: false });
 
-export default function CippGeoLocation({ ipAddress, cardProps }) {
+export default function CippGeoLocation({
+  ipAddress,
+  cardProps,
+  showIpAddress = false,
+  displayIpAddress = null,
+}) {
   const [locationInfo, setLocationInfo] = useState(null);
 
   const markerProperties = ["timezone", "as", "proxy", "hosting", "mobile"];
   const includeProperties = ["org", "city", "region", "country", "zip"];
-  const initialPropertyList = includeProperties.map((key) => ({
-    label: getCippTranslation(key),
-    value: "",
+
+  // Use displayIpAddress if provided, otherwise use ipAddress
+  const ipToDisplay = displayIpAddress || ipAddress;
+
+  // Add IP address to properties if showIpAddress is true
+  const initialIncludeProperties = showIpAddress
+    ? ["ipAddress", ...includeProperties]
+    : includeProperties;
+  const initialPropertyList = initialIncludeProperties.map((key) => ({
+    label: getCippTranslation(key === "ipAddress" ? "IP Address" : key),
+    value: key === "ipAddress" ? ipToDisplay : "",
   }));
 
   const [properties, setProperties] = useState(initialPropertyList);
@@ -28,6 +41,16 @@ export default function CippGeoLocation({ ipAddress, cardProps }) {
     onResult: (result) => {
       setLocationInfo(result);
       var propertyList = [];
+
+      // Add IP address property if showIpAddress is true
+      if (showIpAddress) {
+        propertyList.push({
+          label: getCippTranslation("IP Address"),
+          value: getCippFormatting(ipToDisplay, "ipAddress"),
+        });
+      }
+
+      // Add other properties
       includeProperties.map((key) => {
         propertyList.push({
           label: getCippTranslation(key),

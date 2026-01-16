@@ -29,8 +29,8 @@
     "mappingRequired": true,
     "links": [
       {
-        "name": "Sherweb Cloud Services for MSPs",
-        "url": "https://info.sherweb.com/sherweb-cloud-services-for-msps"
+        "name": "Sherweb CIPP Integration",
+        "url": "https://info.sherweb.com/sherweb-cipp-integration"
       }
     ],
     "SettingOptions": [
@@ -335,29 +335,6 @@
         }
       },
       {
-        "type": "autoComplete",
-        "name": "HaloPSA.TicketType",
-        "label": "Select your HaloPSA Ticket Type, leave blank for default.",
-        "multiple": false,
-        "api": {
-          "url": "/api/ExecExtensionMapping",
-          "data": {
-            "List": "HaloPSAFields"
-          },
-          "queryKey": "HaloTicketTypes",
-          "dataKey": "TicketTypes",
-          "labelField": "name",
-          "valueField": "id",
-          "showRefresh": true
-        },
-        "condition": {
-          "field": "HaloPSA.Enabled",
-          "compareType": "is",
-          "compareValue": true,
-          "action": "disable"
-        }
-      },
-      {
         "type": "textField",
         "name": "HaloPSA.ClientID",
         "label": "HaloPSA Client ID",
@@ -378,6 +355,54 @@
         "required": true,
         "condition": {
           "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "HaloPSA.TicketType",
+        "label": "HaloPSA Ticket Type",
+        "placeholder": "Select your HaloPSA Ticket Type, leave blank for default",
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloTicketTypes",
+          "dataKey": "TicketTypes",
+          "labelField": "name",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "HaloPSA.Outcome",
+        "label": "HaloPSA Outcome",
+        "placeholder": "Select your HaloPSA Outcome, leave blank for default",
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloOutcomes",
+          "dataKey": "Outcomes",
+          "labelField": "buttonname",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.ConsolidateTickets",
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
@@ -598,6 +623,18 @@
           "field": "CFZTNA.Enabled",
           "compareType": "is",
           "compareValue": true
+        }
+      },
+      {
+        "type": "datePicker",
+        "name": "Hudu.NextSync",
+        "label": "Reschedule next sync date",
+        "helperText": "Set a future date to delay the next scheduled sync. Leave blank to sync during the next scheduled sync.",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
         }
       }
     ],
@@ -828,6 +865,16 @@
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "CFZTNA.WebhookEnabled",
+        "label": "Use CloudFlare Service Account credentials with webhooks.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
         }
       }
     ],

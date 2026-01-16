@@ -1,20 +1,16 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { ExclamationTriangleIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { ApiGetCall } from "../../../api/ApiCall";
-import { Button, CircularProgress, SvgIcon } from "@mui/material";
-import { useSettings } from "../../../hooks/use-settings";
+import { EyeIcon } from "@heroicons/react/24/outline";
+import { Button } from "@mui/material";
+import { Search } from "@mui/icons-material";
+import { BreachSearchDialog } from "../../../components/CippComponents/BreachSearchDialog";
+import { useDialog } from "../../../hooks/use-dialog";
 
 const Page = () => {
-  const tenantFilter = useSettings()?.currentTenant;
-  const ApiCall = ApiGetCall({
-    url: "/api/ExecBreachSearch",
-    data: { tenantFilter: tenantFilter },
-    waiting: false,
-  });
-
   const pageTitle = "Potential Breached passwords and information";
   const apiUrl = "/api/ListBreachesTenant";
+  const breachSearchDialog = useDialog();
+  
   const actions = [
     {
       label: "View User",
@@ -26,31 +22,23 @@ const Page = () => {
   ];
 
   return (
-    <CippTablePage
-      actions={actions}
-      title={pageTitle}
-      apiUrl={apiUrl}
-      simpleColumns={["email", "password", "sources"]}
-      tenantInTitle={false}
-      cardButton={
-        <>
-          <Button onClick={ApiCall.refetch}>
-            Run Breach Check
-            {ApiCall.isFetching && (
-              <SvgIcon>
-                <CircularProgress size={10} />
-              </SvgIcon>
-            )}
-            {ApiCall.isError && (
-              <SvgIcon color="error">
-                <ExclamationTriangleIcon />
-              </SvgIcon>
-            )}
-            {ApiCall.isSuccess && <SvgIcon color="success">✓</SvgIcon>}
-          </Button>
-        </>
-      }
-    />
+    <>
+      <CippTablePage
+        actions={actions}
+        title={pageTitle}
+        apiUrl={apiUrl}
+        simpleColumns={["email", "password", "sources"]}
+        tenantInTitle={false}
+        cardButton={
+          <>
+            <Button onClick={breachSearchDialog.handleOpen} startIcon={<Search />}>
+              Run Breach Check
+            </Button>
+          </>
+        }
+      />
+      <BreachSearchDialog createDialog={breachSearchDialog} />
+    </>
   );
 };
 

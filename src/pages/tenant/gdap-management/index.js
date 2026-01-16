@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
 import { WizardSteps } from "/src/components/CippWizard/wizard-steps";
 import Link from "next/link";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const [createDefaults, setCreateDefaults] = useState(false);
@@ -57,9 +58,12 @@ const Page = () => {
     if (roleTemplates.isSuccess) {
       var promptCreateDefaults = true;
       // check templates for CIPP Defaults
+      const firstPageResults = roleTemplates?.data?.pages?.[0]?.Results;
       if (
-        roleTemplates?.data?.pages?.[0].Results?.length > 0 &&
-        roleTemplates?.data?.pages?.[0].Results?.find((t) => t?.TemplateId === "CIPP Defaults")
+        firstPageResults &&
+        Array.isArray(firstPageResults) &&
+        firstPageResults.length > 0 &&
+        firstPageResults.find((t) => t?.TemplateId === "CIPP Defaults")
       ) {
         promptCreateDefaults = false;
       }
@@ -69,11 +73,28 @@ const Page = () => {
 
   useEffect(() => {
     if (mappedRoles.isSuccess && roleTemplates.isSuccess && pendingInvites.isSuccess) {
-      if (mappedRoles?.data?.pages?.[0]?.length > 0) {
+      const mappedRolesFirstPage = mappedRoles?.data?.pages?.[0];
+      if (
+        mappedRolesFirstPage &&
+        Array.isArray(mappedRolesFirstPage) &&
+        mappedRolesFirstPage.length > 0
+      ) {
         setActiveStep(1);
-        if (roleTemplates?.data?.pages?.[0]?.Results?.length > 0) {
+
+        const roleTemplatesFirstPage = roleTemplates?.data?.pages?.[0]?.Results;
+        if (
+          roleTemplatesFirstPage &&
+          Array.isArray(roleTemplatesFirstPage) &&
+          roleTemplatesFirstPage.length > 0
+        ) {
           setActiveStep(2);
-          if (pendingInvites?.data?.pages?.[0]?.length > 0) {
+
+          const pendingInvitesFirstPage = pendingInvites?.data?.pages?.[0];
+          if (
+            pendingInvitesFirstPage &&
+            Array.isArray(pendingInvitesFirstPage) &&
+            pendingInvitesFirstPage.length > 0
+          ) {
             setActiveStep(4);
           }
         }
@@ -95,6 +116,7 @@ const Page = () => {
       }}
       maxWidth={false}
     >
+      <CippHead title="GDAP Overview" />
       <Grid container spacing={2}>
         <Grid size={12}>
           <CippInfoBar
@@ -109,16 +131,17 @@ const Page = () => {
                 icon: <SupervisorAccount />,
                 data:
                   relationships.data?.pages
-                    ?.map((page) => page?.Results?.length)
-                    .reduce((a, b) => a + b, 0) ?? 0,
+                    ?.map((page) => page?.Results?.length || 0)
+                    .reduce((a, b) => (a || 0) + (b || 0), 0) ?? 0,
                 name: "GDAP Relationships",
                 color: "secondary",
               },
               {
                 icon: <AdminPanelSettings />,
                 data:
-                  mappedRoles.data?.pages?.map((page) => page?.length).reduce((a, b) => a + b, 0) ??
-                  0,
+                  mappedRoles.data?.pages
+                    ?.map((page) => page?.length || 0)
+                    .reduce((a, b) => (a || 0) + (b || 0), 0) ?? 0,
                 name: "Mapped Admin Roles",
                 color: "green",
               },
@@ -126,16 +149,16 @@ const Page = () => {
                 icon: <Layers />,
                 data:
                   roleTemplates.data?.pages
-                    ?.map((page) => page?.Results?.length)
-                    .reduce((a, b) => a + b, 0) ?? 0,
+                    ?.map((page) => page?.Results?.length || 0)
+                    .reduce((a, b) => (a || 0) + (b || 0), 0) ?? 0,
                 name: "Role Templates",
               },
               {
                 icon: <HourglassBottom />,
                 data:
                   pendingInvites.data?.pages
-                    ?.map((page) => page?.length)
-                    .reduce((a, b) => a + b, 0) ?? 0,
+                    ?.map((page) => page?.length || 0)
+                    .reduce((a, b) => (a || 0) + (b || 0), 0) ?? 0,
                 name: "Pending Invites",
               },
             ]}

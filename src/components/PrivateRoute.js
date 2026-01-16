@@ -31,7 +31,8 @@ export const PrivateRoute = ({ children, routeType }) => {
   // Or other network errors that would indicate API is unavailable
   if (
     apiRoles?.error?.response?.status === 404 || // API endpoint not found
-    apiRoles?.error?.response?.status === 502 || // Service unavailable
+    apiRoles?.error?.response?.status === 502 || // Bad Gateway
+    apiRoles?.error?.response?.status === 503 || // Service Unavailable
     (apiRoles?.isSuccess && !apiRoles?.data) // No client principal data, indicating API might be offline
   ) {
     return <ApiOfflinePage />;
@@ -68,10 +69,14 @@ export const PrivateRoute = ({ children, routeType }) => {
     const userRoles = roles?.filter((role) => !blockedRoles.includes(role)) ?? [];
     const isAuthenticated = userRoles.length > 0 && !apiRoles?.error;
     const isAdmin = roles?.includes("admin") || roles?.includes("superadmin");
-    if (routeType === "admin") {
-      return !isAdmin ? <UnauthenticatedPage /> : children;
-    } else {
-      return !isAuthenticated ? <UnauthenticatedPage /> : children;
+    if (routeType === "admin" && !isAdmin) {
+      return <UnauthenticatedPage />;
     }
+
+    if (!isAuthenticated) {
+      return <UnauthenticatedPage />;
+    }
+
+    return children;
   }
 };

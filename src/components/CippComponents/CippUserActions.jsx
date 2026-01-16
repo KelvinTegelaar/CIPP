@@ -11,18 +11,108 @@ import {
   LockPerson,
   LockReset,
   MeetingRoom,
-  NoMeetingRoom,
   Password,
   PersonOff,
   PhonelinkLock,
   PhonelinkSetup,
   Shortcut,
+  EditAttributes,
+  CloudSync,
 } from "@mui/icons-material";
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 import { useSettings } from "/src/hooks/use-settings.js";
 import { usePermissions } from "../../hooks/use-permissions";
+import { Tooltip, Box } from "@mui/material";
+import CippFormComponent from "./CippFormComponent";
+import { useWatch } from "react-hook-form";
 
-export const CippUserActions = () => {
+// Separate component for Out of Office form to avoid hook issues
+const OutOfOfficeForm = ({ formControl }) => {
+  // Watch the Auto Reply State value
+  const autoReplyState = useWatch({
+    control: formControl.control,
+    name: "AutoReplyState",
+  });
+
+  // Calculate if date fields should be disabled
+  const areDateFieldsDisabled = autoReplyState?.value !== "Scheduled";
+
+  return (
+    <>
+      <CippFormComponent
+        type="autoComplete"
+        name="AutoReplyState"
+        label="Auto Reply State"
+        multiple={false}
+        formControl={formControl}
+        creatable={false}
+        options={[
+          { label: "Enabled", value: "Enabled" },
+          { label: "Disabled", value: "Disabled" },
+          { label: "Scheduled", value: "Scheduled" },
+        ]}
+      />
+
+      <Tooltip
+        title={
+          areDateFieldsDisabled
+            ? "Scheduling is only available when Auto Reply State is set to Scheduled"
+            : ""
+        }
+        placement="bottom"
+      >
+        <Box>
+          <CippFormComponent
+            type="datePicker"
+            label="Start Date/Time"
+            name="StartTime"
+            formControl={formControl}
+            disabled={areDateFieldsDisabled}
+          />
+        </Box>
+      </Tooltip>
+
+      <Tooltip
+        title={
+          areDateFieldsDisabled
+            ? "Scheduling is only available when Auto Reply State is set to Scheduled"
+            : ""
+        }
+        placement="bottom"
+      >
+        <Box>
+          <CippFormComponent
+            type="datePicker"
+            label="End Date/Time"
+            name="EndTime"
+            formControl={formControl}
+            disabled={areDateFieldsDisabled}
+          />
+        </Box>
+      </Tooltip>
+
+      <CippFormComponent
+        type="richText"
+        label="Internal Message"
+        name="InternalMessage"
+        formControl={formControl}
+        multiline
+        rows={4}
+      />
+
+      <CippFormComponent
+        type="richText"
+        label="External Message"
+        name="ExternalMessage"
+        formControl={formControl}
+        multiline
+        rows={4}
+      />
+    </>
+  );
+};
+
+export const useCippUserActions = () => {
   const tenant = useSettings().currentTenant;
 
   const { checkPermissions } = usePermissions();
@@ -54,7 +144,8 @@ export const CippUserActions = () => {
       type: "GET",
       icon: <MagnifyingGlassIcon />,
       link: "/identity/administration/users/user/bec?userId=[id]",
-      confirmText: "Are you sure you want to research this compromised account?",
+      confirmText:
+        "Are you sure you want to research if [userPrincipalName] is a compromised account?",
       multiPost: false,
     },
     {
@@ -83,7 +174,8 @@ export const CippUserActions = () => {
           dateTimeType: "datetime",
         },
       ],
-      confirmText: "Are you sure you want to create a Temporary Access Password?",
+      confirmText:
+        "Are you sure you want to create a Temporary Access Password for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -94,7 +186,7 @@ export const CippUserActions = () => {
       icon: <PhonelinkSetup />,
       url: "/api/ExecResetMFA",
       data: { ID: "userPrincipalName" },
-      confirmText: "Are you sure you want to reset MFA for this user?",
+      confirmText: "Are you sure you want to reset MFA for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -105,7 +197,7 @@ export const CippUserActions = () => {
       icon: <PhonelinkLock />,
       url: "/api/ExecSendPush",
       data: { UserEmail: "userPrincipalName" },
-      confirmText: "Are you sure you want to send an MFA request?",
+      confirmText: "Are you sure you want to send an MFA request to [userPrincipalName]?",
       multiPost: false,
     },
     {
@@ -114,7 +206,7 @@ export const CippUserActions = () => {
       type: "POST",
       icon: <LockPerson />,
       url: "/api/ExecPerUserMFA",
-      data: { userId: "userPrincipalName", tenantFilter: "Tenant" },
+      data: { userId: "id", userPrincipalName: "userPrincipalName" },
       fields: [
         {
           type: "autoComplete",
@@ -178,25 +270,10 @@ export const CippUserActions = () => {
       url: "/api/ExecSetOoO",
       data: {
         userId: "userPrincipalName",
-        AutoReplyState: { value: "Enabled" },
         tenantFilter: "Tenant",
       },
-      fields: [{ type: "richText", name: "input", label: "Out of Office Message" }],
+      children: ({ formHook: formControl }) => <OutOfOfficeForm formControl={formControl} />,
       confirmText: "Are you sure you want to set the out of office?",
-      multiPost: false,
-      condition: () => canWriteMailbox,
-    },
-
-    {
-      label: "Disable Out of Office",
-      type: "POST",
-      icon: <NoMeetingRoom />,
-      url: "/api/ExecSetOoO",
-      data: {
-        userId: "userPrincipalName",
-        AutoReplyState: { value: "Disabled" },
-      },
-      confirmText: "Are you sure you want to disable the out of office for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteMailbox,
     },
@@ -206,6 +283,7 @@ export const CippUserActions = () => {
       icon: <GroupAdd />,
       url: "/api/EditGroup",
       customDataformatter: (row, action, formData) => {
+        // Build the member list from selected users
         let addMember = [];
         if (Array.isArray(row)) {
           row
@@ -230,26 +308,35 @@ export const CippUserActions = () => {
             },
           });
         }
-        return {
+
+        // Handle multiple groups - return an array of requests (one per group)
+        const selectedGroups = Array.isArray(formData.groupId)
+          ? formData.groupId
+          : [formData.groupId];
+
+        return selectedGroups.map((group) => ({
           addMember: addMember,
           tenantFilter: tenant,
-          groupId: formData.groupId,
-        };
+          groupId: group,
+        }));
       },
       fields: [
         {
           type: "autoComplete",
           name: "groupId",
-          label: "Select a group to add the user to",
-          multiple: false,
+          label: "Select groups to add the user to",
+          multiple: true,
           creatable: false,
-          validators: { required: "Please select a group" },
+          validators: { required: "Please select at least one group" },
           api: {
             url: "/api/ListGroups",
-            labelField: "displayName",
+            labelField: (option) =>
+              option?.calculatedGroupType
+                ? `${option.displayName} (${option.calculatedGroupType})`
+                : option?.displayName ?? "",
             valueField: "id",
             addedField: {
-              groupType: "calculatedGroupType",
+              groupType: "groupType",
               groupName: "displayName",
             },
             queryKey: `groups-${tenant}`,
@@ -257,8 +344,8 @@ export const CippUserActions = () => {
           },
         },
       ],
-      confirmText: "Are you sure you want to add [userPrincipalName] to this group?",
-      multiPost: true,
+      confirmText: "Are you sure you want to add [userPrincipalName] to the selected groups?",
+      multiPost: false,
       allowResubmit: true,
       condition: () => canWriteGroup,
     },
@@ -325,7 +412,7 @@ export const CippUserActions = () => {
       icon: <CloudDone />,
       url: "/api/ExecOneDriveProvision",
       data: { UserPrincipalName: "userPrincipalName" },
-      confirmText: "Are you sure you want to pre-provision OneDrive for this user?",
+      confirmText: "Are you sure you want to pre-provision OneDrive for [userPrincipalName]?",
       multiPost: false,
       condition: () => canWriteUser,
     },
@@ -434,7 +521,33 @@ export const CippUserActions = () => {
       },
       confirmText: "Are you sure you want to clear the Immutable ID for [userPrincipalName]?",
       multiPost: false,
-      condition: (row) => !row.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
+      condition: (row) => !row?.onPremisesSyncEnabled && row?.onPremisesImmutableId && canWriteUser,
+    },
+    {
+      label: "Set Source of Authority",
+      type: "POST",
+      url: "/api/ExecSetCloudManaged",
+      icon: <CloudSync />,
+      data: {
+        ID: "id",
+        displayName: "displayName",
+        type: "!User",
+      },
+      fields: [
+        {
+          type: "radio",
+          name: "isCloudManaged",
+          label: "Source of Authority",
+          options: [
+            { label: "Cloud Managed", value: true },
+            { label: "On-Premises Managed", value: false },
+          ],
+          validators: { required: "Please select a source of authority" },
+        },
+      ],
+      confirmText:
+        "Are you sure you want to change the source of authority for [userPrincipalName]? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
+      multiPost: false,
     },
     {
       label: "Revoke all user sessions",
@@ -456,7 +569,38 @@ export const CippUserActions = () => {
       multiPost: false,
       condition: () => canWriteUser,
     },
+    {
+      label: "Edit Properties",
+      icon: <EditAttributes />,
+      multiPost: true,
+      noConfirm: true,
+      customFunction: (users, action, formData) => {
+        // Handle both single user and multiple users
+        const userData = Array.isArray(users) ? users : [users];
+
+        // Store users in session storage to avoid URL length limits
+        sessionStorage.setItem("patchWizardUsers", JSON.stringify(userData));
+
+        // Use Next.js router for internal navigation
+        import("next/router")
+          .then(({ default: router }) => {
+            router.push("/identity/administration/users/patch-wizard");
+          })
+          .catch(() => {
+            // Fallback to window.location if router is not available
+            window.location.href = "/identity/administration/users/patch-wizard";
+          });
+      },
+      condition: () => canWriteUser,
+    },
   ];
+};
+
+// Legacy wrapper function for backward compatibility - but this should not be used
+// Instead, components should use the useCippUserActions hook
+export const CippUserActions = () => {
+  console.warn("CippUserActions() function is deprecated. Use useCippUserActions() hook instead.");
+  return useCippUserActions();
 };
 
 export default CippUserActions;

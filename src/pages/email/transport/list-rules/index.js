@@ -1,12 +1,24 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
-import { Book, DoDisturb, Done, RocketLaunch } from "@mui/icons-material";
+import { Book, DoDisturb, Done, Edit } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
+import { CippAddTransportRuleDrawer } from "../../../../components/CippComponents/CippAddTransportRuleDrawer";
+import { CippTransportRuleDrawer } from "../../../../components/CippComponents/CippTransportRuleDrawer";
+import { useSettings } from "/src/hooks/use-settings";
+import { useRef } from "react";
 
 const Page = () => {
   const pageTitle = "Transport Rules";
+  const cardButtonPermissions = ["Exchange.TransportRule.ReadWrite"];
+  const tableRef = useRef();
+  const currentTenant = useSettings().currentTenant;
+
+  const handleRuleSuccess = () => {
+    // Refresh the table after successful create/edit
+    if (tableRef.current) {
+      tableRef.current.refreshData();
+    }
+  };
 
   const actions = [
     {
@@ -20,22 +32,41 @@ const Page = () => {
     {
       label: "Enable Rule",
       type: "POST",
-      url: "/api/EditTransportRule",
+      url: "/api/AddEditTransportRule",
       data: {
-        State: "!Enable",
-        GUID: "Guid",
+        Enabled: "!Enabled",
+        Identity: "Guid",
+        Name: "Name",
       },
+      condition: (row) => row.State === "Disabled",
       confirmText: "Are you sure you want to enable this rule?",
       icon: <Done />,
     },
     {
+      label: "Edit Rule",
+      customComponent: (row, {drawerVisible, setDrawerVisible}) => (
+        <CippTransportRuleDrawer
+          isEditMode={true}
+          ruleId={row.Guid}
+          requiredPermissions={cardButtonPermissions}
+          onSuccess={handleRuleSuccess}
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+        />
+      ),
+      icon: <Edit />,
+      multiPost: false,
+    },
+    {
       label: "Disable Rule",
       type: "POST",
-      url: "/api/EditTransportRule",
+      url: "/api/AddEditTransportRule",
       data: {
-        State: "!Disable",
-        GUID: "Guid",
+        Enabled: "!Disabled",
+        Identity: "Guid",
+        Name: "Name",
       },
+      condition: (row) => row.State === "Enabled",
       confirmText: "Are you sure you want to disable this rule?",
       icon: <DoDisturb />,
     },
@@ -75,35 +106,39 @@ const Page = () => {
     "Tenant",
   ];
 
+  const filters = [
+    {
+      filterName: "Enabled Rules",
+      value: [{ id: "State", value: "Enabled" }],
+      type: "column",
+    },
+    {
+      filterName: "Disabled Rules",
+      value: [{ id: "State", value: "Disabled" }],
+      type: "column",
+    },
+  ];
+
   return (
     <CippTablePage
+      ref={tableRef}
       title={pageTitle}
       apiUrl="/api/ListTransportRules"
       apiDataKey="Results"
+      queryKey= {`Transport Rules - ${currentTenant}`}
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
-      filters={[
-        {
-          filterName: "Enabled Rules",
-          value: [{ id: "State", value: "Enabled" }],
-          type: "column",
-        },
-        {
-          filterName: "Disabled Rules",
-          value: [{ id: "State", value: "Disabled" }],
-          type: "column",
-        },
-      ]}
+      filters={filters}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/email/transport/list-rules/add"
-            startIcon={<RocketLaunch />}
-          >
-            Deploy Template
-          </Button>
+          <CippAddTransportRuleDrawer requiredPermissions={cardButtonPermissions} />
+          <CippTransportRuleDrawer
+            buttonText="New Transport Rule"
+            isEditMode={false}
+            requiredPermissions={cardButtonPermissions}
+            onSuccess={handleRuleSuccess}
+          />
         </>
       }
     />

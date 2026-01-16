@@ -6,10 +6,12 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { GitHub } from "@mui/icons-material";
 import ConnectorTemplateDetails from "../../../../components/CippComponents/ConnectorTemplateDetails";
+import { CippAddConnectorDrawer } from "../../../../components/CippComponents/CippAddConnectorDrawer";
 import { ApiGetCall } from "/src/api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Exchange Connector Templates";
+  const cardButtonPermissions = ["Exchange.Connector.ReadWrite"];
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
@@ -93,17 +95,7 @@ const Page = () => {
         label: "Add Template",
         href: "/email/connectors/add-connector-templates",
       }}
-      cardButton={
-        <>
-          <Button
-            component={Link}
-            href="/email/transport/list-connectors/add"
-            startIcon={<RocketLaunch />}
-          >
-            Deploy Connector
-          </Button>
-        </>
-      }
+      cardButton={<CippAddConnectorDrawer requiredPermissions={cardButtonPermissions} />}
     />
   );
 };

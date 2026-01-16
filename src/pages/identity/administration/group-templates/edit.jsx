@@ -28,39 +28,6 @@ const Page = () => {
   });
 
   // Map groupType values to valid radio options
-  const mapGroupType = (type) => {
-    // Map of group types to the corresponding option value
-    const groupTypeMap = {
-      // Standard mappings
-      azurerole: "azurerole",
-      generic: "generic",
-      m365: "m365",
-      dynamic: "dynamic",
-      dynamicdistribution: "dynamicdistribution",
-      distribution: "distribution",
-      security: "security",
-
-      // Additional mappings from possible backend values
-      Unified: "m365",
-      Security: "generic",
-      Distribution: "distribution",
-      "Mail-enabled security": "security",
-      "Mail Enabled Security": "security",
-      "Azure Role Group": "azurerole",
-      "Azure Active Directory Role Group": "azurerole",
-      "Security Group": "generic",
-      "Microsoft 365 Group": "m365",
-      "Microsoft 365 (Unified)": "m365",
-      "Dynamic Group": "dynamic",
-      DynamicMembership: "dynamic",
-      "Dynamic Distribution Group": "dynamicdistribution",
-      DynamicDistribution: "dynamicdistribution",
-      "Distribution List": "distribution",
-    };
-
-    // Return just the value for the radio group, not the label/value pair
-    return groupTypeMap[type] || "generic"; // Default to generic if no mapping exists
-  };
 
   // Set form values when template data is loaded
   useEffect(() => {
@@ -70,8 +37,13 @@ const Page = () => {
       // Make sure we have the necessary data before proceeding
       if (templateData) {
         formControl.reset({
-          ...templateData,
-          groupType: mapGroupType(templateData.groupType),
+          GUID: templateData.GUID,
+          displayName: templateData.displayName,
+          description: templateData.description,
+          username: templateData.username,
+          groupType: templateData.groupType,
+          membershipRules: templateData.membershipRules,
+          allowExternal: templateData.allowExternal,
           tenantFilter: userSettingsDefaults.currentTenant,
         });
       }

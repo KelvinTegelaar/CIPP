@@ -7,7 +7,16 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippWizardConfirmation = (props) => {
-  const { postUrl, lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
+  const { 
+    postUrl, 
+    lastStep, 
+    formControl, 
+    onPreviousStep, 
+    onNextStep, 
+    currentStep,
+    columns = 2 // Default to 2 columns for backward compatibility
+  } = props;
+  
   const formValues = formControl.getValues();
   const formEntries = Object.entries(formValues);
 
@@ -40,24 +49,64 @@ export const CippWizardConfirmation = (props) => {
       !blacklist.includes(key) &&
       key !== "tenantFilter" &&
       key !== "tenant" &&
-      !["user", "userPrincipalName", "username"].includes(key)
+      !["user", "userPrincipalName", "username"].includes(key) &&
+      !key.startsWith('HIDDEN_')
   );
 
-  const halfIndex = Math.ceil(filteredEntries.length / 2);
-  const firstHalf = filteredEntries.slice(0, halfIndex);
-  const secondHalf = filteredEntries.slice(halfIndex);
+  // Calculate total entries including special ones for even distribution
+  const totalEntries = filteredEntries.length + (tenantEntry ? 1 : 0) + (userEntry ? 1 : 0);
 
-  if (tenantEntry) {
-    firstHalf.unshift(tenantEntry);
-  }
+  // Dynamically split entries based on columns prop with special entries distributed
+  const splitEntries = () => {
+    const result = Array.from({ length: columns }, () => []);
 
-  if (userEntry) {
-    secondHalf.unshift(userEntry);
-  }
+    // Add special entries to different columns first
+    if (tenantEntry) {
+      result[0].push(tenantEntry);
+    }
+    if (userEntry && result[1]) {
+      result[1].push(userEntry);
+    }
+
+    // Distribute remaining entries across columns to balance them
+    filteredEntries.forEach((entry) => {
+      // Find the column with the fewest entries
+      let targetColumn = 0;
+      let minLength = result[0].length;
+      
+      for (let i = 1; i < columns; i++) {
+        if (result[i].length < minLength) {
+          minLength = result[i].length;
+          targetColumn = i;
+        }
+      }
+      
+      result[targetColumn].push(entry);
+    });
+
+    return result;
+  };
+
+  const columnEntries = splitEntries();
+
+  // Calculate Grid sizes based on number of columns
+  const getGridSize = () => {
+    const sizes = {
+      1: { lg: 12, md: 12, xs: 12 },
+      2: { lg: 6, md: 6, xs: 12 },
+      3: { lg: 4, md: 6, xs: 12 },
+      4: { lg: 3, md: 6, xs: 12 },
+      6: { lg: 2, md: 4, xs: 12 },
+    };
+    
+    return sizes[columns] || sizes[2]; // Default to 2 columns
+  };
+
+  const gridSize = getGridSize();
 
   return (
     <Stack spacing={3}>
-      {firstHalf.length === 0 ? (
+      {filteredEntries.length === 0 ? (
         <Card variant="outlined">
           <Stack p={3}>
             <Typography variant="h6">
@@ -68,28 +117,19 @@ export const CippWizardConfirmation = (props) => {
       ) : (
         <Card variant="outlined">
           <Grid container spacing={3}>
-            <Grid size={{ md: 6, xs: 12 }}>
-              <PropertyList>
-                {firstHalf.map(([key, value]) => (
-                  <PropertyListItem
-                    key={key}
-                    label={getCippTranslation(key)}
-                    value={getCippFormatting(value, key)}
-                  />
-                ))}
-              </PropertyList>
-            </Grid>
-            <Grid size={{ md: 6, xs: 12 }}>
-              <PropertyList>
-                {secondHalf.map(([key, value]) => (
-                  <PropertyListItem
-                    key={key}
-                    label={getCippTranslation(key)}
-                    value={getCippFormatting(value, key)}
-                  />
-                ))}
-              </PropertyList>
-            </Grid>
+            {columnEntries.map((columnData, index) => (
+              <Grid key={index} size={gridSize}>
+                <PropertyList>
+                  {columnData.map(([key, value]) => (
+                    <PropertyListItem
+                      key={key}
+                      label={getCippTranslation(key)}
+                      value={getCippFormatting(value, key)}
+                    />
+                  ))}
+                </PropertyList>
+              </Grid>
+            ))}
           </Grid>
         </Card>
       )}

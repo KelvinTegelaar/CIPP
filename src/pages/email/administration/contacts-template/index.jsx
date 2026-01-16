@@ -6,9 +6,11 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { GitHub, Edit } from "@mui/icons-material";
 import { ApiGetCall } from "/src/api/ApiCall";
+import { CippDeployContactTemplateDrawer } from "../../../../components/CippComponents/CippDeployContactTemplateDrawer";
 
 const Page = () => {
   const pageTitle = "Contact Templates";
+  const cardButtonPermissions = ["Exchange.Contact.ReadWrite"];
   const integrations = ApiGetCall({
     url: "/api/ListExtensionsConfig",
     queryKey: "Integrations",
@@ -72,12 +74,12 @@ const Page = () => {
       color: "danger",
     },
     {
-        label: "Edit Contact Template",
-        link: "/email/administration/contacts-template/edit?id=[GUID]",
-        icon: <Edit />,
-        color: "success",
-        target: "_self",
-      },
+      label: "Edit Contact Template",
+      link: "/email/administration/contacts-template/edit?id=[GUID]",
+      icon: <Edit />,
+      color: "success",
+      target: "_self",
+    },
   ];
   const simpleColumns = ["name", "contactTemplateName", "GUID"];
 
@@ -90,13 +92,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button
-            component={Link}
-            href="/email/administration/contacts-template/deploy"
-            startIcon={<RocketLaunch />}
-          >
-            Deploy Contact Template
-          </Button>
+          <CippDeployContactTemplateDrawer permissions={cardButtonPermissions} />
           <Button
             component={Link}
             href="/email/administration/contacts-template/add"

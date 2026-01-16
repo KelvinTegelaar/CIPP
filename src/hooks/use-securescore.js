@@ -3,7 +3,7 @@ import { ApiGetCall } from "../api/ApiCall";
 import { useSettings } from "./use-settings";
 import standards from "/src/data/standards.json";
 
-export function useSecureScore() {
+export function useSecureScore({ waiting = true } = {}) {
   const currentTenant = useSettings().currentTenant;
   if (currentTenant === "AllTenants") {
     return {
@@ -27,6 +27,7 @@ export function useSecureScore() {
       $top: 999,
     },
     queryKey: `controlScore-${currentTenant}`,
+    waiting: waiting,
   });
 
   const secureScore = ApiGetCall({
@@ -39,6 +40,7 @@ export function useSecureScore() {
       $top: 7,
     },
     queryKey: `secureScore-${currentTenant}`,
+    waiting: waiting,
   });
 
   useEffect(() => {
@@ -66,7 +68,7 @@ export function useSecureScore() {
           complianceInformation: translation?.complianceInformation,
           actionUrl: remediation
             ? //this needs to be updated to be a direct url to apply this standard.
-              "/tenant/standards/list-standards"
+              "/tenant/standards"
             : translation?.actionUrl,
           remediation: remediation
             ? `1. Enable the CIPP Standard: ${remediation.label}`

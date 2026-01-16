@@ -5,6 +5,31 @@ import { AdminPanelSettings } from "@mui/icons-material";
 import Link from "next/link";
 
 const Page = () => {
+  const simpleColumns = [
+    "userPrincipalName",
+    "displayName",
+    "accountEnabled",
+    "jitAdminEnabled",
+    "jitAdminStartDate",
+    "jitAdminExpiration",
+    "jitAdminReason",
+    "jitAdminCreatedBy",
+    "memberOf",
+  ];
+
+  const filters = [
+    {
+      filterName: "Active JIT Admins",
+      value: [{ id: "jitAdminEnabled", value: true }],
+      type: "column",
+    },
+    {
+      filterName: "Expired/Disabled",
+      value: [{ id: "jitAdminEnabled", value: false }],
+      type: "column",
+    },
+  ];
+
   return (
     <CippTablePage
       cardButton={
@@ -15,9 +40,10 @@ const Page = () => {
         </>
       }
       title="JIT Admin Table"
-      apiUrl="/api/ExecJITAdmin?Action=List"
+      apiUrl="/api/ListJITAdmin"
       apiDataKey="Results"
-      simpleColumns={[]}
+      simpleColumns={simpleColumns}
+      filters={filters}
     />
   );
 };

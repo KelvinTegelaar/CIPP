@@ -41,7 +41,7 @@ export const CippApiDialog = (props) => {
   }
 
   const formHook = useForm({
-    defaultValues: defaultvalues || {},
+    defaultValues: typeof defaultvalues === "function" ? defaultvalues(row) : defaultvalues || {},
     mode: "onChange", // Enable real-time validation
   });
 
@@ -122,8 +122,11 @@ export const CippApiDialog = (props) => {
   const handleActionClick = (row, action, formData) => {
     setIsFormSubmitted(true);
     let finalData = {};
+    let isBulkRequest = false;
     if (typeof api?.customDataformatter === "function") {
       finalData = api.customDataformatter(row, action, formData);
+      // If customDataformatter returns an array, enable bulk request mode
+      isBulkRequest = Array.isArray(finalData);
     } else {
       if (action.multiPost === undefined) action.multiPost = false;
 
@@ -133,11 +136,16 @@ export const CippApiDialog = (props) => {
         return;
       }
 
-      const commonData = {
-        tenantFilter,
-        ...formData,
-        ...addedFieldData,
+      // Helper function to get the correct tenant filter for a row
+      const getRowTenantFilter = (rowData) => {
+        // If we're in AllTenants mode and the row has a Tenant property, use that
+        if (tenantFilter === "AllTenants" && rowData?.Tenant) {
+          return rowData.Tenant;
+        }
+        // Otherwise use the current tenant filter
+        return tenantFilter;
       };
+
       const processedActionData = processActionData(action.data, row, action.replacementBehaviour);
 
       if (!processedActionData || Object.keys(processedActionData).length === 0) {
@@ -146,6 +154,11 @@ export const CippApiDialog = (props) => {
         // MULTI ROW CASES
         if (Array.isArray(row)) {
           const arrayData = row.map((singleRow) => {
+            const commonData = {
+              tenantFilter: getRowTenantFilter(singleRow),
+              ...formData,
+              ...addedFieldData,
+            };
             const itemData = { ...commonData };
             Object.keys(processedActionData).forEach((key) => {
               const rowValue = singleRow[processedActionData[key]];
@@ -173,6 +186,14 @@ export const CippApiDialog = (props) => {
           return;
         }
       }
+
+      // SINGLE ROW CASE
+      const commonData = {
+        tenantFilter: getRowTenantFilter(row),
+        ...formData,
+        ...addedFieldData,
+      };
+
       // ✅ FIXED: DIRECT MERGE INSTEAD OF CORRUPT TRANSFORMATION
       finalData = {
         ...commonData,
@@ -183,7 +204,7 @@ export const CippApiDialog = (props) => {
     if (action.type === "POST") {
       actionPostRequest.mutate({
         url: action.url,
-        bulkRequest: false,
+        bulkRequest: isBulkRequest,
         data: finalData,
       });
     } else if (action.type === "GET") {
@@ -191,7 +212,7 @@ export const CippApiDialog = (props) => {
         url: action.url,
         waiting: true,
         queryKey: Date.now(),
-        bulkRequest: false,
+        bulkRequest: isBulkRequest,
         data: finalData,
       });
     }

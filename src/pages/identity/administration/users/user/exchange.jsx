@@ -40,6 +40,7 @@ import { useDialog } from "../../../../../hooks/use-dialog";
 import CippAliasDialog from "../../../../../components/CippComponents/CippAliasDialog";
 import CippMailboxPermissionsDialog from "../../../../../components/CippComponents/CippMailboxPermissionsDialog";
 import CippCalendarPermissionsDialog from "../../../../../components/CippComponents/CippCalendarPermissionsDialog";
+import CippContactPermissionsDialog from "../../../../../components/CippComponents/CippContactPermissionsDialog";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -50,6 +51,7 @@ const Page = () => {
   const aliasDialog = useDialog();
   const permissionsDialog = useDialog();
   const calendarPermissionsDialog = useDialog();
+  const contactPermissionsDialog = useDialog();
   const router = useRouter();
   const { userId } = router.query;
 
@@ -65,9 +67,9 @@ const Page = () => {
     waiting: waiting,
   });
   const userRequest = ApiGetCall({
-    url: `/api/ListUserMailboxDetails?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
+    url: `/api/ListUserMailboxDetails?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}&userMail=${graphUserRequest.data?.[0]?.userPrincipalName}`,
     queryKey: `Mailbox-${userId}`,
-    waiting: waiting,
+    waiting: waiting && !!graphUserRequest.data?.[0]?.userPrincipalName,
   });
 
   const usersList = ApiGetCall({
@@ -90,6 +92,12 @@ const Page = () => {
   const calPermissions = ApiGetCall({
     url: `/api/ListCalendarPermissions?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `CalendarPermissions-${userId}`,
+    waiting: waiting,
+  });
+
+  const contactPermissions = ApiGetCall({
+    url: `/api/ListContactPermissions?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}`,
+    queryKey: `ContactPermissions-${userId}`,
     waiting: waiting,
   });
 
@@ -118,6 +126,16 @@ const Page = () => {
         type: "Unknown",
         displayName: "Unknown User",
       };
+    }
+
+    // Handle arrays by joining them
+    if (Array.isArray(userIdentifier)) {
+      userIdentifier = userIdentifier.join(", ");
+    }
+
+    // Ensure userIdentifier is a string
+    if (typeof userIdentifier !== "string") {
+      userIdentifier = String(userIdentifier);
     }
 
     // Handle special built-in cases
@@ -235,6 +253,36 @@ const Page = () => {
         permission.CanViewPrivateItems = true;
       }
 
+      // Always include SendNotificationToUser explicitly (default false)
+      permission.SendNotificationToUser = Boolean(data.SendNotificationToUser);
+
+      return {
+        userID: graphUserRequest.data?.[0]?.userPrincipalName,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        permissions: [permission],
+      };
+    },
+  };
+
+  const contactPermissionsApiConfig = {
+    type: "POST",
+    url: "/api/ExecModifyContactPerms",
+    relatedQueryKeys: `ContactPermissions-${userId}`,
+    confirmText: "Add the specified permissions to this contact folder?",
+    customDataformatter: (row, action, data) => {
+      if (!data.UserToGetPermissions || !data.Permissions) return null;
+
+      // Build permission object dynamically
+      const permission = {
+        UserID: data.UserToGetPermissions,
+        PermissionLevel: data.Permissions,
+        FolderName: contactPermissions.data?.[0]?.FolderName ?? "Contact",
+        Modification: "Add",
+      };
+
+      // Always include SendNotificationToUser explicitly (default false)
+      permission.SendNotificationToUser = Boolean(data.SendNotificationToUser);
+
       return {
         userID: graphUserRequest.data?.[0]?.userPrincipalName,
         tenantFilter: userSettingsDefaults.currentTenant,
@@ -266,7 +314,7 @@ const Page = () => {
         new Date(oooRequest.data?.EndTime).getTime() / 1000 || null
       );
     }
-  }, [oooRequest.isSuccess]);
+  }, [oooRequest.isSuccess, oooRequest.data]);
 
   useEffect(() => {
     //if userId is defined, we can fetch the user data
@@ -278,9 +326,14 @@ const Page = () => {
   useEffect(() => {
     if (userRequest.isSuccess && userRequest.data?.[0]) {
       const currentSettings = userRequest.data[0];
-      const forwardingAddress = currentSettings.ForwardingAddress;
+      let forwardingAddress = currentSettings.ForwardingAddress;
       const forwardingSmtpAddress = currentSettings.MailboxActionsData?.ForwardingSmtpAddress;
       const forwardAndDeliver = currentSettings.ForwardAndDeliver;
+
+      // Handle ForwardingAddress being an array or string
+      if (Array.isArray(forwardingAddress)) {
+        forwardingAddress = forwardingAddress.join(", ");
+      }
 
       let forwardingType = "disabled";
       let cleanAddress = "";
@@ -346,6 +399,46 @@ const Page = () => {
 
   // Create options array for calendar permissions (includes system users)
   const calendarPermissionOptions = useMemo(() => {
+    const options = [];
+
+    // Add special system users for calendar permissions
+    options.push({
+      value: "Default",
+      label: "Default",
+      type: "system",
+    });
+
+    // Add users
+    if (usersList?.data?.Results) {
+      usersList.data.Results.forEach((user) => {
+        options.push({
+          value: user.userPrincipalName,
+          label: `${user.displayName} (${user.userPrincipalName})`,
+          type: "user",
+        });
+      });
+    }
+
+    // Add mail-enabled security groups
+    if (groupsList?.data?.Results) {
+      groupsList.data.Results.forEach((group) => {
+        options.push({
+          value: group.mail,
+          label: `${group.displayName} (${group.mail})`,
+          type: "group",
+        });
+      });
+    }
+
+    // Sort alphabetically by label, but keep system users at the top
+    return options.sort((a, b) => {
+      if (a.type === "system" && b.type !== "system") return -1;
+      if (b.type === "system" && a.type !== "system") return 1;
+      return a.label.localeCompare(b.label);
+    });
+  }, [usersList?.data?.Results, groupsList?.data?.Results]);
+
+  const contactPermissionOptions = useMemo(() => {
     const options = [];
 
     // Add special system users for calendar permissions
@@ -695,6 +788,149 @@ const Page = () => {
     },
   ];
 
+  const contactCard = [
+    {
+      id: 1,
+      cardLabelBox: {
+        cardLabelBoxHeader: contactPermissions.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : contactPermissions.data?.length !== 0 ? (
+          <Check />
+        ) : (
+          <Error />
+        ),
+      },
+      text: "Contact permissions",
+      subtext:
+        contactPermissions.data?.length !== 0
+          ? "Other users or groups have access to this contact folder"
+          : "No other users or groups have access to this contact folder",
+      statusColor: "green.main",
+      cardLabelBoxActions: (
+        <Button
+          startIcon={<CalendarToday />}
+          onClick={() => contactPermissionsDialog.handleOpen()}
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+          Add Permissions
+        </Button>
+      ),
+      table: {
+        title: "Contact Permissions",
+        hideTitle: true,
+        data:
+          contactPermissions.data?.map((permission) => {
+            const userIdentifier = permission?.User;
+            const permissionInfo = getPermissionInfo(permission.User, groupsList);
+            return {
+              User: permissionInfo.displayName,
+              AccessRights: permission?.AccessRights?.join(", ") || "Unknown",
+              FolderName: permission?.FolderName || "Unknown",
+              Type: permissionInfo.type,
+              _raw: permission,
+            };
+          }) || [],
+        refreshFunction: () => contactPermissions.refetch(),
+        isFetching: contactPermissions.isFetching,
+        simpleColumns: ["User", "AccessRights", "FolderName", "Type"],
+        actions: [
+          {
+            label: "Remove Permission",
+            type: "POST",
+            icon: <Delete />,
+            url: "/api/ExecModifyContactPerms",
+            customDataformatter: (row, action, formData) => {
+              var permissions = [];
+              if (Array.isArray(row)) {
+                row.forEach((item) => {
+                  const originalUser = item._raw ? item._raw.User : item.User;
+                  permissions.push({
+                    UserID: originalUser, // Use original identifier for API calls
+                    PermissionLevel: item.AccessRights,
+                    FolderName: item.FolderName,
+                    Modification: "Remove",
+                  });
+                });
+              } else {
+                const originalUser = row._raw ? row._raw.User : row.User;
+                permissions.push({
+                  UserID: originalUser, // Use original identifier for API calls
+                  PermissionLevel: row.AccessRights,
+                  FolderName: row.FolderName,
+                  Modification: "Remove",
+                });
+              }
+              return {
+                userID: graphUserRequest.data?.[0]?.userPrincipalName,
+                tenantFilter: userSettingsDefaults.currentTenant,
+                permissions: permissions,
+              };
+            },
+            confirmText: "Are you sure you want to remove this contact permission?",
+            multiPost: false,
+            relatedQueryKeys: `ContactPermissions-${userId}`,
+            condition: (row) => row.User !== "Default" && row.User !== "Anonymous",
+          },
+        ],
+        offCanvas: {
+          children: (data) => {
+            const originalUser = data._raw ? data._raw.User : data.User;
+            const permissionInfo = getPermissionInfo(originalUser, groupsList);
+            return (
+              <CippPropertyListCard
+                cardSx={{ p: 0, m: -2 }}
+                title="Permission Details"
+                propertyItems={[
+                  {
+                    label: "User/Group",
+                    value: permissionInfo.displayName,
+                  },
+                  {
+                    label: "Type",
+                    value: permissionInfo.type,
+                  },
+                  {
+                    label: "Access Rights",
+                    value: data.AccessRights,
+                  },
+                  {
+                    label: "Folder Name",
+                    value: data.FolderName,
+                  },
+                ]}
+                actionItems={[
+                  {
+                    label: "Remove Permission",
+                    type: "POST",
+                    icon: <Delete />,
+                    url: "/api/ExecModifyContactPerms",
+                    data: {
+                      userID: graphUserRequest.data?.[0]?.userPrincipalName,
+                      tenantFilter: userSettingsDefaults.currentTenant,
+                      permissions: [
+                        {
+                          UserID: originalUser, // Use original identifier for API calls
+                          PermissionLevel: data.AccessRights,
+                          FolderName: data.FolderName,
+                          Modification: "Remove",
+                        },
+                      ],
+                    },
+                    confirmText: "Are you sure you want to remove this contact permission?",
+                    multiPost: false,
+                    relatedQueryKeys: `ContactPermissions-${userId}`,
+                  },
+                ]}
+              />
+            );
+          },
+        },
+      },
+    },
+  ];
+
   const mailboxRuleActions = [
     {
       label: "Enable Mailbox Rule",
@@ -707,6 +943,7 @@ const Page = () => {
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
           ruleName: row?.Name,
           Enable: true,
+          tenantFilter: userSettingsDefaults.currentTenant,
         };
       },
       condition: (row) => row && !row.Enabled,
@@ -724,6 +961,7 @@ const Page = () => {
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
           ruleName: row?.Name,
           Disable: true,
+          tenantFilter: userSettingsDefaults.currentTenant,
         };
       },
       condition: (row) => row && row.Enabled,
@@ -740,6 +978,7 @@ const Page = () => {
           ruleId: row?.Identity,
           ruleName: row?.Name,
           userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+          tenantFilter: userSettingsDefaults.currentTenant,
         };
       },
       confirmText: "Are you sure you want to remove this mailbox rule?",
@@ -803,6 +1042,7 @@ const Page = () => {
                       userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
                       ruleName: data?.Name,
                       Enable: true,
+                      tenantFilter: userSettingsDefaults.currentTenant,
                     },
                     confirmText: "Are you sure you want to enable this mailbox rule?",
                     multiPost: false,
@@ -817,6 +1057,7 @@ const Page = () => {
                       userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
                       ruleName: data?.Name,
                       Disable: true,
+                      tenantFilter: userSettingsDefaults.currentTenant,
                     },
                     confirmText: "Are you sure you want to disable this mailbox rule?",
                     multiPost: false,
@@ -830,6 +1071,7 @@ const Page = () => {
                       ruleId: data?.Identity,
                       ruleName: data?.Name,
                       userPrincipalName: graphUserRequest.data?.[0]?.userPrincipalName,
+                      tenantFilter: userSettingsDefaults.currentTenant,
                     },
                     confirmText: "Are you sure you want to remove this mailbox rule?",
                     multiPost: false,
@@ -912,7 +1154,7 @@ const Page = () => {
         data:
           graphUserRequest.data?.[0]?.proxyAddresses?.map((address) => ({
             Address: address,
-            Type: address.startsWith("SMTP:") ? "Primary" : "Alias",
+            Type: address?.startsWith("SMTP:") ? "Primary" : "Alias",
           })) || [],
         refreshFunction: () => graphUserRequest.refetch(),
         isFetching: graphUserRequest.isFetching,
@@ -958,8 +1200,7 @@ const Page = () => {
         <Box
           sx={{
             flexGrow: 1,
-            py: 4,
-            mr: 2,
+            py: 1,
           }}
         >
           <Grid container spacing={2}>
@@ -1015,6 +1256,11 @@ const Page = () => {
                     <CippBannerListCard
                       isFetching={calPermissions.isLoading}
                       items={calCard}
+                      isCollapsible={true}
+                    />
+                    <CippBannerListCard
+                      isFetching={contactPermissions.isLoading}
+                      items={contactCard}
                       isCollapsible={true}
                     />
                     <CippBannerListCard
@@ -1082,6 +1328,22 @@ const Page = () => {
           <CippCalendarPermissionsDialog
             formHook={formHook}
             combinedOptions={calendarPermissionOptions}
+            isUserGroupLoading={isUserGroupLoading}
+          />
+        )}
+      </CippApiDialog>
+
+      <CippApiDialog
+        createDialog={contactPermissionsDialog}
+        title="Add Contact Permissions"
+        api={contactPermissionsApiConfig}
+        row={graphUserRequest.data?.[0]}
+        allowResubmit={true}
+      >
+        {({ formHook }) => (
+          <CippContactPermissionsDialog
+            formHook={formHook}
+            combinedOptions={contactPermissionOptions}
             isUserGroupLoading={isUserGroupLoading}
           />
         )}

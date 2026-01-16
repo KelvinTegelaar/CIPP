@@ -103,7 +103,7 @@ const StandardCard = memo(
             display: "flex",
             flexDirection: "column",
             ...(isNewStandard(standard.addedDate) && {
-              mt: 1.5, // Add top margin to accommodate the "New" label
+              mt: 1.2, // Add top margin to accommodate the "New" label
             }),
           }}
         >
@@ -324,12 +324,12 @@ const VirtualizedStandardGrid = memo(({ items, renderItem }) => {
 
   return (
     <Virtuoso
-      style={{ height: "calc(90vh - 300px)", width: "100%" }}
+      style={{ height: "100%", width: "100%" }}
       totalCount={rows.length}
       overscan={5}
       defaultItemHeight={320} // Provide estimated row height for better virtualization
       itemContent={(index) => (
-        <Box sx={{ pt: index === 0 ? 0 : 2 }}>
+        <Box sx={{ pt: index === 0 ? 0 : 2, pb: index === rows.length - 1 ? 3 : 0 }}>
           <Grid
             container
             spacing={2}
@@ -354,7 +354,7 @@ VirtualizedStandardGrid.displayName = "VirtualizedStandardGrid";
 const CompactStandardList = memo(
   ({ items, selectedStandards, handleToggleSingleStandard, handleAddClick, isButtonDisabled }) => {
     return (
-      <List sx={{ width: "98%", bgcolor: "background.paper" }}>
+      <List sx={{ width: "98%", bgcolor: "background.paper", pb: 3 }}>
         {items.map(({ standard, category }) => {
           const isSelected = !!selectedStandards[standard.name];
 
@@ -960,6 +960,7 @@ const CippStandardDialog = ({
         sx: {
           minWidth: "720px",
           maxHeight: "90vh",
+          height: "90vh",
           display: "flex",
           flexDirection: "column",
         },
@@ -969,7 +970,7 @@ const CippStandardDialog = ({
       <DialogContent
         sx={{
           backgroundColor: "background.default",
-          pb: 1,
+          pb: 0,
           flex: 1,
           overflow: "hidden",
           display: "flex",
@@ -1287,11 +1288,11 @@ const CippStandardDialog = ({
               Showing {processedItems.length} standard{processedItems.length !== 1 ? "s" : ""}
             </Typography>
             {viewMode === "card" ? (
-              <Box sx={{ flex: 1, minHeight: 0, height: "100%" }}>
+              <Box sx={{ flex: 1, minHeight: 0, height: "100%", pb: 1 }}>
                 <VirtualizedStandardGrid items={processedItems} renderItem={renderStandardCard} />
               </Box>
             ) : (
-              <Box sx={{ flex: 1, overflow: "auto", minHeight: 0 }}>
+              <Box sx={{ flex: 1, overflow: "auto", minHeight: 0, pb: 1 }}>
                 <CompactStandardList
                   items={processedItems}
                   selectedStandards={selectedStandards}
@@ -1304,7 +1305,16 @@ const CippStandardDialog = ({
           </Box>
         )}
       </DialogContent>
-      <DialogActions>
+      <DialogActions
+        sx={{
+          px: 3,
+          py: 2,
+          borderTop: "1px solid",
+          borderColor: "divider",
+          backgroundColor: "background.paper",
+          flexShrink: 0,
+        }}
+      >
         <Button variant="contained" onClick={handleClose}>
           Close
         </Button>

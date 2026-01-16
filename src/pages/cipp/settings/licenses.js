@@ -75,11 +75,13 @@ const Page = () => {
             type: "textField",
             name: "GUID",
             label: "GUID",
+            disableVariables: true,
           },
           {
             type: "textField",
             name: "SKUName",
             label: "SKU Name",
+            disableVariables: true,
           },
         ]}
         api={{

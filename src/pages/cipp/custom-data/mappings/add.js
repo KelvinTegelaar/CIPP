@@ -18,15 +18,42 @@ const Page = () => {
 
   const addMappingApi = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["MappingsListPage"],
+    relatedQueryKeys: ["MappingsListPage", "ManualEntryMappings*"],
   });
 
   const handleAddMapping = (data) => {
+    // Filter data based on source type to only include relevant fields
+    let filteredData;
+
+    if (data.sourceType?.value === "manualEntry") {
+      // For manual entry, only include these fields
+      filteredData = {
+        sourceType: data.sourceType,
+        manualEntryFieldLabel: data.manualEntryFieldLabel,
+        directoryObjectType: data.directoryObjectType,
+        customDataAttribute: data.customDataAttribute,
+        tenantFilter: data.tenantFilter,
+      };
+    } else if (data.sourceType?.value === "extensionSync") {
+      // For extension sync, include the original fields
+      filteredData = {
+        sourceType: data.sourceType,
+        extensionSyncDataset: data.extensionSyncDataset,
+        extensionSyncProperty: data.extensionSyncProperty,
+        directoryObjectType: data.directoryObjectType,
+        customDataAttribute: data.customDataAttribute,
+        tenantFilter: data.tenantFilter,
+      };
+    } else {
+      // Fallback to all data if source type is not recognized
+      filteredData = data;
+    }
+
     addMappingApi.mutate({
       url: "/api/ExecCustomData",
       data: {
         Action: "AddEditMapping",
-        Mapping: data,
+        Mapping: filteredData,
       },
     });
   };
