@@ -1,7 +1,7 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { LockPerson, Sync } from "@mui/icons-material";
-import { Button, Alert, SvgIcon } from "@mui/material";
+import { LockPerson, Sync, Info } from "@mui/icons-material";
+import { Button, Alert, SvgIcon, IconButton, Tooltip } from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
 import { useDialog } from "../../../../hooks/use-dialog";
@@ -108,18 +108,24 @@ const Page = () => {
   ];
 
   const pageActions = [
-    <Button
-      key="sync-button"
-      startIcon={
-        <SvgIcon fontSize="small">
-          <Sync />
-        </SvgIcon>
-      }
-      size="xs"
-      onClick={syncDialog.handleOpen}
-    >
-      Sync
-    </Button>,
+    <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
+      <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.">
+        <IconButton size="small">
+          <Info fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Button
+        startIcon={
+          <SvgIcon fontSize="small">
+            <Sync />
+          </SvgIcon>
+        }
+        size="xs"
+        onClick={syncDialog.handleOpen}
+      >
+        Sync
+      </Button>
+    </Stack>,
   ];
 
   return (
@@ -132,12 +138,6 @@ const Page = () => {
         filters={filters}
         actions={actions}
         cardButton={pageActions}
-        tableFilter={
-          <Alert severity="info">
-            This report displays cached data from the CIPP reporting database. Click the Sync button
-            to update the cache for the current tenant.
-          </Alert>
-        }
       />
       <CippApiDialog
         createDialog={syncDialog}

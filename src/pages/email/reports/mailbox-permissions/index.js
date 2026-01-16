@@ -1,10 +1,18 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { useState } from "react";
-import { Button, FormControlLabel, Switch, Alert, SvgIcon } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Switch,
+  Alert,
+  SvgIcon,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
-import { Sync } from "@mui/icons-material";
+import { Sync, Info } from "@mui/icons-material";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 
@@ -41,7 +49,12 @@ const Page = () => {
   };
 
   const pageActions = [
-    <Stack direction="row" spacing={2} key="actions-stack">
+    <Stack direction="row" spacing={2} alignItems="center" key="actions-stack">
+      <Tooltip title="This report displays cached data from the CIPP reporting database. Cache timestamps are shown in the table. Click the Sync button to update the cache for the current tenant.">
+        <IconButton size="small">
+          <Info fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <Button
         startIcon={
           <SvgIcon fontSize="small">
@@ -77,13 +90,6 @@ const Page = () => {
           simpleColumns={columns}
           cardButton={pageActions}
           offCanvas={null}
-          tableFilter={
-            <Alert severity="info">
-              This report displays cached data from the CIPP reporting database. Cache timestamps
-              are shown in the table. Click the Sync button to update the cache for the current
-              tenant.
-            </Alert>
-          }
         />
       ) : (
         <Alert severity="warning">Please select a tenant to view mailbox permissions.</Alert>
