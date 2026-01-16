@@ -47,6 +47,7 @@ const CippGraphExplorerFilter = ({
       $expand: "",
       $top: "",
       $search: "",
+      $orderby: "",
       $format: "",
       NoPagination: false,
       ReverseTenantLookup: false,
@@ -325,6 +326,10 @@ const CippGraphExplorerFilter = ({
       {
         Key: "$expand",
         Value: formParameters.$expand,
+      },
+      {
+        Key: "$orderby",
+        Value: formParameters.$orderby,
       },
       {
         Key: "$format",
@@ -719,6 +724,17 @@ const CippGraphExplorerFilter = ({
               label="Search"
               formControl={formControl}
               placeholder="Search query"
+            />
+          </Grid>
+
+          {/* OrderBy Field */}
+          <Grid size={gridItemSize}>
+            <CippFormComponent
+              type="textField"
+              name="$orderby"
+              label="Order By"
+              formControl={formControl}
+              placeholder="Sort order (e.g. displayName asc)"
             />
           </Grid>
 
