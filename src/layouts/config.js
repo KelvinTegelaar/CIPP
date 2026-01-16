@@ -74,6 +74,11 @@ export const nativeMenuItems = [
             permissions: ["Identity.Role.*"],
           },
           {
+            title: "JIT Admin Templates",
+            path: "/identity/administration/jit-admin-templates",
+            permissions: ["Identity.Role.*"],
+          },
+          {
             title: "Offboarding Wizard",
             path: "/identity/administration/offboarding-wizard",
             permissions: ["Identity.User.*"],
@@ -710,6 +715,11 @@ export const nativeMenuItems = [
             title: "Mailbox Client Access Settings",
             path: "/email/reports/mailbox-cas-settings",
             permissions: ["Exchange.Mailbox.*"],
+          },
+          {
+            title: "Mailbox Permissions",
+            path: "/email/reports/mailbox-permissions",
+            permissions: ["Exchange.Mailbox.Read"],
           },
           {
             title: "Anti-Phishing Filters",

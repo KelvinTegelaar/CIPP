@@ -330,6 +330,7 @@ const EditGroup = () => {
                         },
                       })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 
@@ -353,6 +354,7 @@ const EditGroup = () => {
                       },
                     })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 
@@ -374,6 +376,7 @@ const EditGroup = () => {
                         addedFields: { id: m.id },
                       })) || []
                   }
+                  sortOptions={true}
                 />
               </Grid>
 

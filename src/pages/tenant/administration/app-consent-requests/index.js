@@ -86,6 +86,7 @@ const Page = () => {
   ];
 
   const simpleColumns = [
+    "requestDate", // Request Date
     "requestUser", // Requester
     "appDisplayName", // Application Name
     "appId", // Application ID
@@ -116,6 +117,7 @@ const Page = () => {
 
   const offCanvas = {
     extendedInfoFields: [
+      "requestDate", // Request Date
       "requestUser", // Requester
       "appDisplayName", // Application Name
       "appId", // Application ID

@@ -142,6 +142,12 @@ export const SideNav = (props) => {
       imagesrc: theme === "light" ? "/sponsors/RoB-light.png" : "/sponsors/RoB.png",
       priority: 1,
     },
+    {
+      link: "https://www.relentlesssolutions.com/",
+      imagesrc:
+        theme === "light" ? "/sponsors/relentless-light.png" : "/sponsors/relentless-dark.png",
+      priority: 1,
+    },
   ];
 
   const randomSponsorImage = () => {
