@@ -9,7 +9,7 @@ import { useDialog } from "../../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 
 const Page = () => {
-  const [byUser, setByUser] = useState(false);
+  const [byUser, setByUser] = useState(true);
   const currentTenant = useSettings().currentTenant;
   const syncDialog = useDialog();
 
