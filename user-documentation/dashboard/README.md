@@ -7,6 +7,10 @@ icon: chart-line
 
 Welcome to the CIPP Dashboard! This page provides you with both an overview of your client tenants and a powerful way to assess them. This page is laid out in a tabbed format with different important information on each tab.
 
+{% hint style="warning" %}
+The data CIPP uses to display the dashboard is cached in a database that gets updated at 3AM UTC each day. The first time you load the dashboard for a tenant, you will not see any data until the next refresh cycle occurs.
+{% endhint %}
+
 ### Walkthrough
 
 {% @storylane/embed subdomain="app" linkValue="zt4porabti6d" url="https://app.storylane.io/share/zt4porabti6d" %}
