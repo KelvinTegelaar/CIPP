@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button, FormControlLabel, Switch, Alert, SvgIcon } from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
@@ -20,7 +20,6 @@ const Page = () => {
         ...(isAllTenants ? ["Tenant"] : []),
         "User",
         "UserMailboxType",
-        "MailboxCount",
         "Permissions",
         "MailboxCacheTimestamp",
         "PermissionCacheTimestamp",
@@ -30,7 +29,6 @@ const Page = () => {
         "MailboxUPN",
         "MailboxDisplayName",
         "MailboxType",
-        "PermissionCount",
         "Permissions",
         "MailboxCacheTimestamp",
         "PermissionCacheTimestamp",
@@ -95,25 +93,13 @@ const Page = () => {
         title="Sync Mailbox Permissions Cache"
         fields={[]}
         api={{
-          type: "POST",
-          url: "/api/AddScheduledItem",
-          confirmText: `Run mailbox permissions cache sync for ${currentTenant}? This will update mailbox and permission data. Scheduled tasks start within 15 minutes.`,
+          type: "GET",
+          url: "/api/ExecCIPPDBCache",
+          confirmText: `Run mailbox permissions cache sync for ${currentTenant}? This will update mailbox and permission data immediately.`,
           relatedQueryKeys: ["mailbox-permissions"],
-          dataFunction: () => ({
-            TenantFilter: currentTenant,
-            Name: `Manual Mailbox Cache Sync - ${currentTenant}`,
-            Command: {
-              value: "Set-CIPPDBCacheMailboxes",
-              label: "Set-CIPPDBCacheMailboxes",
-            },
-            ScheduledTime: "0",
-            PostExecution: {
-              Webhook: false,
-              Email: false,
-              PSA: false,
-            },
-            DisallowDuplicateName: true,
-          }),
+          data: {
+            Name: "Mailboxes",
+          },
         }}
       />
     </>
