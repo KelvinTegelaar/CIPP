@@ -10,5 +10,9 @@
   {
     "label": "Devices",
     "path": "/dashboardv2/devices"
+  },
+  {
+    "label": "Previous Dashboard Experience",
+    "path": "/dashboardv1"
   }
 ]
