@@ -4,13 +4,14 @@ This page and the other tabs are a way for you to manage your tenants and their 
 
 ### Manage Drift Overview
 
-{% @storylane/embed subdomain="app" linkValue="xnqdcveexfod" url="https://app.storylane.io/share/xnqdcveexfod" %}
+{% @storylane/embed subdomain="app" linkValue="cqb21ohc9fgp" url="https://app.storylane.io/share/cqb21ohc9fgp" %}
 
 ### Page Actions
 
 | Action                                            | Description                                                                         |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | Refresh Data                                      | Pulls in the latest settings from the tenant to compare against the drift standard. |
+| Generate Report                                   | Opens the ability to generate an Executive Summary for the tenant.                  |
 | Run Standard Now (Currently Selected Tenant only) | Runs the template on the tenant selected in the top menu bar                        |
 | Run Standard Now (All Tenants in Template)        | Runs the template for all configured tenants                                        |
 
@@ -18,18 +19,26 @@ This page and the other tabs are a way for you to manage your tenants and their 
 
 The page is broken up into several sections for ease of viewing.
 
-#### Drift Overview
+#### Breakdown
 
 This handy chart shows you the status of the standards included in the drift standards template.
 
-#### Current Deviations
+#### Filters
 
-This section has two action buttons at the top:
+You can filter the deviations shown on the page by selecting one of the following:
+
+* **Select Drift Template**: Adjust which drift template you are reviewing.
+* **Search deviations**: Show only those deviations that match your search term.
+* **Status**: Adjust the display for "All Deviations", "Current Deviations", "Accepted", "Customer Specific", "Denied", or "Compliant".
+* **Sort by**: This will allow you to change the sort from the default of "Name" to "Status" or "Category".
+
+#### New Deviations
+
+This section has an action button at the top when multiple deviations are checked:
 
 | Action       | Description                                                                                                                                                                                                                        |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Bulk Actions | Displays the actions from each individual card below for bulk application and the additional action of `Remove Drift Customization` which resets all customer, and all tenant applied accepted deviations from the drift standard. |
-| What if      |                                                                                                                                                                                                                                    |
 
 Each card contains the following information:
 

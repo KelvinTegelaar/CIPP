@@ -67,6 +67,14 @@ Click `Manage Backups` to launch the [backup.md](backup.md "mention") settings p
 
 <details>
 
+<summary>JIT Admin Settings</summary>
+
+This allows you to set the maximum duration allowed for a JIT admin created through CIPP. Any attempt to create a JIT admin longer than the allowed time will return an error.
+
+</details>
+
+<details>
+
 <summary>DNS Resolver</summary>
 
 You can switch providers to either Google, Cloudflare or Quad9 for your domain analyzer results.

@@ -2,7 +2,7 @@
 
 ### Drift Management
 
-{% @storylane/embed subdomain="app" linkValue="xnqdcveexfod" url="https://app.storylane.io/share/xnqdcveexfod" %}
+{% @storylane/embed subdomain="app" linkValue="cqb21ohc9fgp" url="https://app.storylane.io/share/cqb21ohc9fgp" %}
 
 ### Drift Standard Creation
 
@@ -27,3 +27,7 @@
 ### License Management
 
 {% @storylane/embed subdomain="app" linkValue="ossqaogex1sw" url="https://app.storylane.io/share/ossqaogex1sw" %}
+
+### Dashboard v2
+
+{% @storylane/embed subdomain="app" linkValue="zt4porabti6d" url="https://app.storylane.io/share/zt4porabti6d" %}

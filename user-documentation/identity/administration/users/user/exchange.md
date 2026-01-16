@@ -47,14 +47,17 @@ description: This page displays information about the user's Exchange settings.
 
 ### Expandable Actions in Info Area
 
-| Action               | Description                                                                                                    |
-| -------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Proxy Addresses      | A widget that allows for updating a user/mailbox proxy addresses with add, delete, and set primary capability. |
-| Mailbox Permissions  | A widget that allows for updating mailbox permissions other users can be granted to this user's mailbox.       |
-| Calendar Permissions | A widget that allows for updating calendar permissions other users can be granted to this user's mailbox.      |
-| Contact Permissions  | A widget that allows you to manage contact folder permissions.                                                 |
-| Mailbox Forwarding   | A widget that allows for updating mail forwarding options for this user's mailbox.                             |
-| Out of Office        | A widget that allows you to edit the out of office settings for this user's mailbox.                           |
+| Action                              | Description                                                                                                                                                 |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Proxy Addresses                     | A widget that allows for updating a user/mailbox proxy addresses with add, delete, and set primary capability.                                              |
+| Mailbox Permissions                 | A widget that allows for updating mailbox permissions other users can be granted to this user's mailbox.                                                    |
+| Calendar Permissions                | A widget that allows for updating calendar permissions other users can be granted to this user's mailbox.                                                   |
+| Contact Permissions                 | A widget that allows you to manage contact folder permissions.                                                                                              |
+| Current Mailbox Rules               | A widget that allows for reviewing any mailbox rules created on the mailbox. There are actions to enable, disable, and delete mailbox rules.                |
+| Trusted and Blocked Senders/Domains | A widget that allows for reviewing any trusted and blocked senders/domains set on the mailbox. There is an action to remove senders/domains from this list. |
+| Mailbox Forwarding                  | A widget that allows for updating mail forwarding options for this user's mailbox.                                                                          |
+| Out of Office                       | A widget that allows you to edit the out of office settings for this user's mailbox.                                                                        |
+| Recipient Limits                    | Allows you to set the maximum number of recipients the mailbox may send to per message.                                                                     |
 
 ***
 

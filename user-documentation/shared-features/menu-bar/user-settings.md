@@ -30,7 +30,7 @@ This will display the active roles for the logged in user.
 
 ### Portal Links Configuration
 
-This will allow you to toggle on and off the various portal links displayed in the [tenant-select.md](tenant-select.md "mention") or on the Portals dropdown on the [dashboard.md](../../dashboard.md "mention").
+This will allow you to toggle on and off the various portal links displayed in the [tenant-select.md](tenant-select.md "mention") or on the Portals dropdown on the [dashboard](../../dashboard/ "mention").
 
 ***
 

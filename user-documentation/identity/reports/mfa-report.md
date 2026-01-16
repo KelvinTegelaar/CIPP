@@ -1,10 +1,12 @@
 # MFA Report
 
-## Multi-Factor Authentication Status Report
+{% hint style="info" %}
+This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.
+{% endhint %}
 
 ### Introduction
 
-This report provides an overview of the Multi-Factor Authentication (MFA) status for all users within the tenant. It's a combination of the built in Entra MFA report, and getting the Per User MFA state and combining them for a complete picture.
+This report provides an overview of the Multi-Factor Authentication (MFA) status for all users within the tenant. It's a combination of the built in Entra MFA report and getting the Per User MFA state and combining them for a complete picture.
 
 {% hint style="info" %}
 **Note**: To utilize the Entra MFA report part of this report, the tenant must be licensed for Entra P1 or higher. Per-User MFA status will still function even if the tenant isn't licensed.
@@ -27,10 +29,6 @@ The report lists every user in the tenant and provides detailed information abou
 * Whether Conditional Access policies require MFA for the user.
 * If the user is capable of using MFA.
 * The MFA methods the user has setup.
-
-{% hint style="warning" %}
-For tenants with over 250 user accounts, the Per User MFA status might appear as blank or null due to API throttling. In such cases, it could indicate any of the following states: disabled, enabled, or enforced.
-{% endhint %}
 
 {% hint style="warning" %}
 This table doesn't utilize a per-row Actions column like many of the other tables introduced with CIPP v7.

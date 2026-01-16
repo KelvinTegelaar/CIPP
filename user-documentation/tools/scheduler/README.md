@@ -35,7 +35,28 @@ A recurring task will return to a planned state directly after execution. The la
 
 ### Table Actions
 
-<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Task Details</td><td>Will open a view only page with the full details of the job</td><td>false</td></tr><tr><td>Run Now</td><td>Will run the task at the next quarter hour</td><td>true</td></tr><tr><td>Edit Job</td><td>Will display the job in a state where you can edit the details</td><td>false</td></tr><tr><td>Clone and Edit Job</td><td>Creates a copy of the selected job and opens the edit window to make any necessary changes</td><td>false</td></tr><tr><td>Delete Job</td><td>Deletes the job from the schedule</td><td>true</td></tr><tr><td>More Info</td><td>Opens a flyout with the task details</td><td>false</td></tr></tbody></table>
+<table><thead><tr><th>Action</th><th>Description</th><th data-type="checkbox">Bulk Action Available</th></tr></thead><tbody><tr><td>View Task Details</td><td>Will open a view only page with the full details of the job</td><td>false</td></tr><tr><td>Run Now</td><td>Will run the task at the next quarter hour</td><td>true</td></tr><tr><td>Edit Job</td><td>Will display the job in a state where you can edit the details</td><td>false</td></tr><tr><td>Clone and Edit Job</td><td>Creates a copy of the selected job and opens the edit window to make any necessary changes</td><td>false</td></tr><tr><td>Delete Job</td><td>Deletes the job from the schedule</td><td>true</td></tr><tr><td>More Info</td><td>Opens a flyout with the task details. See <a data-mention href="./#task-details">#task-details</a> below for more informaition.</td><td>false</td></tr></tbody></table>
+
+### Task Details
+
+This flyout displays more details on the scheduled task.
+
+#### Action Buttons
+
+* **View Logs**: This will open a separate flyout that will show the logbook entry for the scheduled task.
+* **Actions**: Select to "Run Now", "Edit Job", "Clone Job", or "Delete Job"
+
+#### Details
+
+This will include the top-level information on the task, such as status, the command being run, etc.
+
+#### Task Parameters
+
+Expand this section to view the parameters used for this task's command.
+
+#### Execution Results
+
+This table will display the history of the task's execution.
 
 ***
 
