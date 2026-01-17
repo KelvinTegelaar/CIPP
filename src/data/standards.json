@@ -1793,6 +1793,39 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.AutoArchiveMailbox",
+    "cat": "Exchange Standards",
+    "tag": [],
+    "helpText": "Enables or disables the tenant policy that automatically provisions an archive mailbox when a user's primary mailbox reaches 90% of its quota.",
+    "docsDescription": "Enables or disables the tenant policy that automatically provisions an archive mailbox when a user's primary mailbox reaches 90% of its quota. This is separate from auto-archiving thresholds and does not enable archives for all users immediately.",
+    "executiveText": "Automatically provisions archive mailboxes only when users reach 90% of their mailbox capacity, reducing manual intervention and preventing mailbox quota issues without enabling archives for everyone.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": false,
+        "creatable": false,
+        "label": "Select value",
+        "name": "standards.AutoArchiveMailbox.state",
+        "options": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set auto enable archive mailbox state",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-01-16",
+    "powershellEquivalent": "Set-OrganizationConfig -AutoEnableArchiveMailbox $true|$false",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SendReceiveLimitTenant",
     "cat": "Exchange Standards",
     "tag": [],
