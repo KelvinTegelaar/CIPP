@@ -24,7 +24,7 @@ export const CippTablePage = (props) => {
     tableFilter,
     tenantInTitle = true,
     filters,
-    sx = { flexGrow: 1, pb: 4 },
+    sx = {},
     ...other
   } = props;
   const tenant = useSettings().currentTenant;

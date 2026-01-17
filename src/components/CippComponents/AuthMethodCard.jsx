@@ -26,7 +26,7 @@ export const AuthMethodCard = ({ data, isLoading }) => {
     let whfbCount = 0;
 
     enabledUsers.forEach((user) => {
-      const methods = user.MFAMethods || [];
+      const methods = Array.isArray(user.MFAMethods) ? user.MFAMethods : [];
       const perUser = user.PerUser === "enforced" || user.PerUser === "enabled";
       const hasRegistered = user.MFARegistration === true;
 
