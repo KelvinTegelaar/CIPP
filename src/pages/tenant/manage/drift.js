@@ -205,8 +205,10 @@ const ManageDriftPage = () => {
               ComplianceStatus: detail.ComplianceStatus,
               StandardValue: detail.StandardValue,
               ReportingDisabled: detail.ReportingDisabled,
-              expectedValue: "Compliant with template",
-              receivedValue: detail.StandardValue,
+              ExpectedValue: detail.ExpectedValue,
+              CurrentValue: detail.CurrentValue,
+              expectedValue: detail.ExpectedValue || "Compliant with template",
+              receivedValue: detail.CurrentValue || detail.StandardValue,
             };
           })
           .filter((item) => item !== null); // Filter out null items where templates weren't found
@@ -376,6 +378,45 @@ const ManageDriftPage = () => {
     }
   };
 
+  // Helper function to format differences for display
+  const formatDifferences = (differences) => {
+    if (!differences || typeof differences !== 'object') return null;
+
+    const formatted = [];
+    Object.entries(differences).forEach(([key, value]) => {
+      formatted.push({
+        property: key,
+        expected: value.expected !== undefined ? JSON.stringify(value.expected, null, 2) : 'Not set',
+        current: value.current !== undefined ? JSON.stringify(value.current, null, 2) : 'Not set',
+      });
+    });
+
+    return formatted;
+  };
+
+  // Helper function to format matching properties for compliant items
+  const formatCompliantProperties = (value) => {
+    if (!value) return null;
+
+    try {
+      const obj = typeof value === "string" ? JSON.parse(value) : value;
+      
+      if (typeof obj !== 'object' || obj === null) return null;
+
+      const formatted = [];
+      Object.entries(obj).forEach(([key, val]) => {
+        formatted.push({
+          property: key,
+          value: val !== undefined ? JSON.stringify(val, null, 2) : 'Not set',
+        });
+      });
+
+      return formatted.length > 0 ? formatted : null;
+    } catch (e) {
+      return null;
+    }
+  };
+
   // Helper function to format policy objects for display
   const formatPolicyValue = (value) => {
     if (!value) return "N/A";
@@ -466,10 +507,15 @@ const ManageDriftPage = () => {
         let displayExpectedValue = deviation.ExpectedValue || deviation.expectedValue;
         let displayReceivedValue = deviation.CurrentValue || deviation.receivedValue;
 
-        // If we have JSON differences, show only the differences
+        // If we have JSON differences, format them for display
+        let formattedDifferences = null;
+        let formattedCompliantProps = null;
+        
         if (jsonDifferences && !isLicenseSkipped && !isActuallyCompliant) {
-          displayExpectedValue = JSON.stringify(jsonDifferences, null, 2);
-          displayReceivedValue = "See differences in Expected column";
+          formattedDifferences = formatDifferences(jsonDifferences);
+        } else if ((isActuallyCompliant || actualStatus === "aligned") && displayExpectedValue) {
+          // For compliant items, format the properties to show them matching
+          formattedCompliantProps = formatCompliantProperties(displayExpectedValue);
         }
 
         return {
@@ -512,10 +558,285 @@ const ManageDriftPage = () => {
                 </Box>
               )}
 
-              {(displayExpectedValue && displayExpectedValue !== "Compliant with template") ||
-              displayReceivedValue ? (
-                <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", md: "row" } }}>
-                  {displayExpectedValue && displayExpectedValue !== "Compliant with template" && (
+              {formattedDifferences && formattedDifferences.length > 0 ? (
+                <Stack spacing={2}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 600,
+                      color: "text.secondary",
+                      textTransform: "uppercase",
+                      letterSpacing: 0.5,
+                    }}
+                  >
+                    Property Differences
+                  </Typography>
+                  {formattedDifferences.map((diff, idx) => (
+                    <Box key={idx} sx={{ mb: 2 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 600,
+                          mb: 1,
+                          color: "primary.main",
+                        }}
+                      >
+                        {diff.property}
+                      </Typography>
+                      <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: 600,
+                              color: "text.secondary",
+                              textTransform: "uppercase",
+                              letterSpacing: 0.5,
+                              display: "block",
+                              mb: 0.5,
+                            }}
+                          >
+                            Expected
+                          </Typography>
+                          <Box
+                            sx={{
+                              p: 1.5,
+                              bgcolor: "success.lighter",
+                              borderRadius: "12px",
+                              border: "2px solid",
+                              borderColor: "success.main",
+                              position: "relative",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: -8,
+                                right: -8,
+                                width: 24,
+                                height: 24,
+                                borderRadius: "50%",
+                                bgcolor: "success.main",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Check sx={{ color: "white", fontSize: 16 }} />
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: "0.8125rem",
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                                color: "success.dark",
+                              }}
+                            >
+                              {diff.expected}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: 600,
+                              color: "text.secondary",
+                              textTransform: "uppercase",
+                              letterSpacing: 0.5,
+                              display: "block",
+                              mb: 0.5,
+                            }}
+                          >
+                            Current
+                          </Typography>
+                          <Box
+                            sx={{
+                              p: 1.5,
+                              bgcolor: "error.lighter",
+                              borderRadius: "12px",
+                              border: "2px solid",
+                              borderColor: "error.main",
+                              position: "relative",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: -8,
+                                right: -8,
+                                width: 24,
+                                height: 24,
+                                borderRadius: "50%",
+                                bgcolor: "error.main",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Cancel sx={{ color: "white", fontSize: 16 }} />
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: "0.8125rem",
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                                color: "error.dark",
+                              }}
+                            >
+                              {diff.current}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Box>
+                  ))}
+                </Stack>
+              ) : formattedCompliantProps && formattedCompliantProps.length > 0 ? (
+                <Stack spacing={2}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 600,
+                      color: "text.secondary",
+                      textTransform: "uppercase",
+                      letterSpacing: 0.5,
+                    }}
+                  >
+                    Compliant Properties
+                  </Typography>
+                  {formattedCompliantProps.map((prop, idx) => (
+                    <Box key={idx} sx={{ mb: 2 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 600,
+                          mb: 1,
+                          color: "success.main",
+                        }}
+                      >
+                        {prop.property}
+                      </Typography>
+                      <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: 600,
+                              color: "text.secondary",
+                              textTransform: "uppercase",
+                              letterSpacing: 0.5,
+                              display: "block",
+                              mb: 0.5,
+                            }}
+                          >
+                            Expected
+                          </Typography>
+                          <Box
+                            sx={{
+                              p: 1.5,
+                              bgcolor: "success.lighter",
+                              borderRadius: "12px",
+                              border: "2px solid",
+                              borderColor: "success.main",
+                              position: "relative",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: -8,
+                                right: -8,
+                                width: 24,
+                                height: 24,
+                                borderRadius: "50%",
+                                bgcolor: "success.main",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Check sx={{ color: "white", fontSize: 16 }} />
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: "0.8125rem",
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                                color: "success.dark",
+                              }}
+                            >
+                              {prop.value}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: 600,
+                              color: "text.secondary",
+                              textTransform: "uppercase",
+                              letterSpacing: 0.5,
+                              display: "block",
+                              mb: 0.5,
+                            }}
+                          >
+                            Current
+                          </Typography>
+                          <Box
+                            sx={{
+                              p: 1.5,
+                              bgcolor: "success.lighter",
+                              borderRadius: "12px",
+                              border: "2px solid",
+                              borderColor: "success.main",
+                              position: "relative",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: -8,
+                                right: -8,
+                                width: 24,
+                                height: 24,
+                                borderRadius: "50%",
+                                bgcolor: "success.main",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Check sx={{ color: "white", fontSize: 16 }} />
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: "0.8125rem",
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                                color: "success.dark",
+                              }}
+                            >
+                              {prop.value}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Box>
+                  ))}
+                </Stack>
+              ) : displayExpectedValue || displayReceivedValue ? (
+                <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
+                  {displayExpectedValue && (
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography
                         variant="caption"
@@ -524,20 +845,40 @@ const ManageDriftPage = () => {
                           color: "text.secondary",
                           textTransform: "uppercase",
                           letterSpacing: 0.5,
+                          display: "block",
+                          mb: 0.5,
                         }}
                       >
-                        {jsonDifferences ? "Differences" : "Expected"}
+                        Expected
                       </Typography>
                       <Box
                         sx={{
-                          mt: 0.5,
                           p: 1.5,
-                          bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
-                          borderRadius: 1,
-                          border: "1px solid",
-                          borderColor: isActuallyCompliant ? "success.main" : "divider",
+                          bgcolor: isActuallyCompliant || actualStatus === "aligned" ? "success.lighter" : "action.hover",
+                          borderRadius: isActuallyCompliant || actualStatus === "aligned" ? "12px" : 1,
+                          border: isActuallyCompliant || actualStatus === "aligned" ? "2px solid" : "1px solid",
+                          borderColor: isActuallyCompliant || actualStatus === "aligned" ? "success.main" : "divider",
+                          position: "relative",
                         }}
                       >
+                        {(isActuallyCompliant || actualStatus === "aligned") && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: -8,
+                              right: -8,
+                              width: 24,
+                              height: 24,
+                              borderRadius: "50%",
+                              bgcolor: "success.main",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Check sx={{ color: "white", fontSize: 16 }} />
+                          </Box>
+                        )}
                         <Typography
                           variant="body2"
                           sx={{
@@ -545,15 +886,18 @@ const ManageDriftPage = () => {
                             fontSize: "0.8125rem",
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-word",
+                            color: isActuallyCompliant || actualStatus === "aligned" ? "success.dark" : "text.primary",
                           }}
                         >
-                          {displayExpectedValue}
+                          {displayExpectedValue === "Compliant with template" 
+                            ? displayReceivedValue || "Compliant" 
+                            : displayExpectedValue}
                         </Typography>
                       </Box>
                     </Box>
                   )}
 
-                  {displayReceivedValue && !jsonDifferences && (
+                  {displayReceivedValue && (
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography
                         variant="caption"
@@ -562,20 +906,40 @@ const ManageDriftPage = () => {
                           color: "text.secondary",
                           textTransform: "uppercase",
                           letterSpacing: 0.5,
+                          display: "block",
+                          mb: 0.5,
                         }}
                       >
                         Current
                       </Typography>
                       <Box
                         sx={{
-                          mt: 0.5,
                           p: 1.5,
-                          bgcolor: isActuallyCompliant ? "success.lighter" : "action.hover",
-                          borderRadius: 1,
-                          border: "1px solid",
-                          borderColor: isActuallyCompliant ? "success.main" : "divider",
+                          bgcolor: isActuallyCompliant || actualStatus === "aligned" ? "success.lighter" : "action.hover",
+                          borderRadius: isActuallyCompliant || actualStatus === "aligned" ? "12px" : 1,
+                          border: isActuallyCompliant || actualStatus === "aligned" ? "2px solid" : "1px solid",
+                          borderColor: isActuallyCompliant || actualStatus === "aligned" ? "success.main" : "divider",
+                          position: "relative",
                         }}
                       >
+                        {(isActuallyCompliant || actualStatus === "aligned") && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: -8,
+                              right: -8,
+                              width: 24,
+                              height: 24,
+                              borderRadius: "50%",
+                              bgcolor: "success.main",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Check sx={{ color: "white", fontSize: 16 }} />
+                          </Box>
+                        )}
                         <Typography
                           variant="body2"
                           sx={{
@@ -583,6 +947,7 @@ const ManageDriftPage = () => {
                             fontSize: "0.8125rem",
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-word",
+                            color: isActuallyCompliant || actualStatus === "aligned" ? "success.dark" : "text.primary",
                           }}
                         >
                           {displayReceivedValue}
