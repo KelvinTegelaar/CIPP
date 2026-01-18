@@ -130,7 +130,7 @@ const ManageDriftPage = () => {
       }
       if (item.customerSpecificDeviations && Array.isArray(item.customerSpecificDeviations)) {
         acc.customerSpecificDeviationsList.push(
-          ...item.customerSpecificDeviations.filter((dev) => dev !== null)
+          ...item.customerSpecificDeviations.filter((dev) => dev !== null),
         );
       }
       if (item.deniedDeviations && Array.isArray(item.deniedDeviations)) {
@@ -143,7 +143,7 @@ const ManageDriftPage = () => {
         Array.isArray(item.driftSettings.ComparisonDetails)
       ) {
         const compliantStandards = item.driftSettings.ComparisonDetails.filter(
-          (detail) => detail.Compliant === true
+          (detail) => detail.Compliant === true,
         )
           .map((detail) => {
             // Strip "standards." prefix if present
@@ -238,7 +238,7 @@ const ManageDriftPage = () => {
       deniedDeviationsList: [],
       alignedStandards: [],
       latestDataCollection: null,
-    }
+    },
   );
 
   // Transform currentDeviations into deviation items for display
@@ -380,14 +380,15 @@ const ManageDriftPage = () => {
 
   // Helper function to format differences for display
   const formatDifferences = (differences) => {
-    if (!differences || typeof differences !== 'object') return null;
+    if (!differences || typeof differences !== "object") return null;
 
     const formatted = [];
     Object.entries(differences).forEach(([key, value]) => {
       formatted.push({
         property: key,
-        expected: value.expected !== undefined ? JSON.stringify(value.expected, null, 2) : 'Not set',
-        current: value.current !== undefined ? JSON.stringify(value.current, null, 2) : 'Not set',
+        expected:
+          value.expected !== undefined ? JSON.stringify(value.expected, null, 2) : "Not set",
+        current: value.current !== undefined ? JSON.stringify(value.current, null, 2) : "Not set",
       });
     });
 
@@ -400,14 +401,14 @@ const ManageDriftPage = () => {
 
     try {
       const obj = typeof value === "string" ? JSON.parse(value) : value;
-      
-      if (typeof obj !== 'object' || obj === null) return null;
+
+      if (typeof obj !== "object" || obj === null) return null;
 
       const formatted = [];
       Object.entries(obj).forEach(([key, val]) => {
         formatted.push({
           property: key,
-          value: val !== undefined ? JSON.stringify(val, null, 2) : 'Not set',
+          value: val !== undefined ? JSON.stringify(val, null, 2) : "Not set",
         });
       });
 
@@ -495,13 +496,13 @@ const ManageDriftPage = () => {
         const actualStatus = isActuallyCompliant
           ? "aligned"
           : isLicenseSkipped
-          ? "skipped"
-          : statusOverride || deviation.Status || deviation.state;
+            ? "skipped"
+            : statusOverride || deviation.Status || deviation.state;
         const actualStatusText = isActuallyCompliant
           ? "Compliant"
           : isLicenseSkipped
-          ? "Skipped - No License Available"
-          : getDeviationStatusText(actualStatus);
+            ? "Skipped - No License Available"
+            : getDeviationStatusText(actualStatus);
 
         // For skipped items, show different expected/received values
         let displayExpectedValue = deviation.ExpectedValue || deviation.expectedValue;
@@ -510,7 +511,7 @@ const ManageDriftPage = () => {
         // If we have JSON differences, format them for display
         let formattedDifferences = null;
         let formattedCompliantProps = null;
-        
+
         if (jsonDifferences && !isLicenseSkipped && !isActuallyCompliant) {
           formattedDifferences = formatDifferences(jsonDifferences);
         } else if ((isActuallyCompliant || actualStatus === "aligned") && displayExpectedValue) {
@@ -583,7 +584,9 @@ const ManageDriftPage = () => {
                       >
                         {diff.property}
                       </Typography>
-                      <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
+                      <Box
+                        sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}
+                      >
                         <Box sx={{ flex: 1, minWidth: 0 }}>
                           <Typography
                             variant="caption"
@@ -721,7 +724,9 @@ const ManageDriftPage = () => {
                       >
                         {prop.property}
                       </Typography>
-                      <Box sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
+                      <Box
+                        sx={{ display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}
+                      >
                         <Box sx={{ flex: 1, minWidth: 0 }}>
                           <Typography
                             variant="caption"
@@ -854,10 +859,20 @@ const ManageDriftPage = () => {
                       <Box
                         sx={{
                           p: 1.5,
-                          bgcolor: isActuallyCompliant || actualStatus === "aligned" ? "success.lighter" : "action.hover",
-                          borderRadius: isActuallyCompliant || actualStatus === "aligned" ? "12px" : 1,
-                          border: isActuallyCompliant || actualStatus === "aligned" ? "2px solid" : "1px solid",
-                          borderColor: isActuallyCompliant || actualStatus === "aligned" ? "success.main" : "divider",
+                          bgcolor:
+                            isActuallyCompliant || actualStatus === "aligned"
+                              ? "success.lighter"
+                              : "action.hover",
+                          borderRadius:
+                            isActuallyCompliant || actualStatus === "aligned" ? "12px" : 1,
+                          border:
+                            isActuallyCompliant || actualStatus === "aligned"
+                              ? "2px solid"
+                              : "1px solid",
+                          borderColor:
+                            isActuallyCompliant || actualStatus === "aligned"
+                              ? "success.main"
+                              : "divider",
                           position: "relative",
                         }}
                       >
@@ -886,11 +901,14 @@ const ManageDriftPage = () => {
                             fontSize: "0.8125rem",
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-word",
-                            color: isActuallyCompliant || actualStatus === "aligned" ? "success.dark" : "text.primary",
+                            color:
+                              isActuallyCompliant || actualStatus === "aligned"
+                                ? "success.dark"
+                                : "text.primary",
                           }}
                         >
-                          {displayExpectedValue === "Compliant with template" 
-                            ? displayReceivedValue || "Compliant" 
+                          {displayExpectedValue === "Compliant with template"
+                            ? displayReceivedValue || "Compliant"
                             : displayExpectedValue}
                         </Typography>
                       </Box>
@@ -915,10 +933,20 @@ const ManageDriftPage = () => {
                       <Box
                         sx={{
                           p: 1.5,
-                          bgcolor: isActuallyCompliant || actualStatus === "aligned" ? "success.lighter" : "action.hover",
-                          borderRadius: isActuallyCompliant || actualStatus === "aligned" ? "12px" : 1,
-                          border: isActuallyCompliant || actualStatus === "aligned" ? "2px solid" : "1px solid",
-                          borderColor: isActuallyCompliant || actualStatus === "aligned" ? "success.main" : "divider",
+                          bgcolor:
+                            isActuallyCompliant || actualStatus === "aligned"
+                              ? "success.lighter"
+                              : "action.hover",
+                          borderRadius:
+                            isActuallyCompliant || actualStatus === "aligned" ? "12px" : 1,
+                          border:
+                            isActuallyCompliant || actualStatus === "aligned"
+                              ? "2px solid"
+                              : "1px solid",
+                          borderColor:
+                            isActuallyCompliant || actualStatus === "aligned"
+                              ? "success.main"
+                              : "divider",
                           position: "relative",
                         }}
                       >
@@ -947,7 +975,10 @@ const ManageDriftPage = () => {
                             fontSize: "0.8125rem",
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-word",
-                            color: isActuallyCompliant || actualStatus === "aligned" ? "success.dark" : "text.primary",
+                            color:
+                              isActuallyCompliant || actualStatus === "aligned"
+                                ? "success.dark"
+                                : "text.primary",
                           }}
                         >
                           {displayReceivedValue}
@@ -1011,15 +1042,15 @@ const ManageDriftPage = () => {
   const deviationItems = createDeviationItems(processedDriftData.currentDeviations);
   const acceptedDeviationItems = createDeviationItems(
     processedDriftData.acceptedDeviations,
-    "accepted"
+    "accepted",
   );
   const customerSpecificDeviationItems = createDeviationItems(
     processedDriftData.customerSpecificDeviationsList,
-    "customerspecific"
+    "customerspecific",
   );
   const deniedDeviationItems = createDeviationItems(
     processedDriftData.deniedDeviationsList,
-    "denied"
+    "denied",
   );
   const alignedStandardItems = createDeviationItems(processedDriftData.alignedStandards, "aligned");
 
@@ -1027,7 +1058,7 @@ const ManageDriftPage = () => {
   const licenseSkippedItems = deviationItems.filter((item) => item.isLicenseSkipped);
   const compliantFromDeviations = deviationItems.filter((item) => item.isActuallyCompliant);
   const actualDeviationItems = deviationItems.filter(
-    (item) => !item.isLicenseSkipped && !item.isActuallyCompliant
+    (item) => !item.isLicenseSkipped && !item.isActuallyCompliant,
   );
 
   // Combine compliant items from both sources
@@ -1249,7 +1280,7 @@ const ManageDriftPage = () => {
 
   // Find current tenant data
   const currentTenantData = currentTenantInfo.data?.find(
-    (tenant) => tenant.defaultDomainName === tenantFilter
+    (tenant) => tenant.defaultDomainName === tenantFilter,
   );
 
   // Actions for the ActionsMenu
@@ -1412,7 +1443,7 @@ const ManageDriftPage = () => {
         (item) =>
           item.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.subtext?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.standardName?.toLowerCase().includes(searchQuery.toLowerCase())
+          item.standardName?.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -1650,10 +1681,10 @@ const ManageDriftPage = () => {
                           combinedScore === 100
                             ? "success"
                             : combinedScore >= 80
-                            ? "warning"
-                            : combinedScore >= 30
-                            ? "warning"
-                            : "error"
+                              ? "warning"
+                              : combinedScore >= 30
+                                ? "warning"
+                                : "error"
                         }
                         variant="outlined"
                       />
@@ -1685,7 +1716,7 @@ const ManageDriftPage = () => {
                             query: query,
                           },
                           undefined,
-                          { shallow: true }
+                          { shallow: true },
                         );
                       }}
                       placeholder="Select a drift template..."
@@ -1729,8 +1760,8 @@ const ManageDriftPage = () => {
                                 sortBy === "name"
                                   ? "Name"
                                   : sortBy === "status"
-                                  ? "Status"
-                                  : "Category",
+                                    ? "Status"
+                                    : "Category",
                               value: sortBy,
                             }
                           : null
@@ -1791,7 +1822,7 @@ const ManageDriftPage = () => {
                                 (deviation.standardName?.includes("ConditionalAccessTemplate") ||
                                   deviation.standardName?.includes("IntuneTemplate")) &&
                                 deviation.expectedValue ===
-                                  "This policy only exists in the tenant, not in the template."
+                                  "This policy only exists in the tenant, not in the template.",
                             ) && (
                               <MenuItem onClick={() => handleBulkAction("deny-all-delete")}>
                                 <Block sx={{ mr: 1, color: "error.main" }} />
@@ -1913,10 +1944,10 @@ const ManageDriftPage = () => {
               actionData.action?.type === "single"
                 ? "this deviation"
                 : actionData.action?.type === "bulk"
-                ? `these ${actionData.action?.count || 0} deviations`
-                : actionData.action?.type === "reset"
-                ? "for this tenant"
-                : "this deviation"
+                  ? `these ${actionData.action?.count || 0} deviations`
+                  : actionData.action?.type === "reset"
+                    ? "for this tenant"
+                    : "this deviation"
             }?`,
           }}
           row={actionData.data}
