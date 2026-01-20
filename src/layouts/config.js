@@ -722,6 +722,11 @@ export const nativeMenuItems = [
             permissions: ["Exchange.Mailbox.*"],
           },
           {
+            title: "Calendar Permissions",
+            path: "/email/reports/calendar-permissions",
+            permissions: ["Exchange.Mailbox.*"],
+          },
+          {
             title: "Anti-Phishing Filters",
             path: "/email/reports/antiphishing-filters",
             permissions: ["Exchange.SpamFilter.*"],
