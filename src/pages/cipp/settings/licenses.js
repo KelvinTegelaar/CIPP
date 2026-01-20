@@ -19,8 +19,8 @@ const Page = () => {
     {
       label: "Delete Exclusion",
       type: "POST",
-      url: "/api/ExecExcludeLicenses?RemoveExclusion=true",
-      data: { GUID: "GUID" },
+      url: "/api/ExecExcludeLicenses",
+      data: { Action: "!RemoveExclusion", GUID: "GUID" },
       confirmText: "Do you want to delete this exclusion?",
       color: "error",
       icon: (
@@ -73,6 +73,7 @@ const Page = () => {
         apiUrl={apiUrl}
         cardButton={<CardButtons />}
         actions={actions}
+        apiDataKey="Results"
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
         tenantInTitle={false}
@@ -95,11 +96,11 @@ const Page = () => {
           },
         ]}
         api={{
-          url: "/api/ExecExcludeLicenses?AddExclusion=true",
+          url: "/api/ExecExcludeLicenses",
           confirmText:
             "Add a license to the exclusion table, make sure to enter the correct GUID and SKU Name",
           type: "POST",
-          data: {},
+          data: { Action: "!AddExclusion" },
           replacementBehaviour: "removeNulls",
           relatedQueryKeys: ["ExcludedLicenses"],
         }}
@@ -115,11 +116,11 @@ const Page = () => {
           },
         ]}
         api={{
-          url: "/api/ExecExcludeLicenses?ResetToDefaults=true",
+          url: "/api/ExecExcludeLicenses",
           confirmText:
             "This will restore default licenses from the config file. If 'Full Reset' is enabled, all existing entries will be cleared first.",
           type: "POST",
-          data: {},
+          data: { Action: "!RestoreDefaults" },
           relatedQueryKeys: ["ExcludedLicenses"],
         }}
       />
