@@ -382,6 +382,27 @@ export const CippWizardOffboarding = (props) => {
                   type="switch"
                   formControl={formControl}
                 />
+
+                <CippFormCondition
+                  formControl={formControl}
+                  field={"postExecution.psa"}
+                  compareType="is"
+                  compareValue={true}
+                >
+                  <Grid size={{ sm: 12, xs: 12 }}>
+                    <CippFormComponent
+                      name="postExecution.psaTicketId"
+                      label="PSA Ticket ID"
+                      type="textField"
+                      fullWidth
+                      formControl={formControl}
+                      inputProps={{
+                        inputMode: "numeric",
+                        pattern: "[0-9]*",
+                      }}
+                    />
+                  </Grid>
+                </CippFormCondition>
               </Grid>
 
               <Grid size={{ sm: 12, xs: 12 }}>
