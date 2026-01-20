@@ -2,17 +2,17 @@ import tabOptions from "./tabOptions";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Button, SvgIcon } from "@mui/material";
+import { Button, SvgIcon, Stack } from "@mui/material";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { Add } from "@mui/icons-material";
+import { Add, RestartAlt } from "@mui/icons-material";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../hooks/use-dialog";
 
 const Page = () => {
   const pageTitle = "Excluded Licenses";
-  const apiUrl = "/api/ExecExcludeLicenses";
-  const apiData = { List: true };
+  const apiUrl = "/api/ListExcludedLicenses";
   const createDialog = useDialog();
+  const resetDialog = useDialog();
   const simpleColumns = ["Product_Display_Name", "GUID"];
 
   const actions = [
@@ -31,21 +31,32 @@ const Page = () => {
     },
   ];
 
-  const AddExcludedLicense = () => {
+  const CardButtons = () => {
     return (
-      <Button
-        variant="contained"
-        size="small"
-        color="primary"
-        onClick={createDialog.handleOpen}
-        startIcon={
-          <SvgIcon fontSize="small">
-            <Add />
-          </SvgIcon>
-        }
-      >
-        Add Excluded License
-      </Button>
+      <Stack spacing={2} direction="row">
+        <Button
+          variant="contained"
+          size="small"
+          color="primary"
+          onClick={createDialog.handleOpen}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <Add />
+            </SvgIcon>
+          }
+        >
+          Add Excluded License
+        </Button>
+        <Button
+          variant="outlined"
+          size="small"
+          color="primary"
+          onClick={resetDialog.handleOpen}
+          startIcon={<RestartAlt />}
+        >
+          Restore Defaults
+        </Button>
+      </Stack>
     );
   };
 
@@ -60,8 +71,7 @@ const Page = () => {
         title={pageTitle}
         queryKey="ExcludedLicenses"
         apiUrl={apiUrl}
-        cardButton={<AddExcludedLicense />}
-        apiData={apiData}
+        cardButton={<CardButtons />}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}
@@ -91,6 +101,25 @@ const Page = () => {
           type: "POST",
           data: {},
           replacementBehaviour: "removeNulls",
+          relatedQueryKeys: ["ExcludedLicenses"],
+        }}
+      />
+      <CippApiDialog
+        title="Restore Defaults"
+        createDialog={resetDialog}
+        fields={[
+          {
+            type: "switch",
+            name: "FullReset",
+            label: "Full Reset (clear all entries including manually added ones)",
+          },
+        ]}
+        api={{
+          url: "/api/ExecExcludeLicenses?ResetToDefaults=true",
+          confirmText:
+            "This will restore default licenses from the config file. If 'Full Reset' is enabled, all existing entries will be cleared first.",
+          type: "POST",
+          data: {},
           relatedQueryKeys: ["ExcludedLicenses"],
         }}
       />
