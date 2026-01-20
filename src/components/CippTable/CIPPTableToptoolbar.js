@@ -186,6 +186,8 @@ export const CIPPTableToptoolbar = ({
   const toolbarRef = useRef(null);
   const leftContainerRef = useRef(null);
   const actionsContainerRef = useRef(null);
+  const csvExportRef = useRef(null);
+  const pdfExportRef = useRef(null);
 
   const getBulkActions = (actions, selectedRows) => {
     return (
@@ -1058,8 +1060,8 @@ export const CIPPTableToptoolbar = ({
             >
               <MenuItem
                 onClick={() => {
-                  // Trigger CSV export
-                  const csvButton = document.querySelector("[data-csv-export]");
+                  // Trigger CSV export using ref to find the button within this component's scope
+                  const csvButton = csvExportRef.current?.querySelector("button");
                   if (csvButton) csvButton.click();
                   setExportAnchor(null);
                 }}
@@ -1071,8 +1073,8 @@ export const CIPPTableToptoolbar = ({
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  // Trigger PDF export
-                  const pdfButton = document.querySelector("[data-pdf-export]");
+                  // Trigger PDF export using ref to find the button within this component's scope
+                  const pdfButton = pdfExportRef.current?.querySelector("button");
                   if (pdfButton) pdfButton.click();
                   setExportAnchor(null);
                 }}
@@ -1199,20 +1201,22 @@ export const CIPPTableToptoolbar = ({
 
         {/* Hidden export buttons for triggering */}
         <Box sx={{ display: "none" }}>
-          <PDFExportButton
-            rows={table.getFilteredRowModel().rows}
-            columns={usedColumns}
-            reportName={title}
-            columnVisibility={columnVisibility}
-            data-pdf-export
-          />
-          <CSVExportButton
-            reportName={title}
-            columnVisibility={columnVisibility}
-            rows={table.getFilteredRowModel().rows}
-            columns={usedColumns}
-            data-csv-export
-          />
+          <span ref={pdfExportRef}>
+            <PDFExportButton
+              rows={table.getFilteredRowModel().rows}
+              columns={usedColumns}
+              reportName={title}
+              columnVisibility={columnVisibility}
+            />
+          </span>
+          <span ref={csvExportRef}>
+            <CSVExportButton
+              reportName={title}
+              columnVisibility={columnVisibility}
+              rows={table.getFilteredRowModel().rows}
+              columns={usedColumns}
+            />
+          </span>
         </Box>
       </Box>
 
