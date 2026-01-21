@@ -274,6 +274,7 @@
     * [Mailbox Activity](user-documentation/email/reports/mailbox-activity.md)
     * [Mailbox Client Access Settings](user-documentation/email/reports/mailbox-cas-settings.md)
     * [Mailbox Permissions](user-documentation/email/reports/mailbox-permissions.md)
+    * [Calendar Permissions](user-documentation/email/reports/calendar-permissions.md)
     * [Anti-Phishing Filters](user-documentation/email/reports/antiphishing-filters.md)
     * [Malware Filters](user-documentation/email/reports/malware-filters.md)
     * [Safe Attachment Filters](user-documentation/email/reports/safeattachments-filters.md)

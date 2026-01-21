@@ -72,9 +72,9 @@ It is recommended to use these values since the Permissions Check in [permission
 
 9. Select your GDAP groups
 
-_**If**_ you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP.`If you have migrated, but not using CIPP check the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
+_**If**_ you have already migrated to GDAP you select your GDAP groups at this stage. If you migrated using CIPP these groups start with `M365 GDAP`.If you have migrated but not using CIPP check the latest required GDAP roles check our [recommended-roles.md](recommended-roles.md "mention") page.
 
-If you have not migrated or used GDAP at all, **or** are planning to onboard your GDAP tenants using CIPP, continue on.
+If you have not migrated or used GDAP at all or are planning to onboard your GDAP tenants using CIPP, continue on. You'll want to come back after creating your `M365 GDAP` groups and add your service account to them.
 
 {% hint style="warning" %}
 These groups might not exist if you have not yet migrated to GDAP.&#x20;
@@ -88,9 +88,9 @@ If you want to move to using CIPP and Microsoft's best practice recommendation o
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FrNKg3zxDF4cCxMzhGPHRfT_doc.png?alt=media\&token=eee64997-0439-4965-ad41-c8a89d343d36\&time=Fri%20Jul%2026%202024%2021:58:01%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
-11. Add the Global Administrator Role
+11. Add the Application Administrator and User Administrator Roles
 
-Find the Global Admin role. This role is required for the CIPP-SAM application creation, and is recommended to be removed directly after installation.
+Find the Application Administrator and User Administrator roles. These roles are required for the CIPP-SAM application creation and are recommended to be removed directly after installation.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FpqpK88ZAo9i5iijFyHjy6u_doc.png?alt=media\&token=8e954768-0be0-4dd0-8da1-1b0063fdd1e0\&time=Fri%20Jul%2026%202024%2021:58:01%20GMT-0400%20\(Eastern%20Daylight%20Time\))
 
