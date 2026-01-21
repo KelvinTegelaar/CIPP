@@ -331,5 +331,39 @@
     "label": "Alert on quarantine release requests",
     "recommendedRunInterval": "30m",
     "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
+  },
+  {
+    "name": "SecureScore",
+    "label": "Alert on a low Secure Score",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Threshold type absolute number or percent",
+        "inputName": "ThresholdType",
+        "creatable": false,
+        "multiple": false,
+        "options": [
+          {
+            "label": "Percent",
+            "value": "percent"
+          },
+          {
+            "label": "Absolute",
+            "value": "absolute"
+          }
+        ],
+        "required": true
+      },
+      {
+        "inputType": "number",
+        "inputLabel": "Threshold Value (below this will trigger the alert)",
+        "inputName": "InputValue",
+        "required": true
+      }
+    ],
+    "description": "Monitors Secure Score and alerts when it falls below the specified threshold (absolute or percent value). Helps identify security gaps and areas for improvement."
   }
 ]

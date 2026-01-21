@@ -50,7 +50,7 @@ export function ApiGetCall(props) {
           title: `${
             error.config?.params?.tenantFilter ? error.config?.params?.tenantFilter : ""
           } Error`,
-        })
+        }),
       );
     }
     return returnRetry;
@@ -211,7 +211,7 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
                   if (!query.queryKey || !query.queryKey[0]) return false;
                   const queryKeyStr = String(query.queryKey[0]);
                   const matches = wildcardPatterns.some((pattern) =>
-                    queryKeyStr.startsWith(pattern)
+                    queryKeyStr.startsWith(pattern),
                   );
 
                   // Debug logging for each query check
@@ -220,7 +220,7 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
                       queryKey: query.queryKey,
                       queryKeyStr,
                       matchedPattern: wildcardPatterns.find((pattern) =>
-                        queryKeyStr.startsWith(pattern)
+                        queryKeyStr.startsWith(pattern),
                       ),
                     });
                   }
@@ -252,8 +252,9 @@ export function ApiGetCallWithPagination({
   waiting = true,
 }) {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const MAX_RETRIES = retry;
-  const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404];
+  const HTTP_STATUS_TO_NOT_RETRY = [302, 401, 403, 404, 500];
 
   const retryFn = (failureCount, error) => {
     let returnRetry = true;
@@ -261,6 +262,12 @@ export function ApiGetCallWithPagination({
       returnRetry = false;
     }
     if (isAxiosError(error) && HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)) {
+      if (
+        error.response?.status === 302 &&
+        error.response?.headers.get("location").includes("/.auth/login/aad")
+      ) {
+        queryClient.invalidateQueries({ queryKey: ["authmecipp"] });
+      }
       returnRetry = false;
     }
 
@@ -270,7 +277,7 @@ export function ApiGetCallWithPagination({
           message: getCippError(error),
           title: "Error",
           toastError: error,
-        })
+        }),
       );
     }
     return returnRetry;
