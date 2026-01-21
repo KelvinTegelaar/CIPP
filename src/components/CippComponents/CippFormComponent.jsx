@@ -414,12 +414,23 @@ export const CippFormComponent = (props) => {
       const resolvedOptions =
         typeof other.options === "function" ? other.options(row) : other.options;
 
+      // Wrap validate function to pass row as third parameter
+      const resolvedValidators = validators
+        ? {
+            ...validators,
+            validate:
+              typeof validators.validate === "function"
+                ? (value, formValues) => validators.validate(value, formValues, row)
+                : validators.validate,
+          }
+        : validators;
+
       return (
         <div>
           <Controller
             name={convertedName}
             control={formControl.control}
-            rules={validators}
+            rules={resolvedValidators}
             render={({ field }) => (
               <MemoizedCippAutoComplete
                 {...other}

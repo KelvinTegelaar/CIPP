@@ -68,6 +68,9 @@ const Page = () => {
           type: "autoComplete",
           name: "input",
           label: "Country",
+          validators: {
+            required: { value: true, message: "Please select a country" },
+          },
           options: (row) => {
             const existingCountries = row?.countriesAndRegions || [];
             return countryList
@@ -97,6 +100,17 @@ const Page = () => {
           name: "input",
           label: "Country",
           multiple: true,
+          validators: {
+            required: { value: true, message: "Please select at least one country" },
+            validate: (value, formValues, row) => {
+              const totalCountries = row?.countriesAndRegions?.length || 0;
+              const selectedCount = Array.isArray(value) ? value.length : value ? 1 : 0;
+              if (selectedCount >= totalCountries) {
+                return "You must leave at least one country in the named location";
+              }
+              return true;
+            },
+          },
           options: (row) => {
             const currentCountries = row?.countriesAndRegions || [];
             return currentCountries.map((code) => {
@@ -130,15 +144,40 @@ const Page = () => {
           label: "IP",
           validators: {
             required: { value: true, message: "IP address is required" },
-            pattern: {
-              value:
-                /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(?:3[0-2]|[12]?[0-9])$/,
-              message: "Invalid CIDR format. Use format: x.x.x.x/xx (e.g., 1.1.1.1/32)",
+            validate: (value) => {
+              if (!value) return true;
+              // IPv4 CIDR pattern
+              const ipv4Cidr =
+                /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(\d{1,3})$/;
+              // IPv6 CIDR pattern (simplified - covers most common formats)
+              const ipv6Cidr =
+                /^(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|:(?::[0-9a-fA-F]{1,4}){1,7}|::)\/(\d{1,3})$/;
+
+              const ipv4Match = value.match(ipv4Cidr);
+              const ipv6Match = value.match(ipv6Cidr);
+
+              if (ipv4Match) {
+                const prefix = parseInt(ipv4Match[1], 10);
+                if (prefix < 9 || prefix > 32) {
+                  return "CIDR prefix must be between /9 and /32 for IPv4";
+                }
+                return true;
+              }
+
+              if (ipv6Match) {
+                const prefix = parseInt(ipv6Match[1], 10);
+                if (prefix < 9 || prefix > 128) {
+                  return "CIDR prefix must be between /9 and /128 for IPv6";
+                }
+                return true;
+              }
+
+              return "Invalid CIDR format. Use IPv4 (e.g., 1.1.1.1/32) or IPv6 (e.g., 2001:db8::/32)";
             },
           },
         },
       ],
-      confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
+      confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32 or 2001:db8::/32.",
       condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation",
     },
     {
@@ -156,6 +195,17 @@ const Page = () => {
           name: "input",
           label: "IP",
           multiple: true,
+          validators: {
+            required: { value: true, message: "Please select at least one IP" },
+            validate: (value, formValues, row) => {
+              const totalIps = row?.ipRanges?.length || 0;
+              const selectedCount = Array.isArray(value) ? value.length : value ? 1 : 0;
+              if (selectedCount >= totalIps) {
+                return "You must leave at least one IP in the named location";
+              }
+              return true;
+            },
+          },
           options: (row) => {
             const ipRanges = row?.ipRanges || [];
             return ipRanges.map((ip) => ({
