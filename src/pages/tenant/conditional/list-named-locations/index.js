@@ -105,7 +105,9 @@ const Page = () => {
         },
       ],
       confirmText: "Select countries to remove from this named location.",
-      condition: (row) => row["@odata.type"] == "#microsoft.graph.countryNamedLocation",
+      condition: (row) =>
+        row["@odata.type"] == "#microsoft.graph.countryNamedLocation" &&
+        (row.countriesAndRegions?.length || 0) > 1,
     },
     {
       label: "Add IP to named location",
@@ -145,7 +147,9 @@ const Page = () => {
         },
       ],
       confirmText: "Select IPs to remove from this named location.",
-      condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation",
+      condition: (row) =>
+        row["@odata.type"] == "#microsoft.graph.ipNamedLocation" &&
+        (row.ipRanges?.length || 0) > 1,
     },
     {
       label: "Delete named location",
