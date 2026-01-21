@@ -11,12 +11,13 @@ import { getCippTranslation } from "../../../utils/get-cipp-translation";
 
 const Page = () => {
   const router = useRouter();
-  const { logentry } = router.query;
+  const { logentry, dateFilter } = router.query;
 
   const logRequest = ApiGetCall({
     url: `/api/Listlogs`,
     data: {
       logentryid: logentry,
+      dateFilter: dateFilter,
     },
     queryKey: `GetLogEntry-${logentry}`,
     waiting: !!logentry,
@@ -44,12 +45,12 @@ const Page = () => {
                 logData.Severity === "CRITICAL"
                   ? "error"
                   : logData.Severity === "Error"
-                  ? "error"
-                  : logData.Severity === "Warn"
-                  ? "warning"
-                  : logData.Severity === "Info"
-                  ? "info"
-                  : "default"
+                    ? "error"
+                    : logData.Severity === "Warn"
+                      ? "warning"
+                      : logData.Severity === "Info"
+                        ? "info"
+                        : "default"
               }
               variant="filled"
             />
