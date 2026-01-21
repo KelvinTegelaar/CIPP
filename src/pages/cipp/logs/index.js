@@ -37,7 +37,7 @@ const pageTitle = "Logbook Results";
 const actions = [
   {
     label: "View Log Entry",
-    link: "/cipp/logs/logentry?logentry=[RowKey]",
+    link: "/cipp/logs/logentry?logentry=[RowKey]&dateFilter=[DateFilter]",
     icon: <EyeIcon />,
     color: "primary",
   },
@@ -100,14 +100,14 @@ const Page = () => {
     setStartDate(
       data.startDate
         ? new Date(data.startDate * 1000).toISOString().split("T")[0].replace(/-/g, "")
-        : null
+        : null,
     );
 
     // Format end date if available
     setEndDate(
       data.endDate
         ? new Date(data.endDate * 1000).toISOString().split("T")[0].replace(/-/g, "")
-        : null
+        : null,
     );
 
     // Set username filter if available
@@ -117,7 +117,7 @@ const Page = () => {
     setSeverity(
       data.severity && data.severity.length > 0
         ? data.severity.map((item) => item.value).join(",")
-        : null
+        : null,
     );
 
     // Close the accordion after applying filters
@@ -157,13 +157,13 @@ const Page = () => {
                       <>
                         {startDate
                           ? new Date(
-                              startDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00"
+                              startDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00",
                             ).toLocaleDateString()
                           : new Date().toLocaleDateString()}
                         {startDate && endDate ? " - " : ""}
                         {endDate
                           ? new Date(
-                              endDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00"
+                              endDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") + "T00:00:00",
                             ).toLocaleDateString()
                           : ""}
                       </>

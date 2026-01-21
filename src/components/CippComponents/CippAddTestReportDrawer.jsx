@@ -43,13 +43,13 @@ export const CippAddTestReportDrawer = ({ buttonText = "Create custom report" })
 
   const createReport = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListTestReports"],
+    relatedQueryKeys: "ListTestReports",
   });
 
   // Fetch available tests for the form
   const availableTestsApi = ApiGetCall({
     url: "/api/ListAvailableTests",
-    queryKey: ["ListAvailableTests"],
+    queryKey: "ListAvailableTests",
   });
 
   const availableTests = availableTestsApi.data || { IdentityTests: [], DevicesTests: [] };
