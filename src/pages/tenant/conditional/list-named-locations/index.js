@@ -68,10 +68,15 @@ const Page = () => {
           type: "autoComplete",
           name: "input",
           label: "Country",
-          options: countryList.map(({ Code, Name }) => ({
-            value: Code,
-            label: `${Name} (${Code})`,
-          })),
+          options: (row) => {
+            const existingCountries = row?.countriesAndRegions || [];
+            return countryList
+              .filter(({ Code }) => !existingCountries.includes(Code))
+              .map(({ Code, Name }) => ({
+                value: Code,
+                label: `${Name} (${Code})`,
+              }));
+          },
         },
       ],
       confirmText: "Select a country to add to this named location.",
