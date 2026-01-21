@@ -118,7 +118,21 @@ const Page = () => {
         namedLocationId: "id",
         change: "!addIp",
       },
-      fields: [{ type: "textField", name: "input", label: "IP" }],
+      fields: [
+        {
+          type: "textField",
+          name: "input",
+          label: "IP",
+          validators: {
+            required: { value: true, message: "IP address is required" },
+            pattern: {
+              value:
+                /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(?:3[0-2]|[12]?[0-9])$/,
+              message: "Invalid CIDR format. Use format: x.x.x.x/xx (e.g., 1.1.1.1/32)",
+            },
+          },
+        },
+      ],
       confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
       condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation",
     },
