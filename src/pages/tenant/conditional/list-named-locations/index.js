@@ -91,13 +91,20 @@ const Page = () => {
           type: "autoComplete",
           name: "input",
           label: "Country",
-          options: countryList.map(({ Code, Name }) => ({
-            value: Code,
-            label: `${Name} (${Code})`,
-          })),
+          multiple: true,
+          options: (row) => {
+            const currentCountries = row?.countriesAndRegions || [];
+            return currentCountries.map((code) => {
+              const country = countryList.find((c) => c.Code === code);
+              return {
+                value: code,
+                label: country ? `${country.Name} (${code})` : code,
+              };
+            });
+          },
         },
       ],
-      confirmText: "Select a country to remove from this named location.",
+      confirmText: "Select countries to remove from this named location.",
       condition: (row) => row["@odata.type"] == "#microsoft.graph.countryNamedLocation",
     },
     {
@@ -122,8 +129,22 @@ const Page = () => {
         namedLocationId: "id",
         change: "!removeIp",
       },
-      fields: [{ type: "textField", name: "input", label: "IP" }],
-      confirmText: "Enter an IP in CIDR format, e.g., 1.1.1.1/32.",
+      fields: [
+        {
+          type: "autoComplete",
+          name: "input",
+          label: "IP",
+          multiple: true,
+          options: (row) => {
+            const ipRanges = row?.ipRanges || [];
+            return ipRanges.map((ip) => ({
+              value: ip.cidrAddress,
+              label: ip.cidrAddress,
+            }));
+          },
+        },
+      ],
+      confirmText: "Select IPs to remove from this named location.",
       condition: (row) => row["@odata.type"] == "#microsoft.graph.ipNamedLocation",
     },
     {
