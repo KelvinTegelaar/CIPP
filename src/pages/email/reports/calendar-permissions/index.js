@@ -104,7 +104,7 @@ const Page = () => {
           confirmText: `Run calendar permissions cache sync for ${currentTenant}? This will update mailbox and calendar permission data immediately.`,
           relatedQueryKeys: ["calendar-permissions"],
           data: {
-            Name: "Calendars",
+            Name: "Mailboxes",
           },
         }}
       />
