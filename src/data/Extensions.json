@@ -274,7 +274,7 @@
     "links": [
       {
         "name": "HaloPSA Documentation",
-        "url": "https://halopsa.com/guides/"
+        "url": "https://usehalo.com/halopsa/guides/2697"
       }
     ],
     "SettingOptions": [
@@ -865,6 +865,16 @@
           "compareType": "is",
           "compareValue": true,
           "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "CFZTNA.WebhookEnabled",
+        "label": "Use CloudFlare Service Account credentials with webhooks.",
+        "condition": {
+          "field": "CFZTNA.Enabled",
+          "compareType": "is",
+          "compareValue": true
         }
       }
     ],

@@ -26,6 +26,55 @@ import { Box } from "@mui/system";
 import { useSettings } from "../../hooks/use-settings";
 import { isEqual } from "lodash"; // Import lodash for deep comparison
 
+// Resolve dot-delimited property paths against arbitrary data objects.
+const getNestedValue = (source, path) => {
+  if (!source) {
+    return undefined;
+  }
+  if (!path) {
+    return source;
+  }
+
+  return path.split(".").reduce((acc, key) => {
+    if (acc === undefined || acc === null) {
+      return undefined;
+    }
+    if (typeof acc !== "object") {
+      return undefined;
+    }
+    return acc[key];
+  }, source);
+};
+
+// Resolve dot-delimited column ids against the original row data so nested fields can sort/filter properly.
+const getRowValueByColumnId = (row, columnId) => {
+  if (!row?.original || !columnId) {
+    return undefined;
+  }
+
+  if (columnId.includes("@odata")) {
+    return row.original[columnId];
+  }
+
+  return getNestedValue(row.original, columnId);
+};
+
+const compareNullable = (aVal, bVal) => {
+  if (aVal === null && bVal === null) {
+    return 0;
+  }
+  if (aVal === null) {
+    return 1;
+  }
+  if (bVal === null) {
+    return -1;
+  }
+  if (aVal === bVal) {
+    return 0;
+  }
+  return aVal > bVal ? 1 : -1;
+};
+
 export const CippDataTable = (props) => {
   const {
     queryKey,
@@ -48,6 +97,7 @@ export const CippDataTable = (props) => {
     simple = false,
     cardButton,
     offCanvas = false,
+    offCanvasOnRowClick = false,
     noCard = false,
     hideTitle = false,
     refreshFunction,
@@ -57,6 +107,7 @@ export const CippDataTable = (props) => {
     maxHeightOffset = "380px",
     defaultSorting = [],
     isInDialog = false,
+    showBulkExportAction = true,
   } = props;
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
@@ -64,6 +115,10 @@ export const CippDataTable = (props) => {
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
+  const [offCanvasRowIndex, setOffCanvasRowIndex] = useState(0);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [customComponentData, setCustomComponentData] = useState({});
+  const [customComponentVisible, setCustomComponentVisible] = useState(false);
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   const [graphFilterData, setGraphFilterData] = useState({});
   const [sorting, setSorting] = useState([]);
@@ -107,22 +162,6 @@ export const CippDataTable = (props) => {
   useEffect(() => {
     if (getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages;
-      const getNestedValue = (obj, path) => {
-        if (!path) {
-          return obj;
-        }
-
-        const keys = path.split(".");
-        let result = obj;
-        for (const key of keys) {
-          if (result && typeof result === "object" && key in result) {
-            result = result[key];
-          } else {
-            return undefined;
-          }
-        }
-        return result;
-      };
 
       const combinedResults = allPages.flatMap((page) => {
         const nestedData = getNestedValue(page, api.dataKey);
@@ -244,12 +283,45 @@ export const CippDataTable = (props) => {
       baseBackgroundColor: theme.palette.background.paper,
     }),
     muiTablePaperProps: ({ table }) => ({
-      //not sx
-      style: {
-        zIndex: table.getState().isFullScreen ? 1000 : undefined,
-        top: table.getState().isFullScreen ? 64 : undefined,
+      sx: {
+        ...(table.getState().isFullScreen && {
+          position: 'fixed !important',
+          top: '64px !important',
+          bottom: '0 !important',
+          left: { xs: '0 !important', lg: settings?.sidebarCollapse ? '73px !important' : '270px !important' },
+          right: '0 !important',
+          zIndex: '1300 !important',
+          m: '0 !important',
+          p: '16px !important',
+          overflow: 'auto',
+          bgcolor: 'background.paper',
+          maxWidth: 'none !important',
+          width: 'auto !important',
+          height: 'auto !important',
+        }),
       },
     }),
+    muiTableBodyRowProps:
+      offCanvasOnRowClick && offCanvas
+        ? ({ row }) => ({
+            onClick: () => {
+              setOffCanvasData(row.original);
+              // Find the index of this row in the filtered rows
+              const filteredRowsArray = table.getFilteredRowModel().rows;
+              const indexInFiltered = filteredRowsArray.findIndex(
+                (r) => r.original === row.original
+              );
+              setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
+              setOffcanvasVisible(true);
+            },
+            sx: {
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "action.hover",
+              },
+            },
+          })
+        : undefined,
     // Add global styles to target the specific filter components
     enableColumnFilterModes: true,
     muiTableHeadCellProps: {
@@ -363,19 +435,29 @@ export const CippDataTable = (props) => {
                     currentTenant: row.original.Tenant,
                   });
                 }
+
+                if (action.noConfirm && action.customFunction) {
+                  action.customFunction(row.original, action, {});
+                  closeMenu();
+                  return;
+                }
+
+                // Handle custom component differently
+                if (typeof action.customComponent === "function") {
+                  setCustomComponentData({ data: row.original, action: action });
+                  setCustomComponentVisible(true);
+                  closeMenu();
+                  return;
+                }
+
+                // Standard dialog flow
                 setActionData({
                   data: row.original,
                   action: action,
                   ready: true,
                 });
-                if (action.noConfirm && action.customFunction) {
-                  action.customFunction(row.original, action, {});
-                  closeMenu();
-                  return;
-                } else {
-                  createDialog.handleOpen();
-                  closeMenu();
-                }
+                createDialog.handleOpen();
+                closeMenu();
               }}
               disabled={handleActionDisabled(row.original, action)}
             >
@@ -391,6 +473,12 @@ export const CippDataTable = (props) => {
               onClick={() => {
                 closeMenu();
                 setOffCanvasData(row.original);
+                // Find the index of this row in the filtered rows
+                const filteredRowsArray = table.getFilteredRowModel().rows;
+                const indexInFiltered = filteredRowsArray.findIndex(
+                  (r) => r.original === row.original
+                );
+                setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
                 setOffcanvasVisible(true);
               }}
             >
@@ -406,6 +494,12 @@ export const CippDataTable = (props) => {
             onClick={() => {
               closeMenu();
               setOffCanvasData(row.original);
+              // Find the index of this row in the filtered rows
+              const filteredRowsArray = table.getFilteredRowModel().rows;
+              const indexInFiltered = filteredRowsArray.findIndex(
+                (r) => r.original === row.original
+              );
+              setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
               setOffcanvasVisible(true);
             }}
           >
@@ -441,6 +535,7 @@ export const CippDataTable = (props) => {
               setConfiguredSimpleColumns={setConfiguredSimpleColumns}
               queueMetadata={getRequestData.data?.pages?.[0]?.Metadata}
               isInDialog={isInDialog}
+              showBulkExportAction={showBulkExportAction}
             />
           )}
         </>
@@ -448,49 +543,56 @@ export const CippDataTable = (props) => {
     },
     sortingFns: {
       dateTimeNullsLast: (a, b, id) => {
-        const aVal = a?.original?.[id] ?? null;
-        const bVal = b?.original?.[id] ?? null;
-        if (aVal === null && bVal === null) {
-          return 0;
-        }
-        if (aVal === null) {
-          return 1;
-        }
-        if (bVal === null) {
-          return -1;
-        }
-        return aVal > bVal ? 1 : -1;
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const aDate = aRaw ? new Date(aRaw) : null;
+        const bDate = bRaw ? new Date(bRaw) : null;
+        const aTime = aDate && !Number.isNaN(aDate.getTime()) ? aDate.getTime() : null;
+        const bTime = bDate && !Number.isNaN(bDate.getTime()) ? bDate.getTime() : null;
+
+        return compareNullable(aTime, bTime);
       },
       number: (a, b, id) => {
-        const aVal = a?.original?.[id] ?? null;
-        const bVal = b?.original?.[id] ?? null;
-        if (aVal === null && bVal === null) {
-          return 0;
-        }
-        if (aVal === null) {
-          return 1;
-        }
-        if (bVal === null) {
-          return -1;
-        }
-        return aVal - bVal;
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const aNum = typeof aRaw === "number" ? aRaw : Number(aRaw);
+        const bNum = typeof bRaw === "number" ? bRaw : Number(bRaw);
+        const aVal = Number.isNaN(aNum) ? null : aNum;
+        const bVal = Number.isNaN(bNum) ? null : bNum;
+
+        return compareNullable(aVal, bVal);
       },
       boolean: (a, b, id) => {
-        const aVal = a?.original?.[id] ?? null;
-        const bVal = b?.original?.[id] ?? null;
-        if (aVal === null && bVal === null) {
-          return 0;
-        }
-        if (aVal === null) {
-          return 1;
-        }
-        if (bVal === null) {
-          return -1;
-        }
-        // Convert to numbers: true = 1, false = 0
-        const aNum = aVal === true ? 1 : 0;
-        const bNum = bVal === true ? 1 : 0;
-        return aNum - bNum;
+        const aRaw = getRowValueByColumnId(a, id);
+        const bRaw = getRowValueByColumnId(b, id);
+        const toBool = (value) => {
+          if (value === null || value === undefined) {
+            return null;
+          }
+          if (typeof value === "boolean") {
+            return value;
+          }
+          if (typeof value === "string") {
+            const lower = value.toLowerCase();
+            if (lower === "true" || lower === "yes") {
+              return true;
+            }
+            if (lower === "false" || lower === "no") {
+              return false;
+            }
+          }
+          if (typeof value === "number") {
+            return value !== 0;
+          }
+          return null;
+        };
+
+        const aBool = toBool(aRaw);
+        const bBool = toBool(bRaw);
+        const aNumeric = aBool === null ? null : aBool ? 1 : 0;
+        const bNumeric = bBool === null ? null : bBool ? 1 : 0;
+
+        return compareNullable(aNumeric, bNumeric);
       },
     },
     filterFns: {
@@ -615,6 +717,19 @@ export const CippDataTable = (props) => {
   }, [table.getSelectedRowModel().rows]);
 
   useEffect(() => {
+    // Update filtered rows whenever table filtering/sorting changes
+    if (table && table.getFilteredRowModel) {
+      const rows = table.getFilteredRowModel().rows;
+      setFilteredRows(rows.map((row) => row.original));
+    }
+  }, [
+    table,
+    table.getState().columnFilters,
+    table.getState().globalFilter,
+    table.getState().sorting,
+  ]);
+
+  useEffect(() => {
     //check if the simplecolumns are an array,
     if (Array.isArray(simpleColumns) && simpleColumns.length > 0) {
       setConfiguredSimpleColumns(simpleColumns);
@@ -688,12 +803,46 @@ export const CippDataTable = (props) => {
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
-        children={offCanvas?.children}
+        title={offCanvasData?.Name || offCanvas?.title || "Extended Info"}
+        children={
+          offCanvas?.children ? (row) => offCanvas.children(row, offCanvasRowIndex) : undefined
+        }
         customComponent={offCanvas?.customComponent}
+        onNavigateUp={() => {
+          const newIndex = offCanvasRowIndex - 1;
+          if (newIndex >= 0 && filteredRows && filteredRows[newIndex]) {
+            setOffCanvasRowIndex(newIndex);
+            setOffCanvasData(filteredRows[newIndex]);
+          }
+        }}
+        onNavigateDown={() => {
+          const newIndex = offCanvasRowIndex + 1;
+          if (filteredRows && newIndex < filteredRows.length) {
+            setOffCanvasRowIndex(newIndex);
+            setOffCanvasData(filteredRows[newIndex]);
+          }
+        }}
+        canNavigateUp={offCanvasRowIndex > 0}
+        canNavigateDown={filteredRows && offCanvasRowIndex < filteredRows.length - 1}
         {...offCanvas}
       />
+      {/* Render custom component */}
+      {customComponentVisible &&
+        customComponentData?.action &&
+        typeof customComponentData.action.customComponent === "function" &&
+        customComponentData.action.customComponent(customComponentData.data, {
+          drawerVisible: customComponentVisible,
+          setDrawerVisible: setCustomComponentVisible,
+          fromRowAction: true,
+        })}
+
+      {/* Render standard dialog */}
       {useMemo(() => {
-        if (!actionData.ready) return null;
+        if (
+          !actionData.ready ||
+          (actionData.action && typeof actionData.action.customComponent === "function")
+        )
+          return null;
         return (
           <CippApiDialog
             createDialog={createDialog}

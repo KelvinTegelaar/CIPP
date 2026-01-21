@@ -51,7 +51,7 @@ const Page = () => {
                 label="Select Tenant"
                 formControl={formControl}
                 type="single"
-                allTenants={true}
+                allTenants={false}
                 required={true}
                 preselectedEnabled={true}
               />

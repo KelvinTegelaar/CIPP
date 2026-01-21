@@ -41,11 +41,13 @@ const CippGraphExplorerFilter = ({
     mode: "onChange",
     defaultValues: {
       endpoint: "",
+      version: { label: "beta", value: "beta" },
       $select: [],
       $filter: "",
       $expand: "",
       $top: "",
       $search: "",
+      $orderby: "",
       $format: "",
       NoPagination: false,
       ReverseTenantLookup: false,
@@ -209,6 +211,21 @@ const CippGraphExplorerFilter = ({
             ?.split(",")
             .map((item) => ({ label: item, value: item })))
         : (selectedPresets.addedFields.params.$select = []);
+
+      // Convert version string to autocomplete object format, default to beta if not present
+      if (selectedPresets.addedFields.params.version) {
+        const versionValue =
+          typeof selectedPresets.addedFields.params.version === "string"
+            ? selectedPresets.addedFields.params.version
+            : selectedPresets.addedFields.params.version.value;
+        selectedPresets.addedFields.params.version = {
+          label: versionValue,
+          value: versionValue,
+        };
+      } else {
+        selectedPresets.addedFields.params.version = { label: "beta", value: "beta" };
+      }
+
       selectedPresets.addedFields.params.id = selectedPresets.value;
       setSelectedPreset(selectedPresets.value);
       selectedPresets.addedFields.params.name = selectedPresets.label;
@@ -311,6 +328,10 @@ const CippGraphExplorerFilter = ({
         Value: formParameters.$expand,
       },
       {
+        Key: "$orderby",
+        Value: formParameters.$orderby,
+      },
+      {
         Key: "$format",
         Value: formParameters.$format,
       },
@@ -366,6 +387,11 @@ const CippGraphExplorerFilter = ({
     var newvals = Object.assign({}, values);
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(",");
+    }
+    if (newvals.version && newvals.version.value) {
+      newvals.version = newvals.version.value;
+    } else if (!newvals.version) {
+      newvals.version = "beta";
     }
     delete newvals["reportTemplate"];
     delete newvals["tenantFilter"];
@@ -431,6 +457,11 @@ const CippGraphExplorerFilter = ({
   const onSubmit = (values) => {
     if (values.$select && Array.isArray(values.$select) && values.$select.length > 0) {
       values.$select = values?.$select?.map((item) => item.value)?.join(",");
+    }
+    if (values.version && values.version.value) {
+      values.version = values.version.value;
+    } else if (!values.version) {
+      values.version = "beta";
     }
     if (values.ReverseTenantLookup === false) {
       delete values.ReverseTenantLookup;
@@ -605,6 +636,22 @@ const CippGraphExplorerFilter = ({
           <Grid size={gridItemSize}>
             <CippFormComponent
               type="autoComplete"
+              name="version"
+              label="API Version"
+              formControl={formControl}
+              multiple={false}
+              options={[
+                { label: "beta", value: "beta" },
+                { label: "v1.0", value: "v1.0" },
+              ]}
+              placeholder="Select API version"
+              helperText="Graph API version to use"
+            />
+          </Grid>
+
+          <Grid size={gridItemSize}>
+            <CippFormComponent
+              type="autoComplete"
               name="$select"
               label="Select"
               formControl={formControl}
@@ -677,6 +724,17 @@ const CippGraphExplorerFilter = ({
               label="Search"
               formControl={formControl}
               placeholder="Search query"
+            />
+          </Grid>
+
+          {/* OrderBy Field */}
+          <Grid size={gridItemSize}>
+            <CippFormComponent
+              type="textField"
+              name="$orderby"
+              label="Order By"
+              formControl={formControl}
+              placeholder="Sort order (e.g. displayName asc)"
             />
           </Grid>
 

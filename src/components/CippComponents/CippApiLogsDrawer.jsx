@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Box } from "@mui/material";
-import { History } from "@mui/icons-material";
+import { ReceiptLongOutlined } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { CippDataTable } from "../CippTable/CippDataTable";
@@ -9,6 +9,8 @@ export const CippApiLogsDrawer = ({
   buttonText = "View API Logs",
   apiFilter = null,
   tenantFilter = null,
+  standardFilter = null,
+  scheduledTaskFilter = null,
   requiredPermissions = [],
   PermissionButton = Button,
   title = "API Logs",
@@ -27,10 +29,23 @@ export const CippApiLogsDrawer = ({
   // Build the API URL with the filter
   const apiUrl = `/api/ListLogs?Filter=true${apiFilter ? `&API=${apiFilter}` : ""}${
     tenantFilter ? `&Tenant=${tenantFilter}` : ""
+  }${standardFilter ? `&StandardTemplateId=${standardFilter}` : ""}${
+    scheduledTaskFilter ? `&ScheduledTaskId=${scheduledTaskFilter}` : ""
   }`;
 
   // Define the columns for the logs table
-  const simpleColumns = ["DateTime", "Severity", "Message", "User", "Tenant", "API"];
+  const simpleColumns = [
+    "DateTime",
+    "Severity",
+    "Message",
+    "User",
+    "Tenant",
+    "API",
+    "StandardInfo.Template",
+    "StandardInfo.Standard",
+    "StandardInfo.ConditionalAccessPolicy",
+    "StandardInfo.IntunePolicy",
+  ];
 
   const actions = [
     {
@@ -46,7 +61,7 @@ export const CippApiLogsDrawer = ({
       <PermissionButton
         requiredPermissions={requiredPermissions}
         onClick={handleOpenDrawer}
-        startIcon={<History />}
+        startIcon={<ReceiptLongOutlined />}
         {...props}
       >
         {buttonText}
@@ -62,7 +77,9 @@ export const CippApiLogsDrawer = ({
               url: apiUrl,
               dataKey: "",
             }}
-            queryKey={`APILogs-${apiFilter || "All"}`}
+            queryKey={`APILogs-${apiFilter || "All"}-${tenantFilter || "AllTenants"}-${
+              standardFilter || "NoStandard"
+            }-${scheduledTaskFilter || "NoTask"}`}
             simpleColumns={simpleColumns}
             exportEnabled={true}
             offCanvas={{
@@ -77,6 +94,7 @@ export const CippApiLogsDrawer = ({
                 "TenantID",
                 "AppId",
                 "IP",
+                "StandardInfo",
               ],
             }}
             maxHeightOffset="200px"
