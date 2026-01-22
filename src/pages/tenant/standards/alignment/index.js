@@ -1,11 +1,9 @@
-import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import Link from "next/link";
 import { Delete, Add } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import tabOptions from "./tabOptions.json";
+import tabOptions from "../tabOptions.json";
 
 const Page = () => {
   const pageTitle = "Standard & Drift Alignment";

@@ -9,6 +9,7 @@ import CippJsonView from "../CippFormPages/CippJSONView";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
+import { CippFormCondition } from "./CippFormCondition";
 
 export const CippCADeployDrawer = ({
   buttonText = "Deploy CA Policy",
@@ -24,6 +25,10 @@ export const CippCADeployDrawer = ({
   const CATemplates = ApiGetCall({ url: "/api/ListCATemplates", queryKey: "CATemplates" });
   const [JSONData, setJSONData] = useState();
   const watcher = useWatch({ control: formControl.control, name: "TemplateList" });
+  const selectedReplaceMode = useWatch({
+    control: formControl.control,
+    name: "replacename",
+  });
 
   // Use external open state if provided, otherwise use internal state
   const drawerVisible = open !== null ? open : internalDrawerVisible;
@@ -199,6 +204,25 @@ export const CippCADeployDrawer = ({
             label="Disable Security Defaults if enabled when creating policy"
             formControl={formControl}
           />
+          <CippFormCondition
+            formControl={formControl}
+            field="replacename"
+            compareType="is"
+            compareValue="displayName"
+            action="disable"
+          >
+            <CippFormComponent
+              type="switch"
+              name="CreateGroups"
+              label="Create groups if they do not exist"
+              formControl={formControl}
+              helperText={
+                selectedReplaceMode !== "displayName"
+                  ? "Select 'Replace by display name' to create groups specified in the template."
+                  : "Enable this option to create groups that do not exist in the tenant."
+              }
+            />
+          </CippFormCondition>
         </Stack>
       </CippOffCanvas>
     </>
