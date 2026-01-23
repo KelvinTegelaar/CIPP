@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Alert, Box, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { ApiGetCall } from "/src/api/ApiCall";
-import CippTemplateFieldRenderer from "/src/components/CippComponents/CippTemplateFieldRenderer";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import CippTemplateFieldRenderer from "../../../../components/CippComponents/CippTemplateFieldRenderer";
 
 const EditCATemplate = () => {
   const router = useRouter();

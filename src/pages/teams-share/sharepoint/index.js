@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import {
   Add,
@@ -11,8 +11,8 @@ import {
   Delete,
 } from "@mui/icons-material";
 import Link from "next/link";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
-import { useSettings } from "/src/hooks/use-settings";
+import { CippDataTable } from "../../../components/CippTable/CippDataTable";
+import { useSettings } from "../../../hooks/use-settings";
 
 const Page = () => {
   const pageTitle = "SharePoint Sites";

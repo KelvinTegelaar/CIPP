@@ -1,5 +1,5 @@
 import { ResponsiveSankey } from "@nivo/sankey";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippSankey = ({ data }) => {
   const settings = useSettings();

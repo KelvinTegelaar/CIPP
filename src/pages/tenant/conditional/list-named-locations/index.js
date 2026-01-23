@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import {
@@ -11,7 +11,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { LocationOn } from "@mui/icons-material";
-import countryList from "/src/data/countryList.json";
+import countryList from "../../../../data/countryList.json";
 
 const Page = () => {
   const pageTitle = "Named Locations";

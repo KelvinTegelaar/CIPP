@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { Typography } from "@mui/material";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
-import { CippFormGroupSelector } from "/src/components/CippComponents/CippFormGroupSelector";
-import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
-import { CippInfoCard } from "/src/components/CippCards/CippInfoCard";
+import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
+import { CippFormGroupSelector } from "../CippComponents/CippFormGroupSelector";
+import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
+import { CippInfoCard } from "../CippCards/CippInfoCard";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { getCippValidator } from "/src/utils/get-cipp-validator";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings";
+import { getCippValidator } from "../../utils/get-cipp-validator";
+import { ApiGetCall } from "../../api/ApiCall";
+import { useSettings } from "../../hooks/use-settings";
 
 // Utility functions for data processing
 export const safeLinksDataUtils = {

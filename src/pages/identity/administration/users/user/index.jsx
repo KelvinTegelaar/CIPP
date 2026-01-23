@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
+import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { AdminPanelSettings, Check, Group, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -15,11 +15,11 @@ import { SvgIcon, Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { useEffect, useState } from "react";
-import { useCippUserActions } from "/src/components/CippComponents/CippUserActions";
+import { useCippUserActions } from "../../../../../components/CippComponents/CippUserActions";
 import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
 import dynamic from "next/dynamic";
-const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), { ssr: false });
+const CippMap = dynamic(() => import("../../../../../components/CippComponents/CippMap"), { ssr: false });
 
 import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";

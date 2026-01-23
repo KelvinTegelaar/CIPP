@@ -2,7 +2,7 @@ import { Button, Stack, SvgIcon, Menu, MenuItem, ListItemText, Alert } from "@mu
 import { useState } from "react";
 import isEqual from "lodash/isEqual";
 import { useForm } from "react-hook-form";
-import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import {
   ChevronDownIcon,

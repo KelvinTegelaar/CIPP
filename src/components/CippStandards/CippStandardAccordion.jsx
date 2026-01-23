@@ -29,7 +29,7 @@ import {
   Construction,
 } from "@mui/icons-material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useWatch, useFormState } from "react-hook-form";
 import _ from "lodash";
 import Microsoft from "../../icons/iconly/bulk/microsoft";
@@ -37,9 +37,9 @@ import Azure from "../../icons/iconly/bulk/azure";
 import Exchange from "../../icons/iconly/bulk/exchange";
 import Defender from "../../icons/iconly/bulk/defender";
 import Intune from "../../icons/iconly/bulk/intune";
-import GDAPRoles from "/src/data/GDAPRoles";
-import timezoneList from "/src/data/timezoneList";
-import standards from "/src/data/standards.json";
+import GDAPRoles from "../../data/GDAPRoles";
+import timezoneList from "../../data/timezoneList";
+import standards from "../../data/standards.json";
 import { CippFormCondition } from "../CippComponents/CippFormCondition";
 import { CippPolicyImportDrawer } from "../CippComponents/CippPolicyImportDrawer";
 import ReactMarkdown from "react-markdown";

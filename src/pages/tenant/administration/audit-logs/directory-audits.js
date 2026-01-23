@@ -1,7 +1,7 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import CippJsonView from "/src/components/CippFormPages/CippJSONView";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import tabOptions from "./tabOptions.json";
 
 const DirectoryAuditsPage = () => {

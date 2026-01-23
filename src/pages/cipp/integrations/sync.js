@@ -1,7 +1,7 @@
 import { Box } from "@mui/system";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import { CippDataTable } from "../../../components/CippTable/CippDataTable";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 
 const Page = () => {
   const simpleColumns = [

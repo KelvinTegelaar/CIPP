@@ -1,7 +1,7 @@
 import { Alert, Button } from "@mui/material";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import Link from "next/link";
 import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub, ContentCopy } from "@mui/icons-material";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
@@ -9,9 +9,9 @@ import { Grid } from "@mui/system";
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "../tabOptions.json";
-import { useSettings } from "/src/hooks/use-settings.js";
+import { useSettings } from "../../../../hooks/use-settings.js";
 import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
-import { PermissionButton } from "/src/utils/permissions.js";
+import { PermissionButton } from "../../../../utils/permissions.js";
 
 const Page = () => {
   const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });

@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import {
@@ -26,19 +26,19 @@ import {
   Cancel,
   Delete,
 } from "@mui/icons-material";
-import { useSettings } from "/src/hooks/use-settings";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
-import { CippBackupScheduleDrawer } from "/src/components/CippComponents/CippBackupScheduleDrawer";
-import { CippRestoreBackupDrawer } from "/src/components/CippComponents/CippRestoreBackupDrawer";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
-import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
-import { useDialog } from "/src/hooks/use-dialog";
+import { useSettings } from "../../../hooks/use-settings";
+import { ApiGetCall } from "../../../api/ApiCall";
+import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
+import { CippBackupScheduleDrawer } from "../../../components/CippComponents/CippBackupScheduleDrawer";
+import { CippRestoreBackupDrawer } from "../../../components/CippComponents/CippRestoreBackupDrawer";
+import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
+import { CippTimeAgo } from "../../../components/CippComponents/CippTimeAgo";
+import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
+import { useDialog } from "../../../hooks/use-dialog";
 import ReactTimeAgo from "react-time-ago";
 import tabOptions from "./tabOptions.json";
 import { useRouter } from "next/router";
-import { CippHead } from "/src/components/CippComponents/CippHead";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const router = useRouter();

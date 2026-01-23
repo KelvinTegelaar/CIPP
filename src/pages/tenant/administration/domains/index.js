@@ -1,13 +1,13 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { CheckCircle, Star, Delete } from "@mui/icons-material";
-import { CippAddDomainDrawer } from "/src/components/CippComponents/CippAddDomainDrawer.jsx";
-import { CippDomainVerificationRecords } from "/src/components/CippComponents/CippDomainVerificationRecords.jsx";
-import { CippDomainServiceConfigurationRecords } from "/src/components/CippComponents/CippDomainServiceConfigurationRecords.jsx";
+import { CippAddDomainDrawer } from "../../../../components/CippComponents/CippAddDomainDrawer.jsx";
+import { CippDomainVerificationRecords } from "../../../../components/CippComponents/CippDomainVerificationRecords.jsx";
+import { CippDomainServiceConfigurationRecords } from "../../../../components/CippComponents/CippDomainServiceConfigurationRecords.jsx";
 import { Box, Typography, Divider } from "@mui/material";
 import { Stack } from "@mui/system";
-import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
-import { getCippFormatting } from "/src/utils/get-cipp-formatting";
+import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
+import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 
 const Page = () => {
   const pageTitle = "Domains";

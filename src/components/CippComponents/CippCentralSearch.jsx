@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useRouter } from "next/router";
-import { nativeMenuItems } from "/src/layouts/config";
-import { usePermissions } from "/src/hooks/use-permissions";
+import { nativeMenuItems } from "../../layouts/config";
+import { usePermissions } from "../../hooks/use-permissions";
 
 /**
  * Recursively collects only leaf items (those without sub-items).
@@ -62,7 +62,7 @@ async function loadTabOptions() {
 
   for (const basePath of tabOptionPaths) {
     try {
-      const module = await import(`/src/pages${basePath}/tabOptions.json`);
+      const module = await import(`../../pages${basePath}/tabOptions.json`);
       const options = module.default || module;
 
       // Add each tab option with metadata

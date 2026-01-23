@@ -11,7 +11,7 @@ import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
-import countryList from "/src/data/countryList.json";
+import countryList from "../../data/countryList.json";
 
 export const CippBulkUserDrawer = ({
   buttonText = "Bulk Add Users",

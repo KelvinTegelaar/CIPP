@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { hasAccess, hasPermission, hasRole } from "/src/utils/permissions";
+import { ApiGetCall } from "../api/ApiCall";
+import { hasAccess, hasPermission, hasRole } from "../utils/permissions";
 
 /**
  * Hook for checking user permissions and roles

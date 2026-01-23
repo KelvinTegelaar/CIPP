@@ -1,6 +1,6 @@
 import "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 const CippInviteUser = (props) => {
   const { formControl, userSettingsDefaults } = props;
 

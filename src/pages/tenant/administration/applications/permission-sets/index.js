@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
 import { Edit, Delete, ContentCopy, Add } from "@mui/icons-material";
 import tabOptions from "../tabOptions";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { CippPermissionSetDrawer } from "/src/components/CippComponents/CippPermissionSetDrawer";
+import { CippPermissionSetDrawer } from "../../../../../components/CippComponents/CippPermissionSetDrawer";
 import { useRef } from "react";
 
 const Page = () => {

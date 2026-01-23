@@ -1,11 +1,11 @@
 import { Container } from "@mui/material";
 import { Grid } from "@mui/system";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import tabOptions from "./tabOptions";
-import { ApiGetCall } from "/src/api/ApiCall.jsx";
-import { CippBackendCard } from "/src/components/CippSettings/CippBackendCard";
-import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
+import { ApiGetCall } from "../../../api/ApiCall.jsx";
+import { CippBackendCard } from "../../../components/CippSettings/CippBackendCard";
+import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
 import { CommandLineIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {

@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { LockPerson, Sync, Info } from "@mui/icons-material";
 import { Button, Alert, SvgIcon, IconButton, Tooltip } from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings";

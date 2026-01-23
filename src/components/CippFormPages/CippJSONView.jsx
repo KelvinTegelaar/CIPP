@@ -19,7 +19,7 @@ import { PropertyList } from "../property-list";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
-import intuneCollection from "/src/data/intuneCollection.json";
+import intuneCollection from "../../data/intuneCollection.json";
 import { useGuidResolver } from "../../hooks/use-guid-resolver";
 
 const cleanObject = (obj) => {

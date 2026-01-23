@@ -1,9 +1,9 @@
 import { List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { Cancel, CheckCircle, Warning } from "@mui/icons-material";
-import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
+import { CippPropertyList } from "../CippComponents/CippPropertyList";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippDataTable } from "../CippTable/CippDataTable";
 import { useEffect, useState } from "react";
 
 export const CippGDAPResults = (props) => {
