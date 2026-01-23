@@ -80,7 +80,7 @@ const Page = () => {
           query: { ...router.query, reportId: reportIdValue.reportId.value },
         },
         undefined,
-        { shallow: true }
+        { shallow: true },
       );
     }
   }, [reportIdValue]);
@@ -171,7 +171,7 @@ const Page = () => {
   useEffect(() => {
     if (currentTenantInfo.isSuccess) {
       const tenantLookup = currentTenantInfo.data?.find(
-        (tenant) => tenant.defaultDomainName === currentTenant
+        (tenant) => tenant.defaultDomainName === currentTenant,
       );
 
       // Get filtered portals based on user preferences
@@ -341,14 +341,14 @@ const Page = () => {
                   <SecureScoreCard
                     data={testsApi.data?.SecureScore}
                     isLoading={testsApi.isFetching}
-                    sx={{ height: '100%' }}
+                    sx={{ height: "100%" }}
                   />
                 </Box>
                 <Box sx={{ height: 450 }}>
                   <AuthMethodCard
                     data={testsApi.data?.MFAState}
                     isLoading={testsApi.isFetching}
-                    sx={{ height: '100%' }}
+                    sx={{ height: "100%" }}
                   />
                 </Box>
               </Box>
@@ -361,14 +361,14 @@ const Page = () => {
                   <MFACard
                     data={testsApi.data?.MFAState}
                     isLoading={testsApi.isFetching}
-                    sx={{ height: '100%' }}
+                    sx={{ height: "100%" }}
                   />
                 </Box>
                 <Box sx={{ height: 450 }}>
                   <LicenseCard
                     data={testsApi.data?.LicenseData}
                     isLoading={testsApi.isFetching}
-                    sx={{ height: '100%' }}
+                    sx={{ height: "100%" }}
                   />
                 </Box>
               </Box>

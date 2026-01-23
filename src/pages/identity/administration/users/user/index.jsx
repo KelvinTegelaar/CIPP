@@ -19,7 +19,9 @@ import { useCippUserActions } from "../../../../../components/CippComponents/Cip
 import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
 import dynamic from "next/dynamic";
-const CippMap = dynamic(() => import("../../../../../components/CippComponents/CippMap"), { ssr: false });
+const CippMap = dynamic(() => import("../../../../../components/CippComponents/CippMap"), {
+  ssr: false,
+});
 
 import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
@@ -275,7 +277,7 @@ const Page = () => {
     ) {
       // Filter policies where result is "success"
       const appliedPolicies = signInData.appliedConditionalAccessPolicies.filter(
-        (policy) => policy.result === "success"
+        (policy) => policy.result === "success",
       );
 
       if (appliedPolicies.length > 0) {
@@ -420,7 +422,7 @@ const Page = () => {
   if (mfaDevices.length > 0) {
     // Exclude password authentication method
     const mfaDevicesFiltered = mfaDevices.filter(
-      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod"
+      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod",
     );
 
     if (mfaDevicesFiltered.length > 0) {
@@ -538,7 +540,7 @@ const Page = () => {
               },
             ],
             data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.group"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.group",
             ),
             refreshFunction: refreshFunction,
             simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
@@ -558,7 +560,7 @@ const Page = () => {
           subtext: "List of roles the user is a member of",
           statusText: ` ${
             userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
             ).length
           } Role(s)`,
           statusColor: "info.main",
@@ -566,7 +568,7 @@ const Page = () => {
             title: "Admin Roles",
             hideTitle: true,
             data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
             ),
             simpleColumns: ["displayName", "description"],
             refreshFunction: refreshFunction,
