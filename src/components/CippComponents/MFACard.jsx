@@ -107,7 +107,7 @@ export const MFACard = ({ data, isLoading }) => {
   const processedData = processData();
 
   return (
-    <Card sx={{ flex: 1 }}>
+    <Card sx={{ flex: 1, height: '100%' }}>
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -130,6 +130,7 @@ export const MFACard = ({ data, isLoading }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100%",
+                width: "100%",
               }}
             >
               <Typography variant="body2" color="text.secondary">

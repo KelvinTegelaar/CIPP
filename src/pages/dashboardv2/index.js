@@ -337,19 +337,40 @@ const Page = () => {
             {/* Left Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 3, height: "100%" }}>
-                <SecureScoreCard
-                  data={testsApi.data?.SecureScore}
-                  isLoading={testsApi.isFetching}
-                />
-                <AuthMethodCard data={testsApi.data?.MFAState} isLoading={testsApi.isFetching} />
+                <Box sx={{ height: 450 }}>
+                  <SecureScoreCard
+                    data={testsApi.data?.SecureScore}
+                    isLoading={testsApi.isFetching}
+                    sx={{ height: '100%' }}
+                  />
+                </Box>
+                <Box sx={{ height: 450 }}>
+                  <AuthMethodCard
+                    data={testsApi.data?.MFAState}
+                    isLoading={testsApi.isFetching}
+                    sx={{ height: '100%' }}
+                  />
+                </Box>
               </Box>
             </Grid>
 
             {/* Right Column */}
             <Grid size={{ xs: 12, lg: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 3, height: "100%" }}>
-                <MFACard data={testsApi.data?.MFAState} isLoading={testsApi.isFetching} />
-                <LicenseCard data={testsApi.data?.LicenseData} isLoading={testsApi.isFetching} />
+                <Box sx={{ height: 450 }}>
+                  <MFACard
+                    data={testsApi.data?.MFAState}
+                    isLoading={testsApi.isFetching}
+                    sx={{ height: '100%' }}
+                  />
+                </Box>
+                <Box sx={{ height: 450 }}>
+                  <LicenseCard
+                    data={testsApi.data?.LicenseData}
+                    isLoading={testsApi.isFetching}
+                    sx={{ height: '100%' }}
+                  />
+                </Box>
               </Box>
             </Grid>
           </Grid>
