@@ -208,6 +208,7 @@ export const CippTenantModeDeploy = (props) => {
                 : "Connect to Partner Tenant"
             }
             showSuccessAlert={false}
+            scope="https://graph.microsoft.com/DelegatedPermissionGrant.ReadWrite.All https://graph.microsoft.com/Directory.ReadWrite.All https://graph.microsoft.com/AppRoleAssignment.ReadWrite.All offline_access profile openid"
           />
         </Box>
       </Box>
