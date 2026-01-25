@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, SvgIcon } from "@mui/material";
 import { CippTablePage } from "../CippComponents/CippTablePage.jsx";
 import { Sync, Block, PlayArrow, RestartAlt, Delete, Add } from "@mui/icons-material";

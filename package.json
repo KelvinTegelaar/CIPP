@@ -81,7 +81,7 @@
     "react-apexcharts": "1.7.0",
     "react-beautiful-dnd": "13.1.1",
     "react-copy-to-clipboard": "^5.1.0",
-    "react-dom": "19.1.1",
+    "react-dom": "19.2.3",
     "react-dropzone": "14.3.8",
     "react-error-boundary": "^6.1.0",
     "react-grid-layout": "^1.5.0",
