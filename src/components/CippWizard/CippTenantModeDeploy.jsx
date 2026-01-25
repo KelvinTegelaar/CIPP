@@ -49,8 +49,6 @@ export const CippTenantModeDeploy = (props) => {
 
   return (
     <Stack spacing={2}>
-      <CippApiResults apiObject={addTenant} />
-      <CippApiResults apiObject={updateRefreshToken} />
       {/* Partner Tenant (GDAP) */}
       <Box>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -214,6 +212,8 @@ export const CippTenantModeDeploy = (props) => {
         </Box>
       </Box>
 
+      <CippApiResults apiObject={updateRefreshToken} />
+
       {/* Per-Tenant */}
       <Box>
         <Typography variant="h6" gutterBottom>
@@ -269,6 +269,8 @@ export const CippTenantModeDeploy = (props) => {
             </Box>
           </Stack>
         </Box>
+
+        <CippApiResults apiObject={addTenant} />
 
         <Box sx={{ mx: -4 }}>
           <CippTenantTable
