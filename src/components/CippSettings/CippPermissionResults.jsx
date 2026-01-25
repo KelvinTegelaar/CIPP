@@ -143,9 +143,6 @@ export const CippPermissionResults = (props) => {
             }}
             extendedInfo={[]}
           >
-            <Typography variant="h4" sx={{ mx: 3 }}>
-              Permission Details
-            </Typography>
             {results?.Results?.Links.length > 0 && (
               <CippPropertyListCard
                 title="Documentation"

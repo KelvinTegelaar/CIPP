@@ -149,10 +149,6 @@ export const CippGDAPResults = (props) => {
             }}
             extendedInfo={[]}
           >
-            <Typography variant="h4" sx={{ mx: 3 }}>
-              GDAP Details
-            </Typography>
-
             {results?.Results?.GDAPIssues?.length > 0 && (
               <>
                 <CippDataTable
