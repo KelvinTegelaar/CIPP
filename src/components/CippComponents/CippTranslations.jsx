@@ -56,7 +56,7 @@ export const CippTranslations = {
   syndicatePartner: "Syndicate Partner",
   breadthPartner: "Breadth Partner",
   breadthPartnerDelegatedAdmin: "Breadth Partner (Delegated)",
-  resellerPartnerDelegatedAdmin: "Reseller",
+  resellerPartnerDelegatedAdmin: "Direct Reseller",
   valueAddedResellerPartnerDelegatedAdmin: "Indirect Reseller",
   unknownFutureValue: "Unknown",
 };
