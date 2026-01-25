@@ -440,6 +440,9 @@ export const CIPPM365OAuthButton = ({
 
               if (!refreshResponse.ok) {
                 console.warn("Failed to store refresh token, but continuing with authentication");
+              } else {
+                // Invalidate the listAppId and tenants-table queryKeys to refresh data
+                appIdInfo.refetch();
               }
             } catch (error) {
               console.error("Failed to store refresh token:", error);
