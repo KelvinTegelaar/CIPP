@@ -37,10 +37,6 @@ export const CIPPM365OAuthButton = ({
     waiting: true,
   });
 
-  useEffect(() => {
-    appIdInfo.refetch();
-  }, []);
-
   const handleCloseError = () => {
     setAuthError(null);
   };
@@ -57,8 +53,10 @@ export const CIPPM365OAuthButton = ({
     setCodeRetrievalInProgress(true);
     setAuthError(null);
 
-    // Refetch appId to ensure we have the latest
-    await appIdInfo.refetch();
+    // Only refetch appId if not already present
+    if (!applicationId && !appIdInfo?.data?.applicationId) {
+      await appIdInfo.refetch();
+    }
 
     try {
       // Get the application ID to use
@@ -97,8 +95,10 @@ export const CIPPM365OAuthButton = ({
 
   // Device code authentication function - opens popup and starts polling
   const handleDeviceCodeAuthentication = async () => {
-    // Refetch appId to ensure we have the latest
-    await appIdInfo.refetch();
+    // Only refetch appId if not already present
+    if (!applicationId && !appIdInfo?.data?.applicationId) {
+      await appIdInfo.refetch();
+    }
 
     if (!deviceCodeInfo) {
       // If we don't have a device code yet, retrieve it first
@@ -265,7 +265,9 @@ export const CIPPM365OAuthButton = ({
   };
 
   // MSAL-like authentication function
-  const handleMsalAuthentication = async () => {
+  const handleMsalAuthentication = async (retryCount = 0) => {
+    const maxRetries = 3;
+
     // Clear previous authentication state when starting a new authentication
     setAuthInProgress(true);
     setAuthError(null);
@@ -279,10 +281,12 @@ export const CIPPM365OAuthButton = ({
       onmicrosoftDomain: null,
     });
 
-    // Refetch app ID info to ensure we have the latest
-    await appIdInfo.refetch();
+    // Only refetch app ID if not already present
+    if (!applicationId && !appIdInfo?.data?.applicationId) {
+      await appIdInfo.refetch();
+    }
 
-    // Get the application ID to use - now we're sure to have the latest after the await
+    // Get the application ID to use
     const appId = applicationId || appIdInfo?.data?.applicationId;
 
     // Generate MSAL-like authentication parameters
@@ -527,7 +531,24 @@ export const CIPPM365OAuthButton = ({
           const errorCode = urlParams.get("error");
           const errorDescription = urlParams.get("error_description");
 
-          // Set the error state
+          // Check if it's the AADSTS650051 error (service principal already exists during consent)
+          if (
+            errorCode === "invalid_client" &&
+            errorDescription?.includes("AADSTS650051") &&
+            retryCount < maxRetries
+          ) {
+            // Close the popup
+            popup.close();
+            setAuthInProgress(false);
+
+            // Wait before retrying (exponential backoff)
+            setTimeout(() => {
+              handleMsalAuthentication(retryCount + 1);
+            }, 2000 * (retryCount + 1));
+            return;
+          }
+
+          // Set the error state for non-retryable errors
           const error = {
             errorCode: errorCode,
             errorMessage: errorDescription || "Unknown authentication error",
