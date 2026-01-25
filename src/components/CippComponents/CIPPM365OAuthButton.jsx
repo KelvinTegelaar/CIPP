@@ -358,20 +358,43 @@ export const CIPPM365OAuthButton = ({
         };
 
         // Make the token request through our API proxy to avoid origin header issues
-        const tokenResponse = await fetch(`/api/ExecTokenExchange`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tokenRequest,
-            tokenUrl: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
-            tenantId: appId, // Pass the tenant ID to retrieve the correct client secret
-          }),
-        });
+        // Retry logic for AADSTS650051 (service principal already exists)
+        let retryCount = 0;
+        const maxRetries = 3;
+        let tokenResponse;
+        let tokenData;
 
-        // Parse the token response
-        const tokenData = await tokenResponse.json();
+        while (retryCount <= maxRetries) {
+          tokenResponse = await fetch(`/api/ExecTokenExchange`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              tokenRequest,
+              tokenUrl: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+              tenantId: appId, // Pass the tenant ID to retrieve the correct client secret
+            }),
+          });
+
+          // Parse the token response
+          tokenData = await tokenResponse.json();
+
+          // Check if it's the AADSTS650051 error (service principal already exists)
+          if (
+            tokenData.error === "invalid_client" &&
+            tokenData.error_description?.includes("AADSTS650051")
+          ) {
+            retryCount++;
+            if (retryCount <= maxRetries) {
+              // Wait before retrying (exponential backoff)
+              await new Promise((resolve) => setTimeout(resolve, 2000 * retryCount));
+              continue;
+            }
+          }
+          // If no error or different error, break out of retry loop
+          break;
+        }
 
         // Check if the response contains an error
         if (tokenData.error) {
