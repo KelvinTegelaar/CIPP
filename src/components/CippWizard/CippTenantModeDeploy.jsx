@@ -208,6 +208,11 @@ export const CippTenantModeDeploy = (props) => {
                 : "Connect to Partner Tenant"
             }
             showSuccessAlert={false}
+            promptBeforeAuth={
+              partnerTenantInfo?.data?.orgName
+                ? `Are you sure you want to change the partner tenant from '${partnerTenantInfo?.data?.orgName}'? If you are trying to add another tenant, use the per-tenant authentication below.`
+                : false
+            }
             scope="https://graph.microsoft.com/DelegatedPermissionGrant.ReadWrite.All https://graph.microsoft.com/Directory.ReadWrite.All https://graph.microsoft.com/AppRoleAssignment.ReadWrite.All offline_access profile openid"
           />
         </Box>

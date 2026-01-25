@@ -3,6 +3,7 @@ import { Alert, Button, Typography, CircularProgress, Box } from "@mui/material"
 import { Microsoft, Login, Refresh } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
+import { CippApiDialog } from "./CippApiDialog";
 
 export const CIPPM365OAuthButton = ({
   onAuthSuccess,
@@ -15,12 +16,14 @@ export const CIPPM365OAuthButton = ({
   applicationId = null,
   autoStartDeviceLogon = false,
   validateServiceAccount = true,
+  promptBeforeAuth = false,
 }) => {
   const [authInProgress, setAuthInProgress] = useState(false);
   const [authError, setAuthError] = useState(null);
   const [deviceCodeInfo, setDeviceCodeInfo] = useState(null);
   const [codeRetrievalInProgress, setCodeRetrievalInProgress] = useState(false);
   const [isServiceAccount, setIsServiceAccount] = useState(true);
+  const [promptDialog, setPromptDialog] = useState({ open: false });
   const [tokens, setTokens] = useState({
     accessToken: null,
     refreshToken: null,
@@ -542,9 +545,12 @@ export const CIPPM365OAuthButton = ({
             setAuthInProgress(false);
 
             // Wait before retrying (exponential backoff)
-            setTimeout(() => {
-              handleMsalAuthentication(retryCount + 1);
-            }, 2000 * (retryCount + 1));
+            setTimeout(
+              () => {
+                handleMsalAuthentication(retryCount + 1);
+              },
+              2000 * (retryCount + 1),
+            );
             return;
           }
 
@@ -699,6 +705,30 @@ export const CIPPM365OAuthButton = ({
           ) : null}
         </Box>
       )}
+
+      {promptBeforeAuth !== false && (
+        <CippApiDialog
+          title={"Microsoft 365 Authentication"}
+          createDialog={{
+            open: promptDialog.open,
+            handleClose: () => setPromptDialog({ open: false }),
+          }}
+          api={{
+            type: "POST",
+            confirmText: promptBeforeAuth,
+            noConfirm: false,
+            customFunction: () => {
+              setPromptDialog({ open: false });
+              const authFunction = useDeviceCode
+                ? handleDeviceCodeAuthentication
+                : handleMsalAuthentication;
+              authFunction();
+            },
+          }}
+          fields={[]}
+        />
+      )}
+
       <Button
         variant="contained"
         disabled={
@@ -710,7 +740,16 @@ export const CIPPM365OAuthButton = ({
               appIdInfo?.data?.applicationId,
             ))
         }
-        onClick={useDeviceCode ? handleDeviceCodeAuthentication : handleMsalAuthentication}
+        onClick={() => {
+          if (promptBeforeAuth !== false) {
+            setPromptDialog({ open: true });
+          } else {
+            const authFunction = useDeviceCode
+              ? handleDeviceCodeAuthentication
+              : handleMsalAuthentication;
+            authFunction();
+          }
+        }}
         color="primary"
         startIcon={
           authInProgress || codeRetrievalInProgress ? (
