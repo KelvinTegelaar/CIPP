@@ -115,6 +115,7 @@ export const CippTenantTable = ({
     <>
       <CippTablePage
         title={title}
+        queryKey="tenants-table"
         cardButton={
           showCardButton ? (
             <Button

@@ -25,8 +25,8 @@ export const CippTenantModeDeploy = (props) => {
     required: true,
   });
 
-  const updateRefreshToken = ApiPostCall({ urlfromdata: true });
-  const addTenant = ApiPostCall({ urlfromdata: true });
+  const updateRefreshToken = ApiPostCall({ urlfromdata: true, relatedQueryKeys: ["listAppId"] });
+  const addTenant = ApiPostCall({ urlfromdata: true, relatedQueryKeys: ["listTenants"] });
 
   // Get partner tenant info using the same API call as CIPPM365OAuthButton
   const partnerTenantInfo = ApiGetCall({
