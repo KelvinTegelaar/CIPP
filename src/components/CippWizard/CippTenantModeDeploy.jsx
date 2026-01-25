@@ -1,10 +1,12 @@
 import { useEffect } from "react";
-import { Stack, Box, Typography, Link } from "@mui/material";
+import { Stack, Box, Typography, Link, Chip, Skeleton, SvgIcon } from "@mui/material";
+import { Person, Apartment } from "@mui/icons-material";
 import { CIPPM365OAuthButton } from "../CippComponents/CIPPM365OAuthButton";
 import { CippApiResults } from "../CippComponents/CippApiResults";
-import { ApiPostCall } from "../../api/ApiCall";
+import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { CippTenantTable } from "./CippTenantTable";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
 
 export const CippTenantModeDeploy = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
@@ -15,6 +17,13 @@ export const CippTenantModeDeploy = (props) => {
 
   const updateRefreshToken = ApiPostCall({ urlfromdata: true });
   const addTenant = ApiPostCall({ urlfromdata: true });
+
+  // Get partner tenant info using the same API call as CIPPM365OAuthButton
+  const partnerTenantInfo = ApiGetCall({
+    url: `/api/ExecListAppId`,
+    queryKey: "listAppId",
+    waiting: true,
+  });
 
   useEffect(() => {
     if (updateRefreshToken.isSuccess) {
@@ -55,23 +64,85 @@ export const CippTenantModeDeploy = (props) => {
           .
         </Typography>
 
-        <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <CIPPM365OAuthButton
-              onAuthSuccess={(tokenData) => {
-                const updatedTokenData = {
-                  ...tokenData,
-                  tenantMode: "GDAP",
-                };
-                updateRefreshToken.mutate({
-                  url: "/api/ExecUpdateRefreshToken",
-                  data: updatedTokenData,
-                });
+        {partnerTenantInfo.isLoading && (
+          <Box sx={{ mb: 2, mt: 2 }}>
+            <Skeleton variant="rounded" height={60} />
+          </Box>
+        )}
+
+        {partnerTenantInfo?.data?.orgName && (
+          <Box sx={{ mb: 2, mt: 2 }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: "background.paper",
+                borderRadius: 1,
+                border: "1px solid",
+                borderColor: "divider",
               }}
-              buttonText="Connect to Partner Tenant (Recommended)"
-              showSuccessAlert={false}
-            />
-          </Stack>
+            >
+              <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+                <Stack direction="column" spacing={0.5}>
+                  <Stack direction="row" spacing={0.75} alignItems="center">
+                    <SvgIcon fontSize="small">
+                      <Apartment />
+                    </SvgIcon>
+                    <Typography variant="body2" fontWeight="medium">
+                      {partnerTenantInfo.data.orgName}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {partnerTenantInfo.data.tenantId}
+                    </Typography>
+                  </Stack>
+                  {partnerTenantInfo.data.authenticatedUserDisplayName && (
+                    <Stack direction="row" spacing={0.75} alignItems="center">
+                      <SvgIcon fontSize="small">
+                        <Person />
+                      </SvgIcon>
+                      <Typography variant="body2" fontWeight="medium">
+                        {partnerTenantInfo.data.authenticatedUserDisplayName}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {partnerTenantInfo.data.authenticatedUserPrincipalName}
+                      </Typography>
+                    </Stack>
+                  )}
+                </Stack>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {partnerTenantInfo.data.isPartnerTenant ? (
+                    <Chip
+                      label={getCippTranslation(partnerTenantInfo.data.partnerTenantType)}
+                      size="small"
+                      color="info"
+                    />
+                  ) : (
+                    <Chip label="Non-Partner" size="small" color="default" />
+                  )}
+                </Stack>
+              </Stack>
+            </Box>
+          </Box>
+        )}
+
+        <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
+          <CIPPM365OAuthButton
+            onAuthSuccess={(tokenData) => {
+              const updatedTokenData = {
+                ...tokenData,
+                tenantMode: "GDAP",
+              };
+              updateRefreshToken.mutate({
+                url: "/api/ExecUpdateRefreshToken",
+                data: updatedTokenData,
+              });
+            }}
+            buttonText={
+              partnerTenantInfo?.data?.orgName
+                ? "Change Partner Tenant"
+                : "Connect to Partner Tenant (Recommended)"
+            }
+            showSuccessAlert={false}
+          />
         </Box>
       </Box>
 
@@ -105,15 +176,17 @@ export const CippTenantModeDeploy = (props) => {
           </Stack>
         </Box>
 
-        <CippTenantTable
-          title="Authenticated Tenants"
-          tenantInTitle={false}
-          customColumns={["displayName", "defaultDomainName", "delegatedPrivilegeStatus"]}
-          showExcludeButtons={false}
-          showCardButton={false}
-          showTenantSelector={false}
-          showAllTenantsSelector={false}
-        />
+        <Box sx={{ mx: -4 }}>
+          <CippTenantTable
+            title="Authenticated Tenants"
+            tenantInTitle={false}
+            customColumns={["displayName", "defaultDomainName", "delegatedPrivilegeStatus"]}
+            showExcludeButtons={false}
+            showCardButton={false}
+            showTenantSelector={false}
+            showAllTenantsSelector={false}
+          />
+        </Box>
       </Box>
 
       <CippWizardStepButtons
