@@ -264,6 +264,7 @@ export const CippTenantModeDeploy = (props) => {
                   }}
                   buttonText="Connect to Separate Tenants"
                   showSuccessAlert={false}
+                  scope="https://graph.microsoft.com/DelegatedPermissionGrant.ReadWrite.All https://graph.microsoft.com/Directory.ReadWrite.All https://graph.microsoft.com/AppRoleAssignment.ReadWrite.All offline_access profile openid"
                 />
               </Box>
             </Box>
