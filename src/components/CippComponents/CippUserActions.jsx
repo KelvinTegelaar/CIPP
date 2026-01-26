@@ -333,7 +333,7 @@ export const useCippUserActions = () => {
             labelField: (option) =>
               option?.calculatedGroupType
                 ? `${option.displayName} (${option.calculatedGroupType})`
-                : option?.displayName ?? "",
+                : (option?.displayName ?? ""),
             valueField: "id",
             addedField: {
               groupType: "groupType",
@@ -548,6 +548,17 @@ export const useCippUserActions = () => {
       confirmText:
         "Are you sure you want to change the source of authority for [userPrincipalName]? Setting it to On-Premises Managed will take until the next sync cycle to show the change.",
       multiPost: false,
+    },
+    {
+      label: "Reprocess License Assignments",
+      type: "POST",
+      icon: <CloudDone />,
+      url: "/api/ExecReprocessUserLicenses",
+      data: { ID: "id", userPrincipalName: "userPrincipalName" },
+      confirmText:
+        "Are you sure you want to reprocess license assignments for [userPrincipalName]?",
+      multiPost: false,
+      condition: (row) => canWriteUser,
     },
     {
       label: "Revoke all user sessions",

@@ -958,6 +958,16 @@ const AlertWizard = () => {
                                     name={commandValue.value?.inputName}
                                     formControl={formControl}
                                     label={commandValue.value?.inputLabel}
+                                    required={commandValue.value?.required || false}
+                                    {...(commandValue.value?.inputType === 'autoComplete'
+                                      ? {
+                                          options: commandValue.value?.options,
+                                          creatable: commandValue.value?.creatable || true,
+                                          multiple: commandValue.value?.multiple || true,
+                                        }
+                                      : {}
+                                      )
+                                    }
                                   />
                                 )}
                               {commandValue?.value?.multipleInput &&
@@ -974,6 +984,16 @@ const AlertWizard = () => {
                                         name={input.inputName}
                                         formControl={formControl}
                                         label={input.inputLabel}
+                                        required={input.required || false}
+                                        {...(input.inputType === 'autoComplete'
+                                          ? {
+                                              options: input.options,
+                                              creatable: input.creatable ?? true,
+                                              multiple: input.multiple ?? true,
+                                            }
+                                          : {}
+                                          )
+                                        }
                                       />
                                     </Grid>
                                   </Grid>

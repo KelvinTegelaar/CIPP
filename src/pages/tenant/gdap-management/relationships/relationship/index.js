@@ -120,7 +120,7 @@ const Page = () => {
         properties.push({
           label: "Invite URL",
           value: getCippFormatting(
-            "https://admin.microsoft.com/AdminPortal/Home#/partners/invitation/granularAdminRelationships/" +
+            "https://admin.cloud.microsoft/?#/partners/invitation/granularAdminRelationships/" +
               data?.id,
             "InviteUrl",
             "url"
