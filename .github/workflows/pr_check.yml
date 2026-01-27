@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   check-branch:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Check and Comment on PR
         # Only process fork PRs with specific branch conditions
@@ -46,14 +46,14 @@ jobs:
             }
 
             message += '🔒 This PR will now be automatically closed due to the above rules.';
-            
+
             // Post the comment
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,
               body: message
             });
-            
+
             // Close the PR
             await github.rest.pulls.update({
               ...context.repo,
