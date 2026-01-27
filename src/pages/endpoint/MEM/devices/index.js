@@ -189,7 +189,7 @@ const Page = () => {
       url: "/api/ExecDevicePasscodeAction",
       data: {
         GUID: "id",
-        Action: "removeDevicePasscode",
+        Action: "resetPasscode",
       },
       condition: (row) => row.operatingSystem === "iOS",
       confirmText:
