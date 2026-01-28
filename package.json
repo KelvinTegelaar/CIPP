@@ -96,7 +96,7 @@
     "react-papaparse": "^4.4.0",
     "react-quill": "^2.0.0",
     "react-redux": "9.2.0",
-    "react-syntax-highlighter": "^15.6.1",
+    "react-syntax-highlighter": "^16.1.0",
     "react-time-ago": "^7.3.3",
     "react-virtuoso": "^4.12.8",
     "react-window": "^2.1.0",
