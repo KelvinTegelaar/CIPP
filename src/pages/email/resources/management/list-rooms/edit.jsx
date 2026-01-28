@@ -181,30 +181,24 @@ const EditRoomMailbox = () => {
         WorkingHoursTimeZone: values.WorkingHoursTimeZone?.value || values.WorkingHoursTimeZone,
       })}
     >
-      {roomInfo.isLoading && (
+      {roomInfo.isFetching && (
         <CippFormSkeleton layout={[2, 3, 1, 2, 3, 2, 1, 2, 3, 1, 3, 1, 3, 1]} />
       )}
-      {roomInfo.isSuccess && (
-        <>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-            <Typography variant="subtitle1">Basic Information</Typography>
-            <Tooltip title="Refresh">
-              <IconButton
-                size="small"
-                onClick={() => roomInfo.refetch()}
-                disabled={roomInfo.isFetching}
-              >
-                <Sync fontSize="small" sx={{ animation: roomInfo.isFetching ? "spin 1s linear infinite" : "none", "@keyframes spin": { "0%": { transform: "rotate(0deg)" }, "100%": { transform: "rotate(360deg)" } } }} />
-              </IconButton>
-            </Tooltip>
-          </Box>
-          <Box
-            component="fieldset"
-            disabled={roomInfo.isFetching}
-            sx={{ border: "none", p: 0, m: 0, opacity: roomInfo.isFetching ? 0.5 : 1, transition: "opacity 0.2s" }}
-          >
-            <Grid container spacing={2}>
-              <Grid size={{ md: 6, xs: 12 }}>
+      {roomInfo.isSuccess && !roomInfo.isFetching && (
+        <Grid container spacing={2}>
+          {/* Basic Information */}
+          <Grid size={{ xs: 12 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+              <Typography variant="subtitle1">Basic Information</Typography>
+              <Tooltip title="Refresh">
+                <IconButton size="small" onClick={() => roomInfo.refetch()}>
+                  <Sync fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Grid>
+
+          <Grid size={{ md: 6, xs: 12 }}>
             <CippFormComponent
               type="textField"
               label="Display Name"
@@ -540,9 +534,7 @@ const EditRoomMailbox = () => {
               formControl={formControl}
             />
           </Grid>
-            </Grid>
-          </Box>
-        </>
+        </Grid>
       )}
     </CippFormPage>
   );
