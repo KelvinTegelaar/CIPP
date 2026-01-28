@@ -99,7 +99,7 @@
     "react-syntax-highlighter": "^15.6.1",
     "react-time-ago": "^7.3.3",
     "react-virtuoso": "^4.12.8",
-    "react-window": "^2.1.0",
+    "react-window": "^2.2.5",
     "recharts": "^3.6.0",
     "redux": "5.0.1",
     "redux-devtools-extension": "2.13.9",
