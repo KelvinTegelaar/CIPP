@@ -90,6 +90,9 @@ const EditRoomMailbox = () => {
         ForwardRequestsToDelegates: room.ForwardRequestsToDelegates,
         ScheduleOnlyDuringWorkHours: room.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: room.AutomateProcessing,
+        AddOrganizerToSubject: room.AddOrganizerToSubject,
+        DeleteSubject: room.DeleteSubject,
+        RemoveCanceledMeetings: room.RemoveCanceledMeetings,
 
         // Calendar Configuration
         WorkDays:
@@ -166,6 +169,9 @@ const EditRoomMailbox = () => {
         ForwardRequestsToDelegates: values.ForwardRequestsToDelegates,
         ScheduleOnlyDuringWorkHours: values.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: values.AutomateProcessing?.value || values.AutomateProcessing,
+        AddOrganizerToSubject: values.AddOrganizerToSubject,
+        DeleteSubject: values.DeleteSubject,
+        RemoveCanceledMeetings: values.RemoveCanceledMeetings,
 
         // Calendar Configuration
         WorkDays: values.WorkDays?.map((day) => day.value).join(","),
@@ -302,6 +308,30 @@ const EditRoomMailbox = () => {
               type="switch"
               label="Forward to Delegates"
               name="ForwardRequestsToDelegates"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Add Organizer to Subject"
+              name="AddOrganizerToSubject"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Delete Subject"
+              name="DeleteSubject"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Remove Canceled Meetings"
+              name="RemoveCanceledMeetings"
               formControl={formControl}
             />
           </Grid>
