@@ -152,6 +152,29 @@
     ]
   },
   {
+    "name": "DefenderAlerts",
+    "label": "Alert on new Defender Alerts found",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Alert severities to include",
+        "inputName": "AlertSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Vulnerabilities",
     "label": "Alert on software vulnerabilities",
     "requiresInput": true,
