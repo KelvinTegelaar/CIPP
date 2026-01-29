@@ -8,21 +8,21 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import GDAPRoles from "/src/data/GDAPRoles";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import GDAPRoles from "../../../../data/GDAPRoles";
 import { Box, Stack } from "@mui/system";
 import { Grid } from "@mui/system";
-import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
-import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "/src/api/ApiCall";
+import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
-import { getCippFormatting } from "/src/utils/get-cipp-formatting";
+import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { router } from "next/router";
-import cippDefaults from "/src/data/CIPPDefaultGDAPRoles";
-import { WizardSteps } from "/src/components/CippWizard/wizard-steps";
+import cippDefaults from "../../../../data/CIPPDefaultGDAPRoles";
+import { WizardSteps } from "../../../../components/CippWizard/wizard-steps";
 import { ExpandMore, PlayArrow, Replay } from "@mui/icons-material";
-import CippPageCard from "/src/components/CippCards/CippPageCard";
+import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import CippDataTableButton from "../../../../components/CippTable/CippDataTableButton";
 

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 const CippAddGroupTemplateForm = (props) => {
   const { formControl } = props;

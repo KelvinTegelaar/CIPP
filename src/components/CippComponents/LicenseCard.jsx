@@ -90,7 +90,7 @@ export const LicenseCard = ({ data, isLoading }) => {
   const stats = calculateStats();
 
   return (
-    <Card sx={{ flex: 1 }}>
+    <Card sx={{ flex: 1, height: '100%' }}>
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

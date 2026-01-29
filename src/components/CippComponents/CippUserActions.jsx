@@ -20,7 +20,7 @@ import {
   CloudSync,
 } from "@mui/icons-material";
 import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
-import { useSettings } from "/src/hooks/use-settings.js";
+import { useSettings } from "../../hooks/use-settings.js";
 import { usePermissions } from "../../hooks/use-permissions";
 import { Tooltip, Box } from "@mui/material";
 import CippFormComponent from "./CippFormComponent";

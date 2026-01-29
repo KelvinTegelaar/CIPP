@@ -18,8 +18,8 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
 import {
   CheckCircle,
   Cancel,
@@ -37,7 +37,7 @@ import {
   Schedule,
   Check,
 } from "@mui/icons-material";
-import standards from "/src/data/standards.json";
+import standards from "../../../data/standards.json";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
 import { SvgIcon } from "@mui/material";
 import { useForm } from "react-hook-form";

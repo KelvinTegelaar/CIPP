@@ -1,9 +1,9 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import CippGraphExplorerFilter from "../../../../components/CippTable/CippGraphExplorerFilter";
 import { useState } from "react";
 import { Grid } from "@mui/system";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const Page = () => {
   const [apiFilter, setApiFilter] = useState([]);

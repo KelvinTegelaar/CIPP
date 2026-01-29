@@ -8,7 +8,7 @@ jobs:
   build:
     if: github.repository_owner == 'KelvinTegelaar'
     name: "Check for Version Update"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: Check for Changed Files
         uses: brettcannon/check-for-changed-files@v1.1.0

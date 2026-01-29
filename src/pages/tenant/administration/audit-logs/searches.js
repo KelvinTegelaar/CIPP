@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { CippAuditLogSearchDrawer } from "/src/components/CippComponents/CippAuditLogSearchDrawer.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippAuditLogSearchDrawer } from "../../../../components/CippComponents/CippAuditLogSearchDrawer.jsx";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { ManageSearch } from "@mui/icons-material";
 import tabOptions from "./tabOptions.json";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const simpleColumns = ["displayName", "status", "filterStartDateTime", "filterEndDateTime"];
 

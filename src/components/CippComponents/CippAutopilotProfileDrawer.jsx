@@ -7,7 +7,7 @@ import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 import { CippApiResults } from "./CippApiResults";
-import languageList from "/src/data/languageList.json";
+import languageList from "../../data/languageList.json";
 import { ApiPostCall } from "../../api/ApiCall";
 
 export const CippAutopilotProfileDrawer = ({

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from "@mui/
 import { Refresh } from "@mui/icons-material";
 import { useForm, FormProvider } from "react-hook-form";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "./CippApiResults";
 
 export const DomainAnalyserDialog = ({ createDialog }) => {
