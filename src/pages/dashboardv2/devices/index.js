@@ -9,13 +9,13 @@ import {
   Stack,
   Chip,
 } from "@mui/material";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import tabOptions from "../tabOptions";
-import { useSettings } from "/src/hooks/use-settings";
-import { ApiGetCall } from "/src/api/ApiCall.jsx";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
-import { CippTestDetailOffCanvas } from "/src/components/CippTestDetail/CippTestDetailOffCanvas";
+import { useSettings } from "../../../hooks/use-settings";
+import { ApiGetCall } from "../../../api/ApiCall.jsx";
+import { CippDataTable } from "../../../components/CippTable/CippDataTable";
+import { CippTestDetailOffCanvas } from "../../../components/CippTestDetail/CippTestDetailOffCanvas";
 import { useRouter } from "next/router";
 
 const Page = () => {

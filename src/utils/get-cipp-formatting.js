@@ -635,6 +635,20 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     );
   }
 
+  //handle assignedUsers
+  if (cellName === "AssignedUsers") {
+    //show the display name in text. otherwise, just return the obj.
+    return isText ? (
+      Array.isArray(data) ? (
+        data.map((user) => user.displayName).join(",")
+      ) : (
+        data.displayName
+      )
+    ) : (
+      <CippDataTableButton data={data} tableTitle="Assigned Users" />
+    );
+  }
+
   // Handle assigned licenses
   if (cellName === "assignedLicenses") {
     var translatedLicenses = getCippLicenseTranslation(data);

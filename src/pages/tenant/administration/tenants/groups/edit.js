@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
 import { useForm } from "react-hook-form";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippAddEditTenantGroups from "/src/components/CippComponents/CippAddEditTenantGroups";
+import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
+import CippAddEditTenantGroups from "../../../../../components/CippComponents/CippAddEditTenantGroups";
 
 const Page = () => {
   const router = useRouter();

@@ -1,6 +1,6 @@
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import { Delete, Add } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "../tabOptions.json";

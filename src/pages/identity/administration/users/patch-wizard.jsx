@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippWizardPage from "../../../../components/CippWizard/CippWizardPage.jsx";
 import {
   Stack,
   Typography,
@@ -16,10 +16,10 @@ import {
   FormControlLabel,
   Autocomplete,
 } from "@mui/material";
-import { CippWizardStepButtons } from "/src/components/CippWizard/CippWizardStepButtons";
-import { ApiPostCall, ApiGetCall } from "/src/api/ApiCall";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippWizardStepButtons } from "../../../../components/CippWizard/CippWizardStepButtons";
+import { ApiPostCall, ApiGetCall } from "../../../../api/ApiCall";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { Delete } from "@mui/icons-material";
 
 // User properties that can be patched

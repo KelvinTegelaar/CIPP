@@ -1,13 +1,13 @@
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useForm } from "react-hook-form";
 import { Alert, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
 import { useEffect, useMemo } from "react";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import { useTimezones } from "/src/hooks/use-timezones";
+import CippFormPage from "../../../components/CippFormPages/CippFormPage";
+import { useTimezones } from "../../../hooks/use-timezones";
 import tabOptions from "./tabOptions";
 
 const Page = () => {

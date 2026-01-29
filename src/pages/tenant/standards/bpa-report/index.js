@@ -1,13 +1,13 @@
 import { Button } from "@mui/material";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { CopyAll, Delete, Edit, AddBox, GitHub, Sync } from "@mui/icons-material";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../api/ApiCall";
 import { Stack } from "@mui/system";
-import { BPASyncDialog } from "/src/components/CippComponents/BPASyncDialog";
-import { useDialog } from "/src/hooks/use-dialog";
+import { BPASyncDialog } from "../../../../components/CippComponents/BPASyncDialog";
+import { useDialog } from "../../../../hooks/use-dialog";
 
 const Page = () => {
   const pageTitle = "Best Practice Reports";

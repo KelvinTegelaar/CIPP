@@ -17,7 +17,7 @@ import {
   PersonAdd,
   Email,
 } from "@mui/icons-material";
-import { useSettings } from "/src/hooks/use-settings.js";
+import { useSettings } from "../../hooks/use-settings.js";
 import { useMemo } from "react";
 
 export const CippExchangeActions = () => {

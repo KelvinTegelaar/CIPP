@@ -6,7 +6,7 @@ import { CippOffCanvas } from "./CippOffCanvas";
 import { ApiPostCall, ApiGetCallWithPagination } from "../../api/ApiCall";
 import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippAuditLogSearchDrawer = ({
   buttonText = "New Search",

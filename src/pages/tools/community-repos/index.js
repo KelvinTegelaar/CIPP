@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Layout as DashboardLayout } from "/src/layouts";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import {
   Button,
   Dialog,
@@ -21,14 +21,14 @@ import {
   SvgIcon,
 } from "@mui/material";
 import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall } from "../../../api/ApiCall";
 import { useForm, FormProvider } from "react-hook-form";
 import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
+import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import { Add, AddBox, Close, ForkLeft, OpenInNew } from "@mui/icons-material";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
+import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../../api/ApiCall";
 

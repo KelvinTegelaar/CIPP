@@ -3,7 +3,7 @@ import { Box, Container, Stack } from "@mui/system";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useSettings } from "../../hooks/use-settings";
 import { CippHead } from "./CippHead";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const CippTablePage = (props) => {
   const {
@@ -24,11 +24,14 @@ export const CippTablePage = (props) => {
     tableFilter,
     tenantInTitle = true,
     filters,
+    initialFilters,
     sx = {},
     ...other
   } = props;
   const tenant = useSettings().currentTenant;
-  const [tableFilters] = useState(filters || []);
+
+  // Use initialFilters if provided, otherwise use regular filters
+  const activeFilters = initialFilters || filters;
   return (
     <>
       <CippHead title={title} />
@@ -63,15 +66,7 @@ export const CippTablePage = (props) => {
                 columns={columns}
                 columnsFromApi={columnsFromApi}
                 offCanvas={offCanvas}
-                filters={tableFilters}
-                initialState={{
-                  columnFilters: filters
-                    ? filters.map((filter) => ({
-                        id: filter.id || filter.columnId,
-                        value: filter.value,
-                      }))
-                    : [],
-                }}
+                filters={activeFilters}
                 {...other}
               />
             </Card>
