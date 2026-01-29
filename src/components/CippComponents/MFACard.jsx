@@ -111,7 +111,7 @@ export const MFACard = ({ data, isLoading }) => {
   const handleNodeClick = (node) => {
     // Build filter based on clicked node
     let filters = [];
-    
+
     switch (node.id) {
       case "Enabled users":
         filters = [{ id: "AccountEnabled", value: "Yes" }];
@@ -119,13 +119,13 @@ export const MFACard = ({ data, isLoading }) => {
       case "MFA registered":
         filters = [
           { id: "AccountEnabled", value: "Yes" },
-          { id: "MFARegistration", value: "Yes" }
+          { id: "MFARegistration", value: "Yes" },
         ];
         break;
       case "Not registered":
         filters = [
           { id: "AccountEnabled", value: "Yes" },
-          { id: "MFARegistration", value: "No" }
+          { id: "MFARegistration", value: "No" },
         ];
         break;
       default:
@@ -136,66 +136,64 @@ export const MFACard = ({ data, isLoading }) => {
     // Navigate to MFA report with filters
     router.push({
       pathname: "/identity/reports/mfa-report",
-      query: { filters: JSON.stringify(filters) }
+      query: { filters: JSON.stringify(filters) },
     });
   };
 
   const handleLinkClick = (link) => {
     // Build filters based on the link's source and target
     let filters = [];
-    
+
     if (link.source.id === "Enabled users" && link.target.id === "MFA registered") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "Yes" }
+        { id: "MFARegistration", value: "Yes" },
       ];
     } else if (link.source.id === "Enabled users" && link.target.id === "Not registered") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "No" }
+        { id: "MFARegistration", value: "No" },
       ];
     } else if (link.source.id === "MFA registered" && link.target.id === "CA policy") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "Yes" }
+        { id: "MFARegistration", value: "Yes" },
       ];
       // Note: We can't easily filter by CoveredByCA in the table since it needs complex logic
     } else if (link.source.id === "MFA registered" && link.target.id === "Security defaults") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
         { id: "MFARegistration", value: "Yes" },
-        { id: "CoveredBySD", value: "Yes" }
+        { id: "CoveredBySD", value: "Yes" },
       ];
     } else if (link.source.id === "MFA registered" && link.target.id === "Per-user MFA") {
-      filters = [
-        { id: "AccountEnabled", value: "Yes" }
-      ];
+      filters = [{ id: "AccountEnabled", value: "Yes" }];
       // Note: Per-user MFA can be "enabled" or "enforced"
     } else if (link.source.id === "MFA registered" && link.target.id === "No enforcement") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "Yes" }
+        { id: "MFARegistration", value: "Yes" },
       ];
     } else if (link.source.id === "Not registered" && link.target.id === "CA policy") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "No" }
+        { id: "MFARegistration", value: "No" },
       ];
     } else if (link.source.id === "Not registered" && link.target.id === "Security defaults") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
         { id: "MFARegistration", value: "No" },
-        { id: "CoveredBySD", value: "Yes" }
+        { id: "CoveredBySD", value: "Yes" },
       ];
     } else if (link.source.id === "Not registered" && link.target.id === "Per-user MFA") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "No" }
+        { id: "MFARegistration", value: "No" },
       ];
     } else if (link.source.id === "Not registered" && link.target.id === "No enforcement") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "No" }
+        { id: "MFARegistration", value: "No" },
       ];
     }
 
@@ -203,13 +201,13 @@ export const MFACard = ({ data, isLoading }) => {
     if (filters.length > 0) {
       router.push({
         pathname: "/identity/reports/mfa-report",
-        query: { filters: JSON.stringify(filters) }
+        query: { filters: JSON.stringify(filters) },
       });
     }
   };
 
   return (
-    <Card sx={{ flex: 1, height: '100%' }}>
+    <Card sx={{ flex: 1, height: "100%" }}>
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -224,8 +222,8 @@ export const MFACard = ({ data, isLoading }) => {
           {isLoading ? (
             <Skeleton variant="rectangular" width="100%" height={300} />
           ) : processedData ? (
-            <CippSankey 
-              data={{ nodes: processedData.nodes, links: processedData.links }} 
+            <CippSankey
+              data={{ nodes: processedData.nodes, links: processedData.links }}
               onNodeClick={handleNodeClick}
               onLinkClick={handleLinkClick}
             />

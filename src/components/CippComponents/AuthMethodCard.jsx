@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 export const AuthMethodCard = ({ data, isLoading }) => {
   const router = useRouter();
-  
+
   const processData = () => {
     if (!data || !Array.isArray(data) || data.length === 0) {
       return null;
@@ -115,7 +115,7 @@ export const AuthMethodCard = ({ data, isLoading }) => {
 
   const handleNodeClick = (node) => {
     let filters = [];
-    
+
     switch (node.id) {
       case "Users":
         filters = [{ id: "AccountEnabled", value: "Yes" }];
@@ -123,7 +123,7 @@ export const AuthMethodCard = ({ data, isLoading }) => {
       case "Single factor":
         filters = [
           { id: "AccountEnabled", value: "Yes" },
-          { id: "MFARegistration", value: "No" }
+          { id: "MFARegistration", value: "No" },
         ];
         break;
       case "Multi factor":
@@ -133,13 +133,13 @@ export const AuthMethodCard = ({ data, isLoading }) => {
       case "Phishable":
         filters = [
           { id: "AccountEnabled", value: "Yes" },
-          { id: "MFARegistration", value: "Yes" }
+          { id: "MFARegistration", value: "Yes" },
         ];
         break;
       case "Phish resistant":
         filters = [
           { id: "AccountEnabled", value: "Yes" },
-          { id: "MFARegistration", value: "Yes" }
+          { id: "MFARegistration", value: "Yes" },
         ];
         break;
       default:
@@ -148,52 +148,52 @@ export const AuthMethodCard = ({ data, isLoading }) => {
 
     router.push({
       pathname: "/identity/reports/mfa-report",
-      query: { filters: JSON.stringify(filters) }
+      query: { filters: JSON.stringify(filters) },
     });
   };
 
   const handleLinkClick = (link) => {
     let filters = [];
-    
+
     if (link.source.id === "Users" && link.target.id === "Single factor") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "No" }
+        { id: "MFARegistration", value: "No" },
       ];
     } else if (link.source.id === "Users" && link.target.id === "Multi factor") {
       filters = [{ id: "AccountEnabled", value: "Yes" }];
     } else if (link.source.id === "Users" && link.target.id === "Phishable") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "Yes" }
+        { id: "MFARegistration", value: "Yes" },
       ];
     } else if (link.source.id === "Users" && link.target.id === "Phish resistant") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "Yes" }
+        { id: "MFARegistration", value: "Yes" },
       ];
     } else if (link.source.id === "Phishable") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "Yes" }
+        { id: "MFARegistration", value: "Yes" },
       ];
     } else if (link.source.id === "Phish resistant") {
       filters = [
         { id: "AccountEnabled", value: "Yes" },
-        { id: "MFARegistration", value: "Yes" }
+        { id: "MFARegistration", value: "Yes" },
       ];
     }
 
     if (filters.length > 0) {
       router.push({
         pathname: "/identity/reports/mfa-report",
-        query: { filters: JSON.stringify(filters) }
+        query: { filters: JSON.stringify(filters) },
       });
     }
   };
 
   return (
-    <Card sx={{ flex: 1, height: '100%' }}>
+    <Card sx={{ flex: 1, height: "100%" }}>
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -208,7 +208,7 @@ export const AuthMethodCard = ({ data, isLoading }) => {
           {isLoading ? (
             <Skeleton variant="rectangular" width="100%" height={300} />
           ) : processedData ? (
-            <CippSankey 
+            <CippSankey
               data={{ nodes: processedData.nodes, links: processedData.links }}
               onNodeClick={handleNodeClick}
               onLinkClick={handleLinkClick}

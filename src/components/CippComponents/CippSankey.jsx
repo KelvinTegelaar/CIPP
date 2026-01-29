@@ -27,10 +27,10 @@ export const CippSankey = ({ data, onNodeClick, onLinkClick }) => {
   return (
     <div
       className={`h-full w-full ${isDark ? "sankey-dark-mode" : "sankey-light-mode"}`}
-      style={{ 
-        height: "100%", 
+      style={{
+        height: "100%",
         width: "100%",
-        cursor: onNodeClick || onLinkClick ? "pointer" : "default"
+        cursor: onNodeClick || onLinkClick ? "pointer" : "default",
       }}
     >
       <ResponsiveSankey
