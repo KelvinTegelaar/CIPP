@@ -264,7 +264,6 @@
     * [Equipment](user-documentation/email/resource-management/equipment/README.md)
       * [Add Equipment Mailbox](user-documentation/email/resource-management/equipment/add.md)
     * [Rooms](user-documentation/email/resource-management/list-rooms/README.md)
-      * [Add Room](user-documentation/email/resource-management/list-rooms/add.md)
       * [Edit Room](user-documentation/email/resource-management/list-rooms/edit.md)
     * [Room Lists](user-documentation/email/resource-management/room-lists/README.md)
       * [Add Room List](user-documentation/email/resource-management/room-lists/add.md)

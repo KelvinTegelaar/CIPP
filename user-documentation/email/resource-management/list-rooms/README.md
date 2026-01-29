@@ -4,9 +4,9 @@ This page lists all the rooms that are available in the tenant.
 
 ### Action Buttons
 
-{% content-ref url="add.md" %}
-[add.md](add.md)
-{% endcontent-ref %}
+#### Add Room
+
+This flyout allows you to create a new room. Enter the "Display Name", "Username", "Primary Domain name", and "Resource Capacity" for the room and click "Submit".
 
 ### Table Details
 

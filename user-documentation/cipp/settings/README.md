@@ -77,7 +77,7 @@ This allows you to set the maximum duration allowed for a JIT admin created thro
 
 <summary>DNS Resolver</summary>
 
-You can switch providers to either Google, Cloudflare or Quad9 for your domain analyzer results.
+You can switch providers to either Google or Cloudflare for your domain analyzer results.
 
 </details>
 
