@@ -23,7 +23,7 @@ const CippDnsSettings = () => {
   };
 
   const DnsButtons = () => {
-    const resolvers = ["Google", "Cloudflare", "Quad9"];
+    const resolvers = ["Google", "Cloudflare"];
     return resolvers.map((resolver, index) => (
       <Button
         key={resolver}
