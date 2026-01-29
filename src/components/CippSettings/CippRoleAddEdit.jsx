@@ -15,8 +15,8 @@ import {
 
 import { Grid } from "@mui/system";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
-import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
+import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
+import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { Save, WarningOutlined } from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "../CippComponents/CippFormComponent";

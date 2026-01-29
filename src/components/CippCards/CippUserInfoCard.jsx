@@ -12,8 +12,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { AccountCircle, PhotoCamera, Delete } from "@mui/icons-material";
-import { PropertyList } from "/src/components/property-list";
-import { PropertyListItem } from "/src/components/property-list-item";
+import { PropertyList } from "../property-list";
+import { PropertyListItem } from "../property-list-item";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { Stack, Grid, Box } from "@mui/system";
 import { useState, useRef, useCallback } from "react";

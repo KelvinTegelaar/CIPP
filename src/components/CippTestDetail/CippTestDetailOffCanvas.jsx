@@ -4,7 +4,7 @@ import { KeyboardArrowRight } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Grid } from "@mui/system";
-import standardsData from "/src/data/standards.json";
+import standardsData from "../../data/standards.json";
 
 const getStatusColor = (status) => {
   switch (status?.toLowerCase()) {

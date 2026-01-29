@@ -1,7 +1,7 @@
 import "@mui/material";
 import { Grid } from "@mui/system";
 import { useWatch } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 
 const DEVICE_PLATFORM_OPTIONS = [
   { label: "Windows 10 and later", value: "windows10AndLater" },

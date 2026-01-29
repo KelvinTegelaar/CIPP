@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Alert, Button, Typography, CircularProgress, Box } from "@mui/material";
+import { Microsoft, Login, Refresh } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
+import { CippApiDialog } from "./CippApiDialog";
 
 export const CIPPM365OAuthButton = ({
   onAuthSuccess,
@@ -14,12 +16,14 @@ export const CIPPM365OAuthButton = ({
   applicationId = null,
   autoStartDeviceLogon = false,
   validateServiceAccount = true,
+  promptBeforeAuth = false,
 }) => {
   const [authInProgress, setAuthInProgress] = useState(false);
   const [authError, setAuthError] = useState(null);
   const [deviceCodeInfo, setDeviceCodeInfo] = useState(null);
   const [codeRetrievalInProgress, setCodeRetrievalInProgress] = useState(false);
   const [isServiceAccount, setIsServiceAccount] = useState(true);
+  const [promptDialog, setPromptDialog] = useState({ open: false });
   const [tokens, setTokens] = useState({
     accessToken: null,
     refreshToken: null,
@@ -32,12 +36,9 @@ export const CIPPM365OAuthButton = ({
 
   const appIdInfo = ApiGetCall({
     url: `/api/ExecListAppId`,
+    queryKey: "listAppId",
     waiting: true,
   });
-
-  useEffect(() => {
-    appIdInfo.refetch();
-  }, []);
 
   const handleCloseError = () => {
     setAuthError(null);
@@ -55,8 +56,10 @@ export const CIPPM365OAuthButton = ({
     setCodeRetrievalInProgress(true);
     setAuthError(null);
 
-    // Refetch appId to ensure we have the latest
-    await appIdInfo.refetch();
+    // Only refetch appId if not already present
+    if (!applicationId && !appIdInfo?.data?.applicationId) {
+      await appIdInfo.refetch();
+    }
 
     try {
       // Get the application ID to use
@@ -66,8 +69,8 @@ export const CIPPM365OAuthButton = ({
       // Request device code from our API endpoint
       const deviceCodeResponse = await fetch(
         `/api/ExecDeviceCodeLogon?operation=getDeviceCode&clientId=${appId}&scope=${encodeURIComponent(
-          scope
-        )}`
+          scope,
+        )}`,
       );
       const deviceCodeData = await deviceCodeResponse.json();
 
@@ -95,8 +98,10 @@ export const CIPPM365OAuthButton = ({
 
   // Device code authentication function - opens popup and starts polling
   const handleDeviceCodeAuthentication = async () => {
-    // Refetch appId to ensure we have the latest
-    await appIdInfo.refetch();
+    // Only refetch appId if not already present
+    if (!applicationId && !appIdInfo?.data?.applicationId) {
+      await appIdInfo.refetch();
+    }
 
     if (!deviceCodeInfo) {
       // If we don't have a device code yet, retrieve it first
@@ -129,7 +134,7 @@ export const CIPPM365OAuthButton = ({
       const popup = window.open(
         "https://microsoft.com/devicelogin",
         "deviceLoginPopup",
-        `width=${width},height=${height},left=${left},top=${top}`
+        `width=${width},height=${height},left=${left},top=${top}`,
       );
 
       // Start polling for token
@@ -155,7 +160,7 @@ export const CIPPM365OAuthButton = ({
         try {
           // Poll for token using our API endpoint
           const tokenResponse = await fetch(
-            `/api/ExecDeviceCodeLogon?operation=checkToken&clientId=${appId}&deviceCode=${deviceCodeInfo.device_code}`
+            `/api/ExecDeviceCodeLogon?operation=checkToken&clientId=${appId}&deviceCode=${deviceCodeInfo.device_code}`,
           );
           const tokenData = await tokenResponse.json();
 
@@ -263,7 +268,9 @@ export const CIPPM365OAuthButton = ({
   };
 
   // MSAL-like authentication function
-  const handleMsalAuthentication = async () => {
+  const handleMsalAuthentication = async (retryCount = 0) => {
+    const maxRetries = 3;
+
     // Clear previous authentication state when starting a new authentication
     setAuthInProgress(true);
     setAuthError(null);
@@ -277,10 +284,12 @@ export const CIPPM365OAuthButton = ({
       onmicrosoftDomain: null,
     });
 
-    // Refetch app ID info to ensure we have the latest
-    await appIdInfo.refetch();
+    // Only refetch app ID if not already present
+    if (!applicationId && !appIdInfo?.data?.applicationId) {
+      await appIdInfo.refetch();
+    }
 
-    // Get the application ID to use - now we're sure to have the latest after the await
+    // Get the application ID to use
     const appId = applicationId || appIdInfo?.data?.applicationId;
 
     // Generate MSAL-like authentication parameters
@@ -327,7 +336,7 @@ export const CIPPM365OAuthButton = ({
     const popup = window.open(
       authUrl,
       "msalAuthPopup",
-      `width=${width},height=${height},left=${left},top=${top}`
+      `width=${width},height=${height},left=${left},top=${top}`,
     );
 
     // Function to actually exchange the authorization code for tokens
@@ -356,20 +365,43 @@ export const CIPPM365OAuthButton = ({
         };
 
         // Make the token request through our API proxy to avoid origin header issues
-        const tokenResponse = await fetch(`/api/ExecTokenExchange`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tokenRequest,
-            tokenUrl: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
-            tenantId: appId, // Pass the tenant ID to retrieve the correct client secret
-          }),
-        });
+        // Retry logic for AADSTS650051 (service principal already exists)
+        let retryCount = 0;
+        const maxRetries = 3;
+        let tokenResponse;
+        let tokenData;
 
-        // Parse the token response
-        const tokenData = await tokenResponse.json();
+        while (retryCount <= maxRetries) {
+          tokenResponse = await fetch(`/api/ExecTokenExchange`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              tokenRequest,
+              tokenUrl: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+              tenantId: appId, // Pass the tenant ID to retrieve the correct client secret
+            }),
+          });
+
+          // Parse the token response
+          tokenData = await tokenResponse.json();
+
+          // Check if it's the AADSTS650051 error (service principal already exists)
+          if (
+            tokenData.error === "invalid_client" &&
+            tokenData.error_description?.includes("AADSTS650051")
+          ) {
+            retryCount++;
+            if (retryCount <= maxRetries) {
+              // Wait before retrying (exponential backoff)
+              await new Promise((resolve) => setTimeout(resolve, 2000 * retryCount));
+              continue;
+            }
+          }
+          // If no error or different error, break out of retry loop
+          break;
+        }
 
         // Check if the response contains an error
         if (tokenData.error) {
@@ -408,6 +440,9 @@ export const CIPPM365OAuthButton = ({
 
               if (!refreshResponse.ok) {
                 console.warn("Failed to store refresh token, but continuing with authentication");
+              } else {
+                // Invalidate the listAppId and tenants-table queryKeys to refresh data
+                appIdInfo.refetch();
               }
             } catch (error) {
               console.error("Failed to store refresh token:", error);
@@ -502,7 +537,27 @@ export const CIPPM365OAuthButton = ({
           const errorCode = urlParams.get("error");
           const errorDescription = urlParams.get("error_description");
 
-          // Set the error state
+          // Check if it's the AADSTS650051 error (service principal already exists during consent)
+          if (
+            errorCode === "invalid_client" &&
+            errorDescription?.includes("AADSTS650051") &&
+            retryCount < maxRetries
+          ) {
+            // Close the popup
+            popup.close();
+            setAuthInProgress(false);
+
+            // Wait before retrying (exponential backoff)
+            setTimeout(
+              () => {
+                handleMsalAuthentication(retryCount + 1);
+              },
+              2000 * (retryCount + 1),
+            );
+            return;
+          }
+
+          // Set the error state for non-retryable errors
           const error = {
             errorCode: errorCode,
             errorMessage: errorDescription || "Unknown authentication error",
@@ -550,9 +605,9 @@ export const CIPPM365OAuthButton = ({
     <div>
       {!applicationId &&
         !appIdInfo.isLoading &&
-        appIdInfo?.data && // Only check if data is available
+        appIdInfo?.data?.applicationId && // Only check if applicationId is present in data
         !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-          appIdInfo?.data?.applicationId
+          appIdInfo?.data?.applicationId,
         ) && (
           <Alert severity="warning" sx={{ mt: 1 }}>
             The Application ID is not valid. Please check your configuration.
@@ -653,6 +708,30 @@ export const CIPPM365OAuthButton = ({
           ) : null}
         </Box>
       )}
+
+      {promptBeforeAuth !== false && (
+        <CippApiDialog
+          title={"Microsoft 365 Authentication"}
+          createDialog={{
+            open: promptDialog.open,
+            handleClose: () => setPromptDialog({ open: false }),
+          }}
+          api={{
+            type: "POST",
+            confirmText: promptBeforeAuth,
+            noConfirm: false,
+            customFunction: () => {
+              setPromptDialog({ open: false });
+              const authFunction = useDeviceCode
+                ? handleDeviceCodeAuthentication
+                : handleMsalAuthentication;
+              authFunction();
+            },
+          }}
+          fields={[]}
+        />
+      )}
+
       <Button
         variant="contained"
         disabled={
@@ -661,22 +740,35 @@ export const CIPPM365OAuthButton = ({
           codeRetrievalInProgress ||
           (!applicationId &&
             !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-              appIdInfo?.data?.applicationId
+              appIdInfo?.data?.applicationId,
             ))
         }
-        onClick={useDeviceCode ? handleDeviceCodeAuthentication : handleMsalAuthentication}
+        onClick={() => {
+          if (promptBeforeAuth !== false) {
+            setPromptDialog({ open: true });
+          } else {
+            const authFunction = useDeviceCode
+              ? handleDeviceCodeAuthentication
+              : handleMsalAuthentication;
+            authFunction();
+          }
+        }}
         color="primary"
+        startIcon={
+          authInProgress || codeRetrievalInProgress ? (
+            <CircularProgress size="1rem" color="inherit" />
+          ) : tokens.accessToken ? (
+            <Refresh />
+          ) : (
+            <Microsoft />
+          )
+        }
       >
-        {authInProgress || codeRetrievalInProgress ? (
-          <>
-            <CircularProgress size="1rem" color="inherit" sx={{ mr: 1 }} />
-            Authenticating...
-          </>
-        ) : deviceCodeInfo && useDeviceCode ? (
-          "Authenticate with Code"
-        ) : (
-          buttonText
-        )}
+        {authInProgress || codeRetrievalInProgress
+          ? "Authenticating..."
+          : deviceCodeInfo && useDeviceCode
+            ? "Authenticate with Code"
+            : buttonText}
       </Button>
     </div>
   );

@@ -13,7 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Check, Error, Sync } from "@mui/icons-material";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { Grid } from "@mui/system";

@@ -1,6 +1,6 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippPageCard from "/src/components/CippCards/CippPageCard";
-import { CippRoleAddEdit } from "/src/components/CippSettings/CippRoleAddEdit";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippPageCard from "../../../../components/CippCards/CippPageCard";
+import { CippRoleAddEdit } from "../../../../components/CippSettings/CippRoleAddEdit";
 import { CardContent, Stack, Alert } from "@mui/material";
 
 const AddRolePage = () => {

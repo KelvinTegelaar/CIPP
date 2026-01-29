@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormUserSelector } from "../../../../components/CippComponents/CippFormUserSelector";
+import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
 
 const Page = () => {
   const formControl = useForm({

@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
-import CippAppPermissionBuilder from "/src/components/CippComponents/CippAppPermissionBuilder";
-import CippPageCard from "/src/components/CippCards/CippPageCard";
+import CippAppPermissionBuilder from "../../../../../components/CippComponents/CippAppPermissionBuilder";
+import CippPageCard from "../../../../../components/CippCards/CippPageCard";
 import { Alert, CardContent, Stack, Typography, Button, Box } from "@mui/material";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
+import { CippFormComponent } from "../../../../../components/CippComponents/CippFormComponent";
 import { useEffect, useState } from "react";
 import { CopyAll } from "@mui/icons-material";
 

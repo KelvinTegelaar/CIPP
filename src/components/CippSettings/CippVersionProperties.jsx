@@ -1,7 +1,7 @@
 import { Box, Button, SvgIcon } from "@mui/material";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
+import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CheckCircle, SystemUpdateAlt, Warning } from "@mui/icons-material";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../api/ApiCall";
 import { useEffect } from "react";
 
 const CippVersionProperties = () => {

@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useRouter } from "next/router";
 import { Policy, Restore, ExpandMore } from "@mui/icons-material";
 import {
@@ -14,15 +14,15 @@ import {
 import { Grid } from "@mui/system";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
+import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions.json";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
-import { CippHead } from "/src/components/CippComponents/CippHead";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
-import { ApiPostCall } from "/src/api/ApiCall";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
+import { CippDataTable } from "../../../components/CippTable/CippDataTable";
+import { CippHead } from "../../../components/CippComponents/CippHead";
+import { CippFormComponent } from "../../../components/CippComponents/CippFormComponent";
+import { ApiPostCall } from "../../../api/ApiCall";
+import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
 import { createDriftManagementActions } from "./driftManagementActions";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../../hooks/use-settings";
 
 const RecoverPoliciesPage = () => {
   const router = useRouter();
