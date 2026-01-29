@@ -1,9 +1,9 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useState } from "react";
 import { Button, TextField, Switch, FormControlLabel } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
+import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
 
 const Page = () => {
   const pageTitle = "Sign Ins Report";

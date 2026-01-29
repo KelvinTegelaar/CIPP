@@ -9,8 +9,8 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiGetCall } from "/src/api/ApiCall";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import { ApiGetCall } from "../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { CippPermissionResults } from "./CippPermissionResults";
 import { CippGDAPResults } from "./CippGDAPResults";

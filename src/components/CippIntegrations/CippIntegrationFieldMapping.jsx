@@ -8,13 +8,13 @@ import {
   Button,
   Alert,
 } from "@mui/material";
-import CippFormSection from "/src/components/CippFormPages/CippFormSection";
+import CippFormSection from "../CippFormPages/CippFormSection";
 import { useForm } from "react-hook-form";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
-import extensions from "/src/data/Extensions.json";
+import extensions from "../../data/Extensions.json";
 import React, { useEffect, useState } from "react";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { Sync } from "@mui/icons-material";
 import { Stack, Grid } from "@mui/system";
 

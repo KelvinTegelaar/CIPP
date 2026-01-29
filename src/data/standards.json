@@ -3488,6 +3488,34 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.IntuneWindowsDiagnostic",
+    "cat": "Intune Standards",
+    "tag": [],
+    "helpText": "**Some features require Windows E3 or equivalent licenses** Configures Windows diagnostic data settings for Intune. Enables features like Windows update reports, device readiness reports, and driver update reports. More information can be found in [Microsoft's documentation.](https://go.microsoft.com/fwlink/?linkid=2204384)",
+    "docsDescription": "Enables Windows diagnostic data in processor configuration for your Intune tenant. This setting is required for several Intune features including Windows feature update device readiness reports, compatibility risk reports, driver update reports, and update policy alerts. When enabled, your organization becomes the controller of Windows diagnostic data collected from managed devices, allowing Intune to use this data for reporting and update management features. More information can be found in [Microsoft's documentation.](https://go.microsoft.com/fwlink/?linkid=2204384)",
+    "executiveText": "Enables access to Windows Update reporting and compatibility analysis features in Intune by allowing the use of Windows diagnostic data. This unlocks important capabilities like device readiness reports for feature updates, driver update reports, and proactive alerts for update failures, helping IT teams plan and monitor Windows updates more effectively across the organization.",
+    "addedComponent": [
+      {
+        "type": "switch",
+        "name": "standards.IntuneWindowsDiagnostic.areDataProcessorServiceForWindowsFeaturesEnabled",
+        "label": "Enable Windows data",
+        "defaultValue": false
+      },
+      {
+        "type": "switch",
+        "name": "standards.IntuneWindowsDiagnostic.hasValidWindowsLicense",
+        "label": "Confirm ownership of the required Windows E3 or equivalent licenses (Enables Windows update app and driver compatibility reports)",
+        "defaultValue": false
+      }
+    ],
+    "label": "Set Intune Windows diagnostic data settings",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-01-27",
+    "powershellEquivalent": "Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": [],

@@ -1,10 +1,10 @@
 import { Button, Link, List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { Cancel, CheckCircle } from "@mui/icons-material";
-import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
+import { CippPropertyList } from "../CippComponents/CippPropertyList";
 import { WrenchIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippDataTable } from "../CippTable/CippDataTable";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect, useState } from "react";
@@ -143,9 +143,6 @@ export const CippPermissionResults = (props) => {
             }}
             extendedInfo={[]}
           >
-            <Typography variant="h4" sx={{ mx: 3 }}>
-              Permission Details
-            </Typography>
             {results?.Results?.Links.length > 0 && (
               <CippPropertyListCard
                 title="Documentation"

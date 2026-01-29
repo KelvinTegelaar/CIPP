@@ -9,9 +9,9 @@ import {
   useTheme,
   CircularProgress,
 } from "@mui/material";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings.js";
-import { getCippError } from "/src/utils/get-cipp-error";
+import { ApiGetCall } from "../../api/ApiCall";
+import { useSettings } from "../../hooks/use-settings.js";
+import { getCippError } from "../../utils/get-cipp-error";
 
 /**
  * Autocomplete component specifically for custom variables

@@ -12,7 +12,7 @@ import {
 
 export const SecureScoreCard = ({ data, isLoading }) => {
   return (
-    <Card sx={{ flex: 1 }}>
+    <Card sx={{ flex: 1, height: '100%' }}>
       <CardHeader
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -58,43 +58,65 @@ export const SecureScoreCard = ({ data, isLoading }) => {
           <>
             <Box sx={{ height: 250 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={[...data]
-                    .sort((a, b) => new Date(a.createdDateTime) - new Date(b.createdDateTime))
-                    .map((score) => ({
-                      date: new Date(score.createdDateTime).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      }),
-                      score: score.currentScore,
-                      percentage: Math.round((score.currentScore / score.maxScore) * 100),
-                    }))}
-                  margin={{ left: 12, right: 12, top: 10, bottom: 10 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis dataKey="date" tick={{ fontSize: 12 }} tickMargin={8} />
-                  <YAxis tick={{ fontSize: 12 }} tickMargin={8} domain={[0, "dataMax + 20"]} />
-                  <RechartsTooltip
-                    contentStyle={{
-                      backgroundColor: "rgba(255, 255, 255, 0.95)",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                    }}
-                    formatter={(value, name) => {
-                      if (name === "score") return [value.toFixed(2), "Score"];
-                      if (name === "percentage") return [value + "%", "Percentage"];
-                      return value;
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="score"
-                    stroke="#22c55e"
-                    strokeWidth={2}
-                    dot={{ fill: "#22c55e", r: 4 }}
-                    activeDot={{ r: 6 }}
-                  />
-                </LineChart>
+                {(() => {
+                  const sortedData = [...data].sort((a, b) => new Date(a.createdDateTime) - new Date(b.createdDateTime));
+                  const chartData = sortedData.map((score) => ({
+                    date: new Date(score.createdDateTime).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    }),
+                    score: score.currentScore,
+                    percentage: Math.round((score.currentScore / score.maxScore) * 100),
+                  }));
+                  const ticks = chartData.map((d) => d.date);
+                  return (
+                    <LineChart
+                      data={chartData}
+                      margin={{ left: 12, right: 12, top: 10, bottom: 10 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 12 }}
+                        tickMargin={8}
+                        ticks={ticks}
+                        interval={0}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 12 }}
+                        tickMargin={8}
+                        domain={[0, "dataMax + 20"]}
+                        tickFormatter={(value) => Math.round(value)}
+                      />
+                      <RechartsTooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(255,255,255,0.85)",
+                          color: "inherit",
+                          border: "1px solid #bbb",
+                          borderRadius: "4px",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                          backdropFilter: "blur(2px)",
+                        }}
+                        labelStyle={{
+                          color: "#000000",
+                        }}
+                        formatter={(value, name) => {
+                          if (name === "score") return [value.toFixed(2), "Score"];
+                          if (name === "percentage") return [value + "%", "Percentage"];
+                          return value;
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#22c55e"
+                        strokeWidth={2}
+                        dot={{ fill: "#22c55e", r: 4 }}
+                        activeDot={{ r: 6 }}
+                      />
+                    </LineChart>
+                  );
+                })()}
               </ResponsiveContainer>
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>

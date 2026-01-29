@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { useState, useEffect } from "react";
-import { ApiPostCall, ApiGetCall } from "/src/api/ApiCall";
+import { ApiPostCall, ApiGetCall } from "../../../api/ApiCall";
 import {
   Button,
   Dialog,
@@ -13,9 +13,9 @@ import {
   Skeleton,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippJSONView from "/src/components/CippFormPages/CippJSONView";
+import CippJSONView from "../../../components/CippFormPages/CippJSONView";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CippAutoComplete } from "/src/components/CippComponents/CippAutocomplete";
+import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
 import React from "react";
 import { CloudDownload } from "@mui/icons-material";
 

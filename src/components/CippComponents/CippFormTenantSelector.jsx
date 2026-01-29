@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useSettings } from "../../hooks/use-settings";
 import { GroupHeader, GroupItems } from "../CippComponents/CippAutocompleteGrouping";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../api/ApiCall";
 
 export const CippFormTenantSelector = ({
   formControl,

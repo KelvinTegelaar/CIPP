@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, SvgIcon, Typography, TextField, Box } from "@mui/material";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { History } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 

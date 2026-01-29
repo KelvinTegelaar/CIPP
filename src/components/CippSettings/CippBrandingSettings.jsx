@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button, Typography, Box, Alert } from "@mui/material";
 import { Palette, Upload } from "@mui/icons-material";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { useSettings } from "../../hooks/use-settings";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";

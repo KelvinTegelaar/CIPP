@@ -1,9 +1,9 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { RestoreFromTrash, PlayArrow, Pause, Delete } from "@mui/icons-material";
 import MailboxRestoreDetails from "../../../../components/CippComponents/MailboxRestoreDetails";
 import { CippMailboxRestoreDrawer } from "../../../../components/CippComponents/CippMailboxRestoreDrawer";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const Page = () => {
   const pageTitle = "Mailbox Restores";

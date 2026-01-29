@@ -2,7 +2,7 @@ import { Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import CippWizardStepButtons from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
-import countryList from "/src/data/countryList.json";
+import countryList from "../../data/countryList.json";
 import { CippFormLicenseSelector } from "../CippComponents/CippFormLicenseSelector";
 export const CippWizardBulkOptions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;

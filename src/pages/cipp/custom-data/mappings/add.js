@@ -1,12 +1,12 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useFormState } from "react-hook-form";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall } from "../../../../api/ApiCall";
 import { useRouter } from "next/router";
 import { Button, Stack, CardContent, CardActions } from "@mui/material";
 
-import CippPageCard from "/src/components/CippCards/CippPageCard";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import CippCustomDataMappingForm from "/src/components/CippFormPages/CippCustomDataMappingForm";
+import CippPageCard from "../../../../components/CippCards/CippPageCard";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import CippCustomDataMappingForm from "../../../../components/CippFormPages/CippCustomDataMappingForm";
 
 const Page = () => {
   const router = useRouter();

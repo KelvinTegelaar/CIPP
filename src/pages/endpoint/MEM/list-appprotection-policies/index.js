@@ -1,10 +1,10 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Book, LaptopChromebook } from "@mui/icons-material";
 import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
-import { PermissionButton } from "/src/utils/permissions.js";
-import { CippPolicyDeployDrawer } from "/src/components/CippComponents/CippPolicyDeployDrawer.jsx";
-import { useSettings } from "/src/hooks/use-settings.js";
+import { PermissionButton } from "../../../../utils/permissions.js";
+import { CippPolicyDeployDrawer } from "../../../../components/CippComponents/CippPolicyDeployDrawer.jsx";
+import { useSettings } from "../../../../hooks/use-settings.js";
 
 const assignmentModeOptions = [
   { label: "Replace existing assignments", value: "replace" },

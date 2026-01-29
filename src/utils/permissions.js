@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import { usePermissions } from "/src/hooks/use-permissions.js";
+import { usePermissions } from "../hooks/use-permissions.js";
 /**
  * Permission Helper Utilities
  *

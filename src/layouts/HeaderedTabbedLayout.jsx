@@ -15,7 +15,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { ActionsMenu } from "/src/components/actions-menu";
+import { ActionsMenu } from "../components/actions-menu";
 import { useMediaQuery } from "@mui/material";
 
 export const HeaderedTabbedLayout = (props) => {

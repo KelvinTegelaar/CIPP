@@ -1,7 +1,7 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardConfirmation";
-import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
-import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippWizardConfirmation } from "../../../../components/CippWizard/CippWizardConfirmation";
+import CippWizardPage from "../../../../components/CippWizard/CippWizardPage.jsx";
+import { CippTenantStep } from "../../../../components/CippWizard/CippTenantStep.jsx";
 import { CippWizardAssignmentFilterTemplates } from "../../../../components/CippWizard/CippWizardAssignmentFilterTemplates";
 
 const Page = () => {

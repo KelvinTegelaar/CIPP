@@ -1,8 +1,8 @@
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import tabOptions from "../tabOptions";
-import CippTablePage from "/src/components/CippComponents/CippTablePage";
-import CippGdapActions from "/src/components/CippComponents/CippGdapActions";
+import CippTablePage from "../../../../components/CippComponents/CippTablePage";
+import CippGdapActions from "../../../../components/CippComponents/CippGdapActions";
 
 const pageTitle = "GDAP Relationships";
 

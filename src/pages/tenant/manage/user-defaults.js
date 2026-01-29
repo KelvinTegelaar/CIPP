@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import { Delete, Add } from "@mui/icons-material";
 import { useDialog } from "../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
-import countryList from "/src/data/countryList.json";
+import countryList from "../../../data/countryList.json";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../hooks/use-settings";
 

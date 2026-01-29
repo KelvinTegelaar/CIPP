@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useState } from "react";
 import {
   Button,
@@ -104,7 +104,7 @@ const Page = () => {
           confirmText: `Run calendar permissions cache sync for ${currentTenant}? This will update mailbox and calendar permission data immediately.`,
           relatedQueryKeys: ["calendar-permissions"],
           data: {
-            Name: "Calendars",
+            Name: "Mailboxes",
           },
         }}
       />

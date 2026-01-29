@@ -1,5 +1,5 @@
 import { Alert, Box, Stack, Typography } from "@mui/material";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 
 export const CippAddEditGdapRoleTemplate = (props) => {
   const { formControl, availableRoles } = props;

@@ -364,6 +364,7 @@ export const CippApiDialog = (props) => {
                           formControl={formHook}
                           addedFieldData={addedFieldData}
                           setAddedFieldData={setAddedFieldData}
+                          row={row}
                           {...fieldProps}
                         />
                       </Box>

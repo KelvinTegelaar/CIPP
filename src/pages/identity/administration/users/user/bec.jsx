@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { CheckCircle, Download, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";

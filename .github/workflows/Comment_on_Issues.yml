@@ -7,7 +7,7 @@ on:
 jobs:
   add-comment_bug:
     if: github.repository_owner == 'KelvinTegelaar' && github.event.label.name == 'unconfirmed-by-user'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       issues: write
     steps:
@@ -18,5 +18,5 @@ jobs:
           body: |
             Thank you for reporting a potential bug.  If you would like to work on this bug, please comment:
             > I would like to work on this please!
-            
+
             Thank you for helping us maintain the project!

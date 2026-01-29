@@ -1,11 +1,11 @@
 import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Add, SaveRounded } from "@mui/icons-material";
 import { useEffect, useState, useCallback, useMemo, useRef, lazy, Suspense } from "react";
-import standards from "/src/data/standards";
+import standards from "../../../../data/standards";
 import CippStandardAccordion from "../../../../components/CippStandards/CippStandardAccordion";
 // Lazy load the dialog to improve initial page load performance
 const CippStandardDialog = lazy(() =>
@@ -17,8 +17,8 @@ import { useDialog } from "../../../../hooks/use-dialog";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import _ from "lodash";
 import { createDriftManagementActions } from "../../manage/driftManagementActions";
-import { ActionsMenu } from "/src/components/actions-menu";
-import { useSettings } from "/src/hooks/use-settings";
+import { ActionsMenu } from "../../../../components/actions-menu";
+import { useSettings } from "../../../../hooks/use-settings";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
 
 const Page = () => {

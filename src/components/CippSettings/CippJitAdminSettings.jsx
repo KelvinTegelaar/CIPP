@@ -1,7 +1,7 @@
 import { Button, Typography, Alert, Box } from "@mui/material";
 import { ClockIcon } from "@heroicons/react/24/outline";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";

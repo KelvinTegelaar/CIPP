@@ -49,7 +49,7 @@ import { useRouter } from "next/router";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
 import { ApiGetCall } from "../../api/ApiCall";
-import GraphExplorerPresets from "/src/data/GraphExplorerPresets.json";
+import GraphExplorerPresets from "../../data/GraphExplorerPresets.json";
 import CippGraphExplorerFilter from "./CippGraphExplorerFilter";
 import { Stack } from "@mui/system";
 

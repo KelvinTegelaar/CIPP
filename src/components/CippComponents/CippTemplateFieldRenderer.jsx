@@ -1,9 +1,9 @@
 import React from "react";
 import { Typography, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { getCippTranslation } from "/src/utils/get-cipp-translation";
-import intuneCollection from "/src/data/intuneCollection.json";
+import CippFormComponent from "./CippFormComponent";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
+import intuneCollection from "../../data/intuneCollection.json";
 
 const CippTemplateFieldRenderer = ({
   templateData,

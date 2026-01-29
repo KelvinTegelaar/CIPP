@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useEffect, useState } from "react";
 import { ApiPostCall } from "../../../api/ApiCall";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard"; // Fixed import
-import { CippDataTable } from "/src/components/CippTable/CippDataTable"; // Fixed import
+import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard"; // Fixed import
+import { CippDataTable } from "../../../components/CippTable/CippDataTable"; // Fixed import
 import { useDialog } from "../../../hooks/use-dialog";
 import {
   Box,

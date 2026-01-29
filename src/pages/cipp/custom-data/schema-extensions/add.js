@@ -1,6 +1,6 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch, useFormState } from "react-hook-form";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall } from "../../../../api/ApiCall";
 import { useRouter } from "next/router";
 import {
   Box,
@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 import { AddCircle, RemoveCircle } from "@mui/icons-material";
 
-import CippPageCard from "/src/components/CippCards/CippPageCard";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippPageCard from "../../../../components/CippCards/CippPageCard";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 
 const availableTargetTypes = [
   { value: "user", label: "User" },

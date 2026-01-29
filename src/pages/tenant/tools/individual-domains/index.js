@@ -1,5 +1,5 @@
 import { Box, Container } from "@mui/material";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { CippDomainCards } from "../../../../components/CippCards/CippDomainCards";
 
 const Page = () => {

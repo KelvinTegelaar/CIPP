@@ -10,8 +10,8 @@ import {
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce } from "lodash";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { CippApiResults } from "../CippComponents/CippApiResults";

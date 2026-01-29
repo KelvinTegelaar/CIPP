@@ -1,13 +1,13 @@
 import { useWatch } from "react-hook-form";
 import { Box, Stack, Typography, Divider } from "@mui/material";
 import { Grid } from "@mui/system";
-import { CippFormComponent } from "/src/components/CippComponents/CippFormComponent";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
-import { CippCopyToClipBoard } from "/src/components/CippComponents/CippCopyToClipboard";
-import extensionDataMapping from "/src/data/extensionDataMapping";
-import { getCippTranslation } from "/src/utils/get-cipp-translation";
+import { CippFormComponent } from "../CippComponents/CippFormComponent";
+import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
+import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
+import extensionDataMapping from "../../data/extensionDataMapping";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
 
 const CippCustomDataMappingForm = ({ formControl }) => {
   const selectedAttribute = useWatch({ control: formControl.control, name: "customDataAttribute" });

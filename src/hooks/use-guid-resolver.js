@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { ApiPostCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings";
+import { ApiPostCall } from "../api/ApiCall";
+import { useSettings } from "./use-settings";
 
 // Function to check if a string is a GUID
 const isGuid = (str) => {

@@ -1,14 +1,14 @@
 import Head from "next/head";
 import { Box, Container, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../layouts/index.js";
 import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
 import CippFormComponent from "../../components/CippComponents/CippFormComponent";
 import { useForm, useWatch } from "react-hook-form";
 import { useSettings } from "../../hooks/use-settings";
 import countryList from "../../data/countryList.json";
 import { CippSettingsSideBar } from "../../components/CippComponents/CippSettingsSideBar";
-import CippDevOptions from "/src/components/CippComponents/CippDevOptions";
+import CippDevOptions from "../../components/CippComponents/CippDevOptions";
 import { CippOffboardingDefaultSettings } from "../../components/CippComponents/CippOffboardingDefaultSettings";
 import { ApiGetCall } from "../../api/ApiCall";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";

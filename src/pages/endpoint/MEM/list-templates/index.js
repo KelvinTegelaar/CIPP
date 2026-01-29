@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Edit, GitHub, LocalOffer, LocalOfferOutlined, CopyAll } from "@mui/icons-material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
-import { PermissionButton } from "/src/utils/permissions.js";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
+import { PermissionButton } from "../../../../utils/permissions.js";
 
 const Page = () => {
   const pageTitle = "Available Endpoint Manager Templates";

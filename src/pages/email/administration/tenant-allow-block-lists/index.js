@@ -1,7 +1,7 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Delete } from "@mui/icons-material";
-import { CippAddTenantAllowBlockListDrawer } from "/src/components/CippComponents/CippAddTenantAllowBlockListDrawer.jsx";
+import { CippAddTenantAllowBlockListDrawer } from "../../../../components/CippComponents/CippAddTenantAllowBlockListDrawer.jsx";
 
 const Page = () => {
   const pageTitle = "Tenant Allow/Block Lists";

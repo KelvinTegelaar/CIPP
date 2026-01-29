@@ -7,7 +7,7 @@ on:
 
 jobs:
   handle_comment:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     # We need permissions to modify issue comments.
     # 'issues: write' is required for deleting comments.
     permissions:

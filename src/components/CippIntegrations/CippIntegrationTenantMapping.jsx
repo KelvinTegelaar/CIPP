@@ -12,9 +12,9 @@ import {
 import { Grid } from "@mui/system";
 import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
-import extensions from "/src/data/Extensions.json";
+import extensions from "../../data/Extensions.json";
 import { useEffect } from "react";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { PlusSmallIcon, SparklesIcon, TrashIcon } from "@heroicons/react/24/outline";

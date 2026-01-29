@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useRouter } from "next/router";
 import {
   Check,
@@ -29,20 +29,20 @@ import {
 import { Grid } from "@mui/system";
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { CippBannerListCard } from "/src/components/CippCards/CippBannerListCard";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { CippHead } from "/src/components/CippComponents/CippHead";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog";
-import { useDialog } from "/src/hooks/use-dialog";
+import { CippBannerListCard } from "../../../components/CippCards/CippBannerListCard";
+import CippButtonCard from "../../../components/CippCards/CippButtonCard";
+import { CippHead } from "../../../components/CippComponents/CippHead";
+import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
+import { ApiGetCall } from "../../../api/ApiCall";
+import { useSettings } from "../../../hooks/use-settings";
+import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
+import { useDialog } from "../../../hooks/use-dialog";
 import tabOptions from "./tabOptions.json";
-import standardsData from "/src/data/standards.json";
+import standardsData from "../../../data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
-import { ExecutiveReportButton } from "/src/components/ExecutiveReportButton";
+import { ExecutiveReportButton } from "../../../components/ExecutiveReportButton";
 import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 
 const ManageDriftPage = () => {
   const router = useRouter();

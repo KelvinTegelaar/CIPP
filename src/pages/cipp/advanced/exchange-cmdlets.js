@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import {
   Alert,
   Button,
@@ -12,10 +12,10 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { ApiPostCall } from "/src/api/ApiCall";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
+import { ApiPostCall } from "../../../api/ApiCall";
+import CippButtonCard from "../../../components/CippCards/CippButtonCard";
+import { CippDataTable } from "../../../components/CippTable/CippDataTable";
 import { useState, useEffect } from "react";
 import { Search, Close } from "@mui/icons-material";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";

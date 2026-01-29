@@ -1,12 +1,12 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
 import { GlobeAltIcon, TrashIcon, UserIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { LaptopMac, Sync } from "@mui/icons-material";
-import { CippApplicationDeployDrawer } from "/src/components/CippComponents/CippApplicationDeployDrawer";
+import { CippApplicationDeployDrawer } from "../../../../components/CippComponents/CippApplicationDeployDrawer";
 import { Button, Box } from "@mui/material";
-import { useSettings } from "/src/hooks/use-settings.js";
-import { useDialog } from "/src/hooks/use-dialog.js";
+import { useSettings } from "../../../../hooks/use-settings.js";
+import { useDialog } from "../../../../hooks/use-dialog.js";
 
 const assignmentIntentOptions = [
   { label: "Required", value: "Required" },
