@@ -640,7 +640,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
     //show the display name in text. otherwise, just return the obj.
     return isText ? (
       Array.isArray(data) ? (
-        data.map((user) => user.displayName).join("\n")
+        data.map((user) => user.displayName).join(",")
       ) : (
         data.displayName
       )
