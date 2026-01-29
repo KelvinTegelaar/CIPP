@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage";
 import {
   TrashIcon,
   PencilIcon,
@@ -7,7 +7,7 @@ import {
   UserGroupIcon,
   GlobeAltIcon,
 } from "@heroicons/react/24/outline";
-import { showToast } from "/src/store/toasts";
+import { showToast } from "../../../../store/toasts";
 import {
   Button,
   Dialog,
@@ -17,7 +17,7 @@ import {
   CircularProgress,
   DialogActions,
 } from "@mui/material";
-import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
+import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { Close, Save, LaptopChromebook } from "@mui/icons-material";

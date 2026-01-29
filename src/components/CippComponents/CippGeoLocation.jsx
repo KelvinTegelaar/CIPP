@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@mui/material";
 import { Grid } from "@mui/system";
 import dynamic from "next/dynamic";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall } from "../../api/ApiCall";
 import { CippPropertyList } from "./CippPropertyList";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";

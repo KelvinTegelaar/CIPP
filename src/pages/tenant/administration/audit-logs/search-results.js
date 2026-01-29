@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
 import { EyeIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
-import CippAuditLogDetails from "/src/components/CippComponents/CippAuditLogDetails.jsx";
+import CippAuditLogDetails from "../../../../components/CippComponents/CippAuditLogDetails.jsx";
 import { Button, SvgIcon, Box } from "@mui/material";
 import { ManageSearch } from "@mui/icons-material";
-import { useDialog } from "/src/hooks/use-dialog";
+import { useDialog } from "../../../../hooks/use-dialog";
 
 const searchResultsColumns = [
   "createdDateTime",

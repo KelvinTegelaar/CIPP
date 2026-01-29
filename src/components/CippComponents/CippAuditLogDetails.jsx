@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { getCippTranslation } from "/src/utils/get-cipp-translation";
-import { getCippFormatting } from "/src/utils/get-cipp-formatting";
-import CippGeoLocation from "/src/components/CippComponents/CippGeoLocation";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import CippGeoLocation from "./CippGeoLocation";
 import { Tooltip, CircularProgress, Stack } from "@mui/material";
-import { useGuidResolver } from "/src/hooks/use-guid-resolver";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
+import { useGuidResolver } from "../../hooks/use-guid-resolver";
+import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 
 const CippAuditLogDetails = ({ row }) => {
   const {

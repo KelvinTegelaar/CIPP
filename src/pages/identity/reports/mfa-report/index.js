@@ -1,17 +1,20 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { LockPerson, Sync, Info } from "@mui/icons-material";
 import { Button, Alert, SvgIcon, IconButton, Tooltip } from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 const Page = () => {
   const pageTitle = "MFA Report";
   const apiUrl = "/api/ListMFAUsers";
   const currentTenant = useSettings().currentTenant;
   const syncDialog = useDialog();
+  const router = useRouter();
 
   const isAllTenants = currentTenant === "AllTenants";
 
@@ -81,6 +84,19 @@ const Page = () => {
     },
   ];
 
+  // Parse filters from URL query parameters
+  const urlFilters = useMemo(() => {
+    if (router.query.filters) {
+      try {
+        return JSON.parse(router.query.filters);
+      } catch (e) {
+        console.error("Failed to parse filters from URL:", e);
+        return null;
+      }
+    }
+    return null;
+  }, [router.query.filters]);
+
   const actions = [
     {
       label: "Set Per-User MFA",
@@ -138,6 +154,7 @@ const Page = () => {
         filters={filters}
         actions={actions}
         cardButton={pageActions}
+        initialFilters={urlFilters}
       />
       <CippApiDialog
         createDialog={syncDialog}

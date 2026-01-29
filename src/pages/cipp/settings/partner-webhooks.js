@@ -1,7 +1,7 @@
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import tabOptions from "./tabOptions";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
+import CippFormPage from "../../../components/CippFormPages/CippFormPage";
 import { useForm } from "react-hook-form";
 import {
   Box,
@@ -17,7 +17,7 @@ import {
   SvgIcon,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useEffect } from "react";
 import { CippPropertyList } from "../../../components/CippComponents/CippPropertyList";

@@ -1,6 +1,6 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { useSettings } from "../../../../hooks/use-settings";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import {
   Sync,
@@ -189,7 +189,7 @@ const Page = () => {
       url: "/api/ExecDevicePasscodeAction",
       data: {
         GUID: "id",
-        Action: "removeDevicePasscode",
+        Action: "resetPasscode",
       },
       condition: (row) => row.operatingSystem === "iOS",
       confirmText:

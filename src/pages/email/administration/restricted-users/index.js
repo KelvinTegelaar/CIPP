@@ -1,5 +1,5 @@
-﻿import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+﻿import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Alert, Link, Typography, List, ListItem, ListItemText } from "@mui/material";
 import { Block as BlockIcon } from "@mui/icons-material";
 

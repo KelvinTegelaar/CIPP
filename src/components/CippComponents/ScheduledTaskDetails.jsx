@@ -19,8 +19,8 @@ import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { ExpandMore, Sync, Search, Close } from "@mui/icons-material";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { CippTimeAgo } from "/src/components/CippComponents/CippTimeAgo";
-import { ActionsMenu } from "/src/components/actions-menu";
+import { CippTimeAgo } from "./CippTimeAgo";
+import { ActionsMenu } from "../actions-menu";
 import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
 import { CippApiLogsDrawer } from "./CippApiLogsDrawer";
 

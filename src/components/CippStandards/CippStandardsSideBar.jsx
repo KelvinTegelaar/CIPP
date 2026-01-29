@@ -10,14 +10,14 @@ import {
   timelineItemClasses,
   TimelineSeparator,
 } from "@mui/lab";
-import { ActionList } from "/src/components/action-list";
-import { ActionListItem } from "/src/components/action-list-item";
+import { ActionList } from "../action-list";
+import { ActionListItem } from "../action-list-item";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
 import CloseIcon from "@mui/icons-material/Close";
 import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import _ from "lodash";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 import ReactTimeAgo from "react-time-ago";

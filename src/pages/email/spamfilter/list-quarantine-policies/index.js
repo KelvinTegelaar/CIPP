@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { CippInfoBar } from "/src/components/CippCards/CippInfoBar";
-import { CippApiDialog } from "/src/components/CippComponents/CippApiDialog.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
+import { CippInfoBar } from "../../../../components/CippCards/CippInfoBar";
+import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog.jsx";
 import { Alert, Typography, Stack, Tooltip, IconButton, SvgIcon, Button } from "@mui/material";
 import { Grid } from "@mui/system";
 import Link from "next/link";
@@ -16,9 +16,9 @@ import {
   Edit,
   Delete,
 } from "@mui/icons-material";
-import { useSettings } from "/src/hooks/use-settings";
-import { useDialog } from "/src/hooks/use-dialog";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { useSettings } from "../../../../hooks/use-settings";
+import { useDialog } from "../../../../hooks/use-dialog";
+import { ApiGetCall } from "../../../../api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Quarantine Policies";
