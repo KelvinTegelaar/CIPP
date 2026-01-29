@@ -131,7 +131,25 @@
   {
     "name": "DefenderIncidents",
     "label": "Alert on new Defender Incidents found",
-    "recommendedRunInterval": "4h"
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Incident severities to include",
+        "inputName": "IncidentSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
   },
   {
     "name": "Vulnerabilities",
