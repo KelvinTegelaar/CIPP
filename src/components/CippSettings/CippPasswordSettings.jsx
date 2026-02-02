@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, SvgIcon, Typography } from "@mui/material";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { KeyIcon } from "@heroicons/react/24/outline";
 
 const CippPasswordSettings = () => {

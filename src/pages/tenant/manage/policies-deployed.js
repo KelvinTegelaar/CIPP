@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useRouter } from "next/router";
 import { Policy, Security, AdminPanelSettings, Devices, ExpandMore } from "@mui/icons-material";
 import {
@@ -10,12 +10,12 @@ import {
   AccordionDetails,
   Chip,
 } from "@mui/material";
-import { HeaderedTabbedLayout } from "/src/layouts/HeaderedTabbedLayout";
+import { HeaderedTabbedLayout } from "../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions.json";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
-import { CippHead } from "/src/components/CippComponents/CippHead";
-import { ApiGetCall } from "/src/api/ApiCall";
-import standardsData from "/src/data/standards.json";
+import { CippDataTable } from "../../../components/CippTable/CippDataTable";
+import { CippHead } from "../../../components/CippComponents/CippHead";
+import { ApiGetCall } from "../../../api/ApiCall";
+import standardsData from "../../../data/standards.json";
 import { createDriftManagementActions } from "./driftManagementActions";
 import { useSettings } from "../../../hooks/use-settings";
 import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";

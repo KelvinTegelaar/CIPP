@@ -1,18 +1,18 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm } from "react-hook-form";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { Stack, Box, Tab, Tabs, Typography, Button } from "@mui/material";
 import { Grid } from "@mui/system";
-import { CippCardTabPanel } from "/src/components/CippComponents/CippCardTabPanel";
-import CippFormSection from "/src/components/CippFormPages/CippFormSection";
+import { CippCardTabPanel } from "../../../../components/CippComponents/CippCardTabPanel";
+import CippFormSection from "../../../../components/CippFormPages/CippFormSection";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
-import { CippPropertyListCard } from "/src/components/CippCards/CippPropertyListCard";
+import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
-import CippCustomVariables from "/src/components/CippComponents/CippCustomVariables";
-import { CippOffboardingDefaultSettings } from "/src/components/CippComponents/CippOffboardingDefaultSettings";
+import CippCustomVariables from "../../../../components/CippComponents/CippCustomVariables";
+import { CippOffboardingDefaultSettings } from "../../../../components/CippComponents/CippOffboardingDefaultSettings";
 
 function tabProps(index) {
   return {

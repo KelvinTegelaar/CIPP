@@ -43,7 +43,7 @@ import { CippTimeAgo } from "./CippTimeAgo";
 import { CippCodeBlock } from "./CippCodeBlock";
 import DOMPurify from "dompurify";
 import ReactHtmlParser from "react-html-parser";
-import { FileDropzone } from "/src/components/file-dropzone.js";
+import { FileDropzone } from "../file-dropzone.js";
 import CippPageCard from "../CippCards/CippPageCard";
 import {
   MoonIcon,
@@ -51,7 +51,7 @@ import {
   ShieldExclamationIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../hooks/use-settings";
 import CippForefrontHeaderDialog from "./CippForefrontHeaderDialog";
 
 export const CippMessageViewer = ({ emailSource }) => {

@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippTablePage from "../../../../components/CippComponents/CippTablePage";
 import { Delete } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CippAddVacationModeDrawer } from "/src/components/CippComponents/CippAddVacationModeDrawer";
+import { CippAddVacationModeDrawer } from "../../../../components/CippComponents/CippAddVacationModeDrawer";
 
 const Page = () => {
   const actions = [

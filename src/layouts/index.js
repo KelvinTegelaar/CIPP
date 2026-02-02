@@ -23,7 +23,7 @@ import { Box, Container, Grid } from "@mui/system";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboardingv2";
 import { useDialog } from "../hooks/use-dialog";
-import { nativeMenuItems } from "/src/layouts/config";
+import { nativeMenuItems } from "./config";
 import { CippBreadcrumbNav } from "../components/CippComponents/CippBreadcrumbNav";
 
 const SIDE_NAV_WIDTH = 270;

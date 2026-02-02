@@ -1,14 +1,14 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Button, Box } from "@mui/material";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import { Delete, GitHub, Edit, RocketLaunch } from "@mui/icons-material";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { CippPolicyImportDrawer } from "/src/components/CippComponents/CippPolicyImportDrawer.jsx";
-import { CippCADeployDrawer } from "/src/components/CippComponents/CippCADeployDrawer.jsx";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
+import { CippCADeployDrawer } from "../../../../components/CippComponents/CippCADeployDrawer.jsx";
 import { CippApiLogsDrawer } from "../../../../components/CippComponents/CippApiLogsDrawer";
 import { PermissionButton } from "../../../../utils/permissions";
-import { useSettings } from "/src/hooks/use-settings.js";
+import { useSettings } from "../../../../hooks/use-settings.js";
 import { useState } from "react";
 
 const Page = () => {

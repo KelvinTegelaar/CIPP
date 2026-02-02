@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import { Alert, Divider, Typography } from "@mui/material";

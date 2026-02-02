@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import { RocketLaunch } from "@mui/icons-material";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { GitHub, Edit } from "@mui/icons-material";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippDeployContactTemplateDrawer } from "../../../../components/CippComponents/CippDeployContactTemplateDrawer";
 
 const Page = () => {

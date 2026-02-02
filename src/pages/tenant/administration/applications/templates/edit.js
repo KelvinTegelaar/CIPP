@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
 import { useForm } from "react-hook-form";
 import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
-import CippPageCard from "/src/components/CippCards/CippPageCard";
+import CippPageCard from "../../../../../components/CippCards/CippPageCard";
 import { Alert, Button, CardContent } from "@mui/material";
 import { useState } from "react";
 import Link from "next/link";
-import AppApprovalTemplateForm from "/src/components/CippComponents/AppApprovalTemplateForm";
+import AppApprovalTemplateForm from "../../../../../components/CippComponents/AppApprovalTemplateForm";
 
 const Page = () => {
   const router = useRouter();

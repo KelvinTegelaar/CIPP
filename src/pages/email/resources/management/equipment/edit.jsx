@@ -2,15 +2,15 @@ import React, { useEffect } from "react";
 import { Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
+import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
-import countryList from "/src/data/countryList.json";
-import timezoneList from "/src/data/timezoneList.json";
+import { ApiGetCall } from "../../../../../api/ApiCall";
+import countryList from "../../../../../data/countryList.json";
+import timezoneList from "../../../../../data/timezoneList.json";
 
 // Work days options
 const workDaysOptions = [

@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
 import tabOptions from "./tabOptions";
 import { CippTenantTable } from "../../../components/CippWizard/CippTenantTable";
 

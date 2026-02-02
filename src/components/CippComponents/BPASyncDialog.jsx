@@ -9,7 +9,7 @@ import {
 import { Sync } from "@mui/icons-material";
 import { useForm, FormProvider } from "react-hook-form";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
-import { ApiPostCall } from "/src/api/ApiCall";
+import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "./CippApiResults";
 
 export const BPASyncDialog = ({ createDialog }) => {

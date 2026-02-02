@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
 import { Edit, Block, LockOpen, Key } from "@mui/icons-material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { CippAddRoomDrawer } from "../../../../../components/CippComponents/CippAddRoomDrawer";

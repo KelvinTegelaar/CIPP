@@ -1,7 +1,7 @@
 import tabOptions from "./tabOptions";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button, SvgIcon, Stack } from "@mui/material";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Add, RestartAlt } from "@mui/icons-material";

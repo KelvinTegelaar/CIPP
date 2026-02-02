@@ -3,7 +3,7 @@ import CippFormComponent from "./CippFormComponent";
 import { CippFormCondition } from "./CippFormCondition";
 import { Grid } from "@mui/system";
 import { CippApiResults } from "./CippApiResults";
-import { getCippValidator } from "/src/utils/get-cipp-validator";
+import { getCippValidator } from "../../utils/get-cipp-validator";
 
 const CippForwardingSection = ({ formControl, usersList, contactsList, postRequest, handleSubmit }) => {
 
