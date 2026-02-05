@@ -11,6 +11,10 @@ If you decide to **migrate** from a self-hosted instance to our **hosted** envir
 
 ### 1. Back Up Your Self-Hosted Instance
 
+{% hint style="warning" %}
+NOTE: Please ensure your function app is set to run on PowerShell 7.4, otherwise the backups may be corrupted.
+{% endhint %}
+
 {% stepper %}
 {% step %}
 **Log In** to your **self-hosted** CIPP instance.
