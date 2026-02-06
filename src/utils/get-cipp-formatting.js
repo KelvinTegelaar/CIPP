@@ -636,7 +636,7 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
   }
 
   //handle assignedUsers
-  if (cellName === "AssignedUsers") {
+  if (cellName === "AssignedUsers" || cellName === "assignedUsers") {
     //show the display name in text. otherwise, just return the obj.
     return isText ? (
       Array.isArray(data) ? (
@@ -646,6 +646,20 @@ export const getCippFormatting = (data, cellName, type, canReceive, flatten = tr
       )
     ) : (
       <CippDataTableButton data={data} tableTitle="Assigned Users" />
+    );
+  }
+
+  // handle assignedGroups
+  if (cellName === "AssignedGroups" || cellName === "assignedGroups") {
+    //show the display name in text. otherwise, just return the obj.
+    return isText ? (
+      Array.isArray(data) ? (
+        data.map((group) => group.displayName).join(",")
+      ) : (
+        data.displayName
+      )
+    ) : (
+      <CippDataTableButton data={data} tableTitle="Assigned Groups" />
     );
   }
 
