@@ -26,7 +26,7 @@ You should have **an active Sherweb partner account**, and access to the **Cumul
 
 ### Getting Your API Credentials
 
-1. Go to the SherWeb Cumulus Portal and log in to your account: `https://cumulus.sherweb.com/partners/cippcumulus/security/apis`
+1. Go to the SherWeb Cumulus Portal and log in to your account: [`https://cumulus.sherweb.com/partners/%3Cyour-account-name%3E/security/apis`](https://cumulus.sherweb.com/partners/%3Cyour-account-name%3E/security/apis)
 2. Create a new application (you can name it "CIPP")
 3. Copy the below three keys and store them securely (password manager, IT documentation, etc.)
    * **Client ID:** This is a unique identifier for your application within Sherweb.
