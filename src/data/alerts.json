@@ -131,17 +131,117 @@
   {
     "name": "DefenderIncidents",
     "label": "Alert on new Defender Incidents found",
-    "recommendedRunInterval": "4h"
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Incident severities to include",
+        "inputName": "IncidentSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "DefenderAlerts",
+    "label": "Alert on new Defender Alerts found",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Alert severities to include",
+        "inputName": "AlertSeverities",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          { "label": "All Severities", "value": "All" },
+          { "label": "High", "value": "high" },
+          { "label": "Medium", "value": "medium" },
+          { "label": "Low", "value": "low" },
+          { "label": "Informational", "value": "informational" }
+        ]
+      }
+    ]
   },
   {
     "name": "Vulnerabilities",
-    "label": "Alert on vulnerabilities older than X hours",
+    "label": "Alert on software vulnerabilities",
     "requiresInput": true,
-    "inputType": "number",
-    "inputLabel": "Alert on vulnerabilities first seen more than X hours ago (default: 24)",
-    "inputName": "AgeInHours",
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Minimum age in hours (default: 0)",
+        "inputName": "VulnerabilityAgeHours"
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Minimum CVSS severity",
+        "inputName": "CVSSSeverity",
+        "creatable": false,
+        "multiple": false,
+        "options": [
+          {
+            "label": "Low (0.0+)",
+            "value": "low"
+          },
+          {
+            "label": "Medium (4.0+)",
+            "value": "medium"
+          },
+          {
+            "label": "High (7.0+)",
+            "value": "high"
+          },
+          {
+            "label": "Critical (9.0+)",
+            "value": "critical"
+          }
+        ]
+      },
+      {
+        "inputType": "autoComplete",
+        "inputLabel": "Exploitability levels to include",
+        "inputName": "ExploitabilityLevels",
+        "creatable": false,
+        "multiple": true,
+        "options": [
+          {
+            "label": "All Levels",
+            "value": "All"
+          },
+          {
+            "label": "No Known Exploit",
+            "value": "NoExploit"
+          },
+          {
+            "label": "Public Exploit Available",
+            "value": "ExploitIsPublic"
+          },
+          {
+            "label": "Exploit Verified",
+            "value": "ExploitIsVerified"
+          },
+          {
+            "label": "Exploit In Kit",
+            "value": "ExploitIsInKit"
+          }
+        ]
+      }
+    ],
     "recommendedRunInterval": "4h",
-    "description": "Monitors for software vulnerabilities that were first discovered more than the specified number of hours ago. This helps identify lingering vulnerabilities that may have been missed or not yet remediated. Requires Defender for Endpoint/Business."
+    "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
   },
   {
     "name": "UnusedLicenses",
