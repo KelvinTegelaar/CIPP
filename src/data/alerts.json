@@ -382,7 +382,7 @@
   },
     {
     "name": "StaleEntraDevices",
-    "label": "Alert on Stale Entra devices that have not been active for X days",
+    "label": "Alert on stale Entra devices that have not been active for X days",
     "recommendedRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
