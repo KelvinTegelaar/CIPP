@@ -54,7 +54,7 @@ const Page = () => {
     <Stack direction="row" spacing={2} alignItems="center" key="actions-stack">
       <CippQueueTracker
         queueId={syncQueueId}
-        queryKey={["calendar-permissions", currentTenant, byUser]}
+        queryKey={`calendar-permissions-${currentTenant}-${byUser}`}
         title="Calendar Permissions Sync"
       />
       <Tooltip title="This report displays cached data from the CIPP reporting database. Cache timestamps are shown in the table. Click the Sync button to update the cache for the current tenant.">
@@ -92,7 +92,7 @@ const Page = () => {
           key={`calendar-permissions-${byUser}`}
           title="Calendar Permissions Report"
           apiUrl="/api/ListCalendarPermissions"
-          queryKey={["calendar-permissions", currentTenant, byUser]}
+          queryKey={`calendar-permissions-${currentTenant}-${byUser}`}
           apiData={apiData}
           simpleColumns={columns}
           cardButton={pageActions}
@@ -109,7 +109,7 @@ const Page = () => {
           type: "GET",
           url: "/api/ExecCIPPDBCache",
           confirmText: `Run calendar permissions cache sync for ${currentTenant}? This will update mailbox and calendar permission data immediately.`,
-          relatedQueryKeys: ["calendar-permissions"],
+          relatedQueryKeys: [`calendar-permissions-${currentTenant}-${byUser}`],
           data: {
             Name: "Mailboxes",
           },

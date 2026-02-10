@@ -131,7 +131,7 @@ const Page = () => {
     <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
       <CippQueueTracker
         queueId={syncQueueId}
-        queryKey={["ListMFAUsers", currentTenant]}
+        queryKey={`ListMFAUsers-${currentTenant}`}
         title="MFA Report Sync"
       />
       <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.">
@@ -159,7 +159,7 @@ const Page = () => {
         title={pageTitle}
         apiUrl={apiUrl}
         apiData={apiData}
-        queryKey={["ListMFAUsers", currentTenant]}
+        queryKey={`ListMFAUsers-${currentTenant}`}
         simpleColumns={simpleColumns}
         filters={filters}
         actions={actions}
@@ -174,7 +174,7 @@ const Page = () => {
           type: "GET",
           url: "/api/ExecCIPPDBCache",
           confirmText: `Run MFA state cache sync for ${currentTenant}? This will update MFA data immediately.`,
-          relatedQueryKeys: ["ListMFAUsers"],
+          relatedQueryKeys: [`ListMFAUsers-${currentTenant}`],
           data: {
             Name: "MFAState",
           },

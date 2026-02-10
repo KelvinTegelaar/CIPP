@@ -100,9 +100,8 @@ const Page = () => {
     <Stack key="actions-stack" direction="row" spacing={1} alignItems="center">
       <CippQueueTracker
         queueId={syncQueueId}
-        queryKey={["ListMailboxRules", currentTenant]}
+        queryKey={`ListMailboxRules-${currentTenant}`}
         title="Mailbox Rules Sync"
-        onQueueComplete={() => setSyncQueueId(null)}
       />
       <Tooltip title="This report displays cached data from the CIPP reporting database. Click the Sync button to update the cache for the current tenant.">
         <IconButton size="small">
@@ -129,7 +128,7 @@ const Page = () => {
         title={pageTitle}
         apiUrl="/api/ListMailboxRules"
         apiData={apiData}
-        queryKey={["ListMailboxRules", currentTenant]}
+        queryKey={`ListMailboxRules-${currentTenant}`}
         simpleColumns={simpleColumns}
         offCanvas={offCanvas}
         actions={actions}
