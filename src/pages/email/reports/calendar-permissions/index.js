@@ -15,11 +15,13 @@ import { Stack } from "@mui/system";
 import { Sync, Info } from "@mui/icons-material";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
+import { CippQueueTracker } from "../../../../components/CippTable/CippQueueTracker";
 
 const Page = () => {
   const [byUser, setByUser] = useState(true);
   const currentTenant = useSettings().currentTenant;
   const syncDialog = useDialog();
+  const [syncQueueId, setSyncQueueId] = useState(null);
 
   const isAllTenants = currentTenant === "AllTenants";
 
@@ -50,6 +52,11 @@ const Page = () => {
 
   const pageActions = [
     <Stack direction="row" spacing={2} alignItems="center" key="actions-stack">
+      <CippQueueTracker
+        queueId={syncQueueId}
+        queryKey={["calendar-permissions", currentTenant, byUser]}
+        title="Calendar Permissions Sync"
+      />
       <Tooltip title="This report displays cached data from the CIPP reporting database. Cache timestamps are shown in the table. Click the Sync button to update the cache for the current tenant.">
         <IconButton size="small">
           <Info fontSize="small" />
@@ -105,6 +112,11 @@ const Page = () => {
           relatedQueryKeys: ["calendar-permissions"],
           data: {
             Name: "Mailboxes",
+          },
+          onSuccess: (result) => {
+            if (result?.Metadata?.QueueId) {
+              setSyncQueueId(result.Metadata.QueueId);
+            }
           },
         }}
       />
