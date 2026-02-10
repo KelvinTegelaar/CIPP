@@ -5597,7 +5597,7 @@
   },
   {
     "name": "standards.LegacyEmailReportAddins",
-    "deprecated": true,
+    "deprecated": false,
     "cat": "Exchange Standards",
     "tag": [],
     "helpText": "Removes legacy Report Phishing and Report Message Outlook add-ins.",
