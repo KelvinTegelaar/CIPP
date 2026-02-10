@@ -135,8 +135,9 @@ const Page = () => {
     },
   });
 
-  const searchForm = useForm({ defaultValues: { searchType: "user", searchTerm: [] } });
+  const searchForm = useForm({ defaultValues: { searchType: "user", searchTerm: [], includeforks: false } });
   const watchSearchTerm = searchForm.watch("searchTerm");
+  const watchIncludeForks = searchForm.watch("includeforks");
 
   const handleSearch = () => {
     const searchTerms = watchSearchTerm.map((t) => t.value) ?? [];
@@ -149,6 +150,7 @@ const Page = () => {
         Org: org ? org : "",
         SearchTerm: searchTerms,
         Type: "repositories",
+        includeforks: watchIncludeForks,
       },
     });
   };
@@ -354,6 +356,12 @@ const Page = () => {
                   label="Search Terms"
                 />
               </CippFormCondition>
+              <CippFormComponent
+                type="switch"
+                name="includeforks"
+                label="Include Forked Repositories"
+                formControl={searchForm}
+              />
             </Stack>
           </FormProvider>
 
