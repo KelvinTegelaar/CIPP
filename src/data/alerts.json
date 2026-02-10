@@ -381,7 +381,7 @@
     "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
   },
     {
-    "name": "AlertStaleEntraDevices",
+    "name": "StaleEntraDevices",
     "label": "Alert on Stale Entra devices that have not been active for X days",
     "recommendedRunInterval": "1d",
     "requiresInput": true,
