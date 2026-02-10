@@ -135,7 +135,7 @@ const Page = () => {
     },
   });
 
-  const searchForm = useForm({ defaultValues: { searchType: "user", searchTerm: [], includeforks: false } });
+  const searchForm = useForm({ defaultValues: { searchType: "user", includeforks: false } });
   const watchSearchTerm = searchForm.watch("searchTerm");
   const watchIncludeForks = searchForm.watch("includeforks");
 
@@ -432,8 +432,8 @@ const Page = () => {
                                 r.visibility === "private"
                                   ? "error"
                                   : r.visibility === "public"
-                                  ? "success"
-                                  : "primary"
+                                    ? "success"
+                                    : "primary"
                               }
                               variant="outlined"
                               label={r.visibility}
