@@ -34,6 +34,7 @@ const Page = () => {
         "MFAMethods",
         "CAPolicies",
         "IsAdmin",
+        "UserType",
         "CacheTimestamp",
       ]
     : [
@@ -47,6 +48,7 @@ const Page = () => {
         "MFAMethods",
         "CAPolicies",
         "IsAdmin",
+        "UserType",
         "CacheTimestamp",
       ];
   const filters = [

@@ -30,7 +30,7 @@
     "@emotion/styled": "11.14.1",
     "@heroicons/react": "2.2.0",
     "@monaco-editor/react": "^4.6.0",
-    "@mui/icons-material": "7.3.2",
+    "@mui/icons-material": "7.3.7",
     "@mui/lab": "7.0.0-beta.17",
     "@mui/material": "7.3.7",
     "@mui/system": "7.3.2",
@@ -63,7 +63,7 @@
     "gray-matter": "4.0.3",
     "i18next": "25.5.2",
     "javascript-time-ago": "^2.5.11",
-    "jspdf": "^3.0.0",
+    "jspdf": "^4.1.0",
     "jspdf-autotable": "^5.0.2",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
@@ -96,10 +96,10 @@
     "react-papaparse": "^4.4.0",
     "react-quill": "^2.0.0",
     "react-redux": "9.2.0",
-    "react-syntax-highlighter": "^15.6.1",
+    "react-syntax-highlighter": "^16.1.0",
     "react-time-ago": "^7.3.3",
     "react-virtuoso": "^4.12.8",
-    "react-window": "^2.1.0",
+    "react-window": "^2.2.5",
     "recharts": "^3.6.0",
     "redux": "5.0.1",
     "redux-devtools-extension": "2.13.9",
@@ -111,11 +111,11 @@
     "simplebar-react": "3.3.2",
     "stylis-plugin-rtl": "2.1.1",
     "typescript": "5.9.2",
-    "yup": "1.7.0"
+    "yup": "1.7.1"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
-    "eslint": "9.35.0",
+    "eslint": "9.39.2",
     "eslint-config-next": "15.5.2"
   }
 }

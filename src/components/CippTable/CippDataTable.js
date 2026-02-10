@@ -109,6 +109,21 @@ export const CippDataTable = (props) => {
     isInDialog = false,
     showBulkExportAction = true,
   } = props;
+
+  // Create a map of column IDs to their filterType for quick lookup
+  const filterTypeMap = useMemo(() => {
+    if (!filters || !Array.isArray(filters)) return {};
+    return filters.reduce((acc, filter) => {
+      if (filter.value && Array.isArray(filter.value)) {
+        filter.value.forEach((v) => {
+          if (v.id && filter.filterType) {
+            acc[v.id] = filter.filterType;
+          }
+        });
+      }
+      return acc;
+    }, {});
+  }, [filters]);
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
   const [usedData, setUsedData] = useState(data);
@@ -137,7 +152,19 @@ export const CippDataTable = (props) => {
 
   useEffect(() => {
     if (filters && Array.isArray(filters) && filters.length > 0) {
-      setColumnFilters(filters);
+      // Process filters to add filterFn based on filterType
+      const processedFilters = filters.map((filter) => {
+        if (filter.filterType === "equal") {
+          // Use exact match for equal filterType
+          return {
+            ...filter,
+            value: Array.isArray(filter.value) ? filter.value : [filter.value],
+          };
+        }
+        // Default to substring matching (backwards compatible)
+        return filter;
+      });
+      setColumnFilters(processedFilters);
     }
   }, [filters]);
 
@@ -187,19 +214,31 @@ export const CippDataTable = (props) => {
       return;
     }
     const apiColumns = utilColumnsFromAPI(usedData);
+
+    // Apply custom filterFn to columns that have filterType === 'equal'
+    const enhancedApiColumns = apiColumns.map((col) => {
+      if (filterTypeMap[col.id] === "equal") {
+        return {
+          ...col,
+          filterFn: "equals",
+        };
+      }
+      return col;
+    });
+
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
     // Check if we're in AllTenants mode and data has Tenant property
     const isAllTenants = settings?.currentTenant === "AllTenants";
     const hasTenantProperty = usedData.some(
-      (row) => row && typeof row === "object" && "Tenant" in row
+      (row) => row && typeof row === "object" && "Tenant" in row,
     );
     const shouldShowTenant = isAllTenants && hasTenantProperty;
 
     if (columns.length === 0 && configuredSimpleColumns.length === 0) {
-      finalColumns = apiColumns;
-      apiColumns.forEach((col) => {
+      finalColumns = enhancedApiColumns;
+      enhancedApiColumns.forEach((col) => {
         newVisibility[col.id] = true;
       });
     } else if (configuredSimpleColumns.length > 0) {
@@ -212,13 +251,16 @@ export const CippDataTable = (props) => {
         finalResolvedColumns = [...resolvedSimpleColumns, "Tenant"];
       }
 
-      finalColumns = apiColumns;
+      finalColumns = enhancedApiColumns;
       finalColumns.forEach((col) => {
         newVisibility[col.id] = finalResolvedColumns.includes(col.id);
       });
     } else {
       const providedColumnKeys = new Set(columns.map((col) => col.id || col.header));
-      finalColumns = [...columns, ...apiColumns.filter((col) => !providedColumnKeys.has(col.id))];
+      finalColumns = [
+        ...columns,
+        ...enhancedApiColumns.filter((col) => !providedColumnKeys.has(col.id)),
+      ];
       finalColumns.forEach((col) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
@@ -237,7 +279,7 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData, queryKey, settings?.currentTenant]);
+  }, [columns.length, usedData, queryKey, settings?.currentTenant, filterTypeMap]);
 
   const createDialog = useDialog();
 
@@ -250,8 +292,8 @@ export const CippDataTable = (props) => {
       configuredSimpleColumns,
       offCanvas,
       onChange,
-      maxHeightOffset
-    )
+      maxHeightOffset,
+    ),
   );
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
@@ -285,19 +327,22 @@ export const CippDataTable = (props) => {
     muiTablePaperProps: ({ table }) => ({
       sx: {
         ...(table.getState().isFullScreen && {
-          position: 'fixed !important',
-          top: '64px !important',
-          bottom: '0 !important',
-          left: { xs: '0 !important', lg: settings?.sidebarCollapse ? '73px !important' : '270px !important' },
-          right: '0 !important',
-          zIndex: '1300 !important',
-          m: '0 !important',
-          p: '16px !important',
-          overflow: 'auto',
-          bgcolor: 'background.paper',
-          maxWidth: 'none !important',
-          width: 'auto !important',
-          height: 'auto !important',
+          position: "fixed !important",
+          top: "64px !important",
+          bottom: "0 !important",
+          left: {
+            xs: "0 !important",
+            lg: settings?.sidebarCollapse ? "73px !important" : "270px !important",
+          },
+          right: "0 !important",
+          zIndex: "1300 !important",
+          m: "0 !important",
+          p: "16px !important",
+          overflow: "auto",
+          bgcolor: "background.paper",
+          maxWidth: "none !important",
+          width: "auto !important",
+          height: "auto !important",
         }),
       },
     }),
@@ -309,7 +354,7 @@ export const CippDataTable = (props) => {
               // Find the index of this row in the filtered rows
               const filteredRowsArray = table.getFilteredRowModel().rows;
               const indexInFiltered = filteredRowsArray.findIndex(
-                (r) => r.original === row.original
+                (r) => r.original === row.original,
               );
               setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
               setOffcanvasVisible(true);
@@ -406,8 +451,8 @@ export const CippDataTable = (props) => {
       showSkeletons: getRequestData.isFetchingNextPage
         ? false
         : getRequestData.isFetching
-        ? getRequestData.isFetching
-        : isFetching,
+          ? getRequestData.isFetching
+          : isFetching,
     },
     onSortingChange: (newSorting) => {
       setSorting(newSorting ?? []);
@@ -476,7 +521,7 @@ export const CippDataTable = (props) => {
                 // Find the index of this row in the filtered rows
                 const filteredRowsArray = table.getFilteredRowModel().rows;
                 const indexInFiltered = filteredRowsArray.findIndex(
-                  (r) => r.original === row.original
+                  (r) => r.original === row.original,
                 );
                 setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
                 setOffcanvasVisible(true);
@@ -497,7 +542,7 @@ export const CippDataTable = (props) => {
               // Find the index of this row in the filtered rows
               const filteredRowsArray = table.getFilteredRowModel().rows;
               const indexInFiltered = filteredRowsArray.findIndex(
-                (r) => r.original === row.original
+                (r) => r.original === row.original,
               );
               setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
               setOffcanvasVisible(true);
