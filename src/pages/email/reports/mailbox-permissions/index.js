@@ -112,6 +112,7 @@ const Page = () => {
           relatedQueryKeys: [`mailbox-permissions-${currentTenant}-${byUser}`],
           data: {
             Name: "Mailboxes",
+            Types: "Permissions",
           },
           onSuccess: (result) => {
             if (result?.Metadata?.QueueId) {

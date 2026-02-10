@@ -147,9 +147,10 @@ const Page = () => {
           },
           url: "/api/ExecCIPPDBCache",
           confirmText: `Run mailbox rules cache sync for ${currentTenant}? This will update mailbox rules data immediately.`,
-          relatedQueryKeys: ["ListMailboxRules"],
+          relatedQueryKeys: [`ListMailboxRules-${currentTenant}`],
           data: {
-            Name: "MailboxRules",
+            Name: "Mailboxes",
+            Types: "Rules",
           },
         }}
       />

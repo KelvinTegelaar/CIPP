@@ -112,6 +112,7 @@ const Page = () => {
           relatedQueryKeys: [`calendar-permissions-${currentTenant}-${byUser}`],
           data: {
             Name: "Mailboxes",
+            Types: "CalendarPermissions",
           },
           onSuccess: (result) => {
             if (result?.Metadata?.QueueId) {
