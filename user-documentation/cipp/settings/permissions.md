@@ -1,4 +1,4 @@
-# Permissionss
+# Permissions
 
 ### Permissions Check
 
