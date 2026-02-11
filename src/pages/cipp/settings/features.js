@@ -49,7 +49,7 @@ const Page = () => {
     actions: actions,
   };
 
-  const simpleColumns = ["Name", "Enabled"];
+  const simpleColumns = ["Name", "Enabled", "Description"];
 
   return (
     <CippTablePage
