@@ -62,7 +62,7 @@
     "formik": "2.4.6",
     "gray-matter": "4.0.3",
     "i18next": "25.5.2",
-    "javascript-time-ago": "^2.5.11",
+    "javascript-time-ago": "^2.6.2",
     "jspdf": "^4.1.0",
     "jspdf-autotable": "^5.0.2",
     "leaflet": "^1.9.4",
