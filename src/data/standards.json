@@ -5345,6 +5345,46 @@
     ]
   },
   {
+    "name": "standards.ReusableSettingsTemplate",
+    "cat": "Templates",
+    "label": "Reusable Settings Template",
+    "multiple": true,
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
+    "impact": "High Impact",
+    "impactColour": "info",
+    "addedDate": "2026-01-02",
+    "helpText": "Deploy and maintain Intune reusable settings templates that can be referenced by multiple policies.",
+    "executiveText": "Creates and keeps reusable Intune settings templates consistent so common firewall and configuration blocks can be reused across many policies.",
+    "addedComponent": [
+      {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": false,
+        "required": true,
+        "name": "TemplateList",
+        "label": "Select Reusable Settings Template",
+        "api": {
+          "queryKey": "ListIntuneReusableSettingTemplates",
+          "url": "/api/ListIntuneReusableSettingTemplates",
+          "labelField": "displayName",
+          "valueField": "GUID",
+          "showRefresh": true,
+          "templateView": {
+            "title": "Reusable Settings",
+            "property": "RawJSON",
+            "type": "intune"
+          }
+        }
+      }
+    ],
+    "powershellEquivalent": "",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.TransportRuleTemplate",
     "label": "Transport Rule Template",
     "cat": "Templates",
