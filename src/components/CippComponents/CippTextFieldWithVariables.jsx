@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { TextField } from "@mui/material";
 import { CippVariableAutocomplete } from "./CippVariableAutocomplete";
-import { useSettings } from "/src/hooks/use-settings.js";
+import { useSettings } from "../../hooks/use-settings.js";
 
 /**
  * Enhanced TextField that supports custom variable autocomplete

@@ -1,5 +1,5 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import CippTablePage from "../../../components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
@@ -46,7 +46,9 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    children: (extendedData) => <ScheduledTaskDetails data={extendedData} showActions={false} />,
+    children: (extendedData) => (
+      <ScheduledTaskDetails data={extendedData} showActions={true} showTitle={false} />
+    ),
     size: "xl",
     actions: actions,
   };
@@ -77,6 +79,7 @@ const Page = () => {
           "Command",
           "Parameters",
           "PostExecution",
+          "Reference",
           "Recurrence",
           "Results",
         ]}

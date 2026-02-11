@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../../api/ApiCall";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { CheckCircle, Download, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -16,6 +16,7 @@ import CippButtonCard from "../../../../../components/CippCards/CippButtonCard";
 import { SvgIcon, Typography, CircularProgress, Button } from "@mui/material";
 import { PropertyList } from "../../../../../components/property-list";
 import { PropertyListItem } from "../../../../../components/property-list-item";
+import { CippHead } from "../../../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -188,12 +189,13 @@ const Page = () => {
       subtitle={subtitle}
       isFetching={userRequest.isFetching}
     >
+      <CippHead title="Compromise Remediation" />
       {/* Loading State: Show only Remediation Card and Check 1 with Loading Skeleton */}
       {isFetching && userRequest.isSuccess && (
         <Box
           sx={{
             flexGrow: 1,
-            py: 4,
+            py: 1,
           }}
         >
           <Grid container spacing={2}>

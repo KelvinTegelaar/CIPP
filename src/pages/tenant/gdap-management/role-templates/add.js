@@ -1,8 +1,8 @@
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm } from "react-hook-form";
-import { CippAddEditGdapRoleTemplate } from "/src/components/CippFormPages/CippAddEditGdapRoleTemplate";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { CippAddEditGdapRoleTemplate } from "../../../../components/CippFormPages/CippAddEditGdapRoleTemplate";
+import { ApiGetCall } from "../../../../api/ApiCall";
 
 const Page = () => {
   const formControl = useForm({

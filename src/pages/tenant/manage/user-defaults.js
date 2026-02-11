@@ -1,11 +1,11 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Button } from "@mui/material";
 import { Delete, Add } from "@mui/icons-material";
 import { useDialog } from "../../../hooks/use-dialog";
 import { CippApiDialog } from "../../../components/CippComponents/CippApiDialog";
-import countryList from "/src/data/countryList.json";
+import countryList from "../../../data/countryList.json";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../hooks/use-settings";
 
@@ -61,7 +61,7 @@ const Page = () => {
     <>
       <CippTablePage
         title={pageTitle}
-        apiUrl={`/api/ListNewUserDefaults`}
+        apiUrl={`/api/ListNewUserDefaults?includeAllTenants=false`}
         queryKey={`ListNewUserDefaults-${userSettings.currentTenant}`}
         actions={actions}
         offCanvas={offCanvas}
@@ -169,12 +169,11 @@ const Page = () => {
             api: {
               url: "/api/ListLicenses",
               labelField: (option) =>
-                `${option.displayName || option.SkuPartNumber} (${
+                `${option.License || option.skuPartNumber} (${
                   option.AvailableUnits || 0
                 } available)`,
               valueField: "skuId",
               queryKey: "ListLicenses",
-              dataKey: "SkuList",
             },
             multiple: true,
             creatable: false,

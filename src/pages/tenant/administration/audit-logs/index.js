@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useForm } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { Grid } from "@mui/system";
 import tabOptions from "./tabOptions.json";

@@ -1,6 +1,6 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Alert, Button, Link, SvgIcon, Typography } from "@mui/material";
 import { Add, Block, CheckCircleOutline } from "@mui/icons-material";
 import tabOptions from "../tabOptions";

@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useForm, useWatch } from "react-hook-form";
-import { useSettings } from "/src/hooks/use-settings";
+import { useSettings } from "../../../../hooks/use-settings";
 import { useEffect } from "react";
-import { SafeLinksForm, safeLinksDataUtils } from "/src/components/CippFormPages/CippSafeLinksPolicyRuleForm";
+import { SafeLinksForm, safeLinksDataUtils } from "../../../../components/CippFormPages/CippSafeLinksPolicyRuleForm";
 import { useRouter } from "next/router";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../api/ApiCall";
 
 const Page = () => {
   const router = useRouter();

@@ -9,18 +9,18 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import CippIntegrationSettings from "/src/components/CippIntegrations/CippIntegrationSettings";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippIntegrationSettings from "../../../components/CippIntegrations/CippIntegrationSettings";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { useForm } from "react-hook-form";
-import { useSettings } from "/src/hooks/use-settings";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { useSettings } from "../../../hooks/use-settings";
+import { ApiGetCall } from "../../../api/ApiCall";
 import { useRouter } from "next/router";
-import extensions from "/src/data/Extensions.json";
+import extensions from "../../../data/Extensions.json";
 import { useEffect } from "react";
 import { ArrowPathIcon, ArrowTopRightOnSquareIcon, BeakerIcon } from "@heroicons/react/24/outline";
 import { SvgIcon } from "@mui/material";
 import { useState } from "react";
-import { CippApiResults } from "/src/components/CippComponents/CippApiResults";
+import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
 import CippPageCard from "../../../components/CippCards/CippPageCard";
 import CippIntegrationTenantMapping from "../../../components/CippIntegrations/CippIntegrationTenantMapping";
 import CippIntegrationFieldMapping from "../../../components/CippIntegrations/CippIntegrationFieldMapping";
@@ -125,6 +125,7 @@ const Page = () => {
           backButtonTitle="Integrations"
           headerText={extension.headerText}
           hideTitleText={true}
+          noTenantInHead={true}
         >
           <CardContent sx={{ pb: 0, mb: 0 }}>
             {logo && (
@@ -193,13 +194,8 @@ const Page = () => {
               {extension?.links && (
                 <>
                   {extension.links.map((link, index) => (
-                    <Box key={index}> 
-                      <Button
-                        href={link.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        color="inherit"
-                      >
+                    <Box key={index}>
+                      <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
                         <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
                           <ArrowTopRightOnSquareIcon />
                         </SvgIcon>

@@ -1,17 +1,17 @@
 import { Alert, Button } from "@mui/material";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
+import { TabbedLayout } from "../../../../layouts/TabbedLayout";
 import Link from "next/link";
 import { CopyAll, Delete, PlayArrow, AddBox, Edit, GitHub, ContentCopy } from "@mui/icons-material";
-import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { Grid } from "@mui/system";
-import { CippApiResults } from "../../../../../components/CippComponents/CippApiResults";
+import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import tabOptions from "../tabOptions.json";
-import { useSettings } from "/src/hooks/use-settings.js";
-import { CippPolicyImportDrawer } from "../../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
-import { PermissionButton } from "/src/utils/permissions.js";
+import { useSettings } from "../../../../hooks/use-settings.js";
+import { CippPolicyImportDrawer } from "../../../../components/CippComponents/CippPolicyImportDrawer.jsx";
+import { PermissionButton } from "../../../../utils/permissions.js";
 
 const Page = () => {
   const oldStandards = ApiGetCall({ url: "/api/ListStandards", queryKey: "ListStandards-legacy" });
@@ -36,14 +36,14 @@ const Page = () => {
     {
       label: "Edit Template",
       //when using a link it must always be the full path /identity/administration/users/[id] for example.
-      link: "/tenant/standards/template?id=[GUID]&type=[type]",
+      link: "/tenant/standards/templates/template?id=[GUID]&type=[type]",
       icon: <Edit />,
       color: "success",
       target: "_self",
     },
     {
       label: "Clone & Edit Template",
-      link: "/tenant/standards/template?id=[GUID]&clone=true&type=[type]",
+      link: "/tenant/standards/templates/template?id=[GUID]&clone=true&type=[type]",
       icon: <CopyAll />,
       color: "success",
       target: "_self",
@@ -183,12 +183,17 @@ const Page = () => {
       tenantInTitle={false}
       cardButton={
         <>
-          <Button component={Link} href="../template" startIcon={<AddBox />} sx={{ mr: 1 }}>
+          <Button
+            component={Link}
+            href="/tenant/standards/templates/template"
+            startIcon={<AddBox />}
+            sx={{ mr: 1 }}
+          >
             Add Template
           </Button>
           <Button
             component={Link}
-            href="../template?type=drift"
+            href="/tenant/standards/templates/template?type=drift"
             startIcon={<AddBox />}
             sx={{ mr: 1 }}
           >

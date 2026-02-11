@@ -1,6 +1,6 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { useSettings } from "../../../../hooks/use-settings";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import {
   Sync,
@@ -168,6 +168,32 @@ const Page = () => {
       },
       condition: (row) => row.operatingSystem === "macOS",
       confirmText: "Are you sure you want to retrieve the FileVault key for [deviceName]?",
+    },
+    {
+      label: "Reset Passcode",
+      type: "POST",
+      icon: <PasswordOutlined />,
+      url: "/api/ExecDevicePasscodeAction",
+      data: {
+        GUID: "id",
+        Action: "resetPasscode",
+      },
+      condition: (row) => row.operatingSystem === "Android",
+      confirmText:
+        "Are you sure you want to reset the passcode for [deviceName]? A new passcode will be generated and displayed.",
+    },
+    {
+      label: "Remove Passcode",
+      type: "POST",
+      icon: <Password />,
+      url: "/api/ExecDevicePasscodeAction",
+      data: {
+        GUID: "id",
+        Action: "resetPasscode",
+      },
+      condition: (row) => row.operatingSystem === "iOS",
+      confirmText:
+        "Are you sure you want to remove the passcode from [deviceName]? This will remove the device passcode requirement.",
     },
     {
       label: "Windows Defender Full Scan",

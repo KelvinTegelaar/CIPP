@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Alert, Button, Dialog, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Dialog,
+  Divider,
+  DialogContent,
+  DialogTitle,
+  useMediaQuery,
+} from "@mui/material";
+import { Stack } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import { useSettings } from "../hooks/use-settings";
 import { Footer } from "./footer";
@@ -14,7 +23,8 @@ import { Box, Container, Grid } from "@mui/system";
 import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboardingv2";
 import { useDialog } from "../hooks/use-dialog";
-import { nativeMenuItems } from "/src/layouts/config";
+import { nativeMenuItems } from "./config";
+import { CippBreadcrumbNav } from "../components/CippComponents/CippBreadcrumbNav";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -92,6 +102,12 @@ export const Layout = (props) => {
     waiting: !swaStatus.isSuccess || swaStatus.data?.clientPrincipal === null,
   });
 
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000, // Cache for 10 minutes
+  });
+
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
       const userRoles = currentRole.data?.clientPrincipal?.userRoles;
@@ -101,15 +117,22 @@ export const Layout = (props) => {
         setHideSidebar(true);
         return;
       }
+
+      // Get disabled pages from feature flags - only filter if we have valid data
+      let disabledPages = [];
+      if (featureFlags.isSuccess && Array.isArray(featureFlags.data)) {
+        disabledPages = featureFlags.data
+          .filter((flag) => flag.Enabled === false || flag.enabled === false)
+          .flatMap((flag) => flag.Pages || flag.pages || [])
+          .filter((page) => typeof page === "string");
+      }
+
       const filterItemsByRole = (items) => {
         return items
           .map((item) => {
-            // role
-            if (item.roles && item.roles.length > 0) {
-              const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
-              if (!hasRole) {
-                return null;
-              }
+            // Check if page is disabled by feature flag
+            if (item.path && disabledPages.length > 0 && disabledPages.includes(item.path)) {
+              return null;
             }
 
             // Check permission with pattern matching support
@@ -167,6 +190,8 @@ export const Layout = (props) => {
     currentRole.data?.clientPrincipal?.userRoles,
     currentRole.data?.permissions,
     currentRole.isFetching,
+    featureFlags.isSuccess,
+    featureFlags.data,
   ]);
 
   const handleNavPin = useCallback(() => {
@@ -258,7 +283,7 @@ export const Layout = (props) => {
               message: alert.Alert,
               title: alert.title,
               toastError: alert,
-            })
+            }),
           );
         });
       }
@@ -314,8 +339,9 @@ export const Layout = (props) => {
             </Box>
           )}
           {(currentTenant === "AllTenants" || !currentTenant) && !allTenantsSupport ? (
-            <Box sx={{ flexGrow: 1, py: 4 }}>
+            <Box sx={{ flexGrow: 1, py: 3 }}>
               <Container maxWidth={false}>
+                <CippBreadcrumbNav mode="hierarchical" />
                 <Grid container spacing={3}>
                   <Grid size={6}>
                     <CippImageCard
@@ -330,7 +356,13 @@ export const Layout = (props) => {
               </Container>
             </Box>
           ) : (
-            <>{children}</>
+            <Stack>
+              <Box sx={{ mx: 3, mt: 3 }}>
+                <CippBreadcrumbNav mode="hierarchical" />
+              </Box>
+              <Divider sx={{ mb: 2 }} />
+              {children}
+            </Stack>
           )}
           <Footer />
         </LayoutContainer>

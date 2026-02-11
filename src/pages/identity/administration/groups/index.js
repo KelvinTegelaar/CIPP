@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import Link from "next/link";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import {
@@ -287,6 +287,11 @@ const Page = () => {
       "mailEnabled",
       "securityEnabled",
       "visibility",
+      "assignedLicenses",
+      "licenseProcessingState.state",
+      "onPremisesSamAccountName",
+      "membershipRule",
+      "onPremisesSyncEnabled",
     ],
     actions: actions,
   };
@@ -320,11 +325,11 @@ const Page = () => {
         "mailNickname",
         "groupType",
         "assignedLicenses",
+        "licenseProcessingState.state",
         "visibility",
         "onPremisesSamAccountName",
         "membershipRule",
         "onPremisesSyncEnabled",
-        "userPrincipalName",
       ]}
     />
   );

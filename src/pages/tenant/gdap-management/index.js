@@ -1,5 +1,5 @@
-import { TabbedLayout } from "/src/layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { TabbedLayout } from "../../../layouts/TabbedLayout";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import tabOptions from "./tabOptions";
 import { Container } from "@mui/system";
 import { Grid } from "@mui/system";
@@ -16,8 +16,9 @@ import CippPermissionCheck from "../../../components/CippSettings/CippPermission
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import CippButtonCard from "../../../components/CippCards/CippButtonCard";
-import { WizardSteps } from "/src/components/CippWizard/wizard-steps";
+import { WizardSteps } from "../../../components/CippWizard/wizard-steps";
 import Link from "next/link";
+import { CippHead } from "../../../components/CippComponents/CippHead";
 
 const Page = () => {
   const [createDefaults, setCreateDefaults] = useState(false);
@@ -115,6 +116,7 @@ const Page = () => {
       }}
       maxWidth={false}
     >
+      <CippHead title="GDAP Overview" />
       <Grid container spacing={2}>
         <Grid size={12}>
           <CippInfoBar

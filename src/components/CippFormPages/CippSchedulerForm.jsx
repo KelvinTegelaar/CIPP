@@ -14,15 +14,15 @@ import {
 } from "@mui/material";
 import { Grid, Stack } from "@mui/system";
 import { useWatch } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
-import CippGraphResourceSelector from "/src/components/CippComponents/CippGraphResourceSelector";
-import CippGraphAttributeSelector from "/src/components/CippComponents/CippGraphAttributeSelector";
-import { getCippValidator } from "/src/utils/get-cipp-validator";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import CippGraphResourceSelector from "../CippComponents/CippGraphResourceSelector";
+import CippGraphAttributeSelector from "../CippComponents/CippGraphAttributeSelector";
+import { getCippValidator } from "../../utils/get-cipp-validator";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
+import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useEffect, useState } from "react";
 import CippFormInputArray from "../CippComponents/CippFormInputArray";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -100,6 +100,8 @@ const CippSchedulerForm = (props) => {
     { value: "0", label: "Once" },
     { value: "1d", label: "Every 1 day" },
     { value: "7d", label: "Every 7 days" },
+    { value: "14d", label: "Every 14 days" },
+    { value: "21d", label: "Every 21 days" },
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ];
@@ -565,6 +567,16 @@ const CippSchedulerForm = (props) => {
               { label: "Email", value: "Email" },
               { label: "PSA", value: "PSA" },
             ]}
+          />
+        </Grid>
+
+        <Grid size={{ md: 12, xs: 12 }}>
+          <CippFormComponent
+            type="textField"
+            name="reference"
+            label="Reference"
+            formControl={formControl}
+            placeholder="Optional note to identify this task, this is also added to notification titles"
           />
         </Grid>
 

@@ -97,6 +97,7 @@ export const CippDataTable = (props) => {
     simple = false,
     cardButton,
     offCanvas = false,
+    offCanvasOnRowClick = false,
     noCard = false,
     hideTitle = false,
     refreshFunction,
@@ -108,12 +109,29 @@ export const CippDataTable = (props) => {
     isInDialog = false,
     showBulkExportAction = true,
   } = props;
+
+  // Create a map of column IDs to their filterType for quick lookup
+  const filterTypeMap = useMemo(() => {
+    if (!filters || !Array.isArray(filters)) return {};
+    return filters.reduce((acc, filter) => {
+      if (filter.value && Array.isArray(filter.value)) {
+        filter.value.forEach((v) => {
+          if (v.id && filter.filterType) {
+            acc[v.id] = filter.filterType;
+          }
+        });
+      }
+      return acc;
+    }, {});
+  }, [filters]);
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
   const [usedData, setUsedData] = useState(data);
   const [usedColumns, setUsedColumns] = useState([]);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
+  const [offCanvasRowIndex, setOffCanvasRowIndex] = useState(0);
+  const [filteredRows, setFilteredRows] = useState([]);
   const [customComponentData, setCustomComponentData] = useState({});
   const [customComponentVisible, setCustomComponentVisible] = useState(false);
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
@@ -134,7 +152,19 @@ export const CippDataTable = (props) => {
 
   useEffect(() => {
     if (filters && Array.isArray(filters) && filters.length > 0) {
-      setColumnFilters(filters);
+      // Process filters to add filterFn based on filterType
+      const processedFilters = filters.map((filter) => {
+        if (filter.filterType === "equal") {
+          // Use exact match for equal filterType
+          return {
+            ...filter,
+            value: Array.isArray(filter.value) ? filter.value : [filter.value],
+          };
+        }
+        // Default to substring matching (backwards compatible)
+        return filter;
+      });
+      setColumnFilters(processedFilters);
     }
   }, [filters]);
 
@@ -184,19 +214,31 @@ export const CippDataTable = (props) => {
       return;
     }
     const apiColumns = utilColumnsFromAPI(usedData);
+
+    // Apply custom filterFn to columns that have filterType === 'equal'
+    const enhancedApiColumns = apiColumns.map((col) => {
+      if (filterTypeMap[col.id] === "equal") {
+        return {
+          ...col,
+          filterFn: "equals",
+        };
+      }
+      return col;
+    });
+
     let finalColumns = [];
     let newVisibility = { ...columnVisibility };
 
     // Check if we're in AllTenants mode and data has Tenant property
     const isAllTenants = settings?.currentTenant === "AllTenants";
     const hasTenantProperty = usedData.some(
-      (row) => row && typeof row === "object" && "Tenant" in row
+      (row) => row && typeof row === "object" && "Tenant" in row,
     );
     const shouldShowTenant = isAllTenants && hasTenantProperty;
 
     if (columns.length === 0 && configuredSimpleColumns.length === 0) {
-      finalColumns = apiColumns;
-      apiColumns.forEach((col) => {
+      finalColumns = enhancedApiColumns;
+      enhancedApiColumns.forEach((col) => {
         newVisibility[col.id] = true;
       });
     } else if (configuredSimpleColumns.length > 0) {
@@ -209,13 +251,16 @@ export const CippDataTable = (props) => {
         finalResolvedColumns = [...resolvedSimpleColumns, "Tenant"];
       }
 
-      finalColumns = apiColumns;
+      finalColumns = enhancedApiColumns;
       finalColumns.forEach((col) => {
         newVisibility[col.id] = finalResolvedColumns.includes(col.id);
       });
     } else {
       const providedColumnKeys = new Set(columns.map((col) => col.id || col.header));
-      finalColumns = [...columns, ...apiColumns.filter((col) => !providedColumnKeys.has(col.id))];
+      finalColumns = [
+        ...columns,
+        ...enhancedApiColumns.filter((col) => !providedColumnKeys.has(col.id)),
+      ];
       finalColumns.forEach((col) => {
         newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
@@ -234,7 +279,7 @@ export const CippDataTable = (props) => {
     }
     setUsedColumns(finalColumns);
     setColumnVisibility(newVisibility);
-  }, [columns.length, usedData, queryKey, settings?.currentTenant]);
+  }, [columns.length, usedData, queryKey, settings?.currentTenant, filterTypeMap]);
 
   const createDialog = useDialog();
 
@@ -247,8 +292,8 @@ export const CippDataTable = (props) => {
       configuredSimpleColumns,
       offCanvas,
       onChange,
-      maxHeightOffset
-    )
+      maxHeightOffset,
+    ),
   );
   //create memoized version of usedColumns, and usedData
   const memoizedColumns = useMemo(() => usedColumns, [usedColumns]);
@@ -280,12 +325,48 @@ export const CippDataTable = (props) => {
       baseBackgroundColor: theme.palette.background.paper,
     }),
     muiTablePaperProps: ({ table }) => ({
-      //not sx
-      style: {
-        zIndex: table.getState().isFullScreen ? 1000 : undefined,
-        top: table.getState().isFullScreen ? 64 : undefined,
+      sx: {
+        ...(table.getState().isFullScreen && {
+          position: "fixed !important",
+          top: "64px !important",
+          bottom: "0 !important",
+          left: {
+            xs: "0 !important",
+            lg: settings?.sidebarCollapse ? "73px !important" : "270px !important",
+          },
+          right: "0 !important",
+          zIndex: "1300 !important",
+          m: "0 !important",
+          p: "16px !important",
+          overflow: "auto",
+          bgcolor: "background.paper",
+          maxWidth: "none !important",
+          width: "auto !important",
+          height: "auto !important",
+        }),
       },
     }),
+    muiTableBodyRowProps:
+      offCanvasOnRowClick && offCanvas
+        ? ({ row }) => ({
+            onClick: () => {
+              setOffCanvasData(row.original);
+              // Find the index of this row in the filtered rows
+              const filteredRowsArray = table.getFilteredRowModel().rows;
+              const indexInFiltered = filteredRowsArray.findIndex(
+                (r) => r.original === row.original,
+              );
+              setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
+              setOffcanvasVisible(true);
+            },
+            sx: {
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "action.hover",
+              },
+            },
+          })
+        : undefined,
     // Add global styles to target the specific filter components
     enableColumnFilterModes: true,
     muiTableHeadCellProps: {
@@ -370,8 +451,8 @@ export const CippDataTable = (props) => {
       showSkeletons: getRequestData.isFetchingNextPage
         ? false
         : getRequestData.isFetching
-        ? getRequestData.isFetching
-        : isFetching,
+          ? getRequestData.isFetching
+          : isFetching,
     },
     onSortingChange: (newSorting) => {
       setSorting(newSorting ?? []);
@@ -437,6 +518,12 @@ export const CippDataTable = (props) => {
               onClick={() => {
                 closeMenu();
                 setOffCanvasData(row.original);
+                // Find the index of this row in the filtered rows
+                const filteredRowsArray = table.getFilteredRowModel().rows;
+                const indexInFiltered = filteredRowsArray.findIndex(
+                  (r) => r.original === row.original,
+                );
+                setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
                 setOffcanvasVisible(true);
               }}
             >
@@ -452,6 +539,12 @@ export const CippDataTable = (props) => {
             onClick={() => {
               closeMenu();
               setOffCanvasData(row.original);
+              // Find the index of this row in the filtered rows
+              const filteredRowsArray = table.getFilteredRowModel().rows;
+              const indexInFiltered = filteredRowsArray.findIndex(
+                (r) => r.original === row.original,
+              );
+              setOffCanvasRowIndex(indexInFiltered >= 0 ? indexInFiltered : 0);
               setOffcanvasVisible(true);
             }}
           >
@@ -669,6 +762,19 @@ export const CippDataTable = (props) => {
   }, [table.getSelectedRowModel().rows]);
 
   useEffect(() => {
+    // Update filtered rows whenever table filtering/sorting changes
+    if (table && table.getFilteredRowModel) {
+      const rows = table.getFilteredRowModel().rows;
+      setFilteredRows(rows.map((row) => row.original));
+    }
+  }, [
+    table,
+    table.getState().columnFilters,
+    table.getState().globalFilter,
+    table.getState().sorting,
+  ]);
+
+  useEffect(() => {
     //check if the simplecolumns are an array,
     if (Array.isArray(simpleColumns) && simpleColumns.length > 0) {
       setConfiguredSimpleColumns(simpleColumns);
@@ -742,8 +848,27 @@ export const CippDataTable = (props) => {
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
-        children={offCanvas?.children}
+        title={offCanvasData?.Name || offCanvas?.title || "Extended Info"}
+        children={
+          offCanvas?.children ? (row) => offCanvas.children(row, offCanvasRowIndex) : undefined
+        }
         customComponent={offCanvas?.customComponent}
+        onNavigateUp={() => {
+          const newIndex = offCanvasRowIndex - 1;
+          if (newIndex >= 0 && filteredRows && filteredRows[newIndex]) {
+            setOffCanvasRowIndex(newIndex);
+            setOffCanvasData(filteredRows[newIndex]);
+          }
+        }}
+        onNavigateDown={() => {
+          const newIndex = offCanvasRowIndex + 1;
+          if (filteredRows && newIndex < filteredRows.length) {
+            setOffCanvasRowIndex(newIndex);
+            setOffCanvasData(filteredRows[newIndex]);
+          }
+        }}
+        canNavigateUp={offCanvasRowIndex > 0}
+        canNavigateDown={filteredRows && offCanvasRowIndex < filteredRows.length - 1}
         {...offCanvas}
       />
       {/* Render custom component */}

@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useSettings } from "../../../../../hooks/use-settings";
 import { useRouter } from "next/router";
-import { ApiGetCall, ApiPostCall } from "/src/api/ApiCall";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
+import { ApiGetCall, ApiPostCall } from "../../../../../api/ApiCall";
+import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { AdminPanelSettings, Check, Group, Mail, Fingerprint, Launch } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
@@ -15,16 +15,19 @@ import { SvgIcon, Typography } from "@mui/material";
 import { CippBannerListCard } from "../../../../../components/CippCards/CippBannerListCard";
 import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
 import { useEffect, useState } from "react";
-import { useCippUserActions } from "/src/components/CippComponents/CippUserActions";
+import { useCippUserActions } from "../../../../../components/CippComponents/CippUserActions";
 import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
 import dynamic from "next/dynamic";
-const CippMap = dynamic(() => import("/src/components/CippComponents/CippMap"), { ssr: false });
+const CippMap = dynamic(() => import("../../../../../components/CippComponents/CippMap"), {
+  ssr: false,
+});
 
 import { Button, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { CippPropertyList } from "../../../../../components/CippComponents/CippPropertyList";
 import { CippCodeBlock } from "../../../../../components/CippComponents/CippCodeBlock";
+import { CippHead } from "../../../../../components/CippComponents/CippHead";
 
 const SignInLogsDialog = ({ open, onClose, userId, tenantFilter }) => {
   return (
@@ -136,7 +139,7 @@ const Page = () => {
   const mfaDevices = mfaDevicesData?.body?.value || [];
 
   // Set the title and subtitle for the layout
-  const title = userRequest.isSuccess ? <>{userRequest.data?.[0]?.displayName}</> : "Loading...";
+  const title = userRequest.isSuccess ? userRequest.data?.[0]?.displayName : "Loading...";
 
   const subtitle = userRequest.isSuccess
     ? [
@@ -274,7 +277,7 @@ const Page = () => {
     ) {
       // Filter policies where result is "success"
       const appliedPolicies = signInData.appliedConditionalAccessPolicies.filter(
-        (policy) => policy.result === "success"
+        (policy) => policy.result === "success",
       );
 
       if (appliedPolicies.length > 0) {
@@ -419,7 +422,7 @@ const Page = () => {
   if (mfaDevices.length > 0) {
     // Exclude password authentication method
     const mfaDevicesFiltered = mfaDevices.filter(
-      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod"
+      (method) => method["@odata.type"] !== "#microsoft.graph.passwordAuthenticationMethod",
     );
 
     if (mfaDevicesFiltered.length > 0) {
@@ -537,7 +540,7 @@ const Page = () => {
               },
             ],
             data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.group"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.group",
             ),
             refreshFunction: refreshFunction,
             simpleColumns: ["displayName", "groupTypes", "securityEnabled", "mailEnabled"],
@@ -557,7 +560,7 @@ const Page = () => {
           subtext: "List of roles the user is a member of",
           statusText: ` ${
             userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
             ).length
           } Role(s)`,
           statusColor: "info.main",
@@ -565,7 +568,7 @@ const Page = () => {
             title: "Admin Roles",
             hideTitle: true,
             data: userMemberOf?.filter(
-              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole"
+              (item) => item?.["@odata.type"] === "#microsoft.graph.directoryRole",
             ),
             simpleColumns: ["displayName", "description"],
             refreshFunction: refreshFunction,
@@ -591,6 +594,7 @@ const Page = () => {
             py: 4,
           }}
         >
+          <CippHead title={title} />
           <Grid container spacing={2}>
             <Grid size={4}>
               <CippUserInfoCard

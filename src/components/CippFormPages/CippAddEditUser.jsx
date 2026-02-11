@@ -1,10 +1,10 @@
 import { Alert, Divider, InputAdornment, Typography } from "@mui/material";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormCondition } from "/src/components/CippComponents/CippFormCondition";
-import { CippFormDomainSelector } from "/src/components/CippComponents/CippFormDomainSelector";
-import { CippFormUserSelector } from "/src/components/CippComponents/CippFormUserSelector";
-import countryList from "/src/data/countryList.json";
-import { CippFormLicenseSelector } from "/src/components/CippComponents/CippFormLicenseSelector";
+import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
+import { CippFormDomainSelector } from "../CippComponents/CippFormDomainSelector";
+import { CippFormUserSelector } from "../CippComponents/CippFormUserSelector";
+import countryList from "../../data/countryList.json";
+import { CippFormLicenseSelector } from "../CippComponents/CippFormLicenseSelector";
 import { Grid } from "@mui/system";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
@@ -606,9 +606,10 @@ const CippAddEditUser = (props) => {
               label: tenantGroup.displayName,
               value: tenantGroup.id,
               addedFields: {
-                calculatedGroupType: tenantGroup.calculatedGroupType,
+                groupType: tenantGroup.groupType,
               },
             }))}
+            creatable={false}
             formControl={formControl}
           />
         </Grid>
@@ -624,9 +625,10 @@ const CippAddEditUser = (props) => {
               label: userGroups.DisplayName,
               value: userGroups.id,
               addedFields: {
-                calculatedGroupType: userGroups.calculatedGroupType,
+                groupType: userGroups.groupType,
               },
             }))}
+            creatable={false}
             formControl={formControl}
           />
         </Grid>
@@ -715,6 +717,14 @@ const CippAddEditUser = (props) => {
                   type="switch"
                   label="Send results to PSA"
                   name="postExecution.psa"
+                  formControl={formControl}
+                />
+                <CippFormComponent
+                  type="textField"
+                  fullWidth
+                  label="Reference"
+                  name="reference"
+                  placeholder="Enter a reference that will be added to the notification title"
                   formControl={formControl}
                 />
               </Grid>

@@ -1,11 +1,11 @@
 import { OpenInNew } from "@mui/icons-material";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
+import CippButtonCard from "../CippCards/CippButtonCard";
 import { Button, Stack, SvgIcon, Typography } from "@mui/material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useState } from "react";
-import { getCippTranslation } from "/src/utils/get-cipp-translation";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
 
-export const CippBackendCard = ({ backendComponents, item }) => {
+export const CippBackendCard = ({ backendComponents, item, hosted }) => {
   const [open, setOpen] = useState(false);
 
   const BackendButton = () => {
@@ -30,7 +30,7 @@ export const CippBackendCard = ({ backendComponents, item }) => {
             variant="contained"
             size="small"
             onClick={() => setOpen(true)}
-            disabled={backendComponents.isFetching}
+            disabled={backendComponents.isFetching || hosted}
             startIcon={
               item.offcanvasIcon ? <SvgIcon fontSize="small">{item.offcanvasIcon}</SvgIcon> : ""
             }

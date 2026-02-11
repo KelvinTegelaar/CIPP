@@ -1,8 +1,8 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippTablePage from "../../../../components/CippComponents/CippTablePage";
 import { Delete } from "@mui/icons-material";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CippAddVacationModeDrawer } from "/src/components/CippComponents/CippAddVacationModeDrawer";
+import { CippAddVacationModeDrawer } from "../../../../components/CippComponents/CippAddVacationModeDrawer";
 
 const Page = () => {
   const actions = [
@@ -23,6 +23,29 @@ const Page = () => {
     },
   ];
 
+  const filterList = [
+    {
+      filterName: "Running",
+      value: [{ id: "TaskState", value: "Running" }],
+      type: "column",
+    },
+    {
+      filterName: "Planned",
+      value: [{ id: "TaskState", value: "Planned" }],
+      type: "column",
+    },
+    {
+      filterName: "Failed",
+      value: [{ id: "TaskState", value: "Failed" }],
+      type: "column",
+    },
+    {
+      filterName: "Completed",
+      value: [{ id: "TaskState", value: "Completed" }],
+      type: "column",
+    },
+  ];
+
   return (
     <CippTablePage
       cardButton={
@@ -39,16 +62,19 @@ const Page = () => {
         "Tenant",
         "Name",
         "Parameters.Member",
+        "Reference",
         "TaskState",
         "ScheduledTime",
         "ExecutedTime",
       ]}
+      filters={filterList}
       offCanvas={{
         extendedInfoFields: [
           "Name",
           "TaskState",
           "ScheduledTime",
           "Parameters.Member",
+          "Reference",
           "Parameters.PolicyId",
           "Tenant",
           "ExecutedTime",

@@ -1,7 +1,13 @@
-import { Layout as DashboardLayout } from "/src/layouts/index";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage";
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { showToast } from "/src/store/toasts";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage";
+import {
+  TrashIcon,
+  PencilIcon,
+  UserIcon,
+  UserGroupIcon,
+  GlobeAltIcon,
+} from "@heroicons/react/24/outline";
+import { showToast } from "../../../../store/toasts";
 import {
   Button,
   Dialog,
@@ -11,13 +17,18 @@ import {
   CircularProgress,
   DialogActions,
 } from "@mui/material";
-import { CippCodeBlock } from "/src/components/CippComponents/CippCodeBlock";
+import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlock";
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { Close, Save } from "@mui/icons-material";
+import { Close, Save, LaptopChromebook } from "@mui/icons-material";
 import { useSettings } from "../../../../hooks/use-settings";
 import { Stack } from "@mui/system";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const assignmentModeOptions = [
+  { label: "Replace existing assignments", value: "replace" },
+  { label: "Append to existing assignments", value: "append" },
+];
 
 const Page = () => {
   const pageTitle = "Scripts";
@@ -32,9 +43,10 @@ const Page = () => {
   const dispatch = useDispatch();
 
   const language = useMemo(() => {
-    return currentScript?.scriptType?.toLowerCase() === ("macos" || "linux") ? "shell" : "powershell";
+    return currentScript?.scriptType?.toLowerCase() === ("macos" || "linux")
+      ? "shell"
+      : "powershell";
   }, [currentScript?.scriptType]);
-
 
   const tenantFilter = useSettings().currentTenant;
   const {
@@ -154,7 +166,154 @@ const Page = () => {
     );
   };
 
+  // Map script type to Graph API endpoint
+  const getScriptEndpoint = (scriptType) => {
+    const mapping = {
+      Windows: "deviceManagementScripts",
+      MacOS: "deviceShellScripts",
+      Remediation: "deviceHealthScripts",
+      Linux: "configurationPolicies",
+    };
+    return mapping[scriptType] || "deviceManagementScripts";
+  };
+
   const actions = [
+    {
+      label: "Assign to All Users",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      icon: <UserIcon />,
+      color: "info",
+      fields: [
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds the new ones.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: tenantFilter,
+        ID: row?.id,
+        Type: getScriptEndpoint(row?.scriptType),
+        AssignTo: "allLicensedUsers",
+        assignmentMode: formData?.assignmentMode || "replace",
+      }),
+    },
+    {
+      label: "Assign to All Devices",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      icon: <LaptopChromebook />,
+      color: "info",
+      fields: [
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds the new ones.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: tenantFilter,
+        ID: row?.id,
+        Type: getScriptEndpoint(row?.scriptType),
+        AssignTo: "AllDevices",
+        assignmentMode: formData?.assignmentMode || "replace",
+      }),
+    },
+    {
+      label: "Assign Globally (All Users / All Devices)",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      icon: <GlobeAltIcon />,
+      color: "info",
+      fields: [
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds the new ones.",
+        },
+      ],
+      confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
+      customDataformatter: (row, action, formData) => ({
+        tenantFilter: tenantFilter,
+        ID: row?.id,
+        Type: getScriptEndpoint(row?.scriptType),
+        AssignTo: "AllDevicesAndUsers",
+        assignmentMode: formData?.assignmentMode || "replace",
+      }),
+    },
+    {
+      label: "Assign to Custom Group",
+      type: "POST",
+      url: "/api/ExecAssignPolicy",
+      icon: <UserGroupIcon />,
+      color: "info",
+      confirmText: 'Select the target groups for "[displayName]".',
+      fields: [
+        {
+          type: "autoComplete",
+          name: "groupTargets",
+          label: "Group(s)",
+          multiple: true,
+          creatable: false,
+          allowResubmit: true,
+          validators: { required: "Please select at least one group" },
+          api: {
+            url: "/api/ListGraphRequest",
+            dataKey: "Results",
+            queryKey: `ListScriptAssignmentGroups-${tenantFilter}`,
+            labelField: (group) =>
+              group.id ? `${group.displayName} (${group.id})` : group.displayName,
+            valueField: "id",
+            addedField: {
+              description: "description",
+            },
+            data: {
+              Endpoint: "groups",
+              manualPagination: true,
+              $select: "id,displayName,description",
+              $orderby: "displayName",
+              $top: 999,
+              $count: true,
+            },
+          },
+        },
+        {
+          type: "radio",
+          name: "assignmentMode",
+          label: "Assignment mode",
+          options: assignmentModeOptions,
+          defaultValue: "replace",
+          helperText:
+            "Replace will overwrite existing assignments. Append keeps current assignments and adds the new ones.",
+        },
+      ],
+      customDataformatter: (row, action, formData) => {
+        const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
+        return {
+          tenantFilter: tenantFilter,
+          ID: row?.id,
+          Type: getScriptEndpoint(row?.scriptType),
+          GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
+          GroupNames: selectedGroups.map((group) => group.label).filter(Boolean),
+          assignmentMode: formData?.assignmentMode || "replace",
+        };
+      },
+    },
     {
       label: "Edit Script",
       icon: <PencilIcon />,
@@ -197,6 +356,8 @@ const Page = () => {
   const simpleColumns = [
     "scriptType",
     "displayName",
+    "ScriptAssignment",
+    "ScriptExclude",
     "description",
     "runAsAccount",
     "lastModifiedDateTime",

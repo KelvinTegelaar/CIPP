@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import ContactFormLayout from "/src/components/CippFormPages/CippAddEditContact";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
+import ContactFormLayout from "../../../../components/CippFormPages/CippAddEditContact";
 import { ApiGetCall } from "../../../../api/ApiCall";
-import countryList from "/src/data/countryList.json";
+import countryList from "../../../../data/countryList.json";
 import { useRouter } from "next/router";
 
 const countryLookup = new Map(countryList.map((country) => [country.Name, country.Code]));

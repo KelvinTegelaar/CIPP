@@ -18,19 +18,20 @@ import { Grid } from "@mui/system";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import { useForm, useFormState, useWatch } from "react-hook-form";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
 import CippButtonCard from "../../../../components/CippCards/CippButtonCard";
-import alertList from "/src/data/alerts.json";
-import auditLogTemplates from "/src/data/AuditLogTemplates";
-import auditLogSchema from "/src/data/AuditLogSchema.json";
+import alertList from "../../../../data/alerts.json";
+import auditLogTemplates from "../../../../data/AuditLogTemplates";
+import auditLogSchema from "../../../../data/AuditLogSchema.json";
 import { Save, Delete } from "@mui/icons-material";
 
-import { Layout as DashboardLayout } from "/src/layouts/index.js"; // Dashboard layout
+import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // Dashboard layout
 import { CippApiResults } from "../../../../components/CippComponents/CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
+import { CippHead } from "../../../../components/CippComponents/CippHead";
 
 const AlertWizard = () => {
   const apiRequest = ApiPostCall({
@@ -55,6 +56,8 @@ const AlertWizard = () => {
     { value: "4h", label: "Every 4 hours" },
     { value: "1d", label: "Every 1 day" },
     { value: "7d", label: "Every 7 days" },
+    { value: "14d", label: "Every 14 days" },
+    { value: "21d", label: "Every 21 days" },
     { value: "30d", label: "Every 30 days" },
     { value: "365d", label: "Every 365 days" },
   ]);
@@ -113,7 +116,7 @@ const AlertWizard = () => {
             formControl.setValue(
               `conditions.${index}.Input`,
               { value: "" },
-              { shouldValidate: false }
+              { shouldValidate: false },
             );
           } else {
             formControl.setValue(`conditions.${index}.Input`, "", { shouldValidate: false });
@@ -136,13 +139,13 @@ const AlertWizard = () => {
           ? alert.excludedTenants.map((tenant) => ({ value: tenant, label: tenant }))
           : [];
         const usedCommand = alertList?.find(
-          (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", "")
+          (cmd) => cmd.name === alert.RawAlert.Command.replace("Get-CIPPAlert", ""),
         );
         const recurrenceOption = recurrenceOptions?.find(
-          (opt) => opt.value === alert.RawAlert.Recurrence
+          (opt) => opt.value === alert.RawAlert.Recurrence,
         );
         const postExecutionValue = postExecutionOptions.filter((opt) =>
-          alert.RawAlert.PostExecution.split(",").includes(opt.value)
+          alert.RawAlert.PostExecution.split(",").includes(opt.value),
         );
         let tenantFilterForForm;
         if (alert.RawAlert.TenantGroup) {
@@ -190,7 +193,17 @@ const AlertWizard = () => {
                 ? JSON.parse(alert.RawAlert.Parameters)
                 : alert.RawAlert.Parameters;
             if (params.InputValue) {
-              resetObject[usedCommand.inputName] = params.InputValue;
+              if (usedCommand.multipleInput) {
+                // Load multiple input values from InputValue object
+                usedCommand.inputs.forEach((input) => {
+                  if (params.InputValue[input.inputName] !== undefined) {
+                    resetObject[input.inputName] = params.InputValue[input.inputName];
+                  }
+                });
+              } else {
+                // Backward compatibility: single input value
+                resetObject[usedCommand.inputName] = params.InputValue;
+              }
             }
           } catch (error) {
             console.error("Error parsing parameters:", error);
@@ -203,7 +216,7 @@ const AlertWizard = () => {
         setAlertType("audit");
         setIsLoadingExistingAlert(true);
         const foundLogbook = logbookOptions?.find(
-          (logbook) => logbook.value === alert.RawAlert.type
+          (logbook) => logbook.value === alert.RawAlert.type,
         );
         const rawConditions = alert.RawAlert.Conditions || [];
         const formattedConditions = rawConditions.map((cond) => {
@@ -251,7 +264,7 @@ const AlertWizard = () => {
         setTimeout(() => {
           // Seed previous operator values BEFORE setting conditions to prevent clearing
           prevOperatorValuesRef.current = formattedConditions.map((c) =>
-            (c.Operator?.value || "").toLowerCase()
+            (c.Operator?.value || "").toLowerCase(),
           );
 
           // Process each condition with proper normalization
@@ -264,7 +277,7 @@ const AlertWizard = () => {
             // Normalize based on operator and property type
             if (Array.isArray(finalInput)) {
               finalInput = finalInput.map((item) =>
-                typeof item === "string" ? { label: item, value: item } : item
+                typeof item === "string" ? { label: item, value: item } : item,
               );
               // Further ensure label/value presence and rebuild from schema if possible
               const schemaOptions = auditLogSchema[cond.Property?.value] || [];
@@ -349,7 +362,7 @@ const AlertWizard = () => {
       }));
 
       const recommendedOption = updatedRecurrenceOptions?.find(
-        (opt) => opt.value === commandValue.value.recommendedRunInterval
+        (opt) => opt.value === commandValue.value.recommendedRunInterval,
       );
 
       if (recommendedOption) {
@@ -368,7 +381,7 @@ const AlertWizard = () => {
     if (!selectedPreset) return;
     setIsLoadingPreset(true);
     const selectedTemplate = auditLogTemplates?.find(
-      (template) => template.value === selectedPreset.value
+      (template) => template.value === selectedPreset.value,
     );
     if (!selectedTemplate) {
       setIsLoadingPreset(false);
@@ -399,7 +412,7 @@ const AlertWizard = () => {
     }
     setAddedEvent(formattedConditions.map((_, i) => ({ id: i })));
     prevOperatorValuesRef.current = formattedConditions.map((c) =>
-      (c.Operator?.value || "").toLowerCase()
+      (c.Operator?.value || "").toLowerCase(),
     );
     // Ensure React Hook Form registers nested fields before releasing the guard
     setTimeout(() => {
@@ -435,16 +448,27 @@ const AlertWizard = () => {
           // Prevent form reload after successful save
           setHasLoadedExistingAlert(true);
         },
-      }
+      },
     );
   };
 
   const handleScriptSubmit = (values) => {
     const getInputParams = () => {
       if (values.command.value.requiresInput) {
-        return {
-          InputValue: values[values.command.value.inputName],
-        };
+        if (values.command.value.multipleInput) {
+          // Collect all input values into InputValue object
+          const inputValue = {};
+          values.command.value.inputs.forEach((input) => {
+            if (values[input.inputName] !== undefined && values[input.inputName] !== null) {
+              inputValue[input.inputName] = values[input.inputName];
+            }
+          });
+          return { InputValue: inputValue };
+        } else {
+          return {
+            InputValue: values[values.command.value.inputName],
+          };
+        }
       }
       return {};
     };
@@ -469,7 +493,7 @@ const AlertWizard = () => {
           // Prevent form reload after successful save
           setHasLoadedExistingAlert(true);
         },
-      }
+      },
     );
   };
 
@@ -491,22 +515,10 @@ const AlertWizard = () => {
 
   const { isValid } = useFormState({ control: formControl.control });
   return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
+    <Box sx={{ flexGrow: 1, pb: 4 }}>
+      <CippHead title={editAlert ? "Edit Alert" : "Add Alert"} />
       <Container maxWidth={"xl"}>
         <Stack spacing={4}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Button
-              color="inherit"
-              onClick={() => router.back()}
-              startIcon={
-                <SvgIcon fontSize="small">
-                  <ArrowLeftIcon />
-                </SvgIcon>
-              }
-            >
-              Back to Alerts
-            </Button>
-          </Stack>
           {existingAlert.isLoading && <Skeleton />}
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Typography variant="h4">{editAlert ? "Edit" : "Add"} Alert</Typography>
@@ -741,7 +753,7 @@ const AlertWizard = () => {
                                     creatable={true}
                                     options={
                                       propertyWatcher?.[event.id]?.Property?.value?.startsWith(
-                                        "List:"
+                                        "List:",
                                       )
                                         ? auditLogSchema[
                                             propertyWatcher?.[event.id]?.Property?.value
@@ -939,14 +951,49 @@ const AlertWizard = () => {
                               />
                             </Grid>
                             <Grid size={12}>
-                              {commandValue?.value?.requiresInput && (
-                                <CippFormComponent
-                                  type={commandValue.value?.inputType}
-                                  name={commandValue.value?.inputName}
-                                  formControl={formControl}
-                                  label={commandValue.value?.inputLabel}
-                                />
-                              )}
+                              {commandValue?.value?.requiresInput &&
+                                !commandValue.value?.multipleInput && (
+                                  <CippFormComponent
+                                    type={commandValue.value?.inputType}
+                                    name={commandValue.value?.inputName}
+                                    formControl={formControl}
+                                    label={commandValue.value?.inputLabel}
+                                    required={commandValue.value?.required || false}
+                                    {...(commandValue.value?.inputType === "autoComplete"
+                                      ? {
+                                          options: commandValue.value?.options,
+                                          creatable: commandValue.value?.creatable || true,
+                                          multiple: commandValue.value?.multiple || true,
+                                        }
+                                      : {})}
+                                  />
+                                )}
+                              {commandValue?.value?.multipleInput &&
+                                commandValue.value?.inputs?.map((input, index) => (
+                                  <Grid
+                                    container
+                                    spacing={2}
+                                    key={index}
+                                    sx={{ mt: index > 0 ? 2 : 0 }}
+                                  >
+                                    <Grid size={12}>
+                                      <CippFormComponent
+                                        type={input.inputType}
+                                        name={input.inputName}
+                                        formControl={formControl}
+                                        label={input.inputLabel}
+                                        required={input.required || false}
+                                        {...(input.inputType === "autoComplete"
+                                          ? {
+                                              options: input.options,
+                                              creatable: input.creatable ?? true,
+                                              multiple: input.multiple ?? true,
+                                            }
+                                          : {})}
+                                      />
+                                    </Grid>
+                                  </Grid>
+                                ))}
                             </Grid>
                             <Grid size={12}>
                               <CippFormComponent
@@ -970,7 +1017,7 @@ const AlertWizard = () => {
                                 formControl={formControl}
                                 multiline={true}
                                 rows={3}
-                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers..."
+                                placeholder="Add documentation, FAQ links, or instructions for when this alert triggers. Variable replacement like %tenantfilter%, %tenantname% and custom variables are supported. You can also use %resultcount% to include the number of results that triggered the alert."
                               />
                             </Grid>
                             <Grid size={12}>

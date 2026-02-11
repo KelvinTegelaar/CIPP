@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useRouter } from "next/router";
-import { nativeMenuItems } from "/src/layouts/config";
-import { usePermissions } from "/src/hooks/use-permissions";
+import { nativeMenuItems } from "../../layouts/config";
+import { usePermissions } from "../../hooks/use-permissions";
 
 /**
  * Recursively collects only leaf items (those without sub-items).
@@ -46,7 +46,7 @@ async function loadTabOptions() {
     "/email/administration/exchange-retention",
     "/cipp/custom-data",
     "/cipp/super-admin",
-    "/tenant/standards/list-standards",
+    "/tenant/standards",
     "/tenant/manage",
     "/tenant/administration/applications",
     "/tenant/administration/tenants",
@@ -62,7 +62,7 @@ async function loadTabOptions() {
 
   for (const basePath of tabOptionPaths) {
     try {
-      const module = await import(`/src/pages${basePath}/tabOptions.json`);
+      const module = await import(`../../pages${basePath}/tabOptions.json`);
       const options = module.default || module;
 
       // Add each tab option with metadata
@@ -88,14 +88,6 @@ async function loadTabOptions() {
  */
 function filterItemsByPermissionsAndRoles(items, userPermissions, userRoles) {
   return items.filter((item) => {
-    // Check roles if specified
-    if (item.roles && item.roles.length > 0) {
-      const hasRole = item.roles.some((requiredRole) => userRoles.includes(requiredRole));
-      if (!hasRole) {
-        return false;
-      }
-    }
-
     // Check permissions with pattern matching support
     if (item.permissions && item.permissions.length > 0) {
       const hasPermission = userPermissions?.some((userPerm) => {
@@ -109,6 +101,7 @@ function filterItemsByPermissionsAndRoles(items, userPermissions, userRoles) {
           if (requiredPerm.includes("*")) {
             // Convert wildcard pattern to regex
             const regexPattern = requiredPerm
+              .replace(/\\/g, "\\\\") // Escape backslashes
               .replace(/\./g, "\\.") // Escape dots
               .replace(/\*/g, ".*"); // Convert * to .*
             const regex = new RegExp(`^${regexPattern}$`);
@@ -179,7 +172,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
     const filteredMainMenu = filterItemsByPermissionsAndRoles(
       allLeafItems,
       userPermissions,
-      userRoles
+      userRoles,
     ).map((item) => {
       const rawBreadcrumbs = buildBreadcrumbPath(nativeMenuItems, item.path) || [];
       // Remove the leaf item's own title to avoid duplicate when rendering
@@ -257,7 +250,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
     const inTitle = leaf.title?.toLowerCase().includes(normalizedSearch);
     const inPath = leaf.path?.toLowerCase().includes(normalizedSearch);
     const inBreadcrumbs = leaf.breadcrumbs?.some((crumb) =>
-      crumb?.toLowerCase().includes(normalizedSearch)
+      crumb?.toLowerCase().includes(normalizedSearch),
     );
     // If there's no search value, show no results (you could change this logic)
     return normalizedSearch ? inTitle || inPath || inBreadcrumbs : false;
@@ -274,7 +267,7 @@ export const CippCentralSearch = ({ handleClose, open }) => {
         </Typography>
       ) : (
         part
-      )
+      ),
     );
   };
 

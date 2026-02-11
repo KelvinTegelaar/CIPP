@@ -1,10 +1,10 @@
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
 import { RocketLaunch, GitHub, Edit, Add } from "@mui/icons-material";
 import Link from "next/link";
-import { ApiGetCall } from "/src/api/ApiCall";
+import { ApiGetCall } from "../../../../api/ApiCall";
 
 const Page = () => {
   const pageTitle = "Safe Links Policy Templates";

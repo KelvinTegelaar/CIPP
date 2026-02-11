@@ -10,8 +10,8 @@ import {
 } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce } from "lodash";
-import CippButtonCard from "/src/components/CippCards/CippButtonCard";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import CippButtonCard from "../CippCards/CippButtonCard";
+import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -47,6 +47,7 @@ const CippGraphExplorerFilter = ({
       $expand: "",
       $top: "",
       $search: "",
+      $orderby: "",
       $format: "",
       NoPagination: false,
       ReverseTenantLookup: false,
@@ -325,6 +326,10 @@ const CippGraphExplorerFilter = ({
       {
         Key: "$expand",
         Value: formParameters.$expand,
+      },
+      {
+        Key: "$orderby",
+        Value: formParameters.$orderby,
       },
       {
         Key: "$format",
@@ -719,6 +724,17 @@ const CippGraphExplorerFilter = ({
               label="Search"
               formControl={formControl}
               placeholder="Search query"
+            />
+          </Grid>
+
+          {/* OrderBy Field */}
+          <Grid size={gridItemSize}>
+            <CippFormComponent
+              type="textField"
+              name="$orderby"
+              label="Order By"
+              formControl={formControl}
+              placeholder="Sort order (e.g. displayName asc)"
             />
           </Grid>
 

@@ -1,9 +1,9 @@
 import { List, ListItem, Skeleton, SvgIcon, Typography } from "@mui/material";
 import { Cancel, CheckCircle, Warning } from "@mui/icons-material";
-import { CippPropertyList } from "/src/components/CippComponents/CippPropertyList";
+import { CippPropertyList } from "../CippComponents/CippPropertyList";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { CippDataTable } from "/src/components/CippTable/CippDataTable";
+import { CippDataTable } from "../CippTable/CippDataTable";
 import { useEffect, useState } from "react";
 
 export const CippGDAPResults = (props) => {
@@ -149,10 +149,6 @@ export const CippGDAPResults = (props) => {
             }}
             extendedInfo={[]}
           >
-            <Typography variant="h4" sx={{ mx: 3 }}>
-              GDAP Details
-            </Typography>
-
             {results?.Results?.GDAPIssues?.length > 0 && (
               <>
                 <CippDataTable
