@@ -48,6 +48,44 @@
       }
     ]
   },
+    {
+    "name": "InactiveGuestUsers",
+    "label": "Alert on guest users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled guest users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
+      {
+    "name": "InactiveUsers",
+    "label": "Alert on users that have not logged in for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last login (default: 90)",
+        "inputName": "DaysSinceLastLogin"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled users?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
+  },
   {
     "name": "EntraConnectSyncStatus",
     "label": "Alert if Entra Connect sync is enabled and has not run in the last X hours",
@@ -441,6 +479,25 @@
     "label": "Alert on quarantine release requests",
     "recommendedRunInterval": "30m",
     "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
+  },
+    {
+    "name": "StaleEntraDevices",
+    "label": "Alert on stale Entra devices that have not been active for X days",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "multipleInput": true,
+    "inputs": [
+      {
+        "inputType": "number",
+        "inputLabel": "Days since last activity (default: 90)",
+        "inputName": "DaysSinceLastActivity"
+      },
+      {
+        "inputType": "switch",
+        "inputLabel": "Exclude disabled devices?",
+        "inputName": "ExcludeDisabled"
+      }
+    ]
   },
   {
     "name": "SecureScore",
