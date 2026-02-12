@@ -127,7 +127,7 @@ const CippGraphExplorerSimpleFilter = ({
           <CippFormComponent
             type="autoComplete"
             name="reportTemplate"
-            label="Select a preset"
+            label="Select a query"
             multiple={false}
             formControl={presetControl}
             options={presetOptions}
@@ -139,7 +139,7 @@ const CippGraphExplorerSimpleFilter = ({
                 <GroupItems>{params.children}</GroupItems>
               </li>
             )}
-            placeholder="Select a preset to run"
+            placeholder="Select a query to run"
           />
         </Box>
         <Stack direction="row" spacing={1} sx={{ pb: 0.25 }}>
