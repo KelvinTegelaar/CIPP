@@ -1322,10 +1322,22 @@ export const CIPPTableToptoolbar = ({
         title="Edit Filters"
         visible={filterCanvasVisible}
         onClose={() => setFilterCanvasVisible(!filterCanvasVisible)}
+        contentPadding={1}
+        keepMounted={true}
       >
         <CippGraphExplorerFilter
           endpointFilter={api?.data?.Endpoint}
           relatedQueryKeys={[queryKey, currentEffectiveQueryKey].filter(Boolean)}
+          selectedPreset={
+            activeFilterName
+              ? filterList.find((f) => f.filterName === activeFilterName)
+              : null
+          }
+          onPresetSelect={(preset) => {
+            if (preset?.value && preset?.type === "graph") {
+              setTableFilter(preset.value, preset.type, preset.filterName);
+            }
+          }}
           onSubmitFilter={(filter) => {
             setTableFilter(filter, "graph", "Custom Filter");
             if (filter?.$select) {
