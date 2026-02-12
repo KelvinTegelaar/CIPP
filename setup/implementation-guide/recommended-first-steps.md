@@ -94,7 +94,7 @@ Standards allow you to create a baseline for a tenant. This means you can easily
 
 ### Best Practice Analyser
 
-Let's go check out some reporting. Click on Tenant Administration > Administration > Standards > [bpa-report](../../user-documentation/tenant/standards/bpa-report/ "mention") next.
+Let's go check out some reporting. Click on Tenant Administration > Standards & Drift > [bpa-report](../../user-documentation/tenant/standards/bpa-report/ "mention") next.
 
 The BPA gives you the ability to zoom in on your tenants and their current state. You can use custom reports or use the included examples to tell your clients what actions they need to take to become more secure.
 
