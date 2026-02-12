@@ -88,7 +88,7 @@ The report allows you to check this data as raw as it comes back from the API. y
 
 ## Standards
 
-Let's go check out the standards next by navigating to Tenant Administration > Administration > [standards](../../user-documentation/tenant/standards/ "mention").
+Let's go check out the standards next by navigating to Tenant Administration > [standards](../../user-documentation/tenant/standards/ "mention").
 
 Standards allow you to create a baseline for a tenant. This means you can easily deploy your wanted settings to any tenant. With how important Standards are to the function and power of CIPP, we'll take a deeper dive in [standards-setup.md](standards-setup.md "mention"), or you can review the full [standards](../../user-documentation/tenant/standards/ "mention")[ ](../../user-documentation/tenant/standards/)documentation.
 
