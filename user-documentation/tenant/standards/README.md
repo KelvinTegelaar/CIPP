@@ -14,8 +14,12 @@ This page serves as an overview of CIPP Standards.  For the technical components
 
 Standards in CIPP ensure consistent configurations across your Microsoft 365 tenants by reapplying baseline settings every **four hours** or evaluating drift **every twelve hours**. This automatic enforcement and drift detection prevents unauthorized changes and helps maintain security. There are two kinds of standards:
 
-* Classic: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every four hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
-* Drift: New in v 8.3, drift standards allow for you to manage client environments with a much finer touch. These standards evaluate every twelve hours and allow for granular handling of anything that is out of alignment with the template. As such, drift standards are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with drift standards, see [drift.md](../manage/drift.md "mention").
+* Standards: These are the traditional standards that you've known and loved in CIPP for quite a while now. These standards are automatically enforced every four hours. Options for these standards are Report, Alert, and Remediate from [#actions](./#actions "mention").
+* Drift Management: New in v 8.3, Drift Management allows for you to manage client environments with a much finer touch. These templates evaluate every twelve hours and allow for granular handling of anything that is out of alignment with the template. As such, Drift Management settings are automatically set to Report and Alert from the [#actions](./#actions "mention") below. To learn more about what you can do with Drift Management, see [drift.md](../manage/drift.md "mention").
+
+{% hint style="info" %}
+For a deeper dive on the differences between the two types of standards and considerations for when you want to use each, see [standards-v-drift.md](../../../troubleshooting/frequently-asked-questions/standards-v-drift.md "mention")
+{% endhint %}
 
 ### Actions
 

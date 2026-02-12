@@ -356,6 +356,7 @@
   * [Refreshing a Specific Tenant's Permissions via CPV API](troubleshooting/troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md)
 * [Frequently Asked Questions](troubleshooting/frequently-asked-questions/README.md)
   * [I Got a "Potential Phishing page detected" Alert. What Do I Do With That?](troubleshooting/frequently-asked-questions/i-got-a-potential-phishing-page-detected-alert.-what-do-i-do-with-that.md)
+  * [Standards v Drift: How Do I Know Which to Use?](troubleshooting/frequently-asked-questions/standards-v-drift.md)
 
 ## Security
 
