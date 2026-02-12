@@ -18,7 +18,7 @@ The **First Setup** option is designed for initial configuration. It guides you 
    * For these separate tenants, use a service account with equivalent permissions as the partner tenant. More information on these roles can be found under [recommended-roles.md](recommended-roles.md "mention")
 4. **Select Baselines**\
    Choose from a list of available configuration baselines. These presets help you quickly apply best practices and policies.
-   * We recommend selecting the **CyberDrain Templates** for the most optimized standard configurations, and receiving templates and examples on how to utilize standards.
+   * We recommend selecting the **CyberDrain Templates** for the most optimized standard configurations and receiving templates and examples on how to utilize standards.
 5. **Configure Notifications**\
    Set up email notifications on the next page.
    * Ensure your service account has a mailbox enabled to support email alerts. This can either be a shared mailbox
@@ -26,5 +26,12 @@ The **First Setup** option is designed for initial configuration. It guides you 
 6. **Optional Features**\
    The final step presents a list of optional features you can enable to further enhance CIPP’s functionality. Review and configure these as needed.
 
+### Common Errors
 
+<details>
 
+<summary>"Response status code does not indicate success" during Step 2</summary>
+
+We have seen Microsoft implement some new secure by design initiatives that are impacting the ability for tenants, especially newly created tenants, from successfully completing the authentication. By default, Microsoft has disabled the ability for Enterprise Applications to add passwords in new tenants. Open up the Entra portal for your tenant. Navigate to Enterprise Applications > Application Policies. View the "Password addition restriction" policy. To remain most secure, leave the policy enabled but set an exclusion for the CIPP-SAM app by selecting "All applications with exclusions" and adding the CIPP-SAM app to the excluded apps list. Wait a bit for the policy to update to apply and then try the Setup Wizard again.
+
+</details>
