@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import CippAddIntuneReusableSettingTemplateForm from "../../../../components/CippFormPages/CippAddIntuneReusableSettingTemplateForm";
 
 const Page = () => {

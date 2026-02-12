@@ -1,7 +1,7 @@
 import { Book, DeleteForever } from "@mui/icons-material";
-import { CippReusableSettingsDeployDrawer } from "/src/components/CippComponents/CippReusableSettingsDeployDrawer.jsx";
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { CippReusableSettingsDeployDrawer } from "../../../../components/CippComponents/CippReusableSettingsDeployDrawer.jsx";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import { useSettings } from "../../../../hooks/use-settings";
 import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 
@@ -50,7 +50,9 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      cardButton={<CippReusableSettingsDeployDrawer requiredPermissions={["Endpoint.MEM.ReadWrite"]} />}
+      cardButton={
+        <CippReusableSettingsDeployDrawer requiredPermissions={["Endpoint.MEM.ReadWrite"]} />
+      }
       apiUrl="/api/ListIntuneReusableSettings"
       queryKey={`ListIntuneReusableSettings-${currentTenant}`}
       actions={actions}

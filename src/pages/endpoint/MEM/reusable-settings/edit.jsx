@@ -3,13 +3,13 @@ import { Alert, Box, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippFormPage from "/src/components/CippFormPages/CippFormPage";
-import CippFormSkeleton from "/src/components/CippFormPages/CippFormSkeleton";
-import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
-import CippJsonView from "/src/components/CippFormPages/CippJSONView";
-import { ApiGetCall } from "/src/api/ApiCall";
-import { useSettings } from "/src/hooks/use-settings";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
+import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
+import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const EditReusableSetting = () => {
   const router = useRouter();
@@ -72,7 +72,9 @@ const EditReusableSetting = () => {
 
   return (
     <CippFormPage
-      title={record?.displayName ? `Reusable Setting - ${record.displayName}` : "Edit Reusable Setting"}
+      title={
+        record?.displayName ? `Reusable Setting - ${record.displayName}` : "Edit Reusable Setting"
+      }
       formControl={formControl}
       queryKey={["ListIntuneReusableSettings", effectiveTenant, id]}
       backButtonTitle="Reusable Settings"

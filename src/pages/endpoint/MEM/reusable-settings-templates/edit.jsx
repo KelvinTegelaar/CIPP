@@ -1,7 +1,19 @@
-import { Alert, Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography, Divider } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+  Divider,
+} from "@mui/material";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
@@ -15,7 +27,10 @@ const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 const generateGuid = () => {
   const wrap = (val) => `{${val}}`;
   if (typeof crypto !== "undefined" && crypto.randomUUID) return wrap(crypto.randomUUID());
-  const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  const s4 = () =>
+    Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
   return wrap(`${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`);
 };
 
@@ -88,9 +103,13 @@ const EditReusableSettingsTemplate = () => {
   const groupChildDefinitions = useMemo(() => {
     const first = groupCollection?.[0]?.children || [];
     return {
-      idDef: first.find((c) => c.settingDefinitionId?.toLowerCase().includes("_id"))?.settingDefinitionId,
-      autoresolveDef: first.find((c) => c.settingDefinitionId?.toLowerCase().includes("_autoresolve"))?.settingDefinitionId,
-      keywordDef: first.find((c) => c.settingDefinitionId?.toLowerCase().includes("_keyword"))?.settingDefinitionId,
+      idDef: first.find((c) => c.settingDefinitionId?.toLowerCase().includes("_id"))
+        ?.settingDefinitionId,
+      autoresolveDef: first.find((c) =>
+        c.settingDefinitionId?.toLowerCase().includes("_autoresolve"),
+      )?.settingDefinitionId,
+      keywordDef: first.find((c) => c.settingDefinitionId?.toLowerCase().includes("_keyword"))
+        ?.settingDefinitionId,
     };
   }, [groupCollection]);
 
@@ -105,8 +124,14 @@ const EditReusableSettingsTemplate = () => {
 
   useEffect(() => {
     if (normalizedTemplate) {
-      formControl.setValue("displayName", normalizedTemplate.displayName || normalizedTemplate.name);
-      formControl.setValue("description", normalizedTemplate.description || normalizedTemplate.Description);
+      formControl.setValue(
+        "displayName",
+        normalizedTemplate.displayName || normalizedTemplate.name,
+      );
+      formControl.setValue(
+        "description",
+        normalizedTemplate.description || normalizedTemplate.Description,
+      );
     }
   }, [normalizedTemplate, formControl]);
 
@@ -185,7 +210,10 @@ const EditReusableSettingsTemplate = () => {
           processedValues.parsedRAWJson.description = processedValues.description;
         }
 
-        if (processedValues.groupSettingCollectionValue && processedValues.parsedRAWJson.settingInstance) {
+        if (
+          processedValues.groupSettingCollectionValue &&
+          processedValues.parsedRAWJson.settingInstance
+        ) {
           processedValues.parsedRAWJson.settingInstance.groupSettingCollectionValue =
             processedValues.groupSettingCollectionValue;
         }
@@ -356,7 +384,11 @@ const EditReusableSettingsTemplate = () => {
                   </TableBody>
                 </Table>
                 <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                  <Button variant="outlined" size="small" onClick={() => append(createEmptyEntry())}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => append(createEmptyEntry())}
+                  >
                     Add row
                   </Button>
                 </Stack>
