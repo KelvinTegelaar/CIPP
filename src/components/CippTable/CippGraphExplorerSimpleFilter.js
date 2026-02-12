@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Stack, Box } from "@mui/material";
-import { PlayCircle, FilterList, TableChart, Code } from "@mui/icons-material";
+import { PlayCircle, ManageSearch, TableChart, Code } from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { ApiGetCall } from "../../api/ApiCall";
@@ -155,11 +155,11 @@ const CippGraphExplorerSimpleFilter = ({
           </Button>
           <Button
             variant="outlined"
-            startIcon={<FilterList />}
+            startIcon={<ManageSearch />}
             onClick={() => setOffCanvasVisible(true)}
             sx={{ minWidth: "120px" }}
           >
-            Edit Filters
+            Edit Query
           </Button>
           {onViewModeChange && (
             <Button
@@ -176,7 +176,7 @@ const CippGraphExplorerSimpleFilter = ({
 
       <CippOffCanvas
         size="md"
-        title="Graph Explorer Filters"
+        title="Graph Explorer Query"
         visible={offCanvasVisible}
         onClose={() => setOffCanvasVisible(false)}
         contentPadding={1}
