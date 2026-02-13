@@ -1,30 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   TextField,
   Box,
   Typography,
-  Card,
-  CardContent,
-  CardActionArea,
   Skeleton,
-  Button,
-  Link,
+  MenuItem,
+  ListItemText,
+  Paper,
+  CircularProgress,
+  InputAdornment,
+  Portal,
 } from "@mui/material";
-import { Grid } from "@mui/system";
+import { Search as SearchIcon } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
+import { useRouter } from "next/router";
 
 export const CippUniversalSearchV2 = React.forwardRef(
   ({ onConfirm = () => {}, onChange = () => {}, maxResults = 10, value = "" }, ref) => {
     const [searchValue, setSearchValue] = useState(value);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+    const containerRef = useRef(null);
+    const textFieldRef = useRef(null);
+    const router = useRouter();
     const settings = useSettings();
     const { currentTenant } = settings;
-
-    const handleChange = (event) => {
-      const newValue = event.target.value;
-      setSearchValue(newValue);
-      onChange(newValue);
-    };
 
     const search = ApiGetCall({
       url: `/api/ExecUniversalSearchV2`,
@@ -37,129 +38,213 @@ export const CippUniversalSearchV2 = React.forwardRef(
       waiting: false,
     });
 
-    const handleKeyDown = async (event) => {
-      if (event.key === "Enter") {
-        search.refetch();
+    const handleChange = (event) => {
+      const newValue = event.target.value;
+      setSearchValue(newValue);
+      onChange(newValue);
+      
+      if (newValue.length === 0) {
+        setShowDropdown(false);
       }
     };
 
-    return (
-      <Box sx={{ p: 0.5 }}>
-        <TextField
-          ref={ref}
-          fullWidth
-          type="text"
-          label="Search users by UPN or Display Name..."
-          onKeyDown={handleKeyDown}
-          onChange={handleChange}
-          value={searchValue}
-        />
+    const updateDropdownPosition = () => {
+      if (textFieldRef.current) {
+        const rect = textFieldRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY + 4,
+          left: rect.left + window.scrollX,
+          width: rect.width,
+        });
+      }
+    };
 
-        {search.isFetching && (
-          <Box display="flex" justifyContent="center" mt={2}>
-            <Skeleton width={"100%"} />
-          </Box>
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter" && searchValue.length > 0) {
+        updateDropdownPosition();
+        search.refetch();
+        setShowDropdown(true);
+      }
+    };
+
+    const handleResultClick = (match) => {
+      const userData = match.Data || {};
+      const tenantDomain = match.Tenant || "";
+      router.push(
+        `/identity/administration/users/user?tenantFilter=${tenantDomain}&userId=${userData.id}`
+      );
+      setShowDropdown(false);
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (
+          containerRef.current &&
+          !containerRef.current.contains(event.target) &&
+          !event.target.closest('[data-dropdown-portal]')
+        ) {
+          setShowDropdown(false);
+        }
+      };
+
+      if (showDropdown) {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }
+    }, [showDropdown]);
+
+    // Update position on scroll/resize
+    useEffect(() => {
+      if (showDropdown) {
+        updateDropdownPosition();
+        const handleScroll = () => updateDropdownPosition();
+        const handleResize = () => updateDropdownPosition();
+        window.addEventListener("scroll", handleScroll, true);
+        window.addEventListener("resize", handleResize);
+        return () => {
+          window.removeEventListener("scroll", handleScroll, true);
+          window.removeEventListener("resize", handleResize);
+        };
+      }
+    }, [showDropdown]);
+
+    const hasResults = Array.isArray(search?.data) && search.data.length > 0;
+    const shouldShowDropdown = showDropdown && searchValue.length > 0;
+
+    return (
+      <>
+        <Box ref={containerRef} sx={{ width: "100%" }}>
+          <TextField
+            ref={(node) => {
+              textFieldRef.current = node;
+              if (typeof ref === "function") {
+                ref(node);
+              } else if (ref) {
+                ref.current = node;
+              }
+            }}
+            fullWidth
+            type="text"
+            label="Search users by UPN or Display Name..."
+            onKeyDown={handleKeyDown}
+            onChange={handleChange}
+            value={searchValue}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
+              endAdornment: search.isFetching ? (
+                <InputAdornment position="end">
+                  <CircularProgress size={20} />
+                </InputAdornment>
+              ) : null,
+            }}
+          />
+        </Box>
+
+        {shouldShowDropdown && (
+          <Portal>
+            <Paper
+              data-dropdown-portal
+              elevation={8}
+              sx={{
+                position: "absolute",
+                top: `${dropdownPosition.top}px`,
+                left: `${dropdownPosition.left}px`,
+                width: `${dropdownPosition.width}px`,
+                maxHeight: 400,
+                overflow: "auto",
+                zIndex: 9999,
+                boxShadow: 3,
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              {search.isFetching ? (
+                <Box sx={{ p: 2 }}>
+                  <Skeleton height={60} sx={{ mb: 1 }} />
+                  <Skeleton height={60} />
+                </Box>
+              ) : hasResults ? (
+                <Results items={search.data} searchValue={searchValue} onResultClick={handleResultClick} />
+              ) : (
+                <Box sx={{ p: 3, textAlign: "center" }}>
+                  <Typography variant="body2" color="text.secondary">
+                    No results found.
+                  </Typography>
+                </Box>
+              )}
+            </Paper>
+          </Portal>
         )}
-        {search.isSuccess && search?.data?.length > 0 ? (
-          <Results items={search.data} searchValue={searchValue} />
-        ) : (
-          search.isSuccess && searchValue.length > 0 && "No results found."
-        )}
-      </Box>
+      </>
     );
   }
 );
 
 CippUniversalSearchV2.displayName = "CippUniversalSearchV2";
 
-const Results = ({ items = [], searchValue }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const resultsPerPage = 9;
-  const totalResults = items.length;
-  const totalPages = Math.ceil(totalResults / resultsPerPage);
-
-  const startIndex = (currentPage - 1) * resultsPerPage;
-  const endIndex = startIndex + resultsPerPage;
-  const displayedResults = items.slice(startIndex, endIndex);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  return (
-    <>
-      <Typography variant="body2" color="textSecondary" mt={2}>
-        {totalResults} results (Page {currentPage} of {totalPages})
-      </Typography>
-      <Grid container spacing={2} mt={2}>
-        {displayedResults.map((item, key) => (
-          <Grid size={{ md: 4, sm: 6, xs: 12 }} key={key}>
-            <ResultsRow match={item} searchValue={searchValue} />
-          </Grid>
-        ))}
-      </Grid>
-      {totalPages > 1 && (
-        <Box display="flex" justifyContent="space-between" mt={2}>
-          <Button variant="outlined" disabled={currentPage === 1} onClick={handlePreviousPage}>
-            Previous
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={currentPage === totalPages}
-            onClick={handleNextPage}
-          >
-            Next
-          </Button>
-        </Box>
-      )}
-    </>
-  );
-};
-
-const ResultsRow = ({ match, searchValue }) => {
+const Results = ({ items = [], searchValue, onResultClick }) => {
   const highlightMatch = (text) => {
     if (!text || !searchValue) return text;
     const escapedSearch = searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const parts = text?.split(new RegExp(`(${escapedSearch})`, "gi"));
     return parts?.map((part, index) =>
       part.toLowerCase() === searchValue.toLowerCase() ? (
-        <Typography component="span" fontWeight="bold" key={index}>
+        <Box component="span" fontWeight="bold" key={index}>
           {part}
-        </Typography>
+        </Box>
       ) : (
         part
       )
     );
   };
 
-  const userData = match.Data || {};
-  const tenantDomain = match.Tenant || "";
-
   return (
-    <Card variant="outlined" sx={{ height: "100%" }}>
-      <CardActionArea
-        component={Link}
-        href={`identity/administration/users/user?tenantFilter=${tenantDomain}&userId=${userData.id}`}
-        sx={{ height: "100%" }}
-      >
-        <CardContent>
-          <Typography variant="h6">{highlightMatch(userData.displayName || "")}</Typography>
-          <Typography variant="body2" color="textSecondary">
-            {highlightMatch(userData.userPrincipalName || "")}
-          </Typography>
-          <Typography variant="caption" color="textSecondary" sx={{ mt: 1, display: "block" }}>
-            Found in tenant {tenantDomain}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <>
+      {items.map((match, index) => {
+        const userData = match.Data || {};
+        const tenantDomain = match.Tenant || "";
+
+        return (
+          <MenuItem
+            key={match.RowKey || index}
+            onClick={() => onResultClick(match)}
+            sx={{
+              py: 1.5,
+              px: 2,
+              borderBottom: index < items.length - 1 ? "1px solid" : "none",
+              borderColor: "divider",
+              "&:hover": {
+                backgroundColor: "action.hover",
+              },
+            }}
+          >
+            <ListItemText
+              primary={
+                <Typography variant="body1" fontWeight="medium">
+                  {highlightMatch(userData.displayName || "")}
+                </Typography>
+              }
+              secondary={
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    {highlightMatch(userData.userPrincipalName || "")}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                    Tenant: {tenantDomain}
+                  </Typography>
+                </Box>
+              }
+            />
+          </MenuItem>
+        );
+      })}
+    </>
   );
 };
