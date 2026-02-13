@@ -1,9 +1,9 @@
-# Standards Templates
+# Templates
 
 {% hint style="warning" %}
 **Understanding Standards**
 
-This page is a reference to the features of the Standards Templates page in CIPP. To better understand standards, please see the main page for [..](../../ "mention").
+This page is a reference to the features of the Standards Templates page in CIPP. To better understand Standards and Drift Management, please see the main page for [..](../../ "mention").
 {% endhint %}
 
 ## Available Standards

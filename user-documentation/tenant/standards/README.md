@@ -23,7 +23,7 @@ For a deeper dive on the differences between the two types of standards and cons
 
 ### Actions
 
-CIPP allows you to set standards in three different settings. Some classic standards can only be set to specific items, such as Intune standards which can only be "Remediated".
+CIPP allows you to set standards in three different settings. Some standards can only be set to specific items, such as Intune standards which can only be "Remediated".
 
 | Action    | Description                                                                                                                                                                                                     |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -37,7 +37,7 @@ Setting this same standard to "Alert" allows you to receive an alert inside of y
 
 Setting this same standard to "Remediate" changes the client's configuration, and in this case would enable the audit log for the client.
 
-### **Precedence of Classic Standards**
+### **Precedence of Standards**
 
 Standards are merged based on their specificity and creation date:
 
@@ -88,7 +88,7 @@ Each standard is labeled based on the level of change it introduces and its impa
 * **Companion Policies:** Some standards rely on additional policies in tools like **Microsoft Intune** to be fully effective. Ensure all required companion policies are configured to achieve the desired results.
 * **Deselecting Standards:** Deselecting a standard prevents it from being enforced in future cycles, but it does not undo its current configuration.
   * **Example:** If you deselect `"Enable FIDO2 capabilities`," the standard will stop enforcing this policy. However, if FIDO2 was already enabled, it will remain enabled.
-* **Application Cadence:** Classic Standards reapply **every three hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Standards are evaluated every 12 hours.
+* **Application Cadence:** Standards reapply **every three hours** by default. If a setting changes outside of the standard, it will be overridden by the value specified in the standard during the next reapplication cycle. Drift Management are evaluated every 12 hours.
 {% endhint %}
 
 {% hint style="info" %}

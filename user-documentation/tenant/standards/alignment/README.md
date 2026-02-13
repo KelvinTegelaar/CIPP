@@ -3,10 +3,10 @@
 {% hint style="warning" %}
 **Understanding Standards**
 
-This page is a reference to the features of the Standards Templates page in CIPP. To better understand standards, please see the main page for [..](../ "mention").
+This page is a reference to the features of the Standards Templates page in CIPP. To better understand Standards and Drift Management, please see the main page for [..](../ "mention").
 {% endhint %}
 
-This page will allow you to get a snapshot overview of your tenants and their alignment with your various Classic & Drift [templates](templates/ "mention").
+This page will allow you to get a snapshot overview of your tenants and their alignment with your various Standards & Drift Management [templates](templates/ "mention").
 
 ### Table Details
 
@@ -17,7 +17,7 @@ This page will allow you to get a snapshot overview of your tenants and their al
 | Standards Type             | `Classic Standard` or `Drift Standard`                                                                                                                                                                                            |
 | Alignment Score            | This shows the percentage of standards this tenant is in alignment with for the selected standards template                                                                                                                       |
 | License Missing Percentage | This shows the percentage of standards in the standard template that the tenant is not licensed for. 0% indicates that the tenant carries licenses necessary for all standards in the template.                                   |
-| Combined Alignment Score   | This reweights alignment to account for the number of standards in the template that the tenant is not licensed for. If the tenant is not licnesed for any of the features, they will not count against alignment in this column. |
+| Combined Alignment Score   | This reweights alignment to account for the number of standards in the template that the tenant is not licensed for. If the tenant is not licensed for any of the features, they will not count against alignment in this column. |
 | Latest Data Collection     | Relative time since the last standards run to gather information needed to calculate the alignment report.                                                                                                                        |
 
 ### Table Actions

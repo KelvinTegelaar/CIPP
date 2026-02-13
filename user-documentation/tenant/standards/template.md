@@ -4,7 +4,7 @@ When creating a standard, it is recommend to think about how you want your stand
 
 For optimal performance and reliability, we recommend to not have more than 40 standards per template.
 
-### Creating a Classic Standard Template
+### Creating a Standards Template
 
 {% stepper %}
 {% step %}
@@ -56,16 +56,16 @@ Once all other steps are completed and all tenants show configured, click the "S
 {% endstep %}
 {% endstepper %}
 
-### Creating a Drift Standard Template
+### Creating a Drift Manaagement Template
 
-#### About Drift Templates
+#### About Drift Management Templates
 
-Drift templates provide continuous monitoring of tenant configurations to detect unauthorized changes. Each tenant can only have one drift template applied at a time.
+Drift Management templates provide continuous monitoring of tenant configurations to detect unauthorized changes. Each tenant can only have one drift template applied at a time.
 
 {% hint style="warning" %}
-Drift Standards Timing & Alerts
+Drift Management Timing & Alerts
 
-Once activated, drift standards are evaluated **every hour**. You will receive alerts via your configured [notifications.md](../../cipp/settings/notifications.md "mention") settings every hour.
+Once activated, Drift Management is evaluated **every twelve hours**. You will receive alerts via your configured [notifications.md](../../cipp/settings/notifications.md "mention") settings.
 {% endhint %}
 
 #### Remediation Options
@@ -73,7 +73,7 @@ Once activated, drift standards are evaluated **every hour**. You will receive a
 {% hint style="info" %}
 Report & Alert
 
-For drift standards, report and alert are automatically enabled from the available Standards [#actions](./#actions "mention").&#x20;
+For Drift Management templates, report and alert are automatically enabled from the available Standards [#actions](./#actions "mention").&#x20;
 {% endhint %}
 
 * **Automatic Remediation:** Immediately reverts unauthorized changes back to the template configuration
@@ -87,9 +87,9 @@ For drift standards, report and alert are automatically enabled from the availab
 * Granular control over deviation acceptance
 
 {% hint style="danger" %}
-#### Drift Standard Tenant Limitation
+#### Drift Management Tenant Limitation
 
-Each tenant can only have a single drift standard template applied to it. If you attempt to add a tenant to a second drift standard template, you will see an error.
+Each tenant can only have a single Drift Management template applied to it. If you attempt to add a tenant to a second Drift Management template, you will see an error.
 {% endhint %}
 
 {% stepper %}
@@ -114,7 +114,7 @@ If you select "AllTenants", you will be shown an additional dropdown for "Exclud
 
 You will be able to set a custom webhook and/or email address to receive notifications on drift. If nothing is set, this will use the default webhook and/or email address from [notifications.md](../../cipp/settings/notifications.md "mention").
 
-You can also disable all notifications for the drift standard if you do not wish to have notifications and prefer to manually check for drift.
+You can also disable all notifications for the Drift Management template if you do not wish to have notifications and prefer to manually check for drift.
 {% endstep %}
 
 {% step %}
@@ -134,7 +134,7 @@ Toggle on the "Add this standard to the template" for each desired template. Onc
 
 For each standard:
 
-* Drift configuration standards will have an optional toggle to allow you to automatically remediate when drift is detected.
+* Drift Management standards will have an optional toggle to allow you to automatically remediate when drift is detected.
 * Each standard will then have the potential for additional fields that need to be set. Please review those fields and configure as desired.
 * Click Save to store the configured settings. Click Cancel to clear out your changes.
 {% endstep %}
