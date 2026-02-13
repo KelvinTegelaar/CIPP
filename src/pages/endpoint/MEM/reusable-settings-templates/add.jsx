@@ -32,31 +32,80 @@ const Page = () => {
     return wrap(`${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`);
   };
 
-  const buildInitialGroupEntry = () => ({
-    children: [
-      {
+  const buildGroupEntryFromBase = (baseId, options = {}) => {
+    const { idValue = generateGuid(), autoresolveValue = "", keywordValue = "" } = options;
+    return {
+      children: [
+        {
+          "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
+          settingDefinitionId: `${baseId}_id`,
+          simpleSettingValue: {
+            "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
+            value: idValue,
+          },
+        },
+        {
+          "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+          settingDefinitionId: `${baseId}_autoresolve`,
+          choiceSettingValue: { value: autoresolveValue, children: [] },
+        },
+        {
+          "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
+          settingDefinitionId: `${baseId}_keyword`,
+          simpleSettingValue: {
+            "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
+            value: keywordValue,
+          },
+        },
+      ],
+    };
+  };
+
+  const buildGroupEntryFromDefinitions = ({
+    idDef,
+    autoresolveDef,
+    keywordDef,
+    idValue = "",
+    autoresolveValue = "",
+    keywordValue = "",
+  } = {}) => {
+    const children = [];
+
+    if (idDef) {
+      children.push({
         "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
-        settingDefinitionId: `${baseSettingDefinitionId}_id`,
+        settingDefinitionId: idDef,
         simpleSettingValue: {
           "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
-          value: generateGuid(),
+          value: idValue,
         },
-      },
-      {
+      });
+    }
+
+    if (autoresolveDef) {
+      children.push({
         "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
-        settingDefinitionId: `${baseSettingDefinitionId}_autoresolve`,
-        choiceSettingValue: { value: "", children: [] },
-      },
-      {
+        settingDefinitionId: autoresolveDef,
+        choiceSettingValue: { value: autoresolveValue, children: [] },
+      });
+    }
+
+    if (keywordDef) {
+      children.push({
         "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
-        settingDefinitionId: `${baseSettingDefinitionId}_keyword`,
+        settingDefinitionId: keywordDef,
         simpleSettingValue: {
           "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
-          value: "",
+          value: keywordValue,
         },
-      },
-    ],
-  });
+      });
+    }
+
+    return { children };
+  };
+
+  const buildInitialGroupEntry = () =>
+    buildGroupEntryFromBase(baseSettingDefinitionId, { idValue: generateGuid() });
 
   const initialGroupCollection = [buildInitialGroupEntry()];
   const initialParsedRaw = {
@@ -214,40 +263,7 @@ const Page = () => {
   }, [fields]);
 
   const createEmptyEntry = () => {
-    const { idDef, autoresolveDef, keywordDef } = groupChildDefinitions;
-    const children = [];
-
-    if (idDef) {
-      children.push({
-        "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
-        settingDefinitionId: idDef,
-        simpleSettingValue: {
-          "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
-          value: "",
-        },
-      });
-    }
-
-    if (autoresolveDef) {
-      children.push({
-        "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
-        settingDefinitionId: autoresolveDef,
-        choiceSettingValue: { value: "", children: [] },
-      });
-    }
-
-    if (keywordDef) {
-      children.push({
-        "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
-        settingDefinitionId: keywordDef,
-        simpleSettingValue: {
-          "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
-          value: "",
-        },
-      });
-    }
-
-    return { children };
+    return buildGroupEntryFromDefinitions(groupChildDefinitions);
   };
 
   return (
