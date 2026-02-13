@@ -34,6 +34,54 @@ const generateGuid = () => {
   return wrap(`${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`);
 };
 
+const buildGroupEntryFromDefinitions = ({
+  idDef,
+  autoresolveDef,
+  keywordDef,
+  idValue = "",
+  autoresolveValue = "",
+  keywordValue = "",
+} = {}) => {
+  const children = [];
+
+  if (idDef) {
+    children.push({
+      "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
+      settingDefinitionId: idDef,
+      simpleSettingValue: {
+        "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
+        value: idValue,
+      },
+    });
+  }
+
+  if (autoresolveDef) {
+    children.push({
+      "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+      settingDefinitionId: autoresolveDef,
+      choiceSettingValue: { value: autoresolveValue, children: [] },
+    });
+  }
+
+  if (keywordDef) {
+    children.push({
+      "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
+      settingDefinitionId: keywordDef,
+      simpleSettingValue: {
+        "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
+        value: keywordValue,
+      },
+    });
+  }
+
+  return { children };
+};
+
+const normalizeCollection = (collection) => {
+  if (!collection) return [];
+  return Array.isArray(collection) ? collection : [collection];
+};
+
 const EditReusableSettingsTemplate = () => {
   const router = useRouter();
   const { id: rawId } = router.query;
@@ -93,11 +141,11 @@ const EditReusableSettingsTemplate = () => {
   }, [parsedRaw]);
 
   const groupCollection = useMemo(() => {
-    return (
+    const source =
       parsedRaw?.settingInstance?.groupSettingCollectionValue ||
       templateData?.settingInstance?.groupSettingCollectionValue ||
-      []
-    );
+      [];
+    return normalizeCollection(source);
   }, [parsedRaw, templateData]);
 
   const groupChildDefinitions = useMemo(() => {
@@ -236,40 +284,10 @@ const EditReusableSettingsTemplate = () => {
   });
 
   const createEmptyEntry = () => {
-    const { idDef, autoresolveDef, keywordDef } = groupChildDefinitions;
-    const children = [];
-
-    if (idDef) {
-      children.push({
-        "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
-        settingDefinitionId: idDef,
-        simpleSettingValue: {
-          "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
-          value: generateGuid(),
-        },
-      });
-    }
-
-    if (autoresolveDef) {
-      children.push({
-        "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
-        settingDefinitionId: autoresolveDef,
-        choiceSettingValue: { value: "", children: [] },
-      });
-    }
-
-    if (keywordDef) {
-      children.push({
-        "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
-        settingDefinitionId: keywordDef,
-        simpleSettingValue: {
-          "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
-          value: "",
-        },
-      });
-    }
-
-    return { children };
+    return buildGroupEntryFromDefinitions({
+      ...groupChildDefinitions,
+      idValue: generateGuid(),
+    });
   };
 
   return (
@@ -278,7 +296,7 @@ const EditReusableSettingsTemplate = () => {
         normalizedTemplate?.displayName ||
         normalizedTemplate?.name ||
         normalizedTemplate?.Displayname ||
-        "Edit Reusable Settings Template"
+        "Reusable Settings Template"
       }
       formControl={formControl}
       queryKey={[`ReusableSettingTemplate-${normalizedId}`, "ListIntuneReusableSettingTemplates"]}
