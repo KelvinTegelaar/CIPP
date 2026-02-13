@@ -34,6 +34,11 @@ const generateGuid = () => {
   return wrap(`${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`);
 };
 
+const normalizeCollection = (collection) => {
+  if (!collection) return [];
+  return Array.isArray(collection) ? collection : [collection];
+};
+
 const EditReusableSettingsTemplate = () => {
   const router = useRouter();
   const { id: rawId } = router.query;
@@ -93,11 +98,11 @@ const EditReusableSettingsTemplate = () => {
   }, [parsedRaw]);
 
   const groupCollection = useMemo(() => {
-    return (
+    const source =
       parsedRaw?.settingInstance?.groupSettingCollectionValue ||
       templateData?.settingInstance?.groupSettingCollectionValue ||
-      []
-    );
+      [];
+    return normalizeCollection(source);
   }, [parsedRaw, templateData]);
 
   const groupChildDefinitions = useMemo(() => {
@@ -278,7 +283,7 @@ const EditReusableSettingsTemplate = () => {
         normalizedTemplate?.displayName ||
         normalizedTemplate?.name ||
         normalizedTemplate?.Displayname ||
-        "Edit Reusable Settings Template"
+        "Reusable Settings Template"
       }
       formControl={formControl}
       queryKey={[`ReusableSettingTemplate-${normalizedId}`, "ListIntuneReusableSettingTemplates"]}
