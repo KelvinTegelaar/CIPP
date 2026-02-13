@@ -53,7 +53,7 @@ Set your preferred:
 Choose the default password style you would like to use for new user creation and password resets.
 
 * **Classic:** This is the usual combination of letters and symbols to meet outdated complexity requirements
-* **Correct-Battery-Horse:** This sets a passphrase of three random words connected by hyphens. These can often be easier to remember and type for users.
+* **Correct-Battery-Horse:** This sets a passphrase of four random words connected by hyphens. These can often be easier to remember and type for users.
 
 </details>
 
