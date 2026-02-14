@@ -10,6 +10,11 @@
     "recommendedRunInterval": "1d"
   },
   {
+    "name": "NewMFADevice",
+    "label": "Alert when users register new MFA devices",
+    "recommendedRunInterval": "1h"
+  },
+  {
     "name": "LicenseAssignmentErrors",
     "label": "Alert on license assignment errors",
     "recommendedRunInterval": "1d"
