@@ -1678,43 +1678,43 @@
   resolved "https://registry.yarnpkg.com/@react-pdf/fns/-/fns-3.1.2.tgz#9ce7351d9fdf1cdb6e9c6ffd6801bc65f29f991c"
   integrity sha512-qTKGUf0iAMGg2+OsUcp9ffKnKi41RukM/zYIWMDJ4hRVYSr89Q7e3wSDW/Koqx3ea3Uy/z3h2y3wPX6Bdfxk6g==
 
-"@react-pdf/font@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@react-pdf/font/-/font-4.0.3.tgz#81036f4933c8d4a1468720440314c0a1c8b9c021"
-  integrity sha512-N1qQDZr6phXYQOp033Hvm2nkUkx2LkszjGPbmRavs9VOYzi4sp31MaccMKptL24ii6UhBh/z9yPUhnuNe/qHwA==
+"@react-pdf/font@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@react-pdf/font/-/font-4.0.4.tgz#7b5bed082fb159e582f22fe4c56e9a8c46736835"
+  integrity sha512-8YtgGtL511txIEc9AjiilpZ7yjid8uCd8OGUl6jaL3LIHnrToUupSN4IzsMQpVTCMYiDLFnDNQzpZsOYtRS/Pg==
   dependencies:
-    "@react-pdf/pdfkit" "^4.0.4"
-    "@react-pdf/types" "^2.9.1"
+    "@react-pdf/pdfkit" "^4.1.0"
+    "@react-pdf/types" "^2.9.2"
     fontkit "^2.0.2"
     is-url "^1.2.4"
 
-"@react-pdf/image@^3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@react-pdf/image/-/image-3.0.3.tgz#bfdb9e782c361c9d9e0f81c31ef98554bc4e928c"
-  integrity sha512-lvP5ryzYM3wpbO9bvqLZYwEr5XBDX9jcaRICvtnoRqdJOo7PRrMnmB4MMScyb+Xw10mGeIubZAAomNAG5ONQZQ==
+"@react-pdf/image@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@react-pdf/image/-/image-3.0.4.tgz#ee9c8928843d9680279a512138c5f597b3aae616"
+  integrity sha512-z0ogVQE0bKqgXQ5smgzIU857rLV7bMgVdrYsu3UfXDDLSzI7QPvzf6MFTFllX6Dx2rcsF13E01dqKPtJEM799g==
   dependencies:
     "@react-pdf/png-js" "^3.0.0"
     jay-peg "^1.1.1"
 
-"@react-pdf/layout@^4.4.1":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@react-pdf/layout/-/layout-4.4.1.tgz#50c95084f703cf2a1395e8b2e48300b57b3a74fe"
-  integrity sha512-GVzdlWoZWldRDzlWj3SttRXmVDxg7YfraAohwy+o9gb9hrbDJaaAV6jV3pc630Evd3K46OAzk8EFu8EgPDuVuA==
+"@react-pdf/layout@^4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@react-pdf/layout/-/layout-4.4.2.tgz#30bde1e460ec8ead6a0aed85eca41279ed6f0ed8"
+  integrity sha512-gNu2oh8MiGR+NJZYTJ4c4q0nWCESBI6rKFiodVhE7OeVAjtzZzd6l65wsN7HXdWJqOZD3ttD97iE+tf5SOd/Yg==
   dependencies:
     "@react-pdf/fns" "3.1.2"
-    "@react-pdf/image" "^3.0.3"
+    "@react-pdf/image" "^3.0.4"
     "@react-pdf/primitives" "^4.1.1"
-    "@react-pdf/stylesheet" "^6.1.1"
-    "@react-pdf/textkit" "^6.0.0"
-    "@react-pdf/types" "^2.9.1"
+    "@react-pdf/stylesheet" "^6.1.2"
+    "@react-pdf/textkit" "^6.1.0"
+    "@react-pdf/types" "^2.9.2"
     emoji-regex-xs "^1.0.0"
     queue "^6.0.1"
     yoga-layout "^3.2.1"
 
-"@react-pdf/pdfkit@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@react-pdf/pdfkit/-/pdfkit-4.0.4.tgz#c40d49850dafccbdbd371d4dab26d9ca07b88e0f"
-  integrity sha512-/nITLggsPlB66bVLnm0X7MNdKQxXelLGZG6zB5acF5cCgkFwmXHnLNyxYOUD4GMOMg1HOPShXDKWrwk2ZeHsvw==
+"@react-pdf/pdfkit@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@react-pdf/pdfkit/-/pdfkit-4.1.0.tgz#2a32cb4bfa36e887747395d8c13ac425459eda0a"
+  integrity sha512-Wm/IOAv0h/U5Ra94c/PltFJGcpTUd/fwVMVeFD6X9tTTPCttIwg0teRG1Lqq617J8K4W7jpL/B0HTH0mjp3QpQ==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/png-js" "^3.0.0"
@@ -1737,79 +1737,79 @@
   resolved "https://registry.yarnpkg.com/@react-pdf/primitives/-/primitives-4.1.1.tgz#c7bfb7e83173661b6ec50ada4aba8dc9e94d0563"
   integrity sha512-IuhxYls1luJb7NUWy6q5avb1XrNaVj9bTNI40U9qGRuS6n7Hje/8H8Qi99Z9UKFV74bBP3DOf3L1wV2qZVgVrQ==
 
-"@react-pdf/reconciler@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@react-pdf/reconciler/-/reconciler-1.1.4.tgz#62395cf5c8786a1c3465e2cf6315562543b663c5"
-  integrity sha512-oTQDiR/t4Z/Guxac88IavpU2UgN7eR0RMI9DRKvKnvPz2DUasGjXfChAdMqDNmJJxxV26mMy9xQOUV2UU5/okg==
+"@react-pdf/reconciler@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@react-pdf/reconciler/-/reconciler-2.0.0.tgz#d53ba53d5418c275c1fe1b150f0e9822243b799a"
+  integrity sha512-7zaPRujpbHSmCpIrZ+b9HSTJHthcVZzX0Wx7RzvQGsGBUbHP4p6s5itXrAIOuQuPvDepoHGNOvf6xUuMVvdoyw==
   dependencies:
     object-assign "^4.1.1"
     scheduler "0.25.0-rc-603e6108-20241029"
 
-"@react-pdf/render@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@react-pdf/render/-/render-4.3.1.tgz#76a721af66a5279727b61b200234f5f0dca034fd"
-  integrity sha512-v1WAaAhQShQZGcBxfjkEThGCHVH9CSuitrZ1bIOLvB5iBKM14abYK5D6djKhWCwF6FTzYeT2WRjRMVgze/ND2A==
+"@react-pdf/render@^4.3.2":
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/@react-pdf/render/-/render-4.3.2.tgz#ae24c363fc25c46eb25fe85a13b28e693ba97635"
+  integrity sha512-el5KYM1sH/PKcO4tRCIm8/AIEmhtraaONbwCrBhFdehoGv6JtgnXiMxHGAvZbI5kEg051GbyP+XIU6f6YbOu6Q==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/fns" "3.1.2"
     "@react-pdf/primitives" "^4.1.1"
-    "@react-pdf/textkit" "^6.0.0"
-    "@react-pdf/types" "^2.9.1"
+    "@react-pdf/textkit" "^6.1.0"
+    "@react-pdf/types" "^2.9.2"
     abs-svg-path "^0.1.1"
     color-string "^1.9.1"
     normalize-svg-path "^1.1.0"
     parse-svg-path "^0.1.2"
     svg-arc-to-cubic-bezier "^3.2.0"
 
-"@react-pdf/renderer@^4.3.0":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-4.3.1.tgz#0fdc86a0c5d7f92565cda3bef393ef5d374a7d5f"
-  integrity sha512-dPKHiwGTaOsKqNWCHPYYrx8CDfAGsUnV4tvRsEu0VPGxuot1AOq/M+YgfN/Pb+MeXCTe2/lv6NvA8haUtj3tsA==
+"@react-pdf/renderer@^4.3.2":
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-4.3.2.tgz#6a08d9f19cb1221ef377fb15586db4547d59434d"
+  integrity sha512-EhPkj35gO9rXIyyx29W3j3axemvVY5RigMmlK4/6Ku0pXB8z9PEE/sz4ZBOShu2uot6V4xiCR3aG+t9IjJJlBQ==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/fns" "3.1.2"
-    "@react-pdf/font" "^4.0.3"
-    "@react-pdf/layout" "^4.4.1"
-    "@react-pdf/pdfkit" "^4.0.4"
+    "@react-pdf/font" "^4.0.4"
+    "@react-pdf/layout" "^4.4.2"
+    "@react-pdf/pdfkit" "^4.1.0"
     "@react-pdf/primitives" "^4.1.1"
-    "@react-pdf/reconciler" "^1.1.4"
-    "@react-pdf/render" "^4.3.1"
-    "@react-pdf/types" "^2.9.1"
+    "@react-pdf/reconciler" "^2.0.0"
+    "@react-pdf/render" "^4.3.2"
+    "@react-pdf/types" "^2.9.2"
     events "^3.3.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     queue "^6.0.1"
 
-"@react-pdf/stylesheet@^6.1.1":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@react-pdf/stylesheet/-/stylesheet-6.1.1.tgz#ade1174e43ce8fc5fe3f8f6598a9426d853050ac"
-  integrity sha512-Iyw0A3wRIeQLN4EkaKf8yF9MvdMxiZ8JjoyzLzDHSxnKYoOA4UGu84veCb8dT9N8MxY5x7a0BUv/avTe586Plg==
+"@react-pdf/stylesheet@^6.1.2":
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@react-pdf/stylesheet/-/stylesheet-6.1.2.tgz#6ef21e2851ee7c2dc30582e7c01efb14f0308525"
+  integrity sha512-E3ftGRYUQGKiN3JOgtGsLDo0hGekA6dmkmi/MYACytmPTKxQRBSO3126MebmCq+t1rgU9uRlREIEawJ+8nzSbw==
   dependencies:
     "@react-pdf/fns" "3.1.2"
-    "@react-pdf/types" "^2.9.1"
+    "@react-pdf/types" "^2.9.2"
     color-string "^1.9.1"
     hsl-to-hex "^1.0.0"
     media-engine "^1.0.3"
     postcss-value-parser "^4.1.0"
 
-"@react-pdf/textkit@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@react-pdf/textkit/-/textkit-6.0.0.tgz#87cd29aba8b0d81133dbbd61c52d8647fdf11616"
-  integrity sha512-fDt19KWaJRK/n2AaFoVm31hgGmpygmTV7LsHGJNGZkgzXcFyLsx+XUl63DTDPH3iqxj3xUX128t104GtOz8tTw==
+"@react-pdf/textkit@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@react-pdf/textkit/-/textkit-6.1.0.tgz#ff7667b4a67c98fecefbeabff221de4bafa37979"
+  integrity sha512-sFlzDC9CDFrJsnL3B/+NHrk9+Advqk7iJZIStiYQDdskbow8GF/AGYrpIk+vWSnh35YxaGbHkqXq53XOxnyrjQ==
   dependencies:
     "@react-pdf/fns" "3.1.2"
     bidi-js "^1.0.2"
     hyphen "^1.6.4"
     unicode-properties "^1.4.1"
 
-"@react-pdf/types@^2.9.1":
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/@react-pdf/types/-/types-2.9.1.tgz#d3265c019979cd256a423dba3ff0ca72cf86eefb"
-  integrity sha512-5GoCgG0G5NMgpPuHbKG2xcVRQt7+E5pg3IyzVIIozKG3nLcnsXW4zy25vG1ZBQA0jmo39q34au/sOnL/0d1A4w==
+"@react-pdf/types@^2.9.2":
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@react-pdf/types/-/types-2.9.2.tgz#92aefa900b25bd3d0e87bb139346af545ed1ddfc"
+  integrity sha512-dufvpKId9OajLLbgn9q7VLUmyo1Jf+iyGk2ZHmCL8nIDtL8N1Ejh9TH7+pXXrR0tdie1nmnEb5Bz9U7g4hI4/g==
   dependencies:
-    "@react-pdf/font" "^4.0.3"
+    "@react-pdf/font" "^4.0.4"
     "@react-pdf/primitives" "^4.1.1"
-    "@react-pdf/stylesheet" "^6.1.1"
+    "@react-pdf/stylesheet" "^6.1.2"
 
 "@react-spring/animated@~10.0.3":
   version "10.0.3"
