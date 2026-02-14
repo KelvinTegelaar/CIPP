@@ -124,11 +124,11 @@ export const CippDataTable = (props) => {
       return acc;
     }, {});
   }, [filters]);
-  
+
   // Track if initial filters have been applied
   const filtersInitializedRef = useRef(false);
   const previousFiltersRef = useRef(null);
-  
+
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [configuredSimpleColumns, setConfiguredSimpleColumns] = useState(simpleColumns);
   const [usedData, setUsedData] = useState(data);
@@ -158,8 +158,13 @@ export const CippDataTable = (props) => {
   useEffect(() => {
     // Only set initial filters if they haven't been set yet OR if the filters prop has actually changed
     const filtersChanged = !isEqual(filters, previousFiltersRef.current);
-    
-    if (filters && Array.isArray(filters) && filters.length > 0 && (!filtersInitializedRef.current || filtersChanged)) {
+
+    if (
+      filters &&
+      Array.isArray(filters) &&
+      filters.length > 0 &&
+      (!filtersInitializedRef.current || filtersChanged)
+    ) {
       // Process filters to add filterFn based on filterType
       const processedFilters = filters.map((filter) => {
         if (filter.filterType === "equal") {
