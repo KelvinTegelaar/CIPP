@@ -26,6 +26,7 @@ import {
   AutoMode,
   Recycling,
   ManageAccounts,
+  Fingerprint,
 } from "@mui/icons-material";
 import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
 import tabOptions from "./tabOptions";
@@ -131,6 +132,13 @@ const Page = () => {
     }
   }
 
+  // Helper function to format bytes to GB (matching getCippFormatting pattern)
+  const formatBytesToGB = (bytes) => {
+    if (!bytes || bytes === 0) return "N/A";
+    const gb = bytes / 1024 / 1024 / 1024;
+    return `${gb.toFixed(2)} GB`;
+  };
+
   // Set the title and subtitle for the layout
   const title = deviceRequest.isSuccess ? deviceData?.deviceName : "Loading...";
 
@@ -141,14 +149,14 @@ const Page = () => {
           text: <CippCopyToClipBoard type="chip" text={deviceData?.deviceName} />,
         },
         {
-          icon: <Security />,
+          icon: <Fingerprint />,
           text: <CippCopyToClipBoard type="chip" text={deviceData?.id} />,
         },
         {
           icon: <CalendarIcon />,
           text: (
             <>
-              Enrolled: <CippTimeAgo data={deviceData?.enrolledDateTime} />
+              Last Sync: <CippTimeAgo data={deviceData?.lastSyncDateTime} />
             </>
           ),
         },
@@ -858,6 +866,24 @@ const Page = () => {
                             </Typography>
                             <Typography variant="inherit">
                               {getCippFormatting(data?.userPrincipalName, "userPrincipalName") || "N/A"}
+                            </Typography>
+                          </Grid>
+                        )}
+                        {data?.totalStorageSpaceInBytes && (
+                          <Grid size={{ xs: 12 }}>
+                            <Typography variant="inherit" color="text.primary" gutterBottom>
+                              Storage:
+                            </Typography>
+                            <Typography variant="inherit">
+                              {formatBytesToGB(data.freeStorageSpaceInBytes || 0)} free of{" "}
+                              {formatBytesToGB(data.totalStorageSpaceInBytes)}
+                              {data.freeStorageSpaceInBytes &&
+                                data.totalStorageSpaceInBytes &&
+                                ` (${Math.round(
+                                  ((data.totalStorageSpaceInBytes - data.freeStorageSpaceInBytes) /
+                                    data.totalStorageSpaceInBytes) *
+                                    100,
+                                )}% used)`}
                             </Typography>
                           </Grid>
                         )}
