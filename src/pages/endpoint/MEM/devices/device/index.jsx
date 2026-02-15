@@ -44,7 +44,7 @@ import { CippDataTable } from "../../../../../components/CippTable/CippDataTable
 import { CippHead } from "../../../../../components/CippComponents/CippHead";
 import { Button } from "@mui/material";
 import { getCippFormatting } from "../../../../../utils/get-cipp-formatting";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, EyeIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
@@ -712,6 +712,13 @@ const Page = () => {
           data: users,
           simpleColumns: ["displayName", "userPrincipalName", "mail"],
           refreshFunction: refreshFunction,
+          actions: [
+            {
+              icon: <EyeIcon />,
+              label: "View User",
+              link: `/identity/administration/users/user?userId=[id]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+            },
+          ],
         },
       },
     ];
