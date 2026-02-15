@@ -700,8 +700,7 @@ const Page = () => {
                           return obj;
                         }, {})
                     : standardObject.ExpectedValue;
-                isCompliant =
-                  JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
+                isCompliant = JSON.stringify(sortedCurrent) === JSON.stringify(sortedExpected);
               }
               // SECOND: Check if Value is explicitly true
               else if (directStandardValue === true) {
