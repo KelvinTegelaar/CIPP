@@ -29,6 +29,13 @@ const Page = () => {
 
   const actions = [
     {
+      label: "View Device",
+      link: `/endpoint/MEM/devices/device?deviceId=[id]`,
+      color: "info",
+      icon: <EyeIcon />,
+      multiPost: false,
+    },
+    {
       label: "View in Intune",
       link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
       color: "info",
