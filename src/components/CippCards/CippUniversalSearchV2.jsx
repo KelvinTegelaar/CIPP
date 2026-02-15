@@ -134,7 +134,10 @@ export const CippUniversalSearchV2 = React.forwardRef(
             value={searchValue}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start" sx={{ display: 'flex', alignItems: 'center', mb: 0, mt: '12px' }}>
+                <InputAdornment
+                  position="start"
+                  sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
+                >
                   <SearchIcon color="action" sx={{ fontSize: 20 }} />
                 </InputAdornment>
               ),
@@ -144,11 +147,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
                 </InputAdornment>
               ) : null,
               sx: {
-                '& .MuiInputAdornment-root': {
-                  marginTop: '0 !important',
-                  alignSelf: 'center'
-                }
-              }
+                "& .MuiInputAdornment-root": {
+                  marginTop: "0 !important",
+                  alignSelf: "center",
+                },
+              },
             }}
           />
         </Box>
